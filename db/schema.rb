@@ -10,24 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_01_160740) do
+ActiveRecord::Schema.define(version: 2022_07_21_233931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-
-  create_table "application_groups", id: :serial, force: :cascade do |t|
-    t.integer "application_id", null: false
-    t.integer "group_id", null: false
-    t.integer "unread_updates", default: 1, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["application_id", "unread_updates"], name: "index_application_groups_on_application_id_and_unread_updates"
-    t.index ["group_id", "application_id"], name: "index_application_groups_on_group_id_and_application_id", unique: true
-    t.index ["group_id", "unread_updates"], name: "index_application_groups_on_group_id_and_unread_updates"
-  end
 
   create_table "application_users", id: :serial, force: :cascade do |t|
     t.integer "application_id", null: false
@@ -131,6 +120,9 @@ ActiveRecord::Schema.define(version: 2022_06_01_160740) do
     t.index ["verified"], name: "index_contact_infos_on_verified"
   end
 
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
@@ -180,43 +172,6 @@ ActiveRecord::Schema.define(version: 2022_06_01_160740) do
     t.boolean "is_implicit", default: false, null: false
     t.index ["contract_id"], name: "index_fine_print_signatures_on_contract_id"
     t.index ["user_id", "user_type", "contract_id"], name: "index_fine_print_s_on_u_id_and_u_type_and_c_id", unique: true
-  end
-
-  create_table "group_members", id: :serial, force: :cascade do |t|
-    t.integer "group_id", null: false
-    t.integer "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["group_id", "user_id"], name: "index_group_members_on_group_id_and_user_id", unique: true
-    t.index ["user_id"], name: "index_group_members_on_user_id"
-  end
-
-  create_table "group_nestings", id: :serial, force: :cascade do |t|
-    t.integer "member_group_id", null: false
-    t.integer "container_group_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["container_group_id"], name: "index_group_nestings_on_container_group_id"
-    t.index ["member_group_id"], name: "index_group_nestings_on_member_group_id", unique: true
-  end
-
-  create_table "group_owners", id: :serial, force: :cascade do |t|
-    t.integer "group_id", null: false
-    t.integer "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["group_id", "user_id"], name: "index_group_owners_on_group_id_and_user_id", unique: true
-    t.index ["user_id"], name: "index_group_owners_on_user_id"
-  end
-
-  create_table "groups", id: :serial, force: :cascade do |t|
-    t.boolean "is_public", default: false, null: false
-    t.string "name"
-    t.text "cached_subtree_group_ids"
-    t.text "cached_supertree_group_ids"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["is_public"], name: "index_groups_on_is_public"
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
@@ -277,6 +232,11 @@ ActiveRecord::Schema.define(version: 2022_06_01_160740) do
     t.boolean "can_skip_oauth_screen", default: false, null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "push_topics", force: :cascade do |t|
+    t.string "topic_salesforce_id"
+    t.string "topic_name"
   end
 
   create_table "schools", force: :cascade do |t|

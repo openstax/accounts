@@ -222,7 +222,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
       ActiveSupport::JSON.decode(request.body.string)
     ).errors
 
-    head (errors.any? ? :internal_server_error : :no_content)
+    head(errors.any? ? :internal_server_error : :no_content)
   end
 
   # protected

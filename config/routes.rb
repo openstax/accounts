@@ -182,29 +182,6 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :application_groups, only: [] do
-      collection do
-        get 'updates'
-        put 'updated'
-      end
-    end
-
-    resources :messages, only: [:create]
-
-    resources :groups, only: [:index, :show, :create, :update, :destroy] do
-      post '/members/:user_id', to: 'group_members#create'
-      delete '/members/:user_id', to: 'group_members#destroy'
-
-      post '/owners/:user_id', to: 'group_owners#create'
-      delete '/owners/:user_id', to: 'group_owners#destroy'
-
-      post '/nestings/:member_group_id', to: 'group_nestings#create'
-      delete '/nestings/:member_group_id', to: 'group_nestings#destroy'
-    end
-
-    resources :group_members, only: [:index], path: 'memberships'
-    resources :group_owners, only: [:index], path: 'ownerships'
-
     resources :contact_infos, only: [] do
       member do
         put 'resend_confirmation'
@@ -244,10 +221,6 @@ Rails.application.routes.draw do
                                  controller: :contact_infos, action: :destroy
     post :verify_contact_info, path: '/contact_infos/:id/verify',
                                controller: :contact_infos, action: :verify
-
-    resources :pre_auth_states, only: [:index]
-
-    resources :banners, except: :show
 
     mount Blazer::Engine, at: 'blazer', as: 'blazer_admin'
     match "/job_dashboard" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
