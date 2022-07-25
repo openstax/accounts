@@ -28,8 +28,8 @@
 /public/500.html
 /public/503.html
 
-# Ignore vendor cache files
-/vendor
+# Ignore vendor bundler cache
+/vendor/bundle
 
 # Ignore yaml_db database files
 /db/data.yml*
