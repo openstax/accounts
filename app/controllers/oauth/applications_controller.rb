@@ -3,8 +3,6 @@ module Oauth
     include AuthenticateMethods
 
     before_action :set_user
-    #before_action :authenticate_admin_or_oauth_application_owner!
-    skip_before_action :verify_authenticity_token, only: :create
 
     SPACE_SEPARATED_NUMBERS_REGEX = '^(?=.*\d)[\s\d]+$'.freeze
 
@@ -156,11 +154,6 @@ module Oauth
         end
       end
       member_ids
-    end
-
-    def authenticate_admin_or_oauth_application_owner!
-      return if current_user.oauth_applications.any?
-      admin_authentication!
     end
   end
 end
