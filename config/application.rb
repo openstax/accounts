@@ -63,5 +63,10 @@ module Accounts
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults
     config.active_record.belongs_to_required_by_default = false
     config.autoload_paths += %W(#{config.root}/lib)
+
+    # must be loaded beofre cookie_store.rb, see: https://github.com/omniauth/omniauth#rails-api
+    config.session_store :cookie_store, key: "_accounts_session_#{Rails.application.secrets.environment_name}"
+    config.middleware.use ActionDispatch::Cookies # Required for all session management
+    config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
   end
 end

@@ -60,7 +60,7 @@ class OauthCallback
     outputs.user = outputs.authentication.user
   end
 
-  private ###########################
+  private
 
   # users can only have one login per social provider, so if user is trying to log in with
   # the same provider but it has a different uid, then they might've gotten the social account hacked,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_22_154535) do
+ActiveRecord::Schema.define(version: 2022_07_25_202352) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -228,7 +228,6 @@ ActiveRecord::Schema.define(version: 2022_07_22_154535) do
     t.boolean "confidential", default: true, null: false
     t.boolean "can_access_private_user_data", default: false, null: false
     t.boolean "can_find_or_create_accounts", default: false, null: false
-    t.boolean "can_message_users", default: false, null: false
     t.boolean "can_skip_oauth_screen", default: false, null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true

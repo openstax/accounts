@@ -163,7 +163,7 @@ class User < ApplicationRecord
     return SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[1] \
       if sheerid_reported_school.present?
 
-    return self_reported_school if self_reported_school.present?
+    self_reported_school if self_reported_school.present?
   end
 
   def most_accurate_school_city

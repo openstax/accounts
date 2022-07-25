@@ -34,6 +34,9 @@ en:
         redirect_uri: 'Use one line per URI'
         native_redirect_uri: 'Use %{native_redirect_uri} if you want to add localhost URIs for development purposes'
         scopes: 'Separate scopes with spaces. Leave blank to use the default scopes.'
+        can_access_private_user_data: 'Application can access private data through the API (GDPR location, cookie preferences, role, school, and email addresses )'
+        can_find_or_create_accounts: 'Application will be able to use the find_or_create user API'
+        can_skip_oauth_screen: 'Application will not require the user to specify we need their permissions to authenticate with OpenStax.'
       edit:
         title: 'Edit application'
       index:
@@ -130,7 +133,7 @@ en:
       admin:
         title: 'Doorkeeper'
         nav:
-          oauth2_provider: 'OAuth2 Provider'
+          oauth2_provider: 'OpenStax OAuth Provider'
           applications: 'Applications'
           home: 'Home'
       application:

@@ -1,13 +1,15 @@
 module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
+    include AuthenticateMethods
+
     before_action :set_user
-    before_action :authenticate_admin_or_oauth_application_owner!
+    #before_action :authenticate_admin_or_oauth_application_owner!
+    skip_before_action :verify_authenticity_token, only: :create
 
     SPACE_SEPARATED_NUMBERS_REGEX = '^(?=.*\d)[\s\d]+$'.freeze
 
     def index
-      @applications = @user.is_administrator? ? Doorkeeper::Application.all :
-                                                @user.oauth_applications
+      @applications = @user.is_administrator? ? Doorkeeper::Application.all : @user.oauth_applications
       @applications = @applications.ordered_by(:created_at)
 
       respond_to do |format|
@@ -32,9 +34,8 @@ module Oauth
 
     def create
       @application = Doorkeeper::Application.new(app_params)
-      @application.owner = Group.new
       @application.owner.add_member(current_user)
-      @application.owner.add_owner(current_user)
+      @application.add_member(current_user)
 
       OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
 
@@ -64,7 +65,6 @@ module Oauth
 
     def edit
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      set_current_member_ids
     end
 
     def update
@@ -82,7 +82,6 @@ module Oauth
             format.json { render json: @application }
           end
         else
-          set_current_member_ids
           respond_to do |format|
             format.html { render :edit }
             format.json do
@@ -151,16 +150,12 @@ module Oauth
 
       member_ids = params[:member_ids].split.map(&:to_i)
       member_ids.each do |member_id|
-        if !User.where(id: member_id).exists?
+        unless User.where(id: member_id).exists?
           @application.errors.add(:owner, "#{member_id} is not a valid user id")
           return false
         end
       end
       member_ids
-    end
-
-    def set_current_member_ids
-      @member_ids = @application.owner.member_ids
     end
 
     def authenticate_admin_or_oauth_application_owner!
