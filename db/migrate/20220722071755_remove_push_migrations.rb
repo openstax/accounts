@@ -1,6 +1,6 @@
 class RemovePushMigrations < ActiveRecord::Migration[5.2]
   def up
-    drop_table :push_topics
+    drop_table :push_topics if table_exists?(:push_topics)
   end
 
   def down

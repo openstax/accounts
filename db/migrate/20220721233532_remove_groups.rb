@@ -1,6 +1,6 @@
 class RemoveGroups < ActiveRecord::Migration[5.2]
   def up
-    drop_table :groups
+    drop_table :groups if table_exists?(:groups)
   end
 
   def down
