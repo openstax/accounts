@@ -11,8 +11,8 @@ FactoryBot.define do
     trait :trusted do
       can_access_private_user_data { true }
       can_find_or_create_accounts { true }
-      can_message_users { true }
       can_skip_oauth_screen { true }
+      confidential { true }
     end
   end
 end
