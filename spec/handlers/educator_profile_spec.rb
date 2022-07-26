@@ -6,7 +6,7 @@ RSpec.describe CompleteEducatorProfile, type: :handler do
   let(:books_used) { ['Algebra and Trigonometry', 'Physics'] }
   let(:num_students_per_semester_taught) { 10 }
   let(:educator_specific_role) { 'instructor' }
-  let(:using_openstax_how) { CompleteEducatorProfile::AS_PRIMARY }
+  let(:using_openstax_how) { :as_primary }
   let(:params) do
     {
       signup: {
@@ -24,7 +24,7 @@ RSpec.describe CompleteEducatorProfile, type: :handler do
 
   context 'with invalid params' do
     context 'other must be filled out' do
-      let(:educator_specific_role) { CompleteEducatorProfile::OTHER }
+      let(:educator_specific_role) { :other }
 
       it "should return correct error" do
         result = handle
@@ -34,8 +34,8 @@ RSpec.describe CompleteEducatorProfile, type: :handler do
     end
 
     context 'books used must be filled out' do
-      let(:educator_specific_role) { CompleteEducatorProfile::INSTRUCTOR }
-      let(:using_openstax_how) { CompleteEducatorProfile::AS_PRIMARY }
+      let(:educator_specific_role) { :instructor }
+      let(:using_openstax_how) { :as_primary }
       let(:books_used) { [] }
 
       it "should return correct error" do
@@ -46,7 +46,7 @@ RSpec.describe CompleteEducatorProfile, type: :handler do
     end
 
     context 'number of students taught must be filled out' do
-      let(:educator_specific_role) { CompleteEducatorProfile::INSTRUCTOR }
+      let(:educator_specific_role) { :instructor }
       let(:num_students_per_semester_taught) { nil }
 
       it "should return correct error" do

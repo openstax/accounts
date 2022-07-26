@@ -30,10 +30,10 @@ class SignupForm
 
   def required_params
     if signup_params.role == 'instructor'
-      [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
+      [:role, :email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
     else
       # student
-      [:email, :first_name, :last_name, :password].compact
+      [:role, :email, :first_name, :last_name, :password].compact
     end
   end
 

@@ -28,7 +28,7 @@ RSpec.describe ActivateUser do
     end
   end
 
-  context 'educator'  do
+  context 'instructor'  do
     context 'when success' do
       before do
         disable_sfdc_client
@@ -37,14 +37,14 @@ RSpec.describe ActivateUser do
       let(:source_app) { FactoryBot.create(:doorkeeper_application) }
       let(:user) do
         FactoryBot.create(
-          :user, state: 'unverified', role: 'educator',
+          :user, state: 'unverified', role: 'instructor',
           receive_newsletter: true, source_application: source_app
         )
       end
 
       it 'marks the user as activated' do
         expect(user.state).not_to eq(User::ACTIVATED)
-        described_class.call(user: user)
+        described_class.call(user)
         expect(user.state).to eq(User::ACTIVATED)
       end
     end

@@ -68,7 +68,7 @@ RSpec.describe VerifyEmailByPin, type: :handler do
       end
 
       it 'activates their account' do
-        expect_any_instance_of(ActivateUser).to receive(:exec).with(hash_including(user: user))
+        expect_any_instance_of(ActivateUser).to receive(:exec).with(user)
         described_class.call(params: params, email_address: email)
       end
 

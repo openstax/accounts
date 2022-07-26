@@ -66,11 +66,11 @@ Rails.application.routes.draw do
 
     # Step 4
     get 'signup/educator/profile_form', action: :profile_form, as: :profile_form
-    post 'signup/educator/complete_profile', action: :profile_form_post, as: :complete_profile_post
+    post 'signup/educator/complete_profile', action: :profile_post, as: :complete_profile_post
     get 'signup/educator/pending_cs_verification', action: :pending_cs_verification, as: :cs_verification
 
     get 'signup/educator/cs_form', action: :pending_cs_verification_form, as: :cs_verification_form
-    post 'signup/educator/cs_verification_request', action: :profile_form_post, as: :cs_verification_post
+    post 'signup/educator/cs_verification_request', action: :pending_cs_verification_post, as: :cs_verification_post
   end
 
   #########################

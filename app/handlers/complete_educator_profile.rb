@@ -152,12 +152,24 @@ class CompleteEducatorProfile
   def check_params
     role = signup_params.educator_specific_role.strip.downcase
 
-    if signup_params.school_name&.nil?
+    if signup_params.school_name && signup_params.school_name.nil?
       param_error(:school_name, :school_name_must_be_entered)
     end
 
     if role == 'other' && signup_params.other_role_name.nil?
       param_error(:other_role_name, :other_must_be_entered)
+    end
+
+    if role  == 'instructor' && signup_params.using_openstax_how == 'as_primary' && books_used.blank?
+      param_error(:books_used, :books_used_must_be_entered)
+    end
+
+    if role  == 'instructor' && signup_params.using_openstax_how != 'as_primary' && books_of_interest.blank?
+      param_error(:books_of_interest, :books_of_interest_must_be_entered)
+    end
+
+    if role  == 'instructor' && signup_params.num_students_per_semester_taught.blank?
+      param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
     end
 
     if @is_on_cs_form

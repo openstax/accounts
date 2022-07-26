@@ -139,14 +139,13 @@ RSpec.feature 'Educator signup flow', js: true do
 
     let(:user) do
       FactoryBot.create(
-        :user, role: User::INSTRUCTOR_ROLE,
+        :user, :terms_agreed, role: User::INSTRUCTOR_ROLE,
         is_profile_complete: false, sheerid_verification_id: Faker::Alphanumeric.alphanumeric
       )
     end
 
     context 'step 4' do
       before do
-        visit(profile_form_path)
         visit(profile_form_path)
         expect(page.current_path).to eq(profile_form_path)
         find("#signup_educator_specific_role_instructor").click

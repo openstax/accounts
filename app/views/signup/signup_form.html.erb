@@ -42,7 +42,7 @@
         </div>
 
         <% if selected_signup_role == :student %>
-          <%= render partial: 'social_auth/social_auth_buttons' %>
+          <%= render partial: 'social_auth/social_auth_buttons', locals: { origin: :signup_form } %>
 
           <%=
             render(

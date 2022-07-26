@@ -208,8 +208,8 @@ RSpec.describe SignupForm, type: :handler do
         expect { handler_call }.to change { User.where(state: 'unverified', role: :instructor).count }
       end
 
-      it 'sets the new user\'s faculty status to pending_faculty' do
-        expect { handler_call }.to change { User.where(faculty_status: :pending_faculty).count }
+      it 'sets the new user\'s faculty status to incomplete_signup' do
+        expect { handler_call }.to change { User.where(faculty_status: :incomplete_signup).count }
       end
 
       it 'creates an authentication with provider = identity' do
@@ -267,14 +267,16 @@ RSpec.describe SignupForm, type: :handler do
       end
 
       context 'required params' do
-        subject(:required_params){ [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted] }
+        subject(:required_params) { [:email, :first_name, :last_name, :password, :role] }
 
         it 'responds to required_params' do
           expect(described_class.new).to respond_to(:required_params)
         end
 
         it 'requires all the correct params' do
-          expect(described_class.new.required_params).to contain_exactly(*required_params)
+          handler = described_class.new
+          handler.send :params=, {}
+          expect(handler.required_params).to contain_exactly(*required_params)
         end
       end
     end
