@@ -1,0 +1,324 @@
+$normal-margin: 1.5rem;
+$tight-margin: 0.5rem;
+$content-max: 120rem;
+$text-content-max: 80rem;
+$form-element-height: 5rem;
+
+// Per https://zellwk.com/blog/media-query-units/
+// In media queries, only em units handle consistently across browsers.
+// Safari/iOS behaves differently from others when using rem or px and scaled fonts
+// We want the numbers to be in 10-pixel ems, so scale them
+$scale-factor: 10 / 16;
+$wide-screen-min: 140em * $scale-factor;
+$media-content-max: 120em * $scale-factor;
+$phone-max: 60em * $scale-factor;
+$tablet-max: 96em * $scale-factor;
+
+@import "colors";
+@import "fonts";
+@import "typography";
+
+// Includes the given (min) width
+@mixin width-up-to($width) {
+    @media (max-width: $width) {
+        @content;
+    }
+}
+
+$one-pixel-in-em: 1em * $scale-factor * 0.1;
+
+// Excludes the given (max) width
+@mixin wider-than($width) {
+    @media (min-width: $width + $one-pixel-in-em) {
+        @content;
+    }
+}
+
+// Includes the max width, excludes the min width
+@mixin width-between($width1, $width2) {
+    @media (min-width: $width1 + $one-pixel-in-em) and (max-width: $width2) {
+        @content;
+    }
+}
+
+@mixin layout-container($max-width) {
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: $max-width;
+    padding-left: $normal-margin;
+    padding-right: $normal-margin;
+    width: 100%;
+}
+
+// %content and %text-content should be used via @extend because of the nesting
+// rule, so there is no mixin
+%content {
+    @include layout-container($content-max);
+
+    %content {
+        padding: 0;
+    }
+}
+
+%text-content {
+    @include layout-container($text-content-max);
+
+    %content,
+    %text-content {
+        padding: 0;
+    }
+}
+
+// .basis-# defines a cell in the row
+// At phone size, all are 100% width
+// At tablet, .basis-2 thru .basis-6 are 50%, others still 100%
+// At desktop, .basis-n is n/12 of the row
+@mixin bases($prefix) {
+    @for $b from 2 through 12 {
+        #{$prefix}#{$b} {
+            grid-column: auto / span 1;
+            margin: 0;
+
+            @if ($b > 6) {
+                @include width-between($phone-max, $tablet-max) {
+                    grid-column: auto / span 2;
+                }
+            }
+
+            @include wider-than($tablet-max) {
+                grid-column: auto / span $b;
+            }
+        }
+    }
+}
+
+@mixin grid() {
+    display: grid;
+    grid-gap: 1rem 3rem;
+    grid-template-columns: 1fr;
+
+    @include width-between($phone-max, $tablet-max) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include wider-than($tablet-max) {
+        grid-template-columns: repeat(12, 1fr);
+    }
+
+    > * {
+        grid-column: 1 / 1;
+
+        @include width-between($phone-max, $tablet-max) {
+            grid-column-end: 3;
+        }
+
+        @include wider-than($tablet-max) {
+            grid-column-end: 13;
+        }
+    }
+}
+
+@mixin form() {
+    @include layout-container($text-content-max);
+    @include grid();
+
+    background-color: ui-color(form-bg);
+    grid-auto-rows: min-content;
+    grid-gap: 5rem 1rem;
+    padding: 4rem;
+
+    @include width-up-to($phone-max) {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+@mixin tight-row() {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: 1fr;
+
+    @include width-between($phone-max, $tablet-max) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @include wider-than($tablet-max) {
+        grid-template-columns: repeat(auto-fill, minmax(10rem, auto));
+    }
+}
+
+%tight-row {
+    @include tight-row();
+}
+
+%form {
+    @include form();
+}
+
+// A container that centers content horizontally and vertically
+@mixin center() {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+// A rounded-cornered container with a drop shadow
+$card-shadow: 0 2px 6px 0 rgba(ui-color(black), 0.25);
+$card-shadow-hover: 0 8px 20px 0 rgba(ui-color(black), 0.25);
+@mixin card() {
+    border: 0;
+    border-radius: 0.4rem;
+    box-shadow: $card-shadow;
+
+    @include wider-than($tablet-max) {
+        &:hover {
+            box-shadow: $card-shadow-hover;
+        }
+    }
+}
+
+%card {
+    @include card();
+}
+
+// The main menu for desktop
+$menu-highlight-border-width: 0.5rem;
+$menu-highlight-border: $menu-highlight-border-width solid os-color(green);
+%main-menu {
+    box-shadow: 0 0.1rem 0.3rem 0.2rem rgba(os-color(gray), 0.1);
+    height: 5.2rem;
+    width: 100%;
+
+    %content {
+        align-items: flex-start;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    %logo-wrapper {
+        @include set-font(helper-label);
+
+        align-items: center;
+        display: grid;
+        grid-column-gap: 1rem;
+        grid-template-columns: min-content auto;
+        padding: 1.2rem 0.1rem;
+    }
+
+    %logo {
+        height: 2.8rem;
+
+        a {
+            height:100%;
+
+            &:active,
+            &:focus,
+            &:hover {
+                &::after {
+                    background-color: transparent;
+                    box-shadow: none;
+                }
+            }
+        }
+
+        img {
+            height: 100%;
+        }
+
+        %logo-color {
+            display: inline-block;
+        }
+    }
+
+    %nav-menu {
+        @include set-font(h4);
+
+        align-items: baseline;
+        display: flex;
+        flex-flow: row nowrap;
+        height: auto;
+        justify-content: flex-end;
+        list-style-type: none;
+        margin: 0;
+        overflow: visible;
+        padding: 0;
+
+        a {
+            text-decoration: none;
+        }
+
+        %nav-menu-item {
+            margin: $menu-highlight-border-width 1rem;
+            padding: 0 0.25rem;
+            white-space: nowrap;
+
+            &:not(%dropdown) > a {
+                color: os-color(gray);
+                display: inline-block;
+                padding: 1.2rem 0 0.6rem;
+
+                @at-root .transparent#{&} {
+                    color: text-color(white);
+                }
+
+                .chevron {
+                    fill: os-color(gray);
+                    height: 1.33rem;
+                    margin-left: 1rem;
+                    transform-origin: center;
+                    transform: rotate(90deg);
+                    width: 0.8rem;
+                }
+            }
+
+            %dropdown-menu {
+                @include set-font(body-regular);
+
+                display: none;
+
+                // inline-block allows width control
+                &[aria-expanded="true"] {
+                    background-color: ui-color(white);
+                    border-top: $menu-highlight-border;
+                    box-shadow: 0 0.5rem 0.5rem 0 rgba(black, 0.1);
+                    color: os-color(gray);
+                    display: block;
+                    height: auto;
+                    opacity: 1;
+                    padding: 1rem 0;
+                    transition: opacity 0.3s;
+                    width: auto;
+                }
+
+                a {
+                    color: os-color(gray);
+                    display: block;
+                    padding: 0.15rem 1rem;
+                }
+
+                a:focus,
+                a:hover {
+                    background-color: ui-color(default);
+                    color: text-color(normal);
+                }
+            }
+
+            &:hover:not(.dropdown) {
+                border-bottom: $menu-highlight-border;
+                margin-bottom: 0;
+            }
+        }
+
+        > :last-child {
+            margin-right: 0;
+            position: relative;
+
+            %dropdown-menu {
+                position: absolute;
+                right: -$normal-margin;
+            }
+        }
+    }
+}

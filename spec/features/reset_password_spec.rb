@@ -37,7 +37,7 @@ feature 'Password reset', js: true do
       visit password_reset_link
 
       expect(page).not_to(have_current_path(reauthenticate_form_path))
-      expect(page).to(have_current_path(change_password_form_path(token: login_token)))
+      expect(page).to(have_current_path(password_reset_path(token: login_token)))
     end
   end
 

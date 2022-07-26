@@ -3,14 +3,17 @@
     <%= label_tag :school_name, I18n.t(:"educator_profile_form.school_name"),
     class: 'field-label'
     %>
+    <div>
+      <input
+        type="text"
+        name="signup[school_name]"
+        placeholder="<%= I18n.t(:"educator_profile_form.school_name") %>"
+        autofocus
+        data-bind="textInput: schoolName"
+      >
+    </div>
     <div class="school-name mustdo-alert" data-bind="visible: schoolNameNoticeVisible">
       <%= I18n.t(:"educator_profile_form.school_name_must_be_entered") %>
     </div>
-    <input
-      name="signup[school_name]"
-      placeholder="<%= I18n.t(:"educator_profile_form.school_name") %>"
-      autofocus
-      data-bind="textInput: schoolName"
-    >
   </div>
 </div>

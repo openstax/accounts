@@ -5,7 +5,7 @@
   pages = (num_users * 1.0 / per_page).ceil
 %>
 
-<div id='search-results-pagination'>
+<div id='new-search-results-pagination'>
   <%= pluralize(num_users, 'user') %> found.
 
   <% if pages > 0 %>
@@ -21,10 +21,25 @@
       linked_page_numbers.sort!
     %>
 
-    <% linked_page_numbers.each do |lpn| %>
-      <%= link_to_unless lpn == page + 1,
-                         lpn,
-                         admin_users_path(search: {terms: @handler_result.outputs[:query], page: lpn-1, per_page: per_page}), remote: true %>
-    <% end %>
+      <% linked_page_numbers.each do |lpn| %>
+        <% if lpn == page + 1 %>
+          <%= "<span class='btn btn-default btn-sm disabled'>#{lpn}</span>".html_safe %>
+        <% else %>
+          <%= link_to(
+                "<span class='btn btn-default btn-sm'>#{lpn}</span>".html_safe,
+                search_admin_users_path(
+                  search: {
+                    terms:    @handler_result.outputs[:query],
+                    order_by: params[:search][:order_by],
+                    page:     lpn - 1,
+                    per_page: per_page
+                  }
+                )
+              )
+          %>
+        <% end %>
+
+      <% end %>
+    </div>
   <% end %>
 </div>

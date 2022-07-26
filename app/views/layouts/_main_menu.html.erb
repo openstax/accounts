@@ -1,7 +1,7 @@
 <div class="main-menu" role="menubar" aria-label="Main menu">
     <span class="logo-wrapper">
         <span class="logo">
-            <%= link_to logo_url, 'aria-label': 'OpenStax Home Page' do %>
+            <%= link_to Rails.application.secrets.openstax_url, 'aria-label': 'OpenStax Home Page' do %>
                 <%= image_tag 'openstax-logo.svg', class: 'logo-color', alt: 'OpenStax logo' %>
             <% end %>
         </span>

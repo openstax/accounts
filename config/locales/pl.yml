@@ -155,12 +155,12 @@ pl:
     finish: koniec
     should_social_signup: Nie ma żadnego zapisu tego konta. Czy ty próbujesz %{sign_up}?
 
-    student_email_verification_form_decription: >-
+    student_email_verification_form_description: >-
       E-mail został wysłany do <b>%{email} </b>.
       Wprowadź poniżej otrzymany kod PIN.
       Możesz także %{edit_your_email}
 
-    educator_email_verification_form_decription: >-
+    educator_email_verification_form_description: >-
       E-mail został wysłany do <b>% {email} </b>.
       Wprowadź poniżej otrzymany kod PIN.
       Po potwierdzeniu adresu e-mail musisz dokończyć

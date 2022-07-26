@@ -1,2 +1,2 @@
-//= require knockout
+//= require knockout.js
 //= require ./multiselect

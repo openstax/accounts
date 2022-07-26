@@ -1,7 +1,7 @@
 <%# Copyright 2011-2016 Rice University. Licensed under the Affero General Public
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
-<%= ox_card(heading: (t :".page_heading")) do %>
+<%= profile_card(heading: (t :".page_heading")) do %>
 
   <% contract_links = @contracts.collect do |contract|
        link_to contract.title, term_path(contract), remote: true

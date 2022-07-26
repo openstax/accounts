@@ -4,7 +4,7 @@
 %>
 
 <% content_for :head do %>
-  <%= javascript_include_tag  "profile" %>
+  <%= javascript_include_tag "profile" %>
   <%= stylesheet_link_tag "profile-nf" %>
 <% end %>
 
@@ -12,7 +12,7 @@
   <%= render 'layouts/main_menu' %>
 </div>
 
-<%= ox_card do %>
+<%= profile_card do %>
   <div class="profile-title">
     <%=
       link_to(

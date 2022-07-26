@@ -1,5 +1,4 @@
 module FormHelper
-
   class One
     def initialize(f:, header: nil, limit_to: nil, context:, params: nil, errors: nil)
       @f = f
@@ -10,15 +9,11 @@ module FormHelper
       @errors = errors
     end
 
-    def c
-      @context
-    end
-
     def wrapper_div(name:, except: nil, only: nil, class_name: '', &block)
       return if excluded?(except: except, only: only)
       errors_div = get_errors_div(name: name)
-      c.content_tag :div, class: "form-group #{class_name} #{'has-error' if errors_div.present?}" do
-        content = c.capture(&block)
+      @context.content_tag :div, class: "form-group #{class_name} #{'has-error' if errors_div.present?}" do
+        content = @context.capture(&block)
         errors_div.present? ? content + errors_div : content
       end
     end
@@ -29,6 +24,7 @@ module FormHelper
                    value: nil,
                    type: nil,
                    autofocus: false,
+                   autocomplete: nil,
                    except: nil,
                    only: nil,
                    supplemental_class: nil,
@@ -51,7 +47,7 @@ module FormHelper
       end
 
       if numberonly
-        placeholder ||= c.t(label || ".#{name}")
+        placeholder ||= @context.t(label || ".#{name}")
 
         input = (
         @f.number_field name,
@@ -75,6 +71,7 @@ module FormHelper
                       class: desired_class_name,
                       data: data(only: only, except: except),
                       autofocus: autofocus,
+                      autocomplete: autocomplete,
                       readonly: readonly,
                       onkeyup: onkeyup,
                       onkeydown: onkeydown,
@@ -94,13 +91,9 @@ module FormHelper
       html_options[:multiple] = multiple
       html_options[:class] = custom_class if custom_class
 
-      c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
+      @context.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
         "#{@f.select name, options, {}, html_options}#{errors_div}".html_safe
       end
-    end
-
-    def get_params_value(name)
-      @params.try(:[], @f.object_name).try(:[], name)
     end
 
     def excluded?(except:, only:)
@@ -125,7 +118,7 @@ module FormHelper
 
       return '' if field_errors.empty?
 
-      c.content_tag(:div, class: "errors invalid-message") do
+      @context.content_tag(:div, class: "errors invalid-message") do
         # TODO: show multiple error messages per field when the pattern-library is fixed.
         error_divs = field_errors.map do |field_error|
           field_error.translate.html_safe
@@ -133,6 +126,5 @@ module FormHelper
         error_divs.join('<br>').html_safe
       end
     end
-
   end
 end

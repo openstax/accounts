@@ -1,17 +1,34 @@
-<%
-  header = I18n.t(:"login_signup_form.youre_done", first_name: @first_name)
-  image = image_tag('highlighting_and_note_taking.png', style: 'width: inherit;')
-  description = I18n.t(
-    :"login_signup_form.youre_done_description",
-    email_address: @email_address
-  ).html_safe
-%>
+<div id="login-signup-form">
+  <div class="content">
+    <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active' } %>
 
-<%=
-  render(
-    'signup/signup_done_template',
-    header: header,
-    description: description,
-    image: image
-  )
-%>
+    <%= login_signup_card(
+          classes:        "signup-page",
+          header:         I18n.t(:"login_signup_form.youre_done", first_name: current_user.first_name),
+          show_exit_icon: true) do %>
+      <form action="<%= exit_accounts_path %>">
+        <div class="content control-group info-message">
+          <%= I18n.t(
+                :"login_signup_form.youre_done_description",
+                email_address: current_user.email_addresses.first&.value
+              ).html_safe %>
+          <br/>
+          <br/>
+
+          <%= image_tag('highlighting_and_note_taking.png', style: 'width: inherit;') %>
+
+          <%=
+            button_tag(
+              t(:"login_signup_form.finish"),
+              data: {
+                'ga-category': 'Account Creation',
+                'ga-action':   'Click',
+                'ga-label':    '5-Finish'
+              }
+            )
+          %>
+        </div>
+      </form>
+    <% end %>
+  </div>
+</div>

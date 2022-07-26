@@ -25,7 +25,7 @@
     popover.popover('show');
 
     return options.content.on('click', '.btn', function(ev) {
-      var cb, isAbort;
+      let cb, isAbort;
       popover.popover('destroy');
       isAbort = $(this).hasClass('confirm-dialog-btn-abort');
       cb = isAbort ? optionArgs.onCancel : optionArgs.onConfirm;
