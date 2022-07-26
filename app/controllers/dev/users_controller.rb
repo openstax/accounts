@@ -1,7 +1,5 @@
 module Dev
-  class UsersController < BaseController
-
-    skip_before_action :authenticate_user!
+  class UsersController < Dev::BaseController
 
     def create
       handle_with(Dev::UsersCreate)
