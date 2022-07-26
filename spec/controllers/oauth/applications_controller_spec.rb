@@ -16,16 +16,6 @@ module Oauth
     let!(:trusted_application_user2)   { FactoryBot.create :doorkeeper_application, :trusted }
     let!(:untrusted_application_user2) { FactoryBot.create :doorkeeper_application }
 
-    before(:each) do
-      trusted_application_admin.owner.add_member(admin)
-      trusted_application_admin.owner.add_member(user)
-      untrusted_application_admin.owner.add_member(admin)
-      trusted_application_user.owner.add_member(user)
-      untrusted_application_user.owner.add_member(user)
-      trusted_application_user2.owner.add_member(user2)
-      untrusted_application_user2.owner.add_member(user2)
-    end
-
     it "should let an admin update someone else's application" do
       controller.sign_in! admin
       put(:update,
@@ -97,7 +87,6 @@ module Oauth
       expect(response).to have_http_status :success
       expect(assigns(:application).name).to eq(untrusted_application_user.name)
       expect(assigns(:application).redirect_uri).to eq(untrusted_application_user.redirect_uri)
-      expect(assigns(:application).can_message_users).to eq(untrusted_application_user.can_message_users)
     end
 
     it "should let an admin destroy an application" do
@@ -248,8 +237,6 @@ module Oauth
       expect(response).to redirect_to(oauth_application_path(id))
       expect(assigns(:application).name).to eq('Some app')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.com')
-      expect(assigns(:application).can_message_users).to eq(true)
-      expect(assigns(:application).owner.member_ids).to include(user2.id)
     end
 
     it "should let an oauth admin edit an application" do
@@ -293,8 +280,6 @@ module Oauth
       expect(response).to redirect_to(oauth_application_path(id))
       expect(assigns(:application).name).to eq('Some app')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.com')
-      expect(assigns(:application).can_message_users).to eq(true)
-      expect(assigns(:application).owner.member_ids).to include(user2.id)
     end
 
     it "should not let an oauth admin update an application except redirect_uri" do
@@ -312,49 +297,6 @@ module Oauth
       expect(response).to redirect_to(oauth_application_path(trusted_application_admin.id))
       expect(assigns(:application).name).not_to eq('Some app edited')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.org')
-      expect(assigns(:application).can_message_users).not_to eq(false)
-    end
-
-    context "with render_views" do
-      render_views
-      it "should only allow numbers and spaces in Oauth Admin field" do
-        controller.sign_in! admin
-        post(:update,
-          params: {
-            id: untrusted_application_user.id,
-            doorkeeper_application: {
-              name: 'Some app',
-              redirect_uri: 'https://www.example.com',
-              can_message_users: true,
-            },
-            member_ids: user2.id.to_s + " uteq"
-          }
-        )
-
-        id = assigns(:application).id
-        expect(id).not_to be_nil
-        expect(response.body).to include "Member ids must be a space separated list of integers"
-      end
-
-      it "should only allow valid user ids in Oauth Admin field" do
-        controller.sign_in! admin
-        post(:update,
-          params: {
-            id: untrusted_application_user.id,
-            doorkeeper_application: {
-              name: 'Some app',
-              redirect_uri: 'https://www.example.com',
-              can_message_users: true,
-            },
-            member_ids: user2.id.to_s + "12345"
-          }
-        )
-
-        id = assigns(:application).id
-        expect(id).not_to be_nil
-        expect(response.body).to include "12345 is not a valid user id"
-      end
     end
   end
-
 end

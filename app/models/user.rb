@@ -138,7 +138,6 @@ class User < ApplicationRecord
   has_many :contact_infos, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, inverse_of: :user
   has_many :external_uuids, class_name: 'UserExternalUuid', dependent: :destroy
-  has_many :oauth_applications, through: :member_groups
   has_many :security_logs
 
   has_many :access_grants,

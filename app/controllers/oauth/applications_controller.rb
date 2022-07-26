@@ -7,7 +7,7 @@ module Oauth
     SPACE_SEPARATED_NUMBERS_REGEX = '^(?=.*\d)[\s\d]+$'.freeze
 
     def index
-      @applications = @user.is_administrator? ? Doorkeeper::Application.all : @user.oauth_applications
+      @applications = @user.is_administrator? ? Doorkeeper::Application.all : nil
       @applications = @applications.ordered_by(:created_at)
 
       respond_to do |format|
@@ -39,11 +39,8 @@ module Oauth
 
       Doorkeeper::Application.transaction do
         if add_application_owners && @application.save
-          security_log :application_created, application_id: @application.id,
-                                            application_name: @application.name
-          flash[:notice] = I18n.t(
-            :notice, scope: %i[doorkeeper flash applications create]
-          )
+          security_log :application_created, application_id: @application.id, application_name: @application.name
+          flash[:notice] = I18n.t(:notice, scope: %i[doorkeeper flash applications create])
           respond_to do |format|
             format.html { redirect_to oauth_application_url(@application) }
             format.json { render json: @application }
@@ -70,11 +67,8 @@ module Oauth
 
       Doorkeeper::Application.transaction do
         if add_application_owners && @application.update_attributes(app_params)
-          security_log :application_updated, application_id: @application.id,
-                                            application_params: app_params
-          flash[:notice] = I18n.t(
-            :notice, scope: %i[doorkeeper flash applications update]
-          )
+          security_log :application_updated, application_id: @application.id, application_params: app_params
+          flash[:notice] = I18n.t(:notice, scope: %i[doorkeeper flash applications update])
           respond_to do |format|
             format.html { redirect_to oauth_application_url(@application) }
             format.json { render json: @application }
@@ -120,7 +114,7 @@ module Oauth
         params.require(:doorkeeper_application).permit(
           :name, :redirect_uri, :scopes, :email_subject_prefix, :lead_application_source,
           :email_from_address, :confidential,
-          :can_access_private_user_data, :can_find_or_create_accounts, :can_message_users,
+          :can_access_private_user_data, :can_find_or_create_accounts,
           :can_skip_oauth_screen
         )
       elsif @user.oauth_applications.include?(@application)
@@ -133,7 +127,6 @@ module Oauth
     def add_application_owners
       member_ids = validated_member_ids
       return false if @application.errors.any?
-      return true if !current_user.is_administrator? && current_user.oauth_applications.include?(@application)
 
       @application.owner.update_attributes(member_ids: member_ids)
     end
