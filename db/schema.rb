@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_25_202352) do
+ActiveRecord::Schema.define(version: 2022_07_26_165052) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -25,8 +25,10 @@ ActiveRecord::Schema.define(version: 2022_07_25_202352) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "unread_updates", default: 1, null: false
+    t.bigint "applications_id"
     t.index ["application_id", "unread_updates"], name: "index_application_users_on_application_id_and_unread_updates"
     t.index ["application_id"], name: "index_application_users_on_application_id"
+    t.index ["applications_id"], name: "index_application_users_on_applications_id"
     t.index ["default_contact_info_id"], name: "index_application_users_on_default_contact_info_id"
     t.index ["user_id", "application_id"], name: "index_application_users_on_user_id_and_application_id", unique: true
     t.index ["user_id", "unread_updates"], name: "index_application_users_on_user_id_and_unread_updates"
@@ -218,8 +220,6 @@ ActiveRecord::Schema.define(version: 2022_07_25_202352) do
     t.text "redirect_uri", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "owner_id"
-    t.string "owner_type"
     t.string "email_from_address", default: "", null: false
     t.string "email_subject_prefix", default: "", null: false
     t.boolean "skip_terms", default: false, null: false
@@ -229,7 +229,8 @@ ActiveRecord::Schema.define(version: 2022_07_25_202352) do
     t.boolean "can_access_private_user_data", default: false, null: false
     t.boolean "can_find_or_create_accounts", default: false, null: false
     t.boolean "can_skip_oauth_screen", default: false, null: false
-    t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
+    t.bigint "source_application_id"
+    t.index ["source_application_id"], name: "index_oauth_applications_on_source_application_id"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 

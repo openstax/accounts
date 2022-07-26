@@ -32,13 +32,11 @@ module Oauth
 
     def create
       @application = Doorkeeper::Application.new(app_params)
-      @application.owner.add_member(current_user)
-      @application.add_member(current_user)
 
       OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
 
       Doorkeeper::Application.transaction do
-        if add_application_owners && @application.save
+        if @application.save
           security_log :application_created, application_id: @application.id, application_name: @application.name
           flash[:notice] = I18n.t(:notice, scope: %i[doorkeeper flash applications create])
           respond_to do |format|
@@ -66,7 +64,7 @@ module Oauth
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
 
       Doorkeeper::Application.transaction do
-        if add_application_owners && @application.update_attributes(app_params)
+        if @application.update_attributes(app_params)
           security_log :application_updated, application_id: @application.id, application_params: app_params
           flash[:notice] = I18n.t(:notice, scope: %i[doorkeeper flash applications update])
           respond_to do |format|
@@ -122,13 +120,6 @@ module Oauth
           :redirect_uri
         )
       end
-    end
-
-    def add_application_owners
-      member_ids = validated_member_ids
-      return false if @application.errors.any?
-
-      @application.owner.update_attributes(member_ids: member_ids)
     end
 
     def validated_member_ids
