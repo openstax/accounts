@@ -1,6 +1,6 @@
-class OtherController < BaseController
+class ProfileController < BaseController
 
-  before_action :authenticate_user!, only: :profile
+  skip_before_action :authenticate_user!, only: :exit_accounts
   before_action :ensure_complete_educator_signup, only: :profile
   before_action :prevent_caching, only: :profile
 
@@ -29,10 +29,10 @@ class OtherController < BaseController
 
     if decorated_user.edu_incomplete_step_3?
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification. Redirecting.')
-      redirect_to(educator_sheerid_form_path)
+      redirect_to(sheerid_form_path)
     elsif decorated_user.edu_incomplete_step_4?
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete instructor profile. Redirecting.')
-      redirect_to(educator_profile_form_path)
+      redirect_to(profile_form_path)
     end
   end
 

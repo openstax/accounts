@@ -3,33 +3,6 @@ module ApplicationHelper
   include AuthenticateMethods
   include UserSessionManagement
 
-  # To ease the transition to the shared signup controller
-  # TODO: Remove when the new shared signup controller is added
-  def signup_form_path(role:)
-    if role == 'student'
-      signup_student_path
-    else
-      educator_signup_path
-    end
-  end
-
-  def change_signup_email_form_path
-    if unverified_user.role == 'student'
-      student_change_signup_email_form_path
-    else
-      educator_change_signup_email_form_path
-    end
-  end
-
-  def verify_email_by_pin_path
-    if unverified_user.role == 'student'
-      student_verify_pin_path
-    else
-      educator_verify_pin_path
-    end
-  end
-  # end TODO
-
   def contact_us_link
     link_to(
       I18n.t(:"login_signup_form.contact_us"),

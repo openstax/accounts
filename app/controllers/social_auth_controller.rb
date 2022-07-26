@@ -3,6 +3,8 @@ class SocialAuthController < BaseController
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
+  skip_before_action :authenticate_user!, only: [ :oauth_callback, :confirm_oauth_info ]
+
   before_action :restart_signup_if_missing_unverified_user, only: [
     :confirm_oauth_info, :confirm_social_info_form
   ]
