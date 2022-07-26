@@ -1,0 +1,14 @@
+<%= render 'shared/refresh_upon_going_back' %>
+
+<div id="login-signup-form">
+  <div class="content educator-sheerid-form-page">
+    <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active' } %>
+    <%= login_signup_card(current_step: I18n.t(:"login_signup_form.step_counter", current_step: 3, total_steps: 4), classes: 'signup-page') do %>
+      <form>
+        <div class="content control-group">
+          <iframe src=<%= @sheerid_url %> frameborder=0 width="100%"></iframe>
+        </div>
+      </form>
+    <% end %>
+  </div>
+</div>

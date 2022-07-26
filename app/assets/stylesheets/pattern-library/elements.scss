@@ -1,0 +1,21 @@
+@import 'headers';
+// $font-path: '/fonts';
+@import 'fonts';
+@import 'elements/document';
+@import 'elements/typography';
+@import 'elements/layout';
+@import 'elements/form-elements';
+@import 'elements/menus';
+@import 'elements/messages';
+@import 'elements/widgets';
+
+@each $name, $spec in $os-colors {
+    #{".bg-" + $name} {
+        background-color: $spec;
+        @if index(light-blue gold yellow, $name) {
+            color: text-color(normal);
+        } @else {
+            color: text-color(white);
+        }
+    }
+}

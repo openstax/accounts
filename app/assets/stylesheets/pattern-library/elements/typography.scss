@@ -1,0 +1,73 @@
+// Headings
+//
+// Each heading size has a placeholder selector, so you can use, e.g.,
+// <code>
+// @extend %text-h1;
+// </code>
+// to apply h1-style font to some other element type.
+//
+// Markup: ./markup/typography-headings.html
+//
+// .tutor - if enclosed in a `.tutor`, uses OpenStax Tutor typography. Recommend
+// putting this class on the `body` element.
+//
+// Styleguide: Typography.Headings
+
+h1,
+h2,
+h3,
+h4 {
+    margin-bottom: 1rem;
+}
+
+// These should be @extend %text-h1, etc., but that causes SASS to duplicated
+// lots of stuff.
+h1 {
+    @include scale-set-font(h3, h1);
+}
+
+.hero h1 {
+    @include scale-set-font(h2, hero-h1);
+}
+
+h2 {
+    @include scale-set-font(h3, h2);
+}
+
+h3 {
+    @include scale-set-font(h4, h3);
+}
+
+h4 {
+    @extend %text-h4;
+}
+
+.tutor {
+    @extend %tutor;
+}
+
+// Copy
+//
+// Markup: ./markup/typography-copy.html
+//
+// .copy-large - larger copy
+//
+// Styleguide: Typography.Copy
+
+.copy-large {
+    @include set-font(body-large);
+}
+
+// Links
+//
+// Text shades slightly in `:hover` and `:active` states.
+// Separate elements inside links (think icon and text) will be separated by 7px.
+// To avoid separation, wrap them in a span.
+//
+// Markup: ./markup/typography-links.html
+//
+// Styleguide: Typography.Links
+
+a {
+    @include link();
+}

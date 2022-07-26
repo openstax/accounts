@@ -12,19 +12,19 @@
       ]
     %>
     <% options.each do |(value, label_key)| %>
-      <div>
         <% id = "signup_using_openstax_how_#{value}".to_sym %>
-        <input type="radio"
-          value="<%= value %>"
-          id="<%= id %>"
-          class="custom-control-input"
-          name="signup[using_openstax_how]"
-          data-bind="checked: howUsing"
-        >
         <label for="<%= id %>" class="custom-control-label">
-          <%= I18n.t(:"educator_profile_form.#{label_key}") %>
-        </label>
-      </div>
+          <input type="radio"
+            value="<%= value %>"
+            id="<%= id %>"
+            class="custom-control-input"
+            name="signup[using_openstax_how]"
+            data-bind="checked: howUsing"
+          >
+          <span>
+            <%= I18n.t(:"educator_profile_form.#{label_key}") %>
+          </span>
+      </label>
     <% end %>
 
   </div>

@@ -1,9 +1,8 @@
-<%= render 'educator_signup/refresh_upon_going_back' %>
+<%= render 'shared/refresh_upon_going_back' %>
 
 <div id="login-signup-form">
-    <div class="content">
-        <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active'} %>
-
+  <div class="content">
+    <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active' } %>
         <%= login_signup_card(
                     classes: "signup-page",
                     header: header,
@@ -17,42 +16,42 @@
                     )
                 %>
 
-                <div class="content info-message">
-                    <%= form_description %>
-                </div>
+        <div class="content info-message">
+          <%= form_description %>
+        </div>
 
-                <div class="content control-group">
-                    <%= label_tag :pin, I18n.t(:"login_signup_form.pin_label"),
-                                class: 'field-label required'
-                    %>
-                    <%= form_helper.text_field name: :pin,
-                                placeholder: I18n.t(:"login_signup_form.pin_placeholder"),
-                                autofocus: true
-                    %>
-                </div>
+        <div class="content control-group">
+          <%= label_tag :pin, I18n.t(:'login_signup_form.pin_label'),
+                        class: 'field-label required'
+          %>
+          <%= form_helper.text_field name:        :pin,
+                                     placeholder: I18n.t(:'login_signup_form.pin_placeholder'),
+                                     autofocus:   true
+          %>
+        </div>
 
-                <div class="content">
-                    <%= help_message %>
-                </div>
+        <div class="content">
+          <%= help_message %>
+        </div>
 
-                <br />
+        <br/>
 
-                <div class="content">
-                    <%=
-                        form.submit(
-                            I18n.t(:"login_signup_form.confirm_my_account_button"),
-                            class: 'primary',
-                            data: {
-                                disable_with: false,
-                                'ga-category': 'Account Creation',
-                                'ga-action': 'Click',
-                                'ga-label': '4A-Confirm My Account'
-                            }
-                        )
-                    %>
-                </div>
+        <div class="content">
+          <%=
+            form.submit(
+              I18n.t(:"login_signup_form.confirm_my_account_button"),
+              class: 'primary',
+              data:  {
+                disable_with:  false,
+                'ga-category': 'Account Creation',
+                'ga-action':   'Click',
+                'ga-label':    '4A-Confirm My Account'
+              }
+            )
+          %>
+        </div>
 
-            <% end %>
-        <% end %>
-    </div>
+      <% end %>
+    <% end %>
+  </div>
 </div>

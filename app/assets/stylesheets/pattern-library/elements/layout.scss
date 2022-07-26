@@ -1,0 +1,176 @@
+// Media queries
+//
+// Media queries should use the mixins `width-up-to`, `width-between`, and `wider-than`
+// Values should be provided in `em`s, which is the only unit that is handled consistently
+// by all browsers. The pattern library defines several widths: `$phone-max`, `$tablet-max`,
+// `$media-content-max`, and `$wide-screen-min`, which are (in pixels) 600, 960, 1200, and
+// 1400.
+// `$one-pixel-in-em` is also defined to handle off-by-one situations
+//
+// Markup: ./markup/media-queries.html
+//
+// Styleguide: Layout.Media Queries
+.phone-only {
+    @include wider-than($phone-max) {
+        display: none;
+    }
+}
+
+.tablet-only {
+    @include width-up-to($phone-max) {
+        display: none;
+    }
+
+    @include wider-than($tablet-max) {
+        display: none;
+    }
+}
+
+.desktop-only {
+    @include width-up-to($tablet-max) {
+        display: none;
+    }
+}
+
+.wide-desktop-only {
+    @include width-up-to($wide-screen-min - $one-pixel-in-em) {
+        display: none;
+    }
+}
+
+
+// Content
+//
+// Apart from decorative elements, all content should be in a `.content` container,
+// which constrains it to the middle column of the screen on wide screens. `.content`
+// also includes padding to make "gutters" in a region, so that its content will not
+// be flush against the edge. Multiple layers of `.content` do not add multiple layers
+// of gutters.<br>
+// The examples below have a blue-background `.content` block.
+//
+// Markup: ./markup/layout-content.html
+//
+// .text - Narrows the block to the maximum width allowed for single-column text.
+// The class can be applied to the `.content` block or inside it. It is applied to the
+// blue `.content` block here. As you can see from the above example, paragraphs (`<p>`)
+// are always constrained to the single-column text maximum width.
+//
+// Styleguide: Layout.Content
+
+// Page content is constrained to the middle of the screen
+.text,
+p {
+    @extend %text-content;
+}
+
+// In a form, flexrow spacing is different
+form,
+.form {
+    @include form();
+}
+
+// Card
+//
+// Adding the `.card` class to a container will cause it to display in a box
+// with a drop shadow activated on hover. Width, height, and padding will need to be
+// specified.
+//
+// Markup: ./markup/layout-card.html
+//
+// Styleguide: Layout.Card
+
+.card {
+    @extend %card;
+}
+
+.grid {
+    @include grid();
+}
+
+.button-group {
+    @include tight-row();
+
+    max-width: 100%;
+}
+
+.content {
+    @extend %content;
+
+    // Grid layout
+    //
+    // Adding the `.grid` class to a container sets it up as a 12-column grid for
+    // desktop displays, a 2-column grid for tablets, and a 1-column grid for phone.
+    // Contents by default will be 100% of the grid width. Adding a class of `basis-2`
+    // makes the item 2 columns wide, `basis-3` makes it 3 columns wide, etc.
+    //
+    // There is no row element. The items will wrap as necessary. Buttons should be
+    // put into a `.button-group`, which will space them closer together. You will
+    // need to ensure that the buttons fit narrow desktop screens. Buttons that are
+    // naturally wider than 10rem may get too small for their contents.
+    //
+    // Markup: ./markup/layout-grid.html
+    //
+    // Styleguide: Layout.Grid
+
+    // Grid System
+    @include bases('.basis-');
+
+    // Form Layout
+    //
+    // A form is a grid whose rows are spaced further apart, while their
+    // contents are closer together.
+    //
+    // Markup: ./markup/layout-form.html
+    //
+    // Styleguide: Layout.Grid.Form
+
+    // Control Group
+    //
+    // Optional containers `.field-label` and `.invalid-message`<br>
+    // `.field-label` *must not* enclose the input element, so if you are wrapping
+    // the input element in a `label`, put the text in a `span.field-label`.
+    // Add `delay-validation` class to avoid showing validation state
+    //
+    // Markup: ./markup/layout-control-group.html
+    //
+    // Styleguide: Form Elements.Control Group
+
+    // Lays out form element with field-label and invalid-message (each optional)
+    .control-group {
+        @extend %control-group;
+
+        .field-label {
+            @extend %field-label;
+        }
+
+        .invalid-message {
+            @extend %invalid-message;
+        }
+    }
+
+}
+
+// Tabs
+//
+// Tabs are headers of ordinary text color and size in a `.tab-group`
+// The active tab has a green border-bottom.
+//
+// Markup: ./markup/layout-tabs.html
+//
+// Styleguide: Layout.Tabs
+.tab-group {
+    @include tab-group();
+
+    .tab {
+        @extend %tab;
+
+        &.active,
+        &.selected {
+            @extend %active;
+        }
+    }
+}
+
+.tab-baseline {
+    @include tab-baseline();
+}
