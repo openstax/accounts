@@ -4,6 +4,8 @@ module Oauth
 
   describe ApplicationsController, type: :controller do
 
+    before(:all) { load 'db/seeds.rb' }
+
     let!(:admin) { FactoryBot.create :user, :terms_agreed, :admin }
     let!(:user)  { FactoryBot.create :user, :terms_agreed }
     let!(:user2) { FactoryBot.create :user }
@@ -78,7 +80,6 @@ module Oauth
       expect(response).to redirect_to(oauth_application_path(id))
       expect(assigns(:application).name).to eq('Some app')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.com')
-      expect(assigns(:application).can_message_users).to eq(true)
     end
 
     it "should let an admin edit someone else's application" do
@@ -155,12 +156,6 @@ module Oauth
       expect(response).to have_http_status :forbidden
     end
 
-    it "should let a user get his own application" do
-      controller.sign_in! user
-      get(:show, params: { id: untrusted_application_user.id })
-      expect(response).to have_http_status :success
-    end
-
     it "should not let a user get someone else's application" do
       controller.sign_in! user
       get(:show, params: { id: untrusted_application_admin.id })
@@ -171,12 +166,6 @@ module Oauth
       controller.sign_in! user
       get(:new)
       expect(response).to have_http_status :forbidden
-    end
-
-    it "should let a user edit his own application" do
-      controller.sign_in! user
-      get(:edit, params: { id: untrusted_application_user.id })
-      expect(response).to have_http_status :success
     end
 
     it "should not let a user create an application" do
@@ -240,7 +229,7 @@ module Oauth
     end
 
     it "should let an oauth admin edit an application" do
-      controller.sign_in! user
+      controller.sign_in! admin
       get(:edit, params: { id: trusted_application_admin.id })
 
       expect(response).to have_http_status :success
@@ -248,7 +237,7 @@ module Oauth
     end
 
     it "should let an oauth admin update an application" do
-      controller.sign_in! user
+      controller.sign_in! admin
       put(:update,
         params: {
           id: trusted_application_admin.id,
@@ -280,23 +269,6 @@ module Oauth
       expect(response).to redirect_to(oauth_application_path(id))
       expect(assigns(:application).name).to eq('Some app')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.com')
-    end
-
-    it "should not let an oauth admin update an application except redirect_uri" do
-      controller.sign_in! user
-      put(:update,
-        params: {
-          id: trusted_application_admin.id,
-          doorkeeper_application: {
-            name: 'Some app edited',
-            redirect_uri: 'https://www.example.org',
-            can_message_users: false,
-          }
-        }
-      )
-      expect(response).to redirect_to(oauth_application_path(trusted_application_admin.id))
-      expect(assigns(:application).name).not_to eq('Some app edited')
-      expect(assigns(:application).redirect_uri).to eq('https://www.example.org')
     end
   end
 end

@@ -7,12 +7,16 @@ module Oauth
     SPACE_SEPARATED_NUMBERS_REGEX = '^(?=.*\d)[\s\d]+$'.freeze
 
     def index
-      @applications = @user.is_administrator? ? Doorkeeper::Application.all : nil
-      @applications = @applications.ordered_by(:created_at)
+      if @user.is_administrator?
+        @applications = Doorkeeper::Application.all
+        @applications = @applications.ordered_by(:created_at)
 
-      respond_to do |format|
-        format.html
-        format.json { head :no_content }
+        respond_to do |format|
+          format.html
+          format.json { head :no_content }
+        end
+      else
+        head :forbidden
       end
     end
 
@@ -114,10 +118,6 @@ module Oauth
           :email_from_address, :confidential,
           :can_access_private_user_data, :can_find_or_create_accounts,
           :can_skip_oauth_screen
-        )
-      elsif @user.oauth_applications.include?(@application)
-        params.require(:doorkeeper_application).permit(
-          :redirect_uri
         )
       end
     end

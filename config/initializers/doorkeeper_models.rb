@@ -23,8 +23,8 @@ Rails.application.config.to_prepare do
     before_create :create_application_user
 
     def create_application_user
-      return unless application_id && resource_owner_id
-      FindOrCreateApplicationUser.call(application_id, resource_owner_id)
+      return unless application_id && user_id
+      FindOrCreateApplicationUser.call(application_id, user_id)
     end
   end
 

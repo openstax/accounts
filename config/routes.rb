@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/BlockLength
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
@@ -237,4 +236,3 @@ Rails.application.routes.draw do
     get '/external_app_for_specs/public' => 'external_app_for_specs#public'
   end
 end
-# rubocop:enable Metrics/BlockLength
