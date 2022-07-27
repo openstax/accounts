@@ -8,6 +8,7 @@ Rails.application.config.assets.version = '1.0'
 Rails.application.config.assets.precompile += %w(
   admin.css
   admin.js
+  profile.css
   profile.js
   signup.js
   signin.js
@@ -22,6 +23,5 @@ Rails.application.config.assets.precompile += %w(
   newflow.css
   newflow_colors.css
   newflow.js
-  profile-nf.css
   application/ko_extensions.js
 )

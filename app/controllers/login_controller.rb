@@ -7,12 +7,14 @@ class LoginController < BaseController
 
   fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile
 
+  skip_before_action :authenticate_user!
+
   before_action :cache_client_app, only: :login_form
   before_action :cache_alternate_signup_url, only: :login_form
   before_action :redirect_to_signup_if_go_param_present, only: :login_form
   before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
-  def login
+  def login_post
     handle_with(
       LogInUser,
       success: lambda {
@@ -22,11 +24,7 @@ class LoginController < BaseController
         if user.unverified?
           save_unverified_user(user.id)
 
-          if user.student?
-            redirect_to(student_email_verification_form_path)
-          else
-            redirect_to(educator_email_verification_form_path)
-          end
+          redirect_to(verify_email_by_pin_form_path)
 
           return
         end
@@ -64,7 +62,7 @@ class LoginController < BaseController
 
   def redirect_to_signup_if_go_param_present
     if should_redirect_to_student_signup?
-      redirect_to signup_student_path(request.query_parameters)
+      redirect_to signup_form_path(request.query_parameters.merge('role' => 'student'))
     elsif should_redirect_to_signup_welcome?
       redirect_to signup_path(request.query_parameters)
     end

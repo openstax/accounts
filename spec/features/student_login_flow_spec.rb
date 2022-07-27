@@ -142,7 +142,7 @@ RSpec.feature 'student login flow', js: true do
       fill_in('login_form_email', with: email_address.value)
       fill_in('login_form_password', with: 'password')
       find('[type=submit]').click
-      expect(page.current_path).to match(student_email_verification_form_path)
+      expect(page.current_path).to match(verify_email_by_pin_form_path)
     end
   end
 

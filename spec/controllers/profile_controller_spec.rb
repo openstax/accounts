@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe OtherController, type: :controller do
+RSpec.describe ProfileController, type: :controller do
   describe 'GET #profile' do
     context 'when logged in' do
       before do
@@ -31,7 +31,7 @@ RSpec.describe OtherController, type: :controller do
 
         it 'redirects to step 4 — complete profile form' do
           get(:profile)
-          expect(response).to redirect_to(educator_profile_form_path)
+          expect(response).to redirect_to(profile_form_path)
         end
       end
     end
