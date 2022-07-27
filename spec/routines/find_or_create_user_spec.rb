@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe FindOrCreateUnclaimedUser do
+describe FindOrCreateUser do
 
   let(:user) { FactoryBot.create :user, state: 'unclaimed' }
 
@@ -10,7 +10,7 @@ describe FindOrCreateUnclaimedUser do
 
       it "returns the existing user" do
         user = FactoryBot.create :user_with_emails, emails_count: 1
-        found = FindOrCreateUnclaimedUser.call(email:user.contact_infos.first.value).outputs.user
+        found = described_class.call(email:user.contact_infos.first.value).outputs.user
         expect(found).to eq(user)
       end
 
@@ -20,7 +20,7 @@ describe FindOrCreateUnclaimedUser do
 
       it "creates a new user with the email" do
         expect {
-          newuser = FindOrCreateUnclaimedUser.call(
+          newuser = described_class.call(
             email:"anunusedemail@example.com",
             first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
           ).outputs.user
@@ -30,7 +30,7 @@ describe FindOrCreateUnclaimedUser do
 
       it "sends an invitation email" do
           expect do
-            FindOrCreateUnclaimedUser.call(
+            described_class.call(
               email:"anunusedemail@example.com",
               first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
             ).outputs.user
@@ -48,14 +48,14 @@ describe FindOrCreateUnclaimedUser do
     context "of existing unclaimed user" do
 
       it "returns that user" do
-        found = FindOrCreateUnclaimedUser.call(username: user.username).outputs.user
+        found = described_class.call(username: user.username).outputs.user
         expect(found).to eq(user)
       end
 
       context "and a password" do
 
         it "does not set the password" do
-          found = FindOrCreateUnclaimedUser.call(
+          found = described_class.call(
             username: user.username, password:"apassword123",
             password_confirmation: "apassword123"
           ).outputs.user
@@ -69,7 +69,7 @@ describe FindOrCreateUnclaimedUser do
 
       it "creates a new user with that username" do
         expect {
-          new_user = FindOrCreateUnclaimedUser.call(
+          new_user = described_class.call(
             username: "bobsmith", email:"anunusedemail@example.com",
             first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
           ).outputs.user
@@ -80,7 +80,7 @@ describe FindOrCreateUnclaimedUser do
 
       it 'sets the first name and last name' do
         expect {
-          new_user = FindOrCreateUnclaimedUser.call(
+          new_user = described_class.call(
             username: 'bobsmith', email: 'anunusedemail@example.com',
             first_name: 'Bob', last_name: 'Smith'
           ).outputs.user
@@ -93,7 +93,7 @@ describe FindOrCreateUnclaimedUser do
       context "and a password" do
 
         it "sets the password" do
-          new_user = FindOrCreateUnclaimedUser.call(
+          new_user = described_class.call(
             email:"anunusedemail@example.com",
             password:'password123', password_confirmation: 'password123', username: "bobsmith",
             first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
@@ -106,7 +106,7 @@ describe FindOrCreateUnclaimedUser do
       context 'and is_test' do
         it 'sets is_test' do
           is_test = [true, false].sample
-          new_user = FindOrCreateUnclaimedUser.call(
+          new_user = described_class.call(
             username: 'bobsmith', email: 'anunusedemail@example.com',
             first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
             is_test: is_test
@@ -123,7 +123,7 @@ describe FindOrCreateUnclaimedUser do
   context "given invalid options" do
 
     it "returns errors" do
-      results = FindOrCreateUnclaimedUser.call(abunchofjunk:"glub")
+      results = described_class.call(abunchofjunk:"glub")
       expect(results.errors.length).to eq(1)
       expect(results.errors.first.code).to eq(:invalid_input)
     end

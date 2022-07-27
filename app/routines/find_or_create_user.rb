@@ -1,12 +1,12 @@
-# Find or create a new user with state "unclaimed"
+# Find or create a new user with state "external" or "unclaimed"
 #
-# Given either an email address or username:
+# Given either an external_id, username, or email address:
 #   attempt to find a user with that attribute.
 #   If the user is found, return the user
-#     Otherwise create a new user with the email and username given,
-#     set it's state to "unclaimed" and return that record
+#     Otherwise create a new user with the given external_id, username, or email,
+#     set it's state to "external" or "unclaimed" and return that record
 
-class FindOrCreateUnclaimedUser
+class FindOrCreateUser
 
   lev_routine
 
