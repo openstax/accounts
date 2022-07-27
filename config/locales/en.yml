@@ -306,9 +306,6 @@ en:
     confirm_by_code:
       unable_to_verify_address: Unable to confirm email address
 
-    find_or_create_unclaimed_user:
-      must_provide_email_or_username: Must provide email or username
-
   # From here on the sections correspond to directories under app/views
 
   contact_infos:
