@@ -12,12 +12,27 @@ module Api::V1
              readable: true,
              writeable: false
 
+    property :external_id,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+               description: "External ID to search by or assign to newly created user"
+             }
+
+    property :username,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+               description: "Username to search by or assign to newly created user"
+             }
+
     property :email,
              type: String,
              readable: false,
              writeable: true,
              schema_info: {
-               required: true,
                description: "Email address to search by or assign to newly created user"
              }
 
@@ -26,16 +41,7 @@ module Api::V1
              readable: false,
              writeable: true,
              schema_info: {
-                 description: "Controls wheather email should be marked as verified"
-             }
-
-    property :username,
-             type: String,
-             readable: false,
-             writeable: true,
-             schema_info: {
-               required: true,
-               description: "Username to search by or assign to newly created user"
+                 description: "Controls whether email should be marked as verified"
              }
 
     property :password,
@@ -121,13 +127,13 @@ module Api::V1
                }"
              }
 
-  property :is_test,
-           type: :boolean,
-           readable: false,
-           writeable: true,
-           schema_info: {
-             description: 'Whether or not this is a test user'
-           }
+    property :is_test,
+             type: :boolean,
+             readable: true,
+             writeable: true,
+             schema_info: {
+               description: 'Whether or not this is a test user'
+             }
 
   end
 end
