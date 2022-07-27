@@ -86,7 +86,7 @@ feature "User can't sign in", js: true do
       authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
 
-      visit(signup_student_path)
+      visit(signup_form_path(role: 'student'))
       fill_in('signup[email]', with: Faker::Internet.free_email)
       fill_in('signup[password]', with: Faker::Internet.password(min_length: 8))
       fill_in('signup[first_name]', with: Faker::Name.first_name)

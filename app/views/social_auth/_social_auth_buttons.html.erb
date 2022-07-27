@@ -1,8 +1,10 @@
+<% origin ||= :login_form %>
+
 <div class="social-buttons">
   <div class="fb-share-button">
   <%=
       link_to(
-        social_auth_path(:facebook, origin: :login_form),
+        social_auth_path(:facebook, origin: origin),
         class: 'facebook btn',
         data:  { ga_category: 'Login', ga_action: 'Click', ga_label: 'Facebook' }
       ) do
@@ -14,7 +16,7 @@
   <div class="google-share-button">
     <%=
       link_to(
-        social_auth_path(:google_oauth2, origin: :login_form),
+        social_auth_path(:google_oauth2, origin: origin),
         class: 'google btn',
         data:  { ga_category: 'Login', ga_action: 'Click', ga_label: 'Google' }
       ) do

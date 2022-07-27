@@ -1,9 +1,9 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap-sprockets
-//= require underscore.js
-//= require x-editable-bootstrap.js
-//= require knockout.js
+//= require underscore
+//= require x-editable-bootstrap
+//= require knockout
 //= require ./namespace
 //= require ./name
 //= require ./confirmation-popover

@@ -2,7 +2,9 @@ require 'rails_helper'
 require 'vcr_helper'
 
 RSpec.feature 'Student signup flow', js: true, vcr: VCR_OPTS do
-   before do
+  include ActionView::Helpers::SanitizeHelper
+
+  before do
     load 'db/seeds.rb'
   end
 
@@ -34,7 +36,7 @@ RSpec.feature 'Student signup flow', js: true, vcr: VCR_OPTS do
       screenshot!
 
       # sends an email address confirmation email
-      expect(page.current_path).to eq student_email_verification_form_path
+      expect(page.current_path).to eq verify_email_by_pin_form_path
       open_email email
       capture_email!(address: email)
       expect(current_email).to be_truthy
@@ -85,7 +87,7 @@ RSpec.feature 'Student signup flow', js: true, vcr: VCR_OPTS do
       fill_in('login_form_email', with: email_address.value)
       fill_in('login_form_password', with: password)
       find('[type=submit]').click
-      expect(page.current_path).to match(student_email_verification_form_path)
+      expect(page.current_path).to match(verify_email_by_pin_form_path)
     end
 
     # TODO: this works - something with the selector, also the id on the element is misspelled
@@ -113,7 +115,7 @@ example 'arriving from Tutor (a Doorkeeper app)' do
     screenshot!
 
     # sends an email address confirmation email
-    expect(page.current_path).to eq student_email_verification_form_path
+    expect(page.current_path).to eq verify_email_by_pin_form_path
     open_email email
     capture_email!(address: email)
     expect(current_email).to be_truthy
@@ -179,7 +181,9 @@ example 'arriving from Tutor (a Doorkeeper app)' do
       wait_for_animations
       click_on('commit')
       screenshot!
-      expect(page).to have_text(t(:"login_signup_form.check_your_updated_email"))
+      expect(page).to have_text(
+        strip_tags(t(:"login_signup_form.student_email_verification_form_description",
+          email: new_email, edit_your_email: t(:"login_signup_form.edit_your_email"))))
 
       # a different pin is sent in the edited email
       open_email new_email
@@ -191,7 +195,7 @@ example 'arriving from Tutor (a Doorkeeper app)' do
       expect(confirmation_code_url).not_to eq(old_confirmation_code_url)
 
       screenshot!
-      expect(page.current_path).to eq(student_email_verification_form_updated_email_path)
+      expect(page.current_path).to eq(verify_email_by_pin_form_path)
     end
   end
 

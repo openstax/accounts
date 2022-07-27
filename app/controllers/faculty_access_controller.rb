@@ -38,7 +38,7 @@ class FacultyAccessController < ApplicationController
   private
 
   def redirect_to_sheerid
-    redirect_to(educator_sheerid_form_path)
+    redirect_to(sheerid_form_path)
   end
 
   def instructor_has_selected_subject(key)

@@ -30,7 +30,7 @@ RSpec.feature 'Educator signup flow', js: true do
 
         # Step 2
         # sends an email address confirmation email
-        expect(page.current_path).to eq(educator_email_verification_form_path)
+        expect(page.current_path).to eq(verify_email_by_pin_form_path)
         open_email(email_value)
         capture_email!(address: email_value)
         expect(current_email).to be_truthy
@@ -51,14 +51,14 @@ RSpec.feature 'Educator signup flow', js: true do
         expect_sheerid_iframe
 
         # Step 4
-        visit(educator_profile_form_path)
-        expect(page.current_path).to eq(educator_profile_form_path)
+        visit(profile_form_path)
+        expect(page.current_path).to eq(profile_form_path)
         find("#signup_educator_specific_role_other").click
         #byebug
         fill_in('Other (please specify)', with: 'President')
         find('[type="submit"]').click
         # not sure what's happening here - test is getting a 500, can't produce locally.. going to check it out on dev
-        #expect(page.current_path).to eq(signup_done_path).or eq(educator_pending_cs_verification_path)
+        #expect(page.current_path).to eq(signup_done_path).or eq(pending_cs_verification_path)
         #click_on('Finish')
         #expect(page.current_url).to eq(external_app_url)
       end
@@ -82,7 +82,7 @@ RSpec.feature 'Educator signup flow', js: true do
 
         # Step 2
         # sends an email address confirmation email
-        expect(page.current_path).to eq(educator_email_verification_form_path)
+        expect(page.current_path).to eq(verify_email_by_pin_form_path)
         open_email(email_value)
         capture_email!(address: email_value)
         expect(current_email).to be_truthy
@@ -95,8 +95,8 @@ RSpec.feature 'Educator signup flow', js: true do
         expect_sheerid_iframe
 
         # Step 4
-        visit(educator_profile_form_path)
-        expect(page.current_path).to eq(educator_profile_form_path)
+        visit(profile_form_path)
+        expect(page.current_path).to eq(profile_form_path)
         find('#signup_educator_specific_role_other').click
         fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
         click_on('Continue')
@@ -118,7 +118,7 @@ RSpec.feature 'Educator signup flow', js: true do
       fill_in('login_form_email', with: email_address.value)
       fill_in('login_form_password', with: password)
       find('[type=submit]').click
-      expect(page.current_path).to match(educator_email_verification_form_path)
+      expect(page.current_path).to match(verify_email_by_pin_form_path)
     end
 
     xit 'allows the educator to reset their password' do
@@ -139,16 +139,15 @@ RSpec.feature 'Educator signup flow', js: true do
 
     let(:user) do
       FactoryBot.create(
-        :user, role: User::INSTRUCTOR_ROLE,
+        :user, :terms_agreed, role: User::INSTRUCTOR_ROLE,
         is_profile_complete: false, sheerid_verification_id: Faker::Alphanumeric.alphanumeric
       )
     end
 
     context 'step 4' do
       before do
-        visit(educator_profile_form_path)
-        visit(educator_profile_form_path)
-        expect(page.current_path).to eq(educator_profile_form_path)
+        visit(profile_form_path)
+        expect(page.current_path).to eq(profile_form_path)
         find("#signup_educator_specific_role_instructor").click
         find('#signup_who_chooses_books_instructor').click
         fill_in(I18n.t(:"educator_profile_form.num_students_taught"), with: 30)
@@ -201,7 +200,7 @@ RSpec.feature 'Educator signup flow', js: true do
 
       # Step 2
       # sends an email address confirmation email
-      expect(page.current_path).to eq(educator_email_verification_form_path)
+      expect(page.current_path).to eq(verify_email_by_pin_form_path)
       open_email(email_value)
       capture_email!(address: email_value)
       expect(current_email).to be_truthy
@@ -221,7 +220,7 @@ RSpec.feature 'Educator signup flow', js: true do
       wait_for_ajax
       wait_for_animations
       # ... sends you to the SheerID form
-      expect(page).to have_current_path(educator_sheerid_form_path)
+      expect(page).to have_current_path(sheerid_form_path)
 
       # LOG OUT
       visit(signout_path)
@@ -237,8 +236,8 @@ RSpec.feature 'Educator signup flow', js: true do
 
 
       # Step 4
-      visit(educator_profile_form_path)
-      expect(page.current_path).to eq(educator_profile_form_path)
+      visit(profile_form_path)
+      expect(page.current_path).to eq(profile_form_path)
       find('#signup_educator_specific_role_other').click
       expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
       fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')

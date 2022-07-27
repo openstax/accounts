@@ -1,6 +1,19 @@
 # Marks an `EmailAddress` as `verified` if it matches the passed-in `EmailAddress`'s pin
 # and then marks the owner of the email address as 'activated'.
-class VerifyUserEmailByPin
+class VerifyEmailByPin
+
+  lev_handler
+  uses_routine ConfirmByPin
+  uses_routine ActivateUser
+
+  paramify :confirm do
+    attribute :pin, type: String
+    validates :pin, presence: true
+  end
+
+  def authorized?
+    true
+  end
 
   def handle
     result = ConfirmByPin.call(contact_info: options[:email_address], pin: confirm_params.pin)
@@ -18,7 +31,7 @@ class VerifyUserEmailByPin
   end
 
   def activate_user(claiming_user)
-    raise('Must implement')
+    run(ActivateUser, claiming_user)
   end
 
 end
