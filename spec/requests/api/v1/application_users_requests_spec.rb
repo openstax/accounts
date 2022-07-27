@@ -15,19 +15,16 @@ RSpec.describe 'Api::V1::ApplicationUsers multiple requests',
 
   let!(:user_2_token) do
     FactoryBot.create :doorkeeper_access_token,
-                       application: untrusted_application,
-                       resource_owner_id: user_2.id
+                       application: untrusted_application
   end
 
   let!(:untrusted_application_token) do
     FactoryBot.create :doorkeeper_access_token,
-                       application: untrusted_application,
-                       resource_owner_id: nil
+                       application: untrusted_application
   end
   let!(:trusted_application_token) do
     FactoryBot.create :doorkeeper_access_token,
-                       application: trusted_application,
-                       resource_owner_id: nil
+                       application: trusted_application
   end
 
   let(:updated_endpoint) { "/api/application_users/updated" }

@@ -11,8 +11,7 @@ RSpec.describe 'device ID tracking',
 
   let!(:user_token) do
     FactoryBot.create :doorkeeper_access_token,
-                       application: FactoryBot.create(:doorkeeper_application),
-                       resource_owner_id: user.id
+                       application: FactoryBot.create(:doorkeeper_application)
   end
 
   context "not logged in" do

@@ -17,11 +17,7 @@ Doorkeeper.configure do
   end
 
   admin_authenticator do
-    # We allow all users of Accounts to manage applications
-    # We subclassed Doorkeeper::ApplicationsController to provide better
-    # control over access to the Doorkeeper::Application pages
-    authenticate_user!
-    current_user
+    current_user.is_administrator?
   end
 
   # You can use your own model classes if you need to extend (or even override) default

@@ -94,7 +94,7 @@ def create_application(skip_terms: false)
 
   app.update_column(:redirect_uri, redirect_uri)
 
-  FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
+  FactoryBot.create(:doorkeeper_access_token, application: app)
   app
 end
 

@@ -4,21 +4,17 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
 
   let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
   let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, can_access_private_user_data: true }
+  let!(:untrusted_application_token) { FactoryBot.create :doorkeeper_access_token, application: untrusted_application }
+  let!(:trusted_application_token) { FactoryBot.create :doorkeeper_access_token, application: trusted_application }
 
-  let!(:untrusted_application_token) do
-    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
-                                                 resource_owner_id: nil
-  end
-  let!(:trusted_application_token) do
-    FactoryBot.create :doorkeeper_access_token, application: trusted_application,
-                                                 resource_owner_id: nil
-  end
 
-  let!(:user_1)          { FactoryBot.create :user }
-  let!(:user_2)          do
+  let!(:user_1) { FactoryBot.create :user }
+
+  let!(:user_2)  do
     FactoryBot.create :user_with_emails,
                        first_name: 'Bob', last_name: 'Michaels', salesforce_contact_id: "somesfid"
   end
+
   let!(:billy_users) do
     (0..45).to_a.map do |ii|
       user = FactoryBot.create :user,
@@ -40,10 +36,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
     FactoryBot.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
   end
 
-  let!(:user_2_token)    do
-    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
-                                                 resource_owner_id: user_2.id
-  end
+  let!(:user_2_token) { FactoryBot.create :doorkeeper_access_token, application: untrusted_application }
 
   before(:each) do
     user_2.reload

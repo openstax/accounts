@@ -19,15 +19,6 @@ Rails.application.config.to_prepare do
 
   end
 
-  Doorkeeper::AccessToken.class_exec do
-    before_create :create_application_user
-
-    def create_application_user
-      return unless application_id && user_id
-      FindOrCreateApplicationUser.call(application_id, user_id)
-    end
-  end
-
   Doorkeeper::TokensController.class_exec do
     alias_method :original_create, :create # before_action not available
     def create
