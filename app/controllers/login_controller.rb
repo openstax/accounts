@@ -24,11 +24,7 @@ class LoginController < BaseController
         if user.unverified?
           save_unverified_user(user.id)
 
-          if user.student?
-            redirect_to(verify_email_by_pin_form_path)
-          else
-            redirect_to(verify_email_by_pin_form_path)
-          end
+          redirect_to(verify_email_by_pin_form_path)
 
           return
         end

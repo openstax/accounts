@@ -20,7 +20,7 @@ class CreatePassword
 
   def handle
     run(
-      ::SetPassword,
+      SetPassword,
       user: @user,
       password: create_password_form_params.password
     )

@@ -30,7 +30,7 @@ class ChangePassword
     end
 
     run(
-      ::SetPassword,
+      SetPassword,
       user: @user,
       password: change_password_form_params.password
     )

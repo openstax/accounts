@@ -69,7 +69,7 @@ class SignupForm
     )
     outputs.user = user
 
-    run(::SetPassword,
+    run(SetPassword,
         user: user,
         password: signup_params.password)
 
