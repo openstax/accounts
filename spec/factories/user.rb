@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :user do
+  factory :user, aliases: [:instructor, :student, :owner, :resource_owner] do
     username { SecureRandom.hex(3) }
     state { User::ACTIVATED } # otherwise the default from DB will be to 'temp'
     first_name { Faker::Name.first_name }
@@ -49,6 +49,22 @@ FactoryBot.define do
         end
       end
     end
+
+    factory :omniauth_user do
+      transient do
+        uid { '123456' }
+        provider { %w[facebook google_oauth2].sample }
+      end
+
+      after(:create) do |user, evaluator|
+        user.identities << create(
+          :identity,
+          provider:   evaluator.provider,
+          extern_uid: evaluator.uid
+        )
+      end
+    end
+
   end
 
 end
