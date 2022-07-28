@@ -8,8 +8,7 @@ Doorkeeper.configure do
     # normally only be called when the user is already signed in, which is ok because that's what
     # lets us get to the authorization part of oauth, or when we skip the `:authenticate_user!`
     # before_action, which we don't normally do in the oauth flow where this matters
-    authenticate_user!
-    current_user
+    current_user.is_administrator?
   end
 
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb
@@ -21,8 +20,7 @@ Doorkeeper.configure do
     # We allow all users of Accounts to manage applications
     # We subclassed Doorkeeper::ApplicationsController to provide better
     # control over access to the Doorkeeper::Application pages
-    authenticate_user!
-    current_user
+    current_user.is_administrator?
   end
 
   # If you are planning to use Doorkeeper in Rails 5 API-only application, then you might
@@ -94,7 +92,7 @@ Doorkeeper.configure do
   # a registered application
   # Note: you must also run the rails g doorkeeper:application_owner generator to provide the necessary support
   #
-  enable_application_owner confirmation: true
+  # enable_application_owner confirmation: true
 
   # Define access token scopes for your provider
   # For more information go to

@@ -1,24 +1,19 @@
-<%= form_for application, url: doorkeeper_submit_path(application),
-                          html: {class: 'form-horizontal', role: 'form'} do |f| %>
+<%= form_for application, url: doorkeeper_submit_path(application), html: { class: 'form-horizontal', role: 'form' } do |f| %>
   <% if application.errors.any? %>
     <div class="alert alert-danger" data-alert><p>
       <%= t('doorkeeper.applications.form.error') %>
     </p></div>
   <% end %>
 
-  <% if @user.is_administrator? %>
-    <%= content_tag :div,
-        class: "form-group#{' has-error' if application.errors[:name].present?}" do %>
-      <%= f.label :name, class: 'col-sm-2 control-label' %>
-      <div class="col-sm-10">
-        <%= f.text_field :name, class: 'form-control' %>
-        <%= doorkeeper_errors_for application, :name %>
-      </div>
-    <% end %>
+  <%= content_tag :div, class: "form-group#{' has-error' if application.errors[:name].present?}" do %>
+    <%= f.label :name, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-10">
+      <%= f.text_field :name, class: 'form-control' %>
+      <%= doorkeeper_errors_for application, :name %>
+    </div>
   <% end %>
 
-  <%= content_tag :div,
-      class: "form-group#{' has-error' if application.errors[:redirect_uri].present?}" do %>
+  <%= content_tag :div, class: "form-group#{' has-error' if application.errors[:redirect_uri].present?}" do %>
     <%= f.label :redirect_uri, class: 'col-sm-2 control-label' %>
     <div class="col-sm-10">
       <%= f.text_area :redirect_uri, class: 'form-control' %>
@@ -26,97 +21,88 @@
       <span class="help-block">
         <%= t('doorkeeper.applications.help.redirect_uri') %>
       </span>
-      <% if Doorkeeper.configuration.native_redirect_uri %>
-          <span class="help-block">
-            <%= raw t('doorkeeper.applications.help.native_redirect_uri',
-                native_redirect_uri: "<code>#{
-                  Doorkeeper.configuration.native_redirect_uri
-                }</code>") %>
-          </span>
+      <% if Doorkeeper.configuration.allow_blank_redirect_uri?(application) %>
+        <span class="form-text text-secondary">
+          <%= raw t('doorkeeper.applications.help.native_redirect_uri',
+                    native_redirect_uri: "<code>#{
+                      Doorkeeper.configuration.native_redirect_uri
+                    }</code>") %>
+        </span>
       <% end %>
     </div>
   <% end %>
 
-  <% if @user.is_administrator? %>
-    <%= content_tag :div,
-        class: "form-group#{' has-error' if application.errors[:scopes].present?}" do %>
-      <%= f.label :scopes, class: 'col-sm-2 control-label' %>
-      <div class="col-sm-10">
-        <%= f.text_field :scopes, class: 'form-control' %>
-        <%= doorkeeper_errors_for application, :scopes %>
-        <span class="help-block">
+  <%= content_tag :div, class: "form-group#{' has-error' if application.errors[:scopes].present?}" do %>
+    <%= f.label :scopes, class: 'col-sm-2 control-label' %>
+    <div class="col-sm-10">
+      <%= f.text_field :scopes, class: 'form-control' %>
+      <%= doorkeeper_errors_for application, :scopes %>
+      <span class="help-block">
           <%= t('doorkeeper.applications.help.scopes') %>
         </span>
-      </div>
-    <% end %>
+    </div>
+  <% end %>
 
-    <%= content_tag :div,
-        class: "form-group#{' has-error' if application.errors[:email_subject_prefix].present?}" do %>
-      <%= f.label :email_subject_prefix, class: 'col-sm-2 control-label',
-                                        for: 'doorkeeper_application_email_subject_prefix' %>
-      <div class="col-sm-10">
-        <%= f.text_field :email_subject_prefix, class: 'form-control' %>
-        <%= doorkeeper_errors_for application, :email_subject_prefix %>
-      </div>
-    <% end %>
+  <%= content_tag :div, class: "form-group#{' has-error' if application.errors[:email_subject_prefix].present?}" do %>
+    <%= f.label :email_subject_prefix, class: 'col-sm-2 control-label', for: 'doorkeeper_application_email_subject_prefix' %>
+    <div class="col-sm-10">
+      <%= f.text_field :email_subject_prefix, class: 'form-control' %>
+      <%= doorkeeper_errors_for application, :email_subject_prefix %>
+    </div>
+  <% end %>
 
-    <%= content_tag :div,
-        class: "form-group#{' has-error' if application.errors[:lead_application_source].present?}" do %>
-      <%= f.label :lead_application_source, class: 'col-sm-2 control-label',
-                                            for: 'doorkeeper_application_lead_application_source' %>
-      <div class="col-sm-10">
-        <%= f.text_field :lead_application_source, class: 'form-control' %>
-        <%= doorkeeper_errors_for application, :lead_application_source %>
-      </div>
-    <% end %>
-  <% end  %>
+  <%= content_tag :div,
+                  class: "form-group#{' has-error' if application.errors[:lead_application_source].present?}" do %>
+    <%= f.label :lead_application_source, class: 'col-sm-2 control-label', for: 'doorkeeper_application_lead_application_source' %>
+    <div class="col-sm-10">
+      <%= f.text_field :lead_application_source, class: 'form-control' %>
+      <%= doorkeeper_errors_for application, :lead_application_source %>
+    </div>
+  <% end %>
 
-  <% if @user.is_administrator? %>
-    <%= content_tag :div,
-        class: "form-group#{' has-error' if application.errors[:email_from_address].present?}" do %>
-      <%= f.label :email_from_address, class: 'col-sm-2 control-label',
-                                       for: 'doorkeeper_application_email_from_address' %>
-      <div class="col-sm-10">
-        <%= f.text_field :email_from_address, class: 'form-control' %>
-        <%= doorkeeper_errors_for application, :email_from_address %>
-      </div>
-    <% end %>
+  <%= content_tag :div,
+                  class: "form-group#{' has-error' if application.errors[:email_from_address].present?}" do %>
+    <%= f.label :email_from_address, class: 'col-sm-2 control-label', for: 'doorkeeper_application_email_from_address' %>
+    <div class="col-sm-10">
+      <%= f.text_field :email_from_address, class: 'form-control' %>
+      <%= doorkeeper_errors_for application, :email_from_address %>
+    </div>
+  <% end %>
 
-    <% [
-      :can_access_private_user_data,
-      :can_find_or_create_accounts,
-      :can_message_users,
-      :can_skip_oauth_screen,
-    ].each do |priviledge| %>
+  <% [
+       :can_access_private_user_data,
+       :can_find_or_create_accounts,
+       :can_skip_oauth_screen,
+     ].each do |priviledge| %>
 
-    <%= content_tag :div,
-        class: "form-group#{' has-error' if application.errors[priviledge].present?}" do %>
-      <%= f.label priviledge.to_s.humanize + "?", class: 'col-sm-2 control-label',
-                             for: "doorkeeper_application_#{priviledge}" %>
+    <%= content_tag :div, class: "form-group#{' has-error' if application.errors[priviledge].present?}" do %>
+      <%= f.label priviledge.to_s.humanize + "?", class: 'col-sm-4 control-label', for: "doorkeeper_application_#{priviledge}" %>
       <div class="col-sm-10">
         <%= f.check_box priviledge %>
         <%= doorkeeper_errors_for application, priviledge %>
+        <span class="form-text text-secondary">
+        <%= t("doorkeeper.applications.help.#{priviledge}") %>
+      </span>
       </div>
     <% end %>
+
   <% end %>
 
-  <% if @user.is_administrator? %>
-    <div>
-      <%= label_tag(@member_ids, "OAuth Admins", class: 'col-sm-2 control-label') %>
-      <div class="col-sm-10">
-        <%= text_field_tag "member_ids", @member_ids, class: 'form-control', placeholder: 'space separated user ids' %>
-        <%= doorkeeper_errors_for application, :owner %>
-        <p>Space separated list of integer user ids. ex: 1 10 7</p>
-      </div>
-    </div >
-    <% end %>
+  <%= content_tag :div, class: "form-group#{' has-error' if application.errors[:confidential].present?}" do %>
+    <%= f.label :confidential, class: 'col-sm-2 control-label', for: "doorkeeper_application_confidential" %>
+    <div class="col-sm-10">
+      <%= f.check_box :confidential %>
+      <%= doorkeeper_errors_for application, :confidential %>
+      <span class="form-text text-secondary">
+        <%= t('doorkeeper.applications.help.confidential') %>
+      </span>
+    </div>
   <% end %>
 
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
-      <%= f.submit t('doorkeeper.applications.buttons.submit'), class: "btn btn-primary" %>
-      <%= link_to t('doorkeeper.applications.buttons.cancel'), oauth_applications_path,
-                                                               class: "btn btn-default" %>
+      <%= f.submit t('doorkeeper.applications.buttons.submit'), class: 'btn btn-primary' %>
+      <%= link_to t('doorkeeper.applications.buttons.cancel'), oauth_applications_path, class: 'btn btn-secondary' %>
     </div>
   </div>
 <% end %>
