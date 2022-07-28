@@ -392,6 +392,7 @@ ActiveRecord::Schema.define(version: 2022_07_27_131608) do
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
+    t.index ["external_id"], name: "index_users_on_external_id", unique: true
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"
