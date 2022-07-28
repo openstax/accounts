@@ -10,24 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_27_131608) do
+ActiveRecord::Schema.define(version: 2022_07_28_191113) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-
-  create_table "application_groups", id: :serial, force: :cascade do |t|
-    t.integer "application_id", null: false
-    t.integer "group_id", null: false
-    t.integer "unread_updates", default: 1, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["application_id", "unread_updates"], name: "index_application_groups_on_application_id_and_unread_updates"
-    t.index ["group_id", "application_id"], name: "index_application_groups_on_group_id_and_application_id", unique: true
-    t.index ["group_id", "unread_updates"], name: "index_application_groups_on_group_id_and_unread_updates"
-  end
 
   create_table "application_users", id: :serial, force: :cascade do |t|
     t.integer "application_id", null: false
@@ -180,43 +169,6 @@ ActiveRecord::Schema.define(version: 2022_07_27_131608) do
     t.boolean "is_implicit", default: false, null: false
     t.index ["contract_id"], name: "index_fine_print_signatures_on_contract_id"
     t.index ["user_id", "user_type", "contract_id"], name: "index_fine_print_s_on_u_id_and_u_type_and_c_id", unique: true
-  end
-
-  create_table "group_members", id: :serial, force: :cascade do |t|
-    t.integer "group_id", null: false
-    t.integer "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["group_id", "user_id"], name: "index_group_members_on_group_id_and_user_id", unique: true
-    t.index ["user_id"], name: "index_group_members_on_user_id"
-  end
-
-  create_table "group_nestings", id: :serial, force: :cascade do |t|
-    t.integer "member_group_id", null: false
-    t.integer "container_group_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["container_group_id"], name: "index_group_nestings_on_container_group_id"
-    t.index ["member_group_id"], name: "index_group_nestings_on_member_group_id", unique: true
-  end
-
-  create_table "group_owners", id: :serial, force: :cascade do |t|
-    t.integer "group_id", null: false
-    t.integer "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["group_id", "user_id"], name: "index_group_owners_on_group_id_and_user_id", unique: true
-    t.index ["user_id"], name: "index_group_owners_on_user_id"
-  end
-
-  create_table "groups", id: :serial, force: :cascade do |t|
-    t.boolean "is_public", default: false, null: false
-    t.string "name"
-    t.text "cached_subtree_group_ids"
-    t.text "cached_supertree_group_ids"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["is_public"], name: "index_groups_on_is_public"
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
