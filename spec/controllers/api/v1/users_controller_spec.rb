@@ -315,10 +315,9 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                  body: {
                    external_id: external_id,
                    role: 'student',
-                   access_token: 'true'
+                   sso: 'true'
                  }
-      end.to change  { User.count }.by(1)
-         .and change { Doorkeeper::AccessToken.count }.by(1)
+      end.to change { User.count }.by(1)
       expect(response.code).to eq('201')
 
       new_user = User.find(JSON.parse(response.body)['id'])
@@ -328,12 +327,10 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(new_user.applications).to eq [ foc_trusted_application ]
       expect(new_user.uuid).not_to be_blank
 
-      new_access_token = Doorkeeper::AccessToken.find_by(
-        token: JSON.parse(response.body)['access_token']
-      )
-      expect(new_access_token.application).to eq foc_trusted_application_token.application
-      expect(new_access_token.resource_owner_id).to eq new_user.id
-      expect(new_access_token.expires_in).not_to be_blank
+      sso_cookie = JSON.parse(response.body)['sso']
+      sso_hash = controller.sso_cookie_jar.parse('unused_param', sso_cookie)
+      expect(sso_hash['sub']).to eq Api::V1::UserRepresenter.new(new_user).to_hash
+      expect(sso_hash['exp']).to be <= (Time.current + 1.hour).to_i
     end
 
     it "should not create a new user for anonymous" do

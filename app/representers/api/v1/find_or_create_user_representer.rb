@@ -135,13 +135,13 @@ module Api::V1
                description: 'Whether or not this is a test user'
              }
 
-    property :access_token,
+    property :sso,
              type: :string,
              readable: true,
              writeable: true,
-             getter: ->(user_options:, **) { user_options[:access_token] },
+             getter: ->(user_options:, **) { user_options[:sso] },
              schema_info: {
-               description: 'Set to a non-empty string to request an access token for the user'
+               description: 'Set to a non-empty string to request an sso cookie for the user'
              }
 
   end
