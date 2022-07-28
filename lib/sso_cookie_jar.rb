@@ -34,8 +34,6 @@ class SsoCookieJar < ActionDispatch::Cookies::AbstractCookieJar
     @parent_jar.delete @cookie_name, options.reverse_merge(@cookie_options)
   end
 
-  private
-
   def parse(name, encrypted_message, purpose: nil)
     JSON::JWT.decode(
       JSON::JWT.decode(
@@ -59,7 +57,7 @@ class SsoCookieJar < ActionDispatch::Cookies::AbstractCookieJar
       options[:value].merge(
         iss: 'OpenStax Accounts',
         aud: 'OpenStax',
-        exp: (current_time + 20.years).to_i,
+        exp: (current_time + (options[:expires_in] || 20.years)).to_i,
         nbf: current_time.to_i,
         iat: current_time.to_i,
         jti: SecureRandom.uuid
