@@ -25,6 +25,26 @@ class SsoCookieJar < ActionDispatch::Cookies::AbstractCookieJar
   def commit(options)
     options[:value] = SsoCookie.generate options
     options.reverse_merge! @@cookie_options
+
+    current_time = Time.current
+    options[:value] = JSON::JWT.new(
+      options[:value].merge(
+        iss: 'OpenStax Accounts',
+        aud: 'OpenStax',
+        exp: (current_time + (options[:expires_in] || 20.years)).to_i,
+        nbf: current_time.to_i,
+        iat: current_time.to_i,
+        jti: SecureRandom.uuid
+      )
+    ).sign(
+      @signature_private_key, @signature_algorithm
+    ).encrypt(
+      @encryption_public_key, @encryption_algorithm.to_sym, @encryption_method.to_sym
+    ).to_s
+
+    if options[:value].bytesize > ActionDispatch::Cookies::MAX_COOKIE_SIZE
+      raise CookieOverflow
+    end
   end
 end
 

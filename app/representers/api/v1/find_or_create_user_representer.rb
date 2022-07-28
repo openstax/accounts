@@ -28,6 +28,22 @@ module Api::V1
                description: "Username to search by or assign to newly created user"
              }
 
+    property :external_id,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+               description: "External ID to search by or assign to newly created user"
+             }
+
+    property :username,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+               description: "Username to search by or assign to newly created user"
+             }
+
     property :email,
              type: String,
              readable: false,
