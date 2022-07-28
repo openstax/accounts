@@ -177,17 +177,18 @@ class Api::V1::UsersController < Api::V1::ApiController
     payload = consume!(Hashie::Mash.new, represent_with: Api::V1::FindOrCreateUserRepresenter)
 
     payload.application = current_api_user.application
-    result = FindOrCreateUser.call(payload)
+    result = FindOrCreateUser.call(payload.except(:access_token))
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
     else
-      token = Doorkeeper.config.access_token_model.find_or_create_for(
-        application: payload.application,
-        resource_owner: result.outputs.user,
-        scopes: '',
-        expires_in: 1.hour,
-        use_refresh_token: false,
-      ) if payload.access_token.present?
+      # Note: this method changes to keyword arguments in a future Doorkeeper version
+      token = Doorkeeper::AccessToken.find_or_create_for(
+        payload.application,
+        result.outputs.user.id,
+        '',
+        1.hour,
+        false,
+      ).token if payload.access_token.present?
 
       respond_with result.outputs.user, represent_with: Api::V1::FindOrCreateUserRepresenter,
                                         location: nil,

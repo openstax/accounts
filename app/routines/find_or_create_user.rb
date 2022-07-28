@@ -29,7 +29,7 @@ class FindOrCreateUser
     elsif options[:username].present?
       User.find_by(username: options[:username])
     elsif options[:email].present?
-      EmailAddress.verified.with_users.find_by(value: options[:email])&.user
+      EmailAddress.with_users.find_by(value: options[:email])&.user
     else
       fatal_error(code: :invalid_input, message: 'Must provide external_id, username, or email')
     end

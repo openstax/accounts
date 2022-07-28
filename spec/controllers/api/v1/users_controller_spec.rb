@@ -218,8 +218,8 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
   end
 
   context "update" do
-    it "should let User update his own User" do
-      api_put :update, user_2_token, body: {first_name: "Jerry", last_name: "Mouse"}
+    it "should let User update their own name" do
+      api_put :update, user_2_token, body: { first_name: "Jerry", last_name: "Mouse" }
       expect(response.code).to eq('200')
       user_2.reload
       expect(user_2.first_name).to eq 'Jerry'
@@ -228,7 +228,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
 
     it "should not let id be specified" do
       api_put :update, user_2_token, body: { first_name: "Jerry", last_name: "Mouse" },
-                                     params: {id: admin_user.id}
+                                     params: { id: admin_user.id }
       expect(response.code).to eq('200')
       user_2.reload
       admin_user.reload
@@ -306,6 +306,36 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(new_user.uuid).not_to be_blank
     end
 
+    it 'creates an external user with an external_id and no username or email' do
+      external_id = "#{SecureRandom.uuid}/#{SecureRandom.uuid}"
+
+      expect do
+        api_post :find_or_create,
+                 foc_trusted_application_token,
+                 body: {
+                   external_id: external_id,
+                   role: 'student',
+                   access_token: 'true'
+                 }
+      end.to change  { User.count }.by(1)
+         .and change { Doorkeeper::AccessToken.count }.by(1)
+      expect(response.code).to eq('201')
+
+      new_user = User.find(JSON.parse(response.body)['id'])
+      expect(new_user.external_id).to eq external_id
+      expect(new_user.state).to eq 'external'
+      expect(new_user.role).to eq 'student'
+      expect(new_user.applications).to eq [ foc_trusted_application ]
+      expect(new_user.uuid).not_to be_blank
+
+      new_access_token = Doorkeeper::AccessToken.find_by(
+        token: JSON.parse(response.body)['access_token']
+      )
+      expect(new_access_token.application).to eq foc_trusted_application_token.application
+      expect(new_access_token.resource_owner_id).to eq new_user.id
+      expect(new_access_token.expires_in).not_to be_blank
+    end
+
     it "should not create a new user for anonymous" do
       user_count = User.count
       api_post :find_or_create,
@@ -327,7 +357,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     context "should return only IDs for a user" do
       it "does so for unclaimed users" do
         api_post :find_or_create, foc_trusted_application_token,
-                 body: { email: unclaimed_user.contact_infos.first.value }
+                 body: { username: unclaimed_user.username }
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
           id: unclaimed_user.id,
