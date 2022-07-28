@@ -19,7 +19,7 @@ RSpec.describe Doorkeeper::AuthorizationsController, type: :controller do
 
         it 'does not redirect' do
           post :create, params: { response_type: :code }
-          expect(response).to have_http_status(:unauthorized)
+          expect(response).to_not redirect_to profile_url
         end
       end
     end
