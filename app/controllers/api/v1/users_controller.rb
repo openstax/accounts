@@ -181,8 +181,17 @@ class Api::V1::UsersController < Api::V1::ApiController
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
     else
+      token = Doorkeeper.config.access_token_model.find_or_create_for(
+        application: payload.application,
+        resource_owner: result.outputs.user,
+        scopes: '',
+        expires_in: 1.hour,
+        use_refresh_token: false,
+      ) if payload.access_token.present?
+
       respond_with result.outputs.user, represent_with: Api::V1::FindOrCreateUserRepresenter,
-                                        location: nil
+                                        location: nil,
+                                        user_options: { access_token: token }
     end
   end
 

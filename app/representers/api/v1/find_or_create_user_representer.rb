@@ -135,5 +135,15 @@ module Api::V1
                description: 'Whether or not this is a test user'
              }
 
+    property :access_token,
+             type: :string,
+             readable: true,
+             writeable: true,
+             getter: ->(user_options:, **) { user_options[:access_token] },
+             setter: ->(*) {}, # no-op
+             schema_info: {
+               description: 'Set to a non-empty string to request an access token for the user'
+             }
+
   end
 end
