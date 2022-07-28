@@ -170,17 +170,30 @@ class Api::V1::UsersController < Api::V1::ApiController
     #{json_schema(Api::V1::FindOrCreateUserRepresenter, include: [:readable, :writable])}
   EOS
   def find_or_create
-    OSU::AccessPolicy.require_action_allowed!(:unclaimed, current_api_user, User)
+    OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, User)
     # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have
     # Substitue a Hashie::Mash to read the JSON encoded body
     payload = consume!(Hashie::Mash.new, represent_with: Api::V1::FindOrCreateUserRepresenter)
 
     payload.application = current_api_user.application
-    result = FindOrCreateUnclaimedUser.call(payload)
+    result = FindOrCreateUser.call(payload.except(:sso))
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
     else
-      respond_with result.outputs[:user], represent_with: Api::V1::FindOrCreateUserRepresenter, location: nil
+      sso_cookie = if payload.sso.present?
+        options = {
+          value: { sub: Api::V1::UserRepresenter.new(result.outputs.user).to_hash },
+          expires_in: 1.hour
+        }
+
+        sso_cookie_jar.commit(options)
+
+        options[:value]
+      end
+
+      respond_with result.outputs.user, represent_with: Api::V1::FindOrCreateUserRepresenter,
+                                        location: nil,
+                                        user_options: { sso: sso_cookie }
     end
   end
 

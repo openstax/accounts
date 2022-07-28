@@ -295,10 +295,6 @@ pl:
     confirm_by_code:
       unable_to_verify_address: Nie udało się zweryfikować adresu e-mail.
 
-    find_or_create_unclaimed_user:
-      must_provide_email_or_username: >-
-        Wymagany jest adres e-mail lub nazwa użytkownika.
-
   contact_infos:
     confirm:
       page_heading:

@@ -9,6 +9,7 @@ class User < ApplicationRecord
     NEEDS_PROFILE = 'needs_profile', # has yet to fill out their user info
     ACTIVATED = 'activated', # means their user info is in place and the email is verified
     UNVERIFIED = 'unverified', # means their user info is in place but the email is not yet verified
+    EXTERNAL = 'external', # lms users cannot login normally and skip most of the signup process
   ].freeze
 
   VALID_ROLES = [
@@ -292,6 +293,10 @@ class User < ApplicationRecord
 
   def is_needs_profile?
     state == NEEDS_PROFILE
+  end
+
+  def is_external?
+    state == EXTERNAL
   end
 
   def no_faculty_info?
