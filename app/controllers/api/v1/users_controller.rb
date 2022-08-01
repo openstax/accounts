@@ -180,16 +180,10 @@ class Api::V1::UsersController < Api::V1::ApiController
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
     else
-      sso_cookie = if payload.sso.present?
-        options = {
-          value: { sub: Api::V1::UserRepresenter.new(result.outputs.user).to_hash },
-          expires_in: 1.hour
-        }
-
-        sso_cookie_jar.commit(options)
-
-        options[:value]
-      end
+      sso_cookie = SsoCookie.generate(
+        value: { sub: Api::V1::UserRepresenter.new(result.outputs.user).to_hash },
+        expires_in: 1.hour
+      ) if payload.sso.present?
 
       respond_with result.outputs.user, represent_with: Api::V1::FindOrCreateUserRepresenter,
                                         location: nil,
