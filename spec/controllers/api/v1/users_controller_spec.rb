@@ -323,9 +323,12 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(new_user.uuid).not_to be_blank
 
       sso_cookie = JSON.parse(response.body)['sso']
-      sso_hash = controller.sso_cookie_jar.parse('unused_param', sso_cookie)
+      sso_hash = SsoCookie.read sso_cookie
       expect(sso_hash['sub']).to eq Api::V1::UserRepresenter.new(new_user).to_hash
       expect(sso_hash['exp']).to be <= (Time.current + 1.hour).to_i
+
+      # Ensure the Doorkeeper token exists
+      Doorkeeper::AccessToken.find_by! token: sso_cookie
     end
 
     it "should not create a new user for anonymous" do
