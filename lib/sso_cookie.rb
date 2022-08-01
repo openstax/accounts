@@ -1,10 +1,8 @@
 module SsoCookie
   secrets = Rails.application.secrets.sso
-  @signature_private_key = OpenSSL::PKey::RSA.new(secrets[:signature_private_key]) \
-    rescue secrets[:signature_private_key]
-  @signature_public_key = OpenSSL::PKey::RSA.new(secrets[:signature_public_key]) \
-    rescue secrets[:signature_public_key]
-  @signature_algorithm = secrets[:signature_algorithm]&.to_sym
+  @signature_private_key = OpenSSL::PKey::RSA.new secrets[:signature_private_key]
+  @signature_public_key = OpenSSL::PKey::RSA.new secrets[:signature_public_key]
+  @signature_algorithm = secrets[:signature_algorithm].to_sym
 
   @encryption_private_key = OpenSSL::PKey::RSA.new(secrets[:encryption_private_key]) \
     rescue secrets[:encryption_private_key]

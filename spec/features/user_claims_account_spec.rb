@@ -34,7 +34,7 @@ feature 'User claims an unclaimed account' do
       click_on t 'contact_infos.confirm_unclaimed.you_can_now_sign_in.add_password'
       expect(page).to have_content(t :"identities.add.page_heading")
       complete_add_password_screen
-      
+
       FindOrCreateUser.call(
         user_options.merge(
           password: "apassword", password_confirmation: "apassword"
