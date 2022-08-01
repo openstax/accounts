@@ -44,9 +44,13 @@ RSpec.describe SignupController, type: :controller do
         end
 
         it 'saves unverified student user in the session' do
-          expect_any_instance_of(described_class).to receive(:save_unverified_user) do |user|
-            expect(user.role).to eq 'student'
-          end.and_call_original
+          expect_any_instance_of(described_class).to(
+            receive(:save_unverified_user).and_wrap_original do |method, user|
+              expect(user.role).to eq 'student'
+
+              method.call user
+            end
+          )
           post(:signup_post, params: params)
         end
 
@@ -208,9 +212,13 @@ RSpec.describe SignupController, type: :controller do
         end
 
         it 'saves unverified educator user in the session' do
-          expect_any_instance_of(described_class).to receive(:save_unverified_user) do |user|
-            expect(user.role).to eq 'educator'
-          end.and_call_original
+          expect_any_instance_of(described_class).to(
+            receive(:save_unverified_user).and_wrap_original do |method, user|
+              expect(user.role).to eq 'educator'
+
+              method.call user
+            end
+          )
           post(:signup_post, params: params)
         end
 
