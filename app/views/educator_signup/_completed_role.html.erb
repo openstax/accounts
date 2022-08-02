@@ -20,17 +20,17 @@
     </div>
 
     <% educator_complete_roles.each do |(role, id, selected)| %>
-    <label>
       <% label_name = "educator_specific_role_#{id}".to_sym %>
-      <input type="radio"
-        value="<%= id %>"
-        id="signup_<%= label_name %>"
-        class="completed-role custom-control-input"
-        name="signup[educator_specific_role]"
-        data-bind="checked: role"
-      >
-      <%= label(label_name, role, class: 'custom-control-label') %>
-    </label>
+      <label for="signup_<%= label_name %>" class="custom-control-label">
+        <input type="radio"
+          value="<%= id %>"
+          id="signup_<%= label_name %>"
+          class="completed-role custom-control-input"
+          name="signup[educator_specific_role]"
+          data-bind="checked: role"
+        >
+        <span><%= I18n.t(:"educator_profile_form.#{id}") %></span>
+      </label>
     <% end %>
 
   </div>

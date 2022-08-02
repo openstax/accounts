@@ -1,5 +1,5 @@
 module Admin
-  class SecurityLogsController < BaseController
+  class SecurityLogsController < Admin::BaseController
     layout 'admin'
 
     def show

@@ -1,0 +1,18 @@
+html {
+    font-family: 'Neue Helvetica W01', sans-serif;
+    // This resets rem from 16px to 10px
+    font-size: 62.5%;
+}
+
+.kss-style {
+    font-family: 'Neue Helvetica W01', Georgia, sans-serif;
+}
+
+body {
+    @include set-font(body-regular);
+
+    background-color: ui-color(page-bg);
+    color: text-color(normal);
+    margin: 0;
+    min-height: 100vh;
+}

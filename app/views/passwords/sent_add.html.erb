@@ -1,0 +1,41 @@
+<div id="login-signup-form">
+  <div class="content">
+    <%= render partial: 'shared/tab_group', locals: { active_class: 'login--active' } %>
+
+    <%= login_signup_card(
+          classes: 'login-page',
+          header:  I18n.t(:"identities.add.use_form_below_to_add_password")) do %>
+      <form>
+        <div class="content" style="text-align: center">
+          <br/>
+          <div>
+            <i class="fa fa-check-circle" style="font-size: 12rem; color: #63a524"></i>
+          </div>
+          <br/><br/>
+
+          <div class="info-message">
+            <%=
+              I18n.t(
+                :"identities.send_add.we_sent_email",
+                email: @email
+              ).html_safe
+            %>
+          </div>
+
+          <div style="margin-top: 1rem">
+            <%=
+              I18n.t(
+                :"identities.add_success.message",
+                contact_us_link: link_to(
+                                   I18n.t(:"login_signup_form.contact_us"),
+                                   salesforce_knowledge_base_url,
+                                   target: '_blank'
+                                 )
+              ).html_safe
+            %>
+          </div>
+        </div>
+      </form>
+    <% end %>
+  </div>
+</div>

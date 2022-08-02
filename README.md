@@ -190,7 +190,7 @@ Which records need to be created and why.
 * A `User` record, of course, needs to be created. But this record doesn't contain the authentication credentials. It _is_ the main model for users—stores `uuid`, `first_name`, `last_name`, `username`, etc.— but everything else is stored via associated models.
 * An `Authentication` record. This model/record stores the different ways that a user may login, for example, using Facebook, Google, or using email and password. Having a separate model/record for this makes it easier to add new ways of logging in or signing up.
 * An `Identity` record. Essentially, this model stores the **password** for any given `Authentication` and provides a way to check against a user-submitted password during login (calling the method `authenticate`). `Authentication`s (and therefore `User`s) that don't have a password set up will not have an `Identity`.
-* An `ApplicationUser` if the user is signing up as they authorize a doorkeeper/OAuth application at the same time basically. See [config/initializers/doorkeeper_models.rb](config/initializers/doorkeeper_models.rb), calls `FindOrCreateApplicationUser` on `before_create`. Also, if the user account is being created by an application via the api (`/user/find-or-create`) an `ApplicationUser` is created. `FindOrCreateUnclaimedUser` calls `FindOrCreateApplicationUser`. This is in order to associate a user with an application. An application may only handle its own users, unless it's one of our own, trusted, applications.
+* An `ApplicationUser` if the user is signing up as they authorize a doorkeeper/OAuth application at the same time basically. See [config/initializers/doorkeeper_models.rb](config/initializers/doorkeeper_models.rb), calls `FindOrCreateApplicationUser` on `before_create`. Also, if the user account is being created by an application via the api (`/user/find-or-create`) an `ApplicationUser` is created. `FindOrCreateUser` calls `FindOrCreateApplicationUser`. This is in order to associate a user with an application. An application may only handle its own users, unless it's one of our own, trusted, applications.
 * A `ContactInfo` record which essentially stores email addresses for users.
 
 ## Logging in
@@ -246,7 +246,7 @@ Short for `r`edirect parameter, if present and trusted, we store it in order to 
 Also, note that OSWeb/the CMS may use the `next` parameter instead of `r` [(link)](https://github.com/openstax/openstax-cms/blob/81904f6b115fc280745c01316e3f478668893efa/oxauth/views.py#L14-L16) but it rewrites it as `r` for usage in Accounts.
 
 ### `redirect_uri` parameter
-Part of the OAuth protocol, we also take advantage of its presence in the Referrer when users wish to exit Accounts and go back to the OAuth app they came from. See the controller action `exit_accounts` [here](https://github.com/openstax/accounts/blob/e48dd5d4a4bdb7bf4b1e6caa808243432ecd4f57/app/controllers/newflow/login_signup_controller.rb#L338-L339).
+Part of the OAuth protocol, we also take advantage of its presence in the Referrer when users wish to exit Accounts and go back to the OAuth app they came from. See the controller action `exit_accounts` [here](https://github.com/openstax/accounts/blob/main/app/controllers/other_controller.rb).
 
 # Concepts
 These are things that are specific to Accounts and/or will help you learn and understand the codebase better.

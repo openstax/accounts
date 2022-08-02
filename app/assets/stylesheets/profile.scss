@@ -1,9 +1,14 @@
 $font-path: '/accounts/fonts';
-@import "bootstrap-editable";
+@import "x-editable-bootstrap";
 @import "pattern-library/elements/menus";
+@import "pattern-library/layout";
+@import "pattern-library/fonts";
+@import "pattern-library/typography";
+@import "common";
 
 .main-menu {
     box-shadow: none;
+
     height: 2rem;
     margin: 2rem 0 0 2rem;
 
@@ -24,7 +29,7 @@ $font-path: '/accounts/fonts';
 
     .sign-out {
       position: absolute;
-      right: 0px;
+      right: 0;
     }
   }
 
@@ -202,7 +207,6 @@ $font-path: '/accounts/fonts';
     .mod-holder {
       > span { margin-left: 8px; }
       .edit { display: none; }
-      .edit--newflow { display: none; }
     }
 
     &[data-provider=identity] {
@@ -229,18 +233,15 @@ $font-path: '/accounts/fonts';
 
       .mod-holder {
         .edit   { display: inline; }
-        .edit--newflow   { display: inline; }
       }
     }
   }
 
   .enabled-providers {
     .mod-holder .add { display: none; }
-    .mod-holder .add--newflow { display: none; }
     .authentication {
       &:only-child {
         .mod-holder .delete { display: none; }
-        .mod-holder .delete--newflow { display: none; }
       }
     }
   }
@@ -249,9 +250,7 @@ $font-path: '/accounts/fonts';
     .authentication {
       .mod-holder {
         .edit   { display: none; }
-        .edit--newflow   { display: none; }
         .delete { display: none; }
-        .delete--newflow { display: none; }
       }
     }
   }
@@ -260,4 +259,44 @@ $font-path: '/accounts/fonts';
     display: none;
   }
 
+}
+
+body {
+  background: none;
+}
+
+#application-header {
+  display: none;
+}
+
+a, .editable-click, #enable-other-sign-in, a.sign-out, #add-an-email, .resend-confirmation input[type=submit] {
+  color: #027eb5 !important;
+}
+
+.ox-card {
+  background-color: #fff;
+  border: 0.1rem solid #d5d5d5;
+}
+
+#profile .ox-card .category {
+  color: var(--greyish-brown);
+}
+
+#application-footer--copyright a {
+  font-size: 10px;
+  color: #000 !important;
+}
+
+#footer-rice-logo-image {
+  max-height: 3.7rem;
+  margin-bottom: 1.2rem;
+}
+
+.ox-card {
+  height: 90rem;
+}
+
+.btn-primary {
+  background-color: #f36b32;
+  border: 0;
 }

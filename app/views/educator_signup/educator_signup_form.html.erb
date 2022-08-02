@@ -20,12 +20,12 @@
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 4),
           classes: 'signup-page') do %>
       <% lev_form_for :signup, url: educator_signup_post_path do |form| %>
-        <% fh = NewflowFormHelper::Newflow.new(f: form,
-                                               context: self,
-                                               errors: @handler_result&.errors) %>
+        <% fh = FormHelper::One.new(f: form,
+                                    context: self,
+                                    errors: @handler_result&.errors) %>
         <div class="content role-section">
           <div>
-            <%= render partial: 'shared/back_arrow', locals: { path: newflow_signup_path } %>
+            <%= render partial: 'shared/back_arrow', locals: { path: signup_path } %>
             <div class="role-button"><%= I18n.t(:"login_signup_form.educator") %></div>
           </div>
         </div>
@@ -70,7 +70,7 @@
         </div>
 
         <div
-          class="content control-group email-input-group newflow"
+          class="content control-group email-input-group"
           data-bind="css: {'has-error': emailInvalid, 'has-changed': emailHasChanged}"
         >
           <%= label_tag :email, I18n.t(:"login_signup_form.school_issued_email_label"), class: 'field-label' %>
@@ -102,7 +102,7 @@
             <br>
           </div>
 
-          <% if is_BRI_book_adopter? %>
+          <% if is_bri_book_adopter? %>
             <%= render partial: 'shared/is_title_1_school_checkbox' %>
           <% end %>
 

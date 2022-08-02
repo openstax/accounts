@@ -15,10 +15,9 @@ require 'fetch_book_data'
 require 'sheerid_api'
 require 'rate_limiting'
 require 'omniauth/strategies/custom_identity'
-require "omniauth/strategies/facebooknewflow"
-require "omniauth/strategies/googlenewflow"
 require 'email_address_validations'
 require 'host'
+require 'sso_cookie'
 require 'sso_cookie_jar'
 require 'set_gdpr_data'
 require 'date_time'

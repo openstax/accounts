@@ -1,5 +1,5 @@
 module Dev
-  class UsersController < BaseController
+  class UsersController < Dev::BaseController
 
     def create
       handle_with(Dev::UsersCreate)

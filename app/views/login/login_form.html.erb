@@ -10,10 +10,9 @@
         <%= login_signup_card(
                     classes: "login-page",
                     header: (I18n.t(:"login_signup_form.login_page_header")),
-                    banners: @banners,
                     show_exit_icon: true) do %>
             <% lev_form_for :login_form, url: login_path do |f| %>
-                <% fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors) %>
+                <% fh = FormHelper::One.new(f: f, context: self, errors: @handler_result&.errors) %>
                     <div class="content social-section">
                         <div><%= I18n.t(:"login_signup_form.login_with") %></div>
 
@@ -22,7 +21,7 @@
                             <div class="fb-share-button">
                                 <%=
                                     link_to(
-                                        newflow_auth_path(:facebooknewflow, origin: :login_form),
+                                        social_auth_path(:facebook, origin: :login_form),
                                         class: 'facebook btn',
                                         data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Facebook' }
                                     ) do
@@ -35,7 +34,7 @@
                             <div class="google-share-button">
                                 <%=
                                     link_to(
-                                        newflow_auth_path(:googlenewflow, origin: :login_form),
+                                        social_auth_path(:google_oauth2, origin: :login_form),
                                         class: 'google btn',
                                         data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Google' }
                                     ) do

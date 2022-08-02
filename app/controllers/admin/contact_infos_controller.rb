@@ -1,5 +1,5 @@
 module Admin
-  class ContactInfosController < BaseController
+  class ContactInfosController < Admin::BaseController
 
     def verify
       contact_info = ContactInfo.find(params[:id])

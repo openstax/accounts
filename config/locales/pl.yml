@@ -135,7 +135,7 @@ pl:
     too_many_login_attempts: >-
       Limit nieudanych prób logowania na Twoje konto został przekroczony.
       Zmień hasło albo spróbuj ponownie później.
-    profile_newflow_page_header: Moje konto
+    profile_page_header: Moje konto
     how_you_log_in: Jak się logujesz
     sign_in_option_already_used: >-
         Ta metoda logowania jest już używana przez kogoś innego. Jeżeli jesteś
@@ -155,12 +155,12 @@ pl:
     finish: koniec
     should_social_signup: Nie ma żadnego zapisu tego konta. Czy ty próbujesz %{sign_up}?
 
-    student_email_verification_form_decription: >-
+    student_email_verification_form_description: >-
       E-mail został wysłany do <b>%{email} </b>.
       Wprowadź poniżej otrzymany kod PIN.
       Możesz także %{edit_your_email}
 
-    educator_email_verification_form_decription: >-
+    educator_email_verification_form_description: >-
       E-mail został wysłany do <b>% {email} </b>.
       Wprowadź poniżej otrzymany kod PIN.
       Po potwierdzeniu adresu e-mail musisz dokończyć
@@ -295,10 +295,6 @@ pl:
   routines:
     confirm_by_code:
       unable_to_verify_address: Nie udało się zweryfikować adresu e-mail.
-
-    find_or_create_unclaimed_user:
-      must_provide_email_or_username: >-
-        Wymagany jest adres e-mail lub nazwa użytkownika.
 
   contact_infos:
     confirm:
@@ -607,7 +603,6 @@ pl:
       separator_or: albo
       sign_in_with_facebook: Zaloguj się przez Facebooka
       sign_in_with_google: Zaloguj się przez Google
-      sign_in_with_twitter: Zaloguj się przez Twittera
       login: Zaloguj
       submitting: Logowanie…
       password: Hasło

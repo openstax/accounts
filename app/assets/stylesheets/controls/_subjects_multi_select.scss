@@ -1,11 +1,9 @@
-.subjects {
+@import "common";
 
-    &.has-error {
-      border: 1px solid darken($state-danger-border, 10%);
-    }
+.subjects {
     .errors { margin-left: 1rem; }
     .scroll-pane {
-      @extend .clearfix;
+      @extend .clearfix !optional;
       // Height of list is selected to chop off in middle of line to provide an
       // indication that there's items that can be scrolled to
       max-height: 235px;

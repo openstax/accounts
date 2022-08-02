@@ -12,8 +12,8 @@
       <%= I18n.t(:"educator_profile_form.select_option") %>
     </div>
     <% options.each do |(role, value, label_key)| %>
-      <div>
-        <% id = "signup_who_chooses_books_#{value}".to_sym %>
+      <% id = "signup_who_chooses_books_#{value}".to_sym %>
+      <label for="<%= id %>" class="custom-control-label">
         <input type="radio"
           value="<%= value %>"
           id="<%= id %>"
@@ -21,10 +21,10 @@
           name="signup[who_chooses_books]"
           data-bind="checked: howChosen"
         >
-        <label for="<%= id %>" class="custom-control-label">
+        <span>
           <%= I18n.t(:"educator_profile_form.#{label_key}") %>
-        </label>
-      </div>
+        </span>
+      </label>
     <% end %>
   </div>
 </div>

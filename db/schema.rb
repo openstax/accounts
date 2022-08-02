@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_01_160740) do
+ActiveRecord::Schema.define(version: 2022_07_27_131608) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -279,11 +279,6 @@ ActiveRecord::Schema.define(version: 2022_06_01_160740) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
-  create_table "push_topics", force: :cascade do |t|
-    t.string "topic_salesforce_id"
-    t.string "topic_name"
-  end
-
   create_table "schools", force: :cascade do |t|
     t.string "salesforce_id", null: false
     t.string "name", null: false
@@ -393,9 +388,11 @@ ActiveRecord::Schema.define(version: 2022_06_01_160740) do
     t.boolean "sheer_id_webhook_received"
     t.string "salesforce_ox_account_id"
     t.boolean "renewal_eligible"
+    t.string "external_id"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
+    t.index ["external_id"], name: "index_users_on_external_id", unique: true
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"

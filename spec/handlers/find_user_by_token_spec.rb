@@ -3,7 +3,7 @@ require 'rails_helper'
 describe FindUserByToken, type: :handler do
   context 'when success' do
     before do
-      user = create_newflow_user('user@openstax.org')
+      user = create_user('user@openstax.org')
       user.refresh_login_token
       user.save!
       @token = user.login_token
@@ -30,7 +30,7 @@ describe FindUserByToken, type: :handler do
     end
 
     example 'because login token expired' do
-      user = create_newflow_user('user@openstax.org')
+      user = create_user('user@openstax.org')
       token = user.refresh_login_token
       user.login_token_expires_at = 1.days.ago
       user.save!
