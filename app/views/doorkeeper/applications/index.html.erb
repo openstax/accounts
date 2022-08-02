@@ -2,7 +2,7 @@
   <h1><%= t('.title') %></h1>
 </div>
 
-<% if @user.is_administrator? %>
+<% if current_user.is_administrator? %>
   <p><%= link_to t('.new'), new_oauth_application_path, class: 'btn btn-success' %></p>
 <% end %>
 
@@ -31,7 +31,7 @@
       <td class="align-middle">
         <%= link_to t('doorkeeper.applications.buttons.edit'), edit_oauth_application_path(application), class: 'btn btn-link' %>
       </td>
-      <% if @user.is_administrator? %>
+      <% if current_user.is_administrator? %>
         <td class="align-middle">
           <%= render 'delete_form', application: application %>
         </td>

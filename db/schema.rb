@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_28_191113) do
+ActiveRecord::Schema.define(version: 2022_08_02_193549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -221,7 +221,6 @@ ActiveRecord::Schema.define(version: 2022_07_28_191113) do
     t.string "email_subject_prefix", default: "", null: false
     t.boolean "skip_terms", default: false, null: false
     t.string "scopes", default: "", null: false
-    t.string "lead_application_source", default: "", null: false
     t.boolean "confidential", default: true, null: false
     t.boolean "can_access_private_user_data", default: false, null: false
     t.boolean "can_find_or_create_accounts", default: false, null: false
