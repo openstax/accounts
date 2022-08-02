@@ -209,7 +209,7 @@ GEM
     diff-lcs (1.4.4)
     diffy (3.4.0)
     docile (1.4.0)
-    doorkeeper (5.5.4)
+    doorkeeper (5.4.0)
       railties (>= 5)
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
@@ -714,7 +714,7 @@ DEPENDENCIES
   delayed_job_heartbeat_plugin
   delayed_job_web
   delayed_job_worker_pool
-  doorkeeper
+  doorkeeper (~> 5.4.0)
   dotenv-rails
   error_page_assets
   factory_bot_rails

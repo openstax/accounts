@@ -55,7 +55,7 @@ gem 'render_anywhere', require: false
 gem 'bcrypt', '~> 3.1'
 
 # OAuth provider
-gem 'doorkeeper'
+gem 'doorkeeper', '~> 5.4.0'
 
 # OAuth clients
 gem 'omniauth'
