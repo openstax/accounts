@@ -5,7 +5,7 @@ feature 'Admin user pages', js: true do
     before(:each) do
       @admin_user = create_admin_user
       visit '/'
-      log_in('admin', 'password')
+      log_in('admin@openstax.org', 'password')
     end
 
     context "with a user with salesforce contact ID set" do

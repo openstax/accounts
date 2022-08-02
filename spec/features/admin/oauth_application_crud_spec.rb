@@ -5,29 +5,26 @@ feature 'Admin oauth app create and edit', js: true do
     before(:each) do
       @admin_user = create_admin_user
       visit '/'
-      log_in('admin', 'password')
+      log_in('admin@openstax.org')
     end
 
     it 'can create and edit applications' do
-      visit '/oauth/applications'
-      click_link 'New Application'
+      visit '/oauth/applications/new'
       fill_in 'Name', with: 'Test'
       fill_in 'Redirect URI', with: 'urn:ietf:wg:oauth:2.0:oob'
       fill_in 'Email subject prefix', with: '[Test]'
-      fill_in 'Lead application source', with: 'Tutor Signup'
       fill_in 'Email from address', with: 'blah@example.com'
       click_button 'Submit'
 
       expect(page).to have_content("Application: Test")
-      expect(page).to have_content("Tutor Signup")
 
       click_link 'Edit'
 
-      fill_in 'Lead application source', with: 'App Source Blah'
+      fill_in 'Name', with: 'New App Name'
 
       click_button 'Submit'
 
-      expect(page).to have_content("App Source Blah")
+      expect(page).to have_content("Application: New App Name")
     end
   end
 end
