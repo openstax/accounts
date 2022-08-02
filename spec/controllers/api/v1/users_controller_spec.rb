@@ -58,7 +58,6 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
   let(:is_not_gdpr_location) { nil }
 
   context "index" do
-
     it "returns a single result well" do
       api_get :index, trusted_application_token, params: { q: 'first_name:bob last_name:Michaels' }
       expect(response.code).to eq('200')
@@ -105,7 +104,6 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(outcome["items"].length).to eq 0
       expect(outcome["total_count"]).not_to eq 0
     end
-
   end
 
   context "show" do
@@ -213,8 +211,6 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
         expect(response.body_as_hash).to include(is_not_gdpr_location: true)
       end
     end
-
-
   end
 
   context "update" do
@@ -260,7 +256,6 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       user_2.reload
       expect(user_2.contact_infos).to eq original_contact_infos
     end
-
   end
 
   context "find or create" do
@@ -328,9 +323,12 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(new_user.uuid).not_to be_blank
 
       sso_cookie = JSON.parse(response.body)['sso']
-      sso_hash = controller.sso_cookie_jar.parse('unused_param', sso_cookie)
+      sso_hash = SsoCookie.read sso_cookie
       expect(sso_hash['sub']).to eq Api::V1::UserRepresenter.new(new_user).to_hash
       expect(sso_hash['exp']).to be <= (Time.current + 1.hour).to_i
+
+      # Ensure the Doorkeeper token exists
+      Doorkeeper::AccessToken.find_by! token: sso_cookie
     end
 
     it "should not create a new user for anonymous" do
@@ -361,6 +359,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
           uuid: unclaimed_user.uuid
         )
       end
+
       it "does so for claimed users" do
         api_post :find_or_create,
                  foc_trusted_application_token,
