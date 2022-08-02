@@ -1,0 +1,135 @@
+// Buttons
+//
+// Subtle color changes on hover, focus, and active states
+//
+// Markup: ./markup/form-elements-buttons.html
+//
+// .medium - Less vertical padding
+// .small - Smaller font, less padding on all sides
+// .wide - The width of the enclosing container
+// .primary - Colored to stand out
+// .secondary - Colored to stand out a bit less than primary
+//
+// Styleguide: Form Elements.Buttons
+
+button,
+[type="button"],
+[type="submit"],
+[type="reset"],
+.btn {
+    // This actually reduces total code size
+    @extend %button;
+
+    &.primary,
+    &[type="submit"] {
+        @extend %primary;
+    }
+
+    &.secondary,
+    &[type="reset"] {
+        @extend %secondary;
+    }
+}
+
+// Radio button group
+//
+// Customized color-filled indicators
+//
+// Markup: ./markup/form-elements-radio-group.html
+//
+// Styleguide: Form Elements.RadioGroup
+
+.radio-control-group {
+    @extend %radio-control-group;
+}
+
+[type="radio"] {
+    @include radio-button();
+}
+
+// Form
+//
+// Forms get a slightly different background color and a healthy bit of padding to
+// set them off from other containers. These stylings only apply to `<form>` tags
+// that are inside `.content` or themselves have the `.content` class; use the
+// `.form` class to apply to anything else.
+//
+// Markup: ./markup/form-elements-form.html
+//
+// Styleguide: Form Elements.Form
+%content form,
+form%content,
+.form {
+    @include form();
+}
+
+label {
+    @include set-font(helper-label);
+
+    color: text-color(helper);
+    width: 100%;
+
+    > * {
+        display: block;
+    }
+}
+
+input {
+    height: $form-element-height;
+}
+
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="radio"]):not([type="checkbox"]),
+textarea {
+    @include non-button-input();
+
+    .invalid-message {
+        @extend %invalid-message;
+    }
+}
+
+// Button Bar
+//
+// A row of buttons or button-styled elements used like a radio group
+//
+// Markup: ./markup/form-elements-button-bar.html
+//
+// Styleguide: Form Elements.Button Bar
+
+.button-bar {
+    @include button-bar();
+
+    > [aria-selected="true"] {
+        @extend %selected;
+    }
+}
+
+// Input with tooltip
+//
+// A text input field with a tooltip that appears on focus or hover (selectable)
+// In mobile view, tooltip is below the field
+// In desktop view, tooltip is to the left
+// <p>Use macro <code>input-with-tooltip</code> on the wrapping element,<br>
+// <code>@extend %active</code> on the <code>input</code> to make the tooltip display<br>
+// <code>@extend %tooltip</code> on the tooltip element to style the tooltip itself</p>
+//
+// Markup: ./markup/form-elements-input-with-tooltip.html
+//
+// Styleguide: Form Elements.Input with Tooltip
+
+.input-with-tooltip {
+    @include input-with-tooltip();
+
+    input:focus {
+        @extend %active;
+    }
+
+    .tooltip {
+        @extend %tooltip;
+
+        max-width: 18rem;
+
+        @include width-up-to($phone-max) {
+            max-width: 100%;
+        }
+    }
+}

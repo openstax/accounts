@@ -86,7 +86,7 @@ feature "User can't sign in", js: true do
       authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
 
-      visit(signup_student_path)
+      visit(signup_form_path(role: 'student'))
       fill_in('signup[email]', with: Faker::Internet.free_email)
       fill_in('signup[password]', with: Faker::Internet.password(min_length: 8))
       fill_in('signup[first_name]', with: Faker::Name.first_name)
@@ -128,19 +128,15 @@ feature "User can't sign in", js: true do
       open_email('user@example.com')
       capture_email!
       change_password_link = get_path_from_absolute_link(current_email, 'a')
-      expect(change_password_link).to include(change_password_form_path)
+      expect(change_password_link).to include(password_reset_path)
 
       # set the new password
       visit change_password_link
-      expect(page).to have_content(I18n.t(:"login_signup_form.enter_new_password_description"))
-      fill_in('change_password_form_password', with: 'NEWpassword')
-      screenshot!
-      find('#login-signup-form').click
-      wait_for_animations
-      click_button('Log in')
-      screenshot!
+      expect(page).to have_content(I18n.t(:"identities.reset.use_form_below_to_reset_password"))
+      complete_reset_password_screen('NEWpassword')
+      complete_reset_password_success_screen
 
-      expect(page.current_path).to eq(profile_path)
+      expect_back_at_app
     end
 
     scenario "just has social auth" do

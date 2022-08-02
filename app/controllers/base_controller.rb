@@ -4,8 +4,6 @@ class BaseController < ApplicationController
 
   layout 'newflow_layout'
 
-  skip_before_action :authenticate_user!
-
   before_action :set_active_banners
 
   protected #################

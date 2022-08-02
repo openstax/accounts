@@ -1,31 +1,31 @@
 <div id="login-signup-form">
-    <div class="content">
-        <%= render partial: 'shared/tab_group' , locals: { active_class: 'login--active' } %>
+  <div class="content">
+    <%= render partial: 'shared/tab_group', locals: { active_class: 'login--active' } %>
 
-        <%= login_signup_card(
-                    classes: "login-page login-unsuccessful-page",
-                    header: I18n.t(:"login_signup_form.login_unsuccessful", email: @email)) do %>
-            <% lev_form_for :send_instructions, url: send_password_setup_instructions_path do |f| %>
-                <div class="content info-message">
-                    <div>
-                      <%= I18n.t(:"login_signup_form.login_unsuccessful_description",
-                                         email: @email).html_safe
-                      %>
-                    </div>
-                    <br>
-                </div>
-                <div class="content"> <!-- buttons section -->
-                        <div>
-                            <%= f.hidden_field(:email, value: @email) %>
-                            <%= f.submit(I18n.t(:"login_signup_form.send_me_instructions"),
-                                                     id: 'send-instructions-button') %>
+    <%= login_signup_card(
+          classes: "login-page login-unsuccessful-page",
+          header:  I18n.t(:"login_signup_form.login_unsuccessful", email: @email)) do %>
+      <% lev_form_for :send_instructions, url: password_add_path do |f| %>
+        <div class="content info-message">
+          <div>
+            <%= I18n.t(:"login_signup_form.login_unsuccessful_description",
+                       email: @email).html_safe
+            %>
+          </div>
+          <br>
+        </div>
+        <div class="content"> <!-- buttons section -->
+          <div>
+            <%= f.hidden_field(:email, value: @email) %>
+            <%= f.submit(I18n.t(:"login_signup_form.send_me_instructions"),
+                         id: 'send-instructions-button') %>
 
-                            <%= link_to login_path do %>
-                                <%= button_tag(I18n.t(:"login_signup_form.return"), type: nil, id: 'return-button') %>
-                            <% end %>
-                        </div>
-                </div> <!-- END buttons section -->
-            <% end # lev_form_for %>
-        <% end # login_signup_card  %>
-    </div>
+            <%= link_to login_path do %>
+              <%= button_tag(I18n.t(:"login_signup_form.return"), type: nil, id: 'return-button') %>
+            <% end %>
+          </div>
+        </div> <!-- END buttons section -->
+      <% end # lev_form_for %>
+    <% end # login_signup_card  %>
+  </div>
 </div>

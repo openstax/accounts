@@ -11,12 +11,12 @@
     )
 
     form_description = I18n.t(
-        :"login_signup_form.educator_email_verification_form_decription",
+        :"login_signup_form.educator_email_verification_form_description",
         email: @email
     ).html_safe
 
     edit_it_here_link = link_to(
-        I18n.t(:"login_signup_form.edit_it_here"), educator_change_signup_email_form_path
+        I18n.t(:"login_signup_form.edit_it_here"), change_signup_email_form_path
     )
 
     help_message = I18n.t(

@@ -1,6 +1,7 @@
 # Changes the user's password if they have one, otherwise creates a password (an `Identity`).
 class ChangePassword
   lev_handler
+  uses_routine SetPassword
 
   paramify :change_password_form do
     attribute :password, type: String
@@ -29,10 +30,9 @@ class ChangePassword
     end
 
     run(
-      ::SetPassword,
+      SetPassword,
       user: @user,
-      password: change_password_form_params.password,
-      password_confirmation: change_password_form_params.password
+      password: change_password_form_params.password
     )
   end
 

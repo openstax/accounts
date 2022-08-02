@@ -1,0 +1,74 @@
+$os-colors: (
+    blue: #002469,
+    deep-green: #0c9372,
+    gold: #fdbd3e,
+    gray: #5e6162,
+    green: #63a524,
+    light-blue: #0dc0dc,
+    light-gray: #959595,
+    medium-blue: #007297,
+    orange: #f36b32,
+    red: #c22032,
+    yellow: #f4d019,
+);
+
+$text-colors: (
+    button-bar: #5e6062,
+    error: #c22032,
+    footer-header: #9a9a9b,
+    footer: #d5d5d5,
+    helper: #6f6f6f,
+    link-hover: #005481,
+    link: #026aa1,
+    normal: #424242,
+    white: #fff
+);
+
+$ui-colors: (
+    default-active: #e5e5e5,
+    default-hover: #f1f1f1,
+    default: #fff,
+    error-bg: #f8e8ea,
+    error-border: #c22032,
+    error-fg: #c22032,
+    footer-bg: #424242,
+    form-bg: #f1f1f1,
+    form-border: #d5d5d5,
+    page-bg: #f1f1f1,
+    primary-active: #b03808,
+    primary-hover: #be3c08,
+    primary: #d4450c,
+    secondary-active: #4c4c4c,
+    secondary-hover: #646464,
+    secondary: #757575,
+    success-bg: #d6f1f7,
+    success-border: #0064a0,
+    success-fg: #0064a0,
+    white: #fff,
+    black: #000
+);
+
+@mixin light-on-dark() {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+@function get-color($map, $key) {
+    @if map-has-key($map, $key) {
+        @return map-get($map, $key);
+    }
+    @warn 'Unknown color name `#{$key}`';
+    @return #f33;
+}
+
+@function os-color($color) {
+    @return get-color($os-colors, $color);
+}
+
+@function text-color($color) {
+    @return get-color($text-colors, $color);
+}
+
+@function ui-color($color) {
+    @return get-color($ui-colors, $color);
+}

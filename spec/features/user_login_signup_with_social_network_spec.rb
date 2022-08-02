@@ -11,7 +11,7 @@ feature 'User logs in or signs up with a social network', js: true do
   context 'students' do
     context 'when user signs up with a social network' do
       scenario 'happy path' do
-        visit(signup_student_path)
+        visit(signup_form_path(role: 'student'))
 
         simulate_login_signup_with_social(name: 'Elon Musk', email: email) do
           click_on('Facebook')
@@ -36,7 +36,7 @@ feature 'User logs in or signs up with a social network', js: true do
       context 'user denies us access to their email address, has to enter it manually' do
         describe 'success' do
           example do
-            visit(signup_student_path)
+            visit(signup_form_path(role: 'student'))
 
             simulate_login_signup_with_social(name: 'Elon Musk', email: nil) do
               click_on('Facebook')
@@ -68,7 +68,7 @@ feature 'User logs in or signs up with a social network', js: true do
           subject(:invalid_email) { 'someinvalidemail' }
 
           scenario 'the form shows a friendly error message' do
-            visit(signup_student_path)
+            visit(signup_form_path(role: 'student'))
 
             simulate_login_signup_with_social(name: 'Elon Musk', email: nil) do
               click_on('Facebook')
@@ -141,7 +141,7 @@ feature 'User logs in or signs up with a social network', js: true do
       let(:nil_email_value) { nil }
 
       before do
-        visit(signup_student_path)
+        visit(signup_form_path(role: 'student'))
 
         simulate_login_signup_with_social(name: 'Elon Musk', email: nil_email_value) do
           click_on('Facebook')
@@ -186,7 +186,7 @@ feature 'User logs in or signs up with a social network', js: true do
         FactoryBot.create(:email_address, user: user, value: email_value, verified: true)
       end
 
-      context 'tries to log in' do
+      context 'tries to sign up' do
         describe 'denies us access to their email address' do
           let(:nil_email_value) { nil }
 

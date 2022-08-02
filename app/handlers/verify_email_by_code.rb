@@ -5,23 +5,25 @@ class VerifyEmailByCode
   uses_routine ConfirmByCode,
                translations: { outputs: { type: :verbatim },
                                inputs: { type: :verbatim } }
-  uses_routine StudentSignup::ActivateStudent
-  uses_routine EducatorSignup::ActivateEducator
+  uses_routine ActivateUser
 
   def authorized?
     true
   end
 
   def handle
-    run(ConfirmByCode, params[:code])
-    user = outputs.contact_info.user
-
-    if user.student?
-      run(StudentSignup::ActivateStudent, user)
-    else
-      run(EducatorSignup::ActivateEducator, user: user)
+    result = ConfirmByCode.call(params[:code])
+    if result.errors.any?
+      fatal_error(
+        code: :invalid_confirmation_code,
+        offending_inputs: [:code],
+        message: I18n.t(:"contact_infos.confirm.verification_code_not_found")
+      )
     end
 
-    outputs.user = user
+    outputs.contact_info = result.outputs.contact_info
+    outputs.user = outputs.contact_info.user
+
+    run(ActivateUser, outputs.user)
   end
 end

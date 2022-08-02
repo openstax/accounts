@@ -158,12 +158,12 @@ en:
     should_social_signup: There is no record of this account. Are you trying to %{sign_up}?
     is_title_1_school: My school is designated as a Title-1 campus
 
-    student_email_verification_form_decription: >-
+    student_email_verification_form_description: >-
       An email has been sent to <b>%{email}</b>.
       Please enter the PIN you received below.
       You can also %{edit_your_email}
 
-    educator_email_verification_form_decription: >-
+    educator_email_verification_form_description: >-
       An email has been sent to <b>%{email}</b>.
       Please enter the PIN you received below.
       Once your email has been confirmed, you will need to complete
@@ -305,9 +305,6 @@ en:
   routines:
     confirm_by_code:
       unable_to_verify_address: Unable to confirm email address
-
-    find_or_create_unclaimed_user:
-      must_provide_email_or_username: Must provide email or username
 
   # From here on the sections correspond to directories under app/views
 

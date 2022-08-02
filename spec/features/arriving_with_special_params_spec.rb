@@ -50,14 +50,14 @@ feature "Arriving with special params", js: true do
         arrive_from_app(params: {signup_at: alt_signup_url}, do_expect: false)
         click_link(t :"login_signup_form.sign_up")
         click_link(t :"login_signup_form.educator")
-        expect(page.current_path).to eq(educator_signup_path)
+        expect(page.current_path).to eq(signup_form_path)
       end
 
       scenario 'straight to login proceeds to signup form' do
         visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
         click_link(t :"login_signup_form.sign_up")
         click_link(t :"login_signup_form.educator")
-        expect(page.current_path).to eq(educator_signup_path)
+        expect(page.current_path).to eq(signup_form_path)
       end
     end
   end

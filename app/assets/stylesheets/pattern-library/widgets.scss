@@ -1,0 +1,113 @@
+%os-multiselect {
+    $box-background: rgb(231, 242, 246);
+    $box-border: rgb(84, 143, 185);
+    $box-gap: 1rem;
+
+    .btn {
+        @extend %button;
+    }
+
+    .selections,
+    .results,
+    .selections-and-filter > ms-selections {
+        align-items: center;
+        display: flex;
+        flex-flow: row wrap;
+        min-width: 100%;
+        width: 100%;
+
+        > * {
+            margin-right: $box-gap;
+        }
+
+        .box,
+        .result {
+            border-radius: 0.2rem;
+            margin-bottom: #{$box-gap / 2};
+            margin-top: #{$box-gap / 2};
+            padding: 0.2rem 0.7rem;
+        }
+
+        .box {
+            background-color: $box-background;
+            border: thin solid $box-border;
+        }
+
+        .result {
+            border: thin solid ui-color(form-border);
+            cursor: pointer;
+
+            &.selected {
+                -webkit-font-smoothing: antialiased;
+                background-color: text-color(link);
+                border: 0;
+                color: text-color(white);
+            }
+        }
+    }
+
+    .selections {
+        padding-left: 0.5rem;
+
+        input {
+            order: 2;
+        }
+    }
+
+    .selections-and-filter {
+        border: thin solid ui-color(form-border);
+        padding: 0 2rem 0 $normal-margin;
+        position: relative;
+
+        // CSS rules say these not-selectors are a level of specificity, so I need
+        // them here to override the general input style.
+        input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="radio"]):not([type="checkbox"]),
+        {
+            border: 0;
+            background-color: transparent;
+            color: inherit;
+            max-width: 20rem;
+            padding: 0;
+        }
+    }
+
+
+    .group-heading {
+        @include title-font(1.8rem);
+    }
+
+    ms-toggle-button button,
+    .ms-toggle-button {
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+        font-size: 1.8rem;
+        height: 3rem;
+        padding: 0.3rem;
+        position: absolute;
+        right: 0.5rem;
+        top: calc(50% - 1.5rem);
+        width: auto;
+    }
+
+    .filtered-results {
+        border: thin solid ui-color(form-border);
+        padding: 1rem 3rem;
+    }
+
+    .put-away,
+    .clear-filter {
+        cursor: pointer;
+        font-weight: bold;
+        margin-left: 1rem;
+        padding: 0.2rem;
+    }
+
+    .filter {
+        @include set-font(body-regular);
+
+        box-sizing: border-box;
+        height: 4rem;
+        padding: 0 1rem;
+    }
+}
