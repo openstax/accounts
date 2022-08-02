@@ -181,20 +181,18 @@ class Api::V1::UsersController < Api::V1::ApiController
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
     else
-      sso_cookie = if payload.sso.present?
-        options = {
-          value: { sub: Api::V1::UserRepresenter.new(result.outputs.user).to_hash },
-          expires_in: 1.hour
-        }
-
-        sso_cookie_jar.commit(options)
-
-        options[:value]
-      end
+      # Note: this method changes to keyword arguments in a future Doorkeeper version
+      token = Doorkeeper::AccessToken.find_or_create_for(
+        payload.application,
+        result.outputs.user.id,
+        '',
+        1.hour,
+        false,
+      ).token if payload.sso.present?
 
       respond_with result.outputs.user, represent_with: Api::V1::FindOrCreateUserRepresenter,
                                         location: nil,
-                                        user_options: { sso: sso_cookie }
+                                        user_options: { sso: token }
     end
   end
 
