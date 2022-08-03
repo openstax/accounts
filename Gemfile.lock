@@ -126,14 +126,6 @@ GEM
     aws-sigv4 (1.4.0)
       aws-eventstream (~> 1, >= 1.0.2)
     bcrypt (3.1.18)
-    better_html (1.0.16)
-      actionview (>= 4.0)
-      activesupport (>= 4.0)
-      ast (~> 2.0)
-      erubi (~> 1.4)
-      html_tokenizer (~> 0.0.6)
-      parser (>= 2.4)
-      smart_properties
     bindata (2.4.10)
     bindex (0.8.1)
     blazer (2.6.4)
@@ -382,6 +374,15 @@ GEM
       omniauth-oauth2 (~> 1.2)
     omniauth-google-oauth2 (1.0.1)
       jwt (>= 2.0)
+      omniauth (>= 1.1.1)
+      omniauth-oauth2 (>= 1.6)
+    omniauth-identity (3.0.9)
+      bcrypt
+      omniauth
+    omniauth-oauth (1.1.0)
+      oauth
+      omniauth (~> 1.0)
+    omniauth-oauth2 (1.6.0)
       oauth2 (~> 1.1)
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.7.1)
@@ -452,6 +453,8 @@ GEM
       puma (>= 2.7)
     racc (1.6.0)
     rack (2.2.4)
+    rack-contrib (2.2.0)
+      rack (~> 2.0)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
     rack-protection (2.2.0)
@@ -801,4 +804,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   2.3.5
+   2.3.13
