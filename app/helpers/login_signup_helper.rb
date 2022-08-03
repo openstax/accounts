@@ -41,4 +41,8 @@ module LoginSignupHelper
     )
     url.to_s
   end
+
+  def book_data
+    Book.all.pluck(:official_name, :salesforce_name)
+  end
 end

@@ -10,8 +10,8 @@
   <select multiple
     data-bind="multiselect: selectedBooks, attr: {name: bookSelectorName}"
   >
-    <% if @book_titles %>
-      <%= grouped_options_for_select(@book_titles) %>
+    <% if book_data %>
+      <%= grouped_options_for_select(book_data) %>
     <% end %>
   </select>
 </div>

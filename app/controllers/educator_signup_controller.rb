@@ -44,12 +44,10 @@ class EducatorSignupController < SignupController
   def profile_form
     store_if_sheerid_is_unviable_for_user
     store_sheerid_verification_for_user
-    @book_titles = book_data.titles
     security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
   end
 
   def profile_post
-    @book_titles = @book_data&.titles
     handle_with(
       CompleteEducatorProfile,
       user: current_user,
@@ -102,10 +100,6 @@ class EducatorSignupController < SignupController
     when action_name == 'educator_profile_form' && current_user.is_profile_complete?
       redirect_to(profile)
     end
-  end
-
-  def book_data
-    @book_data ||= FetchBookData.new
   end
 
   def store_sheerid_verification_for_user
