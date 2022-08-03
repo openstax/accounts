@@ -28,6 +28,9 @@
 /public/500.html
 /public/503.html
 
+# Ignore
+/vendor/bundle
+
 # Ignore yaml_db database files
 /db/data.yml*
 
