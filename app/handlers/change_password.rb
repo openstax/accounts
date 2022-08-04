@@ -39,6 +39,6 @@ class ChangePassword
   private #################
 
   def logged_in_user
-    return caller if !caller.is_anonymous?
+    caller unless caller.is_anonymous?
   end
 end

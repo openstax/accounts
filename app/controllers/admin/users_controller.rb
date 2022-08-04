@@ -61,10 +61,6 @@ module Admin
       redirect_to actions_admin_users_path, notice: 'Incremented unread update count'
     end
 
-    def force_update_lead
-      CreateSalesforceLead.call(user: get_user)
-    end
-
     protected
 
     def get_user
