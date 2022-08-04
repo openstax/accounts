@@ -1,6 +1,8 @@
 # If a user with the given email address is found, OR if there is a logged in user,
 #  we send (to each of their verified email addresses)
 # an email to reset their password.
+
+#TODO:
 class SendResetPasswordEmail
   lev_handler
 

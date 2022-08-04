@@ -23,21 +23,6 @@ class Api::V1::MessagesController < Api::V1::ApiController
   end
 
   ###############################################################
-  # index
-  ###############################################################
-
-  # api :GET, '/messages', 'Gets messages matching the search criteria.'
-  # description <<-EOS
-  #   Accepts a query string along with options and returns a JSON
-  # representation of the matching Messages. The schema for the returned JSON
-  # result is shown below.
-  #
-  #   {json_schema(Api::V1::MessageSearchRepresenter, include: :readable)}
-  # EOS
-  # def index
-  # end
-
-  ###############################################################
   # create
   ###############################################################
 
