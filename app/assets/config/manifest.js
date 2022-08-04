@@ -1,7 +1,6 @@
 //= link_tree ../images
 //= link_directory ../javascripts .js
 //= link_directory ../stylesheets .css
-//
 //= link application/index.js
 //= link admin.css
 //= link admin.js
@@ -13,7 +12,6 @@
 //= link application/ko_extensions.js
 //= link bootstrap-social.css
 //= link pagination.css
-//
 //= link underscore.js
 //= link x-editable-bootstrap.js
 //= link x-editable-bootstrap.css
