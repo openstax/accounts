@@ -1,6 +1,14 @@
 require 'rails_helper'
+require 'vcr_helper'
 
-RSpec.describe 'whenever schedule' do
+RSpec.describe 'whenever schedule', vcr: VCR_OPTS do
+  before(:all) do
+    VCR.use_cassette('Whenever/sf_setup', VCR_OPTS) do
+      @proxy = SalesforceProxy.new
+      @proxy.setup_cassette
+    end
+  end
+
   let(:schedule) { Whenever::Test::Schedule.new(file: 'config/schedule.rb') }
 
   context 'basics' do
