@@ -43,6 +43,6 @@ module LoginSignupHelper
   end
 
   def book_data
-    Book.all.pluck(:official_name, :salesforce_name)
+    Book.all.order("official_name").pluck(:official_name, :salesforce_name)
   end
 end
