@@ -599,7 +599,7 @@ input.has-error {
             color: var(--greyish-brown);
         }
 
-        input:not([type="radio"],[type="checkbox"]) {
+        input:not([type="radio"]):not([type="checkbox"]) {
             @include set-font(body-regular);
             min-height: 5rem;
         }
