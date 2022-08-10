@@ -7,10 +7,10 @@ class TransferAuthentications
   lev_routine
   uses_routine DestroyUser
 
-  protected #################
+  protected
 
   def exec(authentications, newer_user)
-    authentications = [authentications] if !(authentications.is_a?(Array))
+    authentications = [authentications] unless authentications.is_a?(Array)
     authentications.each do |authentication|
       existing_user = authentication.user
       authentication.update_attributes(user_id: newer_user.id)
@@ -22,7 +22,7 @@ class TransferAuthentications
     end
   end
 
-  private ###################
+  private
 
   # The user must have already tried to signup with the given authentication.
   def can_be_destroyed?(user)

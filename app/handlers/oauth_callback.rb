@@ -21,7 +21,7 @@ class OauthCallback
 
   include Rails.application.routes.url_helpers
 
-  protected #########################
+  protected
 
   def authorized?
     true
@@ -35,7 +35,7 @@ class OauthCallback
     outputs.email = oauth_data.email
   end
 
-  def handle # rubocop:disable Metrics/AbcSize
+  def handle
     if @logged_in_user
       handle_while_logged_in(@logged_in_user.id)
     elsif mismatched_authentication?
@@ -48,7 +48,7 @@ class OauthCallback
       # We will add the authentication to their existing account and then log them in.
       outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
       run(TransferAuthentications, outputs.authentication, existing_user)
-    elsif user_came_from&.to_sym == :login_form
+    elsif request.env['omniauth.origin']&.to_sym == :login_form
       # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
       fatal_error(code: :should_redirect_to_signup)
     else # sign up new student, then we will log them in.
@@ -60,7 +60,7 @@ class OauthCallback
     outputs.user = outputs.authentication.user
   end
 
-  private ###########################
+  private
 
   # users can only have one login per social provider, so if user is trying to log in with
   # the same provider but it has a different uid, then they might've gotten the social account hacked,
@@ -132,26 +132,6 @@ class OauthCallback
     users.sort_by{ |uu| [uu.updated_at, uu.created_at] }.last
   end
 
-  # Create a corresponding new flow Authentication for old flow Authentication owner
-  def create_auth_for_user(user:, provider:, uid:)
-    authentication = Authentication.new(provider: provider, uid: uid)
-
-    run(TransferAuthentications, authentication, user)
-
-    SecurityLog.create!(
-      event_type: :authentication_transferred,
-      user: user,
-      remote_ip: request.remote_ip,
-      event_data: {
-        authentication_id: authentication.id,
-        authentication_provider: authentication.provider,
-        authentication_uid: authentication.uid
-      }
-    )
-
-    authentication
-  end
-
   def oauth_data
     @oauth_data ||= parse_oauth_data(oauth_response)
   end
@@ -183,9 +163,4 @@ class OauthCallback
   def oauth_response
     request.env['omniauth.auth']
   end
-
-  def user_came_from
-    request.env['omniauth.origin']
-  end
-
 end
