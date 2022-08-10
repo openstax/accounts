@@ -39,6 +39,7 @@
 
                         <div class="fb-share-button">
                             <%= link_to social_auth_path(:facebook),
+                                        method: 'post',
                                         class: 'facebook btn',
                                         :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3B-Facebook'} do %>
                                 <i class="social-icon fa fa-facebook"></i>
@@ -50,6 +51,7 @@
                             <%=
                                 link_to(
                                     social_auth_path(:google_oauth2),
+                                    method: 'post',
                                     class: 'google btn',
                                     data: {
                                         ga_category: 'Account Creation',

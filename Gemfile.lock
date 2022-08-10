@@ -391,6 +391,9 @@ GEM
     omniauth-oauth2 (1.7.3)
       oauth2 (>= 1.4, < 3)
       omniauth (>= 1.9, < 3)
+    omniauth-rails_csrf_protection (1.0.1)
+      actionpack (>= 4.2)
+      omniauth (~> 2.0)
     openstax_active_force (1.1.0)
       active_attr
       rails (>= 5.0, < 7.0)
@@ -747,6 +750,7 @@ DEPENDENCIES
   omniauth-facebook
   omniauth-google-oauth2
   omniauth-identity
+  omniauth-rails_csrf_protection
   openstax_api
   openstax_healthcheck
   openstax_path_prefixer!
