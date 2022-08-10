@@ -10,7 +10,7 @@ feature 'Require recent log in to change authentications', js: true do
 
   scenario 'adding Facebook' do
     visit '/'
-    log_in_user(email_value, 'password')
+    log_in_user(email_value)
 
     expect(page.current_path).to eq(profile_path)
 

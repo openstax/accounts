@@ -204,17 +204,9 @@ def make_new_contract_version(contract = FinePrint::Contract.first)
   raise "New contract version didn't publish" unless new_contract_version.version == 2
 end
 
-def click_password_sign_up  # TODO remove, bad name
-  click_on (t :"sessions.start.sign_up")
-end
-
 def expect_sign_in_page
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"sessions.start.page_heading")
-end
-
-def expect_authenticate_page
-  expect(page.body).to match(/Hello.*!/)
 end
 
 def expect_profile_page
@@ -238,15 +230,6 @@ def complete_login_username_or_email_screen(username_or_email)
   expect(page).to have_no_missing_translations
   screenshot!
   click_button(I18n.t(:"login_signup_form.continue_button"))
-  expect(page).to have_no_missing_translations
-end
-
-def complete_login_password_screen(password)
-  expect(page).to have_content(t :"sessions.authenticate_options.forgot_password")
-  fill_in (t :"sessions.authenticate_options.password"), with: password
-  expect(page).to have_no_missing_translations
-  screenshot!
-  click_button(t :"sessions.authenticate_options.login")
   expect(page).to have_no_missing_translations
 end
 
@@ -290,7 +273,7 @@ def complete_terms_screens(without_privacy_policy: false)
   end
 end
 
-def log_in_user(username_or_email, password)
+def log_in_user(username_or_email, password = 'password')
   visit(login_path) unless page.current_url == login_url
   fill_in('login_form_email', with: username_or_email).native
   expect(page).to have_no_missing_translations
@@ -322,17 +305,6 @@ def reauthenticate_user(email, password)
   wait_for_animations
 end
 
-def log_out
-  visit '/logout'
-end
-
-def click_sign_up(role:)
-  click_on (t :"login_signup_form.sign_up") unless page.current_path == signup_path
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"login_signup_form.welcome_page_header")
-  find(".join-as__role.#{role}").click
-end
-
 def expect_sign_up_welcome_tab
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"login_signup_form.welcome_page_header")
@@ -346,50 +318,6 @@ def submit_signup_form
   find('[type=submit]').click
   wait_for_ajax
   wait_for_animations
-end
-
-def call_embedded_screenshots
-  begin
-    original_value = @call_embedded_screenshots
-    @call_embedded_screenshots = true
-    yield
-  ensure
-    @call_embedded_screenshots = original_value
-  end
-end
-
-def complete_faculty_access_apply_screen(role: nil, first_name: nil, last_name: nil, suffix: nil,
-                                         email: "", phone_number: "", school: "", url: "",
-                                         num_students: "", using_openstax: "", newsletter: true,
-                                         subjects: [])
-
-  if role.present?
-    raise IllegalArgument unless [:instructor, :other].include?(role)
-    screenshot! if @call_embedded_screenshots
-    select role.to_s.capitalize, from: "apply_role"
-    wait_for_animations
-    wait_for_ajax
-  end
-
-  expect(page).to have_content(t :"faculty_access.apply.page_heading")
-  expect(page).to have_no_missing_translations
-
-  screenshot! if @call_embedded_screenshots
-
-  fill_in (t :"faculty_access.apply.first_name"), with: first_name if !first_name.nil?
-  fill_in (t :"faculty_access.apply.last_name"), with: last_name if !last_name.nil?
-  fill_in (t :"faculty_access.apply.suffix"), with: suffix if suffix.present?
-  fill_in (t :"faculty_access.apply.email_placeholder"), with: email
-  fill_in (t :"faculty_access.apply.phone_number"), with: phone_number
-  fill_in (t :"faculty_access.apply.school"), with: school
-  fill_in (t :"faculty_access.apply.url"), with: url if role != :student
-  fill_in (t :"faculty_access.apply.num_students"), with: num_students if role == :instructor
-  select using_openstax, from: "apply_using_openstax" if !using_openstax.blank? if role == :instructor
-
-  subjects.each { |subject| check subject }
-  page.check('apply[newsletter]') if newsletter
-  click_button (t :"faculty_access.apply.submit")
-  expect(page).to have_no_missing_translations
 end
 
 def generate_login_token_for_user(user)
