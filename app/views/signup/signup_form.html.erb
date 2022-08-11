@@ -42,8 +42,9 @@
         </div>
 
         <% if selected_signup_role == :student %>
-          <%= render partial: 'social_auth/social_auth_buttons', locals: { origin: :signup_form } %>
-
+          <div class="content social-section">
+            <%= render partial: 'social_auth/social_auth_buttons', locals: { origin: :signup_form } %>
+          </div>
           <%=
             render(
               partial: 'shared/form_divider',
@@ -138,7 +139,6 @@
               <%= form.check_box :newsletter, checked: true %>
               <span><%= I18n.t(:'login_signup_form.send_me_newsletter') %></span>
             </label>
-            <br>
           </div>
 
           <% if is_bri_book_adopter? %>
