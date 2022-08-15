@@ -73,7 +73,11 @@ class EducatorSignupController < SignupController
     )
   end
 
-  def pending_cs_verification_form; end
+  def pending_cs_verification; end
+
+  def pending_cs_verification_form
+    render :profile_form
+  end
 
   def pending_cs_verification_post
     security_log(:user_sent_to_cs_for_review, user: current_user)
@@ -90,6 +94,7 @@ class EducatorSignupController < SignupController
   end
 
   def exit_signup_if_steps_complete
+    return unless current_user.present?
     case true
     when current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
       redirect_to(pending_cs_verification_form)
