@@ -9,7 +9,7 @@
             current_step: 2,
             total_steps:  @total_steps)) do %>
       <% lev_form_for :change_signup_email, url: change_signup_email_post_path do |f| %>
-        <% fh = FormHelper::One.new(f:       f,
+        <% fh = FormHelper::One.new(f: f,
                                     context: self,
                                     errors:  @handler_result&.errors) %>
         <div class="content control-group info-message">
