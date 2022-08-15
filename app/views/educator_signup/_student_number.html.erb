@@ -34,7 +34,7 @@
     <%= I18n.t(:"educator_profile_form.fill_out") %>
   </div>
   <input name="signup[<%= :num_students_per_semester_taught %>][]"
-    type="number" min="1" class="form-control wide"
+    type="number" min="1" max= "999" class="form-control wide"
     placeholder="<%= I18n.t(:"educator_profile_form.num_students_taught") %>"
     data-bind="value: studentCounts[0]"
   >
