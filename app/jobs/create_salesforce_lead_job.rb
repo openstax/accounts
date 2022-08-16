@@ -1,6 +1,8 @@
 class CreateSalesforceLeadJob < ApplicationJob
   queue_as :salesforce_signup_lead_creation
 
+  after_perform :add_account_to_salesforce
+
   ADOPTION_STATUS_FROM_USER = {
     as_primary:      'Confirmed Adoption Won',
     as_recommending: 'Confirmed Will Recommend',
@@ -52,7 +54,6 @@ class CreateSalesforceLeadJob < ApplicationJob
         position:             sf_position,
         title:                user.other_role_name,
         who_chooses_books:    user.who_chooses_books,
-        subject:              user.which_books, # TODO: remove this once SF migrated to subject_interest
         subject_interest:     user.which_books,
         adoption_status:      ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
         adoption_json:        adoption_json,
@@ -116,7 +117,8 @@ class CreateSalesforceLeadJob < ApplicationJob
     rescue => e
       SecurityLog.create!(
         user:       user,
-        event_type: :salesforce_error
+        event_type: :salesforce_error,
+        event_data: { error: e.message }
       )
       Sentry.capture_exception(e)
       return
@@ -124,6 +126,12 @@ class CreateSalesforceLeadJob < ApplicationJob
   end
 
   private
+
+  def add_account_to_salesforce
+    # Lead was created, now let's add their account information to SF
+    AddAccountToSalesforceJob.perform_later(user.id)
+    yield
+  end
 
   def book_json_for_sf(user)
     return nil unless user.which_books
