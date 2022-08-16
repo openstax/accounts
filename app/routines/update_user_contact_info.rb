@@ -76,11 +76,14 @@ class UpdateUserContactInfo
                                 :rejected_by_sheerid
                               when "incomplete_signup"
                                 :incomplete_signup
+                              when "no_faculty_info"
+                                :no_faculty_info
                               when NilClass
                                 :no_faculty_info
                             else
                               Sentry.capture_message("Unknown faculty_verified field: '#{
-                                sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
+                                sf_contact.faculty_verified}'' on contact #{sf_contact.id}. Setting to no_faculty_info")
+                              :no_faculty_info
                             end
 
       user.school_type = case sf_contact.school_type
