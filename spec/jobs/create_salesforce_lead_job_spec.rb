@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'vcr_helper'
 
 RSpec.describe CreateSalesforceLeadJob, type: :job do
 

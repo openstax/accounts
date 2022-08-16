@@ -13,6 +13,7 @@ require 'database_cleaner'
 require 'spec_helper'
 
 include OpenStax::Salesforce::SpecHelpers
+include ActiveJob::TestHelper
 
 # https://github.com/colszowka/simplecov/issues/369#issuecomment-313493152
 # Load rake tasks so they can be tested.
