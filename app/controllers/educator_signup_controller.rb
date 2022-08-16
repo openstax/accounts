@@ -96,9 +96,9 @@ class EducatorSignupController < SignupController
   def exit_signup_if_steps_complete
     return unless current_user.present?
     case true
-    when current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
+    when current_user.is_educator_pending_cs_verification? && current_user.pending_faculty?
       redirect_to(pending_cs_verification_form)
-    when current_user.is_educator_pending_cs_verification && !current_user.pending_faculty?
+    when current_user.is_educator_pending_cs_verification? && !current_user.pending_faculty?
       redirect_back(fallback_location: profile_path)
     when action_name == 'educator_sheerid_form' && current_user.step_3_complete?
       redirect_to(profile_form)
