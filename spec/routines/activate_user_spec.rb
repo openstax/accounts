@@ -13,7 +13,7 @@ RSpec.describe ActivateUser do
 
       it 'does NOT sign up user for the newsletter when NOT checked' do
         user.update(receive_newsletter: false)
-        expect_any_instance_of(CreateSalesforceLead).not_to receive(:exec)
+        expect_any_instance_of(CreateSalesforceLeadJob).not_to receive(:exec)
         described_class.call(user)
       end
 
@@ -21,7 +21,7 @@ RSpec.describe ActivateUser do
         source_app = FactoryBot.create(:doorkeeper_application)
         user.update(source_application_id: source_app.id)
 
-        expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
+        expect_any_instance_of(CreateSalesforceLeadJob).to receive(:exec)
 
         described_class.call(user)
       end
