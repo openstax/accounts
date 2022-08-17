@@ -9,6 +9,10 @@ RSpec.describe SignupController, type: :controller do
   end
 
   context 'student' do
+    before do
+      disable_sfdc_client
+    end
+
     describe 'GET #signup_form' do
       it 'renders student signup_form' do
         get(:signup_form, params: { role: 'student' })
@@ -65,6 +69,16 @@ RSpec.describe SignupController, type: :controller do
         it 'redirects to verify_email_by_pin_form_path' do
           post(:signup_post, params: params)
           expect(response).to  redirect_to(verify_email_by_pin_form_path)
+        end
+
+        it 'does NOT sign up user for the newsletter when NOT checked' do
+          expect_any_instance_of(CreateSalesforceLead).to_not(
+            receive(:exec).and_wrap_original do |method, user|
+              expect(user.role).to eq 'student'
+
+              method.call user
+            end
+          )
         end
       end
 

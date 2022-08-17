@@ -21,9 +21,6 @@ class ActivateUser
     if user.role == 'student'
       SecurityLog.create!(user: user, event_type: :student_verified_email)
       user.update!(faculty_status: :no_faculty_info)
-      if user.receive_newsletter?
-        CreateSalesforceLead.perform_later(user_id: user.id)
-      end
     else
       # instructor, so they should be on their way to getting verified, set to pending
       SecurityLog.create!(user: user, event_type: :educator_verified_email)

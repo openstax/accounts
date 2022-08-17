@@ -124,6 +124,10 @@ class SignupController < BaseController
   def check_your_email; end
 
   def signup_done
+    if current_user.receive_newsletter? && current_user.role == 'student'
+      CreateSalesforceLead.perform_later(user_id: current_user.id)
+    end
+
     security_log(:sign_up_successful, form_name: action_name)
     redirect_back if current_user.is_tutor_user?
   end
