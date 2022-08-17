@@ -139,6 +139,8 @@ class SignupController < BaseController
   def total_steps
     @total_steps ||= if params[:role]
        params[:role] == 'student' ? 2 : 4
+     elsif unverified_user.present?
+        unverified_user&.role == 'student' ? 2 : 4
      elsif !current_user.is_anonymous?
        current_user&.role == 'student' ? 2 : 4
      end

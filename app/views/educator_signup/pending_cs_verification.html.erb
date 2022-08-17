@@ -2,7 +2,7 @@
   header = I18n.t(:"login_signup_form.educator_pending_cs_verification")
   description = I18n.t(
     :"login_signup_form.educator_pending_cs_verification_description",
-    email_address: @email_address
+    email_address: current_user.email_addresses.last&.value
   ).html_safe
 %>
 
