@@ -128,7 +128,7 @@ feature "User can't sign in", js: true do
       open_email('user@example.com')
       capture_email!
       change_password_link = get_path_from_absolute_link(current_email, 'a')
-      expect(change_password_link).to include(password_reset_path)
+      expect(change_password_link).to include('/password/reset')
 
       # set the new password
       visit change_password_link
