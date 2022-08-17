@@ -41,7 +41,7 @@ jobs:
           gem install bundler
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
-          bundle exec rake parallel:create parallel:load_schema parallel:seed --trace
+          bundle exec rake db:create db:load_schema db:seed --trace
           bundle exec rspec ./spec
       - uses: codecov/codecov-action@v2
         with:
