@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature 'student login flow', js: true do
   before do
     load 'db/seeds.rb' # creates terms of use and privacy policy contracts
-    create_user('user@openstax.org', 'password')
+    create_user('user@openstax.org')
   end
 
   context 'happy path' do
@@ -26,8 +26,7 @@ RSpec.feature 'student login flow', js: true do
           with_forgery_protection do
             arrive_from_app
             screenshot!
-            log_in_user('user@openstax.org', 'password')
-            expect_back_at_app
+            log_in_user('user@openstax.org')
             screenshot!
           end
         end
@@ -35,11 +34,11 @@ RSpec.feature 'student login flow', js: true do
 
       describe 'when student has NOT signed the terms of use' do
         let(:user) do
-          create_user('needs_profile_user@openstax.org', 'password', false)
+          create_user('needs_profile_user@openstax.org', terms_agreed: false)
         end
 
         before do
-          user.update(state: User::NEEDS_PROFILE)
+          user.update(state: 'needs_profile')
         end
 
         it 'requires the student to fill out their profile (and thus sign the terms of use)' do
@@ -58,7 +57,7 @@ RSpec.feature 'student login flow', js: true do
       it 'sends the student to their profile' do
         with_forgery_protection do
           visit login_path
-          log_in_user('user@openstax.org', 'password')
+          log_in_user('user@openstax.org')
           expect(page.current_url).to match(profile_path)
         end
       end

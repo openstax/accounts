@@ -1,19 +1,7 @@
 require 'rails_helper'
-require 'vcr_helper'
 
-RSpec.feature 'Student signup flow', js: true, vcr: VCR_OPTS do
+RSpec.feature 'Student signup flow', js: true do
   include ActionView::Helpers::SanitizeHelper
-
-  before do
-    load 'db/seeds.rb'
-  end
-
-  before(:all) do
-    VCR.use_cassette('Students/student_signup_flow/sf_setup', VCR_OPTS) do
-      @proxy = SalesforceProxy.new
-      @proxy.setup_cassette
-    end
-  end
 
   let(:email) do
     Faker::Internet::free_email
@@ -23,14 +11,23 @@ RSpec.feature 'Student signup flow', js: true, vcr: VCR_OPTS do
     Faker::Internet.password(min_length: 8)
   end
 
+  let(:first_name) do
+    Faker::Name.first_name
+  end
+
+  let(:last_name) do
+    Faker::Name.last_name
+  end
+
   context 'signup happy path' do
     before do
       visit signup_path(r: '/external_app_for_specs')
       find('.join-as__role.student').click
-      fill_in 'signup_first_name',	with: 'Bryan'
-      fill_in 'signup_last_name',	with: 'Dimas'
+      fill_in 'signup_first_name',	with: first_name
+      fill_in 'signup_last_name',	with: last_name
       fill_in 'signup_email',	with: email
       fill_in 'signup_password',	with: password
+      fill_in 'receive_newsletter',	with: false
       check('signup_terms_accepted')
       submit_signup_form
       screenshot!
@@ -47,7 +44,7 @@ RSpec.feature 'Student signup flow', js: true, vcr: VCR_OPTS do
       verify_email_url = get_path_from_absolute_link(current_email, 'a')
       visit verify_email_url
       # ... which sends you to "sign up done page"
-      expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
+      expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: first_name))
       screenshot!
 
       # can exit and go back to the app they came from
@@ -63,7 +60,7 @@ RSpec.feature 'Student signup flow', js: true, vcr: VCR_OPTS do
       screenshot!
       click_on('commit')
       # ... which sends you to "sign up done page"
-      expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
+      expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: first_name))
       expect(page).to have_text(
         strip_html(t(:"login_signup_form.youre_done_description", email_address: email))
       )
@@ -77,7 +74,7 @@ RSpec.feature 'Student signup flow', js: true, vcr: VCR_OPTS do
   end
 
   context 'when student has not verified their only email address' do
-    let!(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: User::STUDENT_ROLE) }
+    let!(:user) { FactoryBot.create(:user, state: 'unverified', role: 'student') }
     let!(:email_address) { FactoryBot.create(:email_address, user: user, verified: false) }
     let!(:identity) { FactoryBot.create(:identity, user: user, password: password) }
     let!(:password) { 'password' }
@@ -90,8 +87,7 @@ RSpec.feature 'Student signup flow', js: true, vcr: VCR_OPTS do
       expect(page.current_path).to match(verify_email_by_pin_form_path)
     end
 
-    # TODO: this works - something with the selector, also the id on the element is misspelled
-    xit 'allows the student to reset their password' do
+    it 'allows the student to reset their password' do
       visit(login_path)
       #byebug
       log_in_user(email_address.value, 'WRONGpassword')
@@ -127,7 +123,7 @@ example 'arriving from Tutor (a Doorkeeper app)' do
       click_on('commit')
 
       # ... redirects you back to Tutor
-      expect(page).not_to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
+      expect(page).not_to have_text(t(:"login_signup_form.youre_done", first_name: first_name))
       expect(page.current_path).to eq('/external_app_for_specs')
   end
 
@@ -135,8 +131,8 @@ example 'arriving from Tutor (a Doorkeeper app)' do
     example 'user gets PIN wrong' do
       visit signup_path(r: '/external_app_for_specs')
       find('.join-as__role.student').click
-      fill_in 'signup_first_name',	with: 'Bryan'
-      fill_in 'signup_last_name',	with: 'Dimas'
+      fill_in 'signup_first_name',	with: first_name
+      fill_in 'signup_last_name',	with: last_name
       fill_in 'signup_email',	with: email
       fill_in 'signup_password',	with: password
       submit_signup_form
@@ -154,8 +150,8 @@ example 'arriving from Tutor (a Doorkeeper app)' do
     example 'user can change their initial email during the signup flow' do
       visit signup_path(r: '/external_app_for_specs')
       find('.join-as__role.student').click
-      fill_in 'signup_first_name',	with: 'Bryan'
-      fill_in 'signup_last_name',	with: 'Dimas'
+      fill_in 'signup_first_name',	with: first_name
+      fill_in 'signup_last_name',	with: last_name
       fill_in 'signup_email',	with: email
       fill_in 'signup_password',	with: password
       submit_signup_form
