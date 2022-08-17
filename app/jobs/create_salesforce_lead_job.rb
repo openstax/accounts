@@ -1,7 +1,12 @@
 class CreateSalesforceLeadJob < ApplicationJob
   queue_as :salesforce_signup_lead_creation
 
-  after_perform :add_account_to_salesforce
+  after_perform do |job|
+    # After the lead is created, add the account to Salesforce
+    # record is assigned to the user_id passed into the perform method
+    record = job.arguments.first
+    AddAccountToSalesforceJob.perform_later(record)
+  end
 
   ADOPTION_STATUS_FROM_USER = {
     as_primary:      'Confirmed Adoption Won',
@@ -126,12 +131,6 @@ class CreateSalesforceLeadJob < ApplicationJob
   end
 
   private
-
-  def add_account_to_salesforce
-    # Lead was created, now let's add their account information to SF
-    AddAccountToSalesforceJob.perform_later(user.id)
-    yield
-  end
 
   def book_json_for_sf(user)
     return nil unless user.which_books

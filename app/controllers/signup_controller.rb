@@ -127,7 +127,7 @@ class SignupController < BaseController
     security_log(:sign_up_successful, form_name: action_name)
 
     # If the user signing up is a student and wants the newsletter - create their lead now.
-    if current_user.receive_newsletter? && current_user.role.student?
+    if current_user.receive_newsletter? && current_user.role == 'student'
       CreateSalesforceLeadJob.perform_later(current_user.id)
     end
 
