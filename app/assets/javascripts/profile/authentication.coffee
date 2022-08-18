@@ -22,8 +22,9 @@ class AuthenticationOption
     this.$el.data('provider')
 
   addSocial: ->
-    # TODO: figure out a way for the BE to pass the url
-    window.location.href = "#{BASE_URL}/auth/#{@getType()}"
+    $.ajax({type: "POST", url: "#{BASE_URL}/auth/#{@getType()}"})
+      .success(@handleDelete)
+      .error(OX.Alert.display)
 
   delete: ->
     $.ajax({type: "DELETE", url: "#{BASE_URL}/auth/#{@getType()}"})
@@ -44,6 +45,12 @@ class AuthenticationOption
       $('.other-sign-in .providers').append(@$el)
       @$el.show()
     )
+
+  handleAdd: (response) ->
+    if response.location?
+      window.location.href = response.location
+    else
+      @moveToEnabledSection()
 
   handleDelete: (response) ->
     if response.location?
