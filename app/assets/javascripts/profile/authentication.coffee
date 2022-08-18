@@ -23,7 +23,7 @@ class AuthenticationOption
 
   addSocial: ->
     $.ajax({type: "POST", url: "#{BASE_URL}/auth/#{@getType()}"})
-      .success(@handleDelete)
+      .success(@handleAdd)
       .error(OX.Alert.display)
 
   delete: ->
