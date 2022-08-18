@@ -92,7 +92,6 @@ Rails.application.routes.draw do
   #  Social Auth          #
   #########################
   scope controller: :social_auth do
-    get 'auth/:provider', action: :oauth_callback, as: :social_auth
     post 'auth/:provider', action: :oauth_callback
     get 'auth/:provider/callback', action: :oauth_callback
     delete 'auth/:provider', action: :remove_auth_strategy
@@ -100,6 +99,13 @@ Rails.application.routes.draw do
     get 'confirm_oauth_info', action: :confirm_oauth_info
     post 'confirm_oauth_info', action: :confirm_oauth_info
   end
+
+  # Create a named path for links like `/auth/facebook` so that the path prefixer gem
+  #     will appropriately prefix the path. https://stackoverflow.com/a/40125738/1664216
+  # The actual request, however, is handled by the omniauth middleware when it detects
+  #     that the current_url is the callback_path, using `OmniAuth::Strategy#on_callback_path?`
+  #     So, admittedly, this route is deceiving.
+  get '/auth/:provider', to: ->(_env) { [404, {}, ['Not Found']] }, as: :social_auth
 
   # routes for access via an iframe
   scope 'remote', controller: 'remote' do

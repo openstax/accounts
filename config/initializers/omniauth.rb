@@ -13,8 +13,6 @@ Rails.application.config.middleware.use OmniAuth::Builder do
            }
 
   provider :google_oauth2, secrets[:google_client_id], secrets[:google_client_secret]
-
-  provider :twitter, secrets[:twitter_consumer_key], secrets[:twitter_consumer_secret]
 end
 
 OmniAuth.config.logger = Rails.logger
