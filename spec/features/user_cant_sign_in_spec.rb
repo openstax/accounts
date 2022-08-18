@@ -80,28 +80,6 @@ feature "User can't sign in", js: true do
 
       screenshot!
     end
-
-    scenario "user tries to sign up with used oauth email" do
-      user = create_user 'user'
-      authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
-
-
-      visit(signup_form_path(role: 'student'))
-      fill_in('signup[email]', with: Faker::Internet.free_email)
-      fill_in('signup[password]', with: Faker::Internet.password(min_length: 8))
-      fill_in('signup[first_name]', with: Faker::Name.first_name)
-      fill_in('signup[last_name]', with: Faker::Name.last_name)
-      check('signup_terms_accepted')
-
-
-      with_omniauth_test_mode(uid: authentication.uid) do
-        # Found link from back button or some other shenanigans
-        visit 'auth/facebook'
-      end
-
-      screenshot!
-      expect(page).to have_content('Confirm your information')
-    end
   end
 
   context "we find one user", js: true do

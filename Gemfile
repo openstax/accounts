@@ -58,10 +58,10 @@ gem 'bcrypt', '~> 3.1'
 gem 'doorkeeper', '~> 5.1.0'
 
 # OAuth clients
-gem 'omniauth'
+gem 'omniauth', '~> 2.0.0'
+gem "omniauth-rails_csrf_protection"
 gem 'omniauth-identity'
 gem 'omniauth-facebook'
-gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
 # Key-value store for caching

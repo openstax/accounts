@@ -10,7 +10,7 @@ feature 'Require recent log in to change authentications', js: true do
 
   scenario 'adding Facebook' do
     visit '/'
-    log_in_user(email_value, 'password')
+    log_in_user(email_value)
 
     expect(page.current_path).to eq(profile_path)
 
@@ -24,13 +24,8 @@ feature 'Require recent log in to change authentications', js: true do
       expect(page).to have_content((t :"users.edit.other_sign_in_options_html")[0..7])
       expect(page).to have_content('Facebook')
 
-      with_omniauth_test_mode(identity_user: user) do
+      simulate_login_signup_with_social(name: 'Elon Musk', email: email_value) do
         find('.authentication[data-provider="facebook"] .add').click
-        wait_for_ajax
-        expect(page).to have_content(t :"login_signup_form.login_page_header")
-        screenshot!
-        fill_in(t(:"login_signup_form.password_label"), with: 'password')
-        find('[type=submit]').click
         expect(page.current_path).to eq(profile_path)
         expect(page).to have_content('Facebook')
         screenshot!
