@@ -24,7 +24,7 @@ RSpec.describe VerifyEmailByPin, type: :handler do
         }
       end
 
-      it 'runs ActivateStudent' do
+      it 'activates student account' do
         expect_any_instance_of(ActivateUser).to receive(:exec)
         described_class.call(params: params, email_address: email)
       end
@@ -43,12 +43,12 @@ RSpec.describe VerifyEmailByPin, type: :handler do
     end
   end
 
-  context 'educator' do
+  context 'instructor' do
     context 'when success' do
       before { disable_sfdc_client }
 
       let(:user) do
-        FactoryBot.create(:user, state: 'unverified', source_application: source_app, receive_newsletter: true)
+        FactoryBot.create(:user, state: 'unverified', role: 'instructor', source_application: source_app, receive_newsletter: true)
       end
 
       let(:source_app) do
@@ -67,7 +67,7 @@ RSpec.describe VerifyEmailByPin, type: :handler do
         }
       end
 
-      it 'activates their account' do
+      it 'activates the instructor account' do
         expect_any_instance_of(ActivateUser).to receive(:exec).with(user)
         described_class.call(params: params, email_address: email)
       end

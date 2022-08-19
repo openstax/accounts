@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature 'student login flow', js: true do
   before do
     load 'db/seeds.rb' # creates terms of use and privacy policy contracts
-    create_user('user@openstax.org', 'password')
+    create_user('user@openstax.org')
   end
 
   context 'happy path' do
@@ -13,7 +13,7 @@ RSpec.feature 'student login flow', js: true do
           return_to = capybara_url(external_app_for_specs_path)
           visit login_path(r: return_to)
           screenshot!
-          log_in_user('user@openstax.org', 'password')
+          log_in_user('user@openstax.org')
           expect(page.current_url).to eq(return_to)
           screenshot!
         end
@@ -26,7 +26,7 @@ RSpec.feature 'student login flow', js: true do
           with_forgery_protection do
             arrive_from_app
             screenshot!
-            log_in_user('user@openstax.org', 'password')
+            log_in_user('user@openstax.org')
             expect_back_at_app
             screenshot!
           end
@@ -39,14 +39,14 @@ RSpec.feature 'student login flow', js: true do
         end
 
         before do
-          user.update(state: User::NEEDS_PROFILE)
+          user.update(state: 'needs_terms')
         end
 
         it 'requires the student to fill out their profile (and thus sign the terms of use)' do
           with_forgery_protection do
             arrive_from_app
             screenshot!
-            log_in_user('needs_profile_user@openstax.org', 'password')
+            log_in_user('needs_terms_user@openstax.org')
             screenshot!
             expect(page.current_path).to match('/terms/pose')
           end
@@ -54,21 +54,21 @@ RSpec.feature 'student login flow', js: true do
       end
     end
 
-    describe 'with no return parameter specified, when feature flag is on' do
+    describe 'with no return parameter specified' do
       it 'sends the student to their profile' do
         with_forgery_protection do
           visit login_path
-          log_in_user('user@openstax.org', 'password')
+          log_in_user('user@openstax.org')
           expect(page.current_url).to match(profile_path)
         end
       end
     end
 
     context 'user interface' do
-      # example 'Forgot your password? link takes user to reset password form' do
-      #   visit login_path
-      #   expect(find('#forgot-passwork-link')['href']).to match(forgot_password_form_path)
-      # end
+      example 'Forgot your password? link takes user to reset password form' do
+        visit login_path
+        expect(find('#forgot-password-link')['href']).to match(forgot_password_form_path)
+      end
 
       example 'SHOW/HIDE link for password field shows and hides password' do
         visit login_path
@@ -133,7 +133,7 @@ RSpec.feature 'student login flow', js: true do
   end
 
   context 'when student has not verified their only email address' do
-    let!(:user) { FactoryBot.create(:user, state: User::UNVERIFIED) }
+    let!(:user) { FactoryBot.create(:user, state: 'unverified', role: 'student') }
     let!(:email_address) { FactoryBot.create(:email_address, user: user) }
     let!(:identity) { FactoryBot.create(:identity, user: user, password: 'password') }
 
@@ -147,7 +147,7 @@ RSpec.feature 'student login flow', js: true do
   end
 
   context 'no user found with such email' do
-    xit 'adds a message to the email input field' do
+    it 'adds a message to the email input field' do
       with_forgery_protection do
         visit login_path
         log_in_user('NOone@openstax.org', 'password')
@@ -159,7 +159,7 @@ RSpec.feature 'student login flow', js: true do
   end
 
   context 'wrong password for account with such email' do
-    xit 'adds a message to the password input field' do
+    it 'adds a message to the password input field' do
       with_forgery_protection do
           visit login_path
           log_in_user('user@openstax.org', 'WRONGpassword')
@@ -171,7 +171,7 @@ RSpec.feature 'student login flow', js: true do
   end
 
   context 'forgot password' do
-    xit 'enables the user to reset their password' do
+    it 'enables the user to reset their password' do
       with_forgery_protection do
         visit login_path
         screenshot!
@@ -212,6 +212,4 @@ RSpec.feature 'student login flow', js: true do
       end
     end
   end
-
-  # logging in with facebook and google is tested in unit tests as well as manually
 end

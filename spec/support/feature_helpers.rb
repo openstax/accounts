@@ -370,21 +370,6 @@ def external_public_url
   capybara_url(external_app_for_specs_path) + '/public'
 end
 
-def expect_sheerid_iframe
-  within_frame do
-    expect(page).to have_text('Verify your instructor status')
-    expect(page.find('#sid-country')[:value]).to have_text('United States', exact: false)
-    expect(page.find('#sid-teacher-school')[:value]).to be_blank
-    expect(page.find('#sid-first-name')[:value]).to have_text(first_name)
-    expect(page.find('#sid-last-name')[:value]).to have_text(last_name)
-    expect(page.find('#sid-email')[:value]).to have_text(email_value)
-    expect(page).to have_text('Can\'t find your country in the list? Click here.')
-    expect(page).to have_text('Can\'t find your school in the list? Click here.')
-    expect(page).to have_text('Verify my instructor status')
-    screenshot!
-  end
-end
-
 def mock_current_user(user)
   # The following mocks are a little faster than:
   #   visit '/'

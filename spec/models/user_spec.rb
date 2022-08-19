@@ -231,17 +231,14 @@ RSpec.describe User, type: :model do
       user = FactoryBot.create(:user)
       user.state = 'activated'
       expect(user.save).to be_truthy
-      expect(user.reload.temporary?).to be_falsey
     end
 
     it "relays it's value to helper methods" do
       user = FactoryBot.create(:user)
-      user.state = User::TEMP
-      expect(user.temporary?).to    be_truthy
-      expect(user.activated?).to be_falsey
-      user.state = User::ACTIVATED
+      user.state = 'unverified'
+      expect(user.unverified?).to be_truthy
+      user.state = 'activated'
       expect(user.activated?).to be_truthy
-      expect(user.temporary?).to    be_falsey
     end
 
     it "disallows invalid values" do
@@ -379,22 +376,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '.cleanup_unverified_users' do
-    before do
-      FactoryBot.create(:user, created_at: 10.years.ago, state: User::ACTIVATED)
-      @older_unverified_user = FactoryBot.create(:user, created_at: 10.years.ago, state: User::UNVERIFIED)
-      FactoryBot.create(:user, created_at: 1.month.ago, state: User::ACTIVATED)
-      FactoryBot.create(:user, created_at: 1.month.ago, state: User::UNVERIFIED)
-    end
-
-    it 'removes the unverified users older than a year' do
-      expect(User.count).to eq 4
-      described_class.cleanup_unverified_users
-      expect(User.count).to eq 3
-      expect(User.find_by(id: @older_unverified_user.id)).to be_nil
-    end
-  end
-
   describe 'activated_at gets updated when user changes state to activated' do
     let(:user) do
       FactoryBot.create(:user, state: User::UNVERIFIED)
@@ -406,38 +387,6 @@ RSpec.describe User, type: :model do
       user.save
       user.reload
       expect(user.activated_at).not_to be_nil
-    end
-  end
-
-  describe '#sheerid_supported?' do
-    context 'is sheer supported' do
-      subject(:user) do
-        FactoryBot.create(:user, country_code: '1')
-      end
-
-      it 'returns sheer supported' do
-        expect(user.sheerid_supported?).to be_truthy
-      end
-    end
-
-    context 'is not sheer supported' do
-      subject(:user) do
-        FactoryBot.create(:user, country_code: '111')
-      end
-
-      it 'returns not sheer supported' do
-        expect(user.sheerid_supported?).to be_falsey
-      end
-    end
-
-    context 'country code not set' do
-      subject(:user) do
-        FactoryBot.create(:user, country_code: nil)
-      end
-
-      it 'returns not sheer supported' do
-        expect(user.sheerid_supported?).to be_falsey
-      end
     end
   end
 
@@ -488,45 +437,4 @@ RSpec.describe User, type: :model do
       end
     end
   end
-
-  describe '#is_tutor_user?' do
-    context 'when the app name includes tutor in the name' do
-      subject(:user) do
-        FactoryBot.create(:user, source_application: tutor_app)
-      end
-
-      let(:tutor_app) do
-        FactoryBot.create(:doorkeeper_application, name: '123 Tutor Dev')
-      end
-
-      it 'returns true' do
-        expect(user.is_tutor_user?).to be_truthy
-      end
-    end
-
-    context 'when the app name does not include tutor in the name' do
-      subject(:user) do
-        FactoryBot.create(:user, source_application: tutor_app)
-      end
-
-      let(:tutor_app) do
-        FactoryBot.create(:doorkeeper_application, name: '123 CMS Dev')
-      end
-
-      it 'returns false' do
-        expect(user.is_tutor_user?).to be_falsey
-      end
-    end
-
-    context 'country code not set' do
-      subject(:user) do
-        FactoryBot.create(:user, country_code: nil)
-      end
-
-      it 'returns not sheer supported' do
-        expect(user.sheerid_supported?).to be_falsey
-      end
-    end
-  end
-
 end

@@ -3,10 +3,8 @@ require "i18n"
 class User < ApplicationRecord
 
   VALID_STATES = [
-    TEMP = 'temp', # deprecated but still could exist for old accounts
-    NEW_SOCIAL = 'new_social',
     UNCLAIMED = 'unclaimed',
-    NEEDS_PROFILE = 'needs_profile', # has yet to fill out their user info
+    NEEDS_TERMS = 'needs_terms', # has yet to sign the terms of service
     ACTIVATED = 'activated', # means their user info is in place and the email is verified
     UNVERIFIED = 'unverified', # means their user info is in place but the email is not yet verified
     EXTERNAL = 'external', # lms users cannot login normally and skip most of the signup process
@@ -31,7 +29,8 @@ class User < ApplicationRecord
     REJECTED_FACULTY = 'rejected_faculty',
     PENDING_SHEERID = 'pending_sheerid',
     REJECTED_BY_SHEERID = 'rejected_by_sheerid',
-    INCOMPLETE_SIGNUP = 'incomplete_signup'
+    INCOMPLETE_SIGNUP = 'incomplete_signup',
+    NEEDS_VERIFICATION = 'needs_verification'
   ].freeze
 
   VALID_USING_OPENSTAX_HOW = [:as_primary, :as_recommending, :as_future].freeze
@@ -146,8 +145,6 @@ class User < ApplicationRecord
   has_many :oauth_applications, through: :member_groups
   has_many :security_logs
 
-  delegate_to_routine :destroy
-
   attr_readonly :uuid
 
   attribute :is_not_gdpr_location, :boolean, default: nil
@@ -183,20 +180,6 @@ class User < ApplicationRecord
     email_addresses.first&.value
   end
 
-  def needs_to_complete_educator_profile?
-    (role != STUDENT_ROLE) && !is_profile_complete
-  end
-
-  def is_instructor_verification_stale?
-    pending_faculty? && activated? && activated_at.present? && \
-    (activated_at <= STALE_VERIFICATION_PERIOD.ago) && \
-    !is_educator_pending_cs_verification
-  end
-
-  def is_tutor_user?
-    source_application&.name&.downcase&.include?('tutor')
-  end
-
   def self.username_is_valid?(username)
     user = User.new(username: username)
     user.valid?
@@ -205,21 +188,6 @@ class User < ApplicationRecord
 
   def self.create_random_username(base:, num_digits_in_suffix:)
     "#{base}#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
-  end
-
-  def self.cleanup_unverified_users
-    by_unverified.older_than_one_year.destroy_all
-  end
-
-  def sheerid_supported?
-    {
-      '1'   => 'United States & Canada',
-      '27'  => 'South Africa',
-      '44'  => 'United Kingdom',
-      '61'  => 'Australia',
-      '64'  => 'New Zealand',
-      '353' => 'Ireland',
-    }.key?(country_code&.strip)
   end
 
   def is_test?
@@ -236,10 +204,6 @@ class User < ApplicationRecord
 
   def is_application?
     false
-  end
-
-  def step_3_complete?
-    sheerid_verification_id.present? || is_sheerid_unviable? || is_profile_complete?
   end
 
   # State helpers.
@@ -263,20 +227,8 @@ class User < ApplicationRecord
      state == UNVERIFIED
   end
 
-  def temporary?
-    state == TEMP
-  end
-
   def is_unclaimed?
     state == UNCLAIMED
-  end
-
-  def is_new_social?
-    state == NEW_SOCIAL
-  end
-
-  def is_needs_profile?
-    state == NEEDS_PROFILE
   end
 
   def is_external?
@@ -309,6 +261,9 @@ class User < ApplicationRecord
 
   def incomplete_signup?
     faculty_status == INCOMPLETE_SIGNUP
+  end
+  def needs_verification
+    faculty_status == NEEDS_VERIFICATION && !student?
   end
 
   def name
@@ -451,8 +406,6 @@ class User < ApplicationRecord
   # there are existing users without names
   # allow them to continue to function, but require a name to exist once it's set
   def ensure_names_continue_to_be_present
-    return true if is_needs_profile?
-
     %w{first_name last_name}.each do |attr|
       change = changes[attr]
 
@@ -470,5 +423,4 @@ class User < ApplicationRecord
       self.touch(:activated_at)
     end
   end
-
 end

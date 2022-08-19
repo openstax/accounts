@@ -33,10 +33,6 @@ class AnonymousUser
     false
   end
 
-  def is_needs_profile?
-    false
-  end
-
   def id
     nil
   end
@@ -47,14 +43,6 @@ class AnonymousUser
 
   def identity
     nil
-  end
-
-  def temporary?
-    false
-  end
-
-  def is_new_social?
-    false
   end
 
   def applications
