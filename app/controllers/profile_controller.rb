@@ -27,10 +27,10 @@ class ProfileController < BaseController
   def ensure_complete_educator_signup
     return if current_user.student?
 
-    if decorated_user.edu_incomplete_step_3?
+    if user.sheerid_verification_id.blank? && user.pending_faculty? && !user.is_educator_pending_cs_verification
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification. Redirecting.')
       redirect_to(sheerid_form_path)
-    elsif decorated_user.edu_incomplete_step_4?
+    elsif !user.is_profile_complete?
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete instructor profile. Redirecting.')
       redirect_to(profile_form_path)
     end
