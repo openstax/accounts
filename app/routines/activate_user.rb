@@ -29,6 +29,7 @@ class ActivateUser
       SecurityLog.create!(user: user, event_type: :educator_verified_email)
       user.update!(faculty_status: :pending_faculty)
     end
+    user.save!
 
     transfer_errors_from(user, { type: :verbatim })
   end
