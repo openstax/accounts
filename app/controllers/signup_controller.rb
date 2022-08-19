@@ -126,7 +126,7 @@ class SignupController < BaseController
 
   def signup_done
     security_log(:sign_up_successful, form_name: action_name)
-    redirect_back if current_user.is_tutor_user?
+    redirect_back if current_user.source_application&.name&.downcase&.include?('tutor')
   end
 
   private
@@ -148,7 +148,7 @@ class SignupController < BaseController
   end
 
   def skip_signup_done_for_tutor_users
-    return unless current_user.is_tutor_user?
+    return unless current_user.source_application&.name&.downcase&.include?('tutor')
 
     redirect_back(fallback_location: signup_done_path)
   end
