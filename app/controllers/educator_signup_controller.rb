@@ -5,7 +5,7 @@ class EducatorSignupController < SignupController
 
   before_action :prevent_caching, only: :sheerid_webhook
 
-  before_action(:exit_signup_if_steps_complete, only: %i[
+  before_action(:check_if_signup_complete, only: %i[
       sheerid_form
       profile_form
       pending_cs_verification_form
@@ -90,22 +90,6 @@ class EducatorSignupController < SignupController
     if is_school_not_supported_by_sheerid? || is_country_not_supported_by_sheerid?
       current_user.update!(is_sheerid_unviable: true)
       security_log(:user_not_viable_for_sheerid, user: current_user)
-    end
-  end
-
-  def exit_signup_if_steps_complete
-    return unless current_user.present?
-    case true
-    when current_user.is_educator_pending_cs_verification? && current_user.pending_faculty?
-      redirect_to(pending_cs_verification_form)
-    when current_user.is_educator_pending_cs_verification? && !current_user.pending_faculty?
-      redirect_back(fallback_location: profile_path)
-    when action_name == 'educator_sheerid_form' && current_user.step_3_complete?
-      redirect_to(profile_form)
-    when action_name == 'educator_profile_form' && current_user.is_profile_complete?
-      redirect_to(profile)
-      else
-        redirect_back(fallback_location: profile_path)
     end
   end
 

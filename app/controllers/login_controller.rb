@@ -11,6 +11,9 @@ class LoginController < BaseController
   before_action :cache_alternate_signup_url, only: :login_form
   before_action :student_signup_redirect, only: :login_form
   before_action :redirect_back, if: -> { signed_in? }, only: :login_form
+  before_action :check_if_signup_complete, only: :login_post
+
+  def login_form; end
 
   def login_post
     handle_with(
@@ -25,41 +28,14 @@ class LoginController < BaseController
           end
         end
 
-        # user has not verified email address - send them back to verify email form
-        if user.unverified? || user.faculty_status == 'incomplete_signup'
-          save_unverified_user(user.id)
-          redirect_to(verify_email_by_pin_form_path) and return
-        end
-
         sign_in!(user, security_log_data: { 'email': @handler_result.outputs.email} )
-
-        # If the user is not a student, let's make sure they finished the signup process.
-        unless user.student?
-          unless current_user.is_sheerid_unviable? || current_user.is_profile_complete?
-            security_log(:educator_resumed_signup_flow,
-                         message: 'User needs to complete SheerID verification - return to SheerID verification form.')
-            redirect_to sheerid_form_path and return
-          end
-
-          if current_user.is_needs_profile? || !current_user.is_profile_complete?
-            security_log(:educator_resumed_signup_flow,
-                         message: 'User has not completed profile - return to complete profile screen.')
-            redirect_to profile_form_path and return
-          end
-        end
 
         redirect_back
       },
       failure: lambda {
         email = @handler_result.outputs.email
         save_login_failed_email(email)
-
-        code = @handler_result.errors.first.code
-        case code
-        when :cannot_find_user, :multiple_users, :incorrect_password, :too_many_login_attempts
-          security_log(:sign_in_failed, { reason: code, email: email })
-        end
-
+        security_log(:sign_in_failed, { reason: @handler_result.errors.first.code, email: email })
         render :login_form
       }
     )
@@ -75,19 +51,11 @@ class LoginController < BaseController
   protected
 
   def student_signup_redirect
-    if should_redirect_to_student_signup?
+    if params[:go]&.strip&.downcase == 'student_signup'
       redirect_to signup_form_path(request.query_parameters.merge('role' => 'student'))
-    elsif should_redirect_to_signup_welcome?
+    elsif params[:go]&.strip&.downcase == 'signup'
       redirect_to signup_path(request.query_parameters)
     end
-  end
-
-  def should_redirect_to_student_signup?
-    params[:go]&.strip&.downcase == 'student_signup'
-  end
-
-  def should_redirect_to_signup_welcome?
-    params[:go]&.strip&.downcase == 'signup'
   end
 
   # Save (in the session) or clear the URL that the "Sign up" button in the FE points to.
