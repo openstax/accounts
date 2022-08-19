@@ -13,9 +13,10 @@ class SignupController < BaseController
     ]
   )
 
-  before_action(:exit_signup_if_logged_in, only: :welcome)
-  before_action(:skip_signup_done_for_tutor_users, only: :signup_done)
-  before_action(:total_steps, except: [:welcome])
+  before_action :clear_signup_state, only: %i[signup_form signup_post]
+  before_action :exit_signup_if_logged_in, only: :welcome
+  before_action :skip_signup_done_for_tutor_users, only: :signup_done
+  before_action :total_steps, except: :welcome
 
   def welcome
     redirect_back(fallback_location: profile_path) if signed_in?
