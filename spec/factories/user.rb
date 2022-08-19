@@ -1,11 +1,11 @@
 FactoryBot.define do
   factory :user do
     username { SecureRandom.hex(3) }
-    state { User::ACTIVATED } # otherwise the default from DB will be to 'temp'
+    state { 'activated' } # otherwise the default from DB will be to 'temp'
     first_name { Faker::Name.first_name }
     last_name  { Faker::Name.last_name  }
     uuid { Faker::Internet.uuid }
-    role { User::STUDENT_ROLE }
+    role { 'student' }
     school { FactoryBot.build(:school) }
 
     is_profile_complete { true }
@@ -14,11 +14,11 @@ FactoryBot.define do
       is_administrator { true }
     end
 
-    factory :temp_user do
-      state { 'temp' }
+    factory :unverified_user do
+      state { 'unverified' }
     end
 
-    factory :new_social_user do
+    factory :verified_user do
       state { 'new_social' }
     end
 
