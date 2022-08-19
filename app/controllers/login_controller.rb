@@ -2,40 +2,53 @@ class LoginController < BaseController
 
   include LoginSignupHelper
 
-  GO_TO_STUDENT_SIGNUP = 'student_signup'
-  GO_TO_SIGNUP = 'signup'
-
   fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile
 
   skip_before_action :authenticate_user!
 
+  before_action :clear_signup_state, only: :login_form
   before_action :cache_client_app, only: :login_form
   before_action :cache_alternate_signup_url, only: :login_form
-  before_action :redirect_to_signup_if_go_param_present, only: :login_form
+  before_action :student_signup_redirect, only: :login_form
   before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
   def login_post
     handle_with(
       LogInUser,
       success: lambda {
-        clear_signup_state
         user = @handler_result.outputs.user
 
-        if user.unverified?
+        if Rails.env.production?
+          Sentry.configure_scope do |scope|
+            scope.set_tags(user_role: user.role.humanize)
+            scope.set_user(uuid: user.uuid)
+          end
+        end
+
+        # user has not verified email address - send them back to verify email form
+        if user.unverified? || user.faculty_status == 'incomplete_signup'
           save_unverified_user(user.id)
-
-          redirect_to(verify_email_by_pin_form_path)
-
-          return
+          redirect_to(verify_email_by_pin_form_path) and return
         end
 
-        sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
+        sign_in!(user, security_log_data: { 'email': @handler_result.outputs.email} )
 
-        if current_user.student? || decorated_user.can_do?('redirect_back_upon_login')
-          redirect_back # back to `r`edirect parameter. See `before_action :save_redirect`.
-        else
-          redirect_to(decorated_user.next_step)
+        # If the user is not a student, let's make sure they finished the signup process.
+        unless user.student?
+          unless current_user.is_sheerid_unviable? || current_user.is_profile_complete?
+            security_log(:educator_resumed_signup_flow,
+                         message: 'User needs to complete SheerID verification - return to SheerID verification form.')
+            redirect_to sheerid_form_path and return
+          end
+
+          if current_user.is_needs_profile? || !current_user.is_profile_complete?
+            security_log(:educator_resumed_signup_flow,
+                         message: 'User has not completed profile - return to complete profile screen.')
+            redirect_to profile_form_path and return
+          end
         end
+
+        redirect_back
       },
       failure: lambda {
         email = @handler_result.outputs.email
@@ -54,13 +67,15 @@ class LoginController < BaseController
   end
 
   def logout
+    Sentry.set_user({}) if Rails.env.production?
+
     sign_out!
     redirect_back(fallback_location: login_path)
   end
 
-  protected ###############
+  protected
 
-  def redirect_to_signup_if_go_param_present
+  def student_signup_redirect
     if should_redirect_to_student_signup?
       redirect_to signup_form_path(request.query_parameters.merge('role' => 'student'))
     elsif should_redirect_to_signup_welcome?
@@ -69,11 +84,11 @@ class LoginController < BaseController
   end
 
   def should_redirect_to_student_signup?
-    params[:go]&.strip&.downcase == GO_TO_STUDENT_SIGNUP
+    params[:go]&.strip&.downcase == 'student_signup'
   end
 
   def should_redirect_to_signup_welcome?
-    params[:go]&.strip&.downcase == GO_TO_SIGNUP
+    params[:go]&.strip&.downcase == 'signup'
   end
 
   # Save (in the session) or clear the URL that the "Sign up" button in the FE points to.
