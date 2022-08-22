@@ -21,7 +21,6 @@ ActionController::Base.class_exec do
   prepend_before_action :set_device_id
   before_action :save_redirect
   before_action :set_locale
-  before_action :complete_signup_profile
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
