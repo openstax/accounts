@@ -30,7 +30,7 @@ class LoginController < BaseController
 
         sign_in!(user, security_log_data: { 'email': @handler_result.outputs.email} )
 
-        redirect_back
+        redirect_back(fallback_location: profile_path)
       },
       failure: lambda {
         email = @handler_result.outputs.email

@@ -22,6 +22,7 @@ class User < ApplicationRecord
     HOMESCHOOL_ROLE    = :homeschool
   ].freeze
 
+  # TODO: Thinking we can migrate to having faculty status == state - instead of having both
   VALID_FACULTY_STATUSES = [
     NO_FACULTY_INFO = 'no_faculty_info',
     PENDING_FACULTY = 'pending_faculty',
@@ -29,8 +30,9 @@ class User < ApplicationRecord
     REJECTED_FACULTY = 'rejected_faculty',
     PENDING_SHEERID = 'pending_sheerid',
     REJECTED_BY_SHEERID = 'rejected_by_sheerid',
-    INCOMPLETE_SIGNUP = 'incomplete_signup',
-    NEEDS_VERIFICATION = 'needs_verification'
+    NEEDS_EMAIL_VERIFIED = 'needs_email_verified',
+    NEEDS_VERIFICATION = 'needs_verification',
+    NEEDS_PROFILE = 'needs_profile'
   ].freeze
 
   VALID_USING_OPENSTAX_HOW = [:as_primary, :as_recommending, :as_future].freeze
@@ -264,6 +266,10 @@ class User < ApplicationRecord
   end
   def needs_verification
     faculty_status == NEEDS_VERIFICATION && !student?
+  end
+
+  def needs_profile
+    faculty_status == NEEDS_PROFILE && !student?
   end
 
   def name

@@ -27,13 +27,6 @@ ActionController::Base.class_exec do
 
   protected
 
-  def complete_signup_profile
-    return true if request.format != :html || request.options?
-    redirect_to '/profile' if current_user.is_needs_profile?
-    # TODO: uncomment this line after fixing openstax_path_prefixer
-    # redirect_to main_app.signup_profile_path if current_user.is_needs_profile?
-  end
-
   def security_log(event_type, event_data = {})
     user = event_data[:user]
 

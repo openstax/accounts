@@ -5,7 +5,6 @@
 # Otherwise, that user will have their authentication taken away.
 class TransferAuthentications
   lev_routine
-  uses_routine DestroyUser
 
   protected
 
@@ -15,17 +14,6 @@ class TransferAuthentications
       existing_user = authentication.user
       authentication.update_attributes(user_id: newer_user.id)
       transfer_errors_from(authentication, {type: :verbatim}, :fail_if_errors)
-
-      if existing_user && can_be_destroyed?(existing_user)
-        run(DestroyUser, existing_user) # to avoid orphaned User records.
-      end
     end
-  end
-
-  private
-
-  # The user must have already tried to signup with the given authentication.
-  def can_be_destroyed?(user)
-    !user.activated? && user.reload.authentications.empty?
   end
 end

@@ -43,9 +43,9 @@ RSpec.describe ActivateUser do
       end
 
       it 'marks the user as activated' do
-        expect(user.state).not_to eq(User::ACTIVATED)
+        expect(user.state).not_to eq('activated')
         described_class.call(user)
-        expect(user.state).to eq(User::ACTIVATED)
+        expect(user.state).to eq('activated')
       end
     end
   end

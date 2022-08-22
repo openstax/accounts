@@ -2,7 +2,7 @@ class IdentitiesController < ApplicationController
 
   include RequireRecentSignin
 
-  skip_before_action :authenticate_user!, :check_if_password_expired, :complete_signup_profile,
+  skip_before_action :authenticate_user!, :check_if_password_expired,
                     only: [:reset, :send_reset, :add, :send_add]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,

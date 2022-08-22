@@ -1,7 +1,6 @@
 class RemoteController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [:iframe, :notify_logout]
-  skip_before_action :complete_signup_profile,     only: [:iframe]
   skip_before_action :check_if_password_expired,   only: [:iframe]
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:iframe]
 

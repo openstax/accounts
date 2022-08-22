@@ -5,11 +5,14 @@ RSpec.describe ConfirmOauthInfo, type: :handler do
     disable_sfdc_client
   end
 
+  let(:first_name_value) { Faker::Name.first_name }
+  let(:last_name_value) { Faker::Name.first_name }
+
   let(:params) do
     {
       signup: {
-        first_name: 'Bryan',
-        last_name: 'Dimas',
+        first_name: first_name_value,
+        last_name: last_name_value,
         email: Faker::Internet.free_email,
         newsletter: '1',
         terms_accepted: '1',
@@ -47,7 +50,7 @@ RSpec.describe ConfirmOauthInfo, type: :handler do
       FactoryBot.create(:user, state: 'unverified')
     end
 
-    xit 'creates an email address for the user' do
+    it 'creates an email address for the user' do
       expect {
         described_class.call(params: params, user: User.last)
       }.to(change(EmailAddress, :count))

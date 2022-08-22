@@ -42,6 +42,9 @@ class EducatorSignupController < SignupController
   end
 
   def profile_form
+    current_user.faculty_status = 'needs_profile'
+    current_user.save!
+
     store_if_sheerid_is_unviable_for_user
     store_sheerid_verification_for_user
     security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
