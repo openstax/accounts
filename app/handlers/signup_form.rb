@@ -46,13 +46,13 @@ class SignupForm
     validate_presence_of_required_params
     return if errors?
 
-    signup_email  = signup_params.email.squish!
+    signup_email = signup_params.email.squish!
     outputs.email = signup_email
 
     if LookupUsers.by_verified_email(signup_email).first
       fatal_error(
-        code:             :email_taken,
-        message:          I18n.t(:'login_signup_form.email_address_taken'),
+        code: :email_taken,
+        message: I18n.t(:'login_signup_form.email_address_taken'),
         offending_inputs: :email
       )
     end
@@ -60,7 +60,7 @@ class SignupForm
     user = User.create(
       state: :unverified,
       role: signup_params.role,
-      faculty_status: :incomplete_signup, # signify email is unverified for user
+      faculty_status: :needs_email_verified, # signify email is unverified for user
       first_name: signup_params.first_name,
       last_name: signup_params.last_name,
       phone_number: signup_params.phone_number,
