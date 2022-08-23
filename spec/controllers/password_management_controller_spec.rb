@@ -101,10 +101,6 @@ RSpec.describe PasswordManagementController, type: :controller do
     end
   end
 
-  describe 'POST #create_password' do
-    it 'creates a password for logged in user'
-  end
-
   describe 'GET #change_password_form' do
     context 'success - when valid token' do
       let(:params) do
@@ -130,7 +126,7 @@ RSpec.describe PasswordManagementController, type: :controller do
         expect(response.status).to eq(200)
       end
 
-      xit 'creates a security log' do
+      it 'creates a security log' do
         expect {
           get('change_password_form', params: params)
         }.to change {
