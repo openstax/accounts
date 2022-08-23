@@ -1,20 +1,8 @@
-class SignupController < BaseController
+class SignupController < ApplicationController
 
   include LoginSignupHelper
 
   skip_before_action :authenticate_user!, except: :signup_done
-
-  before_action(:restart_signup_if_missing_unverified_user, only: %i[
-      change_signup_email_form
-      change_signup_email
-      verify_email_by_code
-      verify_email_by_pin_form
-      verify_email_by_pin_post
-    ]
-  )
-
-  before_action :clear_signup_state, only: %i[signup_form signup_post]
-  before_action :exit_signup_if_logged_in, only: :welcome
   before_action :skip_signup_done_for_tutor_users, only: :signup_done
   before_action :total_steps, except: :welcome
 
@@ -23,10 +11,10 @@ class SignupController < BaseController
   end
 
   def signup_form
-    @selected_signup_role = params[:role]
+    @selected_signup_role = params[:role].to_sym
     @errors = params[:errors]
     # make sure they are using one of the approved roles to signup
-    if %w[educator student].include? @selected_signup_role
+    if [:educator, :student].include? @selected_signup_role
       render :signup_form
     else
       head(:not_found)
@@ -40,15 +28,19 @@ class SignupController < BaseController
       client_app: get_client_app,
       is_bri_book: is_bri_book_adopter?,
       success: lambda {
-        save_unverified_user(@handler_result.outputs.user.id)
-        security_log(:user_viewed_signup_form, { user: @handler_result.outputs.user })
+        user = @handler_result.outputs.user
+        security_log(:user_viewed_signup_form, { user: user })
         clear_cache_bri_marketing
+
+        user.faculty_status = 'needs_email_verified'
+        user.save!
+        sign_in!(user)
         redirect_to verify_email_by_pin_form_path and return
       },
       failure: lambda {
-        security_log(:sign_up_failed,
-                     { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
-        render :signup_form and return
+        @errors = @handler_result.errors
+        security_log(:sign_up_failed, { reason: @handler_result.errors.map(&:code)})
+        render(:signup_form, params: { role: @selected_signup_role }) and return
       }
     )
   end
@@ -60,12 +52,12 @@ class SignupController < BaseController
   def verify_email_by_pin_post
     handle_with(
       VerifyEmailByPin,
-      email_address: unverified_user.email_addresses.first,
+      email_address: current_user.email_addresses.first,
       success: lambda {
         user = @handler_result.outputs.user
         sign_in!(user)
         security_log(:contact_info_confirmed_by_pin,
-                     { user: user, email_address: unverified_user.email_addresses.first.value })
+                     { user: user, email_address: current_user.email_addresses.first.value })
 
         if user.student?
           redirect_to signup_done_path
@@ -75,7 +67,7 @@ class SignupController < BaseController
         end
       },
       failure: lambda {
-        security_log(:contact_info_confirmation_by_pin_failed, email: unverified_user.email_addresses.first)
+        security_log(:contact_info_confirmation_by_pin_failed, email: current_user.email_addresses.first)
         render :email_verification_form
       }
     )
@@ -85,7 +77,6 @@ class SignupController < BaseController
     handle_with(
       VerifyEmailByCode,
       success: lambda {
-        clear_signup_state
         user = @handler_result.outputs.user
         sign_in!(user)
         security_log(:contact_info_confirmed_by_code, { user: user, email_address: user.email_addresses.first.value })
@@ -103,20 +94,17 @@ class SignupController < BaseController
     )
   end
 
-  def change_signup_email_form
-    @email = unverified_user.email_addresses.first.value
-    render :change_signup_email_form
-  end
+  def change_signup_email_form; end
 
   def change_signup_email_post
     handle_with(
       ChangeSignupEmail,
-      user: unverified_user,
+      user: current_user,
       success: lambda {
         redirect_to verify_email_by_pin_form_path and return
       },
       failure: lambda {
-        @email = unverified_user.email_addresses.first.value
+        @email = current_user.email_addresses.first.value
         render :change_signup_email_form and return
       }
     )
@@ -126,7 +114,11 @@ class SignupController < BaseController
 
   def signup_done
     security_log(:sign_up_successful, form_name: action_name)
-    redirect_back if current_user.source_application&.name&.downcase&.include?('tutor')
+    if current_user.source_application&.name&.downcase&.include?('tutor')
+      redirect_back
+    else
+      redirect_to(profile_path)
+    end
   end
 
   private
@@ -138,12 +130,8 @@ class SignupController < BaseController
   end
 
   def total_steps
-    @total_steps ||= if params[:role]
-       params[:role] == 'student' ? 2 : 4
-     elsif unverified_user.present?
-        unverified_user&.role == 'student' ? 2 : 4
-     elsif !current_user.is_anonymous?
-       current_user&.role == 'student' ? 2 : 4
+    unless current_user.is_anonymous?
+      @total_steps ||= params[:role] == 'student' ? 2 : 4
      end
   end
 
@@ -151,11 +139,5 @@ class SignupController < BaseController
     return unless current_user.source_application&.name&.downcase&.include?('tutor')
 
     redirect_back(fallback_location: signup_done_path)
-  end
-
-  def exit_signup_if_logged_in
-    if signed_in?
-      redirect_back(fallback_location: profile_path(request.query_parameters))
-    end
   end
 end

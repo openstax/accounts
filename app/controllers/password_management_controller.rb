@@ -1,4 +1,4 @@
-class PasswordManagementController < BaseController
+class PasswordManagementController < ApplicationController
   include LoginSignupHelper
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [
@@ -18,7 +18,6 @@ class PasswordManagementController < BaseController
         user = @handler_result.outputs.user
         @email = @handler_result.outputs.email
         security_log(:password_reset, {user: user, email: @email, message: "Sent password reset email"})
-        clear_signup_state
         sign_out!
         render :reset_password_email_sent
       },

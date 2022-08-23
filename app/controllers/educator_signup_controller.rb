@@ -20,6 +20,9 @@ class EducatorSignupController < SignupController
   # SheerID makes a POST request to this endpoint when it verifies an educator
   # http://developer.sheerid.com/program-settings#webhooks
   def sheerid_webhook
+    current_user.faculty_status = 'needs_verification'
+    current_user.save!
+
     handle_with(
       SheeridWebhook,
       verification_id: sheerid_provided_verification_id_param,
@@ -57,7 +60,6 @@ class EducatorSignupController < SignupController
       success: lambda {
         user = @handler_result.outputs.user
         security_log(:user_profile_complete, { user: user })
-        clear_incomplete_educator
 
         if user.is_educator_pending_cs_verification?
           redirect_to(cs_verification_path)
@@ -84,7 +86,6 @@ class EducatorSignupController < SignupController
 
   def pending_cs_verification_post
     security_log(:user_sent_to_cs_for_review, user: current_user)
-    @email_address = current_user.email_addresses.last&.value
   end
 
   private

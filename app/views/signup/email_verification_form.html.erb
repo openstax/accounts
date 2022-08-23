@@ -4,13 +4,13 @@
     locals:  {
       header:           I18n.t(
         :"login_signup_form.confirmation_page_header",
-        first_name: unverified_user.first_name
+        first_name: current_user.first_name
       ),
       form_description: I18n.t(
         "login_signup_form.#{
-          unverified_user.role == 'student' ? :student : :educator
+          current_user.role == 'student' ? :student : :educator
         }_email_verification_form_description".to_sym,
-        email:           unverified_user.email_addresses.first.value,
+        email: current_user.email_addresses.first.value,
         edit_your_email: link_to(I18n.t(:"login_signup_form.edit_your_email"), change_signup_email_form_path)).html_safe,
       current_step:     I18n.t(
         :"login_signup_form.step_counter",

@@ -1,7 +1,10 @@
 class ApplicationController < ActionController::Base
-  layout 'application'
+  include ApplicationHelper
+
+  layout 'newflow_layout'
 
   before_action :authenticate_user!
+  before_action :set_active_banners
   before_action :check_if_password_expired
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
@@ -27,15 +30,6 @@ class ApplicationController < ActionController::Base
     redirect_to(password_reset_path)
   end
 
-  def return_url_specified_and_allowed?
-    # This returns true if `save_redirect` actually saved the URL
-    params[:r] && params[:r] == stored_url
-  end
-
-  def set_unverified_user
-    save_unverified_user(current_user.id)
-  end
-
   def check_if_signup_complete
     # user has not verified email address - send them back to verify email form
     if current_user.faculty_status == 'incomplete_signup'
@@ -56,20 +50,19 @@ class ApplicationController < ActionController::Base
         redirect_to profile_form_path and return
       end
     end
-    redirect_back(fallback_location: profile_path) and return
-  end
-
-  def restart_signup_if_missing_unverified_user
-    unless unverified_user.present?
-      redirect_to signup_path and return
-    end
+    redirect_back(fallback_location: profile_path)
   end
 
   include Lev::HandleWith
 
   respond_to :html
 
-  protected #################
+  protected
+
+  def set_active_banners
+    return unless request.get?
+    @banners ||= Banner.active
+  end
 
   def allow_iframe_access
     @iframe_parent = params[:parent]

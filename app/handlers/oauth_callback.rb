@@ -28,7 +28,7 @@ class OauthCallback
   end
 
   def setup
-    @logged_in_user = options[:logged_in_user]
+    @logged_in_user = signed_in? && current_user
 
     @oauth_provider = oauth_data.provider
     @oauth_uid = oauth_data.uid.to_s
@@ -99,7 +99,7 @@ class OauthCallback
     end
 
     # add the authentication to their account
-    run(TransferAuthentications, authentication, options[:logged_in_user])
+    run(TransferAuthentications, authentication, current_user)
 
     authentication
   end

@@ -1,4 +1,4 @@
-class LoginController < BaseController
+class LoginController < ApplicationController
 
   include LoginSignupHelper
 
@@ -6,7 +6,6 @@ class LoginController < BaseController
 
   skip_before_action :authenticate_user!
 
-  before_action :clear_signup_state, only: :login_form
   before_action :cache_client_app, only: :login_form
   before_action :cache_alternate_signup_url, only: :login_form
   before_action :student_signup_redirect, only: :login_form

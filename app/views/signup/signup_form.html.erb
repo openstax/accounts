@@ -6,12 +6,6 @@
   contract_links = contracts.collect { |contract|
     link_to(contract.title, term_path(contract), target: '_blank')
   }
-
-  if @selected_signup_role == 'student'
-    selected_signup_role = :student
-  else
-    selected_signup_role = :instructor
-  end
 %>
 
 <%= render 'shared/refresh_upon_going_back' %>
@@ -25,13 +19,12 @@
           current_step: I18n.t(:'login_signup_form.step_counter', current_step: 1, total_steps: @total_steps),
           classes:      'signup-page') do %>
       <% lev_form_for :signup, url: signup_form_path(role: @selected_signup_role) do |form| %>
-        <% fh = FormHelper::One.new(f:      form, context: self,
-                                    errors: @handler_result&.errors) %>
+        <% fh = FormHelper::One.new(f: form, context: self, errors: @handler_result&.errors) %>
 
         <div class="content role-section">
           <div>
             <%= render partial: 'shared/back_arrow', locals: { path: signup_form_path(role: @selected_signup_role) } %>
-            <% if selected_signup_role == :student %>
+            <% if @selected_signup_role == :student %>
               <div class="role-button"><%= I18n.t(:'login_signup_form.student') %></div>
             <% else %>
               <div class="role-button"><%= I18n.t(:'login_signup_form.educator') %></div>
@@ -39,7 +32,7 @@
           </div>
         </div>
 
-        <% if selected_signup_role == :student %>
+        <% if @selected_signup_role == :student %>
           <div class="content social-section">
             <%= render partial: 'social_auth/social_auth_buttons', locals: { origin: :signup_form } %>
           </div>
@@ -78,7 +71,7 @@
           %>
         </div>
 
-        <% if selected_signup_role == :instructor %>
+        <% if @selected_signup_role == :instructor %>
           <div class="content control-group">
             <%= label_tag :phone_number, I18n.t(:'login_signup_form.phone_number_label'), class: 'field-label' %>
             <%=
@@ -159,7 +152,7 @@
 
             <%= form.hidden_field :contract_1_id, value: contracts.first.id %>
             <%= form.hidden_field :contract_2_id, value: contracts.second.id %>
-            <%= form.hidden_field :role, value: selected_signup_role %>
+            <%= form.hidden_field :role, value: @selected_signup_role %>
           </div>
 
         </div>

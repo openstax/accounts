@@ -1,13 +1,9 @@
-class SocialAuthController < BaseController
+class SocialAuthController < ApplicationController
   include LoginSignupHelper
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   skip_before_action :authenticate_user!, only: [ :oauth_callback, :confirm_oauth_info ]
-
-  before_action :restart_signup_if_missing_unverified_user, only: [
-    :confirm_oauth_info
-  ]
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback
@@ -16,24 +12,22 @@ class SocialAuthController < BaseController
     else
       handle_with(
         OauthCallback,
-        logged_in_user: signed_in? && current_user,
         success: lambda {
           authentication = @handler_result.outputs.authentication
           user = @handler_result.outputs.user
-          save_unverified_user(unverified_user.id)
 
-          if user.student? && !user.activated?
+          if user.student? && !user.first_name
             @first_name = user.first_name
             @last_name = user.last_name
             @email = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
             # must confirm their social info on signup
-            render :confirm_oauth_info and return # TODO: if possible, update the route/path to reflect that this page is being rendered
+            redirect_to confirm_oauth_info_path and return
           end
 
           sign_in!(user)
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
-          redirect_back(fallback_location: profile_path)
+          redirect_back
         },
         failure: lambda {
           @email = @handler_result.outputs.email
@@ -78,11 +72,10 @@ class SocialAuthController < BaseController
   def confirm_oauth_info
     handle_with(
       ConfirmOauthInfo,
-      user: unverified_user,
+      user: current_user,
       contracts_required: !contracts_not_required,
       client_app: get_client_app,
       success: lambda {
-        clear_signup_state
         sign_in!(@handler_result.outputs.user)
         security_log(:student_social_auth_confirmation_success)
         redirect_to signup_done_path
