@@ -2,19 +2,18 @@ require 'rails_helper'
 
 RSpec.describe ApplicationController, type: :controller do
 
-  let!(:user)               { FactoryBot.create :user, :terms_agreed }
-  let!(:app_token)          { FactoryBot.create :doorkeeper_access_token, resource_owner_id: nil }
-  let!(:application)        { app_token.application }
-  let!(:user_token)         { FactoryBot.create :doorkeeper_access_token,
-                                                 application: nil,
-                                                 resource_owner_id: user.id }
+  let!(:user) { FactoryBot.create :user, :terms_agreed }
+  let!(:app_token) { FactoryBot.create :doorkeeper_access_token, resource_owner_id: nil }
+  let!(:application) { app_token.application }
+  let!(:user_token) { FactoryBot.create :doorkeeper_access_token,
+                                        application: nil,
+                                        resource_owner_id: user.id }
   let!(:app_and_user_token) { FactoryBot.create :doorkeeper_access_token,
-                                                 application: application,
-                                                 resource_owner_id: user.id }
-
-  let!(:anonymous_api_user)    { OpenStax::Api::ApiUser.new(nil, -> { nil }) }
-  let!(:user_api_user)         { OpenStax::Api::ApiUser.new(user_token, -> { nil }) }
-  let!(:app_api_user)          { OpenStax::Api::ApiUser.new(app_token, -> { nil }) }
+                                                application: application,
+                                                resource_owner_id: user.id }
+  let!(:anonymous_api_user) { OpenStax::Api::ApiUser.new(nil, -> { nil }) }
+  let!(:user_api_user) { OpenStax::Api::ApiUser.new(user_token, -> { nil }) }
+  let!(:app_api_user) { OpenStax::Api::ApiUser.new(app_token, -> { nil }) }
   let!(:app_and_user_api_user) { OpenStax::Api::ApiUser.new(app_and_user_token, -> { nil }) }
 
   context 'security log' do

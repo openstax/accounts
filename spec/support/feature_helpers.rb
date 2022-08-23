@@ -18,7 +18,7 @@ def create_user(email_or_username, password='password', terms_agreed=nil, confir
   authentication = FactoryBot.create :authentication, user: user,
                                                       provider: 'identity',
                                                       uid: identity.uid
-  return user
+  user
 end
 
 def create_admin_user

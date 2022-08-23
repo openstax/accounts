@@ -12,13 +12,13 @@ RSpec.describe LoginController, type: :controller do
     describe 'success' do
       describe 'students' do
         before do
-          user = create_user('user@openstax.org', 'password')
-          user.update!(role: User::STUDENT_ROLE)
+          user = create_user('student@openstax.org', 'password')
+          user.update!(role: 'student')
           expect_any_instance_of(LogInUser).to receive(:call).once.and_call_original
         end
 
         let(:params) do
-          { login_form: { email: 'user@openstax.org', password: 'password' } }
+          { login_form: { email: 'student@openstax.org', password: 'password' } }
         end
 
         it 'logs in the user' do
@@ -60,19 +60,19 @@ RSpec.describe LoginController, type: :controller do
         end
       end
 
-      describe 'educators' do
-        let(:user) { create_user('user@openstax.org', 'password') }
+      describe 'instructors' do
+        let(:user) { create_user('instructor@openstax.org', 'password') }
 
         before do
-          user.update!(role: User::INSTRUCTOR_ROLE)
+          user.update!(role: 'instructor')
         end
 
         let(:params) do
-          { login_form: { email: 'user@openstax.org', password: 'password' } }
+          { login_form: { email: 'instructor@openstax.org', password: 'password' } }
         end
 
-        context 'when educator is profile complete' do
-          before { user.update!(is_profile_complete: true) }
+        context 'when educator is profile complete - pending verification from CS team' do
+          before { user.update!(faculty_status: 'pending_faculty') }
 
           it 'logs in the user' do
             expect_any_instance_of(described_class).to receive(:sign_in!).once.and_call_original
@@ -113,28 +113,54 @@ RSpec.describe LoginController, type: :controller do
           end
         end
 
-        context 'when educator is NOT profile complete' do
-          before { user.update!(is_profile_complete: false) }
+        context 'when educator is profile complete - verified' do
+          before { user.update!(faculty_status: 'confirmed_faculty') }
 
-          it 'saves incomplete educator in the session' do
-            # expect_any_instance_of(described_class).to receive(:save_incomplete_educator).with(user).once.and_call_original
+          it 'logs in the user' do
+            expect_any_instance_of(described_class).to receive(:sign_in!).once.and_call_original
             post('login_post', params: params)
-            # expect(assigns(:current_incomplete_educator)).to eq(user)
+            expect(assigns(:current_user)).to eq(User.last)
           end
 
-          it 'does a redirect' do
+          it 'redirects on success' do
             post('login_post', params: params)
             expect(response).to have_http_status(:redirect)
           end
 
-          it 'creates a security log' do
-            skip 'todo – maybe'
+          it 'redirects back to `r`eturn parameter' do
+            path = Faker::Internet.slug
 
+            # GET login_form with `?r=URL` stores the url to return to after login
+            get('login_form', params: { r: "https://openstax.org/#{path}" })
+
+            post('login_post', params: params)
+            expect(response).to redirect_to("https://openstax.org/#{path}")
+          end
+
+          it 'checks `r`eturn parameter is whitelisted' do
+            expect(Host).to receive(:trusted?).once.and_call_original
+            # GET login_form with `?r=URL` may store a SAFE url to return to after login
+            get('login_form', params: { r: 'https://maliciousdomain.com' })
+
+            post('login_post', params: params)
+            expect(response).not_to redirect_to('https://maliciousdomain.com')
+          end
+
+          it 'creates a security log' do
             expect {
               post('login_post', params: params)
             }.to change {
-              SecurityLog.where(event_type: :educator_resumed_signup_flow).count
+              SecurityLog.where(event_type: :sign_in_successful).count
             }
+          end
+        end
+
+        context 'when instructor is NOT profile complete' do
+          before { user.update!(faculty_status: 'needs_profile') }
+
+          it 'does a redirect' do
+            post('login_post', params: params)
+            expect(response).to have_http_status(:redirect)
           end
         end
       end
@@ -144,7 +170,7 @@ RSpec.describe LoginController, type: :controller do
       describe 'when cannot_find_user' do
         let(:noones_email){ 'noone@openstax.org' }
 
-        xit 'creates a security log' do
+        it 'creates a security log' do
           expect {
             post('login_post', params: { login_form: { email: noones_email, password: 'password' } })
           }.to change {
@@ -166,7 +192,7 @@ RSpec.describe LoginController, type: :controller do
           'user@example.com'
         end
 
-        xit 'creates a security log' do
+        it 'creates a security log' do
           expect {
             post('login_post', params: { login_form: { email: email_address, password: 'password' } })
           }.to change {
@@ -184,7 +210,7 @@ RSpec.describe LoginController, type: :controller do
         let(:user) { FactoryBot.create(:user) }
         let(:max_attempts_per_user) { 0 }
 
-        xit 'creates a security log' do
+        it 'creates a security log' do
           expect {
             post('login_post', params: { login_form: { email: email.value, password: 'wrongpassword' } })
           }.to change {

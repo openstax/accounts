@@ -6,7 +6,7 @@ class SocialAuthController < BaseController
   skip_before_action :authenticate_user!, only: [ :oauth_callback, :confirm_oauth_info ]
 
   before_action :restart_signup_if_missing_unverified_user, only: [
-    :confirm_oauth_info, :confirm_social_info_form
+    :confirm_oauth_info
   ]
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
@@ -20,19 +20,15 @@ class SocialAuthController < BaseController
         success: lambda {
           authentication = @handler_result.outputs.authentication
           user = @handler_result.outputs.user
+          save_unverified_user(unverified_user.id)
 
           if user.student? && !user.activated?
-            # Not activated means signup.
-            # Only students can sign up with a social network.
-            unverified_user = ensure_unverified_user(user)
-
-            save_unverified_user(unverified_user.id)
             @first_name = user.first_name
             @last_name = user.last_name
             @email = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
             # must confirm their social info on signup
-            render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
+            render :confirm_oauth_info and return # TODO: if possible, update the route/path to reflect that this page is being rendered
           end
 
           sign_in!(user)
@@ -47,13 +43,10 @@ class SocialAuthController < BaseController
           authentication = @handler_result.outputs.authentication
           case code
           when :should_redirect_to_signup
-            redirect_to(
-              login_path,
-              notice: I18n.t(
+            redirect_to(login_path, notice: I18n.t(
                 :"login_signup_form.should_social_signup",
                 sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), signup_path)
-              )
-            )
+              ))
           when :authentication_taken
             security_log(:authentication_transfer_failed, authentication_id: authentication.id)
             redirect_to(profile_path, alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
@@ -96,7 +89,7 @@ class SocialAuthController < BaseController
       },
       failure: lambda {
         security_log(:student_social_auth_confirmation_failed)
-        render :confirm_social_info_form
+        render :confirm_oauth_info
       }
     )
   end
@@ -122,11 +115,5 @@ class SocialAuthController < BaseController
         end
       )
     end
-  end
-
-  private #################
-
-  def ensure_unverified_user(user)
-    EnsureUnverifiedUser.call(user).outputs.user
   end
 end

@@ -12,7 +12,7 @@ RSpec.describe ProfileController, type: :controller do
 
       context 'when profile is complete' do
         before do
-          user.update!(is_profile_complete: true)
+          user.update!(faculty_status: 'confirmed_faculty')
         end
 
           it 'renders 200 OK status' do
@@ -27,7 +27,7 @@ RSpec.describe ProfileController, type: :controller do
       end
 
       context 'when profile is not complete' do
-        before { user.update!(is_profile_complete: false) }
+        before { user.update!(faculty_status: 'needs_profile') }
 
         it 'redirects to step 4 — complete profile form' do
           get(:profile)

@@ -43,23 +43,26 @@ class ApplicationController < ActionController::Base
     end
 
     # If the user is not a student, let's make sure they finished the signup process.
-    return if current_user.student?
+    unless current_user.student?
+      if current_user.needs_verification?
+        security_log(:educator_resumed_signup_flow,
+                     message: 'User needs to complete SheerID verification - return to SheerID verification form.')
+        redirect_to sheerid_form_path and return
+      end
 
-    if current_user.needs_verification?
-      security_log(:educator_resumed_signup_flow,
-                   message: 'User needs to complete SheerID verification - return to SheerID verification form.')
-      redirect_to sheerid_form_path and return
+      if current_user.needs_profile?
+        security_log(:educator_resumed_signup_flow,
+                     message: 'User has not completed profile - return to complete profile screen.')
+        redirect_to profile_form_path and return
+      end
     end
-
-    if current_user.needs_profile?
-      security_log(:educator_resumed_signup_flow,
-                   message: 'User has not completed profile - return to complete profile screen.')
-      redirect_to profile_form_path
-    end
+    redirect_back(fallback_location: profile_path)
   end
 
   def restart_signup_if_missing_unverified_user
-    redirect_to signup_path unless unverified_user.present?
+    unless unverified_user.present?
+      redirect_to signup_path and return
+    end
   end
 
   include Lev::HandleWith

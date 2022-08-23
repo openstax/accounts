@@ -11,7 +11,6 @@ class LoginController < BaseController
   before_action :cache_alternate_signup_url, only: :login_form
   before_action :student_signup_redirect, only: :login_form
   before_action :redirect_back, if: -> { signed_in? }, only: :login_form
-  before_action :check_if_signup_complete, only: :login_post
 
   def login_form; end
 
@@ -30,7 +29,10 @@ class LoginController < BaseController
 
         sign_in!(user, security_log_data: { 'email': @handler_result.outputs.email} )
 
-        redirect_back(fallback_location: profile_path)
+        # This will redirect users not having verified their email address or instructors
+        # that have not completed their verification / profile.
+        # Otherwise, it returns them back to the `r` param or their profile
+        check_if_signup_complete
       },
       failure: lambda {
         email = @handler_result.outputs.email

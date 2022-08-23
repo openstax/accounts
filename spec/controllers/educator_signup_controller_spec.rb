@@ -3,7 +3,10 @@ require 'rails_helper'
 RSpec.describe EducatorSignupController, type: :controller do
 
   describe 'GET #sheerid_form' do
-    it 'requires a logged in user'
+    it 'requires a logged in user' do
+      get(:sheerid_form)
+      expect(response).to_not render_template(:sheerid_form)
+    end
   end
 
   describe 'POST #sheerid_webhook' do

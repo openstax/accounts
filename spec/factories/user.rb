@@ -5,10 +5,8 @@ FactoryBot.define do
     first_name { Faker::Name.first_name }
     last_name  { Faker::Name.last_name  }
     uuid { Faker::Internet.uuid }
-    role { 'student' }
+    role { User::VALID_ROLES.sample }
     school { FactoryBot.build(:school) }
-
-    is_profile_complete { true }
 
     trait :admin do
       is_administrator { true }

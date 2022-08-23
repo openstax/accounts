@@ -19,7 +19,7 @@ RSpec.describe SocialAuthController, type: :controller do
 
     context 'social login (login means user.state == activated) - success' do
       let(:user) do
-        create_user('user@openstax.org')
+        create_user('student@openstax.org')
       end
 
       let(:params) do
@@ -100,9 +100,5 @@ RSpec.describe SocialAuthController, type: :controller do
         end
       end
     end
-  end
-
-  describe 'GET #confirm_oauth_info' do
-    it ''
   end
 end
