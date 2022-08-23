@@ -2,32 +2,31 @@ require 'rails_helper'
 
 RSpec.describe ProfileController, type: :controller do
   describe 'GET #profile' do
-    context 'when logged in' do
+    context 'while logged in' do
+      let(:user) { create_user('instructor@openstax.org') }
+
       before do
-        user.update!(role: User::INSTRUCTOR_ROLE)
+        user.update!(role: 'instructor')
         mock_current_user(user)
       end
-
-      let(:user) { create_user('user@openstax.org') }
 
       context 'when profile is complete' do
         before do
           user.update!(faculty_status: 'confirmed_faculty')
         end
 
-          it 'renders 200 OK status' do
+          it 'redirects to profile after checking if profile complete' do
           get(:profile)
-          expect(response.status).to eq(200)
-        end
-
-        it 'renders profile' do
-          get(:profile)
-          expect(response).to render_template(:profile)
+          # This can redirect to the user profile or back to the application
+          # they started from
+          expect(response).to have_http_status(:redirect)
         end
       end
 
       context 'when profile is not complete' do
-        before { user.update!(faculty_status: 'needs_profile') }
+        before do
+          user.update!(faculty_status: 'needs_profile')
+        end
 
         it 'redirects to step 4 — complete profile form' do
           get(:profile)
@@ -36,10 +35,10 @@ RSpec.describe ProfileController, type: :controller do
       end
     end
 
-    context 'while not logged in' do
+    context 'while logged out' do
       it 'redirects to login form' do
         get(:profile)
-        expect(response).to redirect_to login_path
+        expect(response).to redirect_to(login_path)
       end
     end
   end

@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
         redirect_to profile_form_path and return
       end
     end
-    redirect_back(fallback_location: profile_path)
+    redirect_back(fallback_location: profile_path) and return
   end
 
   def restart_signup_if_missing_unverified_user

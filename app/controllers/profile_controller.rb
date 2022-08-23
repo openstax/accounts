@@ -2,10 +2,11 @@ class ProfileController < BaseController
 
   skip_before_action :authenticate_user!, only: :exit_accounts
   before_action :prevent_caching, only: :profile
-  before_action :check_if_signup_complete, only: :profile
+
+  layout 'application'
 
   def profile
-    render layout: 'application'
+    check_if_signup_complete
   end
 
   def exit_accounts
