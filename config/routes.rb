@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   get 'faculty_access/apply/' => redirect('signup/educator/apply')
   get 'faculty_access/pending/' => redirect('signup/educator/pending_cs_verification')
   get 'educator/cs_form/' => redirect('signup/cs_form')
+  # This is a URL coming from SheerID, when we update out SheerID version, we can likely remove this
+  # also, might only be relevant locally because of a cloudfront fix for /i/ paths
+  get '/i/signup/educator/profile_form' => redirect('signup/educator/profile_form')
 
   ###################
   #  FAQs/Support   #
