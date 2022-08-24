@@ -4,13 +4,15 @@ describe AnonymousUser do
   let!(:au) { AnonymousUser.instance }
 
   it 'handles faculty status enum methods' do
-    expect(au.incomplete_signup?).to be_truthy
     expect(au.no_faculty_info?).to be_falsy
     expect(au.pending_faculty?).to be_falsy
+    expect(au.confirmed_faculty?).to be_falsy
     expect(au.rejected_faculty?).to be_falsy
     expect(au.pending_sheerid?).to be_falsy
     expect(au.rejected_by_sheerid?).to be_falsy
-    expect(au.confirmed_faculty?).to be_falsy
+    expect(au.needs_email_verified?).to be_falsy
+    expect(au.needs_verification?).to be_falsy
+    expect(au.needs_profile?).to be_falsy
 
     expect(au.faculty_status).to eq "incomplete_signup"
     expect{au.faculty_status="blah"}.to raise_error(AnonymousUserIsImmutableError)
