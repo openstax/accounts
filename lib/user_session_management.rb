@@ -39,8 +39,6 @@ module UserSessionManagement
   end
 
   def sign_in!(user, security_log_data: {})
-    clear_login_state
-
     @current_user = user || AnonymousUser.instance
 
     if @current_user.is_anonymous?
@@ -62,6 +60,7 @@ module UserSessionManagement
   end
 
   def sign_out!(options={})
+    clear_login_state
     sign_in!(AnonymousUser.instance, options)
   end
 
@@ -92,16 +91,12 @@ module UserSessionManagement
   end
 
   def set_client_app(client_id)
-    @client_app = client_id.nil? ?
-                    nil :
-                    Doorkeeper::Application.find_by(uid: client_id)
+    @client_app = client_id.nil? ? nil : Doorkeeper::Application.find_by(uid: client_id)
     session[:client_app] = @client_app.present? ? @client_app.id : nil
   end
 
   def get_client_app
-    @client_app ||= session[:client_app].nil? ?
-                      nil :
-                      Doorkeeper::Application.find_by(id: session[:client_app])
+    @client_app ||= session[:client_app].nil? ? nil : Doorkeeper::Application.find_by(id: session[:client_app])
   end
 
   def set_alternate_signup_url(url)
