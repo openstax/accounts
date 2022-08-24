@@ -28,7 +28,7 @@ class OauthCallback
   end
 
   def setup
-    @logged_in_user = signed_in? && current_user
+    @logged_in_user = current_user&.signed_in?
 
     @oauth_provider = oauth_data.provider
     @oauth_uid = oauth_data.uid.to_s
@@ -36,28 +36,28 @@ class OauthCallback
   end
 
   def handle
-    if @logged_in_user
+    # User found with the given authentication. We will log them in.
+    if Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid)
+      outputs.user = outputs.authentication.user
+    # User is logged in trying - we'll sign them in with their social account
+    elsif @logged_in_user
       handle_while_logged_in(@logged_in_user.id)
+    # Another user has this email attached to their account
     elsif mismatched_authentication?
       fatal_error(code: :mismatched_authentication)
-    elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
-      # User found with the given authentication. We will log them in.
-      outputs.authentication.user
-    elsif (existing_user = user_most_recently_used(users_matching_oauth_data))
-      # No user found with the given authentication, but a user *was* found with the given email address.
-      # We will add the authentication to their existing account and then log them in.
+    # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
+    elsif request.env['omniauth.origin']&.to_sym == :login_form
+      fatal_error(code: :should_redirect_to_signup)
+    # No user found with the given authentication, but a user *was* found with the given email address.
+    # We will add the authentication to their existing account and then log them in.
+    elsif(existing_user = user_most_recently_used(users_matching_oauth_data))
       outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
       run(TransferAuthentications, outputs.authentication, existing_user)
-    elsif request.env['omniauth.origin']&.to_sym == :login_form
-      # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
-      fatal_error(code: :should_redirect_to_signup)
     else # sign up new student, then we will log them in.
       user = create_student_user_instance
       run(TransferOmniauthData, oauth_data, user)
       outputs.authentication = create_authentication(user, @oauth_provider)
     end
-
-    outputs.user = outputs.authentication.user
   end
 
   private
@@ -69,15 +69,12 @@ class OauthCallback
     return false if oauth_data.email.blank?
 
     existing_email_owner_id = LookupUsers.by_verified_email_or_username(oauth_data.email).last&.id
-    existing_auth_uid = Authentication.where(user_id: existing_email_owner_id, provider: @oauth_provider).pluck(:uid).first
+    existing_auth_uid = Authentication.where(user_id: existing_email_owner_id, provider: @oauth_provider).last&.uid
     incoming_auth_uid = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).last&.uid
 
-    if existing_auth_uid != incoming_auth_uid
-      Sentry.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
-      true
-    else
-      false
-    end
+    return false unless existing_auth_uid != incoming_auth_uid
+
+    Sentry.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
   end
 
   def handle_while_logged_in(logged_in_user_id)
@@ -105,17 +102,13 @@ class OauthCallback
   end
 
   def users_matching_oauth_data
-    # We find potential matching users by comparing their email addresses to
-    # what comes back in the OAuth data.  We trust that Google/FB/ omniauth
-    # strategies will only give us verified emails.
+    # We find potential matching users by comparing their email addresses to what comes back in the OAuth data.
+    # We trust that Google/FB/omniauth strategies will only give us verified emails.
     #
-    #   true for Google (omniauth strategy checks that the emails are verified)
-    #   true for FB (their API only returns verified emails)
+    # true for Google (omniauth strategy checks that the emails are verified)
+    # true for FB (their API only returns verified emails)
 
-    @users_matching_oauth_data ||= EmailAddress.where(value: oauth_data.email)
-                                                                  .verified
-                                                                  .with_users
-                                                                  .map(&:user)
+    @users_matching_oauth_data ||= EmailAddress.where(value: oauth_data.email).verified.with_users.map(&:user)
   end
 
   def user_most_recently_used(users)
@@ -136,8 +129,14 @@ class OauthCallback
     @oauth_data ||= parse_oauth_data(oauth_response)
   end
 
+  def parse_oauth_data(oauth_response)
+    OmniauthData.new(oauth_response)
+  rescue StandardError
+    fatal_error(code: :invalid_omniauth_data)
+  end
+
   def create_student_user_instance
-    user = User.new(state: 'unverified', role: 'student')
+    user = User.new(role: 'student', state: 'unverified', faculty_status: 'no_faculty_info')
     user.full_name = oauth_data.name unless oauth_data.name.nil?
 
     transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
@@ -148,12 +147,6 @@ class OauthCallback
     auth = Authentication.new(provider: oauth_provider, uid: @oauth_uid)
     run(TransferAuthentications, auth, user)
     auth
-  end
-
-  def parse_oauth_data(oauth_response)
-    OmniauthData.new(oauth_response)
-  rescue StandardError
-    fatal_error(code: :invalid_omniauth_data)
   end
 
   def is_email_taken?(email, logged_in_user_id)

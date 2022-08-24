@@ -66,12 +66,6 @@ RSpec.describe SocialAuthController, type: :controller do
           get(:oauth_callback, params: params)
           expect(response).to redirect_to(login_path)
         end
-
-        it 'saves login failed email' do
-          expect_any_instance_of(described_class).to receive(:save_login_failed_email).and_call_original
-          get(:oauth_callback, params: params)
-          expect(session[:login_failed_email]).to eq(info[:email])
-        end
       end
 
       context 'when no email address is returned' do
