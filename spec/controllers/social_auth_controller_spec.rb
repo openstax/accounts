@@ -46,11 +46,6 @@ RSpec.describe SocialAuthController, type: :controller do
         { provider: 'facebook', uid: Faker::Internet.uuid }
       end
 
-      it 'saves unverified user' do
-        expect_any_instance_of(described_class).to receive(:save_unverified_user)
-        get(:oauth_callback, params: params)
-      end
-
       it 'renders confirm_social_info_form' do
         get(:oauth_callback, params: params)
         expect(response).to render_template(:confirm_social_info_form)

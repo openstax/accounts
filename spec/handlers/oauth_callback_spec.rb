@@ -151,7 +151,7 @@ RSpec.describe OauthCallback, type: :handler do
     end
 
     let(:process_request) do
-      described_class.call(request: request, logged_in_user: user)
+      described_class.call(request: request)
     end
 
     let(:request) do
