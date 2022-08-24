@@ -28,22 +28,14 @@ class OauthCallback
   end
 
   def setup
-    @logged_in_user = current_user&.signed_in?
-
-    @oauth_provider = oauth_data.provider
-    @oauth_uid = oauth_data.uid.to_s
     outputs.email = oauth_data.email
   end
 
   def handle
     # User found with the given authentication. We will log them in.
-    if Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid)
-      outputs.user = outputs.authentication.user
-    # User is logged in trying - we'll sign them in with their social account
-    elsif @logged_in_user
-      handle_while_logged_in(@logged_in_user.id)
-    # Another user has this email attached to their account
-    elsif mismatched_authentication?
+    authentication = Authentication.find_by(provider: oauth_data.provider, uid: oauth_data.uid)
+
+    if mismatched_authentication?
       fatal_error(code: :mismatched_authentication)
     # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
     elsif request.env['omniauth.origin']&.to_sym == :login_form
@@ -51,12 +43,11 @@ class OauthCallback
     # No user found with the given authentication, but a user *was* found with the given email address.
     # We will add the authentication to their existing account and then log them in.
     elsif(existing_user = user_most_recently_used(users_matching_oauth_data))
-      outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
+      outputs.authentication = Authentication.find_or_initialize_by(provider: oauth_data.provider, uid: oauth_data.uid)
       run(TransferAuthentications, outputs.authentication, existing_user)
-    else # sign up new student, then we will log them in.
-      user = create_student_user_instance
-      run(TransferOmniauthData, oauth_data, user)
-      outputs.authentication = create_authentication(user, @oauth_provider)
+    # User seems legit, sign them in/up
+    else
+      outputs.authentication = create_authentication(user, oauth_data.provider)
     end
   end
 
@@ -75,30 +66,6 @@ class OauthCallback
     return false unless existing_auth_uid != incoming_auth_uid
 
     Sentry.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
-  end
-
-  def handle_while_logged_in(logged_in_user_id)
-    outputs.authentication = authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
-
-    if authentication.user&.activated?
-      fatal_error(
-        code: :authentication_taken,
-        message: I18n.t(:"controllers.sessions.sign_in_option_already_used")
-      )
-    end
-
-    if is_email_taken?(oauth_data.email, logged_in_user_id)
-      fatal_error(
-        code: :email_already_in_use,
-        offending_inputs: :email,
-        message: I18n.t(:"login_signup_form.sign_in_option_already_used")
-      )
-    end
-
-    # add the authentication to their account
-    run(TransferAuthentications, authentication, current_user)
-
-    authentication
   end
 
   def users_matching_oauth_data
@@ -135,16 +102,8 @@ class OauthCallback
     fatal_error(code: :invalid_omniauth_data)
   end
 
-  def create_student_user_instance
-    user = User.new(role: 'student', state: 'unverified', faculty_status: 'no_faculty_info')
-    user.full_name = oauth_data.name unless oauth_data.name.nil?
-
-    transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
-    user
-  end
-
   def create_authentication(user, oauth_provider)
-    auth = Authentication.new(provider: oauth_provider, uid: @oauth_uid)
+    auth = Authentication.new(provider: oauth_provider, uid: oauth_data.uid)
     run(TransferAuthentications, auth, user)
     auth
   end

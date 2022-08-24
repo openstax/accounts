@@ -14,9 +14,8 @@ class SocialAuthController < ApplicationController
         OauthCallback,
         success: lambda {
           authentication = @handler_result.outputs.authentication
-          user = @handler_result.outputs.user
 
-          if user.student? && !user.first_name
+          if current_user.student? && !current_user.first_name
             @first_name = user.first_name
             @last_name = user.last_name
             @email = @handler_result.outputs.email
@@ -25,19 +24,17 @@ class SocialAuthController < ApplicationController
             redirect_to confirm_oauth_info_path and return
           end
 
-          sign_in!(user)
-          security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
+          sign_in!(current_user)
+          security_log(:authenticated_with_social, user: current_user, authentication_id: authentication.id)
           redirect_back
         },
         failure: lambda {
           @email = @handler_result.outputs.email
 
-          code = @handler_result.errors.first.code
-          authentication = @handler_result.outputs.authentication
-          case code
+          case @handler_result.errors.first.code
             # Another user has this email attached to their account
             when :mismatched_authentication
-              security_log(:sign_in_failed, reason: "mismatched authentication")
+              security_log(:sign_in_failed, reason: "mismatched authentication", email: @email)
               redirect_to(login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
             # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
             when :should_redirect_to_signup
@@ -48,24 +45,14 @@ class SocialAuthController < ApplicationController
             # No user found with the given authentication, but a user *was* found with the given email address.
             # We will add the authentication to their existing account and then log them in.
             when :authentication_taken
-              security_log(:authentication_transfer_failed, authentication_id: authentication.id)
+              security_log(:authentication_transfer_failed, email: @email)
               redirect_to(profile_path, alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
             when :email_already_in_use
-              security_log(:email_already_in_use, email: @email, authentication_id: authentication.id)
+              security_log(:email_already_in_use, email: @email)
               redirect_to(profile_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
             else
-              oauth = request.env['omniauth.auth']
-              errors = @handler_result.errors.inspect
-              last_exception = $!.inspect
-              exception_backtrace = $@.inspect
-
-              error_message = "[SocialAuthController#oauth_callback] IllegalState on failure: " +
-                              "OAuth data: #{oauth}; error code: #{code}; " +
-                              "handler errors: #{errors}; last exception: #{last_exception}; " +
-                              "exception backtrace: #{exception_backtrace}"
-
-              # Send the error to Sentry
-              Sentry.capture_message(error_message)
+              # Another unhandled error has occurred - Send the error to Sentry
+              Sentry.capture_message(@handler_result.errors.inspect)
           end
         }
       )
