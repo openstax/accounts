@@ -31,7 +31,6 @@ class SocialAuthController < ApplicationController
         },
         failure: lambda {
           @email = @handler_result.outputs.email
-          save_login_failed_email(@email)
 
           code = @handler_result.errors.first.code
           authentication = @handler_result.outputs.authentication

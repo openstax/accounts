@@ -66,7 +66,6 @@ class CompleteEducatorProfile
       how_many_students:                   signup_params.num_students_per_semester_taught,
       which_books:                         which_books,
       self_reported_school:                signup_params.school_name,
-      is_profile_complete:                 true,
       is_educator_pending_cs_verification: !@did_use_sheerid
     )
 
@@ -78,7 +77,7 @@ class CompleteEducatorProfile
       # user needs CS review to become confirmed - set it as such in accounts
       @user.update(
         requested_cs_verification_at: DateTime.now,
-        faculty_status: :pending_faculty
+        faculty_status: 'pending_faculty'
       )
       if signup_params.school_issued_email.present?
         # this user used the CS form and _should_ have provided us an email address -
@@ -92,12 +91,12 @@ class CompleteEducatorProfile
       # sheerid_webhook when we hear back from their webhook
       # Otherwise, we can see who didn't fill out their profile with a faculty
       # status of :incomplete_signup
-      if @user.faculty_status == :incomplete_signup && !@did_use_sheerid
-        @user.faculty_status = :pending_faculty
+      if @user.faculty_status == 'needs_verification' && !@did_use_sheerid
+        @user.faculty_status = 'pending_faculty'
         SecurityLog.create!(
           user: @user,
           event_type: :faculty_status_updated,
-          event_data: { old_status: "incomplete", new_status: "pending" }
+          event_data: { old_status: "needs_verification", new_status: "pending_faculty" }
         )
       end
     end
@@ -119,7 +118,7 @@ class CompleteEducatorProfile
 
     # Now we create the lead for the user... because we returned above
     # if they did... again SheeridWebhook
-    CreateSalesforceLeadJob.perform_later(@user.id)
+    CreateSalesforceLead.perform_later(user_id: @user.id)
 
   end
 

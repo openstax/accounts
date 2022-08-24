@@ -5,12 +5,7 @@ class EducatorSignupController < SignupController
 
   before_action :prevent_caching, only: :sheerid_webhook
 
-  before_action(:check_if_signup_complete, only: %i[
-      sheerid_form
-      profile_form
-      pending_cs_verification_form
-    ]
-  )
+  before_action(:check_if_signup_complete, only: %i[sheerid_form, profile_form, pending_cs_verification_form])
 
   def sheerid_form
     @sheerid_url = generate_sheer_id_url(user: current_user)
@@ -20,9 +15,6 @@ class EducatorSignupController < SignupController
   # SheerID makes a POST request to this endpoint when it verifies an educator
   # http://developer.sheerid.com/program-settings#webhooks
   def sheerid_webhook
-    current_user.faculty_status = 'needs_verification'
-    current_user.save!
-
     handle_with(
       SheeridWebhook,
       verification_id: sheerid_provided_verification_id_param,
@@ -45,9 +37,6 @@ class EducatorSignupController < SignupController
   end
 
   def profile_form
-    current_user.faculty_status = 'needs_profile'
-    current_user.save!
-
     store_if_sheerid_is_unviable_for_user
     store_sheerid_verification_for_user
     security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
@@ -61,11 +50,7 @@ class EducatorSignupController < SignupController
         user = @handler_result.outputs.user
         security_log(:user_profile_complete, { user: user })
 
-        if user.is_educator_pending_cs_verification?
-          redirect_to(cs_verification_path)
-        else
-          redirect_to(signup_done_path)
-        end
+        user.pending_faculty? ? redirect_to(cs_verification_path) : redirect_to(signup_done_path)
       },
       failure: lambda {
         security_log(:educator_sign_up_failed, user: current_user, reason: @handler_result.errors)
