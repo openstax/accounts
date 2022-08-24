@@ -113,7 +113,7 @@ user_method: current_user
 # user_name: name
 
 # custom before_action to use for auth
-before_action_method: check_if_admin
+before_action_method: authenticate_admin!
 
 # email to send checks from
 # from_email: no-reply@openstax.org
@@ -135,4 +135,3 @@ check_schedules:
 # note: with trend, time series are sent to https://trendapi.org
 # forecasting: prophet / trend
 # forecasting: prophet
-
