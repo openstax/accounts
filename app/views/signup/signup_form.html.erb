@@ -179,7 +179,7 @@
   <%= javascript_include_tag 'application/ko_extensions' %>
 </div>
 
-<% if @selected_signup_role == 'educator' %>
+<% if @selected_signup_role == :instructor %>
   <script type="text/javascript">
       // Add the data-bind to the form tag, since can't do that in markup
       const formEl = document.querySelector('form');

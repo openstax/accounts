@@ -29,7 +29,7 @@ class SignupForm
   end
 
   def required_params
-    if signup_params.role == 'instructor'
+    if signup_params.role == :instructor
       [:role, :email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
     else
       # student

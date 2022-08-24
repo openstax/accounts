@@ -5,6 +5,7 @@ class SignupController < ApplicationController
   skip_before_action :authenticate_user!, except: :signup_done
   before_action :skip_signup_done_for_tutor_users, only: :signup_done
   before_action :total_steps, except: :welcome
+  before_action :return_to_signup_if_not_signed_in, except: [:welcome, :signup_form, :signup_post]
 
   def welcome
     redirect_back(fallback_location: profile_path) if signed_in?
@@ -15,6 +16,11 @@ class SignupController < ApplicationController
     @errors = params[:errors]
     # make sure they are using one of the approved roles to signup
     if [:educator, :student].include? @selected_signup_role
+      # Educator is what is displayed on accounts, instructor is the internal name for this role
+      if @selected_signup_role == :educator
+        @selected_signup_role = :instructor
+      end
+
       render :signup_form
     else
       head(:not_found)
@@ -24,6 +30,7 @@ class SignupController < ApplicationController
   def signup_post
     handle_with(
       SignupForm,
+      # TODO: what is all this stuff getting set?
       contracts_required: !contracts_not_required,
       client_app: get_client_app,
       is_bri_book: is_bri_book_adopter?,
@@ -137,7 +144,12 @@ class SignupController < ApplicationController
 
   def skip_signup_done_for_tutor_users
     return unless current_user.source_application&.name&.downcase&.include?('tutor')
-
     redirect_back(fallback_location: signup_done_path)
+  end
+
+  def return_to_signup_if_not_signed_in
+    if current_user.is_anonymous? || !session[:signing_up_user]
+      redirect_to(signup_path)
+    end
   end
 end
