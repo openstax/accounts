@@ -4,7 +4,6 @@ RSpec.describe IdentityAccessPolicy do
 
   let!(:identity)  { FactoryBot.create :identity }
   let!(:anon)      { AnonymousUser.instance }
-  let!(:temp)      { FactoryBot.create :temp_user }
   let!(:user)      { FactoryBot.create :user }
   let!(:admin)     { FactoryBot.create :user, :admin }
   let!(:app)       { FactoryBot.create :doorkeeper_application }
@@ -19,7 +18,6 @@ RSpec.describe IdentityAccessPolicy do
     it 'can be accessed by human users' do
       [:new, :reset_password].each do |action|
         expect(OSU::AccessPolicy.action_allowed?(action, anon, identity)).to eq true
-        expect(OSU::AccessPolicy.action_allowed?(action, temp, identity)).to eq true
         expect(OSU::AccessPolicy.action_allowed?(action, user, identity)).to eq true
         expect(OSU::AccessPolicy.action_allowed?(action, admin, identity)).to eq true
       end
@@ -30,7 +28,6 @@ RSpec.describe IdentityAccessPolicy do
     it 'cannot be accessed by applications or unauthorized users' do
       expect(OSU::AccessPolicy.action_allowed?(:update, app, identity)).to eq false
       expect(OSU::AccessPolicy.action_allowed?(:update, anon, identity)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:update, temp, identity)).to eq false
       expect(OSU::AccessPolicy.action_allowed?(:update, user, identity)).to eq false
       expect(OSU::AccessPolicy.action_allowed?(:update, admin, identity)).to eq false
     end

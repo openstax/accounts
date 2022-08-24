@@ -31,7 +31,6 @@ RSpec.describe UserAccessPolicy do
     it 'can be accessed by human users' do
       expect(OSU::AccessPolicy.action_allowed?(:read, user, user)).to eq true
       expect(OSU::AccessPolicy.action_allowed?(:read, admin, admin)).to eq true
-      expect(OSU::AccessPolicy.action_allowed?(:read, temp, temp)).to eq true
 
       expect(OSU::AccessPolicy.action_allowed?(:update, user, user)).to eq true
       expect(OSU::AccessPolicy.action_allowed?(:update, admin, admin)).to eq true

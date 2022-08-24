@@ -16,9 +16,6 @@ class MockUserState
     self.the_current_user
   end
 
-  def clear_pre_auth_state
-  end
-
   protected
 
   attr_accessor :the_current_user
