@@ -3,7 +3,7 @@ class ChangeSignupEmail
 
   paramify :change_signup_email do
     attribute :email
-    attribute :new_email
+    attribute :old_email
     validates :email, presence: true
   end
 
@@ -14,7 +14,9 @@ class ChangeSignupEmail
   end
 
   def handle
-    if LookupUsers.by_verified_email(change_signup_email_params.email.squish!).first
+    new_email = change_signup_email_params.email.squish!
+
+    if LookupUsers.by_verified_email(new_email).first
       fatal_error(
         code: :email_taken,
         message: I18n.t(:"login_signup_form.email_address_taken"),
@@ -23,7 +25,7 @@ class ChangeSignupEmail
     end
 
     @email_address = EmailAddress.where(value: change_signup_email_params.old_email).first
-    @email_address.value = change_signup_email_params.email.squish!
+    @email_address.value = new_email
     @email_address.reset_confirmation_pin_code
     @email_address.save
 

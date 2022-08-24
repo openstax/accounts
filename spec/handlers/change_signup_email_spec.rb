@@ -12,7 +12,8 @@ RSpec.describe ChangeSignupEmail, type: :handler do
   let(:params) {
     {
       change_signup_email: {
-        email: Faker::Internet.free_email
+        email: Faker::Internet.free_email,
+        old_email: before_change_email
       }
     }
   }
@@ -20,6 +21,7 @@ RSpec.describe ChangeSignupEmail, type: :handler do
   context 'when success' do
     it 'changes the user\'s only email address' do
       new_email = params.dig(:change_signup_email, :email)
+      old_email = params.dig(:change_signup_email, :old_email)
 
       expect(user.email_addresses.first.value).not_to eq new_email
 
