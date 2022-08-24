@@ -38,6 +38,8 @@
 
             <br/>
 
+            <%= f.hidden_field :old_email, value: @signing_up_user[:email]['value'] %>
+
             <div class="content">
               <%=
                 f.submit(

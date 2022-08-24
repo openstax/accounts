@@ -69,23 +69,21 @@ module UserSessionManagement
     !current_user.is_anonymous?
   end
 
-  def set_login_state(username_or_email: nil, matching_user_ids: nil, names: nil, providers: nil)
+  def set_login_state(email: nil, first_name: nil, last_name: nil, role: nil)
     session[:login] = {
-      'u' => username_or_email,
-      'm' => matching_user_ids,
-      'n' => names,
-      'p' => providers
+      'email' => email,
+      'first_name' => first_name,
+      'last_name' => last_name,
+      'role' => role
     }
   end
 
   def get_login_state
-    clear_login_state if signed_in? # should have happened already, but may not have
-
     {
-      username_or_email: session[:login].try(:[],'u'),
-      matching_user_ids: session[:login].try(:[], 'm'),
-      names: session[:login].try(:[],'n'),
-      providers: session[:login].try(:[],'p')
+      email: session[:login].try(:[],'email'),
+      first_name: session[:login].try(:[], 'first_name'),
+      last_name: session[:login].try(:[],'last_name'),
+      role: session[:login].try(:[], 'role'),
     }
   end
 
@@ -133,15 +131,4 @@ module UserSessionManagement
   def get_alternate_signup_url
     session[:alt_signup]
   end
-
-  # New flow below
-    def save_login_failed_email(email)
-      session[:login_failed_email] = email
-    end
-
-    def login_failed_email
-      session.delete(:login_failed_email)
-    end
-
-
 end

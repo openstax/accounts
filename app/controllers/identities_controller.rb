@@ -37,8 +37,7 @@ class IdentitiesController < ApplicationController
     # Can be reached before logged in (can't remember password) or when logged
     # in and asked to reauthenticate and can't remember password.
 
-    user = signed_in? ? current_user :
-                        User.find_by(id: get_login_state[:matching_user_ids].try(:first))
+    user = signed_in? ? current_user : nil
 
     redirect_to(root_path, alert: I18n.t(:'controllers.lost_user')) && return if user.nil?
 
@@ -51,7 +50,7 @@ class IdentitiesController < ApplicationController
                 end,
                 failure: lambda do
                   security_log :help_request_failed, user: user
-                  redirect_to authenticate_path
+                  redirect_to login_path
                 end)
   end
 

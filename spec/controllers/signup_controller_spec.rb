@@ -45,7 +45,7 @@ RSpec.describe SignupController, type: :controller do
         terms_accepted: true,
         contract_1_id: FinePrint::Contract.first.id,
         contract_2_id: FinePrint::Contract.second.id,
-        role: 'educator'
+        role: 'instructor'
       }
     }
   end
@@ -62,12 +62,12 @@ RSpec.describe SignupController, type: :controller do
         terms_accepted: true,
         contract_1_id: FinePrint::Contract.first.id,
         contract_2_id: FinePrint::Contract.second.id,
-        role: 'educator'
+        role: 'instructor'
       }
     }
   end
 
-  let(:change_email_params) {
+  let(:valid_change_email_params) {
     {
       change_signup_email: {
         email: 'newemail@openstax.org'
@@ -142,22 +142,23 @@ RSpec.describe SignupController, type: :controller do
     describe 'POST #change_signup_email' do
       before do
         post(:signup_post, params: valid_student_params)
+        get(:change_signup_email_form)
       end
 
       context 'success' do
-        xit 'redirects to verify_email_by_pin_form_path' do
+        it 'redirects to verify_email_by_pin_form_path' do
           get(:change_signup_email_form)
           expect(response).to render_template(:change_signup_email_form)
-          post(:change_signup_email_post, params: change_email_params)
+          post(:change_signup_email_post, params: valid_change_email_params)
           expect(response).to redirect_to(verify_email_by_pin_form_path)
         end
       end
 
       context 'failure' do
-        xit 'renders change_signup_email_form' do
+        it 'renders change_signup_email_form' do
           get(:change_signup_email_form)
           expect(response).to render_template(:change_signup_email_form)
-          post(:change_signup_email_post, params: change_email_params)
+          post(:change_signup_email_post, params: invalid_change_email_params)
           expect(response).to render_template(:change_signup_email_form)
         end
       end
@@ -216,44 +217,28 @@ RSpec.describe SignupController, type: :controller do
 
     describe 'POST #change_signup_email' do
       before do
-        user = create_user('original@openstax.org')
-        user.update_attribute('state', 'unverified')
+        post(:signup_post, params: valid_educator_params)
+        get(:change_signup_email_form)
       end
 
       context 'success' do
-        let(:valid_email_params) {
-          {
-            change_signup_email: {
-              email: 'newemail@openstax.org'
-            }
-          }
-        }
-
         it 'redirects to verify_email_by_pin_form_path' do
-          post(:change_signup_email_post, params: valid_email_params)
+          post(:change_signup_email_post, params: valid_change_email_params)
           expect(response).to redirect_to(verify_email_by_pin_form_path)
         end
       end
 
       context 'failure' do
-        let(:invalid_email_params) {
-          {
-            change_signup_email: {
-              email: 'invalid-email@..'
-            }
-          }
-        }
-
         it 'renders change_signup_email_form' do
-          post(:change_signup_email_post, params: invalid_email_params)
+          post(:change_signup_email_post, params: invalid_change_email_params)
           expect(response).to render_template(:change_signup_email_form)
         end
       end
     end
 
     describe 'GET #verify_email_by_pin_form' do
-      context 'with current incomplete educator' do
-        let(:user) { FactoryBot.create(:user_with_emails, state: 'unverified') }
+      context 'with current signing up educator' do
+        let(:user) { FactoryBot.create(:user_with_emails, faculty_status: 'needs_email_verification') }
 
         it 'renders correct template' do
           get(:verify_email_by_pin_form)
