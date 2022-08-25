@@ -2,9 +2,7 @@ require 'rails_helper'
 
 RSpec.describe SocialAuthController, type: :controller do
   describe 'GET #oauth_callback' do
-    let(:info) do
-      { email: 'user@openstax.org', name: Faker::Name.name }
-    end
+    let(:info) { { email: 'user@openstax.org', name: Faker::Name.name } }
 
     before do
       allow_any_instance_of(OauthCallback).to receive(:oauth_response)  do
@@ -17,38 +15,13 @@ RSpec.describe SocialAuthController, type: :controller do
       get(:oauth_callback, params: { provider: 'facebook' })
     end
 
-    context 'social login (login means user.state == activated) - success' do
-      let(:user) do
-        create_user('student@openstax.org')
-      end
+    context 'social signup as a student' do
+      let(:params) { { provider: 'facebook', uid: Faker::Internet.uuid, email: Faker::Internet.safe_email } }
 
-      let(:params) do
-        { provider: 'facebook', uid: Faker::Internet.uuid }
-      end
-
-      before do
-        FactoryBot.create :authentication, user: user, provider: params[:provider], uid: params[:uid]
-      end
-
-      it 'responds with 302 redirect' do
-        get(:oauth_callback, params: params)
-        assert_response :redirect
-      end
-
-      it 'signs in the user' do
+      it 'signs the user in and renders confirm_social_info_form' do
         expect_any_instance_of(described_class).to receive(:sign_in!).and_call_original
-        get(:oauth_callback, params: params)
-      end
-    end
-
-    context 'social signup (signup means user.state != activated) - success' do
-      let(:params) do
-        { provider: 'facebook', uid: Faker::Internet.uuid }
-      end
-
-      it 'renders confirm_social_info_form' do
-        get(:oauth_callback, params: params)
-        expect(response).to render_template(:confirm_social_info_form)
+        post(:oauth_callback, params: params)
+        expect(response).to redirect_to(confirm_oauth_info_path)
       end
     end
 
@@ -58,9 +31,7 @@ RSpec.describe SocialAuthController, type: :controller do
           allow_any_instance_of(OauthCallback).to receive(:mismatched_authentication?).and_return(true)
         end
 
-        let(:params) do
-          { provider: 'facebook', uid: 'nonexistent' }
-        end
+        let(:params) { { provider: 'facebook', uid: Faker::Internet.uuid } }
 
         it 'redirects to login' do
           get(:oauth_callback, params: params)
@@ -69,13 +40,8 @@ RSpec.describe SocialAuthController, type: :controller do
       end
 
       context 'when no email address is returned' do
-        let(:info) do
-          { email: nil, name: Faker::Name.name }
-        end
-
-        let(:params) do
-          { provider: 'facebook', uid: Faker::Internet.uuid }
-        end
+        let(:info) { { email: nil, name: Faker::Name.name } }
+        let(:params) { { provider: 'facebook', uid: Faker::Internet.uuid } }
 
         before do
           allow_any_instance_of(OauthCallback).to receive(:oauth_response)  do

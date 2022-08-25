@@ -1,5 +1,5 @@
 # Creates a verified user, an email address, and a password
-def create_user(email_or_username, password='password', terms_agreed=nil, confirmation_code=nil, role='student')
+def create_user(email_or_username, password='password', terms_agreed=nil, confirmation_code=nil, role='student', with_auth: true)
   terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
                           :terms_agreed :
                           :terms_not_agreed
@@ -15,9 +15,11 @@ def create_user(email_or_username, password='password', terms_agreed=nil, confir
   end
 
   identity = FactoryBot.create :identity, user: user, password: password
-  authentication = FactoryBot.create :authentication, user: user,
-                                                      provider: 'identity',
-                                                      uid: identity.uid
+  if with_auth
+    authentication = FactoryBot.create :authentication, user: user,
+                                                        provider: 'identity',
+                                                        uid: identity.uid
+  end
   user
 end
 

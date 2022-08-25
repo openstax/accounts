@@ -7,6 +7,7 @@ class SocialAuthController < ApplicationController
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback
+    @user = current_user
     if signed_in? && user_signin_is_too_old?
       reauthenticate_user!
     else
@@ -16,16 +17,16 @@ class SocialAuthController < ApplicationController
           authentication = @handler_result.outputs.authentication
           user = @handler_result.outputs.user
 
-          if !user.first_name
+          sign_in!(user)
+
+          unless user.activated? # needs social confirmation page for info
             @first_name = user.first_name
-            @last_name = user.last_name
-            @email = @handler_result.outputs.email
+            @last_name  = user.last_name
+            @email      = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
-            # must confirm their social info on signup
             redirect_to confirm_oauth_info_path and return
           end
 
-          sign_in!(user)
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
           redirect_back
         },
