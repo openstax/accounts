@@ -5,7 +5,7 @@ describe LookupUsers, type: :lib do
   context '#by_verified_email_or_username' do
     it 'returns nothing for nil username lookup' do
       FactoryBot.create(:user, username: nil)
-      expect(described_class.by_verified_email_or_username(nil)).to eq []
+      expect(described_class.by_email_or_username(nil)).to eq []
     end
 
     context '#by_verfied_email' do
@@ -31,19 +31,19 @@ describe LookupUsers, type: :lib do
       }
 
       it 'finds an exact match' do
-        expect(described_class.by_verified_email_or_username('BOB')).to eq [@user2]
+        expect(described_class.by_email_or_username('BOB')).to eq [@user2]
       end
 
       it 'returns no results when no exact match' do
         # An empty return is desired because we have no way to deal with multiple case
         # insensitive username matches
-        expect(described_class.by_verified_email_or_username('boB')).to eq []
+        expect(described_class.by_email_or_username('boB')).to eq []
       end
     end
 
     it 'finds a user when there is only one case insensitive match by username' do
       @user = FactoryBot.create(:user, username: 'BOB')
-      expect(described_class.by_verified_email_or_username('bob')).to eq [@user]
+      expect(described_class.by_email_or_username('bob')).to eq [@user]
     end
   end
 end

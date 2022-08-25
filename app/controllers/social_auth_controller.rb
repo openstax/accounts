@@ -14,8 +14,9 @@ class SocialAuthController < ApplicationController
         OauthCallback,
         success: lambda {
           authentication = @handler_result.outputs.authentication
+          user = @handler_result.outputs.user
 
-          if current_user.student? && !current_user.first_name
+          if !user.first_name
             @first_name = user.first_name
             @last_name = user.last_name
             @email = @handler_result.outputs.email
@@ -24,8 +25,8 @@ class SocialAuthController < ApplicationController
             redirect_to confirm_oauth_info_path and return
           end
 
-          sign_in!(current_user)
-          security_log(:authenticated_with_social, user: current_user, authentication_id: authentication.id)
+          sign_in!(user)
+          security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
           redirect_back
         },
         failure: lambda {
