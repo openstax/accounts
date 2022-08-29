@@ -19,7 +19,7 @@ class SocialAuthController < ApplicationController
 
           sign_in!(user)
 
-          unless user.activated? # needs social confirmation page for info
+          if user.unverified? # needs social confirmation page for info
             @first_name = user.first_name
             @last_name  = user.last_name
             @email      = @handler_result.outputs.email
