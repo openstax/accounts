@@ -18,14 +18,6 @@ class LoginController < ApplicationController
       LogInUser,
       success: lambda {
         user = @handler_result.outputs.user
-
-        if Rails.env.production?
-          Sentry.configure_scope do |scope|
-            scope.set_tags(user_role: user.role.humanize)
-            scope.set_user(uuid: user.uuid)
-          end
-        end
-
         sign_in!(user, security_log_data: { 'email': @handler_result.outputs.email} )
 
         # This will redirect users not having verified their email address or instructors
@@ -43,8 +35,6 @@ class LoginController < ApplicationController
   end
 
   def logout
-    Sentry.set_user({}) if Rails.env.production?
-
     sign_out!
     redirect_back(fallback_location: login_path)
   end
