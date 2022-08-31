@@ -26,19 +26,20 @@ class ApplicationController < ActionController::Base
   end
 
   def check_if_signup_complete
+    return if session[:login].nil?
     # user has not verified email address - send them back to verify email form
-    if current_user.faculty_status == 'incomplete_signup' && session[:login].nil?
+    if current_user.faculty_status == 'incomplete_signup'
       redirect_to(verify_email_by_pin_form_path) and return
     end
 
     # If the user is not a student, let's make sure they finished the signup process.
     unless current_user.student?
-      if current_user.needs_verification? && session[:login].nil?
+      if current_user.needs_verification?
         security_log(:educator_resumed_signup_flow, message: 'Verification required - SheerID verification form.')
         redirect_to sheerid_form_path and return
       end
 
-      if current_user.needs_profile? && session[:login].nil?
+      if current_user.needs_profile?
         security_log(:educator_resumed_signup_flow, message: 'Profile required - return to complete profile screen.')
         redirect_to profile_form_path and return
       end
