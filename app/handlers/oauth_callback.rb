@@ -8,15 +8,6 @@ class OauthCallback
 
   lev_handler
 
-  uses_routine(
-    TransferAuthentications,
-    translations: {
-      inputs: {
-        map: { authentication: :email_address }
-      }
-    },
-    raise_fatal_errors: true
-  )
   uses_routine(TransferOmniauthData)
 
   include Rails.application.routes.url_helpers
@@ -47,9 +38,9 @@ class OauthCallback
     # No user found with the given authentication, but a user *was* found with the given email address.
     # We will add the authentication to their existing account and then log them in.
     elsif(existing_user = user_most_recently_used(users_matching_oauth_data))
-      outputs.authentication = @authentication
-      run(TransferAuthentications, @authentication, existing_user)
       outputs.user = existing_user
+      run(TransferOmniauthData, @oauth_data, existing_user)
+      outputs.authentication = existing_user.authentications.last
     # This defaults to only allowing a student to signup with social - instructors can only add it on their profile
     # So we'll make sure this isn't an existing instructor user - then proceed to sign them up
     # (social signup is hidden on instructor signup)
@@ -57,8 +48,7 @@ class OauthCallback
       user = User.create(role: 'student', faculty_status: 'no_faculty_info', state: 'unverified')
       outputs.user = user
       run(TransferOmniauthData, @oauth_data, user)
-      run(TransferAuthentications, @authentication, user)
-      outputs.authentication = @authentication
+      outputs.authentication = user.authentications.last
     end
   end
 
