@@ -34,6 +34,8 @@ class ConfirmByPin
         fatal_error(code: :pin_not_correct)
       end
     end
+
+    outputs[:contact_info] = contact_info
   end
 
 end
