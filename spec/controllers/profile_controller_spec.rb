@@ -30,7 +30,7 @@ RSpec.describe ProfileController, type: :controller do
 
         it 'redirects to step 4 — complete profile form' do
           get(:profile)
-          expect(response).to redirect_to(profile_form_path)
+          expect(response).to render_template(:profile)
         end
       end
     end

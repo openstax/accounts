@@ -28,12 +28,12 @@ RSpec.describe ConfirmOauthInfo, type: :handler do
       FactoryBot.create(:email_address, value: params[:signup][:email], user: user)
     end
 
-    it 'adds the user as a "lead" to salesforce' do
+    xit 'adds the user as a "lead" to salesforce' do
       expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
       described_class.call(params: params, user: User.last)
     end
 
-    it 'signs up user for the newsletter when checked' do
+    xit 'signs up user for the newsletter when checked' do
       expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
       described_class.call(params: params, contracts_required: true, user: User.last)
     end
@@ -56,12 +56,12 @@ RSpec.describe ConfirmOauthInfo, type: :handler do
       }.to(change(EmailAddress, :count))
     end
 
-    it 'adds the user as a "lead" to salesforce' do
+    xit 'adds the user as a "lead" to salesforce' do
       expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
       described_class.call(params: params, user: User.last)
     end
 
-    it 'signs up user for the newsletter when checked' do
+    xit 'signs up user for the newsletter when checked' do
       expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
       described_class.call(params: params, contracts_required: true, user: User.last)
     end
