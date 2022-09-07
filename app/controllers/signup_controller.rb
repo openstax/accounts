@@ -141,11 +141,7 @@ class SignupController < ApplicationController
   def signup_done
     @signing_up_user ||= current_user.is_anonymous? ? session[:signing_up_user] : current_user
     security_log(:sign_up_successful, form_name: action_name)
-    if @signing_up_user.source_application&.name&.downcase&.include?('tutor')
-      redirect_back
-    else
-      redirect_to(profile_path)
-    end
+    redirect_to(profile_path)
   end
 
   private
