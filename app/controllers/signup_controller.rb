@@ -160,7 +160,7 @@ class SignupController < ApplicationController
 
   def skip_signup_done_for_tutor_users
     return unless @signing_up_user.source_application&.name&.downcase&.include?('tutor')
-    redirect_back(fallback_location: signup_done_path)
+    redirect_back
   end
 
   def return_to_signup_if_not_signed_in
