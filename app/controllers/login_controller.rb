@@ -24,10 +24,11 @@ class LoginController < ApplicationController
         # that have not completed their verification / profile.
         # Otherwise, it returns them back to the `r` param or their profile
         check_if_signup_complete
+        redirect_back
       },
       failure: lambda {
         email = @handler_result.outputs.email
-        save_login_failed_email(email)
+        session[:login_failed_email] = email
         security_log(:sign_in_failed, { reason: @handler_result.errors.first.code, email: email })
         render :login_form
       }

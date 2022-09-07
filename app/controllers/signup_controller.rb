@@ -35,18 +35,14 @@ class SignupController < ApplicationController
       client_app: get_client_app,
       is_bri_book: is_bri_book_adopter?,
       success: lambda {
-        user = @handler_result.outputs.user
-        set_login_state(email: user.email_addresses.last,
-                        first_name: user.first_name,
-                        last_name: user.last_name,
-                        role: user.role)
+        @signing_up_user = @handler_result.outputs.user
 
-        security_log(:user_viewed_signup_form, { user: user })
+        security_log(:user_viewed_signup_form, { user: @signing_up_user })
         clear_cache_bri_marketing
 
-        user.faculty_status = 'needs_email_verified'
-        user.save!
-        sign_in!(user)
+        @signing_up_user.faculty_status = 'needs_email_verified'
+        @signing_up_user.save!
+        sign_in!(@signing_up_user)
         redirect_to verify_email_by_pin_form_path and return
       },
       failure: lambda {
@@ -58,22 +54,22 @@ class SignupController < ApplicationController
   end
 
   def verify_email_by_pin_form
-    @signing_up_user = get_login_state
+    @signing_up_user = current_user
     render :email_verification_form
   end
 
   def verify_email_by_pin_post
-    @signing_up_user = get_login_state
+    @signing_up_user = current_user
     handle_with(
       VerifyEmailByPin,
-      email_address: current_user.email_addresses.first,
+      email_address: @signing_up_user.email_addresses.first,
       success: lambda {
-        user = @handler_result.outputs.user
-        sign_in!(user)
+        @signing_up_user = @handler_result.outputs.user
+        sign_in!(@signing_up_user)
         security_log(:contact_info_confirmed_by_pin,
-                     { user: user, email_address: current_user.email_addresses.first.value })
+                     { user: @signing_up_user, email_address: current_user.email_addresses.first.value })
 
-        if user.student?
+        if @signing_up_user.student?
           redirect_to signup_done_path
         else
           # instructor/educator
@@ -81,21 +77,21 @@ class SignupController < ApplicationController
         end
       },
       failure: lambda {
-        security_log(:contact_info_confirmation_by_pin_failed, email: current_user.email_addresses.first)
+        security_log(:contact_info_confirmation_by_pin_failed, email: @signing_up_user.email_addresses.first)
         render :email_verification_form
       }
     )
   end
 
   def verify_email_by_code
-    @signing_up_user = get_login_state
+    @signing_up_user = current_user
     handle_with(
       VerifyEmailByCode,
       success: lambda {
-        user = @handler_result.outputs.user
+        @signing_up_user = @handler_result.outputs.user
         security_log(:contact_info_confirmed_by_code, { user: user, email_address: @signing_up_user[:email][:value] })
 
-        if user.student?
+        if @signing_up_user.student?
           redirect_to signup_done_path
         else
           # instructor/educator
@@ -109,32 +105,33 @@ class SignupController < ApplicationController
   end
 
   def change_signup_email_form
-    @signing_up_user = get_login_state
+    @signing_up_user = current_user
+    render :change_signup_email_form
   end
 
   def change_signup_email_post
-    @signing_up_user = get_login_state
+    @signing_up_user = current_user
     handle_with(
       ChangeSignupEmail,
-      user: current_user,
+      user: @signing_up_user,
       success: lambda {
-        set_login_state(email: @handler_result.outputs.email)
+        @email = @signing_up_user.email_addresses.first.value
         redirect_to verify_email_by_pin_form_path and return
       },
       failure: lambda {
-        @email = current_user.email_addresses.first.value
+        @email = @signing_up_user.email_addresses.first.value
         render :change_signup_email_form and return
       }
     )
   end
 
   def check_your_email
-    @signing_up_user = get_login_state
+    @signing_up_user = current_user
   end
 
   def signup_done
     security_log(:sign_up_successful, form_name: action_name)
-    if current_user.source_application&.name&.downcase&.include?('tutor')
+    if @signing_up_user.source_application&.name&.downcase&.include?('tutor')
       redirect_back
     else
       redirect_to(profile_path)
@@ -161,7 +158,7 @@ class SignupController < ApplicationController
   end
 
   def return_to_signup_if_not_signed_in
-    if current_user.is_anonymous? && @signing_up_user[:role].nil?
+    if current_user.is_anonymous? || @signing_up_user[:role].nil?
       redirect_to(signup_path)
     end
   end

@@ -8,7 +8,7 @@ class PasswordManagementController < ApplicationController
   skip_before_action :authenticate_user!
 
   def forgot_password_form
-    @email = login_failed_email
+    @email = session[:login_failed_email]
   end
 
   def send_reset_password_email

@@ -68,21 +68,22 @@ module UserSessionManagement
     !current_user.is_anonymous?
   end
 
-  def set_login_state(email: nil, first_name: nil, last_name: nil, role: nil)
+  def set_login_state(username_or_email: nil, matching_user_ids: nil, names: nil, providers: nil)
     session[:login] = {
-      'email' => email,
-      'first_name' => first_name,
-      'last_name' => last_name,
-      'role' => role
+      'u' => username_or_email,
+      'm' => matching_user_ids,
+      'n' => names,
+      'p' => providers
     }
   end
 
   def get_login_state
+    clear_login_state if signed_in? # should have happened already, but may not have
     {
-      email: session[:login].try(:[],'email'),
-      first_name: session[:login].try(:[], 'first_name'),
-      last_name: session[:login].try(:[],'last_name'),
-      role: session[:login].try(:[], 'role'),
+      username_or_email: session[:login].try(:[], 'u'),
+      matching_user_ids: session[:login].try(:[], 'm'),
+      names:             session[:login].try(:[], 'n'),
+      providers:         session[:login].try(:[], 'p')
     }
   end
 

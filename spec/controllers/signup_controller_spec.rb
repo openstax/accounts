@@ -138,32 +138,6 @@ RSpec.describe SignupController, type: :controller do
         end
       end
     end
-
-    describe 'POST #change_signup_email' do
-      before do
-        post(:signup_post, params: valid_student_params)
-        get(:change_signup_email_form)
-      end
-
-      context 'success' do
-        it 'redirects to verify_email_by_pin_form_path' do
-          get(:change_signup_email_form)
-          expect(response).to render_template(:change_signup_email_form)
-          post(:change_signup_email_post, params: valid_change_email_params)
-          expect(response).to redirect_to(verify_email_by_pin_form_path)
-        end
-      end
-
-      context 'failure' do
-        it 'renders change_signup_email_form' do
-          get(:change_signup_email_form)
-          expect(response).to render_template(:change_signup_email_form)
-          post(:change_signup_email_post, params: invalid_change_email_params)
-          expect(response).to render_template(:change_signup_email_form)
-        end
-      end
-    end
-
   end
 
   context 'instructor' do
@@ -215,51 +189,21 @@ RSpec.describe SignupController, type: :controller do
       end
     end
 
-    describe 'POST #change_signup_email' do
-      before do
-        post(:signup_post, params: valid_educator_params)
-        get(:change_signup_email_form)
-      end
-
-      context 'success' do
-        it 'redirects to verify_email_by_pin_form_path' do
-          post(:change_signup_email_post, params: valid_change_email_params)
-          expect(response).to redirect_to(verify_email_by_pin_form_path)
-        end
-      end
-
-      context 'failure' do
-        it 'renders change_signup_email_form' do
-          post(:change_signup_email_post, params: invalid_change_email_params)
-          expect(response).to render_template(:change_signup_email_form)
-        end
-      end
-    end
-
     describe 'GET #verify_email_by_pin_form' do
       context 'with current signing up educator' do
         let(:user) { FactoryBot.create(:user_with_emails, faculty_status: 'needs_email_verification') }
 
-        it 'renders correct template' do
-          get(:verify_email_by_pin_form)
-          expect(response).to render_template(:email_verification_form)
+        it 'redirects to verify_email_by_pin_form_path' do
+          post(:signup_post, params: valid_student_params)
+          expect(response).to redirect_to(verify_email_by_pin_form_path)
         end
       end
     end
 
-    describe 'GET #change_signup_email_form' do
-      it 'renders the change email form template' do
-        user = create_user('user@openstax.org')
-        user.update(state: 'unverified', faculty_status: 'needs_email_verified')
-        get(:change_signup_email_form)
-        expect(response).to render_template(:change_signup_email_form)
-      end
-
-      it 'redirects when there is no user present' do
-        get(:change_signup_email_form)
+    it 'redirects when there is no user present' do
+        get(:verify_email_by_pin_form)
         expect(response.status).to eq(302)
         expect(response).to redirect_to(signup_path)
       end
-    end
   end
 end

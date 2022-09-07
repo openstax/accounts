@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
       end
     end
     unless request.path == profile_path
-      redirect_back(fallback_location: profile_path) unless session[:login]
+      redirect_back(fallback_location: profile_path)
     end
   end
 

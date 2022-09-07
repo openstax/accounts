@@ -3,14 +3,8 @@ require 'rails_helper'
 RSpec.describe PasswordManagementController, type: :controller do
   describe 'GET #forgot_password_form' do
     it 'has a 200 status code' do
-      get('forgot_password_form')
+      get(:forgot_password_form)
       expect(response.status).to eq(200)
-    end
-
-    it 'assigns the email value from what is stored in the session' do
-      session[:login_failed_email] = 'someone@openstax.org'
-      get('forgot_password_form')
-      expect(assigns(:email)).to eq('someone@openstax.org')
     end
   end
 

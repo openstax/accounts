@@ -19,7 +19,7 @@ RSpec.describe ProfileController, type: :controller do
           get(:profile)
           # This can redirect to the user profile or back to the application
           # they started from
-          expect(response).to have_http_status(:redirect)
+          expect(response).to render_template(:profile)
         end
       end
 
