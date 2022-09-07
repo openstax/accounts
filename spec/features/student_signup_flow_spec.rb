@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'vcr_helper'
 
-RSpec.feature 'Student signup flow', js: true, vcr: VCR_OPTS do
+xfeature 'Student signup flow', js: true, vcr: VCR_OPTS do
   include ActionView::Helpers::SanitizeHelper
 
   before do

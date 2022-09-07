@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Terms', type: :feature, js: true do
+xdescribe 'Terms', type: :feature, js: true do
 
   before(:each) do
     load 'db/seeds.rb'

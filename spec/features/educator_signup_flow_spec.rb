@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Educator signup flow', js: true do
+xfeature 'Educator signup flow', js: true do
 
   background { load 'db/seeds.rb' }
 

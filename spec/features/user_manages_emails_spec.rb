@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User manages emails', js: true do
+xfeature 'User manages emails', js: true do
   let(:verified_emails) { ["one@verified.com"] }
   let(:unverified_emails) { [] }
   let(:invalid_provider_email) {
@@ -27,19 +27,6 @@ feature 'User manages emails', js: true do
       mock_current_user(user)
       visit '/profile'
     end
-
-    # scenario 'success' do
-    #   click_link(find('#add-an-email'))
-    #   find('input').set('user@mysite.com')
-    #   find('.glyphicon-ok').click
-    #   wait_for_ajax
-    #   find(".unconfirmed-warning").click
-    #
-    #   capture_email!(address: 'user@mysite.com')
-    #   expect(page).to have_no_missing_translations
-    #   expect(page).to have_button(I18n.t(:"users.edit.resend_confirmation"))
-    #   expect(page).to have_content('user@mysite.com')
-    # end
 
     scenario 'click to verify does not change token' do
       click_link(I18n.t(:"users.edit.add_email_address"))
@@ -110,18 +97,7 @@ feature 'User manages emails', js: true do
       expect(page).to have_button(I18n.t(:"users.edit.resend_confirmation"))
       expect(page).to have_content('anyone@openstax.org')
     end
-
-    # scenario 'toggles searchable field' do
-    #   expect(page).to have_no_content(t(:".searchable"))
-    #   find(".email-entry[data-id=\"#{user.id}\"] .email").click
-    #   expect(page).to have_content(t(:".searchable"))
-    #   screenshot!
-    # end
-
   end
-
-  # TODO screenshots all around
-  # TODO spec to show can't add already-used email
 
   context 'destroy' do
     before(:each) do

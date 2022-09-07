@@ -1,25 +1,23 @@
 # Creates a verified user, an email address, and a password
 def create_user(email_or_username, password='password', terms_agreed=nil, confirmation_code=nil, role='student', with_auth: true)
-  terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
-                          :terms_agreed :
-                          :terms_not_agreed
+  terms_agreed_option = (terms_agreed.nil? || terms_agreed) ? :terms_agreed : :terms_not_agreed
 
   user = if email_or_username.include? '@'
     FactoryBot.create(:user, terms_agreed_option, role: role).tap do |user|
-      FactoryBot.create(:email_address, user: user, value: email_or_username,
-                        confirmation_code: confirmation_code,
+      FactoryBot.create(:email_address, user: user, value: email_or_username, confirmation_code: confirmation_code,
                         verified: confirmation_code.nil?)
     end
   else
     FactoryBot.create(:user, terms_agreed_option, username: email_or_username, role: role)
   end
 
-  identity = FactoryBot.create :identity, user: user, password: password
   if with_auth
+    identity = FactoryBot.create :identity, user: user, password: password
     authentication = FactoryBot.create :authentication, user: user,
                                                         provider: 'identity',
                                                         uid: identity.uid
   end
+
   user
 end
 
@@ -208,7 +206,7 @@ end
 
 def expect_sign_in_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"sessions.start.page_heading")
+  expect(page.current_url).to match(login_url)
 end
 
 def expect_profile_page
@@ -307,11 +305,6 @@ def reauthenticate_user(email, password)
   wait_for_animations
 end
 
-def expect_sign_up_welcome_tab
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"login_signup_form.welcome_page_header")
-end
-
 def submit_signup_form
   check('signup_terms_accepted')
   wait_for_ajax
@@ -401,7 +394,7 @@ end
 module Capybara
   class Session
     alias_method :original_visit, :visit
-    def visit(visit_uri)
+    def visit(visit_uri, params=nil)
       # Note that the feature specs aren't yet modified to pass in a cloudfront simulation
       # world.  Particularly, expectations on paths are hardcoded without the /accounts
       # prefix and would need to be modified or taught how to expect during a cloudfront
@@ -410,6 +403,7 @@ module Capybara
       if ENV['SIMULATE_CLOUDFRONT'] == 'true'
         uri = URI(visit_uri)
         uri.path = "/#{OpenStax::PathPrefixer.configuration.prefix}#{uri.path}"
+        uri.path + params if params
         visit_uri = uri.to_s
       end
 

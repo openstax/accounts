@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User updates password on profile screen', js: true do
+xfeature 'User updates password on profile screen', js: true do
   before(:each) do
     @user = create_user('user')
     @user.update!(role: User::STUDENT_ROLE)

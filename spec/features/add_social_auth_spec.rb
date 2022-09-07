@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Add social auth', js: true do
+xfeature 'Add social auth', js: true do
   before do
     load('db/seeds.rb')
   end

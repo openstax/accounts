@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "Remove accounts path prefix" do
+xdescribe "Remove accounts path prefix" do
   # Ensure that the config.ru gets loaded before these tests
   let(:app) {
     Rack::Builder.new do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'student login flow', js: true do
+xfeature 'student login flow', js: true do
   before do
     load 'db/seeds.rb' # creates terms of use and privacy policy contracts
     create_user('user@openstax.org')

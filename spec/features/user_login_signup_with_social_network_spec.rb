@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User logs in or signs up with a social network', js: true do
+xfeature 'User logs in or signs up with a social network', js: true do
   before do
     load('db/seeds.rb')
     allow_any_instance_of(CreateSalesforceLead).to receive(:exec)

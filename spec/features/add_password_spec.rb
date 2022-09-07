@@ -2,7 +2,7 @@ require 'rails_helper'
 
 require_relative './adding_and_resetting_password_from_profile'
 
-feature 'User adds password', js: true do
+xfeature 'User adds password', js: true do
   it_behaves_like 'adding and resetting password from profile', :add
 
   scenario 'without identity – form to create password is rendered' do

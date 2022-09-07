@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Require recent log in to change authentications', js: true do
+xfeature 'Require recent log in to change authentications', js: true do
   let!(:user) do
     user = create_user(email_value)
     user.update(role: 'student')

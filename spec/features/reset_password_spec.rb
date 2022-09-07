@@ -2,7 +2,7 @@ require 'rails_helper'
 
 require_relative './adding_and_resetting_password_from_profile'
 
-feature 'Password reset', js: true do
+xfeature 'Password reset', js: true do
   before do
     user.update!(role: User::STUDENT_ROLE)
   end
