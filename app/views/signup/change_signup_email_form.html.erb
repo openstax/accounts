@@ -29,7 +29,7 @@
                 name:        :email,
                 placeholder: I18n.t(:"login_signup_form.email_placeholder"),
                 autofocus:   true,
-                value: current_user.email_addresses.first.value
+                value: @signing_up_user[:email]['value']
               )
             %>
             <div class="tooltip">

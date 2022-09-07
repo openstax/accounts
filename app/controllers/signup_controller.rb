@@ -164,7 +164,7 @@ class SignupController < ApplicationController
   end
 
   def return_to_signup_if_not_signed_in
-    if current_user.is_anonymous? || @signing_up_user[:role].nil?
+    if current_user.is_anonymous? || @signing_up_user.nil?
       redirect_to(signup_path)
     end
   end
