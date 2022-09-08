@@ -15,6 +15,8 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
 
   # Returns true if the user is due for resetting their password
   def password_expired?
+    # TODO: In another PR, remove this line and make a data migration to set all expiration timestamps to null
+    return if DEFAULT_PASSWORD_EXPIRATION_PERIOD.nil?
     !password_expires_at.nil? && password_expires_at <= DateTime.now
   end
 end
