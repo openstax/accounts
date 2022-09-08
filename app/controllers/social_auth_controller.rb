@@ -4,7 +4,8 @@ class SocialAuthController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   skip_before_action :authenticate_user!, only: [ :oauth_callback, :confirm_oauth_info ]
-
+  before_action :collect_info_during_social_signup, if: -> { signed_in? }, only: :oauth_callback
+  
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback
     @user = current_user
@@ -18,14 +19,6 @@ class SocialAuthController < ApplicationController
           user = @handler_result.outputs.user
 
           sign_in!(user)
-
-          if user.unverified? # needs social confirmation page for info
-            @first_name = user.first_name
-            @last_name  = user.last_name
-            @email      = @handler_result.outputs.email
-            security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
-            redirect_to confirm_oauth_info_path and return
-          end
 
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
           redirect_back
@@ -99,6 +92,18 @@ class SocialAuthController < ApplicationController
           render status: 422, plain: @handler_result.errors.map(&:message).to_sentence
         end
       )
+    end
+  end
+
+  protected
+
+  def collect_info_during_social_signup
+    if current_user.unverified? # needs social confirmation page for info
+      @first_name = current_user.first_name
+      @last_name = current_user.last_name
+      @email = current_user.email_address.first
+      security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
+      redirect_to(confirm_oauth_info_path)
     end
   end
 end
