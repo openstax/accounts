@@ -30,10 +30,8 @@ class OauthCallback
     @authentication = Authentication.find_or_initialize_by(provider: @oauth_data.provider, uid: @oauth_data.uid)
     user = User.find_by(id: @authentication.user_id)
     # User found with the given authentication. We will log them in.
-    # byebug
     if user.present?
       outputs.user = user
-      handle_while_logged_in(@authentication.user)
       outputs.authentication = @authentication
     # No user found with the given authentication, but a user *was* found with the given email address.
     # We will add the authentication to their existing account and then log them in.

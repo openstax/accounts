@@ -5,7 +5,7 @@ class SocialAuthController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [ :oauth_callback, :confirm_oauth_info ]
   before_action :collect_info_during_social_signup, if: -> { signed_in? }, only: :oauth_callback
-  
+
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback
     @user = current_user
