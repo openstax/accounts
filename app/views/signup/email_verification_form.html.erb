@@ -1,28 +1,70 @@
-<%=
-  render(
-    partial: 'signup/email_verification_form_template',
-    locals:  {
-      header:           I18n.t(
-        :"login_signup_form.confirmation_page_header",
-        first_name: current_user.first_name
-      ),
-      form_description: I18n.t(
-        "login_signup_form.#{
-          current_user.role == 'student' ? :student : :educator
-        }_email_verification_form_description".to_sym,
-        email: current_user.email_addresses.first.value,
-        edit_your_email: link_to(I18n.t(:"login_signup_form.edit_your_email"), change_signup_email_form_path)).html_safe,
-      current_step:     I18n.t(
-        :"login_signup_form.step_counter",
-        current_step: 2,
-        total_steps:  @total_steps
-      ),
-      help_message:     I18n.t(
-        :"login_signup_form.didnt_receive_email",
-        sign_up_with_different_email_link: link_to(
-                                             I18n.t(:"login_signup_form.sign_up_with_different_email"), change_signup_email_form_path
-                                           )).html_safe,
-      submit_to_path: :verify_email_by_pin_post
-    }
-  )
-%>
+<%= render 'shared/refresh_upon_going_back' %>
+
+<div id="login-signup-form">
+  <div class="content">
+    <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active' } %>
+    <%= login_signup_card(
+          classes:      "signup-page",
+          header: I18n.t(
+            :"login_signup_form.confirmation_page_header",
+            first_name: current_user.first_name
+          ),
+          current_step: I18n.t(
+            :"login_signup_form.step_counter",
+            current_step: 2,
+            total_steps:  @total_steps
+          )) do %>
+      <% lev_form_for :confirm, url: verify_email_by_pin_post do |form| %>
+        <%
+          form_helper = FormHelper::One.new(
+            f:       form,
+            context: self,
+            errors:  @handler_result&.errors
+          )
+        %>
+
+        <div class="content info-message">
+          <%= I18n.t(
+                "login_signup_form.#{
+                  @signing_up_user.role == 'student' ? :student : :educator
+                }_email_verification_form_description".to_sym) %>
+        </div>
+
+        <div class="content control-group">
+          <%= label_tag :pin, I18n.t(:'login_signup_form.pin_label'),
+                        class: 'field-label required'
+          %>
+          <%= form_helper.text_field name:        :pin,
+                                     placeholder: I18n.t(:'login_signup_form.pin_placeholder'),
+                                     autofocus:   true
+          %>
+        </div>
+
+        <div class="content">
+          <%= I18n.t(
+            :"login_signup_form.didnt_receive_email", sign_up_with_different_email_link:
+            link_to(I18n.t(:"login_signup_form.sign_up_with_different_email"), change_signup_email_form_path
+            )).html_safe %>
+        </div>
+
+        <br/>
+
+        <div class="content">
+          <%=
+            form.submit(
+              I18n.t(:"login_signup_form.confirm_my_account_button"),
+              class: 'primary',
+              data:  {
+                disable_with:  false,
+                'ga-category': 'Account Creation',
+                'ga-action':   'Click',
+                'ga-label':    '4A-Confirm My Account'
+              }
+            )
+          %>
+        </div>
+
+      <% end %>
+    <% end %>
+  </div>
+</div>

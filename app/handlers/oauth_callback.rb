@@ -97,6 +97,7 @@ class OauthCallback
     fatal_error(code: :invalid_omniauth_data)
   end
 
+  # TODO: is this is still needed?
   def handle_while_logged_in(user)
     if user&.activated?
       fatal_error(code: :authentication_taken,

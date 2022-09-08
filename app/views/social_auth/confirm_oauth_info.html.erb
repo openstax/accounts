@@ -86,10 +86,6 @@
                         <span><%= I18n.t(:"login_signup_form.send_me_newsletter") %></span>
                     </div>
 
-                    <% if current_user&.student? && is_bri_book_adopter? %>
-                        <%= render partial: 'shared/is_title_1_school_checkbox' %>
-                    <% end %>
-
                     <div class="terms">
                         <label>
                             <%= form.check_box :terms_accepted %>
@@ -100,8 +96,8 @@
                                 %>
                             </span>
                         </label>
-                        <%= form.hidden_field :contract_1_id, value: contracts.first.id %>
-                        <%= form.hidden_field :contract_2_id, value: contracts.second.id %>
+                        <%= form.hidden_field :contract_1_id, value: contracts.first&.id %>
+                        <%= form.hidden_field :contract_2_id, value: contracts.second&.id %>
                         <%= form.hidden_field :role, value: :student %>
                     </div>
                 </div>
