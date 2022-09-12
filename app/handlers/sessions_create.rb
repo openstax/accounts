@@ -27,7 +27,6 @@ class SessionsCreate
 
   lev_handler
 
-  uses_routine TransferAuthentications
   uses_routine TransferOmniauthData
   uses_routine ActivateUnclaimedUser
 
@@ -75,7 +74,7 @@ class SessionsCreate
     end
 
     sign_in!(authentication_user)
-    return :returning_user
+    :returning_user
   end
 
   def handle_during_signup
@@ -109,7 +108,6 @@ class SessionsCreate
       end
     end
 
-    run(TransferAuthentications, authentication, receiving_user)
     sign_in!(receiving_user)
     status
   end
@@ -123,7 +121,7 @@ class SessionsCreate
     # Check if they are trying to add a new authentication to their account
     if request.env['omniauth.params'].try!(:[], 'add') == 'true'
       # Add the new authentication
-      return :authentication_taken if authentication_user && authentication_user.activated?
+      return :authentication_taken if authentication_user&.activated?
 
       return :same_provider \
         if current_user.authentications.map(&:provider).include?(authentication.provider)
@@ -134,7 +132,6 @@ class SessionsCreate
         return :email_already_in_use
       end
 
-      run(TransferAuthentications, authentication, current_user)
       run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
 
       :authentication_added
@@ -169,10 +166,7 @@ class SessionsCreate
     #   true for Google (omniauth strategy checks that the emails are verified)
     #   true for FB (their API only returns verified emails)
 
-    @users_matching_oauth_data ||= EmailAddress.where(value: @data.email)
-                                               .verified
-                                               .with_users
-                                               .map(&:user)
+    @users_matching_oauth_data ||= EmailAddress.where(value: @data.email).verified.with_users.map(&:user)
   end
 
   def user_most_recently_used(users)
@@ -214,7 +208,7 @@ class SessionsCreate
 
   def signing_up?
     Sentry.capture_message("User caught in session_create signup flow #{current_user.id}")
-    return
+    nil
   end
 
   def logging_in?

@@ -4,10 +4,7 @@ class IdentitiesSetPassword
 
   paramify :set_password do
     attribute :password, type: String
-    attribute :password_confirmation, type: String
-
     validates :password, presence: true
-    validates :password_confirmation, presence: true
   end
 
   uses_routine SetPassword
@@ -20,7 +17,6 @@ class IdentitiesSetPassword
 
   def handle
     run(SetPassword, user: caller,
-                     password: set_password_params.password,
-                     password_confirmation: set_password_params.password_confirmation )
+                     password: set_password_params.password )
   end
 end

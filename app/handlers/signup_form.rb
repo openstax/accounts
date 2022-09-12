@@ -5,7 +5,7 @@ class SignupForm
   lev_handler
 
   uses_routine AgreeToTerms
-  uses_routine CreateEmailForUser
+  uses_routine AddEmailToUser
   uses_routine SetPassword, translations: {
     outputs: {
       map:   { identity: :password },
@@ -83,7 +83,7 @@ class SignupForm
       user.update!(is_b_r_i_user: true, title_1_school: signup_params.is_title_1_school)
     end
 
-    run(CreateEmailForUser, email: signup_email, user: user)
+    run(AddEmailToUser, email: signup_email, user: user)
   end
 
   private

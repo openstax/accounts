@@ -29,11 +29,7 @@ class ChangePassword
       )
     end
 
-    run(
-      SetPassword,
-      user: @user,
-      password: change_password_form_params.password
-    )
+    run(SetPassword, user: @user, password: change_password_form_params.password)
   end
 
   private #################

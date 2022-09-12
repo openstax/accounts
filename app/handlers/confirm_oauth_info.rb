@@ -2,7 +2,7 @@ class ConfirmOauthInfo
 
   lev_handler
 
-  uses_routine CreateEmailForUser
+  uses_routine AddEmailToUser
   uses_routine AgreeToTerms
   uses_routine ActivateUser
 
@@ -36,7 +36,7 @@ class ConfirmOauthInfo
     return email_taken_error!(@user.id) if is_email_taken?(signup_params.email.squish!)
 
     if @user.email_addresses.none?
-      run(CreateEmailForUser, email: signup_params.email.squish!, user: @user)
+      run(AddEmailToUser, email: signup_params.email.squish!, user: @user)
     end
 
     @user.update(

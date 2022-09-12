@@ -2,7 +2,7 @@ class CompleteEducatorProfile
 
   lev_handler
 
-  uses_routine CreateEmailForUser, translations: {
+  uses_routine AddEmailToUser, translations: {
     outputs: {
       map:   { email: :school_issued_email },
       scope: :school_issued_email
@@ -46,7 +46,7 @@ class CompleteEducatorProfile
 
   def handle
     # let the controller know this is the cs form, so we can redirect properly on error
-    @is_on_cs_form        = signup_params.is_cs_form?
+    @is_on_cs_form = signup_params.is_cs_form?
     outputs.is_on_cs_form = @is_on_cs_form
 
     # is this user coming from the sheerid flow? there are a few things we can check...
@@ -59,13 +59,13 @@ class CompleteEducatorProfile
     return if errors?
 
     @user.update!(
-      role:                                signup_params.educator_specific_role,
-      other_role_name:                     other_role_name,
-      using_openstax_how:                  signup_params.using_openstax_how,
-      who_chooses_books:                   signup_params.who_chooses_books,
-      how_many_students:                   signup_params.num_students_per_semester_taught,
-      which_books:                         which_books,
-      self_reported_school:                signup_params.school_name,
+      role: signup_params.educator_specific_role,
+      other_role_name: other_role_name,
+      using_openstax_how: signup_params.using_openstax_how,
+      who_chooses_books: signup_params.who_chooses_books,
+      how_many_students: signup_params.num_students_per_semester_taught,
+      which_books: which_books,
+      self_reported_school: signup_params.school_name,
       is_educator_pending_cs_verification: !@did_use_sheerid
     )
 
@@ -82,7 +82,7 @@ class CompleteEducatorProfile
       if signup_params.school_issued_email.present?
         # this user used the CS form and _should_ have provided us an email address -
         # so let's add it - validation happens before this in check_params
-        run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
+        run(AddEmailToUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
       end
     else
       # If user did not need CS verification but still needs to be pending, set

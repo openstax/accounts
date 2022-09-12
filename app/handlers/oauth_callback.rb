@@ -109,7 +109,7 @@ class OauthCallback
                   message: I18n.t(:"login_signup_form.sign_in_option_already_used"))
     end
     # add the authentication to their account
-    run(TransferAuthentications, @authentication, user)
+    run(TransferOmniauthData, @authentication, user)
   end
 
   def oauth_response
