@@ -78,20 +78,6 @@ Rails.application.routes.draw do
   end
 
   #########################
-  #  Password Management  #
-  #########################
-  scope controller: :password_management do
-    # Password management process (forgot,  change, or create password)
-    get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
-    post 'send_reset_password_email', action: :send_reset_password_email, as: :send_reset_password_email
-    get 'reset_password_email_sent', action: :reset_password_email_sent, as: :reset_password_email_sent
-    get 'create_password_form', action: :create_password_form, as: :create_password_form
-    post 'create_password', action: :create_password, as: :create_password
-    get 'change_password_form', action: :change_password_form, as: :change_password_form
-    post 'change_password', action: :change_password, as: :change_password
-  end
-
-  #########################
   #  Social Auth          #
   #########################
   scope controller: :social_auth do
@@ -129,6 +115,9 @@ Rails.application.routes.draw do
 
     get 'add'
     post 'add'
+
+    get 'edit'
+    post 'edit'
 
     get 'reset_success'
     get 'add_success'

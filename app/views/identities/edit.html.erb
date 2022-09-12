@@ -19,7 +19,7 @@
       <%= login_signup_card(
             classes: "login-page",
             header:  I18n.t(:"login_signup_form.enter_new_password")) do %>
-        <% lev_form_for :change_password_form, url: change_password_path do |f| %>
+        <% lev_form_for :edit, url: password_edit_path do |f| %>
           <% fh = FormHelper::One.new(f:       f,
                                       context: self,
                                       errors:  @handler_result&.errors) %>

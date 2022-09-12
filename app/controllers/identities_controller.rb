@@ -19,6 +19,10 @@ class IdentitiesController < ApplicationController
     set_password(kind: :add)
   end
 
+  def edit
+    set_password(kind: :edit)
+  end
+
   def send_reset
     send_password_email(kind: :reset)
   end
@@ -67,6 +71,8 @@ class IdentitiesController < ApplicationController
                     else
                       case kind
                       when :add
+                        redirect_to action: :reset if current_user.identity.present? && !current_page?(password_reset_path)
+                      when :edit
                         redirect_to action: :reset if current_user.identity.present? && !current_page?(password_reset_path)
                       when :reset
                         redirect_to action: :add if current_user.identity.nil? && !current_page?(password_add_path)

@@ -5,7 +5,7 @@
     <%= login_signup_card(
           classes: "login-page",
           header:  I18n.t(:"login_signup_form.reset_my_password")) do %>
-      <% lev_form_for :forgot_password_form, url: password_send_reset_path do |form| %>
+      <% lev_form_for :reset, url: password_send_reset_path do |form| %>
         <%
           form_helper = FormHelper::One.new(
             f:       form,

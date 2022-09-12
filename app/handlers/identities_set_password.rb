@@ -16,7 +16,6 @@ class IdentitiesSetPassword
   end
 
   def handle
-    run(SetPassword, user: caller,
-                     password: set_password_params.password )
+    run(SetPassword, user: caller, password: set_password_params.password )
   end
 end
