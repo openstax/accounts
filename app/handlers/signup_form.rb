@@ -83,7 +83,7 @@ class SignupForm
       user.update!(is_b_r_i_user: true, title_1_school: signup_params.is_title_1_school)
     end
 
-    run(AddEmailToUser, email: signup_email, user: user)
+    run(AddEmailToUser, signup_email, user)
   end
 
   private
