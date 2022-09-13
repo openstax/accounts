@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_if_signup_complete
-    return if session[:login].nil?
+    return if session[:login].nil? || session[:signing_up_user].nil?
     # user has not verified email address - send them back to verify email form
     if current_user.faculty_status == 'incomplete_signup'
       redirect_to(verify_email_by_pin_form_path) and return

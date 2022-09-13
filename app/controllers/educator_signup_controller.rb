@@ -8,7 +8,9 @@ class EducatorSignupController < SignupController
   before_action(:check_if_signup_complete, only: %i[sheerid_form, profile_form, pending_cs_verification_form])
 
   def sheerid_form
-    @sheerid_url = generate_sheer_id_url(user: current_user)
+    @signing_up_user = session[:signing_up_user]
+    @signing_up_user.faculty_status = 'needs_verification'
+    @sheerid_url = generate_sheer_id_url(user: @signing_up_user)
     security_log(:user_viewed_sheerid_form, user: current_user)
   end
 
@@ -37,6 +39,8 @@ class EducatorSignupController < SignupController
   end
 
   def profile_form
+    @signing_up_user = session[:signing_up_user]
+    @signing_up_user.faculty_status = 'needs_profile'
     store_if_sheerid_is_unviable_for_user
     store_sheerid_verification_for_user
     security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
@@ -45,7 +49,7 @@ class EducatorSignupController < SignupController
   def profile_post
     handle_with(
       CompleteEducatorProfile,
-      user: current_user,
+      signing_up_user: session[:signing_up_user],
       success: lambda {
         user = @handler_result.outputs.user
         security_log(:user_profile_complete, { user: user })
@@ -77,23 +81,23 @@ class EducatorSignupController < SignupController
 
   def store_if_sheerid_is_unviable_for_user
     if is_school_not_supported_by_sheerid? || is_country_not_supported_by_sheerid?
-      current_user.update!(is_sheerid_unviable: true)
+      @signing_up_user.update(is_sheerid_unviable: true)
       security_log(:user_not_viable_for_sheerid, user: current_user)
     end
   end
 
   def store_sheerid_verification_for_user
-    if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
+    if sheerid_provided_verification_id_param.present? && @signing_up_user.sheerid_verification_id.blank?
       # create the verification object - this is verified later in SheeridWebhook
       SheeridVerification.find_or_initialize_by(verification_id: sheerid_provided_verification_id_param)
 
       # update the user
-      current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)
+      @signing_up_user.update(sheerid_verification_id: sheerid_provided_verification_id_param)
 
       # log it
       SecurityLog.create!(
         event_type: :sheerid_verification_id_added_to_user_during_signup,
-        user: current_user,
+        user: @signing_up_user,
         event_data: { verification_id: sheerid_provided_verification_id_param }
       )
     end
@@ -103,8 +107,8 @@ class EducatorSignupController < SignupController
     url = Addressable::URI.parse(Rails.application.secrets.sheerid_base_url)
     url.query_values = url.query_values.merge(
       first_name: user.first_name,
-      last_name:  user.last_name,
-      email:      user.email_addresses.first&.value
+      last_name: user.last_name,
+      email: user.email_addresses.first&.value
     )
     url.to_s
   end

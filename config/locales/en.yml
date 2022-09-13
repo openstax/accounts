@@ -82,15 +82,15 @@ en:
     or_sign_up_below: OR SIGN UP BELOW
     send_me_newsletter: Send me the OpenStax newsletter
     agree_to_terms_of_use: I agree to the %{terms_of_use} and %{privacy_policy}
-    youre_done: You're done, %{first_name}!
-    youre_done_description: >-
+    you_are_done: You're done, %{first_name}!
+    you_are_done_description: >-
       Your account has been confirmed for <b>%{email_address}</b>!
       To start exploring, check out some of the features you now have access to.
     educator_pending_cs_verification: We're processing your request
     educator_pending_cs_verification_description: >-
       You instructor access is pending.
       We will verify your instructor status withing 3-4 business days.
-      Updates on your verification status will be sent to <b>%{email_address}</b>.
+      Updates on your verification status will be sent to your email address.
       In the meantime, you can access all books and resources
       except those that require instructor verification.
     join_as_student_description: >-
@@ -103,28 +103,24 @@ en:
     return: Return
     login_unsuccessful: Login unsuccessful
     login_unsuccessful_description: >-
-      We were not able to authenticate the account associated with <b>%{email}</b>.
+      We were not able to authenticate the account associated with that email address.
       If you are unable to use your social login, we can send instructions for setting up
-      an account password to <b>%{email}</b>. You can also return to the login page and try again.
+      an account password to your email address. You can also return to the login page and try again.
     check_your_email: Check your email
-    check_your_email_description: >-
-      An email containing password setup instructions has been sent to <b>%{email}</b>.
-    confirm_my_account_button:
-      Confirm my account
+    email_verification_form_description: An email has been sent to you with directions to complete signing up.
+    confirm_my_account_button: Confirm my account
     confirm_your_info: Confirm your information
     edit_your_email: edit your email
     send_my_pin: Send my PIN
     reset_my_password: Reset my password
-    reset_my_password_description: >-
-      Please enter your email below so that we can send instructions for password recovery.
+    reset_my_password_description:  Please enter your email below so that we can send instructions for password recovery.
     cant_remember_email: Can't remember your email? %{contact_us_link}.
     reset_my_password_button: Reset my password
     password_reset_email_sent: Password reset email sent
-    password_reset_email_sent_description: >-
-      Password reset instructions successfully sent to <b>%{email}</b>.
+    password_reset_email_sent_description: Password reset instructions successfully sent to your email address.
     password_reset_email_sent_help: Still having trouble logging in? %{contact_us_link}.
     setup_your_new_password: Set up your new password
-    setup_your_new_password_description: Please finish setting up the password for %{email} below.
+    setup_your_new_password_description: Please finish setting up the password for your email address below.
     confirm_social_info_tooltip: You can add a different email via your <b>Account Profile</b> later.
     change_signup_email_form_tooltip: You will need to use this updated email to log in.
     enter_new_password: Enter your new password
@@ -157,17 +153,6 @@ en:
     finish: Finish
     should_social_signup: There is no record of this account. Are you trying to %{sign_up}?
     is_title_1_school: My school is designated as a Title-1 campus
-
-    student_email_verification_form_description: >-
-      An email has been sent to <b>%{email}</b>.
-      Please enter the PIN you received below.
-      You can also %{edit_your_email}
-
-    educator_email_verification_form_description: >-
-      An email has been sent to <b>%{email}</b>.
-      Please enter the PIN you received below.
-      Once your email has been confirmed, you will need to complete
-      the remaining steps to verify your instructor status.
     educator_email_verification_help_msg: See a typo in your email address? %{edit_it_here}. Didn't receive a message? %{contact_us_link}.
     edit_it_here: Edit it here
 
@@ -188,8 +173,7 @@ en:
       confirmText: OK
 
     email:
-      confirm_delete: >-
-        Are you sure you want to remove this email address from your account?
+      confirm_delete: Are you sure you want to remove this email address from your account?
 
     name:
       first_last_name_blank: First and last name can't be blank
@@ -213,49 +197,18 @@ en:
         You cannot reset your password because your account does not have a
         password.
       password_changed: Password changed
-      password_expired: >-
-        Your password has expired. Please enter a new password.
-      password_reset_successfully: >-
-        Your password has been reset successfully! You are now signed in.
+      password_expired: Your password has expired. Please enter a new password.
+      password_reset_successfully: Your password has been reset successfully! You are now signed in.
 
     sessions:
-      accessing_instructions_emailed: >-
-        Instructions for accessing your OpenStax account have been emailed to
-        you.
-      no_account_for_username_or_email: >-
-        We could not find your account using the information provided. Please try again.
-      several_accounts_for_one_email: >-
-        We found multiple accounts for the information provided. Please try again.
-      incorrect_password: The password you provided is incorrect.
-      new_sign_in_option_added: Your new login option has been added!
-      same_provider_already_linked: >-
-        You are logged in as %{user_name}. A different %{authentication} account
-        is already linked to your OpenStax account. Only one %{authentication}
-        account can be linked to your OpenStax account at a time.
       sign_in_option_already_used: >-
         That login option is already used by someone else. If that someone is
         you, remove it from your other account and try again.
-      too_many_login_attempts:
-        # %{reset_password}   a hyperlink pointing to password reset page. Label
-        #                     of the link is defined by the .reset_password key.
-        content: >-
-          You have made too many login attempts recently. Please
-          %{reset_password} or try again later.
-        reset_password: reset your password
-      too_many_lookup_attempts: >-
-        You have made too many login attempts recently. Please try again later.
       way_to_login_cannot_be_added: >-
         That way to log in cannot be added because it is associated to an email
         address that is already in use!
       mismatched_authentication: >-
         You logged in with a different third-party account than we expected. Please try again.
-      start_failed:
-        Please log in or create an account.
-      trouble_with_provider: >-
-        We are having difficulties communicating with the login provider you selected. Our technical
-        team has been notified and we will get to work fixing this problem. In the meantime you can
-        log in with a password if you have already set one up, or you can add one if you haven't.
-        If you need help, please contact support.
 
     signup:
       already_have_username_and_password: >-
@@ -358,7 +311,7 @@ en:
 
   layouts:
     application_footer:
-      terms_of_use: Terms of Use
+      terms_of_use: Terms of Use
 
     application_header:
       sign_out: Log out
@@ -369,56 +322,6 @@ en:
 
     attention:
       please_enable_javascript: Please enable JavaScript.
-
-  faculty_access:
-    apply:
-      page_heading: Apply for instructor access
-      instructions: To access faculty-only products, please provide the following information so that we can verify that you are faculty.
-      role_heading: Your faculty role
-      email: Your school email address
-      iama: I am a
-      instructor: Instructor
-      adjunct: Adjunct Faculty
-      administrator: Administrator
-      librarian: Librarian
-      homeschool: Homeschool Instructor
-      designer: Instructional Designer
-      other: Other
-      name_heading: Name
-      first_name: First name
-      last_name: Last name
-      suffix: Suffix
-      email_placeholder: me@myschool.edu
-      email_in_use: This email is already in use.
-      teacher_school_email: >-
-        This is the email address given to you by your school.
-      teacher_school_email_warning:
-        Is this your school email address?  If yes, click %{button} below.
-        If not, please enter your school email address.
-      additional_information_heading: Additional information
-      instructor_use:
-        how: How are you using OpenStax?
-        fully: Fully adopted and using it as the primary textbook
-        recommended: Recommending the book – my students buy a different book
-        interested: Interested in using OpenStax in the future
-        nope: Not using OpenStax
-      phone_number: Phone number
-      school: School name
-      url: A web page that shows you are faculty
-      num_students: Number of students per semester
-      using_openstax: Already using OpenStax?
-      titles_interested: Select at least one OpenStax titles that interest you
-      keep_me_informed: Send me the OpenStax newsletter.
-      submit: Apply
-
-    pending:
-      page_heading: Your application has been submitted
-      message: >-
-        Your instructor access is pending. We will verify your instructor status
-        within 3-4 business days. In the meantime, you can access all books and
-        resources except those that require instructor verification.
-      check_box: Send me an email when my instructor access is approved.
-      ok: OK
 
   static_pages:
     copyright:
@@ -495,12 +398,12 @@ en:
       continue: Continue
     send_reset:
       page_heading: Check your email
-      we_sent_email: We sent an email to %{emails}. Click the link in that email to reset your password.
+      we_sent_email: We sent an email to your email address on file. Click the link in that email to reset your password.
       close_this_window: You can close this window.
 
     send_add:
       page_heading: Check your email
-      we_sent_email: We sent an email to %{emails}. Click the link in that email to add a password.
+      we_sent_email: We sent an email to to your email address on file. Click the link in that email to add a password.
       close_this_window: You can close this window.
 
   users:

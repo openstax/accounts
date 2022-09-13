@@ -26,9 +26,9 @@ xfeature 'User logs in or signs up with a social network', js: true do
           screenshot!
           submit_signup_form
           screenshot!
-          expect(page).to have_content(t(:"login_signup_form.youre_done", first_name: 'Elon'))
+          expect(page).to have_content(t(:"login_signup_form.you_are_done", first_name: 'Elon'))
           expect(page).to(
-            have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email)))
+            have_content(strip_html(t(:"login_signup_form.you_are_done_description", email_address: email)))
           )
         end
       end
@@ -56,9 +56,9 @@ xfeature 'User logs in or signs up with a social network', js: true do
               fill_in('signup_email', with: email)
               submit_signup_form
               screenshot!
-              expect(page).to have_content(t(:"login_signup_form.youre_done", first_name: 'Elon'))
+              expect(page).to have_content(t(:"login_signup_form.you_are_done", first_name: 'Elon'))
               expect(page).to(
-                have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email)))
+                have_content(strip_html(t(:"login_signup_form.you_are_done_description", email_address: email)))
               )
             end
           end
@@ -154,7 +154,7 @@ xfeature 'User logs in or signs up with a social network', js: true do
           screenshot!
 
           expect(page).to(
-            have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email_value)))
+            have_content(strip_html(t(:"login_signup_form.you_are_done_description", email_address: email_value)))
           )
           click_on('Finish')
           click_on('Log out')

@@ -5,14 +5,6 @@ class SignupController < ApplicationController
   skip_before_action :authenticate_user!, except: :signup_done
   before_action :skip_signup_done_for_tutor_users, only: :signup_done
   before_action :total_steps, except: :welcome
-  before_action(:return_to_signup_if_not_signed_in, only: %i[
-      change_signup_email_form
-      change_signup_email
-      verify_email_by_code
-      verify_email_by_pin_form
-      verify_email_by_pin_post
-    ]
-  )
 
   def welcome
     redirect_back(fallback_location: profile_path) if signed_in?
@@ -49,10 +41,6 @@ class SignupController < ApplicationController
 
         security_log(:user_viewed_signup_form, { user: @signing_up_user })
         clear_cache_bri_marketing
-
-        @signing_up_user.faculty_status = 'needs_email_verified'
-        @signing_up_user.save!
-        session[:signing_up_user] = @signing_up_user
         redirect_to verify_email_by_pin_form_path and return
       },
       failure: lambda {
@@ -73,7 +61,7 @@ class SignupController < ApplicationController
     @signing_up_user ||= session[:signing_up_user]
     handle_with(
       VerifyEmailByPin,
-      email_address: session[:signing_up_email],
+      email_address: ContactInfo.find_by(value: session[:signing_up_email]),
       success: lambda {
         @signing_up_user = @handler_result.outputs.user
         security_log(:contact_info_confirmed_by_pin,
@@ -167,11 +155,5 @@ class SignupController < ApplicationController
   def skip_signup_done_for_tutor_users
     return unless @signing_up_user.source_application&.name&.downcase&.include?('tutor')
     redirect_back
-  end
-
-  def return_to_signup_if_not_signed_in
-    if current_user.is_anonymous? || @signing_up_user.nil?
-      redirect_to(signup_path)
-    end
   end
 end

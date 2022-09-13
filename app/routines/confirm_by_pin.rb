@@ -16,6 +16,8 @@ class ConfirmByPin
   protected
 
   def exec(contact_info:, pin:)
+    contact_info = ContactInfo.find_by(value: contact_info) if contact_info.is_a?(String)
+
     return if contact_info.confirmed?
 
     sequential_failure = self.class.sequential_failure_for(contact_info)

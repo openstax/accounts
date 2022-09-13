@@ -10,7 +10,7 @@ xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
   end
 
   context 'with a known username' do
-    scenario 'getting the user unblocked after a password reset' do
+    xscenario 'getting the user unblocked after a password reset' do
       with_forgery_protection do
         create_user 'user'
 
@@ -37,7 +37,7 @@ xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
       end
     end
 
-    scenario 'getting the user unblocked after 1 hour' do
+    xscenario 'getting the user unblocked after 1 hour' do
       with_forgery_protection do
         create_user 'user'
 
@@ -64,7 +64,7 @@ xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
   end
 
   context 'with a known verified email address' do
-    scenario 'getting the user unblocked after a password reset' do
+    xscenario 'getting the user unblocked after a password reset' do
       with_forgery_protection do
         user = create_user 'user'
         create_email_address_for user, 'user@example.com'
@@ -92,7 +92,7 @@ xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
       end
     end
 
-    scenario 'getting the user unblocked after 1 hour' do
+    xscenario 'getting the user unblocked after 1 hour' do
       with_forgery_protection do
         user = create_user 'user'
         create_email_address_for user, 'user@example.com'

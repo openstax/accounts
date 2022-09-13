@@ -36,15 +36,12 @@ class CompleteEducatorProfile
 
   attr_reader :user
 
-  def setup
-    @user = options[:user]
-  end
-
   def authorized?
-    @user && !@user.is_anonymous?
+    true
   end
 
   def handle
+    signing_up_user = options[:signing_up_user]
     # let the controller know this is the cs form, so we can redirect properly on error
     @is_on_cs_form = signup_params.is_cs_form?
     outputs.is_on_cs_form = @is_on_cs_form
@@ -58,7 +55,7 @@ class CompleteEducatorProfile
     check_params
     return if errors?
 
-    @user.update!(
+    signing_up_user.update(
       role: signup_params.educator_specific_role,
       other_role_name: other_role_name,
       using_openstax_how: signup_params.using_openstax_how,
@@ -75,14 +72,14 @@ class CompleteEducatorProfile
         event_type: :user_completed_cs_form
       )
       # user needs CS review to become confirmed - set it as such in accounts
-      @user.update(
+      signing_up_user.update(
         requested_cs_verification_at: DateTime.now,
         faculty_status: 'pending_faculty'
       )
       if signup_params.school_issued_email.present?
         # this user used the CS form and _should_ have provided us an email address -
         # so let's add it - validation happens before this in check_params
-        run(AddEmailToUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
+        run(AddEmailToUser, email: signup_params.school_issued_email, user: signing_up_user, is_school_issued: true)
       end
     else
       # If user did not need CS verification but still needs to be pending, set
@@ -91,26 +88,26 @@ class CompleteEducatorProfile
       # sheerid_webhook when we hear back from their webhook
       # Otherwise, we can see who didn't fill out their profile with a faculty
       # status of :incomplete_signup
-      if @user.faculty_status == 'needs_verification' && !@did_use_sheerid
-        @user.faculty_status = 'pending_faculty'
+      if signing_up_user['faculty_status'] == 'needs_verification' && !@did_use_sheerid
+        signing_up_user['faculty_status'] = 'pending_faculty'
         SecurityLog.create!(
-          user: @user,
+          user: signing_up_user,
           event_type: :faculty_status_updated,
           event_data: { old_status: "needs_verification", new_status: "pending_faculty" }
         )
       end
     end
 
-    transfer_errors_from(@user, { type: :verbatim }, :fail_if_errors)
+    transfer_errors_from(options[:signing_up_user], { type: :verbatim }, :fail_if_errors)
 
     #output the user to the lev handler
-    outputs.user = @user
+    outputs.user = signing_up_user
 
     if @did_use_sheerid
       # User used SheerID or needs CS verification - we create their lead in
       # SheeridWebhook, not here.. and might not be instant
       SecurityLog.create!(
-        user: @user,
+        user: signing_up_user,
         event_type: :lead_creation_awaiting_sheerid_webhook,
       )
       return
@@ -118,7 +115,7 @@ class CompleteEducatorProfile
 
     # Now we create the lead for the user... because we returned above
     # if they did... again SheeridWebhook
-    CreateSalesforceLead.perform_later(user_id: @user.id)
+    CreateSalesforceLead.perform_later(user_id: signing_up_user['id'])
 
   end
 

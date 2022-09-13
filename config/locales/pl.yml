@@ -79,8 +79,8 @@ pl:
     or_sign_up_below: ALBO ZAREJESTRUJ SIĘ PONIŻEJ
     send_me_newsletter: Zapisz mnie na newsletter OpenStax
     agree_to_terms_of_use: Akceptuję %{terms_of_use} oraz %{privacy_policy}
-    youre_done: Zrobione, %{first_name}!
-    youre_done_description: >-
+    you_are_done: Zrobione, %{first_name}!
+    you_are_done_description: >-
       Potwierdzamy założenie konta na <b>%{email_address}</b>.
       Wypróbuj możliwości naszego serwisu!
     educator_pending_cs_verification: Przetwarzamy Twoją prośbę
@@ -154,17 +154,6 @@ pl:
     hide_password_btn: UKRYĆ
     finish: koniec
     should_social_signup: Nie ma żadnego zapisu tego konta. Czy ty próbujesz %{sign_up}?
-
-    student_email_verification_form_description: >-
-      E-mail został wysłany do <b>%{email} </b>.
-      Wprowadź poniżej otrzymany kod PIN.
-      Możesz także %{edit_your_email}
-
-    educator_email_verification_form_description: >-
-      E-mail został wysłany do <b>% {email} </b>.
-      Wprowadź poniżej otrzymany kod PIN.
-      Po potwierdzeniu adresu e-mail musisz dokończyć
-      pozostałe kroki weryfikacji statusu instruktora.
     educator_email_verification_help_msg: Widzisz literówkę w swoim adresie e-mail? %{edit_it_here}. Wiadomość nie dotarła? %{contact_us_link}.
     edit_it_here: Edytuj go tutaj
 
@@ -215,31 +204,9 @@ pl:
         Twoje hasło zostało pomyślnie zmienione. Jesteś teraz zalogowany/a.
 
     sessions:
-      accessing_instructions_emailed: >-
-        Wskazówki, jak używać konta OpenStax, zostały wysłane do Ciebie
-        w wiadomości e-mail.
-      no_account_for_username_or_email: >-
-        Nie udało się znaleźć konta pasującego do podanych przez Ciebie danych.
-        Spróbuj ponownie.
-      several_accounts_for_one_email: >-
-        Istnieje więcej niż jedno konto pasujące do podanych przez Ciebie
-        danych. Spróbuj ponownie
-      incorrect_password: Podane hasło nie jest prawidłowe.
-      new_sign_in_option_added: Twoja nowa metoda logowania została dodana.
-      same_provider_already_linked: >-
-        Jesteś zalogowany/a jako %{user_name}. Obecnie z Twoim kontem Openstax
-        powiązane jest już konto %{authentication}. Tylko jedno konto
-        %{authentication} może być powiązane z kontem Openstax.
       sign_in_option_already_used: >-
         Ta metoda logowania jest już używana przez kogoś innego. Jeżeli jesteś
         tą osobą, usuń wpierw tę metodę logowania ze swojego innego konta.
-      too_many_login_attempts:
-        content: >-
-          Limit nieudanych prób logowania na Twoje konto został przekroczony.
-          %{reset_password} albo spróbuj ponownie później.
-        reset_password: Zmień hasło
-      too_many_lookup_attempts: >-
-        Wyczerpany limit prób logowania do konta. Spróbuj ponownie później
       way_to_login_cannot_be_added: >-
         Ta metoda logowania nie może zostać użyta, ponieważ jest powiązana
         z już wykorzystanym adresem e-mail.
@@ -351,61 +318,6 @@ pl:
 
     attention:
       please_enable_javascript: Włącz obsługę JavaScript.
-
-  faculty_access:
-    apply:
-      page_heading: Wniosek o status nauczyciela
-      instructions: >-
-        Aby uzyskać dostęp do zastrzeżonych materiałów, wypełnij poniższy formularz.
-        Te dane pozwolą nam potwierdzić, że jesteś nauczycielem.
-      role_heading: Twoja funkcja
-      email: Twój szkolny adres e-mail
-      iama: Jestem
-      instructor: Nauczycielem
-      adjunct: Adiunkt wydziału
-      administrator: Administratorem
-      librarian: Archiwistą
-      designer: Twórcą zasobów dydaktycznych
-      other: Inne
-      name_heading: Dane kontaktowe
-      first_name: Imię
-      last_name: Nazwisko
-      suffix: Dopisek
-      email_placeholder: ja@mojaszkoła.edu.pl
-      email_in_use: Ten adres e-mail jest już w użyciu.
-      teacher_school_email: >-
-        Adres e-mail przyznany Ci przez Twoją szkołę.
-      teacher_school_email_warning: >-
-        Czy to na pewno jest Twój szkolny adres e-mail? Jeżeli tak, wciśnij
-        %{button} poniżej. Jeżeli nie, wpisz swój szkolny adres e-mail.
-      additional_information_heading: Informacje dodatkowe
-      instructor_use:
-        how: W jaki sposób korzystasz z OpenStax?
-        fully: Używam OpenStax jako mojego głównego podręcznika.
-        recommended: >-
-          Polecam podręcznik OpenStax, ale moi uczniowie kupują inny.
-        interested: Jestem zainteresowany/a używaniem podręcznika OpenStax.
-        nope: Nie używam OpenStax.
-      phone_number: Numer telefonu
-      school: Szkoła
-      url: Strona Twojej szkoły, która potwierdza, że jesteś nauczycielem
-      num_students: Liczba uczniów w semestrze
-      using_openstax: Używasz już OpenStax?
-      titles_interested: Zaznacz wszystkie interesujące Cię podręczniki OpenStax
-      keep_me_informed: >-
-        Proszę o wysyłanie do mnie informacji o nowych podręcznikach, zasobach
-        i związanych z nimi kwestiach.
-      submit: Wyślij
-
-    pending:
-      page_heading: Twój wniosek został wysłany
-      message: >-
-        Zarejestrowałeś/aś się jako nauczyciel. Otrzymasz dostęp do zastrzeżonych
-        materiałów, gdy potwierdzimy Twój status, co nie powinno zając dłużej niż 3-4 dni
-        robocze. W międzyczasie możesz już zapoznać się ze wszystkimi podręcznikami
-        i zasobami, które nie są zastrzeżone dla nauczycieli.
-      check_box: Proszę o e-mail z powiadomieniem o przyznaniu dostępu.
-      ok: OK
 
   static_pages:
     copyright:
