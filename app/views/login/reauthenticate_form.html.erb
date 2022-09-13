@@ -1,6 +1,5 @@
 <%
-    email_prefill_value = current_users_resetting_password_email
-    email_prefill_value ||= nil # because otherwise it literally shows "false" in the form's input field
+    email_prefill_value = current_user.is_anonymous? ? session[:signing_up_email] : current_user.email_addresses.first
 %>
 
 <div id="login-signup-form">

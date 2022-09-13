@@ -29,7 +29,7 @@
                 name:        :email,
                 placeholder: I18n.t(:"login_signup_form.email_placeholder"),
                 autofocus:   true,
-                value: @signing_up_user[:email]['value']
+                value: @signing_up_email
               )
             %>
             <div class="tooltip">
@@ -38,7 +38,7 @@
 
             <br/>
 
-            <%= f.hidden_field :old_email, value: @signing_up_user[:email]['value'] %>
+            <%= f.hidden_field :old_email, value: @signing_up_email %>
 
             <div class="content">
               <%=

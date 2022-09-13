@@ -43,14 +43,15 @@ class SignupController < ApplicationController
       is_bri_book: is_bri_book_adopter?,
       success: lambda {
         @signing_up_user = @handler_result.outputs.user
+        @signing_up_email = @handler_result.outputs.email
         session[:signing_up_user] = @signing_up_user
+        session[:signing_up_email] = @signing_up_email
 
         security_log(:user_viewed_signup_form, { user: @signing_up_user })
         clear_cache_bri_marketing
 
         @signing_up_user.faculty_status = 'needs_email_verified'
         @signing_up_user.save!
-        sign_in!(@signing_up_user)
         session[:signing_up_user] = @signing_up_user
         redirect_to verify_email_by_pin_form_path and return
       },
@@ -63,18 +64,18 @@ class SignupController < ApplicationController
   end
 
   def verify_email_by_pin_form
-    @signing_up_user ||= current_user.is_anonymous? ? session[:signing_up_user] : current_user
+    @signing_up_user ||= session[:signing_up_user]
+    @signing_up_email ||= session[:signing_up_email]
     render :email_verification_form
   end
 
   def verify_email_by_pin_post
-    @signing_up_user ||= current_user.is_anonymous? ? session[:signing_up_user] : current_user
+    @signing_up_user ||= session[:signing_up_user]
     handle_with(
       VerifyEmailByPin,
-      email_address: @signing_up_user.email_addresses.first,
+      email_address: session[:signing_up_email],
       success: lambda {
         @signing_up_user = @handler_result.outputs.user
-        sign_in!(@signing_up_user)
         security_log(:contact_info_confirmed_by_pin,
                      { user: @signing_up_user, email_address: @signing_up_user.email_addresses.first.value })
 
@@ -93,7 +94,8 @@ class SignupController < ApplicationController
   end
 
   def verify_email_by_code
-    @signing_up_user ||= current_user.is_anonymous? ? session[:signing_up_user] : current_user
+    @signing_up_user  ||= session[:signing_up_user]
+    @signing_up_email ||= session[:signing_up_email]
     handle_with(
       VerifyEmailByCode,
       success: lambda {
@@ -114,15 +116,17 @@ class SignupController < ApplicationController
   end
 
   def change_signup_email_form
-    @signing_up_user ||= current_user.is_anonymous? ? session[:signing_up_user] : current_user
+    @signing_up_user  ||= session[:signing_up_user]
+    @signing_up_email ||= session[:signing_up_email]
     render :change_signup_email_form
   end
 
   def change_signup_email_post
-    @signing_up_user ||= current_user.is_anonymous? ? session[:signing_up_user] : current_user
+    @signing_up_user  ||= session[:signing_up_user]
+    @signing_up_email ||= session[:signing_up_email]
     handle_with(
       ChangeSignupEmail,
-      user: @signing_up_user,
+      user: User.find(@signing_up_user['id']),
       success: lambda {
         @email = @signing_up_user.email_addresses.first.value
         redirect_to verify_email_by_pin_form_path and return
@@ -135,11 +139,13 @@ class SignupController < ApplicationController
   end
 
   def check_your_email
-    @signing_up_user ||= current_user.is_anonymous? ? session[:signing_up_user] : current_user
+    @signing_up_user  ||= session[:signing_up_user]
+    @signing_up_email ||= session[:signing_up_email]
   end
 
   def signup_done
-    @signing_up_user ||= current_user.is_anonymous? ? session[:signing_up_user] : current_user
+    @signing_up_user  ||= session[:signing_up_user]
+    @signing_up_email ||= session[:signing_up_email]
     security_log(:sign_up_successful, form_name: action_name)
     redirect_to(profile_path)
   end
