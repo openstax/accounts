@@ -10,7 +10,7 @@ describe SetPassword do
       expect(identity.authenticate('qwertyui')).to eq identity
       expect(identity.authenticate('password')).to eq false
 
-      call(user, 'password', 'password')
+      call(user, 'password')
       identity.reload
 
       expect(identity.authenticate('qwertyui')).to eq false
@@ -20,26 +20,13 @@ describe SetPassword do
     it 'returns errors if password is too short' do
       expect(identity.authenticate('qwertyui')).to eq identity
 
-      errors = call(user, 'pass', 'pass').errors
+      errors = call(user, 'pass').errors
       expect(errors).not_to be_empty
 
       identity.reload
 
       expect(identity.authenticate('qwertyui')).to eq identity
       expect(identity.authenticate('pass')).to eq false
-    end
-
-    it 'returns errors if password confirmation is different from password' do
-      expect(identity.authenticate('qwertyui')).to eq identity
-      expect(identity.authenticate('password')).to eq false
-
-      errors = call(user, 'password', 'passwordd').errors
-      expect(errors).not_to be_empty
-
-      identity.reload
-
-      expect(identity.authenticate('qwertyui')).to eq identity
-      expect(identity.authenticate('password')).to eq false
     end
   end
 
@@ -52,7 +39,7 @@ describe SetPassword do
       stub_const('Identity::DEFAULT_PASSWORD_EXPIRATION_PERIOD', 1.year)
       one_year_later = DateTime.now + 1.year
 
-      call(user, '1234567890', '1234567890')
+      call(user, '1234567890')
 
       identity.reload
 
@@ -64,8 +51,8 @@ describe SetPassword do
     end
   end
 
-  def call(user, password, confirmation)
-    described_class.call(user: user, password: password, password_confirmation: confirmation)
+  def call(user, password)
+    described_class.call(user: user, password: password)
   end
 
 end
