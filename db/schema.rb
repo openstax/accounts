@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_27_131608) do
+ActiveRecord::Schema.define(version: 2022_12_10_002041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -286,7 +286,7 @@ ActiveRecord::Schema.define(version: 2022_07_27_131608) do
   create_table "oauth_access_tokens", id: :serial, force: :cascade do |t|
     t.integer "resource_owner_id"
     t.integer "application_id"
-    t.string "token", null: false
+    t.text "token", null: false
     t.string "refresh_token"
     t.integer "expires_in"
     t.datetime "revoked_at"
