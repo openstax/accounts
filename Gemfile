@@ -261,6 +261,9 @@ group :development do
 end
 
 group :test do
+  # Fixes https://discuss.rubyonrails.org/t/invalid-domain-example-com-in-rspec-after-changing-session-store-to-domain-all/81922/1
+  gem 'cgi'
+
   # RSpec matchers for convenience
   gem 'shoulda-matchers', '~> 3.1'
 
