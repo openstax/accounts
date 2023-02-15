@@ -155,6 +155,7 @@ GEM
     capybara-screenshot (1.0.26)
       capybara (>= 1.0, < 4)
       launchy
+    cgi (0.3.6)
     chartkick (4.2.1)
     childprocess (4.1.0)
     chronic (0.10.2)
@@ -715,6 +716,7 @@ DEPENDENCIES
   capybara
   capybara-email
   capybara-screenshot
+  cgi
   chronic
   codecov
   coffee-rails (= 5.0.0)
