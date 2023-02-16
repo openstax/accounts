@@ -20,7 +20,7 @@ class CreateUser
 
     outputs[:user] = User.send(create_method) do |user|
       user.state = state
-      user.external_id = external_id
+      user.external_ids << ExternalId.new(external_id: external_id) unless external_id.nil?
       user.username = username
       user.first_name = first_name
       user.last_name = last_name
