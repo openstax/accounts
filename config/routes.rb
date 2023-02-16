@@ -169,6 +169,7 @@ Rails.application.routes.draw do
 
     resource :user, only: [:show, :update] do
       post '/find-or-create', action: 'find_or_create'
+      post '/external-ids', action: 'create_external_id'
     end
 
     resources :application_users, only: [:index] do

@@ -196,4 +196,8 @@ class Api::V1::UsersController < Api::V1::ApiController
     end
   end
 
+  def create_external_id
+    standard_create ExternalId.new
+  end
+
 end
