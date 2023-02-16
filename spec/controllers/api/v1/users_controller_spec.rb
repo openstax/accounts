@@ -372,4 +372,56 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       end
     end
   end
+
+  context "create_external_id" do
+    let(:trusted_application) do
+      FactoryBot.create :doorkeeper_application, can_find_or_create_accounts: true
+    end
+    let(:trusted_application_token) do
+      FactoryBot.create :doorkeeper_access_token, application: trusted_application,
+                                                  resource_owner_id: nil
+    end
+
+    let(:user)       { FactoryBot.create :user }
+    let(:valid_body) { { user_id: user.id, external_id: SecureRandom.uuid } }
+
+    it "should create a new external id for a trusted app" do
+      expect do
+        api_post :create_external_id,
+                 trusted_application_token,
+                 body: valid_body
+      end.to change { ExternalId.count }.by(1)
+      expect(response).to have_http_status :created
+      expect(response.body_as_hash).to eq(
+        user_id: valid_body[:user_id], external_id: valid_body[:external_id]
+      )
+    end
+
+    it "should not create a new external id for a user that does not exist" do
+      expect do
+        api_post :create_external_id,
+                 trusted_application_token,
+                 body: { user_id: 0, external_id: SecureRandom.uuid }
+      end.not_to change { ExternalId.count }
+      expect(response).to have_http_status :unprocessable_entity
+    end
+
+    it "should not create an external id for anonymous" do
+      expect do
+        api_post :create_external_id,
+                nil,
+                body: valid_body
+      end.not_to change { ExternalId.count }
+      expect(response).to have_http_status :forbidden
+    end
+
+    it "should not create a new user for another user" do
+      expect do
+        api_post :create_external_id,
+                user_2_token,
+                body: valid_body
+      end.not_to change { ExternalId.count }
+      expect(response).to have_http_status :forbidden
+    end
+  end
 end
