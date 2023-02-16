@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_10_002041) do
+ActiveRecord::Schema.define(version: 2023_02_16_162510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -167,6 +167,15 @@ ActiveRecord::Schema.define(version: 2022_12_10_002041) do
     t.boolean "has_mx", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "external_ids", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "external_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_external_ids_on_external_id", unique: true
+    t.index ["user_id"], name: "index_external_ids_on_user_id"
   end
 
   create_table "fine_print_contracts", id: :serial, force: :cascade do |t|
@@ -472,11 +481,9 @@ ActiveRecord::Schema.define(version: 2022_12_10_002041) do
     t.boolean "faculty_verification_email_sent"
     t.boolean "needs_sync"
     t.boolean "sheer_id_webhook_received"
-    t.string "external_id"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
-    t.index ["external_id"], name: "index_users_on_external_id", unique: true
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"
@@ -489,6 +496,7 @@ ActiveRecord::Schema.define(version: 2022_12_10_002041) do
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
+  add_foreign_key "external_ids", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "salesforce_streaming_replays", "push_topics", column: "push_topics_id"

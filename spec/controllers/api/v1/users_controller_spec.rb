@@ -316,7 +316,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(response.code).to eq('201')
 
       new_user = User.find(JSON.parse(response.body)['id'])
-      expect(new_user.external_id).to eq external_id
+      expect(new_user.external_ids.first.external_id).to eq external_id
       expect(new_user.state).to eq 'external'
       expect(new_user.role).to eq 'student'
       expect(new_user.applications).to eq [ foc_trusted_application ]

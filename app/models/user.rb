@@ -143,6 +143,7 @@ class User < ApplicationRecord
   has_many :applications, through: :application_users
   has_many :contact_infos, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, inverse_of: :user
+  has_many :external_ids, inverse_of: :user
   has_many :message_recipients, inverse_of: :user, dependent: :destroy
   has_many :received_messages, through: :message_recipients, source: :message
   has_many :sent_messages, class_name: 'Message'
