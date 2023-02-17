@@ -50,7 +50,8 @@ class Api::V1::UsersController < Api::V1::ApiController
     * `name` &ndash; Matches Users' first, last, or full names, case insensitive. (uses wildcard matching)
     * `id` &ndash; Matches Users' IDs exactly.
     * `email` &ndash; Matches Users' emails exactly.
-    * `uuid` &ndash; Mathces Users' UUIDs exactly.
+    * `uuid` &ndash; Matches Users' UUIDs exactly.
+    * `external_id` &ndash; Matches Users' external IDs exactly.
 
     You can also add search terms without prefixes, separated by spaces.
 
