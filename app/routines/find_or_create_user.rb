@@ -1,12 +1,12 @@
-# Find or create a new user with state "unclaimed"
+# Find or create a new user with state "external" or "unclaimed"
 #
-# Given either an email address or username:
+# Given either an external_id, username, or email address:
 #   attempt to find a user with that attribute.
 #   If the user is found, return the user
-#     Otherwise create a new user with the email and username given,
-#     set it's state to "unclaimed" and return that record
+#     Otherwise create a new user with the given external_id, username, or email,
+#     set it's state to "external" or "unclaimed" and return that record
 
-class FindOrCreateUnclaimedUser
+class FindOrCreateUser
 
   lev_routine
 
@@ -18,19 +18,33 @@ class FindOrCreateUnclaimedUser
   protected
 
   def exec(options)
-    unless options[:email] || options[:username]
-      fatal_error(code: :invalid_input, message: (I18n.t :"routines.find_or_create_unclaimed_user.must_provide_email_or_username"))
-    end
-
-    user = find_user(options)
-
     # output either the found unclaimed user or a freshly created one
-    outputs[:user] = user || create_user(options)
+    outputs.user = find_user(options) || create_user(options)
+  end
+
+  # Attempt to find a user by either the external_id, username, or email address
+  def find_user(options)
+    if options[:external_id].present?
+      User.joins(:external_ids).find_by(external_ids: { external_id: options[:external_id] })
+    elsif options[:username].present?
+      User.find_by(username: options[:username])
+    elsif options[:email].present?
+      EmailAddress.with_users.find_by(value: options[:email])&.user
+    else
+      fatal_error(code: :invalid_input, message: 'Must provide external_id, username, or email')
+    end
   end
 
   def create_user(options)
+    # If a user has only the external_id set,
+    # they can only login via this routine and can never add an email or username or be claimed
+    state = options[:external_id].present? &&
+            options[:username].blank? &&
+            options[:email].blank? ? 'external' : 'unclaimed'
+
     user = run(CreateUser,
-               state: 'unclaimed',
+               state: state,
+               external_id: options[:external_id],
                username: options[:username],
                first_name: options[:first_name],
                last_name: options[:last_name],
@@ -42,14 +56,11 @@ class FindOrCreateUnclaimedUser
                ensure_no_errors: true).outputs.user
 
     # routine is smart and gracefully handles case of missing options[:email]
-    options[:already_verified] = true if options[:already_verified].nil?
     run(AddEmailToUser, options[:email], user, already_verified: options[:already_verified])
 
-    if options[:application]
-      FindOrCreateApplicationUser[options[:application].id, user.id]
-    end
+    FindOrCreateApplicationUser[options[:application].id, user.id] if options[:application].present?
 
-    if options[:password]
+    if options[:password].present?
       identity = run(CreateIdentity, {
                        user_id: user.id,
                        password: options[:password],
@@ -67,17 +78,5 @@ class FindOrCreateUnclaimedUser
 
     user
   end
-
-  # Attempt to find a user by either the username or email address
-  def find_user(options)
-    user = User.find_by(username: options[:username]) if options[:username].present?
-
-    user = EmailAddress.with_users.find_by(value: options[:email]).try!(:user) \
-      if !user && options[:email]
-
-    user
-  end
-
-
 
 end

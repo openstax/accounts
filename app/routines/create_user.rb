@@ -10,7 +10,7 @@ class CreateUser
 
   protected
 
-  def exec(state:, username: nil,
+  def exec(state:, external_id: nil, username: nil,
            title: nil, first_name: nil, last_name: nil, suffix: nil,
            salesforce_contact_id: nil, faculty_status: nil, role: nil,
            school_type: nil, is_test: nil, ensure_no_errors: false)
@@ -20,6 +20,7 @@ class CreateUser
 
     outputs[:user] = User.send(create_method) do |user|
       user.state = state
+      user.external_ids << ExternalId.new(external_id: external_id) unless external_id.nil?
       user.username = username
       user.first_name = first_name
       user.last_name = last_name

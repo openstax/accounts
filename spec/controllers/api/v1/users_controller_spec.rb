@@ -58,7 +58,6 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
   let(:is_not_gdpr_location) { nil }
 
   context "index" do
-
     it "returns a single result well" do
       api_get :index, trusted_application_token, params: { q: 'first_name:bob last_name:Michaels' }
       expect(response.code).to eq('200')
@@ -105,7 +104,6 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(outcome["items"].length).to eq 0
       expect(outcome["total_count"]).not_to eq 0
     end
-
   end
 
   context "show" do
@@ -213,13 +211,11 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
         expect(response.body_as_hash).to include(is_not_gdpr_location: true)
       end
     end
-
-
   end
 
   context "update" do
-    it "should let User update his own User" do
-      api_put :update, user_2_token, body: {first_name: "Jerry", last_name: "Mouse"}
+    it "should let User update their own name" do
+      api_put :update, user_2_token, body: { first_name: "Jerry", last_name: "Mouse" }
       expect(response.code).to eq('200')
       user_2.reload
       expect(user_2.first_name).to eq 'Jerry'
@@ -228,7 +224,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
 
     it "should not let id be specified" do
       api_put :update, user_2_token, body: { first_name: "Jerry", last_name: "Mouse" },
-                                     params: {id: admin_user.id}
+                                     params: { id: admin_user.id }
       expect(response.code).to eq('200')
       user_2.reload
       admin_user.reload
@@ -260,7 +256,6 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       user_2.reload
       expect(user_2.contact_infos).to eq original_contact_infos
     end
-
   end
 
   context "find or create" do
@@ -306,6 +301,36 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(new_user.uuid).not_to be_blank
     end
 
+    it 'creates an external user with an external_id and no username or email' do
+      external_id = "#{SecureRandom.uuid}/#{SecureRandom.uuid}"
+
+      expect do
+        api_post :find_or_create,
+                 foc_trusted_application_token,
+                 body: {
+                   external_id: external_id,
+                   role: 'student',
+                   sso: 'true'
+                 }
+      end.to change { User.count }.by(1)
+      expect(response.code).to eq('201')
+
+      new_user = User.find(JSON.parse(response.body)['id'])
+      expect(new_user.external_ids.first.external_id).to eq external_id
+      expect(new_user.state).to eq 'external'
+      expect(new_user.role).to eq 'student'
+      expect(new_user.applications).to eq [ foc_trusted_application ]
+      expect(new_user.uuid).not_to be_blank
+
+      sso_cookie = JSON.parse(response.body)['sso']
+      sso_hash = SsoCookie.read sso_cookie
+      expect(sso_hash['sub']).to eq Api::V1::UserRepresenter.new(new_user).to_hash
+      expect(sso_hash['exp']).to be <= (Time.current + 1.hour).to_i
+
+      # Ensure the Doorkeeper token exists
+      Doorkeeper::AccessToken.find_by! token: sso_cookie
+    end
+
     it "should not create a new user for anonymous" do
       user_count = User.count
       api_post :find_or_create,
@@ -327,7 +352,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     context "should return only IDs for a user" do
       it "does so for unclaimed users" do
         api_post :find_or_create, foc_trusted_application_token,
-                 body: { email: unclaimed_user.contact_infos.first.value }
+                 body: { username: unclaimed_user.username }
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
           id: unclaimed_user.id,
@@ -335,6 +360,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
           support_identifier: unclaimed_user.support_identifier
         )
       end
+
       it "does so for claimed users" do
         api_post :find_or_create,
                  foc_trusted_application_token,
@@ -344,6 +370,58 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
           id: user_2.id, uuid: user_2.uuid, support_identifier: user_2.support_identifier
         )
       end
+    end
+  end
+
+  context "create_external_id" do
+    let(:trusted_application) do
+      FactoryBot.create :doorkeeper_application, can_find_or_create_accounts: true
+    end
+    let(:trusted_application_token) do
+      FactoryBot.create :doorkeeper_access_token, application: trusted_application,
+                                                  resource_owner_id: nil
+    end
+
+    let(:user)       { FactoryBot.create :user }
+    let(:valid_body) { { user_id: user.id, external_id: SecureRandom.uuid } }
+
+    it "should create a new external id for a trusted app" do
+      expect do
+        api_post :create_external_id,
+                 trusted_application_token,
+                 body: valid_body
+      end.to change { ExternalId.count }.by(1)
+      expect(response).to have_http_status :created
+      expect(response.body_as_hash).to eq(
+        user_id: valid_body[:user_id], external_id: valid_body[:external_id]
+      )
+    end
+
+    it "should not create a new external id for a user that does not exist" do
+      expect do
+        api_post :create_external_id,
+                 trusted_application_token,
+                 body: { user_id: 0, external_id: SecureRandom.uuid }
+      end.not_to change { ExternalId.count }
+      expect(response).to have_http_status :unprocessable_entity
+    end
+
+    it "should not create an external id for anonymous" do
+      expect do
+        api_post :create_external_id,
+                nil,
+                body: valid_body
+      end.not_to change { ExternalId.count }
+      expect(response).to have_http_status :forbidden
+    end
+
+    it "should not create a new user for another user" do
+      expect do
+        api_post :create_external_id,
+                user_2_token,
+                body: valid_body
+      end.not_to change { ExternalId.count }
+      expect(response).to have_http_status :forbidden
     end
   end
 end

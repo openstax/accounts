@@ -30,7 +30,7 @@ feature 'User claims an unclaimed account' do
   describe 'a new user receives an invite' do
 
     scenario 'without a pre-existing password' do
-      FindOrCreateUnclaimedUser.call(user_options).outputs[:user]
+      FindOrCreateUser.call(user_options).outputs[:user]
 
       visit_invite_url
 
@@ -47,7 +47,7 @@ feature 'User claims an unclaimed account' do
     scenario 'and resets the password' do
       arrive_from_app(do_expect: false)
 
-      FindOrCreateUnclaimedUser.call(
+      FindOrCreateUser.call(
         user_options.merge(
           password: "apassword", password_confirmation: "apassword"
         )

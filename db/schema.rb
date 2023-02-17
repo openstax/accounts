@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_01_174350) do
+ActiveRecord::Schema.define(version: 2023_02_16_162510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -169,6 +169,15 @@ ActiveRecord::Schema.define(version: 2022_02_01_174350) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "external_ids", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "external_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_external_ids_on_external_id", unique: true
+    t.index ["user_id"], name: "index_external_ids_on_user_id"
+  end
+
   create_table "fine_print_contracts", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.integer "version"
@@ -286,7 +295,7 @@ ActiveRecord::Schema.define(version: 2022_02_01_174350) do
   create_table "oauth_access_tokens", id: :serial, force: :cascade do |t|
     t.integer "resource_owner_id"
     t.integer "application_id"
-    t.string "token", null: false
+    t.text "token", null: false
     t.string "refresh_token"
     t.integer "expires_in"
     t.datetime "revoked_at"
@@ -409,8 +418,8 @@ ActiveRecord::Schema.define(version: 2022_02_01_174350) do
     t.string "first_name"
     t.string "last_name"
     t.string "organization_name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "user_external_uuids", id: :serial, force: :cascade do |t|
@@ -429,7 +438,7 @@ ActiveRecord::Schema.define(version: 2022_02_01_174350) do
     t.string "first_name"
     t.string "last_name"
     t.string "title"
-    t.uuid "uuid", default: -> { "public.gen_random_uuid()" }, null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "suffix"
     t.string "state", default: "needs_profile", null: false
     t.string "salesforce_contact_id"
@@ -487,6 +496,7 @@ ActiveRecord::Schema.define(version: 2022_02_01_174350) do
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
+  add_foreign_key "external_ids", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "salesforce_streaming_replays", "push_topics", column: "push_topics_id"
