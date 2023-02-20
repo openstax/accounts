@@ -23,6 +23,8 @@ RSpec.describe SearchUsers, type: :routine do
                                           username: 'bigbear'
   end
 
+  let!(:external_id)     { FactoryBot.create :external_id, user: user_4 }
+
   let!(:billy_users) do
     (0..8).to_a.map do |ii|
       FactoryBot.create :user,
@@ -136,6 +138,11 @@ RSpec.describe SearchUsers, type: :routine do
   it 'should match by id' do
     outcome = described_class.call("id:#{user_3.id}").outputs.items.to_a
     expect(outcome).to eq [user_3]
+  end
+
+  it 'should match by external_id' do
+    outcome = described_class.call("external_id:#{user_4.external_ids.first.external_id}").outputs.items.to_a
+    expect(outcome).to eq [user_4]
   end
 
   it 'should not match by support_identifier' do
