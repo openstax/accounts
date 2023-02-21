@@ -2,12 +2,13 @@ require 'rails_helper'
 
 RSpec.describe UserAccessPolicy do
 
-  let!(:anon)       { AnonymousUser.instance }
-  let!(:temp)       { FactoryBot.create :temp_user }
-  let!(:user)       { FactoryBot.create :user }
-  let!(:new_social) { FactoryBot.create :new_social_user }
-  let!(:admin)      { FactoryBot.create :user, :admin }
-  let!(:app)        { FactoryBot.create :doorkeeper_application }
+  let!(:anon)        { AnonymousUser.instance }
+  let!(:temp)        { FactoryBot.create :temp_user }
+  let!(:user)        { FactoryBot.create :user }
+  let!(:new_social)  { FactoryBot.create :new_social_user }
+  let!(:admin)       { FactoryBot.create :user, :admin }
+  let!(:app)         { FactoryBot.create :doorkeeper_application }
+  let!(:trusted_app) { FactoryBot.create :doorkeeper_application, :trusted }
 
   context 'search' do
     it 'cannot be accessed by anonymous or temp users' do
@@ -69,6 +70,23 @@ RSpec.describe UserAccessPolicy do
       expect(OSU::AccessPolicy.action_allowed?(:signup, temp, user)).to eq false
       expect(OSU::AccessPolicy.action_allowed?(:signup, new_social, user)).to eq false
       expect(OSU::AccessPolicy.action_allowed?(:signup, temp, admin)).to eq false
+    end
+  end
+
+  [ :find, :create ].each do |action|
+    context action do
+      it 'cannot be accessed by users or unstrusted apps' do
+        expect(OSU::AccessPolicy.action_allowed?(action, anon, anon)).to eq false
+        expect(OSU::AccessPolicy.action_allowed?(action, temp, user)).to eq false
+        expect(OSU::AccessPolicy.action_allowed?(action, user, user)).to eq false
+        expect(OSU::AccessPolicy.action_allowed?(action, new_social, user)).to eq false
+        expect(OSU::AccessPolicy.action_allowed?(action, admin, user)).to eq false
+        expect(OSU::AccessPolicy.action_allowed?(action, app, user)).to eq false
+      end
+
+      it 'can be accessed by trusted apps' do
+        expect(OSU::AccessPolicy.action_allowed?(action, trusted_app, user)).to eq true
+      end
     end
   end
 
