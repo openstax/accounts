@@ -258,6 +258,54 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
   end
 
+  context "find" do
+    let(:trusted_application) do
+      FactoryBot.create :doorkeeper_application, can_find_or_create_accounts: true
+    end
+    let(:trusted_application_token) do
+      FactoryBot.create :doorkeeper_access_token, application: trusted_application,
+                                                  resource_owner_id: nil
+    end
+
+    let(:user)        { FactoryBot.create :user }
+    let(:external_id) { FactoryBot.create :external_id, user: user }
+    let(:valid_body)  { { external_id: external_id.external_id, sso: 'true' } }
+
+    it "should find a user for a trusted app" do
+      api_post :find,
+                trusted_application_token,
+                body: valid_body
+      expect(response).to have_http_status :ok
+      expect(response.body_as_hash).to match(
+        id: user.id,
+        sso: kind_of(String),
+        support_identifier: user.support_identifier,
+        uuid: user.uuid
+      )
+    end
+
+    it "should not find a user that does not exist" do
+      api_post :find,
+                trusted_application_token,
+                body: { external_id: SecureRandom.uuid, sso: 'true' }
+      expect(response).to have_http_status :not_found
+    end
+
+    it "should not find a user for anonymous" do
+      api_post :find,
+              nil,
+              body: valid_body
+      expect(response).to have_http_status :forbidden
+    end
+
+    it "should not find a user for another user" do
+      api_post :find,
+              user_2_token,
+              body: valid_body
+      expect(response).to have_http_status :forbidden
+    end
+  end
+
   context "find or create" do
     let!(:foc_trusted_application) do
       FactoryBot.create :doorkeeper_application, can_find_or_create_accounts: true
