@@ -2,8 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::UserRepresenter, type: :representer do
   let(:user)            { FactoryBot.create :user  }
-  let(:school)            { FactoryBot.create :school  }
+  let(:school)          { FactoryBot.create :school  }
   subject(:representer) { described_class.new(user) }
+
+  let(:contract)  { FactoryBot.create :fine_print_contract, :published }
 
   context 'uuid' do
     it 'can be read' do
@@ -156,6 +158,24 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
 
       expect(user).not_to receive(:grant_tutor_access=)
       expect { representer.from_hash(hash) }.not_to change { user.reload.grant_tutor_access }
+    end
+  end
+
+  context 'signed_contract_names' do
+    it 'can be read' do
+      FactoryBot.create :fine_print_signature, contract: contract, user: user
+
+      expect(
+        representer.to_hash(user_options: { include_private_data: true })['signed_contract_names']
+      ).to eq [ contract.name ]
+    end
+
+    it 'cannot be written (attempts are silently ignored)' do
+      hash = { 'signed_contract_names' => [ contract.name ] }
+
+      expect do
+        representer.from_hash(hash, user_options: { include_private_data: true })
+      end.not_to change { FinePrint::Signature.count }
     end
   end
 end
