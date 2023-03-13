@@ -37,6 +37,7 @@ def user_matcher(user, include_private_data: false)
             Api::V1::ContactInfoRepresenter.new(ci).to_hash.symbolize_keys
           end
         )
+    base_hash[:signed_contract_names] = FinePrint::Contract.published.latest.signed_by(user).pluck(:name)
   end
 
   base_hash.delete_if { |k,v| v.nil? }
