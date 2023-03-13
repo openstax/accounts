@@ -151,6 +151,9 @@ Rails.application.routes.draw do
       post 'agree', as: 'agree_to'
     end
   end
+  resources :terms, param: :name, only: [] do
+    get :sign, on: :member
+  end
 
   scope controller: :static_pages do
     get 'copyright'

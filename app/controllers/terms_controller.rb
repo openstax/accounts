@@ -3,6 +3,7 @@ class TermsController < ApplicationController
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
+  before_action :allow_iframe_access, only: [:sign]
   before_action :get_contract, only: [:show]
 
   def index
@@ -27,6 +28,11 @@ class TermsController < ApplicationController
 
   def pose
     @contract = FinePrint.get_contract(params[:terms].first)
+  end
+
+  def sign
+    @contract = FinePrint::Contract.published.latest.find_by! params[:name]
+    render :pose
   end
 
   def agree
