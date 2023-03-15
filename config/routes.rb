@@ -152,7 +152,7 @@ Rails.application.routes.draw do
     end
   end
   resources :terms, param: :name, only: [] do
-    get :sign, on: :member
+    get :pose, action: :pose_by_name, on: :member
   end
 
   scope controller: :static_pages do
