@@ -32,7 +32,7 @@ class TermsController < ApplicationController
   end
 
   def pose_by_name
-    @contract = FinePrint::Contract.published.latest.find_by! params[:name]
+    @contract = FinePrint::Contract.published.latest.find_by! name: params[:name]
     render :pose
   end
 
@@ -49,9 +49,8 @@ class TermsController < ApplicationController
 
   def authenticate_user_with_token!
     if params[:token].present?
-      token = Doorkeeper::AccessToken.find_by token: params[:token]
-      return head(:forbidden) if token.nil?
-      @current_user = token.user
+      token = Doorkeeper::AccessToken.select(:resource_owner_id).find_by! token: params[:token]
+      @current_user = User.find token.resource_owner_id
     else
       authenticate_user!
     end
