@@ -36,7 +36,12 @@ class TermsController < ApplicationController
   end
 
   def agree
-    handle_with(TermsAgree, complete: lambda { fine_print_return })
+    handle_with(
+      TermsAgree, complete: -> do
+        params[:r].present? && Host.trusted?(params[:r]) ?
+          redirect_to(params[:r]) : fine_print_return
+      end
+    )
   end
 
   protected
