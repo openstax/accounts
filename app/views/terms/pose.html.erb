@@ -10,7 +10,11 @@
     <%= simple_format @contract.content, {}, sanitize: false %>
   </div>
 
-  <%= lev_form_for :agreement, url: agree_to_terms_path(r: params[:r]), method: :post do |f| %>
+  <%= lev_form_for(
+    :agreement,
+    url: agree_to_terms_path(r: params[:r], token: params[:token]),
+    method: :post
+  ) do |f| %>
     <div class="checkbox">
       <label>
         <%= f.check_box :i_agree %> <%= t :".have_read_terms_and_agree" %>
