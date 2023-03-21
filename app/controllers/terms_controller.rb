@@ -1,4 +1,8 @@
 class TermsController < ApplicationController
+  # Allow us to sign terms in an iframe
+  # Unlikely that attackers would want to trick our browsers into signing terms
+  skip_forgery_protection only: :agree
+
   skip_before_action :authenticate_user!, only: [:index, :show, :pose_by_name, :agree]
   skip_before_action :complete_signup_profile, only: [:index, :show]
 
