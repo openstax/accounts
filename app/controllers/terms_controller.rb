@@ -1,9 +1,15 @@
 class TermsController < ApplicationController
-  skip_before_action :authenticate_user!, :complete_signup_profile, only: [:index, :show]
+  # Allow us to sign terms in an iframe
+  # Unlikely that attackers would want to trick our browsers into signing terms
+  skip_forgery_protection only: :agree
+
+  skip_before_action :authenticate_user!, only: [:index, :show, :pose_by_name, :agree]
+  skip_before_action :complete_signup_profile, only: [:index, :show]
+
+  before_action :authenticate_user_with_token!, :allow_iframe_access, only: [:pose_by_name, :agree]
+  before_action :get_contract, only: [:show]
 
   fine_print_skip :general_terms_of_use, :privacy_policy
-
-  before_action :get_contract, only: [:show]
 
   def index
     @contracts = [FinePrint.get_contract(:general_terms_of_use),
@@ -29,11 +35,30 @@ class TermsController < ApplicationController
     @contract = FinePrint.get_contract(params[:terms].first)
   end
 
+  def pose_by_name
+    @contract = FinePrint::Contract.published.latest.find_by! name: params[:name]
+    render :pose
+  end
+
   def agree
-    handle_with(TermsAgree, complete: lambda { fine_print_return })
+    handle_with(
+      TermsAgree, complete: -> do
+        params[:r].present? && Host.trusted?(params[:r]) ?
+          redirect_to(params[:r]) : fine_print_return
+      end
+    )
   end
 
   protected
+
+  def authenticate_user_with_token!
+    if params[:token].present?
+      token = Doorkeeper::AccessToken.select(:resource_owner_id).find_by! token: params[:token]
+      @current_user = User.find token.resource_owner_id
+    else
+      authenticate_user!
+    end
+  end
 
   def get_contract
     @contract = FinePrint.get_contract(params[:id])

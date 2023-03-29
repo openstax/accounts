@@ -191,5 +191,12 @@ module Api::V1
                  description: "A list of the applications the user has accessed",
                  required: false
                }
+
+    collection :signed_contract_names,
+               type: String,
+               readable: true,
+               writeable: false,
+               if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+               getter: ->(*) { FinePrint::Contract.published.latest.signed_by(self).pluck(:name) }
   end
 end

@@ -307,10 +307,10 @@ GEM
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
     ffi (1.15.4)
-    fine_print (5.0.0)
+    fine_print (6.0.1)
       action_interceptor
       jquery-rails
-      rails
+      rails (< 7)
       responders
     font-awesome-rails (4.7.0.5)
       railties (>= 3.2, < 6.1)
