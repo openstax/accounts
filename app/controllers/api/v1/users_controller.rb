@@ -50,7 +50,8 @@ class Api::V1::UsersController < Api::V1::ApiController
     * `name` &ndash; Matches Users' first, last, or full names, case insensitive. (uses wildcard matching)
     * `id` &ndash; Matches Users' IDs exactly.
     * `email` &ndash; Matches Users' emails exactly.
-    * `uuid` &ndash; Mathces Users' UUIDs exactly.
+    * `uuid` &ndash; Matches Users' UUIDs exactly.
+    * `external_id` &ndash; Matches Users' external IDs exactly.
 
     You can also add search terms without prefixes, separated by spaces.
 
@@ -147,6 +148,39 @@ class Api::V1::UsersController < Api::V1::ApiController
   end
 
   ###############################################################
+  # find
+  ###############################################################
+
+  api :POST, '/user/find', 'Finds a user account.'
+  description <<-EOS
+    Finds a user.
+
+    An external_id must be supplied.
+
+    If the external_id is already in use, that existing user will be returned.
+    If the sso parameter is also set, an SSO token for the user will also be returned.
+
+    Otherwise, a 404 error is returned.
+
+    #{json_schema(Api::V1::FindUserRepresenter, include: [:readable, :writable])}
+  EOS
+  def find
+    OSU::AccessPolicy.require_action_allowed!(:find, current_api_user, User)
+    # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have
+    # Substitue a Hashie::Mash to read the JSON encoded body
+    payload = consume!(Hashie::Mash.new, represent_with: Api::V1::FindUserRepresenter)
+
+    user = User.joins(:external_ids).find_by!(external_ids: { external_id: payload.external_id })
+
+    token = get_sso_token(current_api_user.application, user) if payload.sso.present?
+
+    respond_with user, represent_with: Api::V1::FindUserRepresenter,
+                       status: :ok,
+                       location: nil,
+                       user_options: { sso: token }
+  end
+
+  ###############################################################
   # find_or_create
   ###############################################################
 
@@ -156,13 +190,13 @@ class Api::V1::UsersController < Api::V1::ApiController
     state will be "unclaimed" meaning it is a place-holder account for
     an user who has not yet completed the sign up process.
 
-    An email address or username must be supplied.
+    An email address, username or external_id must be supplied.
 
-    If the username or email is already in use, that existing user's ID
+    If the username, email or external_id is already in use, that existing user's ID
     will be returned.
 
-    If an account is created with only an email and no username, it cannot be logged
-    into directly.  It will merged with the user's account when they complete the
+    If an account is created with no username, it cannot be logged
+    into directly. It will merged with the user's account when they complete the
     standard sign up process using a matching email address.
 
     If an account is created with a username and password, it may be signed into and used
@@ -175,25 +209,51 @@ class Api::V1::UsersController < Api::V1::ApiController
     # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have
     # Substitue a Hashie::Mash to read the JSON encoded body
     payload = consume!(Hashie::Mash.new, represent_with: Api::V1::FindOrCreateUserRepresenter)
-
     payload.application = current_api_user.application
+
     result = FindOrCreateUser.call(payload.except(:sso))
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
     else
-      # Note: this method changes to keyword arguments in a future Doorkeeper version
-      token = Doorkeeper::AccessToken.find_or_create_for(
-        payload.application,
-        result.outputs.user.id,
-        '',
-        1.hour,
-        false,
-      ).token if payload.sso.present?
+      token = get_sso_token(payload.application, result.outputs.user) if payload.sso.present?
 
       respond_with result.outputs.user, represent_with: Api::V1::FindOrCreateUserRepresenter,
                                         location: nil,
                                         user_options: { sso: token }
     end
+  end
+
+  ###############################################################
+  # external_id
+  ###############################################################
+
+  api :POST, '/user/external_id', 'Creates an external id for a given user.'
+  description <<-EOS
+    Creates an external id for a given user.
+
+    Both external_id and user_id must be supplied.
+
+    Only trusted apps may call this API. All others will receive a 403 error.
+
+    If the external_id does not exist, it is created and 201 is returned.
+
+    #{json_schema(Api::V1::ExternalIdRepresenter, include: [:readable, :writable])}
+  EOS
+  def create_external_id
+    standard_create ExternalId.new
+  end
+
+  private
+
+  def get_sso_token(application, user)
+    # Note: this method changes to keyword arguments in a future Doorkeeper version
+    Doorkeeper::AccessToken.find_or_create_for(
+      application,
+      user.id,
+      '',
+      1.hour,
+      false,
+    ).token
   end
 
 end

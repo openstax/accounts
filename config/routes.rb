@@ -151,6 +151,9 @@ Rails.application.routes.draw do
       post 'agree', as: 'agree_to'
     end
   end
+  resources :terms, param: :name, only: [] do
+    get :pose, action: :pose_by_name, on: :member
+  end
 
   scope controller: :static_pages do
     get 'copyright'
@@ -168,7 +171,9 @@ Rails.application.routes.draw do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update] do
-      post '/find-or-create', action: 'find_or_create'
+      post 'find'
+      post 'find-or-create', action: 'find_or_create'
+      post 'external-ids', action: 'create_external_id'
     end
 
     resources :application_users, only: [:index] do

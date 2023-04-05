@@ -1,5 +1,4 @@
 class TermsAgree
-
   lev_handler
 
   paramify :agreement do

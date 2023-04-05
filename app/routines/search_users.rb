@@ -106,6 +106,11 @@ class SearchUsers
         users = users.where(contact_infos: {type: 'EmailAddress', verified: true, is_searchable: true}) unless options[:admin]
       end
 
+      with.keyword :external_id do |external_ids|
+        sanitized_external_ids = sanitize_strings external_ids
+        users = users.joins(:external_ids).where(external_ids: { external_id: sanitized_external_ids })
+      end
+
       # Rerun the queries above for 'any' terms (which are ones without a
       # prefix).
 

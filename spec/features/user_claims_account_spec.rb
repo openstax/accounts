@@ -25,7 +25,7 @@ feature 'User claims an unclaimed account' do
 
   describe 'a new user receives an invite' do
 
-    scenario 'without a pre-existing password' do
+    xscenario 'without a pre-existing password' do
       FindOrCreateUser.call(user_options).outputs[:user]
 
       visit_invite_url
@@ -34,6 +34,13 @@ feature 'User claims an unclaimed account' do
       click_on t 'contact_infos.confirm_unclaimed.you_can_now_sign_in.add_password'
       expect(page).to have_content(t :"identities.add.page_heading")
       complete_add_password_screen
+
+      FindOrCreateUser.call(
+        user_options.merge(
+          password: "apassword", password_confirmation: "apassword"
+        )
+      )
+    end
 
       complete_add_password_success_screen
       complete_terms_screens

@@ -59,3 +59,14 @@ FinePrint.configure do |config|
   }
 
 end
+
+# Patch that allows us to use FinePrint 6 on Rails 5
+Rails.application.config.to_prepare do
+  FinePrint::Contract.class_exec do
+    scope :signed_by, ->(user) do
+      joins(:signatures).where(
+        fine_print_signatures: { user_id: user.id, user_type: class_name_for(user) }
+      )
+    end
+  end
+end
