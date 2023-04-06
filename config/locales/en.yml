@@ -4,6 +4,7 @@ en:
     school_name: School name
     describe_role: Which of the following best describes your role?
     instructor: Instructor
+    researcher: Researcher
     administrator: Administrator
     other: Other educational staff
     other_please_specify: Other (please specify)
@@ -40,7 +41,7 @@ en:
     log_in: Log in
     sign_up: Sign up
     student: Student
-    educator: Educator
+    educator: Educator / Researcher
     step_counter: Step %{current_step} of %{total_steps}
     login_page_header: Log in to your OpenStax account
     login_with: 'Log in with:'

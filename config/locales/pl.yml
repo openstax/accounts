@@ -3,6 +3,7 @@ pl:
     complete_page_header: Uzupełnij swój profil
     describe_role: Które z poniższych najlepiej opisuje twoją rolę?
     instructor: Instruktor
+    researcher: Badacz
     administrator: Administrator
     other: Inni pracownicy edukacyjni
     other_please_specify: Inne (proszę określić)
@@ -37,7 +38,7 @@ pl:
     log_in: Zaloguj się
     sign_up: Zarejestruj się
     student: Student
-    educator: Nauczyciel
+    educator: Nauczyciel / Badacz
     step_counter: Krok %{current_step} z %{total_steps}
     login_page_header: Zaloguj się na swoje konto OpenStax
     login_with: 'Zaloguj się przez:'
