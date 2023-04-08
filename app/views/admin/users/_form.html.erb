@@ -320,8 +320,12 @@
   </div>
 
   <% if @user.external_uuids.any? %>
+  <br>
+
+  <h4>Legacy External authentications</h4>
+
   <div class="form-group">
-    <%= f.label :trusted_launch_user, 'External authentications?', class: "col-sm-2 control-label" %>
+    <%= f.label :trusted_launch_user, 'Legacy External authentications?', class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
       <div class="checkbox">
         <%= f.check_box :keep_external_uuids, checked: true, style: 'margin-left: 0px'  %>
@@ -340,4 +344,29 @@
   <div class="actions">
 
   </div>
+<% end %>
+
+<% if @user.contact_infos.empty? && @user.external_ids.any? %>
+  <h4>External IDs</h4>
+
+  <% @user.external_ids.each do |external_id| %>
+      <%= label_tag(
+        "external_id_#{external_id.id}".to_sym,
+        external_id.external_id,
+        class: "col-sm-2 control-label"
+      ) %>
+
+      <div class="col-sm-10 checkbox" style="padding-left: 0">
+        <%= button_to(
+          'Remove',
+          admin_external_id_path(external_id),
+          class: 'btn btn-danger',
+          data: {
+            confirm: "Are you sure you want to remove external id #{external_id.external_id}?",
+            disable_with: 'Removing...'
+          },
+          method: :delete
+        ) %>
+      </div>
+  <% end %>
 <% end %>
