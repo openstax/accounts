@@ -41,26 +41,12 @@ describe SetGdprData, type: :lib, vcr: VCR_OPTS do
 
   describe "#country_code" do
     it 'succeeds' do
-      expect(described_class.country_code(ip: us_ip)).to eq "US"
+      headers = { 'CloudFront-Viewer-Country' => 'US' }
+      expect(described_class.country_code(headers: headers)).to eq 'US'
     end
 
-    it 'returns nil for bad IP' do
-      expect(Sentry).to receive(:capture_message).with(/Failed IP/, any_args)
-      expect(described_class.country_code(ip: "howdy")).to eq nil
-    end
-
-    it 'returns nil for net timeout' do
-      # cannot really test read timeout b/c of how webmock inserts itself
-      # https://github.com/bblimke/webmock/issues/286#issuecomment-19457387
-      allow(Net::HTTP).to receive(:start).and_raise(Net::ReadTimeout)
-      expect(Sentry).to receive(:capture_message).with(/timed out/)
-      expect(described_class.country_code(ip: us_ip)).to eq nil
-    end
-
-    it 'returns nil for any other problem' do
-      allow(Net::HTTP).to receive(:start).and_raise(StandardError)
-      expect(Sentry).to receive(:capture_exception)
-      expect(described_class.country_code(ip: us_ip)).to eq nil
+    it 'returns nil if CloudFront headers are absent' do
+      expect(described_class.country_code(headers: {})).to eq nil
     end
   end
 
@@ -70,27 +56,26 @@ describe SetGdprData, type: :lib, vcr: VCR_OPTS do
 
     context "data already cached" do
       context "cached IP matches called IP" do
-        it "sets the user status and does not make an HTTP request" do
-          described_class.call(user: user, session: {gdpr: "i#{eu_ip}"}, ip: eu_ip)
-          expect(WebMock).to_not have_requested(:get, /.*/)
+        it "sets the user status and does not use the CloudFront header" do
+          described_class.call(user: user, headers: {}, session: {gdpr: "i#{eu_ip}"}, ip: eu_ip)
           expect(user.is_not_gdpr_location).to eq false
         end
       end
 
       context "cached IP different from called IP" do
-        it "sets the user status, makes an HTTP request, and changes the cached session" do
+        it "sets the user status, uses the CloudFront header, and changes the cached session" do
           session = {gdpr: "i#{eu_ip}"}
-          described_class.call(user: user, session: session, ip: us_ip)
-          expect(WebMock).to have_requested(:get, /.*/)
+          headers = { 'CloudFront-Viewer-Country' => 'US' }
+          described_class.call(user: user, headers: headers, session: session, ip: us_ip)
           expect(user.is_not_gdpr_location).to eq true
           expect(session).to eq ({gdpr: "o#{us_ip}"})
         end
       end
 
-      context "for unresolvable addresses" do
+      context "without CloudFront headers" do
         it "sets the user status to unknown and clears session data" do
           session = {gdpr: "i#{eu_ip}"}
-          described_class.call(user: user, session: session, ip: "howdy")
+          described_class.call(user: user, headers: {}, session: session, ip: "howdy")
           expect(user.is_not_gdpr_location).to eq false
           expect(session).to eq ({})
         end
@@ -99,17 +84,21 @@ describe SetGdprData, type: :lib, vcr: VCR_OPTS do
 
     context "data not yet cached" do
       context "for EU addresses" do
-        it "sets the user status and cache" do
+        it "sets the user status and caches" do
           session = {}
-          described_class.call(user: user, session: session, ip: eu_ip)
+          headers = { 'CloudFront-Viewer-Country' => 'FR' }
+          described_class.call(user: user, headers: headers, session: session, ip: eu_ip)
           expect(user.is_not_gdpr_location).to eq false
           expect(session).to eq({gdpr: "i#{eu_ip}"})
         end
       end
 
-      context "for unresolvable addresses" do
-        it "sets the user status to unknown and clears session data" do
-
+      context "without CloudFront headers" do
+        it "sets the user status to unknown and does not cache" do
+          session = {}
+          described_class.call(user: user, headers: {}, session: session, ip: "howdy")
+          expect(user.is_not_gdpr_location).to eq false
+          expect(session).to eq ({})
         end
       end
     end

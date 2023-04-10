@@ -62,7 +62,6 @@ VCR.configure do |c|
   ).each { |salesforce_secret_name| c.filter_secret(['salesforce', salesforce_secret_name]) }
 
   %w(
-    ip_api_key
     sheerid_api_secret
   ).each { |secret_name| c.filter_secret([secret_name]) }
 end

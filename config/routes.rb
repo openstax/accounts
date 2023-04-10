@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
-  scope controller: 'newflow/other' do
+  scope controller: 'other' do
     # Profile access
     get 'i/profile', action: :profile_newflow, as: :profile_newflow
 

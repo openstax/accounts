@@ -116,6 +116,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, current_human_user)
 
     SetGdprData.call(user: current_human_user,
+                     headers: request.headers,
                      session: session,
                      ip: ENV['IP_ADDRESS_FOR_GDPR'] || request.ip)
 
