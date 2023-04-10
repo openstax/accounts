@@ -1,4 +1,4 @@
-class OtherController < BaseController
+class OtherController < Newflow::BaseController
 
   before_action :newflow_authenticate_user!, only: :profile_newflow
   before_action :ensure_complete_educator_signup, only: :profile_newflow
