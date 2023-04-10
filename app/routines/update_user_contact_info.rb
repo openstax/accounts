@@ -54,17 +54,23 @@ class UpdateUserContactInfo
 
       old_fv_status = user.faculty_status
       user.faculty_status = case sf_contact.faculty_verified
-                            when "confirmed_faculty"
-                              :confirmed_faculty
-                            when "pending_faculty"
-                              :pending_faculty
-                            when "rejected_faculty"
-                              :rejected_faculty
-                            when NilClass
-                              :no_faculty_info
-                            else
-                              Sentry.capture_message("Unknown faculty_verified field: '#{
-                                sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
+                              when "confirmed_faculty"
+                                :confirmed_faculty
+                              when "pending_faculty"
+                                :pending_faculty
+                              when "rejected_faculty"
+                                :rejected_faculty
+                              when "rejected_by_sheerid"
+                                :rejected_by_sheerid
+                              when "incomplete_signup"
+                                :incomplete_signup
+                              when "no_faculty_info"
+                                :no_faculty_info
+                              when NilClass
+                                :no_faculty_info
+                              else
+                                Sentry.capture_message("Unknown faculty_verified field: '#{
+                                  sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
                             end
 
       user.school_type = case sf_contact.school_type
