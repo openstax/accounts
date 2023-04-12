@@ -34,7 +34,7 @@ module Newflow
         validates(
           :educator_specific_role,
           inclusion: {
-            in: %w(instructor administrator other),
+            in: %w(instructor researcher administrator other),
           }
         )
       end

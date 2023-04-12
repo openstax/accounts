@@ -21,7 +21,8 @@ class User < ApplicationRecord
     DESIGNER_ROLE = :designer,
     OTHER_ROLE = :other,
     ADJUNCT_ROLE = :adjunct,
-    HOMESCHOOL_ROLE = :homeschool
+    HOMESCHOOL_ROLE = :homeschool,
+    RESEARCHER_ROLE = :researcher,
   ].freeze
 
   VALID_FACULTY_STATUSES = [
