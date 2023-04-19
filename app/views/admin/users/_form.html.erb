@@ -340,23 +340,20 @@
       <%= f.submit 'Save', class: 'btn btn-primary' %>
     </div>
   </div>
-
-  <div class="actions">
-
-  </div>
 <% end %>
 
-<% if @user.contact_infos.empty? && @user.external_ids.any? %>
+<% if @user.external_ids.any? %>
   <h4>External IDs</h4>
 
   <% @user.external_ids.each do |external_id| %>
+    <div class="form-group" style="overflow: auto">
       <%= label_tag(
         "external_id_#{external_id.id}".to_sym,
         external_id.external_id,
-        class: "col-sm-2 control-label"
+        class: "col-sm-6 control-label"
       ) %>
 
-      <div class="col-sm-10 checkbox" style="padding-left: 0">
+      <div class="col-sm-6">
         <%= button_to(
           'Remove',
           admin_external_id_path(external_id),
@@ -365,8 +362,10 @@
             confirm: "Are you sure you want to remove external id #{external_id.external_id}?",
             disable_with: 'Removing...'
           },
+          disabled: @user.contact_infos.empty?,
           method: :delete
         ) %>
       </div>
+    </div>
   <% end %>
 <% end %>
