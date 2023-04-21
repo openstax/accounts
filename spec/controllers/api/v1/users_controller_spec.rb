@@ -373,7 +373,9 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       sso_cookie = JSON.parse(response.body)['sso']
       sso_hash = SsoCookie.read sso_cookie
       expect(sso_hash['sub']).to eq Api::V1::UserRepresenter.new(new_user).to_hash
-      expect(sso_hash['exp']).to be <= (Time.current + 1.hour).to_i
+      expect(sso_hash['exp']).to be <= (
+        Time.current + Api::V1::UsersController::SSO_TOKEN_DURATION
+      ).to_i
 
       # Ensure the Doorkeeper token exists
       Doorkeeper::AccessToken.find_by! token: sso_cookie
