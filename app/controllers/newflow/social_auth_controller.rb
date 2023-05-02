@@ -10,75 +10,89 @@ module Newflow
 
     # Log in (or sign up and then log in) a user using a social (OAuth) provider
     def oauth_callback
-      if signed_in? && user_signin_is_too_old?
-        reauthenticate_user!
+      # If state is not assigned, then doorkeeper uses a random string
+      # So if state is not decodable we assume they are in the normal signup
+      token = Rails.application.message_verifier('social_auth').verify(params[:state]) rescue nil
+
+      if token
+        logged_in_user = User.find token['user_id']
+        @return_to = token['return_to']
+        @is_external = true
+      elsif signed_in? && user_signin_is_too_old?
+        return reauthenticate_user!
       else
-        handle_with(
-          OauthCallback,
-          logged_in_user: signed_in? && current_user,
-          success: lambda {
-            authentication = @handler_result.outputs.authentication
-            user = @handler_result.outputs.user
-
-            if user.student? && !user.activated?
-              # Not activated means signup.
-              # Only students can sign up with a social network.
-              unverified_user = ensure_unverified_user(user)
-
-              save_unverified_user(unverified_user.id)
-              @first_name = user.first_name
-              @last_name = user.last_name
-              @email = @handler_result.outputs.email
-              security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
-              # must confirm their social info on signup
-              render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
-            end
-
-            sign_in!(user)
-            security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
-            redirect_back(fallback_location: profile_newflow_path)
-          },
-          failure: lambda {
-            @email = @handler_result.outputs.email
-            save_login_failed_email(@email)
-
-            code = @handler_result.errors.first.code
-            authentication = @handler_result.outputs.authentication
-            case code
-            when :should_redirect_to_signup
-              redirect_to(
-                newflow_login_path,
-                notice: I18n.t(
-                  :"login_signup_form.should_social_signup",
-                  sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
-                )
-              )
-            when :authentication_taken
-              security_log(:authentication_transfer_failed, authentication_id: authentication.id)
-              redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
-            when :email_already_in_use
-              security_log(:email_already_in_use, email: @email, authentication_id: authentication.id)
-              redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
-            when :mismatched_authentication
-              security_log(:sign_in_failed, reason: "mismatched authentication")
-              redirect_to(newflow_login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
-            else
-              oauth = request.env['omniauth.auth']
-              errors = @handler_result.errors.inspect
-              last_exception = $!.inspect
-              exception_backtrace = $@.inspect
-
-              error_message = "[SocialAuthController#oauth_callback] IllegalState on failure: " +
-                              "OAuth data: #{oauth}; error code: #{code}; " +
-                              "handler errors: #{errors}; last exception: #{last_exception}; " +
-                              "exception backtrace: #{exception_backtrace}"
-
-              # Send the error to Sentry
-              Sentry.capture_message(error_message)
-            end
-          }
-        )
+        logged_in_user = signed_in? && current_user
+        @return_to = nil
+        @is_external = false
       end
+
+      handle_with(
+        OauthCallback,
+        logged_in_user: logged_in_user,
+        success: -> {
+          authentication = @handler_result.outputs.authentication
+          user = @handler_result.outputs.user
+
+          if user.student? && !user.activated?
+            # Not activated means signup.
+            # Only students can sign up with a social network.
+            unverified_user = ensure_unverified_user(user)
+
+            save_unverified_user(unverified_user.id)
+            @first_name = user.first_name
+            @last_name = user.last_name
+            @email = @handler_result.outputs.email
+            security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
+            # must confirm their social info on signup
+            render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
+          end
+
+          sign_in!(user)
+          security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
+          @return_to.present? ? redirect_to(@return_to) :
+                                redirect_back(fallback_location: profile_newflow_path)
+
+        },
+        failure: -> {
+          @email = @handler_result.outputs.email
+          save_login_failed_email(@email)
+
+          code = @handler_result.errors.first.code
+          authentication = @handler_result.outputs.authentication
+          case code
+          when :should_redirect_to_signup
+            redirect_to(
+              error_path(@is_external, code),
+              notice: I18n.t(
+                :"login_signup_form.should_social_signup",
+                sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
+              )
+            )
+          when :authentication_taken
+            security_log(:authentication_transfer_failed, authentication_id: authentication.id)
+            redirect_to(error_path(@is_external, code), alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
+          when :email_already_in_use
+            security_log(:email_already_in_use, email: @email, authentication_id: authentication.id)
+            redirect_to(error_path(@is_external, code), alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
+          when :mismatched_authentication
+            security_log(:sign_in_failed, reason: "mismatched authentication")
+            redirect_to(error_path(@is_external, code), alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
+          else
+            oauth = request.env['omniauth.auth']
+            errors = @handler_result.errors.inspect
+            last_exception = $!.inspect
+            exception_backtrace = $@.inspect
+
+            error_message = "[SocialAuthController#oauth_callback] IllegalState on failure: " +
+                            "OAuth data: #{oauth}; error code: #{code}; " +
+                            "handler errors: #{errors}; last exception: #{last_exception}; " +
+                            "exception backtrace: #{exception_backtrace}"
+
+            # Send the error to Sentry
+            Sentry.capture_message(error_message)
+          end
+        }
+      )
     end
 
     def confirm_oauth_info
@@ -124,6 +138,17 @@ module Newflow
     end
 
     private #################
+
+    def error_path(is_external, code)
+      return new_external_account_credentials_path if is_external
+
+      case code
+      when :should_redirect_to_signup, :mismatched_authentication
+        newflow_login_path
+      when :authentication_taken, :email_already_in_use
+        profile_newflow_path
+      end
+    end
 
     def ensure_unverified_user(user)
       EnsureUnverifiedUser.call(user).outputs.user

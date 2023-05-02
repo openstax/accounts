@@ -214,6 +214,8 @@ Rails.application.routes.draw do
     get :pose, action: :pose_by_name, on: :member
   end
 
+  resource :external_account_credentials, only: [:new, :create]
+
   scope controller: 'static_pages' do
     get 'copyright'
     get 'api'
