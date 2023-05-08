@@ -1,4 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApiController
+  SSO_TOKEN_DURATION = 6.hours
 
   resource_description do
     api_versions "v1"
@@ -251,7 +252,7 @@ class Api::V1::UsersController < Api::V1::ApiController
       application,
       user.id,
       '',
-      1.hour,
+      SSO_TOKEN_DURATION,
       false,
     ).token
   end
