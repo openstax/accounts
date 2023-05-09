@@ -14,7 +14,7 @@ module Newflow
       # So if state is not decodable we assume they are in the normal signup
       token = Rails.application.message_verifier('social_auth').verify(params[:state]) rescue nil
 
-      if token
+      if token.present?
         logged_in_user = User.find token['user_id']
         @return_to = token['return_to']
         @is_external = true
@@ -140,7 +140,7 @@ module Newflow
     private #################
 
     def error_path(is_external, code)
-      return new_external_account_credentials_path if is_external
+      return new_external_user_credentials_path if is_external
 
       case code
       when :should_redirect_to_signup, :mismatched_authentication

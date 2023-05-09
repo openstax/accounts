@@ -1,4 +1,4 @@
-class CreateExternalAccountCredentials
+class CreateExternalUserCredentials
   lev_handler
 
   uses_routine AgreeToTerms

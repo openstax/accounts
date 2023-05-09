@@ -1,5 +1,5 @@
-class ExternalAccountCredentialsController < BaseController
-  before_action :authenticate_external_user!, :validate_return_param!
+class ExternalUserCredentialsController < Newflow::BaseController
+  prepend_before_action :authenticate_external_user!, :validate_return_param!
 
   def new
     render_form
@@ -7,19 +7,23 @@ class ExternalAccountCredentialsController < BaseController
 
   def create
     handle_with(
-      CreateExternalAccountCredentials,
+      CreateExternalUserCredentials,
       success: -> {
-        security_log :student_created_password, user: @user
+        security_log :student_created_password
         redirect_to @return_to
       },
       failure: -> {
-        security_log :student_create_password_failed, user: @user
+        security_log :student_create_password_failed
         render_form
       }
     )
   end
 
   protected
+
+  def current_user
+    @user
+  end
 
   def render_form
     @contracts = [
@@ -35,10 +39,10 @@ class ExternalAccountCredentialsController < BaseController
   end
 
   def authenticate_external_user!
-    @user = User.joins(:external_ids).find_by external_id: params[:external_id]
+    @user = User.find_by(id: Doorkeeper::AccessToken.find_by(token: params[:token])&.resource_owner_id)
 
     # Cannot be used by users who can already login
-    raise SecurityTransgression if @user.nil? || @user.can_login?
+    raise SecurityTransgression if @user.nil? || !@user.is_external?
   end
 
   def validate_return_param!

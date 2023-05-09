@@ -10,7 +10,7 @@
                     header: (I18n.t(:"login_signup_form.signup_page_header")),
                     current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
                     classes: 'signup-page') do %>
-            <% lev_form_for :signup, url: external_account_credentials_path do |form| %>
+            <% lev_form_for :signup, url: external_user_credentials_path do |form| %>
                 <%
                     form_helper = NewflowFormHelper::Newflow.new(
                         f: form,
