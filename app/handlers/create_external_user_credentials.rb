@@ -10,13 +10,9 @@ class CreateExternalUserCredentials
     attribute :last_name, type: String
     attribute :email, type: String
     attribute :password, type: String
-    attribute :is_title_1_school, type: boolean
-    attribute :newsletter, type: boolean
     attribute :terms_accepted, type: boolean
     attribute :contract_1_id, type: Integer
     attribute :contract_2_id, type: Integer
-    attribute :role, type: String
-    attribute :phone_number, type: String
   end
 
   protected #############
@@ -26,7 +22,7 @@ class CreateExternalUserCredentials
   end
 
   def required_params
-    @required_params ||= [:email, :first_name, :last_name,:password].compact
+    @required_params ||= [:email, :first_name, :last_name, :password].compact
   end
 
   def handle
