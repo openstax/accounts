@@ -67,7 +67,7 @@ en:
     legal_first_name_label: Legal first name
     legal_last_name_label: Legal last name
     email_label: Email
-    school_issued_email_label: School-issued email address
+    school_issued_email_label: Institutional email address
     phone_number_label: Phone number
     password_label: Password
     pin_label: Confirm PIN

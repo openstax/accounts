@@ -135,7 +135,7 @@ module Newflow
       books = user.which_books.split(';')
 
       if user.how_many_students.blank?
-        number_of_students = nil
+        number_of_students = 0
       else
         number_of_students = user.how_many_students
       end
