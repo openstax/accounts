@@ -4,26 +4,19 @@ module Newflow
 
     fine_print_skip :general_terms_of_use, :privacy_policy
 
-    before_action :restart_signup_if_missing_unverified_user, only: [
-      :confirm_oauth_info, :confirm_social_info_form
-    ]
-
     # Log in (or sign up and then log in) a user using a social (OAuth) provider
     def oauth_callback
       # If state is not assigned, then doorkeeper uses a random string
-      # So if state is not decodable we assume they are in the normal signup
-      token = Rails.application.message_verifier('social_auth').verify(params[:state]) rescue nil
-
-      if token.present?
-        logged_in_user = User.find token['user_id']
-        @return_to = token['return_to']
-        @is_external = true
+      # So if state is not decodable we assume they are in the normal signup flow
+      @token = verify_token(params[:state])
+      if @token.present?
+        logged_in_user = User.find @token['user_id']
+        is_external = true
       elsif signed_in? && user_signin_is_too_old?
         return reauthenticate_user!
       else
         logged_in_user = signed_in? && current_user
-        @return_to = nil
-        @is_external = false
+        is_external = false
       end
 
       handle_with(
@@ -38,7 +31,10 @@ module Newflow
             # Only students can sign up with a social network.
             unverified_user = ensure_unverified_user(user)
 
-            save_unverified_user(unverified_user.id)
+            # If a token is present, we just get the user from that in confirm_oauth_info
+            # Otherwise we save the unverified user in the session to be used there
+            save_unverified_user(unverified_user.id) if @token.nil?
+
             @first_name = user.first_name
             @last_name = user.last_name
             @email = @handler_result.outputs.email
@@ -49,8 +45,7 @@ module Newflow
 
           sign_in!(user)
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
-          @return_to.present? ? redirect_to(@return_to) :
-                                redirect_back(fallback_location: profile_newflow_path)
+          redirect_back(fallback_location: profile_newflow_path)
 
         },
         failure: -> {
@@ -62,7 +57,7 @@ module Newflow
           case code
           when :should_redirect_to_signup
             redirect_to(
-              error_path(@is_external, code),
+              error_path(is_external, code),
               notice: I18n.t(
                 :"login_signup_form.should_social_signup",
                 sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
@@ -70,13 +65,13 @@ module Newflow
             )
           when :authentication_taken
             security_log(:authentication_transfer_failed, authentication_id: authentication.id)
-            redirect_to(error_path(@is_external, code), alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
+            redirect_to(error_path(is_external, code), alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
           when :email_already_in_use
             security_log(:email_already_in_use, email: @email, authentication_id: authentication.id)
-            redirect_to(error_path(@is_external, code), alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
+            redirect_to(error_path(is_external, code), alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
           when :mismatched_authentication
             security_log(:sign_in_failed, reason: "mismatched authentication")
-            redirect_to(error_path(@is_external, code), alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
+            redirect_to(error_path(is_external, code), alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
           else
             oauth = request.env['omniauth.auth']
             errors = @handler_result.errors.inspect
@@ -96,19 +91,32 @@ module Newflow
     end
 
     def confirm_oauth_info
+      @token = verify_token(params[:token])
+      if @token.present?
+        user = User.find(@token['user_id'])
+        return_to = @token['return_to']
+      else
+        return redirect_to(newflow_signup_path) unless unverified_user.present?
+        user = unverified_user
+        return_to = signup_done_path
+      end
+
       handle_with(
         ConfirmOauthInfo,
-        user: unverified_user,
+        user: user,
         contracts_required: !contracts_not_required,
         client_app: get_client_app,
-        success: lambda {
+        success: -> {
           clear_signup_state
           sign_in!(@handler_result.outputs.user)
           security_log(:student_social_auth_confirmation_success)
-          redirect_to signup_done_path
+          redirect_to return_to
         },
-        failure: lambda {
+        failure: -> {
           security_log(:student_social_auth_confirmation_failed)
+          @first_name = user.first_name
+          @last_name = user.last_name
+          @email = @handler_result.outputs.email
           render :confirm_social_info_form
         }
       )
@@ -120,7 +128,7 @@ module Newflow
       else
         handle_with(
           AuthenticationsDelete,
-          success: lambda do
+          success: -> do
             authentication = @handler_result.outputs.authentication
             security_log :authentication_deleted,
                         authentication_id: authentication.id,
@@ -130,7 +138,7 @@ module Newflow
                   plain: (I18n.t :"controllers.authentications.authentication_removed",
                                 authentication: params[:provider].titleize)
           end,
-          failure: lambda do
+          failure: -> do
             render status: 422, plain: @handler_result.errors.map(&:message).to_sentence
           end
         )
@@ -138,6 +146,10 @@ module Newflow
     end
 
     private #################
+
+    def verify_token(token)
+      JSON.parse(Rails.application.message_verifier('social_auth').verify(token)) rescue nil
+    end
 
     def error_path(is_external, code)
       return new_external_user_credentials_path if is_external
