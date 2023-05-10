@@ -90,7 +90,7 @@
                         <br>
                     </div>
 
-                    <% if unverified_user&.student? && is_BRI_book_adopter? %>
+                    <% if unverified_user.present? && !unverified_user&.student? && is_BRI_book_adopter? %>
                         <%= render partial: 'newflow/is_title_1_school_checkbox' %>
                     <% end %>
 
