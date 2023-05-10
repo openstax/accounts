@@ -1,7 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe CreateExternalUserCredentials, type: :handler do
-  let(:user)  { FactoryBot.create :user, state: User::EXTERNAL }
+  let(:user)  do
+    FactoryBot.create :user, receive_newsletter: false,
+                             role: User::UNKNOWN_ROLE,
+                             state: User::EXTERNAL
+  end
 
   let(:email) { Faker::Internet.free_email }
 
@@ -15,8 +19,7 @@ RSpec.describe CreateExternalUserCredentials, type: :handler do
         terms_accepted: true,
         newsletter: true,
         contract_1_id: FinePrint::Contract.first.id,
-        contract_2_id: FinePrint::Contract.second.id,
-        role: :student
+        contract_2_id: FinePrint::Contract.second.id
       }
     }
   end
@@ -50,6 +53,18 @@ RSpec.describe CreateExternalUserCredentials, type: :handler do
         )
       )
       handler_call
+    end
+
+    it "sets the User's role to student" do
+      expect(user).to be_unknown_role
+      handler_call
+      expect(user.reload).to be_student
+    end
+
+    it 'stores selection in User whether to receive newsletter or not' do
+      expect(user.receive_newsletter).to eq false
+      handler_call
+      expect(user.reload.receive_newsletter).to eq true
     end
 
     it 'agrees to terms of use and privacy policy' do
@@ -89,8 +104,7 @@ RSpec.describe CreateExternalUserCredentials, type: :handler do
           terms_accepted: true,
           newsletter: true,
           contract_1_id: 1,
-          contract_2_id: 2,
-          role: 'student'
+          contract_2_id: 2
         }
       }
     end

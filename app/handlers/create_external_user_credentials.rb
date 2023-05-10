@@ -10,6 +10,7 @@ class CreateExternalUserCredentials
     attribute :last_name, type: String
     attribute :email, type: String
     attribute :password, type: String
+    attribute :newsletter, type: boolean
     attribute :terms_accepted, type: boolean
     attribute :contract_1_id, type: Integer
     attribute :contract_2_id, type: Integer
@@ -40,6 +41,8 @@ class CreateExternalUserCredentials
 
     outputs.user.first_name = signup_params.first_name
     outputs.user.last_name = signup_params.last_name
+    outputs.user.receive_newsletter = signup_params.newsletter
+    outputs.user.role = :student
     outputs.user.save
     transfer_errors_from(outputs.user, { type: :verbatim }, :fail_if_errors)
 

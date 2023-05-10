@@ -58,6 +58,29 @@ module Newflow
         end
       end
 
+      context 'with a signed token in the state param' do
+        let(:user)      { FactoryBot.create :user, state: User::EXTERNAL }
+        let(:return_to) { 'http://localhost' }
+        let(:state)     do
+          Rails.application.message_verifier('social_auth').generate({
+            user_id: user.id,
+            return_to: return_to
+          }.to_json)
+        end
+
+        let(:params) { { provider: 'facebook', uid: Faker::Internet.uuid, state: state } }
+
+        it 'saves unverified user' do
+          expect_any_instance_of(described_class).to receive(:save_unverified_user)
+          get(:oauth_callback, params: params)
+        end
+
+        it 'renders confirm_social_info_form' do
+          get(:oauth_callback, params: params)
+          expect(response).to render_template(:confirm_social_info_form)
+        end
+      end
+
       context 'failure' do
         context 'with mismatched_authentication' do
           before do
