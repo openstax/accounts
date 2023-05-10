@@ -40,10 +40,6 @@ $(document).ready ->
   # the below clause will that window
   # or (window.opener and window.name is 'oxlogin')
 
-  # we're being loaded inside an iframe or a popup
-  # Set a css class to adjusted to fit a narrow screen
-  $(document.body).addClass('condensed iframe')
-
   relayHeading()
 
   # notify the parent iframe of our size now and whenever it's changed
