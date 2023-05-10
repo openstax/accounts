@@ -1,4 +1,4 @@
-<%= ox_card(heading: @contract.title) do %>
+<%= ox_card(heading: @contract.title, classes: "wide") do %>
 
   <% if FinePrint.signed_any_version_of_contract?(current_user, @contract) %>
     <p><%= t :".contracts_changed_notice", contract_title: @contract.title %></p>
@@ -13,7 +13,8 @@
   <%= lev_form_for(
     :agreement,
     url: agree_to_terms_path(r: params[:r], token: params[:token]),
-    method: :post
+    method: :post,
+    html: { class: 'footer' }
   ) do |f| %>
     <div class="checkbox">
       <label>
