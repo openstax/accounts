@@ -142,10 +142,14 @@
     background: #F5F5F5;
     display: flex;
     justify-content: space-between;
+    gap: 4rem;
+
+    @media (max-width: $screen-sm - ($card-padding * 2)) {
+      flex-direction: column;
+      gap: 1.6rem;
+    }
 
     .checkbox {
-      align-self: center;
-
       label {
         display: flex;
         align-items: center;
@@ -154,6 +158,7 @@
         input[type="checkbox"] {
           margin: 0 1.6rem 0 0;
           position: initial;
+          flex-shrink: 0;
         }
       }
     }
