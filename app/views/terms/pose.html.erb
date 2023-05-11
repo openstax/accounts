@@ -18,12 +18,12 @@
   ) do |f| %>
     <div class="checkbox">
       <label>
-        <%= f.check_box :i_agree %> <%= t :".have_read_terms_and_agree" %>
+        <%= f.check_box :i_agree, class: 'new-style' %> <%= t :".have_read_terms_and_agree" %>
       </label>
     </div>
 
     <%= f.hidden_field :contract_id, value: @contract.id %>
-    <%= f.submit (t :".agree"), id: "agreement_submit", class: 'primary' %>
+    <%= f.submit (t :".agree"), id: "agreement_submit", class: 'primary new-style' %>
   <% end %>
 
 <% end %>
