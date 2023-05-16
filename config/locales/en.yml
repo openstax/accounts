@@ -497,7 +497,7 @@ en:
         There have been changes to the %{contract_title}. Please review them and
         then click the agreement button at the bottom of this page to continue.
       have_read_terms_and_agree: >-
-        I have read and agree to these terms of use.
+        I have read and agree to the terms listed above.
 
   legacy:
     users:
