@@ -444,8 +444,7 @@ pl:
         Zapisy regulaminu %{contract_title} zmieniły się. Prosimy zapoznać się
         z nową wersją, a następnie kliknąć „Zgadzam się” na końcu tej strony.
       have_read_terms_and_agree: >-
-        Zapoznałem/am się z przedstawionymi powyżej regulaminami i zgadzam
-        się na zawarte w nich warunki.
+        Przeczytałem i zgadzam się z tymi warunkami użytkowania.
 
   legacy:
     users:
