@@ -1,13 +1,18 @@
 .ox-card {
   $input-height: 50px;
   $input-border-color: darken($os_light_gray, 10%);
+  $card-padding: 50px;
 
   display: block;
   margin: auto;
   max-width: 570px;
   background-color: $os_light_gray;
-  padding: 30px 50px 50px 50px;
+  padding: 30px $card-padding $card-padding;
   font-size: 14px;
+
+  &.wide {
+    max-width: initial;
+  }
 
   h1, h2, h3, .minor-heading {
     font-family: $os_heading_font_family;
@@ -130,4 +135,36 @@
     }
   }
 
+  .footer {
+    margin: $card-padding $card-padding*-1 $card-padding*-1;
+    padding: 1.8rem $card-padding;
+    border-top: 1px solid #D5D5D5;
+    background: #F5F5F5;
+    display: flex;
+    justify-content: space-between;
+    gap: 4rem;
+
+    @media (max-width: $screen-sm - ($card-padding * 2)) {
+      flex-direction: column;
+      gap: 1.6rem;
+    }
+
+    .checkbox {
+      label {
+        display: flex;
+        align-items: center;
+        padding: 0;
+
+        input[type="checkbox"] {
+          margin: 0 1.6rem 0 0;
+          position: initial;
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    input[type=submit] {
+      margin-right: 0;
+    }
+  }
 }

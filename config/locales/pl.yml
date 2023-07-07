@@ -87,7 +87,7 @@ pl:
     educator_pending_cs_verification_description: >-
       Twój dostęp do instruktora jest w toku.
        Sprawdzimy Twój status instruktora w ciągu 3-4 dni roboczych.
-       Aktualizacje Twojego statusu weryfikacji zostaną wysłane na adres <b>% {email_addess} </b>.
+       Aktualizacje Twojego statusu weryfikacji zostaną wysłane na adres <b>%{email_addess}</b>.
        W międzyczasie możesz uzyskać dostęp do wszystkich książek i zasobów
        z wyjątkiem tych, które wymagają weryfikacji instruktora.
     join_as_student_description: >-
@@ -436,7 +436,7 @@ pl:
       page_heading: Regulaminy użytkowania serwisu
 
     pose:
-      agree: Zgadzam się
+      agree: Zaakceptuj i kontynuuj
       contract_acceptance_required: >-
         Aby kontynuować, zapoznaj się z treścią poniższych regulaminów
         i zaakceptuj je klikając „Zgadzam się” na końcu tej strony.

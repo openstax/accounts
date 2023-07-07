@@ -32,6 +32,38 @@ button {
 
   &.primary {
     @include ox-button($os_orange);
+
+    &.new-style {
+      font-size: 1.6rem;
+      line-height: 2rem;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      display: inline-flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      height: 4rem;
+      padding: 0 3rem;
+      background: #D4450C;
+      color: #FFFFFF;
+      border: 0;
+      border-radius: 5px;
+      box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease-in-out;
+      text-decoration: none;
+      user-select: none;
+      white-space: nowrap;
+      text-transform: none;
+
+      &:not([disabled]) {
+        &:hover {
+          background: #be3c08;
+        }
+        &:active {
+          background: #b03808;
+        }
+      }
+    }
   }
 
 }
