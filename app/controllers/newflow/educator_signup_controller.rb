@@ -138,6 +138,10 @@ module Newflow
     end
 
     def educator_complete_profile
+      @book_titles = book_data.titles
+      render :educator_profile_form
+      return
+
       handle_with(
         EducatorSignup::CompleteProfile,
         user: current_user,

@@ -26,7 +26,7 @@ module Newflow
         attribute :other_role_name, type: String
         attribute :who_chooses_books, type: String
         attribute :using_openstax_how, type: String
-        attribute :num_students_per_semester_taught, type: Integer
+        attribute :using_book_details, type: Object
         attribute :books_used, type: Object
         attribute :books_of_interest, type: Object
         attribute :is_cs_form, type: Object
@@ -152,15 +152,18 @@ module Newflow
           param_error(:other_role_name, :other_must_be_entered)
         end
 
-        if role  == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
+        if role == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
           param_error(:books_used, :books_used_must_be_entered)
         end
 
-        if role  == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
+        if role == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
           param_error(:books_of_interest, :books_of_interest_must_be_entered)
         end
 
-        if role  == INSTRUCTOR && signup_params.num_students_per_semester_taught.blank?
+        if role == INSTRUCTOR && books_used.present?
+          books_used.each do |book|
+            # check book number of students
+          end
           param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
         end
 

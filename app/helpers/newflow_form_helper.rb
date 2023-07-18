@@ -33,7 +33,8 @@ module NewflowFormHelper
                    readonly: false,
                    onkeyup: nil,
                    onkeydown: nil,
-                   numberonly: false)
+                   numberonly: false,
+                   disabled: false)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -55,7 +56,8 @@ module NewflowFormHelper
                       autofocus: autofocus,
                       readonly: readonly,
                       onkeyup: onkeyup,
-                      onkeydown: onkeydown
+                      onkeydown: onkeydown,
+                      disabled: disabled
         )
       else
         input = (
@@ -68,13 +70,14 @@ module NewflowFormHelper
                       autofocus: autofocus,
                       readonly: readonly,
                       onkeyup: onkeyup,
-                      onkeydown: onkeydown
+                      onkeydown: onkeydown,
+                      disabled: disabled
         )
       end
       "#{input}\n#{errors_div}".html_safe
     end
 
-    def select(name:, options:, except: nil, only: nil, autofocus: nil, multiple: false, custom_class: nil)
+    def select(name:, options:, except: nil, only: nil, autofocus: nil, multiple: false, custom_class: nil, disabled: false)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -83,6 +86,7 @@ module NewflowFormHelper
       html_options[:autofocus] = autofocus if !autofocus.nil?
       html_options[:multiple] = multiple
       html_options[:class] = custom_class if custom_class
+      html_options[:disabled] = disabled
 
       c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
         "#{@f.select name, options, {}, html_options}#{errors_div}".html_safe

@@ -313,6 +313,8 @@ class NewflowUi.EducatorComplete
     @please_fill_out_total_num.hide()
 
   onBooksUsedChange: ->
+    @updateBooksUsedFields(@books_used_select.val() || [])
+
     @checkBooksUsedValidMax()
     return false if !@checkTotalNumValid()
 
@@ -325,3 +327,35 @@ class NewflowUi.EducatorComplete
 
     @please_select_books_of_interest.hide()
     @continue.prop('disabled', false)
+
+  updateBooksUsedFields: (selected_books) ->
+    # Find all cloned nodes and remove ones that were deleted
+    clonedNodes = document.querySelectorAll('div[data-book-name]')
+    for node in clonedNodes
+      bookName = node.getAttribute('data-book-name')
+      if bookName not in selected_books
+        node.parentNode.removeChild(node)
+
+    for book in selected_books
+      if not document.querySelector("div[data-book-name='#{book}']")
+        templateNode = document.querySelector("div[data-template-id='used-book-info']")
+        if templateNode
+          clonedNode = templateNode.cloneNode(true)
+          clonedNode.removeAttribute('data-template-id')
+          clonedNode.setAttribute('data-book-name', book)
+
+          book_name_placeholders = clonedNode.querySelectorAll("[data-placeholder-id='used-book-name']")
+          for book_name_placeholder in book_name_placeholders
+            book_name_node = document.createTextNode(book)
+            book_name_placeholder.parentNode.replaceChild(book_name_node, book_name_placeholder)
+
+          # for input in clonedNode.querySelectorAll("[name*='%placeholder-book-name%']")
+          #   input.id = input.id.replace('%placeholder-book-name%', book)
+          #   input.name = input.name.replace('%placeholder-book-name%', book)
+          clonedNode.querySelectorAll('label, select, input').forEach (element) ->
+            element.removeAttribute('disabled')
+            Array.from(element.attributes)
+            .filter((attr) -> attr.value.includes('%placeholder-book-name%'))
+            .forEach((attr) -> attr.value = attr.value.replace('%placeholder-book-name%', book))
+
+          templateNode.insertAdjacentElement('afterend', clonedNode)
