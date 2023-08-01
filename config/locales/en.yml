@@ -35,8 +35,8 @@ en:
     school_name_must_be_entered: Please enter school name
     other_must_be_entered: Please enter other role name
     books_used_must_be_entered: Please enter books used
+    books_used_details_must_be_entered: Please enter the number of students taught and how the book is used
     books_of_interest_must_be_entered: Please enter books of interest
-    num_students_must_be_entered: Please enter number of students taught
     school_issued_email: School-issued email address
     school_issued_email_must_be_entered: Please enter your school-issued email address
     school_issued_email_is_invalid: Please enter a valid email address

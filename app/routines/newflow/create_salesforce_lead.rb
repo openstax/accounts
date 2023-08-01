@@ -130,19 +130,14 @@ module Newflow
     def build_book_adoption_json_for_salesforce(user)
       adoption_json = {}
       books_json = []
-      return nil unless user.which_books
+      return nil unless user.books_used_details
 
-      books = user.which_books.split(';')
-
-      if user.how_many_students.blank?
-        number_of_students = 0
-      else
-        number_of_students = user.how_many_students
-      end
-
-      books.each do |book|
-        book_keywords = { name: book, students: number_of_students }
-        books_json << book_keywords
+      user.books_used_details.each do |book|
+         books_json << {
+          name: book[0],
+          students: book[1]["num_students_using_book"],
+          howUsing: book[1]["how_using_book"]
+        }
       end
 
       adoption_json['Books'] = books_json

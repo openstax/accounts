@@ -14,7 +14,6 @@ class NewflowUi.EducatorComplete
 
     @how_chosen = @findOrLogNotFound(@form, '.how-chosen')
     @how_using = @findOrLogNotFound(@form, '.how-using')
-    @total_num_students = @findOrLogNotFound(@form, '.total-num-students')
 
     @books_used = @findOrLogNotFound(@form, '.books-used')
     @books_of_interest = @findOrLogNotFound(@form, '.books-of-interest')
@@ -27,7 +26,6 @@ class NewflowUi.EducatorComplete
 
     @how_chosen_radio = @findOrLogNotFound(@how_chosen, "input")
     @how_using_radio = @findOrLogNotFound(@how_using, "input")
-    @total_num_students_input = @findOrLogNotFound(@total_num_students, "input")
 
     # book selections
     @books_used_select = @findOrLogNotFound(@books_used, "select")
@@ -41,7 +39,6 @@ class NewflowUi.EducatorComplete
 
     @please_select_chosen = @findOrLogNotFound(@form, '.how-chosen .chosen.newflow-mustdo-alert')
     @please_select_using = @findOrLogNotFound(@form, '.how-using .using.newflow-mustdo-alert')
-    @please_fill_out_total_num = @findOrLogNotFound(@form, '.total-num-students .total-num.newflow-mustdo-alert')
 
     @please_select_books_used = @findOrLogNotFound(@form, '.books-used .used.newflow-mustdo-alert')
     @books_used_max = @findOrLogNotFound(@form, '.books-used .used-limit.newflow-mustdo-alert')
@@ -56,7 +53,6 @@ class NewflowUi.EducatorComplete
 
     @how_chosen_radio.change(@onHowChosenChange)
     @how_using_radio.change(@onHowUsingChange)
-    @total_num_students_input.change(@onTotalNumChange)
 
     @books_used_select.change(@onBooksUsedChange)
     @books_of_interest_select.change(@onBooksOfInterestChange)
@@ -73,14 +69,12 @@ class NewflowUi.EducatorComplete
     @other_specify.hide()
     @how_chosen.hide()
     @how_using.hide()
-    @total_num_students.hide()
     @books_used.hide()
     @books_of_interest.hide()
 
     # Hide all validations messages
     @please_fill_out_school.hide()
     @please_select_role.hide()
-    @please_fill_out_total_num.hide()
 
     @please_select_books_used.hide()
     @books_used_max.hide()
@@ -111,7 +105,7 @@ class NewflowUi.EducatorComplete
     chosen_valid = @checkChosenValid()
     using_how_valid = @checkUsingHowValid()
 
-    total_num_valid = @checkTotalNumValid()
+    total_nums_valid = @checkTotalNumsValid()
     books_used_valid = @checkBooksUsedValid()
     books_used_valid_max = @checkBooksUsedValidMax()
     books_of_interest_valid = @checkBooksOfInterestValid()
@@ -123,7 +117,7 @@ class NewflowUi.EducatorComplete
         other_valid and
         chosen_valid and
         using_how_valid and
-        total_num_valid and
+        total_nums_valid and
         books_used_valid and
         books_used_valid_max and
         books_of_interest_valid_max and
@@ -158,15 +152,17 @@ class NewflowUi.EducatorComplete
       @please_select_chosen.show()
       false
 
-  checkTotalNumValid: () ->
-    return true if @total_num_students_input.is(":hidden")
+  checkTotalNumsValid: () ->
+    inputs = @form.find(".students-using-book:visible input")
 
-    if @total_num_students_input.val()
-      @please_fill_out_total_num.hide()
-      true
-    else
-      @please_fill_out_total_num.show()
-      false
+    values = inputs.map ->
+      if $(this).val()
+        $(this).siblings('.num-using-book.newflow-mustdo-alert').hide()
+        true
+      else
+        $(this).siblings('.num-using-book.newflow-mustdo-alert').show()
+        false
+    return values.get().every (value) -> value
 
   checkUsingHowValid: () ->
     return true if @how_using_radio.is(":hidden")
@@ -234,13 +230,14 @@ class NewflowUi.EducatorComplete
     if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_instructor').is(':checked') && @checkSchoolNameValid() )
       @how_using.show()
       @how_chosen.show()
-      @total_num_students.show()
+
+      @showBookUsedFields()
 
       @other_specify.hide()
       @books_used.hide()
       @please_select_using.hide()
       @please_select_chosen.hide()
-      @please_fill_out_total_num.hide()
+      @form.find('.students-using-book .newflow-mustdo-alert').hide()
 
       @onHowUsingChange()
     else if (@findOrLogNotFound($(document), '#signup_educator_specific_role_researcher').is(':checked') && @checkSchoolNameValid())
@@ -249,9 +246,10 @@ class NewflowUi.EducatorComplete
 
       @other_specify.hide()
       @books_used.hide()
-      @total_num_students.hide()
       @please_select_chosen.hide()
       @please_select_using.hide()
+
+      @hideBookUsedFields()
 
       @onHowUsingChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_administrator').is(':checked') && @checkSchoolNameValid())
@@ -260,9 +258,10 @@ class NewflowUi.EducatorComplete
 
       @other_specify.hide()
       @books_used.hide()
-      @total_num_students.hide()
       @please_select_chosen.hide()
       @please_select_using.hide()
+
+      @hideBookUsedFields()
 
       @onHowUsingChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked') )
@@ -271,7 +270,7 @@ class NewflowUi.EducatorComplete
       @books_used.hide()
       @books_of_interest.hide()
       @how_chosen.hide()
-      @total_num_students.hide()
+      @hideTotalNumStudents
       @how_using.hide()
       @please_fill_out_other.hide()
 
@@ -309,21 +308,21 @@ class NewflowUi.EducatorComplete
       @please_select_books_used.hide()
       @please_select_books_of_interest.hide()
 
-  onTotalNumChange: ->
-    @please_fill_out_total_num.hide()
+  onTotalNumChange: () ->
+    $(this).siblings('.num-using-book.newflow-mustdo-alert').hide()
 
   onBooksUsedChange: ->
     @updateBooksUsedFields(@books_used_select.val() || [])
 
     @checkBooksUsedValidMax()
-    return false if !@checkTotalNumValid()
+    return false if !@checkTotalNumsValid()
 
     @please_select_books_used.hide()
     @continue.prop('disabled', false)
 
   onBooksOfInterestChange: ->
     @checkBooksOfInterestValidMax()
-    return false if !@checkTotalNumValid()
+    return false if !@checkTotalNumsValid()
 
     @please_select_books_of_interest.hide()
     @continue.prop('disabled', false)
@@ -349,9 +348,6 @@ class NewflowUi.EducatorComplete
             book_name_node = document.createTextNode(book)
             book_name_placeholder.parentNode.replaceChild(book_name_node, book_name_placeholder)
 
-          # for input in clonedNode.querySelectorAll("[name*='%placeholder-book-name%']")
-          #   input.id = input.id.replace('%placeholder-book-name%', book)
-          #   input.name = input.name.replace('%placeholder-book-name%', book)
           clonedNode.querySelectorAll('label, select, input').forEach (element) ->
             element.removeAttribute('disabled')
             Array.from(element.attributes)
@@ -359,3 +355,21 @@ class NewflowUi.EducatorComplete
             .forEach((attr) -> attr.value = attr.value.replace('%placeholder-book-name%', book))
 
           templateNode.insertAdjacentElement('afterend', clonedNode)
+          @attachBookUsedEvents(clonedNode)
+
+      @showBookUsedFields()
+
+  attachBookUsedEvents: (parent) ->
+    total_num_students = @findOrLogNotFound($(parent), '.students-using-book')
+
+    total_num_students_input = @findOrLogNotFound(total_num_students, 'input')
+    total_num_students_input.on 'change', ->
+      $(parent).find('.students-using-book .num-using-book.newflow-mustdo-alert').hide()
+
+  hideBookUsedFields: ->
+    @form.find('.students-using-book').hide()
+    @form.find('.how-using-book').hide()
+
+  showBookUsedFields: ->
+    @form.find('.students-using-book').show()
+    @form.find('.how-using-book').show()

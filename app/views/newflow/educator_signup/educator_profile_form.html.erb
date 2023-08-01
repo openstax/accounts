@@ -227,38 +227,45 @@
               %>
             </div>
 
-            <div class="form-group question total-num-students" data-template-id="used-book-info">
-              <%= label_tag nil, class: 'field-label' do %>
-                <%= I18n.t(:"educator_profile_form.num_students_using_book_base") %>
-                <span data-placeholder-id="used-book-name"></span>
-                <%= I18n.t(:"educator_profile_form.num_students_using_book_time_period") %>
+            <div data-template-id="used-book-info">
+              <div class="form-group question students-using-book">
+                <%= label_tag nil, class: 'field-label' do %>
+                  <%= I18n.t(:"educator_profile_form.num_students_using_book_base") %>
+                  <span data-placeholder-id="used-book-name"></span>
+                  <%= I18n.t(:"educator_profile_form.num_students_using_book_time_period") %>
 
-                <div class="total-num newflow-mustdo-alert">
-                  <%= I18n.t(:"educator_profile_form.fill_out") %>
-                </div>
-                <%=
-                  fh.text_field(
-                  name: 'books_used_details[%placeholder-book-name%]num_students_using_book',
-                  placeholder: "#{I18n.t(:'educator_profile_form.num_students_using_book_base')} %placeholder-book-name% #{I18n.t(:'educator_profile_form.num_students_using_book_time_period')}",
-                  autofocus: true,
-                  numberonly: true,
-                  disabled: true
-                  )
-                %>
-              <% end %>
-
-              <%= label_tag nil, class: 'field-label' do %>
-                <%= I18n.t(:"educator_profile_form.how_using_book_base") %>
-                <span data-placeholder-id="used-book-name">
-                </span><%= I18n.t(:"educator_profile_form.how_using_book_tail") %>
-
-
-                <%= fh.select name: 'books_used_details[%placeholder-book-name%]how_using_book',
-                    options: options_for_select([['', '']] + I18n.t(:"educator_profile_form.how_using_book_options")),
+                  <div class="num-using-book newflow-mustdo-alert" style="display: none">
+                    <%= I18n.t(:"educator_profile_form.fill_out") %>
+                  </div>
+                  <%=
+                    fh.text_field(
+                    name: 'books_used_details[%placeholder-book-name%]num_students_using_book',
+                    placeholder: "#{I18n.t(:'educator_profile_form.num_students_using_book_base')} %placeholder-book-name% #{I18n.t(:'educator_profile_form.num_students_using_book_time_period')}",
                     autofocus: true,
+                    numberonly: true,
                     disabled: true
-                %>
-              <% end %>
+                    )
+                  %>
+                <% end %>
+              </div>
+
+              <div class="form-group question how-using-book">
+                <%= label_tag nil, class: 'field-label' do %>
+                  <%= I18n.t(:"educator_profile_form.how_using_book_base") %>
+                  <span data-placeholder-id="used-book-name">
+                  </span><%= I18n.t(:"educator_profile_form.how_using_book_tail") %>
+
+                  <div class="using-book newflow-mustdo-alert"  style="display: none">
+                    <%= I18n.t(:"educator_profile_form.fill_out") %>
+                  </div>
+
+                  <%= fh.select name: 'books_used_details[%placeholder-book-name%]how_using_book',
+                      options: options_for_select([['', '']] + I18n.t(:"educator_profile_form.how_using_book_options")),
+                      autofocus: true,
+                      disabled: true
+                      %>
+                <% end %>
+              </div>
             </div>
 
             <div class="form-group question books-of-interest">
