@@ -159,6 +159,7 @@ class User < ApplicationRecord
   delegate_to_routine :destroy
 
   attr_readonly :uuid, :support_identifier
+  attr_accessor :books_used_details
 
   attribute :is_not_gdpr_location, :boolean, default: nil
 

@@ -92,6 +92,12 @@ body {
     }
 }
 
+.form-helper-text {
+  font-weight: normal;
+  font-style: italic;
+  margin: 1rem 0;
+}
+
 input.has-error {
     @extend %has-error;
 }
@@ -147,9 +153,8 @@ input.has-error {
     }
 }
 
-select:not([multiple]) { // TODO: pull from
+select:not([multiple]) {
   $input-border-color: darken(#f5f5f5, 10%);
-
   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50px' height='50px'><polyline fill='" + $input-border-color +"' points='46.139,15.518 25.166,36.49 4.193,15.519'/></svg>") right no-repeat;
   background-position: right 1rem center;
   background-size: 18px 18px;

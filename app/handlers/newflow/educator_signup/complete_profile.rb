@@ -172,7 +172,7 @@ module Newflow
             param_error(:books_used, :books_used_must_be_entered)
           end
 
-          details_present = books_used_details.all? do |name, details|
+          details_present = signup_params.books_used_details.all? do |name, details|
             name.present? && details.all?(&:present?)
           end
 
