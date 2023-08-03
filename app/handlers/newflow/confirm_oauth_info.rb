@@ -34,10 +34,11 @@ module Newflow
     end
 
     def handle
-      return email_taken_error!(@user.id) if is_email_taken?(signup_params.email.squish!)
+      outputs.email = signup_params.email.squish!
+      return email_taken_error!(@user.id) if is_email_taken?(outputs.email)
 
       if @user.email_addresses.none?
-        run(CreateEmailForUser, email: signup_params.email.squish!, user: @user)
+        run(CreateEmailForUser, email: outputs.email, user: @user)
       end
 
       @user.update(

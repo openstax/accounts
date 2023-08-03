@@ -8,7 +8,7 @@ module Newflow
       end
 
       before do
-        allow_any_instance_of(OauthCallback).to receive(:oauth_response)  do
+        allow_any_instance_of(OauthCallback).to receive(:oauth_response) do
           MockOmniauthRequest.new(params[:provider], params[:uid], info).env['omniauth.auth']
         end
       end
@@ -49,6 +49,29 @@ module Newflow
 
         it 'saves unverified user' do
           expect_any_instance_of(described_class).to receive(:save_unverified_user)
+          get(:oauth_callback, params: params)
+        end
+
+        it 'renders confirm_social_info_form' do
+          get(:oauth_callback, params: params)
+          expect(response).to render_template(:confirm_social_info_form)
+        end
+      end
+
+      context 'with a signed token in the state param' do
+        let(:user)      { FactoryBot.create :user, state: User::EXTERNAL }
+        let(:return_to) { 'http://localhost' }
+        let(:state)     do
+          Rails.application.message_verifier('social_auth').generate({
+            user_id: user.id,
+            return_to: return_to
+          }.to_json)
+        end
+
+        let(:params) { { provider: 'facebook', uid: Faker::Internet.uuid, state: state } }
+
+        it 'does not save unverified user' do
+          expect_any_instance_of(described_class).not_to receive(:save_unverified_user)
           get(:oauth_callback, params: params)
         end
 
@@ -103,8 +126,96 @@ module Newflow
       end
     end
 
-    describe 'GET #confirm_oauth_info' do
-      it ''
+    describe 'POST #confirm_oauth_info' do
+      before(:all) do
+        DatabaseCleaner.start
+        load('db/seeds.rb')
+      end
+
+      after(:all) { DatabaseCleaner.clean }
+
+      context 'with valid params' do
+        let(:valid_params) do
+          {
+            signup: {
+              first_name: 'Test',
+              last_name: 'User',
+              email: 'test@example.com',
+              contract_1_id: FinePrint::Contract.first.id,
+              contract_2_id: FinePrint::Contract.second.id,
+              terms_accepted: true
+            }
+          }
+        end
+
+        context 'with a signed token in the token param' do
+          let(:user)      { FactoryBot.create :user, state: User::EXTERNAL }
+          let(:return_to) { 'http://localhost' }
+          let(:token)     do
+            Rails.application.message_verifier('social_auth').generate({
+              user_id: user.id,
+              return_to: return_to
+            }.to_json)
+          end
+
+          let(:params) { valid_params.merge(token: token) }
+
+          it 'confirms the user in the token and redirects to the return_to url' do
+            post :confirm_oauth_info, params: params
+            expect(response).to redirect_to(return_to)
+            expect(user.reload).to be_activated
+          end
+        end
+
+        context 'without a signed token in the token param' do
+          let(:params) { valid_params }
+
+          context 'with a saved unverified_user' do
+            let(:user)   { FactoryBot.create :user, state: User::UNVERIFIED }
+
+            before { controller.save_unverified_user user.id }
+
+            it 'confirms the saved unverified_user and redirects to the signup_done path' do
+              post :confirm_oauth_info, params: params
+              expect(response).to redirect_to :signup_done
+              expect(user.reload).to be_activated
+            end
+          end
+
+          context 'without a saved unverified_user' do
+            it 'restarts signup' do
+              post :confirm_oauth_info, params: params
+              expect(response).to redirect_to :newflow_signup
+            end
+          end
+        end
+      end
+
+      context 'with invalid params' do
+        render_views
+
+        let(:user)   { FactoryBot.create :user, state: User::UNVERIFIED }
+
+        let(:params) do
+          {
+            signup: {
+              first_name: 'Test',
+              last_name: 'User',
+              email: '',
+              contract_1_id: FinePrint::Contract.first.id,
+              contract_2_id: FinePrint::Contract.second.id,
+              terms_accepted: true
+            }
+          }
+        end
+
+        before { controller.save_unverified_user user.id }
+
+        it 're-renders the form with an error message' do
+          post :confirm_oauth_info, params: params
+          expect(response.body).to include("Email can't be blank")
+        end
+      end
     end
   end
 end
