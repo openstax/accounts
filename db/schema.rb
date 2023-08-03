@@ -481,7 +481,7 @@ ActiveRecord::Schema.define(version: 2023_08_03_031713) do
     t.boolean "faculty_verification_email_sent"
     t.boolean "needs_sync"
     t.boolean "sheer_id_webhook_received"
-    t.json "books_used_details"
+    t.jsonb "books_used_details"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
