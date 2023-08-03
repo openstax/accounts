@@ -69,8 +69,6 @@ module Newflow
           total + book["num_students_using_book"].to_i rescue 0
         end
 
-        @user.books_used_details = signup_params.books_used_details
-
         @user.update!(
           role: signup_params.educator_specific_role,
           other_role_name: other_role_name,
@@ -78,12 +76,11 @@ module Newflow
           who_chooses_books: signup_params.who_chooses_books,
           how_many_students: total_students,
           which_books: which_books,
+          books_used_details: books_used_details,
           self_reported_school: signup_params.school_name,
           is_profile_complete: true,
           is_educator_pending_cs_verification: !@did_use_sheerid
         )
-
-        @user.books_used_details = signup_params.books_used_details
 
         if @is_on_cs_form
           SecurityLog.create!(
@@ -156,7 +153,6 @@ module Newflow
       end
 
       def check_params
-        param_error(:books_used, :books_used_must_be_entered)
         role = signup_params.educator_specific_role.strip.downcase
 
         if !@did_use_sheerid && signup_params.school_name.nil?
@@ -172,12 +168,8 @@ module Newflow
             param_error(:books_used, :books_used_must_be_entered)
           end
 
-          details_present = signup_params.books_used_details.all? do |name, details|
-            name.present? && details.all?(&:present?)
-          end
-
-          if books_used_details.blank? || !details_present
-            param_error(:books_used_details, :books_used_details_must_be_entered)
+          if books_used_details.blank?
+            param_error(:books_used, :books_used_details_must_be_entered)
           end
         end
 

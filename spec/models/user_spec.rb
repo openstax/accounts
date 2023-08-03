@@ -551,4 +551,21 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe 'books_used_details' do
+    context 'books_used_details validation' do
+      it 'adds error when hash contains invalid keys' do
+        user.books_used_details = { "Book Name" => { "invalid_key" => "some_value" } }
+        expect(user).not_to be_valid
+        expect(user.errors[:books_used_details]).to include("contains unallowed keys")
+      end
+
+      it 'is valid when hash contains only valid keys' do
+        user.books_used_details = { "Book Name" => {
+                                      "num_students_using_book" => "12",
+                                      "how_using_book" => "As the core textbook" }
+                                  }
+        expect(user).to be_valid
+      end
+    end
+  end
 end
