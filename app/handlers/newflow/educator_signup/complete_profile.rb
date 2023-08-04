@@ -65,7 +65,7 @@ module Newflow
                              signup_params.is_country_not_supported_by_sheerid == 'true' ||
                              user.is_sheerid_unviable? || @is_on_cs_form)
 
-        total_students = signup_params.books_used_details.values.inject(0) do |total, book|
+        total_students = books_used_details.values.inject(0) do |total, book|
           total + book["num_students_using_book"].to_i rescue 0
         end
 
