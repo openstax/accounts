@@ -154,7 +154,6 @@ module Newflow
           expect_educator_step_4_page
           select_educator_role('instructor')
           find('#signup_who_chooses_books_instructor').click
-          fill_in(I18n.t(:"educator_profile_form.num_students_taught"), with: 30)
         end
 
         context 'label for books list' do
