@@ -7,7 +7,17 @@ pl:
     administrator: Administrator
     other: Inni pracownicy edukacyjni
     other_please_specify: Inne (proszę określić)
-    how_using: Jak korzystasz z OpenStax?
+    how_using_book_base: Jak wykorzystujesz
+    how_using_book_options:
+      - Jako główny podręcznik do mojego kursu
+      - Jako opcjonalny/zalecany podręcznik do mojego kursu
+      - Do nauczania, korepetycji lub wsparcia studentów poza ustawieniami kursu
+      - Dla mojej własnej wiedzy lub innej pracy
+    how_using_book_tail: "?"
+    num_students_using_book_base: Ile studentów korzysta z
+    num_students_using_book_time_period: każdego semestru?
+    num_students_using_book_supplemental: Uwzględnij sekcje prowadzone przez asystentów, którymi nadzorujesz
+    num_students_using_book_placeholder: Liczba studentów korzystających z tej książki na semestr
     how_textbooks_chosen: Jak wybierane są podręczniki w twojej instytucji?
     num_students_taught: Łączna liczba studentów uczysz w semestrze
     subjects_of_interest: Przedmioty zainteresowania
