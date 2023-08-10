@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_03_031713) do
+ActiveRecord::Schema.define(version: 2023_08_10_185800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 2023_08_03_031713) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "unread_updates", default: 1, null: false
+    t.string "roles", default: [], null: false, array: true
     t.index ["application_id", "unread_updates"], name: "index_application_users_on_application_id_and_unread_updates"
     t.index ["application_id"], name: "index_application_users_on_application_id"
     t.index ["default_contact_info_id"], name: "index_application_users_on_default_contact_info_id"

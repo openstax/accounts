@@ -38,6 +38,5 @@ module Api::V1
                required: true,
                description: "The associated user's default contact info id"
              }
-
   end
 end
