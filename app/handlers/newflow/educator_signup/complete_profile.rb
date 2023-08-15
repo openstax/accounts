@@ -26,8 +26,8 @@ module Newflow
         attribute :other_role_name, type: String
         attribute :who_chooses_books, type: String
         attribute :using_openstax_how, type: String
-        attribute :num_students_per_semester_taught, type: Integer
         attribute :books_used, type: Object
+        attribute :books_used_details, type: Object
         attribute :books_of_interest, type: Object
         attribute :is_cs_form, type: Object
 
@@ -65,13 +65,18 @@ module Newflow
                              signup_params.is_country_not_supported_by_sheerid == 'true' ||
                              user.is_sheerid_unviable? || @is_on_cs_form)
 
+        total_students = books_used_details.values.inject(0) do |total, book|
+          total + book["num_students_using_book"].to_i rescue 0
+        end
+
         @user.update!(
           role: signup_params.educator_specific_role,
           other_role_name: other_role_name,
           using_openstax_how: signup_params.using_openstax_how,
           who_chooses_books: signup_params.who_chooses_books,
-          how_many_students: signup_params.num_students_per_semester_taught,
+          how_many_students: total_students,
           which_books: which_books,
+          books_used_details: books_used_details,
           self_reported_school: signup_params.school_name,
           is_profile_complete: true,
           is_educator_pending_cs_verification: !@did_use_sheerid
@@ -137,6 +142,12 @@ module Newflow
         signup_params.books_used.reject{ |b| b.blank? }
       end
 
+      def books_used_details
+        signup_params.books_used_details.reject do |k, v|
+          k.blank? || v.dig('how_using_book').blank? || v.dig('num_students_using_book').blank?
+        end
+      end
+
       def books_of_interest
         signup_params.books_of_interest.reject{ |b| b.blank? }
       end
@@ -152,16 +163,18 @@ module Newflow
           param_error(:other_role_name, :other_must_be_entered)
         end
 
-        if role  == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
-          param_error(:books_used, :books_used_must_be_entered)
+        if role == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY
+          if books_used.blank?
+            param_error(:books_used, :books_used_must_be_entered)
+          end
+
+          if books_used_details.blank?
+            param_error(:books_used, :books_used_details_must_be_entered)
+          end
         end
 
-        if role  == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
+        if role == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
           param_error(:books_of_interest, :books_of_interest_must_be_entered)
-        end
-
-        if role  == INSTRUCTOR && signup_params.num_students_per_semester_taught.blank?
-          param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
         end
 
         if @is_on_cs_form

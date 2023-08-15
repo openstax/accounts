@@ -10,9 +10,19 @@ en:
     other_please_specify: Other (please specify)
     how_using: How are you using OpenStax?
     how_textbooks_chosen: How are textbooks chosen at your institution?
-    num_students_taught: Total number of students you teach per semester
+    how_using_book_base: How are you using
+    how_using_book_options:
+      - As the core textbook for my course
+      - As an optional/recommended textbook for my course
+      - To teach, tutor, or support students outside of a course setting
+      - For my own knowledge or other work
+    how_using_book_tail: "?"
+    num_students_using_book_base: How many students are using
+    num_students_using_book_time_period: each semester?
+    num_students_using_book_supplemental: Include sections taught by TAs that you oversee
+    num_students_using_book_placeholder:  Number of students using this book per semester
     subjects_of_interest: Subjects of interest
-    books_used: Books you've used in your courses
+    books_used: Which textbook(s) are you currently using?
     books_of_interest: Books of interest
     using_primary_textbook: Using an OpenStax book as our primary textbook
     using_recommending_openstax: Recommending the book -- my students buy a different one
@@ -26,8 +36,8 @@ en:
     school_name_must_be_entered: Please enter school name
     other_must_be_entered: Please enter other role name
     books_used_must_be_entered: Please enter books used
+    books_used_details_must_be_entered: Please enter the number of students taught and how the book is used
     books_of_interest_must_be_entered: Please enter books of interest
-    num_students_must_be_entered: Please enter number of students taught
     school_issued_email: School-issued email address
     school_issued_email_must_be_entered: Please enter your school-issued email address
     school_issued_email_is_invalid: Please enter a valid email address
@@ -94,7 +104,7 @@ en:
       In the meantime, you can access all books and resources
       except those that require instructor verification.
     join_as_student_description: >-
-      Sign up for a <b>Student</b> account to create and save 
+      Sign up for a <b>Student</b> account to create and save
       notes and highlights in OpenStax study materials.
     join_as_educator_description: >-
       Sign up for an <b>Educator</b> account to adopt a book and access locked

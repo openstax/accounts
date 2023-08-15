@@ -128,6 +128,8 @@ class User < ApplicationRecord
 
   validates(:uuid, :support_identifier, presence: true, uniqueness: true)
 
+  validate :books_used_details_valid
+
   before_save(:add_unread_update)
 
   before_create(:make_first_user_an_admin)
@@ -481,6 +483,17 @@ class User < ApplicationRecord
   def save_activated_at_if_became_activated
     if state_changed?(to: ACTIVATED)
       self.touch(:activated_at)
+    end
+  end
+
+  def books_used_details_valid
+    return if books_used_details.blank?
+
+    allowed_keys = %w[num_students_using_book how_using_book]
+    books_used_details.each do |book, details|
+      if details.keys.any? { |key| !allowed_keys.include?(key) }
+        errors.add(:books_used_details, "contains unallowed keys")
+      end
     end
   end
 
