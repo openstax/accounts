@@ -37,6 +37,51 @@ module Newflow
         allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
       end
 
+      context 'with valid params' do
+        let(:params) do
+          {
+            signup: {
+              books_used: books_used,
+              books_used_details: books_used_details,
+              using_openstax_how: using_openstax_how,
+              educator_specific_role: educator_specific_role,
+              school_name: 'Test School'
+            }
+          }
+        end
+
+        context 'books used details' do
+          let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR }
+
+          it "calculates the correct total number of students using books" do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '14'
+          end
+
+          context 'filtering' do
+            let(:books_used_details) do
+              {
+                "Book1" => { "num_students_using_book" => "5", "how_using_book" => "As core" },
+                "Book2" => { "num_students_using_book" => "10", "how_using_book" => "As core" },
+                "" => { "num_students_using_book" => "15", "how_using_book" => "As optional" },
+                "Book3" => { "num_students_using_book" => "", "how_using_book" => "As optional" },
+                "Book4" => { "num_students_using_book" => "20", "how_using_book" => "" }
+              }
+            end
+
+            it "removes books with blank details" do
+              handle
+              user.reload
+              expect(user.books_used_details).to eq({
+                                     "Book1" => { "num_students_using_book" => "5", "how_using_book" => "As core" },
+                                     "Book2" => { "num_students_using_book" => "10", "how_using_book" => "As core" }
+                                   })
+            end
+          end
+        end
+      end
+
       context 'with invalid params' do
         context 'other must be filled out' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::OTHER }

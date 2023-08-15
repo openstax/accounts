@@ -566,6 +566,11 @@ RSpec.describe User, type: :model do
                                   }
         expect(user).to be_valid
       end
+
+      it 'is valid when books_used_details is blank' do
+        user.books_used_details = {}
+        expect(user).to be_valid
+      end
     end
   end
 end
