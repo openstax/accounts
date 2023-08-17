@@ -132,7 +132,7 @@ module Admin
       user_params = params.require(:user).permit(:first_name, :last_name, :username)
 
       User.transaction do
-        @user.application_users = (params[:application_users].permit!.to_h || {}).map do |_, au|
+        @user.application_users = (params[:application_users]&.permit!&.to_h || {}).map do |_, au|
           application_user = @user.application_users.to_a.find do |a_user|
             a_user.application_id == au[:application_id].to_i
           end

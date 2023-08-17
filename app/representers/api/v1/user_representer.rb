@@ -184,6 +184,7 @@ module Api::V1
                decorator: ContactInfoRepresenter
 
     collection :application_users,
+               as: :applications,
                readable: true,
                writeable: false,
                decorator: ApplicationUserApplicationRepresenter,
@@ -198,7 +199,7 @@ module Api::V1
                writeable: false,
                if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
                getter: ->(*) { FinePrint::Contract.published.latest.signed_by(self).pluck(:name) }
-    
+
     def to_hash(options = {})
       # Avoid N+1 load on application_users.application
       ActiveRecord::Associations::Preloader.new.preload represented.application_users.to_a, :application
