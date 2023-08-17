@@ -14,7 +14,7 @@ class UpdateUserContactInfo
   ADOPTION_STATUSES = {
     "Current Adopter" => true,
     "Future Adopter" => true,
-    "Past Adopter" => false,
+    "Past Adopter" => true,
     "Not Adopter" => false
   }
 
