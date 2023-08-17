@@ -88,7 +88,7 @@ else
     current_time = Time.current
 
     if update_time.nil? || current_time - update_time > 60
-      Webdrivers::Chromedriver.required_version = "114.0.5735.90"
+      Webdrivers::Chromedriver.update
 
       file.rewind
       file.write current_time.iso8601
