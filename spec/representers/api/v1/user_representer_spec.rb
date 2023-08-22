@@ -7,6 +7,8 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
 
   let(:contract)  { FactoryBot.create :fine_print_contract, :published }
 
+  let!(:application_user) { FactoryBot.create :application_user, user: user }
+
   context 'uuid' do
     it 'can be read' do
       expect(representer.to_hash['uuid']).to eq user.uuid
@@ -158,6 +160,34 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
 
       expect(user).not_to receive(:grant_tutor_access=)
       expect { representer.from_hash(hash) }.not_to change { user.reload.grant_tutor_access }
+    end
+  end
+
+  context 'applications' do
+    it 'can be read' do
+      expected_hash = user.application_users.map do |application_user|
+        {
+          'id' => application_user.application_id,
+          'name' => application_user.application.name,
+          'roles' => application_user.roles
+        }
+      end
+
+      expect(representer.to_hash['applications']).to eq expected_hash
+    end
+
+    it 'cannot be written (attempts are silently ignored)' do
+      hash = { 'applications' => [ { 'id' => 1, name: 'Test', roles: [ 'admin' ] } ] }
+
+      expect(user).not_to receive(:application_users=)
+      expect(user).not_to receive(:applications=)
+      expect do
+        representer.from_hash(hash)
+      end.to  not_change { user.application_users.count }
+         .and not_change { application_user.reload.id }
+         .and not_change { application_user.application_id }
+         .and not_change { application_user.roles }
+         .and not_change { application_user.application.name }
     end
   end
 

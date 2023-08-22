@@ -131,7 +131,18 @@ module Admin
       end
       user_params = params.require(:user).permit(:first_name, :last_name, :username)
 
-      @user.update_attributes(user_params)
+      User.transaction do
+        @user.application_users = (params[:application_users]&.permit!&.to_h || {}).map do |_, au|
+          application_user = @user.application_users.to_a.find do |a_user|
+            a_user.application_id == au[:application_id].to_i
+          end
+          application_user = @user.application_users.new(application_id: au[:application_id].to_i)\
+            if application_user.nil?
+          application_user.roles = au[:roles].split(',').map(&:strip)
+          application_user
+        end
+        @user.update_attributes! user_params
+      end
     end
   end
 end
