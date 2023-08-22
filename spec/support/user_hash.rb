@@ -17,7 +17,13 @@ def user_matcher(user, include_private_data: false)
     is_administrator: user.is_administrator?,
     salesforce_contact_id: user.salesforce_contact_id,
     applications: a_collection_containing_exactly(
-      *user.applications.map { |app| { id: app.id, name: app.name } }
+      *user.application_users.map do |app_user|
+        {
+          id: app_user.application_id,
+          name: app_user.application.name,
+          roles: app_user.roles
+        }
+      end
     ),
     faculty_status: user.faculty_status.to_s
   }

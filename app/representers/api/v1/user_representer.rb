@@ -183,10 +183,11 @@ module Api::V1
                if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
                decorator: ContactInfoRepresenter
 
-    collection :applications,
+    collection :application_users,
+               as: :applications,
                readable: true,
                writeable: false,
-               decorator: ApplicationRepresenter,
+               decorator: ApplicationUserApplicationRepresenter,
                schema_info: {
                  description: "A list of the applications the user has accessed",
                  required: false
@@ -198,5 +199,12 @@ module Api::V1
                writeable: false,
                if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
                getter: ->(*) { FinePrint::Contract.published.latest.signed_by(self).pluck(:name) }
+
+    def to_hash(options = {})
+      # Avoid N+1 load on application_users.application
+      ActiveRecord::Associations::Preloader.new.preload represented.application_users.to_a, :application
+
+      super(options)
+    end
   end
 end
