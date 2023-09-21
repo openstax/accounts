@@ -145,6 +145,7 @@
                         <%= form.hidden_field :contract_1_id, value: @contracts.first.id %>
                         <%= form.hidden_field :contract_2_id, value: @contracts.second.id %>
                         <%= form.hidden_field :role, value: :student %>
+                        <%= hidden_field_tag :return_to, params[:return_to] %>
                     </div>
 
                 </div>
