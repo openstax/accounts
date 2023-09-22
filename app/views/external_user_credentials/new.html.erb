@@ -146,6 +146,7 @@
                         <%= form.hidden_field :contract_2_id, value: @contracts.second.id %>
                         <%= form.hidden_field :role, value: :student %>
                         <%= hidden_field_tag :return_to, params[:return_to] %>
+                        <%= hidden_field_tag :token, params[:token] %>
                     </div>
 
                 </div>
