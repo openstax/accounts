@@ -36,7 +36,7 @@ class SearchUsers
 
   def exec(query, options={})
 
-    users = User.all
+    users = User.preload(:external_ids, application_users: :application)
     table = User.arel_table
     contact_info_table = ContactInfo.arel_table
     space = Arel::Nodes.build_quoted(' ')
