@@ -267,18 +267,33 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                                                   resource_owner_id: nil
     end
 
-    let(:user)        { FactoryBot.create :user }
-    let(:external_id) { FactoryBot.create :external_id, user: user }
-    let(:valid_body)  { { external_id: external_id.external_id, sso: 'true' } }
+    let(:user)         { FactoryBot.create :user }
+    let!(:external_id) { FactoryBot.create :external_id, user: user }
+    let(:valid_external_id_body) { { external_id: external_id.external_id, sso: 'true' } }
+    let(:valid_uuid_body)        { { uuid: user.uuid } }
 
-    it "should find a user for a trusted app" do
+    it "should find a user by external_id for a trusted app" do
       api_post :find,
                 trusted_application_token,
-                body: valid_body
+                body: valid_external_id_body
       expect(response).to have_http_status :ok
       expect(response.body_as_hash).to match(
+        external_ids: [ external_id.external_id ],
         id: user.id,
         sso: kind_of(String),
+        support_identifier: user.support_identifier,
+        uuid: user.uuid
+      )
+    end
+
+    it "should find a user by uuid for a trusted app" do
+      api_post :find,
+                trusted_application_token,
+                body: valid_uuid_body
+      expect(response).to have_http_status :ok
+      expect(response.body_as_hash).to match(
+        external_ids: [ external_id.external_id ],
+        id: user.id,
         support_identifier: user.support_identifier,
         uuid: user.uuid
       )
@@ -294,14 +309,14 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     it "should not find a user for anonymous" do
       api_post :find,
               nil,
-              body: valid_body
+              body: valid_external_id_body
       expect(response).to have_http_status :forbidden
     end
 
     it "should not find a user for another user" do
       api_post :find,
               user_2_token,
-              body: valid_body
+              body: valid_external_id_body
       expect(response).to have_http_status :forbidden
     end
   end
