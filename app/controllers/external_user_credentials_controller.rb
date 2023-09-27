@@ -1,5 +1,6 @@
 class ExternalUserCredentialsController < Newflow::BaseController
   prepend_before_action :authenticate_external_user!, :validate_return_param!
+  fine_print_skip :general_terms_of_use, :privacy_policy
 
   def new
     render_form
