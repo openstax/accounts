@@ -24,6 +24,26 @@
         </a>
       </li>
     `);
+
+    const applicationOnChange = () => {
+      const enabled = $('#add-application-select').val() && $(`#application-users-list input[type=\"hidden\"][name*=\"application_id\"][value=\"${$('#add-application-select').val()}\"]`).length === 0;
+
+      $('#add-application').prop('disabled', !enabled);
+    };
+
+    const applicationOnClick = (event) => {
+      event.preventDefault();
+      const nextIndex = Math.max(-1, ...Object.values($('#application-users-list input')).map(i => i.name?.match(/^application_users\[(\d+)\]/)).filter(m => m).map(m => parseInt(m[1], 10))) + 1;
+      renderApplicationUser(
+        $('#add-application-select').val(),
+        $('#add-application-select option:selected').text(),
+        '',
+        '',
+        nextIndex,
+      );
+      $('#add-application-select').val(undefined);
+      $('#add-application').prop('disabled', 'disabled');
+    };
   </script>
 <% end %>
 
@@ -283,19 +303,13 @@
     <div class="col-sm-8">
       <%= f.select nil, Doorkeeper::Application.pluck(:name, :id), {include_blank: true, selected: nil},
                   {name: nil, id: 'add-application-select', class: "form-control",
-                   onchange: "$('#add-application').prop('disabled', !$('#add-application-select').val());"} %>
+                   onchange: 'applicationOnChange()'} %>
     </div>
     <div class="col-sm-2">
       <%= button_tag 'Add Application', id: 'add-application',
                                         class: 'btn btn-primary',
                                         disabled: true,
-                                        onclick: "event.preventDefault(); renderApplicationUser(
-        $('#add-application-select').val(),
-        $('#add-application-select').text(),
-        '',
-        '',
-        $('#add-application-users-list').children.length,
-      ); $('#add-application-select').val(undefined); $('#add-application').prop('disabled', 'disabled');"
+                                        onclick: 'applicationOnClick(event)'
       %>
     </div>
   </div>
