@@ -50,6 +50,25 @@ module Newflow
           }
         end
 
+        context 'with a different profile' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_of_interest: ['Test Book'],
+                books_used: ['Test Book'],
+                using_openstax_how: Newflow::EducatorSignup::CompleteProfile::AS_FUTURE,
+                educator_specific_role: Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR,
+              }
+            }
+          end
+
+          it "should not error" do
+            result = handle
+            expect(result.errors.count).to eq 0
+          end
+        end
+
         context 'books used details' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR }
 
