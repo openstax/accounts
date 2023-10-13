@@ -98,10 +98,12 @@ class UpdateUserContactInfo
                                :unknown_school_location
                              end
 
+      # TODO: This can be removed once OSWeb is migated to using the new adopter_status field for renewal forms
       unless sf_contact.adoption_status.blank?
         user.using_openstax = ADOPTION_STATUSES[sf_contact.adoption_status]
       end
 
+      user.adopter_status = sf_contact.adoption_status
       user.is_kip = sf_school&.is_kip || sf_school&.is_child_of_kip
       user.grant_tutor_access = sf_contact.grant_tutor_access
       user.is_b_r_i_user = sf_contact.b_r_i_marketing
