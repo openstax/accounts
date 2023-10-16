@@ -143,7 +143,7 @@ module Newflow
       end
 
       def books_used_details
-        signup_params.books_used_details.reject do |k, v|
+        (signup_params.books_used_details || {}).reject do |k, v|
           k.blank? || v.dig('how_using_book').blank? || v.dig('num_students_using_book').blank?
         end
       end
