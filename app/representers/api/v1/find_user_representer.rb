@@ -10,7 +10,7 @@ module Api::V1
     property :uuid,
              type: String,
              readable: true,
-             writeable: false
+             writeable: true
 
     property :support_identifier,
              type: String,
@@ -24,6 +24,15 @@ module Api::V1
              schema_info: {
                description: "External ID to search by"
              }
+
+    collection :external_ids,
+               type: String,
+               readable: true,
+               writeable: false,
+               schema_info: {
+                 description: "The user's external_ids"
+               },
+               getter: ->(represented:, **) { represented.external_ids.map(&:external_id) }
 
     property :is_test,
              type: :boolean,

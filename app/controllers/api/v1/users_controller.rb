@@ -171,7 +171,13 @@ class Api::V1::UsersController < Api::V1::ApiController
     # Substitue a Hashie::Mash to read the JSON encoded body
     payload = consume!(Hashie::Mash.new, represent_with: Api::V1::FindUserRepresenter)
 
-    user = User.joins(:external_ids).find_by!(external_ids: { external_id: payload.external_id })
+    user = if payload.external_id.present?
+      User.joins(:external_ids).find_by!(external_ids: { external_id: payload.external_id })
+    elsif payload.uuid.present?
+      User.find_by!(uuid: payload.uuid)
+    else
+      raise ActiveRecord::RecordNotFound, 'either external_id or uuid must be provided'
+    end
 
     token = get_sso_token(current_api_user.application, user) if payload.sso.present?
 
