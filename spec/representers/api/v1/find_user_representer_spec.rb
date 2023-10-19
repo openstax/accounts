@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::FindUserRepresenter, type: :representer do
-  let(:payload)         { Hashie::Mash.new }
+  let(:payload)         { Hashie::Mash.new external_ids: [] }
   subject(:representer) { described_class.new payload }
 
   context 'id' do
@@ -24,11 +24,9 @@ RSpec.describe Api::V1::FindUserRepresenter, type: :representer do
       expect(representer.to_hash['uuid']).to eq payload.uuid
     end
 
-    it 'cannot be written (attempts are silently ignored)' do
-      hash = { 'uuid' => SecureRandom.uuid }
-
-      expect(payload).not_to receive(:uuid=)
-      expect { representer.from_hash(hash) }.not_to change { payload.uuid }
+    it 'can be written' do
+      expect(payload).to receive(:uuid=).and_call_original
+      expect { representer.from_hash 'uuid' => SecureRandom.uuid }.to change { payload.uuid }
     end
   end
 
@@ -57,6 +55,20 @@ RSpec.describe Api::V1::FindUserRepresenter, type: :representer do
       expect { representer.from_hash 'external_id' => SecureRandom.uuid }.to(
         change { payload.external_id }
       )
+    end
+  end
+
+  context 'external_ids' do
+    it 'can be read' do
+      payload.external_ids = [ Hashie::Mash.new(external_id: SecureRandom.uuid) ]
+      expect(representer.to_hash['external_ids']).to eq payload.external_ids.map(&:external_id)
+    end
+
+    it 'cannot be written (attempts are silently ignored)' do
+      hash = { 'external_ids' => [ SecureRandom.uuid ] }
+
+      expect(payload).not_to receive(:external_ids=)
+      expect { representer.from_hash(hash) }.not_to change { payload.external_ids }
     end
   end
 

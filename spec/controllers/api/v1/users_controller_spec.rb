@@ -267,18 +267,33 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                                                   resource_owner_id: nil
     end
 
-    let(:user)        { FactoryBot.create :user }
-    let(:external_id) { FactoryBot.create :external_id, user: user }
-    let(:valid_body)  { { external_id: external_id.external_id, sso: 'true' } }
+    let(:user)         { FactoryBot.create :user }
+    let!(:external_id) { FactoryBot.create :external_id, user: user }
+    let(:valid_external_id_body) { { external_id: external_id.external_id, sso: 'true' } }
+    let(:valid_uuid_body)        { { uuid: user.uuid } }
 
-    it "should find a user for a trusted app" do
+    it "should find a user by external_id for a trusted app" do
       api_post :find,
                 trusted_application_token,
-                body: valid_body
+                body: valid_external_id_body
       expect(response).to have_http_status :ok
       expect(response.body_as_hash).to match(
+        external_ids: [ external_id.external_id ],
         id: user.id,
         sso: kind_of(String),
+        support_identifier: user.support_identifier,
+        uuid: user.uuid
+      )
+    end
+
+    it "should find a user by uuid for a trusted app" do
+      api_post :find,
+                trusted_application_token,
+                body: valid_uuid_body
+      expect(response).to have_http_status :ok
+      expect(response.body_as_hash).to match(
+        external_ids: [ external_id.external_id ],
+        id: user.id,
         support_identifier: user.support_identifier,
         uuid: user.uuid
       )
@@ -294,14 +309,14 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     it "should not find a user for anonymous" do
       api_post :find,
               nil,
-              body: valid_body
+              body: valid_external_id_body
       expect(response).to have_http_status :forbidden
     end
 
     it "should not find a user for another user" do
       api_post :find,
               user_2_token,
-              body: valid_body
+              body: valid_external_id_body
       expect(response).to have_http_status :forbidden
     end
   end
@@ -324,7 +339,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(response.code).to eq('201')
       new_user = User.order(:id).last
       expect(response.body_as_hash).to eq(
-        id: new_user.id, uuid: new_user.uuid, support_identifier: new_user.support_identifier
+        id: new_user.id, uuid: new_user.uuid, external_ids: [], support_identifier: new_user.support_identifier
       )
     end
 
@@ -362,15 +377,17 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                  }
       end.to change { User.count }.by(1)
       expect(response.code).to eq('201')
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response['external_ids']).to eq [ external_id ]
 
-      new_user = User.find(JSON.parse(response.body)['id'])
+      new_user = User.find(parsed_response['id'])
       expect(new_user.external_ids.first.external_id).to eq external_id
       expect(new_user.state).to eq 'external'
       expect(new_user.role).to eq 'student'
       expect(new_user.applications).to eq [ foc_trusted_application ]
-      expect(new_user.uuid).not_to be_blank
+      expect(new_user.uuid).to eq parsed_response['uuid']
 
-      sso_cookie = JSON.parse(response.body)['sso']
+      sso_cookie = parsed_response['sso']
       sso_hash = SsoCookie.read sso_cookie
       expect(sso_hash['sub']).to eq Api::V1::UserRepresenter.new(new_user).to_hash
       expect(sso_hash['exp']).to be <= (
@@ -407,6 +424,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
         expect(response.body_as_hash).to eq(
           id: unclaimed_user.id,
           uuid: unclaimed_user.uuid,
+          external_ids: [],
           support_identifier: unclaimed_user.support_identifier
         )
       end
@@ -417,7 +435,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                  body: { email: user_2.contact_infos.first.value }
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
-          id: user_2.id, uuid: user_2.uuid, support_identifier: user_2.support_identifier
+          id: user_2.id, uuid: user_2.uuid, external_ids: [], support_identifier: user_2.support_identifier
         )
       end
     end

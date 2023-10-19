@@ -25,6 +25,15 @@ module Api::V1
                description: "External ID to search by or assign to newly created user"
              }
 
+    collection :external_ids,
+               type: String,
+               readable: true,
+               writeable: false,
+               schema_info: {
+                 description: "The user's external_ids"
+               },
+               getter: ->(represented:, **) { represented.external_ids.map(&:external_id) }
+
     property :username,
              type: String,
              readable: false,

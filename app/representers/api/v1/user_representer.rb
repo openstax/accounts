@@ -206,6 +206,13 @@ module Api::V1
                if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
                getter: ->(*) { FinePrint::Contract.published.latest.signed_by(self).pluck(:name) }
 
+    collection :external_ids,
+               type: String,
+               readable: true,
+               writeable: false,
+               if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+               getter: ->(represented:, **) { represented.external_ids.map(&:external_id) }
+
     def to_hash(options = {})
       # Avoid N+1 load on application_users.application
       ActiveRecord::Associations::Preloader.new.preload represented.application_users.to_a, :application
