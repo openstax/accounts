@@ -4,33 +4,33 @@ namespace :accounts do
   task update_adopter_status: [:environment] do
     last_id = nil
     loop do
-      contacts = OpenStax::Salesforce::Remote::Contact.select(
-        :id,
-        :adoption_status,
-        :accounts_uuid
-      )
-      .where("Accounts_UUID__c != null")
-      .order(:Id)
-      .limit(250)
-      contacts = contacts.where("Id > '#{last_id}'") unless last_id.nil?
-      contacts = contacts.to_a
-      last_id = contacts.last&.id
+      users = User.where(adopter_status: nil).order(:id).limit(250)
+      users = users.where("id > #{last_id}") unless last_id.nil?
+      last_id = users.last&.id
 
       begin
-        user_by_salesforce_id = User.where(
-          salesforce_contact_id: contacts.map(&:id)
-        ).index_by(&:salesforce_contact_id)
+        contacts = OpenStax::Salesforce::Remote::Contact.select(
+          :id,
+          :adoption_status,
+          :accounts_uuid
+        )
+        .where(id: users.map(&:salesforce_contact_id))
+        .index_by(&:id)
+        .to_a
 
-        updated_contacts = contacts.map do |contact|
-          user = user_by_salesforce_id[contact.id]
+        updated_users = users.map do |user|
+          contact = contacts[user.salesforce_contact_id]
           user.adopter_status = contact.adoption_status
-          user.save!
+        end
+        
+        updated_users.transaction do
+          updated_users.save!
         end
       rescue StandardError => se
         Sentry.capture_exception se
       end
 
-      break if contacts.length < 250
+      break if users.length < 250
     end
   end
 end
