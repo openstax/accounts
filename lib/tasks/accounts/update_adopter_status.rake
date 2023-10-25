@@ -3,7 +3,7 @@ namespace :accounts do
   # rake accounts:update_adopter_status
   task update_adopter_status: [:environment] do
     loop do
-      users = User.where(adopter_status: nil).where.not(salesforce_contact_id: nil ).limit(250)
+      users = User.where(adopter_status: nil).where.not(salesforce_contact_id: nil).limit(250)
 
       contacts = OpenStax::Salesforce::Remote::Contact.select(
         :id,
@@ -11,6 +11,7 @@ namespace :accounts do
         :accounts_uuid
       )
       .where(id: users.map(&:salesforce_contact_id))
+      .to_a
       .index_by(&:id)
 
       updated_users = users.map do |user|
