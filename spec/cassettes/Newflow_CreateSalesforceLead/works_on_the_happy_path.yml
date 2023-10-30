@@ -1,0 +1,66 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Lead"
+    body:
+      encoding: UTF-8
+      string: '{"FirstName":"Max","LastName":"Liebermann","Company":"Test University","Country":"United
+        States","Phone":"+17133484799","LeadSource":"Account Creation","Newsletter__c":false,"Newsletter_Opt_In__c":false,"Adoption_Status__c":"Confirmed
+        Adoption Won","Number_of_Students__c":"35","Accounts_ID__c":1,"Accounts_UUID__c":"f9b81c7c-b57b-4c8f-b8c7-dc760b14ed21","Application_Source__c":"Accounts","Role__c":"Instructor","Position__c":"instructor","who_chooses_books__c":"instructor","FV_Status__c":"pending_faculty","BRI_Marketing__c":false,"Title_1_school__c":false}'
+    headers:
+      User-Agent:
+      - Faraday v1.0.1
+      Content-Type:
+      - application/json
+      Authorization:
+      - OAuth <salesforce_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Mon, 30 Oct 2023 19:38:13 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - BrowserId=0OvWbndbEe68IzGd4tbGQQ; domain=.salesforce.com; path=/; expires=Tue,
+        29-Oct-2024 19:37:52 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; path=/; expires=Tue, 29-Oct-2024 19:37:52 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 29-Oct-2024 19:37:52
+        GMT; Max-Age=31536000
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Sforce-Limit-Info:
+      - api-usage=22/5000000
+      Location:
+      - "/services/data/v51.0/sobjects/Lead/00Q04000006GrgJEAS"
+      Vary:
+      - Accept-Encoding
+      Server:
+      - sfdcedge
+      X-Sfdc-Request-Id:
+      - 07e99c888d917346e15aabd66b7aed91
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"00Q04000006GrgJEAS","success":true,"errors":[]}'
+    http_version:
+  recorded_at: Mon, 30 Oct 2023 19:38:13 GMT
+recorded_with: VCR 3.0.3

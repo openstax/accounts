@@ -54,6 +54,7 @@ VCR.configure do |c|
 
   %w(
     instance_url
+    login_domain
     username
     password
     security_token
