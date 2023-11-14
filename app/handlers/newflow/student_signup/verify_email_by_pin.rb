@@ -23,7 +23,7 @@ module Newflow
       private #################
 
       def activate_user(claiming_user)
-        run(ActivateStudent, claiming_user)
+        run(ActivateStudent, user: claiming_user)
       end
 
     end
