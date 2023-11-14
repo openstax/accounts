@@ -136,9 +136,8 @@ module Newflow
             event_data: { verification: verification_details_from_sheerid.inspect })
         end
 
-        if user.salesforce_lead_id.blank? && user.salesforce_contact_id.blank?
-          CreateOrUpdateSalesforceLead.perform_later(user: user)
-        end
+        CreateOrUpdateSalesforceLead.perform_later(user: user)
+
 
         SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)
         outputs.verification_id = verification_id
