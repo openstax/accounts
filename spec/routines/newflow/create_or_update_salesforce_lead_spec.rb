@@ -2,10 +2,10 @@ require 'rails_helper'
 require 'vcr_helper'
 
 module Newflow
-  RSpec.describe CreateSalesforceLead, type: :routine, vcr: VCR_OPTS do
+  RSpec.describe CreateOrUpdateSalesforceLead, type: :routine, vcr: VCR_OPTS do
 
     before(:all) do
-      VCR.use_cassette('Newflow_CreateSalesforceLead/sf_setup', VCR_OPTS) do
+      VCR.use_cassette('Newflow_CreateOrUpdateSalesforceLead/sf_setup', VCR_OPTS) do
         @proxy = SalesforceProxy.new
         @proxy.setup_cassette
       end
