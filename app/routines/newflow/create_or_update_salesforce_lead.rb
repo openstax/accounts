@@ -143,7 +143,6 @@ module Newflow
 
     def store_salesforce_lead_id(user, lead_id)
       fatal_error(code: :lead_id_is_blank, message: :lead_id_is_blank.to_s.titleize) if lead_id.blank?
-      fatal_error(code: :lead_id_is_already_set, message: :lead_id_is_already_set.to_s.titleize) if user.salesforce_lead_id.present?
 
       user.salesforce_lead_id = lead_id
 
