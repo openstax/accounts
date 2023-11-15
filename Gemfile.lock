@@ -14,6 +14,16 @@ GIT
       sass-rails
 
 GIT
+  remote: https://github.com/openstax/openstax_salesforce.git
+  revision: 4c1858b47cf46728d38d518b892456154b1940f1
+  ref: 4c1858b47cf46728d38d518b892456154b1940f1
+  specs:
+    openstax_salesforce (7.6.0)
+      openstax_active_force
+      rails (>= 5.0, < 7.0)
+      restforce
+
+GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: 8298c40ec38f132fc23ea946b2b20e855fe73a49
   ref: 8298c40ec38f132fc23ea946b2b20e855fe73a49
@@ -487,10 +497,6 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.2.0)
       rails (>= 3.1, < 7.0)
-    openstax_salesforce (7.5.1)
-      openstax_active_force
-      rails (>= 5.0, < 7.0)
-      restforce
     openstax_utilities (5.0.0)
       aws-sdk-autoscaling
       faraday
@@ -838,7 +844,7 @@ DEPENDENCIES
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce
+  openstax_salesforce!
   openstax_utilities
   p3p
   parallel_tests
