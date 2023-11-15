@@ -39,11 +39,16 @@ module Newflow
         adoption_json = build_book_adoption_json_for_salesforce(user)
       end
 
-      user.faculty_status = User::INCOMPLETE_SIGNUP unless user.is_profile_complete?
+      # The user has not finished signing up, so we mark them as such and set their school to Find Me A Home
+      unless sf_school_id && user.is_profile_complete?
+        user.faculty_status = User::INCOMPLETE_SIGNUP
+        sf_school_id = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home').id
+      end
 
-      lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
+      if user.salesforce_lead_id
+        # we want to look for the user by email because the lead id could have changed (Lead Merge in SF)
+        lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
 
-      if lead
         lead.first_name = user.first_name
         lead.last_name = user.last_name
         lead.phone = user.phone_number

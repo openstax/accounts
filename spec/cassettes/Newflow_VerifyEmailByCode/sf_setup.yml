@@ -1,0 +1,54 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://<salesforce_login_domain>/services/oauth2/token
+    body:
+      encoding: US-ASCII
+      string: grant_type=password&client_id=<salesforce_consumer_key>&client_secret=<salesforce_consumer_secret>&username=<salesforce_username_url>&password=<salesforce_password_url><salesforce_security_token>
+    headers:
+      User-Agent:
+      - Faraday v1.0.1
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 15 Nov 2023 16:14:59 GMT
+      Set-Cookie:
+      - BrowserId=H-5da4PSEe6uFMnuBFn0Jg; domain=.salesforce.com; path=/; expires=Thu,
+        14-Nov-2024 16:14:59 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:0; path=/; expires=Thu, 14-Nov-2024 16:14:59 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:0; path=/; expires=Thu, 14-Nov-2024 16:14:59
+        GMT; Max-Age=31536000
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      X-Readonlymode:
+      - 'false'
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"access_token":"<salesforce_access_token>","instance_url":"<salesforce_instance_url>","id":"https://<salesforce_login_domain>/id/00D040000003rgWEAQ/005U0000005MXdmIAG","token_type":"Bearer","issued_at":"1700064900732","signature":"<salesforce_signature>"}'
+    http_version:
+  recorded_at: Wed, 15 Nov 2023 16:15:00 GMT
+recorded_with: VCR 3.0.3
