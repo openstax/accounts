@@ -97,6 +97,11 @@ module Newflow
             # so let's add it - validation happens before this in check_params
             run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
           end
+
+          if user.school.nil? && !signup_params.school_name.blank?
+            user.school = School.fuzzy_search name
+            user.save
+          end
         end
 
         transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)

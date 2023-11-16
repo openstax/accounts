@@ -27,7 +27,11 @@ module Newflow
 
       sf_school_id = user.school&.salesforce_id
       # no school attached to user? Set to Find Me A Home
-      sf_school_id = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home').id unless sf_school_id
+      unless sf_school_id
+        sf_school_id = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home').id
+        user.school = School.find_by(salesforce_id: sf_school_id)
+        user.save
+      end
 
       if user.role == 'student'
         sf_role = 'Student'
