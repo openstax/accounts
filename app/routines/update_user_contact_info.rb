@@ -46,11 +46,13 @@ class UpdateUserContactInfo
 
       user.salesforce_contact_id = sf_contact.id
 
-      SecurityLog.create!(
-        user: user,
-        event_type: :user_contact_id_updated_from_salesforce,
-        event_data: { contact_id: sf_contact.id }
-      )
+      if user.salesforce_contact_id.changed?
+        SecurityLog.create!(
+          user: user,
+          event_type: :user_contact_id_updated_from_salesforce,
+          event_data: { contact_id: sf_contact.id }
+        )
+      end
 
       old_fv_status = user.faculty_status
       user.faculty_status = case sf_contact.faculty_verified
@@ -72,6 +74,15 @@ class UpdateUserContactInfo
                                 Sentry.capture_message("Unknown faculty_verified field: '#{
                                   sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
                             end
+
+      if user.faculty_status_changed?
+        users_fv_status_changed += 1
+        SecurityLog.create!(
+          user:       user,
+          event_type: :salesforce_updated_faculty_status,
+          event_data: { user_id: user.id, salesforce_contact_id: sf_contact.id, old_status: old_fv_status, new_status: user.faculty_status }
+        )
+      end
 
       user.school_type = case sf_contact.school_type
                          when *COLLEGE_TYPES
@@ -115,18 +126,9 @@ class UpdateUserContactInfo
           event_data: { school_id: sf_school.id }
         )
         users_without_cached_school += 1
-        log("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
+        Sentry.capture_message("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
       else
         user.school = school
-      end
-
-      if user.faculty_status_changed?
-        users_fv_status_changed += 1
-        SecurityLog.create!(
-          user: user,
-          event_type: :salesforce_updated_faculty_status,
-          event_data: { user_id: user.id, salesforce_contact_id: sf_contact.id, old_status:old_fv_status, new_status: user.faculty_status }
-        )
       end
 
       user.save! && users_updated += 1 if user.changed?
