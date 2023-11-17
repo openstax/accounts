@@ -12,6 +12,7 @@ module Newflow
     before_action :known_signup_role_redirect, only: :login_form
     before_action :cache_alternate_signup_url, only: :login_form
     before_action :redirect_to_signup_if_go_param_present, only: :login_form
+    before_action :did_sign_privacy_notice, only: :login_form
     before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
     def login
@@ -85,6 +86,13 @@ module Newflow
     # has a message for students just letting them know how to sign up (they must receive an email invitation).
     def cache_alternate_signup_url
       set_alternate_signup_url(params[:signup_at])
+    end
+
+    def did_sign_privacy_notice
+      contract = FinePrint.get_contract(:privacy_policy)
+      unless contract.signed_by?(current_user)
+        redirect_to pose_term_url(name: contract.name, params: request.params)
+      end
     end
   end
 end
