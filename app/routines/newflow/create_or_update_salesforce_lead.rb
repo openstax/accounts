@@ -48,9 +48,9 @@ module Newflow
       # The user has not finished signing up
       user.faculty_status = User::INCOMPLETE_SIGNUP unless user.is_profile_complete?
 
-      if user.salesforce_lead_id
-        # we want to look for the user by email because the lead id could have changed (Lead Merge in SF)
-        lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
+
+      lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce) ||
+        OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
 
         lead.first_name = user.first_name
         lead.last_name = user.last_name
@@ -75,43 +75,10 @@ module Newflow
         lead.title_1_school = user.title_1_school?
         lead.newsletter = user.receive_newsletter?
         lead.newsletter_opt_in = user.receive_newsletter?
+        lead.self_reported_school = user.self_reported_school
         lead.sheerid_school_name = user.sheerid_reported_school
-        lead.instant_verification = user.is_sheerid_verified
         lead.account_id = sf_school_id
         lead.school_id = sf_school_id
-      else
-
-        lead = OpenStax::Salesforce::Remote::Lead.new(
-          first_name: user.first_name,
-          last_name: user.last_name,
-          phone: user.phone_number,
-          email: user.best_email_address_for_salesforce,
-          source: LEAD_SOURCE,
-          application_source: DEFAULT_REFERRING_APP_NAME,
-          role: sf_role,
-          position: sf_position,
-          title: user.other_role_name,
-          who_chooses_books: user.who_chooses_books,
-          subject_interest: user.which_books,
-          num_students: user.how_many_students,
-          adoption_status: ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
-          adoption_json: adoption_json,
-          os_accounts_id: user.id,
-          accounts_uuid: user.uuid,
-          school: user.most_accurate_school_name,
-          city: user.most_accurate_school_city,
-          country: user.most_accurate_school_country,
-          verification_status: user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,
-          b_r_i_marketing: user.is_b_r_i_user?,
-          title_1_school: user.title_1_school?,
-          newsletter: user.receive_newsletter?,
-          newsletter_opt_in: user.receive_newsletter?,
-          sheerid_school_name: user.sheerid_reported_school,
-          instant_verification: user.is_sheerid_verified,
-          account_id: sf_school_id,
-          school_id: sf_school_id
-        )
-      end
 
       state = user.most_accurate_school_state
       unless state.blank?
