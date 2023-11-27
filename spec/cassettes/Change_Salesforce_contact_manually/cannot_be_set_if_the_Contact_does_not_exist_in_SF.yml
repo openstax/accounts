@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 15 Nov 2023 17:10:26 GMT
+      - Mon, 27 Nov 2023 16:18:02 GMT
       Content-Type:
       - application/json;charset=UTF-8
       Transfer-Encoding:
@@ -29,10 +29,10 @@ http_interactions:
       Connection:
       - keep-alive
       Set-Cookie:
-      - BrowserId=3pVrWIPZEe61wuFwbSy-Rw; domain=.salesforce.com; path=/; expires=Thu,
-        14-Nov-2024 17:10:26 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; path=/; expires=Thu, 14-Nov-2024 17:10:26 GMT; Max-Age=31536000
-      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Thu, 14-Nov-2024 17:10:26
+      - BrowserId=ibUIBY1AEe6Khe8IdOYHzw; domain=.salesforce.com; path=/; expires=Tue,
+        26-Nov-2024 16:18:02 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; path=/; expires=Tue, 26-Nov-2024 16:18:02 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 26-Nov-2024 16:18:02
         GMT; Max-Age=31536000
       Strict-Transport-Security:
       - max-age=63072000; includeSubDomains
@@ -45,18 +45,18 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Sforce-Limit-Info:
-      - api-usage=201/5000000
+      - api-usage=35215/5000000
       Vary:
       - Accept-Encoding
       Server:
       - sfdcedge
       X-Sfdc-Request-Id:
-      - 67d79e14afad740fea53cc958aed7762
+      - 4e668b119139b49cf808b0be3412f81a
       X-Sfdc-Edge-Cache:
       - MISS
     body:
       encoding: ASCII-8BIT
       string: '{"totalSize":0,"done":true,"records":[]}'
     http_version:
-  recorded_at: Wed, 15 Nov 2023 17:10:25 GMT
+  recorded_at: Mon, 27 Nov 2023 16:18:02 GMT
 recorded_with: VCR 3.0.3
