@@ -97,26 +97,19 @@ module Newflow
             # so let's add it - validation happens before this in check_params
             run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
           end
+
+          if user.school.nil? && !signup_params.school_name.blank?
+            user.school = School.fuzzy_search name
+            user.save
+          end
         end
 
         transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
 
+        CreateOrUpdateSalesforceLead.perform_later(user: @user)
+
         #output the user to the lev handler
         outputs.user = @user
-
-        if !user.is_educator_pending_cs_verification && !user.sheer_id_webhook_received
-          # User used SheerID or needs CS verification - we create their lead in SheeridWebhook, not here.. and might not be instant
-          SecurityLog.create!(
-            user: user,
-            event_type: :lead_creation_awaiting_sheerid_webhook,
-          )
-          return
-        end
-        # otherwise, we already heard from SheerID, so let's create the lead.
-        # We check in SheeridWebhook to see if they completed their profile before creating lead
-
-        # Now we create the lead for the user... because we returned above if they did... again SheeridWebhook
-        CreateSalesforceLead.perform_later(user: @user)
 
       end
 

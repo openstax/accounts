@@ -3,15 +3,10 @@ require 'vcr_helper'
 
 module Newflow
   module StudentSignup
-    describe VerifyEmailByPin, type: :handler, vcr: VCR_OPTS do
-      before(:all) do
-        VCR.use_cassette('handlers/newflow/student_signup/sf_setup', VCR_OPTS) do
-          @proxy = SalesforceProxy.new
-          @proxy.setup_cassette
-        end
-      end
-
+    describe VerifyEmailByPin, type: :handler do
       context 'when success' do
+        before { disable_sfdc_client }
+
         let(:user) do
           FactoryBot.create(:user, state: 'unverified', source_application: source_app, receive_newsletter: true)
         end
@@ -21,7 +16,7 @@ module Newflow
         end
 
         let(:email) do
-          FactoryBot.create(:email_address, user: user, value: 'test@openstax.org')
+          FactoryBot.create(:email_address, user: user)
         end
 
         let(:params) do
@@ -33,7 +28,7 @@ module Newflow
         end
 
         it 'runs ActivateStudent' do
-          expect_any_instance_of(ActivateStudent).to receive(:exec)
+          expect_any_instance_of(ActivateStudent).to receive(:exec).with(hash_including(user: user))
           described_class.call(params: params, email_address: email)
         end
 

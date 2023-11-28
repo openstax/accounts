@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20BRI_Marketing__c,%20Title_1_school__c,%20Accounts_UUID__c,%20LeadSource%20FROM%20Contact%20WHERE%20(Id%20=%20%27somethingwonky%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20Title_1_school__c,%20Accounts_UUID__c,%20LeadSource,%20Signup_Date__c,%20Renewal_Eligible__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27somethingwonky%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
@@ -21,30 +21,40 @@ http_interactions:
       message: Bad Request
     headers:
       Date:
-      - Mon, 24 Jan 2022 13:55:41 GMT
+      - Mon, 27 Nov 2023 16:18:01 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
       Set-Cookie:
-      - BrowserId=US_AEX0dEeyOoSHSbsZOUA; domain=.salesforce.com; path=/; expires=Tue,
-        24-Jan-2023 13:55:41 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; path=/; expires=Tue, 24-Jan-2023 13:55:41 GMT; Max-Age=31536000
-      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 24-Jan-2023 13:55:41
+      - BrowserId=iUJwro1AEe6XW6cG93Tdkw; domain=.salesforce.com; path=/; expires=Tue,
+        26-Nov-2024 16:18:01 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; path=/; expires=Tue, 26-Nov-2024 16:18:01 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 26-Nov-2024 16:18:01
         GMT; Max-Age=31536000
       Strict-Transport-Security:
       - max-age=63072000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
       X-Robots-Tag:
       - none
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Sforce-Limit-Info:
-      - api-usage=1599/5000000
-      Content-Type:
-      - application/json;charset=UTF-8
-      Transfer-Encoding:
-      - chunked
+      - api-usage=35215/5000000
+      Server:
+      - sfdcedge
+      X-Sfdc-Request-Id:
+      - a6a1f4e2ee854bed5e12af40f1013a70
     body:
       encoding: UTF-8
-      string: '[{"message":"\nLeadSource FROM Contact WHERE (Id = ''somethingwonky'')
-        LIMIT 1\n                               ^\nERROR at Row:1:Column:341\ninvalid
+      string: '[{"message":"\nRenewal_Eligible__c FROM Contact WHERE (Id = ''somethingwonky'')
+        LIMIT 1\n                                        ^\nERROR at Row:1:Column:339\ninvalid
         ID field: somethingwonky","errorCode":"INVALID_QUERY_FILTER_OPERATOR"}]'
-    http_version: 
-  recorded_at: Mon, 24 Jan 2022 13:55:12 GMT
+    http_version:
+  recorded_at: Mon, 27 Nov 2023 16:18:01 GMT
 recorded_with: VCR 3.0.3

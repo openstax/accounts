@@ -169,7 +169,7 @@ class User < ApplicationRecord
   end
 
   def contact
-    OpenStax::Salesforce::Remote::Contact.find_by(id: salesforce_contact_id)
+    OpenStax::Salesforce::Remote::Contact.find(salesforce_contact_id)
   end
 
   def most_accurate_school_name
