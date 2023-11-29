@@ -108,18 +108,18 @@ feature 'Require recent log in to change authentications', js: true do
 
   scenario 'removing an authentication' do
     with_forgery_protection do
-      FactoryBot.create :authentication, user: user, provider: 'twitter'
+      FactoryBot.create :authentication, user: user, provider: 'facebooknewflow'
 
       newflow_log_in_user(email_value, 'password')
 
       expect(page).to have_no_missing_translations
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
         visit '/profile'
-        expect_newflow_profile_page
-        expect(page).to have_content('Twitter')
+        expect(page.current_path).to eq(profile_newflow_path)
+        expect(page).to have_content('Facebook')
         screenshot!
 
-        find('.authentication[data-provider="twitter"] .delete--newflow').click
+        find('.authentication[data-provider="facebooknewflow"] .delete--newflow').click
         screenshot!
         click_button 'OK'
         screenshot!
@@ -128,9 +128,9 @@ feature 'Require recent log in to change authentications', js: true do
         expect_newflow_profile_page
         screenshot!
 
-        find('.authentication[data-provider="twitter"] .delete--newflow').click
+        find('.authentication[data-provider="facebooknewflow"] .delete--newflow').click
         click_button 'OK'
-        expect(page).to have_no_content('Twitter')
+        expect(page).to have_no_content('Facebook')
         screenshot!
       end
     end
