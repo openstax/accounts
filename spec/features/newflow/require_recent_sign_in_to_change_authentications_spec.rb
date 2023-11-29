@@ -6,7 +6,7 @@ feature 'Require recent log in to change authentications', js: true do
   end
 
   let!(:user) do
-    user = create_newflow_user(email_value)
+    user = create_newflow_user(email_value, 'password', terms_agreed: true)
     user.update(role: User::STUDENT_ROLE)
     user
   end
