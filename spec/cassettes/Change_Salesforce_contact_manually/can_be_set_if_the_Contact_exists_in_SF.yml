@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20BillingCountry,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c%20FROM%20Account%20WHERE%20(RecordType.Name%20=%20%27School%27)%20AND%20(Name%20IN%20(%27JP%20University%27))"
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20BillingCountry,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c,%20Total_School_Enrollment__c%20FROM%20Account%20WHERE%20(RecordType.Name%20=%20%27School%27%20OR%20RecordType.Name%20=%20%27School%20District%27)%20AND%20(Name%20IN%20(%27RSpec%20University%27))"
     body:
       encoding: US-ASCII
       string: ''
@@ -21,40 +21,52 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 24 Jan 2022 13:55:41 GMT
+      - Mon, 27 Nov 2023 16:18:03 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
       Set-Cookie:
-      - BrowserId=UbeNkn0dEeyWOUuoD6vnqg; domain=.salesforce.com; path=/; expires=Tue,
-        24-Jan-2023 13:55:42 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; path=/; expires=Tue, 24-Jan-2023 13:55:42 GMT; Max-Age=31536000
-      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 24-Jan-2023 13:55:42
+      - BrowserId=imOXQ41AEe6XW6cG93Tdkw; domain=.salesforce.com; path=/; expires=Tue,
+        26-Nov-2024 16:18:03 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; path=/; expires=Tue, 26-Nov-2024 16:18:03 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 26-Nov-2024 16:18:03
         GMT; Max-Age=31536000
       Strict-Transport-Security:
       - max-age=63072000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
       X-Robots-Tag:
       - none
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Sforce-Limit-Info:
-      - api-usage=1599/5000000
-      Content-Type:
-      - application/json;charset=UTF-8
+      - api-usage=35216/5000000
       Vary:
       - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
+      Server:
+      - sfdcedge
+      X-Sfdc-Request-Id:
+      - d856c234a625b439ee0d27f6571fa1a3
+      X-Sfdc-Edge-Cache:
+      - MISS
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v51.0/sobjects/Account/0014C00000etq0uQAA"},"Id":"0014C00000etq0uQAA","Name":"JP
+      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v51.0/sobjects/Account/0010400001ayViVAAU"},"Id":"0010400001ayViVAAU","Name":"RSpec
         University","BillingCity":null,"BillingState":null,"BillingCountry":"United
-        States","Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}]}'
-    http_version: 
-  recorded_at: Mon, 24 Jan 2022 13:55:13 GMT
+        States","Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false,"Total_School_Enrollment__c":null}]}'
+    http_version:
+  recorded_at: Mon, 27 Nov 2023 16:18:03 GMT
 - request:
     method: post
     uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Contact"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Lillian","LastName":"Zulauf","AccountId":"0014C00000etq0uQAA"}'
+      string: '{"FirstName":"Claudette","LastName":"Adams","Email":"vance@example.org","AccountId":"0010400001ayViVAAU"}'
     headers:
       User-Agent:
       - Faraday v1.0.1
@@ -72,37 +84,47 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Mon, 24 Jan 2022 13:55:42 GMT
+      - Mon, 27 Nov 2023 16:18:05 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
       Set-Cookie:
-      - BrowserId=Ug9xgH0dEeyk3wN9Bwamng; domain=.salesforce.com; path=/; expires=Tue,
-        24-Jan-2023 13:55:42 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; path=/; expires=Tue, 24-Jan-2023 13:55:42 GMT; Max-Age=31536000
-      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 24-Jan-2023 13:55:42
+      - BrowserId=ipypWo1AEe68DhWGX-mu8A; domain=.salesforce.com; path=/; expires=Tue,
+        26-Nov-2024 16:18:03 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; path=/; expires=Tue, 26-Nov-2024 16:18:03 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 26-Nov-2024 16:18:03
         GMT; Max-Age=31536000
       Strict-Transport-Security:
       - max-age=63072000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
       X-Robots-Tag:
       - none
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Sforce-Limit-Info:
-      - api-usage=1599/5000000
+      - api-usage=35215/5000000
       Location:
-      - "/services/data/v51.0/sobjects/Contact/0034C00000XQzmjQAD"
-      Content-Type:
-      - application/json;charset=UTF-8
+      - "/services/data/v51.0/sobjects/Contact/0030400000gHxGfAAK"
       Vary:
       - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
+      Server:
+      - sfdcedge
+      X-Sfdc-Request-Id:
+      - e42e2ad525f02a38b805c3e911685a3a
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"0034C00000XQzmjQAD","success":true,"errors":[]}'
-    http_version: 
-  recorded_at: Mon, 24 Jan 2022 13:55:17 GMT
+      string: '{"id":"0030400000gHxGfAAK","success":true,"errors":[]}'
+    http_version:
+  recorded_at: Mon, 27 Nov 2023 16:18:05 GMT
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20BRI_Marketing__c,%20Title_1_school__c,%20Accounts_UUID__c,%20LeadSource%20FROM%20Contact%20WHERE%20(Id%20=%20%270034C00000XQzmjQAD%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20Title_1_school__c,%20Accounts_UUID__c,%20LeadSource,%20Signup_Date__c,%20Renewal_Eligible__c%20FROM%20Contact%20WHERE%20(Id%20=%20%270030400000gHxGfAAK%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
@@ -121,32 +143,44 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 24 Jan 2022 13:55:46 GMT
+      - Mon, 27 Nov 2023 16:18:06 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
       Set-Cookie:
-      - BrowserId=VFk6YX0dEeyj1KHMMeYh7g; domain=.salesforce.com; path=/; expires=Tue,
-        24-Jan-2023 13:55:46 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; path=/; expires=Tue, 24-Jan-2023 13:55:46 GMT; Max-Age=31536000
-      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 24-Jan-2023 13:55:46
+      - BrowserId=jATEso1AEe66LFegd-phRw; domain=.salesforce.com; path=/; expires=Tue,
+        26-Nov-2024 16:18:06 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; path=/; expires=Tue, 26-Nov-2024 16:18:06 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 26-Nov-2024 16:18:06
         GMT; Max-Age=31536000
       Strict-Transport-Security:
       - max-age=63072000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
       X-Robots-Tag:
       - none
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Sforce-Limit-Info:
-      - api-usage=1599/5000000
-      Content-Type:
-      - application/json;charset=UTF-8
+      - api-usage=35215/5000000
       Vary:
       - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
+      Server:
+      - sfdcedge
+      X-Sfdc-Request-Id:
+      - f4560b1fb8579301761ebdc80997efc9
+      X-Sfdc-Edge-Cache:
+      - MISS
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v51.0/sobjects/Contact/0034C00000XQzmjQAD"},"Id":"0034C00000XQzmjQAD","Name":"Lillian
-        Zulauf","FirstName":"Lillian","LastName":"Zulauf","Email":null,"Email_alt__c":null,"Faculty_Confirmed_Date__c":null,"FV_Status__c":null,"LastModifiedDate":"2022-01-24T13:55:45.000+0000","AccountId":"0014C00000etq0uQAA","School_Type__c":null,"SendFacultyVerificationTo__c":null,"All_Emails__c":null,"Confirmed_Emails__c":null,"Adoption_Status__c":"Not
-        Adopter","Grant_Tutor_Access__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false,"Accounts_UUID__c":null,"LeadSource":null}]}'
-    http_version: 
-  recorded_at: Mon, 24 Jan 2022 13:55:18 GMT
+      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v51.0/sobjects/Contact/0030400000gHxGfAAK"},"Id":"0030400000gHxGfAAK","Name":"Claudette
+        Adams","FirstName":"Claudette","LastName":"Adams","Email":"vance@example.org","Email_alt__c":null,"Faculty_Confirmed_Date__c":null,"FV_Status__c":null,"LastModifiedDate":"2023-11-27T16:18:05.000+0000","AccountId":"0010400001ayViVAAU","School_Type__c":null,"SendFacultyVerificationTo__c":null,"All_Emails__c":"vance@example.org","Adoption_Status__c":"Not
+        Adopter","Grant_Tutor_Access__c":false,"Title_1_school__c":false,"Accounts_UUID__c":null,"LeadSource":null,"Signup_Date__c":null,"Renewal_Eligible__c":false}]}'
+    http_version:
+  recorded_at: Mon, 27 Nov 2023 16:18:06 GMT
 recorded_with: VCR 3.0.3

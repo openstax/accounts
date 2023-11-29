@@ -50,7 +50,7 @@ module Newflow
       transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
 
       agree_to_terms(@user) if options[:contracts_required] && signup_params.terms_accepted
-      run(StudentSignup::ActivateStudent, @user)
+      run(StudentSignup::ActivateStudent, user: @user)
 
       outputs.user = @user
     end

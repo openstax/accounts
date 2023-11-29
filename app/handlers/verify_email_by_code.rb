@@ -17,7 +17,7 @@ class VerifyEmailByCode
     user = outputs.contact_info.user
 
     if user.student?
-      run(Newflow::StudentSignup::ActivateStudent, user)
+      run(Newflow::StudentSignup::ActivateStudent, user: user)
     else
       run(Newflow::EducatorSignup::ActivateEducator, user: user)
     end

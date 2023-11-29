@@ -136,11 +136,8 @@ module Newflow
             event_data: { verification: verification_details_from_sheerid.inspect })
         end
 
-        # if we got the webhook back after the user submitted the profile, they didn't get a lead built yet
-        # We just make sure they don't have a lead or contact id yet
-        if user.salesforce_lead_id.blank? && user.salesforce_contact_id.blank? && user.is_profile_complete
-          CreateSalesforceLead.perform_later(user: user)
-        end
+        CreateOrUpdateSalesforceLead.perform_later(user: user)
+
 
         SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)
         outputs.verification_id = verification_id
