@@ -114,7 +114,7 @@ feature 'Require recent log in to change authentications', js: true do
 
       expect(page).to have_no_missing_translations
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-        visit '/profile'
+        visit profile_newflow_path
         expect(page.current_path).to eq(profile_newflow_path)
         expect(page).to have_content('Facebook')
         screenshot!

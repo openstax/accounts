@@ -12,12 +12,12 @@ feature 'User updates password on profile screen', js: true do
 
   scenario "adds one" do
     # Get rid of password (have to add another auth first so things don't freak out)
-    FactoryBot.create :authentication, user: @user, provider: 'facebook'
+    FactoryBot.create :authentication, user: @user, provider: 'facebooknewflow'
     @user.authentications.where(provider: 'identity').destroy_all
     @user.identity.destroy
     @user.authentications.reload
     @user.reload.identity
-    visit '/profile'
+    visit profile_newflow_path
 
     screenshot!
     expect(page).not_to have_css('[data-provider=identity]')
