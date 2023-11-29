@@ -89,9 +89,11 @@ module Newflow
     end
 
     def did_sign_privacy_notice
-      contract = FinePrint.get_contract(:privacy_policy)
-      unless contract.signed_by?(current_user)
-        redirect_to pose_term_url(name: contract.name, params: request.params)
+      if signed_in?
+        contract = FinePrint.get_contract(:privacy_policy)
+        unless contract.signed_by?(current_user)
+          redirect_to pose_term_url(name: contract.name, params: request.params)
+        end
       end
     end
   end
