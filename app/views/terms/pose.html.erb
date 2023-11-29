@@ -1,4 +1,4 @@
-<%= ox_card(heading: @contract.title, classes: "wide") do %>
+<%= ox_card(classes: "wide") do %>
 
   <% if FinePrint.signed_any_version_of_contract?(current_user, @contract) %>
     <p><%= t :".contracts_changed_notice", contract_title: @contract.title %></p>
@@ -6,7 +6,7 @@
     <p><%= t :".contract_acceptance_required" %></p>
   <% end %>
 
-  <div class="well">
+  <div class="policy">
     <%= simple_format @contract.content, {}, sanitize: false %>
   </div>
 
@@ -16,11 +16,16 @@
     method: :post,
     html: { class: 'footer' }
   ) do |f| %>
-    <div class="checkbox">
+
+    <div class="content control-group checkboxes-section center">
+      <div class="terms">
       <label>
-        <%= f.check_box :i_agree, class: 'new-style' %> <%= t :".have_read_terms_and_agree" %>
+        <%= f.check_box :i_agree, style: "height: 1.3rem"%>
+        <span style="font-weight: bold;"><%= t :".have_read_terms_and_agree" %></span>
       </label>
     </div>
+    </div>
+
 
     <%= f.hidden_field :contract_id, value: @contract.id %>
     <%= f.submit (t :".agree"), id: "agreement_submit", class: 'primary new-style' %>

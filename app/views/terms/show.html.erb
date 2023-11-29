@@ -1,5 +1,7 @@
-<%= ox_card(heading: @contract.title) do %>
+<%= ox_card(classes: "center") do %>
 
-  <%= @contract.content.html_safe %>
+  <div class="policy">
+    <%= @contract.content.html_safe %>
+  </div>
 
 <% end %>
