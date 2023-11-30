@@ -11,14 +11,14 @@ class UpdateUserLeadInfo
 
       leads = OpenStax::Salesforce::Remote::Lead.select(:id, :accounts_uuid, :verification_status).where(accounts_uuid: users.map(&:uuid)).to_a.index_by(&:accounts_uuid)
 
-      updated_users = users.map do |user|
+      users.map do |user|
         lead = leads[user.uuid]
 
-        begin
+        unless lead.nil?
           user.salesforce_lead_id = lead.id # it might change in SF lead merging
 
           old_fv_status = user.faculty_status
-          user.faculty_status = case lead.faculty_verified
+          user.faculty_status = case lead.verification_status
                                   when "confirmed_faculty"
                                     :confirmed_faculty
                                   when "pending_faculty"
@@ -35,12 +35,12 @@ class UpdateUserLeadInfo
                                     :no_faculty_info
                                   else
                                     Sentry.capture_message("Unknown faculty_verified field: '#{
-                                      lead.faculty_verified}'' on lead #{lead.id}")
+                                      lead.verification_status}'' on lead #{lead.id}")
                                 end
 
           if user.faculty_status_changed?
             SecurityLog.create!(
-              user:       user,
+              user: user,
               event_type: :salesforce_updated_faculty_status,
               event_data: {
                 user_id: user.id,
@@ -50,13 +50,9 @@ class UpdateUserLeadInfo
               }
             )
           end
-        rescue NoMethodError
-          Sentry.capture_message("User #{user.id} unable to be synced with lead #{lead.id}")
-        end
-      end
 
-      updated_users.transaction do
-        updated_users.each(&:save!)
+          user.save if user.changed?
+        end
       end
 
       break if users.length < BATCH_SIZE
