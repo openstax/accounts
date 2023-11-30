@@ -103,22 +103,14 @@ module Newflow
         event_data: { lead_data: lead }
       )
 
-      begin
-        lead.save
+      if lead.save
         user.salesforce_lead_id = lead.id
         user.save
-
         outputs.lead = lead
-      rescue => e
-        SecurityLog.create!(
-          user: user,
-          event_type: :salesforce_error,
-          event_data: {
-            message: e,
-          }
-        )
-
+      else
         message = "#{self.class.name} error creating SF lead! #{lead.inspect}; User: #{user.id}; Error: #{lead.errors.full_messages}"
+
+        Sentry.capture_message(message)
 
         SecurityLog.create!(
           user: user,
@@ -127,7 +119,6 @@ module Newflow
             message: message
           }
         )
-        Sentry.capture_message(message)
       end
 
       outputs.user = user
