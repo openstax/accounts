@@ -430,10 +430,10 @@ end
 def complete_terms_screens(without_privacy_policy: false)
 
   check 'agreement_i_agree'
-  expect(page).to have_content('Terms of Use')
+  expect(page).to have_content('To continue, please review and agree to the following site terms')
   click_button (t :"terms.pose.agree")
   unless without_privacy_policy
-    expect(page).to have_content('Privacy Policy')
+    expect(page).to have_content('To continue, please review and agree to the following site terms')
     check 'agreement_i_agree'
     click_button (t :"terms.pose.agree")
   end

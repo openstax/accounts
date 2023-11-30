@@ -290,6 +290,18 @@ input.has-error {
     color: var(--input-error-message-color);
 }
 
+.center {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.policy {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 40px;
+    background-color: #f5f5f5;
+}
+
 // per-page styles
 .cs-form-complete-profile {
     header.page-header {
