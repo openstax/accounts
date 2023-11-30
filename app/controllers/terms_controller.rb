@@ -1,4 +1,6 @@
 class TermsController < ApplicationController
+  layout 'newflow_layout'
+
   # Allow us to sign terms in an iframe
   # Unlikely that attackers would want to trick our browsers into signing terms
   skip_forgery_protection only: :agree
