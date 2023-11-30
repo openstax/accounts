@@ -149,6 +149,5 @@ module Newflow
       adoption_json['Books'] = books_json
       adoption_json.to_json
     end
-
   end
 end
