@@ -118,7 +118,6 @@ class UpdateUserContactInfo
       user.adopter_status = sf_contact.adoption_status
       user.is_kip = sf_school&.is_kip || sf_school&.is_child_of_kip
       user.grant_tutor_access = sf_contact.grant_tutor_access
-      user.is_b_r_i_user = sf_contact.b_r_i_marketing
 
       if school.nil? && !sf_school.nil?
         SecurityLog.create!(
