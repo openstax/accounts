@@ -12,7 +12,6 @@ module Newflow
     before_action :known_signup_role_redirect, only: :login_form
     before_action :cache_alternate_signup_url, only: :login_form
     before_action :redirect_to_signup_if_go_param_present, only: :login_form
-    before_action :redirect_to_privacy_pose_if_not_signed, if: -> { signed_in? }, only: :login_form
     before_action :did_sign_privacy_notice, if: -> { signed_in? }, only: :login_form
     before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
