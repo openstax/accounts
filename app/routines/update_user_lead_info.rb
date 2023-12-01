@@ -15,7 +15,16 @@ class UpdateUserLeadInfo
         lead = leads[user.uuid]
 
         unless lead.nil?
+          previous_lead_id = user.salesforce_lead_id
           user.salesforce_lead_id = lead.id # it might change in SF lead merging
+
+          if lead.id != previous_lead_id
+            SecurityLog.create!(
+              user:       user,
+              event_type: :user_lead_id_updated_from_salesforce,
+              event_data: { previous_lead_id: previous_lead_id, new_lead_id: lead.id }
+            )
+          end
 
           old_fv_status = user.faculty_status
           user.faculty_status = case lead.verification_status

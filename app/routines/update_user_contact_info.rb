@@ -51,7 +51,7 @@ class UpdateUserContactInfo
         SecurityLog.create!(
           user: user,
           event_type: :user_contact_id_updated_from_salesforce,
-          event_data: { contact_id: sf_contact.id }
+          event_data: { previous_contact_id: previous_contact_id,new_contact_id: sf_contact.id }
         )
       end
 
