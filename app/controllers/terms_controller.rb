@@ -45,8 +45,13 @@ class TermsController < ApplicationController
   def agree
     handle_with(
       TermsAgree, complete: -> do
-        params[:r].present? && Host.trusted?(params[:r]) ?
-          redirect_to(params[:r]) : fine_print_return
+        if params[:r].present? && Host.trusted?(params[:r])
+            redirect_to(params[:r])
+        elsif !session[:return_to].nil? && Host.trusted?(session[:return_to])
+          redirect_to(session[:return_to])
+        else
+          fine_print_return
+        end
       end
     )
   end

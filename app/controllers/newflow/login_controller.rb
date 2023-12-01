@@ -6,14 +6,13 @@ module Newflow
     GO_TO_STUDENT_SIGNUP = 'student_signup'
     GO_TO_SIGNUP = 'signup'
 
-    prepend_before_action :did_sign_privacy_notice, if: -> { signed_in? }, only: :login_form
     fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile_newflow
 
     before_action :cache_client_app, only: :login_form
     before_action :known_signup_role_redirect, only: :login_form
     before_action :cache_alternate_signup_url, only: :login_form
     before_action :redirect_to_signup_if_go_param_present, only: :login_form
-    before_action :redirect_back, if: -> { signed_in? }, only: :login_form
+    before_action :redirect_back, if: -> { signed_in? && did_sign_recent_privacy_notice? }, only: :login_form
 
     def login
       handle_with(
@@ -37,7 +36,7 @@ module Newflow
           sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
 
           if current_user.student? || !current_user.is_newflow? || (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login'))
-            redirect_back # back to `r`edirect parameter. See `before_action :save_redirect`.
+            redirect_back
           else
             redirect_to(decorated_user.next_step)
           end
@@ -88,11 +87,12 @@ module Newflow
       set_alternate_signup_url(params[:signup_at])
     end
 
-    def did_sign_privacy_notice
+    def did_sign_recent_privacy_notice?
       contract = FinePrint.get_contract(:privacy_policy)
       unless contract.signed_by?(current_user)
-        redirect_to pose_term_url(name: contract.name, params: request.params)
+        false
       end
+      true
     end
   end
 end
