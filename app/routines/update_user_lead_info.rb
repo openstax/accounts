@@ -4,12 +4,15 @@ class UpdateUserLeadInfo
   def self.call
     new.call
   end
-
   def call
-    loop do
-      users = User.where(salesforce_contact_id: nil).where.not(salesforce_lead_id: nil, role: :student, faculty_status: :rejected_faculty).limit(BATCH_SIZE)
+    users = User.where(salesforce_contact_id: nil)
+                .where.not(salesforce_lead_id: nil, role: :student, faculty_status: :rejected_faculty)
 
-      leads = OpenStax::Salesforce::Remote::Lead.select(:id, :accounts_uuid, :verification_status).where(accounts_uuid: users.map(&:uuid)).to_a.index_by(&:accounts_uuid)
+    users.find_in_batches(batch_size: BATCH_SIZE) do |users|
+      leads = OpenStax::Salesforce::Remote::Lead.select(:id, :accounts_uuid, :verification_status)
+                                                .where(accounts_uuid: users.map(&:uuid))
+                                                .to_a
+                                                .index_by(&:accounts_uuid)
 
       users.map do |user|
         lead = leads[user.uuid]
@@ -63,8 +66,6 @@ class UpdateUserLeadInfo
           user.save if user.changed?
         end
       end
-
-      break if users.length < BATCH_SIZE
     end
   end
 end
