@@ -105,7 +105,23 @@ module Newflow
 
       if lead.save
         user.salesforce_lead_id = lead.id
-        user.save
+        if user.save
+          SecurityLog.create!(
+            user: user,
+            event_type: :created_salesforce_lead,
+            event_data: { lead_id: lead.id }
+          )
+        else
+          SecurityLog.create!(
+            user: user,
+            event_type: :educator_sign_up_failed,
+            event_data: {
+              message: "saving the user's lead id FAILED",
+              lead_id: lead.id
+            }
+          )
+          Sentry.capture_message("User #{user.id} was not successfully saved with lead #{lead.id}")
+        end
         outputs.lead = lead
       else
         message = "#{self.class.name} error creating SF lead! #{lead.inspect}; User: #{user.id}; Error: #{lead.errors.full_messages}"
