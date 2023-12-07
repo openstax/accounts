@@ -30,7 +30,6 @@ class User < ApplicationRecord
     PENDING_FACULTY = 'pending_faculty',
     CONFIRMED_FACULTY = 'confirmed_faculty',
     REJECTED_FACULTY = 'rejected_faculty',
-    # TODO: need to implement below this line - requires thorough application code checking
     PENDING_SHEERID = 'pending_sheerid',
     REJECTED_BY_SHEERID = 'rejected_by_sheerid',
     INCOMPLETE_SIGNUP = 'incomplete_signup'

@@ -44,13 +44,14 @@ class UpdateUserContactInfo
       sf_contact = contacts_by_uuid[user.uuid]
       school = schools_by_salesforce_id[sf_contact.school_id]
 
+      previous_contact_id = user.salesforce_contact_id
       user.salesforce_contact_id = sf_contact.id
 
-      if user.salesforce_contact_id.changed?
+      if sf_contact.id != previous_contact_id
         SecurityLog.create!(
           user: user,
           event_type: :user_contact_id_updated_from_salesforce,
-          event_data: { contact_id: sf_contact.id }
+          event_data: { previous_contact_id: previous_contact_id,new_contact_id: sf_contact.id }
         )
       end
 
@@ -117,7 +118,6 @@ class UpdateUserContactInfo
       user.adopter_status = sf_contact.adoption_status
       user.is_kip = sf_school&.is_kip || sf_school&.is_child_of_kip
       user.grant_tutor_access = sf_contact.grant_tutor_access
-      user.is_b_r_i_user = sf_contact.b_r_i_marketing
 
       if school.nil? && !sf_school.nil?
         SecurityLog.create!(

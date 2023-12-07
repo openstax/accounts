@@ -36,13 +36,17 @@ data_sources:
         5: "Designer",
         6: "Other",
         7: "Adjunct",
-        8: "Homeschool"
+        8: "Homeschool",
+        9: "Researcher"
       }
       faculty_status: {
         0: "No Info",
         1: "Pending",
         2: "Confirmed",
-        3: "Rejected"
+        3: "Rejected",
+        4: "Pending SheerID",
+        5: "Rejected by SheerID",
+        6: "Incomplete Signup"
       }
       school_type: {
         0: "Unknown",
@@ -77,13 +81,17 @@ data_sources:
         5: "Designer",
         6: "Other",
         7: "Adjunct",
-        8: "Homeschool"
+        8: "Homeschool",
+        9: "Researcher"
       }
       faculty_status: {
         0: "No Info",
         1: "Pending",
         2: "Confirmed",
-        3: "Rejected"
+        3: "Rejected",
+        4: "Pending SheerID",
+        5: "Rejected by SheerID",
+        6: "Incomplete Signup"
       }
       school_type: {
         0: "Unknown",
@@ -135,4 +143,3 @@ check_schedules:
 # note: with trend, time series are sent to https://trendapi.org
 # forecasting: prophet / trend
 # forecasting: prophet
-
