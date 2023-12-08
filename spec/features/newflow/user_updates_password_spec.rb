@@ -40,6 +40,7 @@ feature 'User updates password on profile screen', js: true do
   end
 
   scenario "changes existing" do
+    visit profile_newflow_path
     find('[data-provider=identity] .edit--newflow').click
     newflow_complete_add_password_screen
     expect(page).to have_no_missing_translations
