@@ -11,10 +11,10 @@ feature 'Add social auth', js: true do
     other_user = create_user('other_user')
     create_email_address_for(other_user, email_value)
 
-    user = create_user('user')
+    user = create_user('user', 'password', terms_agree: true)
     user.update(role: User::STUDENT_ROLE)
     newflow_log_in_user('user', 'password')
-
+    visit profile_newflow_path
     expect_newflow_profile_page
 
     click_link (t :"legacy.users.edit.enable_other_sign_in_options")
@@ -31,12 +31,12 @@ feature 'Add social auth', js: true do
   end
 
   scenario "email collides with the current user's verified email" do
-    user = create_user 'user'
+    user = create_user('user', 'password', terms_agree: true)
     user.update(role: User::STUDENT_ROLE)
     create_email_address_for(user, email_value)
 
     newflow_log_in_user('user', 'password')
-
+    visit profile_newflow_path
     expect_newflow_profile_page
 
     click_link (t :"legacy.users.edit.enable_other_sign_in_options")
@@ -55,10 +55,10 @@ feature 'Add social auth', js: true do
   scenario "email collides with existing user's UNverified email" do
     create_email_address_for(create_user('other_user'), email_value, 'token')
 
-    user = create_user 'user'
+    user = create_user('user', 'password', terms_agree: true)
     user.update(role: User::STUDENT_ROLE)
     newflow_log_in_user('user', 'password')
-
+    visit profile_newflow_path
     expect_newflow_profile_page
 
     click_link (t :"legacy.users.edit.enable_other_sign_in_options")

@@ -4,7 +4,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
   before(:each) do
     turn_on_student_feature_flag
 
-    @user = create_user 'user'
+    @user = create_user('user', 'password', terms_agreed: true)
     @user.update!(role: User.roles[User::STUDENT_ROLE])
     @login_token = generate_login_token_for 'user'
 
@@ -95,7 +95,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     expect_newflow_profile_page
 
     click_link (t :"legacy.users.edit.sign_out")
-    visit '/'
+    visit login_path
     expect(page).to have_current_path newflow_login_path
 
     # try logging in with the old password
@@ -104,7 +104,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
 
     # try logging in with the new password
     newflow_log_in_user('user', 'newpassword')
-
+    visit profile_newflow_path
     expect_newflow_profile_page
     expect(page).to have_no_missing_translations
     expect(page).to have_content(@user.full_name)

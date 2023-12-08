@@ -10,7 +10,7 @@ feature 'User adds password', js: true do
   it_behaves_like 'adding and resetting password from profile', :add
 
   scenario 'without identity – form to create password is rendered' do
-    @user = create_user 'user'
+    @user = create_user('user', 'password', terms_agreed: true)
     @login_token = generate_login_token_for 'user'
     @user.identity.destroy
     visit change_password_form_path(token: @login_token)

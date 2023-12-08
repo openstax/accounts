@@ -34,7 +34,7 @@ module Newflow
           sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
 
           if current_user.student? || !current_user.is_newflow? || (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login'))
-            redirect_back(fallback_location: profile_newflow_path) # back to `r`edirect parameter.
+            did_user_sign_recent_privacy_notice? ? redirect_back : redirect_to_sign_privacy_notice
           else
             redirect_to(decorated_user.next_step)
           end
