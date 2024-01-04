@@ -172,7 +172,7 @@ class User < ApplicationRecord
   end
 
   def most_accurate_school_name
-    return school.name if school.present?
+    return school.name if school.present? && school.name != 'Find Me A Home'
 
     return SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[1] \
       if sheerid_reported_school.present?

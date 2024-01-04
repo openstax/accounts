@@ -99,7 +99,7 @@ module Newflow
           end
 
           if user.school.nil? && !signup_params.school_name.blank?
-            user.school = School.fuzzy_search name
+            user.school = School.fuzzy_search signup_params.school_name
             user.save
           end
         end
