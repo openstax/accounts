@@ -59,7 +59,7 @@ jobs:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
         run: |
-          gem install bundler
+          gem install bundler -v '2.4.22'
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
           bundle exec rake db:create db:schema:load db:seed --trace
