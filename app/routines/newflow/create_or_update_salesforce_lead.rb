@@ -45,8 +45,10 @@ module Newflow
         adoption_json = build_book_adoption_json_for_salesforce(user)
       end
 
-      # The user has not finished signing up
-      user.faculty_status = User::INCOMPLETE_SIGNUP unless user.is_profile_complete?
+      # The user has not finished signing up, check for confirmed faculty if they were verified by sheerid
+      if !user.is_profile_complete? && !user.faculty_status.include(:confirmed_faculty, :pending_sheerid, :rejected_by_sheerid)
+        user.faculty_status = :incomplete_signup
+      end
 
 
       if user.salesforce_lead_id
