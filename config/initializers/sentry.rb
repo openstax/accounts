@@ -10,6 +10,9 @@ Sentry.init do |config|
   # Send POST data and cookies to Sentry
   config.send_default_pii = true
 
+  # Don't send transaction data to Sentry
+  config.traces_sample_rate = 0.0
+
   # Reduce the amount of logging from Sentry
   config.logger = Sentry::Logger.new(STDOUT)
   config.logger.level = Logger::ERROR
