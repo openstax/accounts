@@ -46,7 +46,7 @@ module Newflow
       end
 
       # The user has not finished signing up, check for confirmed faculty if they were verified by sheerid
-      if !user.is_profile_complete? && !user.faculty_status.include(:confirmed_faculty, :pending_sheerid, :rejected_by_sheerid)
+      if !user.is_profile_complete? && !user.faculty_status.include?(:confirmed_faculty, :pending_sheerid, :rejected_by_sheerid)
         user.faculty_status = :incomplete_signup
       end
 
