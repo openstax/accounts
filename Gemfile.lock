@@ -191,7 +191,7 @@ GEM
       compass (~> 1.0.0)
       sass-rails (< 5.1)
       sprockets (< 4.0)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     crack (0.4.5)
       rexml
     crass (1.0.6)
@@ -218,7 +218,7 @@ GEM
     diff-lcs (1.4.4)
     diffy (3.4.2)
     docile (1.4.0)
-    doorkeeper (5.1.2)
+    doorkeeper (5.6.6)
       railties (>= 5)
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
@@ -411,7 +411,7 @@ GEM
     mini_portile2 (2.8.5)
     mini_racer (0.6.2)
       libv8-node (~> 16.10.0.0)
-    minitest (5.20.0)
+    minitest (5.21.2)
     msgpack (1.5.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
@@ -427,12 +427,12 @@ GEM
     net-smtp (0.4.0)
       net-protocol
     nio4r (2.6.1)
-    nokogiri (1.15.5)
+    nokogiri (1.16.0)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.15.5-x86_64-darwin)
+    nokogiri (1.16.0-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.15.5-x86_64-linux)
+    nokogiri (1.16.0-x86_64-linux)
       racc (~> 1.4)
     notiffany (0.1.0)
       nenv (~> 0.1)
@@ -797,7 +797,7 @@ DEPENDENCIES
   delayed_job_active_record
   delayed_job_heartbeat_plugin
   delayed_job_worker_pool
-  doorkeeper (~> 5.1.0)
+  doorkeeper (~> 5.6.6)
   dotenv-rails
   dry-validation (= 0.12.3)
   error_page_assets
