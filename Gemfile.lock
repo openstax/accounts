@@ -191,7 +191,7 @@ GEM
       compass (~> 1.0.0)
       sass-rails (< 5.1)
       sprockets (< 4.0)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     crack (0.4.5)
       rexml
     crass (1.0.6)
@@ -411,22 +411,22 @@ GEM
     mini_portile2 (2.8.5)
     mini_racer (0.6.2)
       libv8-node (~> 16.10.0.0)
-    minitest (5.20.0)
+    minitest (5.21.2)
     msgpack (1.5.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.3.0)
     nenv (0.3.0)
-    net-imap (0.4.6)
+    net-imap (0.4.9.1)
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
     net-protocol (0.2.2)
       timeout
-    net-smtp (0.4.0)
+    net-smtp (0.4.0.1)
       net-protocol
-    nio4r (2.6.1)
+    nio4r (2.7.0)
     nokogiri (1.15.5)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
@@ -487,7 +487,7 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.2.0)
       rails (>= 3.1, < 7.0)
-    openstax_salesforce (7.6.1)
+    openstax_salesforce (7.6.2)
       openstax_active_force
       rails (>= 5.0, < 7.0)
       restforce
