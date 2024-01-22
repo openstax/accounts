@@ -53,6 +53,7 @@ module Newflow
           user.faculty_status = sheerid_response.current_step_to_faculty_status
         end
       else
+        # User has not completed their profile
         user.faculty_status = :incomplete_signup
       end
 
