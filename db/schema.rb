@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_04_175741) do
+ActiveRecord::Schema.define(version: 2024_01_23_173834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -348,19 +348,6 @@ ActiveRecord::Schema.define(version: 2023_10_04_175741) do
     t.index ["contact_info_kind"], name: "index_pre_auth_states_on_contact_info_kind"
   end
 
-  create_table "push_topics", force: :cascade do |t|
-    t.string "topic_salesforce_id"
-    t.string "topic_name"
-  end
-
-  create_table "salesforce_streaming_replays", force: :cascade do |t|
-    t.bigint "push_topics_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "replay_id"
-    t.index ["push_topics_id"], name: "index_salesforce_streaming_replays_on_push_topics_id"
-  end
-
   create_table "schools", force: :cascade do |t|
     t.string "salesforce_id", null: false
     t.string "name", null: false
@@ -502,7 +489,6 @@ ActiveRecord::Schema.define(version: 2023_10_04_175741) do
   add_foreign_key "external_ids", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "salesforce_streaming_replays", "push_topics", column: "push_topics_id"
   add_foreign_key "users", "oauth_applications", column: "source_application_id"
   add_foreign_key "users", "schools"
 end
