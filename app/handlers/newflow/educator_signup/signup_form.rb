@@ -35,7 +35,7 @@ module Newflow
       end
 
       def required_params
-        @required_params ||= [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
+        @required_params ||= [:email, :first_name, :last_name, :password, :terms_accepted]
       end
 
       protected #################
