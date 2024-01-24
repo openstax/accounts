@@ -92,7 +92,7 @@ module Newflow
         end
 
         context 'required params' do
-          subject(:required_params){ [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted] }
+          subject(:required_params){ [:email, :first_name, :last_name, :password, :terms_accepted] }
 
           it 'responds to required_params' do
             expect(described_class.new).to respond_to(:required_params)
