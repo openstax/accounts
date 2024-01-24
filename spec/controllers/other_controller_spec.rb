@@ -26,8 +26,17 @@ RSpec.describe OtherController, type: :controller do
         end
       end
 
-      context 'when profile is not complete' do
+      context 'when have not completed verification' do
         before { user.update!(is_profile_complete: false) }
+
+        it 'redirects to step 3 — complete SheerID' do
+          get(:profile_newflow)
+          expect(response).to redirect_to(educator_sheerid_form_path)
+        end
+      end
+
+      context 'when profile is not complete and not SheerID eligible/skipped' do
+        before { user.update!(is_profile_complete: false, is_sheerid_unviable: true) }
 
         it 'redirects to step 4 — complete profile form' do
           get(:profile_newflow)

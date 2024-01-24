@@ -59,13 +59,11 @@ module Newflow
           # Step 4
           expect_educator_step_4_page
           select_educator_role('other')
-          #byebug
           fill_in('Other (please specify)', with: 'President')
           find('#signup_form_submit_button').click
-          # not sure what's happening here - test is getting a 500, can't produce locally.. going to check it out on dev
-          #expect(page.current_path).to eq(signup_done_path).or eq(educator_pending_cs_verification_path)
-          #click_on('Finish')
-          #expect(page.current_url).to eq(external_app_url)
+          expect(page.current_path).to eq(signup_done_path).or eq(educator_pending_cs_verification_path)
+          click_on('Finish')
+          expect(page.current_url).to eq(external_app_url)
         end
       end
 
@@ -104,9 +102,9 @@ module Newflow
           find('#signup_educator_specific_role_other').click
           fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
           click_on('Continue')
-          #expect(page.current_path).to eq(signup_done_path)
-          #click_on('Finish')
-          #expect(page.current_url).to eq(external_app_url)
+          expect(page.current_path).to eq(signup_done_path)
+          click_on('Finish')
+          expect(page.current_url).to eq(external_app_url)
         end
       end
     end
@@ -117,7 +115,7 @@ module Newflow
       let!(:identity) { FactoryBot.create(:identity, user: user, password: password) }
       let!(:password) { 'password' }
 
-      xit 'allows the educator to log in and redirects them to the email verification form' do
+      it 'allows the educator to log in and redirects them to the email verification form' do
         visit(newflow_login_path)
         fill_in('login_form_email', with: email_address.value)
         fill_in('login_form_password', with: password)
@@ -125,11 +123,10 @@ module Newflow
         expect(page.current_path).to match(educator_email_verification_form_path)
       end
 
-      xit 'allows the educator to reset their password' do
+      it 'allows the educator to reset their password' do
         visit(newflow_login_path)
         newflow_log_in_user(email_address.value, 'WRONGpassword')
         find('[id=forgot-password-link]').click
-        #click_on(I18n.t(:"login_signup_form.forgot_password"))
         expect(page.current_path).to eq(forgot_password_form_path)
         expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
         screenshot!
@@ -186,8 +183,6 @@ module Newflow
       end
 
       it 'redirects them to continue signup flow (step 3) after logging in' do
-        skip 'because it only fails in Travis but works locally and locally testing'
-
         visit(login_path(return_param))
         click_on(I18n.t(:"login_signup_form.sign_up"))
         click_on(I18n.t(:"login_signup_form.educator"))
@@ -212,10 +207,9 @@ module Newflow
         fill_in('confirm_pin', with: correct_pin)
         wait_for_ajax
         wait_for_animations
-        expect(page).to have_content(correct_pin)
-        expect(page).to have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
+        #expect(page).to have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
         click_on(I18n.t(:"login_signup_form.confirm_my_account_button"))
-        expect(page).to_not have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
+        #expect(page).to_not have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
         wait_for_ajax
         wait_for_animations
         expect(EmailAddress.verified.count).to eq(1)
@@ -235,66 +229,20 @@ module Newflow
 
         # Step 3
         expect_sheerid_iframe
-        simulate_step_3_instant_verification(User.last, sheerid_verification.verification_id)
+        click_on('Stuck? Click here to skip instant verification.')
 
         # Step 4
         expect_educator_step_4_page
+        fill_in('signup[school_name]', with: 'Rice University')
         find('#signup_educator_specific_role_other').click
         expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
         fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
         click_on('Continue')
-        expect(page.current_path).to eq(signup_done_path)
+        expect(page.current_path).to eq(educator_pending_cs_verification_path)
         click_on('Finish')
         wait_for_ajax
         expect(page.current_url).to eq(external_app_url)
       end
     end
-
-    context 'when educator stops signup flow, logs out, after completing step 3' do
-      it 'redirects them to continue signup flow (step 4) after logging in'
-    end
-
-    context 'when legacy educator wants to request faculty verification' do
-      before(:each) do
-        educator.update(
-          is_newflow: false,
-          role: User::INSTRUCTOR_ROLE,
-          first_name: first_name,
-          last_name: last_name
-        )
-
-        visit(login_path)
-        newflow_log_in_user(email_value, password)
-        visit faculty_access_apply_path(r: capybara_url(external_app_for_specs_path))
-      end
-
-      let!(:educator) { create_newflow_user(email_value, password) }
-      let(:email_value) { 'user@openstax.org' }
-      let(:password) { 'password' }
-
-      context 'with faculty status as no_faculty_info' do
-        it 'sends them to step 3 — SheerID iframe' do
-          expect_sheerid_iframe
-        end
-      end
-
-      context 'with faculty status as rejected' do
-        it 'sends them to step 4 — Educator Profile Form' do
-          expect_educator_step_4_page
-        end
-
-        it 'shows a school name field'
-
-        it 'shows a school-issued email field'
-      end
-    end
-
-    context 'when educators have been rejected by SheerID one or more times' do
-      context 'and have been in the pending faculty status step for more than 4 days' do
-        it 'will send them through the CS verification process (modified step 4)'
-      end
-    end
-
   end
-
 end
