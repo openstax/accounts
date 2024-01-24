@@ -18,5 +18,12 @@
         </form>
 
     <% end %>
+    <br><br>
+    <div>
+      <%= link_to "Stuck? Click here to skip instant verification.",
+                educator_profile_form_url(:school => 'unknown'),
+                class: 'btn small',
+                style: 'background-color: #002469; color: #fff; width: 100%' %>
+    </div>
   </div>
 </div>
