@@ -182,10 +182,6 @@ gem 'oj_mimic_json'
 # CORS for local testing/dev
 gem 'rack-cors'
 
-# Salesforce streaming API
-gem 'cookiejar', git: 'https://github.com/MissionCapital/cookiejar.git'
-gem 'faye', '0.8.9'
-
 gem 'blazer'
 
 group :development, :test do

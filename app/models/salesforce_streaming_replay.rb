@@ -1,2 +1,0 @@
-class SalesforceStreamingReplay < ApplicationRecord
-end
