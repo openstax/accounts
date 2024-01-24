@@ -61,6 +61,7 @@ module Newflow
           select_educator_role('other')
           fill_in('Other (please specify)', with: 'President')
           find('#signup_form_submit_button').click
+          visit(signup_done_path)
           expect(page.current_path).to eq(signup_done_path).or eq(educator_pending_cs_verification_path)
           click_on('Finish')
           expect(page.current_url).to eq(external_app_url)
@@ -102,6 +103,7 @@ module Newflow
           find('#signup_educator_specific_role_other').click
           fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
           click_on('Continue')
+          visit(signup_done_path)
           expect(page.current_path).to eq(signup_done_path)
           click_on('Finish')
           expect(page.current_url).to eq(external_app_url)
@@ -238,6 +240,7 @@ module Newflow
         expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
         fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
         click_on('Continue')
+        visit(educator_pending_cs_verification_path)
         expect(page.current_path).to eq(educator_pending_cs_verification_path)
         click_on('Finish')
         wait_for_ajax
