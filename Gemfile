@@ -81,7 +81,8 @@ gem 'openstax_rescue_from'
 
 # Sentry integration
 gem 'sentry-ruby'
-gem "sentry-rails"
+gem 'sentry-rails'
+gem 'sentry-delayed_job'
 
 # Background job status store
 gem 'jobba'

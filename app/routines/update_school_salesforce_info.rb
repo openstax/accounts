@@ -23,6 +23,7 @@ class UpdateSchoolSalesforceInfo
   end
 
   def call
+    check_in_id = Sentry.capture_check_in('update-school-salesforce', :in_progress)
     log('Starting UpdateSchoolSalesforceInfo')
 
     # Check if any Schools that have 0 users have been deleted from Salesforce and remove them
@@ -80,5 +81,6 @@ class UpdateSchoolSalesforceInfo
     end
 
     log("Finished updating #{schools_updated} schools")
+    Sentry.capture_check_in('update-school-salesforce', :ok, check_in_id: check_in_id)
   end
 end

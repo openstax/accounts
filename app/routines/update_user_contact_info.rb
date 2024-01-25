@@ -23,6 +23,7 @@ class UpdateUserContactInfo
   end
 
   def call
+    check_in_id = Sentry.capture_check_in('update-user-contact-info', :in_progress)
     log("Starting sync with Salesforce")
     contacts = salesforce_contacts
     log("#{contacts.count} contacts fetched from Salesforce")
@@ -136,6 +137,7 @@ class UpdateUserContactInfo
     log("Completed updating #{users_updated} users.")
     log("#{users_fv_status_changed} users had their faculty status updated.")
     log("#{users_without_cached_school} users had no cached school in accounts. This should update on the next sync (after UpdateSchoolSalesforceInfo runs) or it is missing in Salesforce.")
+    Sentry.capture_check_in('update-user-contact-info', :ok, check_in_id: check_in_id)
   end
 
   def salesforce_contacts

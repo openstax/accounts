@@ -81,6 +81,8 @@ module Newflow
           is_profile_complete: true,
           is_educator_pending_cs_verification: !@did_use_sheerid
         )
+        # If anything happens during lead creation, it's helpful for us to have this on the log.
+        SecurityLog.create!(user: user, event_type: :user_profile_complete, event_data: { books_used_details: books_used_details })
 
         if @is_on_cs_form
           SecurityLog.create!(

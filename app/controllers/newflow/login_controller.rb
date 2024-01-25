@@ -18,6 +18,7 @@ module Newflow
         success: lambda {
           clear_signup_state
           user = @handler_result.outputs.user
+          Sentry.set_user(id: user.id) if Rails.env.production?
 
           if user.unverified?
             save_unverified_user(user.id)
@@ -57,6 +58,7 @@ module Newflow
 
     def logout
       sign_out!
+      Sentry.set_user({}) if Rails.env.production?
       redirect_back(fallback_location: newflow_login_path)
     end
 
