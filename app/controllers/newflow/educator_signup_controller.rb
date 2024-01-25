@@ -180,9 +180,9 @@ module Newflow
 
     def exit_signup_if_steps_complete
       case true
-      when current_user.is_educator_pending_cs_verification? && !current_user.confirmed_faculty?
+      when current_user.is_educator_pending_cs_verification? && (!current_user.confirmed_faculty? || !current_user.rejected_faculty?)
         redirect_to(educator_pending_cs_verification_path)
-      when current_user.is_educator_pending_cs_verification? && current_user.confirmed_faculty?
+      when current_user.confirmed_faculty?
         redirect_back(fallback_location: profile_newflow_path)
       when action_name == 'educator_sheerid_form' && (current_user.step_3_complete? || current_user.is_sheerid_unviable?)
         redirect_to(educator_profile_form_path)
