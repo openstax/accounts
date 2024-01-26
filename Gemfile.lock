@@ -393,6 +393,8 @@ GEM
     multi_xml (0.6.0)
     multipart-post (2.3.0)
     nenv (0.3.0)
+    net-http (0.4.1)
+      uri
     net-imap (0.4.9.1)
       date
       net-protocol
@@ -710,6 +712,7 @@ GEM
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.6.0)
+    uri (0.13.0)
     vcr (3.0.3)
     web-console (3.7.0)
       actionview (>= 5.0)
@@ -798,6 +801,7 @@ DEPENDENCIES
   maruku
   meta_request
   mini_racer
+  net-http
   oj (~> 3.7.12)
   oj_mimic_json
   omniauth

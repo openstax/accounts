@@ -235,6 +235,7 @@ group :development, :test do
   gem 'rubocop-rspec'
 
   gem 'faraday', '~> 1.0.0'
+  gem 'net-http' # to fix deprecation warnings (see https://github.com/ruby/net-imap/issues/16#issuecomment-803086765)
 
   gem 'faraday_middleware', '~> 1.0.0'
 end
