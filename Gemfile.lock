@@ -653,8 +653,6 @@ GEM
     sassc (2.0.1)
       ffi (~> 1.9)
       rake
-    scout_apm (5.1.0)
-      parser
     sd_notify (0.1.1)
     selenium-webdriver (4.9.0)
       rexml (~> 3.2, >= 3.2.5)
@@ -836,7 +834,6 @@ DEPENDENCIES
   rubocop-rspec
   ruby-debug-ide
   sass-rails (~> 5.0)
-  scout_apm
   sd_notify
   selenium-webdriver
   sentry-rails

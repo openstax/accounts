@@ -1,7 +1,6 @@
 # Load the Rails application
 require_relative 'application'
 
-require 'scout_helper'
 require 'env_utilities'
 require 'token_maker'
 require 'markdown_wrapper'

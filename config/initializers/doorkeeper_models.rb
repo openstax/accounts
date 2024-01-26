@@ -38,7 +38,6 @@ Rails.application.config.to_prepare do
   Doorkeeper::TokensController.class_exec do
     alias_method :original_create, :create # before_action not available
     def create
-      ScoutHelper.ignore!(0.99)
       original_create
     end
   end
