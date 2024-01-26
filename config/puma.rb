@@ -86,9 +86,6 @@ preload_app! if ActiveModel::Type::Boolean.new.cast(ENV.fetch('PRELOAD_APP', fal
 #
 plugin :tmp_restart
 
-# Call GC.start and GC.compact before forking to try to reduce worker memory usage
-nakayoshi_fork
-
 # Adds a small delay before accepting requests if the worker (process) has threads already
 # processing other requests, to try to get idle workers to accept the request
 wait_for_less_busy_worker ENV.fetch('WAIT_FOR_LESS_BUSY_WORKERS', '0.005').to_f
