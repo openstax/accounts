@@ -22,7 +22,7 @@ OpenStax::RescueFrom.configure do |config|
     }
     extra.merge!(proxy.extras) if proxy.extras.is_a? Hash
 
-    Sentry.capture_exception(proxy.exception, extra: extra)
+    Sentry.capture_exception(proxy.exception)
   end
   config.notify_background_proc = ->(proxy) do
     extra = {
@@ -34,7 +34,7 @@ OpenStax::RescueFrom.configure do |config|
     }
     extra.merge!(proxy.extras) if proxy.extras.is_a? Hash
 
-    Sentry.capture_exception(proxy.exception, extra: extra)
+    Sentry.capture_exception(proxy.exception)
   end
 
   config.html_error_template_path = 'errors/any'
