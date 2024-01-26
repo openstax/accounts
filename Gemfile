@@ -16,7 +16,7 @@ gem 'bootsnap', require: false
 gem 'dotenv-rails'
 
 # Threaded application server
-gem 'puma'
+gem 'puma', '~> 5.6.0'
 
 # Prevent server memory from growing until OOM
 gem 'puma_worker_killer'
