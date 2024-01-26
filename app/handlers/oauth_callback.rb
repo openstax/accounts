@@ -81,7 +81,7 @@ class OauthCallback
     existing_auth_uid = Authentication.where(user_id: existing_email_owner_id, provider: @oauth_provider).pluck(:uid).first
     incoming_auth_uid = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).last&.uid
 
-    !existing_auth_uid != incoming_auth_uid
+    existing_auth_uid != incoming_auth_uid
   end
 
   def newflow_handle_while_logged_in(logged_in_user_id)
