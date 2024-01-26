@@ -97,7 +97,7 @@ module Newflow
         },
         failure: lambda {
           security_log :help_request_failed, :user
-          redirect_to :newflow_login
+          redirect_to :newflow_login_path
         }
       )
     end
