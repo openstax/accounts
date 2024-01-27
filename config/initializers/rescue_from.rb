@@ -11,10 +11,10 @@ OpenStax::RescueFrom.configure do |config|
 
   # Notify devs using sentry
   config.notify_proc = ->(proxy, controller) do
-    Sentry.capture_exception(proxy.exception, extra: extra)
+    Sentry.capture_exception(proxy.exception)
   end
   config.notify_background_proc = ->(proxy) do
-    Sentry.capture_exception(proxy.exception, extra: extra)
+    Sentry.capture_exception(proxy.exception,)
   end
 
   config.html_error_template_path = 'errors/any'
