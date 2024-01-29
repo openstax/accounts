@@ -494,7 +494,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     public_suffix (4.0.6)
-    puma (5.6.7)
+    puma (5.6.8)
       nio4r (~> 2.0)
     puma_worker_killer (0.3.1)
       get_process_mem (~> 0.2)
@@ -658,13 +658,13 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    sentry-rails (4.4.0)
-      railties (>= 5.0)
+    sentry-delayed_job (4.4.0)
       sentry-ruby-core (~> 4.4.0.pre.beta)
-    sentry-ruby (4.4.2)
+    sentry-rails (5.16.1)
+      railties (>= 5.0)
+      sentry-ruby (~> 5.16.1)
+    sentry-ruby (5.16.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
-      faraday (>= 1.0)
-      sentry-ruby-core (= 4.4.2)
     sentry-ruby-core (4.4.2)
       concurrent-ruby
       faraday
@@ -816,7 +816,7 @@ DEPENDENCIES
   pattern-library!
   pg
   premailer-rails
-  puma
+  puma (~> 5.6.0)
   puma_worker_killer
   rack-cors
   rails (= 5.2.4.4)
@@ -836,6 +836,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   sd_notify
   selenium-webdriver
+  sentry-delayed_job
   sentry-rails
   sentry-ruby
   shoulda-matchers (~> 3.1)
