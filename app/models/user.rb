@@ -318,6 +318,22 @@ class User < ApplicationRecord
     faculty_status == REJECTED_FACULTY
   end
 
+  def pending_sheerid?
+    faculty_status == PENDING_SHEERID
+  end
+
+  def rejected_by_sheerid?
+    faculty_status == REJECTED_BY_SHEERID
+  end
+
+  def incomplete_signup?
+    faculty_status == INCOMPLETE_SIGNUP
+  end
+
+  def in_pending_faculty_state?
+    pending_faculty? || pending_sheerid? || rejected_by_sheerid? || incomplete_signup?
+  end
+
   def name
     full_name.present? ? full_name : username
   end

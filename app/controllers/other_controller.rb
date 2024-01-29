@@ -27,10 +27,10 @@ class OtherController < Newflow::BaseController
   def ensure_complete_educator_signup
     return if current_user.student?
 
-    if decorated_user.newflow_edu_incomplete_step_3?
+    if decorated_user.incomplete_step_3?
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification. Redirecting.')
       redirect_to(educator_sheerid_form_path)
-    elsif decorated_user.newflow_edu_incomplete_step_4?
+    elsif decorated_user.incomplete_step_4?
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete instructor profile. Redirecting.')
       redirect_to(educator_profile_form_path)
     end
