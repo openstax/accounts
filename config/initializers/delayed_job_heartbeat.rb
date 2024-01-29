@@ -2,11 +2,7 @@ Delayed::Heartbeat.configure do |configuration|
   configuration.heartbeat_interval_seconds = 30
   configuration.heartbeat_timeout_seconds = 60
   configuration.on_worker_termination = ->(worker_model, exception) do
-    Raven.capture_exception(
-      exception,
-      logger: 'delayed_job_heartbeat_plugin',
-      extra: { delayed_worker: worker_model.attributes }
-    )
+    Sentry.capture_exception(exception)
   end
   configuration.worker_version = Rails.application.secrets.release_version
 end
