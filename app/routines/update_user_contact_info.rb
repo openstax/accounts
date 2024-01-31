@@ -124,6 +124,10 @@ class UpdateUserContactInfo
         updated_school = School.find_by(salesforce_id: sf_school.id)
         if updated_school
           user.school = updated_school
+          updated_school.users do |other_users_at_school|
+            other_users_at_school.school = updated_school
+            other_users_at_school.save!
+          end
         else
           SecurityLog.create!(
             user: user,
