@@ -7,10 +7,10 @@ env:
   HEADLESS: true
 
 on:
-  workflow_runs:
-    workflows: ["Migrations"]
-    types:
-      - completed
+  pull_request:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '0 0 * * 0' # weekly
 
