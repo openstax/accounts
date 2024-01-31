@@ -121,14 +121,10 @@ class UpdateUserContactInfo
       user.grant_tutor_access = sf_contact.grant_tutor_access
 
       if school.nil? && !sf_school.nil?
+        # The school might have merged in Salesforce and now has a new ID.
+        # Check if it exists in the Accounts DB. Update all user's with this school id.
         updated_school = School.find_by(salesforce_id: sf_school.id)
-        if updated_school
-          user.school = updated_school
-          updated_school.users do |other_users_at_school|
-            other_users_at_school.school = updated_school
-            other_users_at_school.save!
-          end
-        else
+        if updated_school.nil?
           SecurityLog.create!(
             user: user,
             event_type: :attempted_to_add_school_not_cached_yet,
@@ -136,6 +132,12 @@ class UpdateUserContactInfo
           )
           users_without_cached_school += 1
           Sentry.capture_message("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
+        else
+          user.school = updated_school
+          updated_school.users do |other_user_at_school|
+            other_user_at_school.school = updated_school
+            other_user_at_school.save!
+          end
         end
       else
         user.school = school
