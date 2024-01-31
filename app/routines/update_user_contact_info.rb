@@ -45,6 +45,9 @@ class UpdateUserContactInfo
       sf_contact = contacts_by_uuid[user.uuid]
       school = schools_by_salesforce_id[sf_contact.school_id]
 
+      # Mark the school as stale if it's not in the database
+      school.stale_in_salesforce = school.nil?
+
       previous_contact_id = user.salesforce_contact_id
       user.salesforce_contact_id = sf_contact.id
 

@@ -41,6 +41,24 @@ class UpdateSchoolSalesforceInfo
       School.where(salesforce_id: deleted_salesforce_ids).delete_all
     end
 
+    # Loop through stale schools and update users associated with them to prevent sync issues
+    School.find_by(stale_in_salesforce: true) do |stale_school|
+      sf_school = OpenStax::Salesforce::Remote::School.find(school.salesforce_id)
+      unless sf_school.nil?
+        updated_school = School.find_or_create_by(salesforce_id: sf_school.id)
+        SF_TO_DB_CACHE_COLUMNS_MAP.each do |sf_column, db_column|
+          updated_school.public_send "#{db_column}=", sf_school.public_send(sf_column)
+        end
+        updated_school.save!
+
+        stale_school.users do |user|
+          user.update!(school: updated_school)
+        end
+        stale_school.destroy!
+      end
+    end
+
+
     # Go through all SF Schools and cache their information, if it changed
     schools_updated = 0
     last_id = nil
