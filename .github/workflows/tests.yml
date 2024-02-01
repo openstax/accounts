@@ -37,7 +37,6 @@ jobs:
       - name: Test
         run: |
           bundle install --jobs 4 --retry 3
-          bundle exec rake db:migrate
           bundle exec rake parallel:create parallel:load_schema parallel:seed --trace
           bundle exec rspec ./spec
       - uses: codecov/codecov-action@v2
