@@ -37,9 +37,9 @@
       <th>Last Name</th>
       <th>Faculty Status</th>
       <th>Role</th>
-      <th>School Type</th>
-      <th>KIP?</th>
-      <th>Grant Tutor Access?</th>
+      <th>School</th>
+      <th>Salesforce</th>
+      <th></th>
       <th></th>
     </tr>
     <% @handler_result.outputs[:items].each do |user| %>
@@ -52,11 +52,38 @@
         <td><%= link_to user.id, edit_admin_user_path(user), target: '_blank' %></td>
         <td><%= user.first_name || '---' %></td>
         <td><%= user.last_name || '---' %></td>
-        <td><%= user.faculty_status %></td>
-        <td><%= user.unknown_role? ? "Unknown" : user.role.capitalize %></td>
-        <td><%= user.school_type %></td>
-        <td><%= user.is_kip ? 'Yes' : 'No' %></td>
-        <td><%= user.grant_tutor_access ? 'Yes' : 'No' %></td>
+        <td><%= user.faculty_status.humanize %></td>
+        <td><%= user.school_type.humanize %></td>
+        <td>
+          <% if user.school %>
+            <% sf_id = user.school.salesforce_id %>
+            <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+            <% if instance_url.nil? %>
+              <%= sf_id %>
+            <% else %>
+              <%= link_to user.school.name, instance_url + "/" + sf_id, target: '_blank' %>
+            <% end %>
+          <% end %>
+        </td>
+        <td>
+          <% if !user.salesforce_contact_id.nil? %>
+            <% sf_id = user.salesforce_contact_id %>
+            <% sf_type = 'Contact' %>
+          <% elsif !user.salesforce_lead_id.nil? %>
+            <% sf_id = user.salesforce_lead_id%>
+            <% sf_type = 'Lead' %>
+          <% end %>
+
+          <% if !sf_id.nil? %>
+            <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+            <% if instance_url.nil? %>
+              <%= sf_id %>
+            <% else %>
+              <%= link_to sf_type, instance_url + "/" + sf_id, target: '_blank' %>
+            <% end %>
+          <% end %>
+        </td>
+        <td><%= link_to admin_security_log_path(search: { query: "user_id:#{user.id}" }) do %><i class="fa fa-history"></i><% end %></td>
         <td>
           <%= link_to become_admin_user_path(user),
                       method: :post,
@@ -67,15 +94,13 @@
       </tr>
       <tr class="<%= zebra %> details">
         <td></td>
-        <td colspan=6>
+        <td colspan=8>
           <div>
             <div style="float:right">
               <span class="created"><i>Created:</i> <%= user.created_at.in_time_zone('Central Time (US & Canada)') %></span>
               <br/>
               <span class="updated"><i>Updated:</i> <%= user.updated_at.in_time_zone('Central Time (US & Canada)') %></span>
             </div>
-
-            <span class="full-name"><%= user.full_name || '(no name)' %></span> |
 
             <% if user.is_administrator %>
               <span class="admin">Administrator</span> |
@@ -85,37 +110,8 @@
               <span class="test">Test User</span> |
             <% end %>
 
-            <% sf_id = user.salesforce_contact_id %>
-
-            <% if sf_id.present? %>
-              <span class="sf">
-                <i>Salesforce:</i>
-
-                <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
-                <% if instance_url.nil? %>
-                  <%= sf_id %>
-                <% else %>
-                  <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
-                <% end %>
-              </span> |
-            <% end %>
-
-            <% security_log_params = { query: "user_id:#{user.id}" } %>
-
-            <span class="security_log">
-              <%= link_to "Security Log", admin_security_log_path(search: security_log_params), target: '_blank' %>
-            </span> |
-
-            <span class="state">
-              <i>State:</i> <%= user.state %>
-            </span> |
-
             <span class="uuid">
               <i>UUID:</i> <%= user.uuid %>
-            </span>
-
-            <span class="support_identifier">
-              <i>Support Identifier:</i> <%= user.support_identifier || '(no support_identifier)' %>
             </span>
 
             <% if user.self_reported_school.present? %>
