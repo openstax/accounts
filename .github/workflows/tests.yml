@@ -32,6 +32,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
       - name: Test
         run: |
           bundle install --jobs 4 --retry 3

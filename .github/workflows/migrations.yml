@@ -42,6 +42,8 @@ jobs:
 
       # Install ruby
       - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
       # Create data to be migrated and revert to PR merge commit
       - name: Create data to be migrated
