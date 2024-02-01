@@ -15,18 +15,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
-      - uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-pr-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-pr-
+          bundler-cache: true
       - name: Build assets
         run: |
-          gem install bundler -v '2.4.22'
-          bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
           bundle exec rake assets:precompile
