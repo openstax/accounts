@@ -45,9 +45,6 @@ class UpdateUserContactInfo
       sf_contact = contacts_by_uuid[user.uuid]
       school = schools_by_salesforce_id[sf_contact.school_id]
 
-      # Mark the school as stale if it's not in the database, which is handled in UpdateSchoolSalesforceInfo
-      school.stale_in_salesforce = school.nil?
-
       previous_contact_id = user.salesforce_contact_id
       user.salesforce_contact_id = sf_contact.id
 
@@ -124,6 +121,8 @@ class UpdateUserContactInfo
       user.grant_tutor_access = sf_contact.grant_tutor_access
 
       if school.nil? && !sf_school.nil?
+        # Add the possible updated school id to the record, we check for this in UpdateSchoolSalesforceInfo
+        school.updated_salesforce_id = sf_school.id
         SecurityLog.create!(
           user: user,
           event_type: :attempted_to_add_school_not_cached_yet,
