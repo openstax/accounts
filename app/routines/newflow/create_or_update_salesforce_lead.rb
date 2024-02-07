@@ -115,7 +115,9 @@ module Newflow
       try
         save_lead(user, lead)
       except Restforce::ErrorCode::InsufficientAccessOnCrossReferenceEntity
+          Sentry.capture_message("Invalid school (#{user.school.salesforce_id}) for user (#{user.id})")
           UpdateSchoolSalesforceInfo.cleanup_merged_schools(user.school)
+          save_lead(user, lead)
 
       outputs.lead = lead
       outputs.user = user
