@@ -112,14 +112,24 @@ module Newflow
         event_data: { lead_data: lead }
       )
 
-      if lead.save
+      try
+        save_lead(user, lead)
+      except Restforce::ErrorCode::InsufficientAccessOnCrossReferenceEntity
+          UpdateSchoolSalesforceInfo.cleanup_merged_schools(user.school)
+
+      outputs.lead = lead
+      outputs.user = user
+    end
+
+    def save_lead(user, lead)
         user.salesforce_lead_id = lead.id
         if user.save
           SecurityLog.create!(
-            user: user,
+            user:       user,
             event_type: :created_salesforce_lead,
             event_data: { lead_id: lead.id.to_s }
           )
+          user
         else
           SecurityLog.create!(
             user: user,
@@ -130,23 +140,8 @@ module Newflow
             }
           )
           Sentry.capture_message("User #{user.id} was not successfully saved with lead #{lead.id}")
+          raise
         end
-        outputs.lead = lead
-      else
-        message = "#{self.class.name} error creating SF lead! #{lead.inspect}; User: #{user.id}; Error: #{lead.errors.full_messages}"
-
-        Sentry.capture_message(message)
-
-        SecurityLog.create!(
-          user: user,
-          event_type: :salesforce_error,
-          event_data: {
-            message: message
-          }
-        )
-      end
-
-      outputs.user = user
     end
 
     def build_book_adoption_json_for_salesforce(user)

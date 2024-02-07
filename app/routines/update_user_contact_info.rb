@@ -121,8 +121,6 @@ class UpdateUserContactInfo
       user.grant_tutor_access = sf_contact.grant_tutor_access
 
       if school.nil? && !sf_school.nil?
-        # Add the possible updated school id to the record, we check for this in UpdateSchoolSalesforceInfo
-        user.school.updated_salesforce_id = sf_school.id
         SecurityLog.create!(
           user: user,
           event_type: :attempted_to_add_school_not_cached_yet,

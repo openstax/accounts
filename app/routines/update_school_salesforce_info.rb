@@ -80,8 +80,16 @@ class UpdateSchoolSalesforceInfo
       break if sf_schools.length < BATCH_SIZE
     end
 
+    cleanup_merged_schools
+
+    log("Finished updating #{schools_updated} schools")
+    Sentry.capture_check_in('update-school-salesforce', :ok, check_in_id: check_in_id)
+  end
+
+  def cleanup_merged_schools(school_id=None)
     # Loop through stale schools and update users associated with them to prevent sync issues
-    School.where.not(updated_salesforce_id: nil) do |merged_school|
+    school_id ? schools = School.where(id: school_id) : schools ||= School.where.not(updated_salesforce_id: nil)
+    schools&.each do |merged_school|
       # Let's make sure it wasn't just created
       if School.find_by(salesforce_id: merged_school.updated_salesforce_id)
         merged_school.update!(updated_salesforce_id: nil)
@@ -100,11 +108,9 @@ class UpdateSchoolSalesforceInfo
         updated_school.save!
 
         merged_school.users.update_all(school: updated_school) if merged_school.users.any?
+        merged_school.reload
         merged_school.destroy!
       end
     end
-
-    log("Finished updating #{schools_updated} schools")
-    Sentry.capture_check_in('update-school-salesforce', :ok, check_in_id: check_in_id)
   end
 end
