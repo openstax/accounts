@@ -108,11 +108,18 @@ class Api::V1::UsersController < Api::V1::ApiController
   api :GET, '/user', 'Gets the current user\'s data.'
   description <<-EOS
     Returns the current user's data.
+    For users that are not logged in, a 403 forbidden response is normally returned.
+    However, if always_200 is set to true, then a 200 OK with a blank object is returned instead.
 
     #{json_schema(Api::V1::UserRepresenter, include: :readable)}
   EOS
   def show
-    OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, current_human_user)
+    begin
+      OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, current_human_user)
+    rescue SecurityTransgression => error
+      return render(plain: {}) if params[:always_200] == 'true'
+      raise error
+    end
 
     SetGdprData.call(user: current_human_user,
                      headers: request.headers,
