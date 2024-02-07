@@ -116,17 +116,32 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     it "should let a User get his info" do
       api_get :show, user_1_token
       expect(response.code).to eq('200')
+      expected_response = user_matcher(user_1, include_private_data: true)
+      expect(response.body_as_hash).to match(expected_response)
+    end
+
+    it "should let a User get his info when if always_200 is set" do
+      api_get :show, user_1_token, params: { always_200: true }
+      expect(response.code).to eq('200')
+      expected_response = user_matcher(user_1, include_private_data: true)
+      expect(response.body_as_hash).to match(expected_response)
     end
 
     it "should not let id be specified" do
-      api_get :show, user_1_token, params: {id: admin_user.id}
+      api_get :show, user_1_token, params: { id: admin_user.id }
       expected_response = user_matcher(user_1, include_private_data: true)
       expect(response.body_as_hash).to match(expected_response)
     end
 
     it "should not let an application get a User without a token" do
-      api_get :show, trusted_application_token, params: {id: admin_user.id}
+      api_get :show, trusted_application_token, params: { id: admin_user.id }
       expect(response).to have_http_status :forbidden
+    end
+
+    it "should return an empty object if always_200 is set" do
+      api_get :show, trusted_application_token, params: { always_200: true }
+      expect(response).to have_http_status :ok
+      expect(response.body_as_hash).to match({})
     end
 
     it "should return a properly formatted JSON response for low-info user" do
