@@ -121,31 +121,19 @@ module Newflow
             event_data: { lead_id: lead.id.to_s }
           )
         else
+          if lead.errors.messages.inspect.include? == 'INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY'
+            Sentry.capture_message("Invalid school (#{user.school.salesforce_id}) for user (#{user.id})")
+          end
           SecurityLog.create!(
             user: user,
             event_type: :educator_sign_up_failed,
-            event_data: {
-              message: "saving the user's lead id FAILED",
-              lead_id: lead.id
-            }
+            event_data: { lead_id: lead.id }
           )
           Sentry.capture_message("User #{user.id} was not successfully saved with lead #{lead.id}")
         end
-        outputs.lead = lead
-      else
-        message = "#{self.class.name} error creating SF lead! #{lead.inspect}; User: #{user.id}; Error: #{lead.errors.full_messages}"
-
-        Sentry.capture_message(message)
-
-        SecurityLog.create!(
-          user: user,
-          event_type: :salesforce_error,
-          event_data: {
-            message: message
-          }
-        )
       end
 
+      outputs.lead = lead
       outputs.user = user
     end
 

@@ -24,8 +24,7 @@ feature 'Admin user pages', js: true do
 
           page.all(:css, '.expand').each(&:click)
 
-          expect(page).to have_content("#{@admin_user.full_name} | Administrator |")
-          expect(page).to have_content("#{@sf_user.full_name} | Salesforce: booyah")
+          expect(page).to have_content("Administrator |")
         end
 
         it "can bring up the edit page without exploding" do

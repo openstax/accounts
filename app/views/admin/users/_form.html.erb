@@ -122,6 +122,7 @@
     </div>
   </div>
 
+  <% if @user.sheerid_verification_id %>
   <div class="form-group">
     <%= f.label :sheerid_verification_id, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
@@ -130,6 +131,35 @@
       </p>
     </div>
   </div>
+  <% end %>
+
+  <% if @user.school %>
+  <div class="form-group">
+    <%= f.label :school, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <p class="form-control-static">
+        <% sf_id = @user.school.salesforce_id %>
+          <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+          <% if instance_url.nil? %>
+            <%= @user.school.name %>
+          <% else %>
+            <%= link_to @user.school.name, instance_url + "/" + sf_id, target: '_blank' %>
+          <% end %>
+      </p>
+    </div>
+  </div>
+  <% end %>
+
+  <% if @user.which_books %>
+  <div class="form-group">
+    <%= f.label :which_books, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <p class="form-control-static">
+        <%= @user.which_books %>
+      </p>
+    </div>
+  </div>
+  <% end %>
 
   <% if @user.sheerid_reported_school %>
   <div class="form-group">
@@ -149,11 +179,7 @@
       <% sf_id = @user.salesforce_lead_id %>
       <p class="form-control-static">
         <% if sf_id.nil? %>
-          <%= link_to 'Not Set. Force Push?', force_update_lead_admin_user_path(@user),
-                      remote: true, method: :post,
-                      class: 'btn btn-default',
-                      data: {confirm: "Are you sure you want to force sync this lead with Salesforce?"}
-          %>
+          No Lead
         <% else %>
           <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
           <% if instance_url.nil? %>
@@ -324,33 +350,6 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :is_kip, 'Key Institutional Partner?', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <div class="checkbox">
-        <%= f.check_box :is_kip, style: 'margin-left: 0px' %>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :is_b_r_i_user, 'BRI User?', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <div class="checkbox">
-        <%= f.check_box :is_b_r_i_user, style: 'margin-left: 0px' %>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :grant_tutor_access, 'Grant Tutor Access?', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <div class="checkbox">
-        <%= f.check_box :grant_tutor_access, style: 'margin-left: 0px' %>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group">
     <%= f.label :is_administrator, 'Administrator?', class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
       <div class="checkbox">
@@ -364,15 +363,6 @@
     <div class="col-sm-10">
       <div class="checkbox">
         <%= f.check_box :is_test, style: 'margin-left: 0px' %>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :opt_out_of_cookies, 'Opt Out of Cookies?', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <div class="checkbox">
-        <%= f.check_box :opt_out_of_cookies, style: 'margin-left: 0px' %>
       </div>
     </div>
   </div>
