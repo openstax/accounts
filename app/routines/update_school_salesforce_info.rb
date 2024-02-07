@@ -83,24 +83,4 @@ class UpdateSchoolSalesforceInfo
     log("Finished updating #{schools_updated} schools")
     Sentry.capture_check_in('update-school-salesforce', :ok, check_in_id: check_in_id)
   end
-
-  def cleanup_merged_schools(stale_school_id)
-    stale_school = School.where(id: stale_school_id)
-
-    # Find the new school and update the users attached to it
-    sf_school = OpenStax::Salesforce::Remote::School.find_by(sheerid_school_name: stale_school.sheerid_reported_name)
-    if sf_school.nil?
-      Sentry.capture_message("Stale school (#{stale_school.salesforce_id}) not found by SheerID name (#{stale_school.sheerid_reported_name})")
-    else
-      updated_school = School.find_or_create_by(salesforce_id: sf_school.id)
-      SF_TO_DB_CACHE_COLUMNS_MAP.each do |sf_column, db_column|
-        updated_school.public_send "#{db_column}=", sf_school.public_send(sf_column)
-      end
-      updated_school.save!
-
-      stale_school.users.update_all(school: updated_school) if stale_school.users.any?
-      stale_school.reload
-      stale_school.destroy!
-    end
-  end
 end

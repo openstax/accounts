@@ -120,11 +120,10 @@ module Newflow
             event_type: :created_salesforce_lead,
             event_data: { lead_id: lead.id.to_s }
           )
-        elsif lead.errors.messages.inspect.include? == 'INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY'
-          Sentry.capture_message("Invalid school (#{user.school.salesforce_id}) for user (#{user.id})")
-          UpdateSchoolSalesforceInfo.cleanup_merged_schools(user.school)
-          lead.save && (user.salesforce_lead_id = lead.id && user.save)
         else
+          if lead.errors.messages.inspect.include? == 'INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY'
+            Sentry.capture_message("Invalid school (#{user.school.salesforce_id}) for user (#{user.id})")
+          end
           SecurityLog.create!(
             user: user,
             event_type: :educator_sign_up_failed,
