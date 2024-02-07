@@ -108,6 +108,8 @@ class Api::V1::UsersController < Api::V1::ApiController
   api :GET, '/user', 'Gets the current user\'s data.'
   description <<-EOS
     Returns the current user's data.
+    For users that are not logged in, a 403 forbidden response is normally returned.
+    However, if always_200 is set to true, then a 200 OK with a blank object is returned instead.
 
     #{json_schema(Api::V1::UserRepresenter, include: :readable)}
   EOS
