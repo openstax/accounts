@@ -129,7 +129,13 @@ class UpdateUserContactInfo
         users_without_cached_school += 1
         Sentry.capture_message("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
       else
+        stale_school = user.school
         user.school = school
+        if user.school_changed? && !stale_school.nil?
+          stale_school.users.update_all(school: school)
+          stale_school.reload
+          stale_school.destroy! if stale_school.users.empty?
+        end
       end
 
       user.save! && users_updated += 1 if user.changed?

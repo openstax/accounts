@@ -36,8 +36,8 @@
       <th>First Name</th>
       <th>Last Name</th>
       <th>Faculty Status</th>
-      <th>Role</th>
       <th>School</th>
+      <th>School Type</th>
       <th>Salesforce</th>
       <th></th>
       <th></th>
@@ -53,7 +53,6 @@
         <td><%= user.first_name || '---' %></td>
         <td><%= user.last_name || '---' %></td>
         <td><%= user.faculty_status.humanize %></td>
-        <td><%= user.school_type.humanize %></td>
         <td>
           <% if user.school %>
             <% sf_id = user.school.salesforce_id %>
@@ -65,6 +64,7 @@
             <% end %>
           <% end %>
         </td>
+        <td><%= user.school_type.humanize %></td>
         <td>
           <% if !user.salesforce_contact_id.nil? %>
             <% sf_id = user.salesforce_contact_id %>
@@ -81,9 +81,11 @@
             <% else %>
               <%= link_to sf_type, instance_url + "/" + sf_id, target: '_blank' %>
             <% end %>
+          <% else %>
+              Not Set
           <% end %>
         </td>
-        <td><%= link_to admin_security_log_path(search: { query: "user_id:#{user.id}" }) do %><i class="fa fa-history"></i><% end %></td>
+        <td><%= link_to admin_security_log_path(search: { query: "user_id:#{user.id}" }), target:"_blank" do %><i class="fa fa-history"></i><% end %></td>
         <td>
           <%= link_to become_admin_user_path(user),
                       method: :post,
