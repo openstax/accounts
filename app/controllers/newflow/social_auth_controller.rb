@@ -63,10 +63,10 @@ module Newflow
                 sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
               )
             )
-          when :authentication_taken
+          when :authentication_taken || :taken
             security_log(:authentication_transfer_failed, authentication_id: authentication.id)
             redirect_to(error_path(is_external, code), alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
-          when :email_already_in_use || :taken
+          when :email_already_in_use
             security_log(:email_already_in_use, email: @email, authentication_id: authentication.id)
             redirect_to(error_path(is_external, code), alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
           when :mismatched_authentication
