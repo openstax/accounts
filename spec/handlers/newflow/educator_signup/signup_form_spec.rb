@@ -33,8 +33,8 @@ module Newflow
           expect { handler_call }.to change { User.where(state: 'unverified', role: :instructor).count }
         end
 
-        it 'sets the new user\'s faculty status to pending_faculty' do
-          expect { handler_call }.to change { User.where(faculty_status: :pending_faculty).count }
+        it 'sets the new user\'s faculty status to incomplete_signup' do
+          expect { handler_call }.to change { User.where(faculty_status: :incomplete_signup).count }
         end
 
         it 'creates an authentication with provider = identity' do
