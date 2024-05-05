@@ -121,11 +121,6 @@ class UpdateUserContactInfo
       user.grant_tutor_access = sf_contact.grant_tutor_access
 
       if school.nil? && !sf_school.nil?
-        SecurityLog.create!(
-          user: user,
-          event_type: :attempted_to_add_school_not_cached_yet,
-          event_data: { school_id: sf_school.id }
-        )
         users_without_cached_school += 1
         Sentry.capture_message("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
       else
