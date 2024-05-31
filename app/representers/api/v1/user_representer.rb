@@ -60,7 +60,7 @@ module Api::V1
              as: :is_test,
              type: :boolean,
              readable: true,
-             writeable: true,
+             writeable: false,
              schema_info: {
                 description: "If true, the user is an internal test user," +
                              "not a real OpenStax end user"
