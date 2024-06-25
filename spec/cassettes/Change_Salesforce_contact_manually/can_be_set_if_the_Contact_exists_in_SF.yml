@@ -122,7 +122,7 @@ http_interactions:
   recorded_at: Mon, 22 Jan 2024 19:56:09 GMT
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20Title_1_school__c,%20Accounts_UUID__c,%20LeadSource,%20Signup_Date__c,%20Renewal_Eligible__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27003VZ000002wESuYAM%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20Title_1_school__c,%20Accounts_UUID__c,%20LeadSource,%20Signup_Date__c,%20Renewal_Eligible__c,%20Assignable_Interest__c,%20Assignable_Adoption_Date__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27003VZ000002wESuYAM%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''

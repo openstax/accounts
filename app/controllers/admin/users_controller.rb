@@ -93,8 +93,8 @@ module Admin
         return true
       end
 
-      if new_id.downcase == "remove"
-        flash[:notice] = "Removed the Salesforce Contact ID"
+      if new_id.downcase == 'remove'
+        flash[:notice] = 'Removed the Salesforce Contact ID'
         @user.salesforce_contact_id = nil
         return @user.save
       end
@@ -104,16 +104,19 @@ module Admin
 
         if contact.present?
           # The contact really exists, so save its ID to the User
-          flash[:notice] = "Updated Salesforce Contact"
+          flash[:notice] = 'Updated Salesforce Contact'
           @user.salesforce_contact_id = new_id
           return @user.save
+        else
+          flash[:alert] = "Can't find a Salesforce contact with ID #{new_id}"
         end
       rescue
         # exploded, probably due to badly formed SF ID
+        flash[:alert] = 'Failed to update Salesforce Contact ID'
       end
 
       # if haven't returned yet, either exploded or contact was `nil` (not found)
-      flash[:alert] = "Can't find a Salesforce contact with ID #{new_id}"
+      return false
     end
 
     def update_user
