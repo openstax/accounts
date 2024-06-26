@@ -8,11 +8,11 @@ class UpdateSalesforceAssignableFields
 
     # Currently ExternalIds are only used by Assignable
     # If this will change at some point, migrate ExternalIds first to add a field to distinguish them
-    ExternalId.select(:user_id, ExternalId.arel_table[:created_at].minimum.as(:min_created_at))
+    ExternalId.select(:user_id, ExternalId.arel_table[:created_at].minimum.as('min_created_at'))
               .group(:user_id)
               .having(ExternalId.arel_table[:created_at].minimum.gt(created_after))
               .preload(:user)
-              .find_each do |external_id|
+              .each do |external_id|
       contact_id = external_id.user.salesforce_contact_id
       next if contact_id.nil?
 
