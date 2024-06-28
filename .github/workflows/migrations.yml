@@ -34,7 +34,7 @@ jobs:
 
     steps:
       # Clone repo and checkout merge commit parent (PR target commit)
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
