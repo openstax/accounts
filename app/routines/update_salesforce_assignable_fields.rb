@@ -17,6 +17,8 @@ class UpdateSalesforceAssignableFields
       next if contact_id.nil?
 
       contact = OpenStax::Salesforce::Remote::Contact.find(contact_id)
+      next if contact.nil?
+
       contact.assignable_interest = 'Fully Integrated'
       contact.assignable_adoption_date = external_id.min_created_at
       contact.save!
