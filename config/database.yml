@@ -28,4 +28,4 @@ production:
   database: <%= ENV['RDS_DATABASE'] %>
   pool: <%= ENV['RAILS_MAX_THREADS'] %>
   sslmode: verify-full
-  sslrootcert: /etc/ssl/certs/rds.pem
+  sslrootcert: /etc/ssl/certs/rds-bundle.pem
