@@ -1,5 +1,6 @@
 name: Tests
 env:
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   OXA_DB_USER: accounts
   OXA_DB_PASS: accounts
   OXA_TEST_DB: ci_test
@@ -39,7 +40,3 @@ jobs:
           bundle install --jobs 4 --retry 3
           bundle exec rake parallel:create parallel:load_schema parallel:seed --trace
           bundle exec rspec ./spec
-      - uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: openstax/accounts
