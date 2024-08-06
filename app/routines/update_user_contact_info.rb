@@ -149,6 +149,7 @@ class UpdateUserContactInfo
                      :accounts_uuid
                    )
                    .where("Accounts_UUID__c != null")
+                   .where("LastModifiedById != B000008QCs1QAG") # do not pull in records last modified by Pardot
                    .where("LastModifiedDate >= #{DateTime.strptime(c_date,"%Y-%m-%d").utc.iso8601}")
                    .includes(:school)
                    .to_a
