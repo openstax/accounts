@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_23_173834) do
+ActiveRecord::Schema.define(version: 2024_08_08_171751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -471,6 +471,7 @@ ActiveRecord::Schema.define(version: 2024_01_23_173834) do
     t.boolean "sheer_id_webhook_received"
     t.jsonb "books_used_details"
     t.string "adopter_status"
+    t.jsonb "consent_preferences"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"

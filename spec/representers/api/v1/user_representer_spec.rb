@@ -22,9 +22,9 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
     end
   end
 
-  context 'support_identifier' do
+  context 'consent_preferences' do
     it 'can be read' do
-      expect(representer.to_hash['support_identifier']).to eq user.support_identifier
+      expect(representer.to_hash['consent_preferences']).to eq user.consent_preferences
     end
 
     it 'cannot be written (attempts are silently ignored)' do

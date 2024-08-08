@@ -50,10 +50,10 @@ module Api::V1
              readable: true,
              writeable: false
 
-    property :support_identifier,
-             type: String,
+    property :consent_preferences,
+             type: JSON,
              readable: true,
-             writeable: false
+             writeable: true
 
     property :is_not_gdpr_location,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
@@ -100,15 +100,6 @@ module Api::V1
              writeable: false,
              schema_info: {
                 description: "One of #{User.faculty_statuses.keys.map(&:to_s).inspect}"
-             }
-
-    property :needs_to_complete_educator_profile?,
-             as: :needs_complete_edu_profile,
-             type: String,
-             readable: true,
-             writeable: false,
-             schema_info: {
-                description: "New flow faculty user needs to finish signing up?"
              }
 
     property :role,
@@ -161,28 +152,12 @@ module Api::V1
                description: "One of #{User.school_locations.keys.map(&:to_s).inspect}"
              }
 
-    property :is_kip,
-             type: :boolean,
-             readable: true,
-             writeable: false,
-             schema_info: {
-               description: 'Whether the user is part of a Key Institutional Partner school'
-             }
-
     property :is_administrator,
              type: :boolean,
              readable: true,
              writeable: false,
              schema_info: {
                description: 'Whether the user is an Accounts admin'
-             }
-
-    property :grant_tutor_access,
-             type: :boolean,
-             readable: true,
-             writeable: false,
-             schema_info: {
-               description: 'Whether the user should be granted Tutor access'
              }
 
     collection :contact_infos,
