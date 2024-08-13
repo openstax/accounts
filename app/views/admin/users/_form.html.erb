@@ -133,6 +133,15 @@
   </div>
   <% end %>
 
+  <div class="form-group">
+    <%= f.label :consent_preferences, 'Consent Preferences', class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <div class="form-control-static">
+        <%= @user.consent_preferences %>
+      </div>
+    </div>
+  </div>
+
   <% if @user.school %>
   <div class="form-group">
     <%= f.label :school, class: "col-sm-2 control-label" %>
