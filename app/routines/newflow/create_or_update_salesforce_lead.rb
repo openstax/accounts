@@ -92,6 +92,7 @@ module Newflow
         lead.account_id = sf_school_id
         lead.school_id = sf_school_id
         lead.signup_date = user.created_at.strftime("%Y-%m-%dT%T.%L%z")
+        lead.tracking_parameters = 'https://openstax.org/accounts/i/signup'
 
       state = user.most_accurate_school_state
       unless state.blank?
