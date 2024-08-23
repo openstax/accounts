@@ -4,17 +4,13 @@ class UpdateUserLeadInfo
     new.call
   end
   def call
+    # TODO: we do want to limit this, but we need to update all the leads and schedule this first
     # we are only using this to check users created in the last month
-    start_date = Time.zone.now - 1.day
-    end_date = Time.zone.now - 30.day
+    # start_date = Time.zone.now - 1.day
+    # end_date = Time.zone.now - 30.day
 
     users = User.where(salesforce_contact_id: nil).where("created_at <= ? AND created_at >= ?", start_date, end_date)
                 .where.not(salesforce_lead_id: nil, role: :student, faculty_status: :rejected_faculty)
-
-    if users.count > 300
-      Sentry.capture_message("Too many users #{users.count} to update in UpdateUserLeadInfo")
-      exit
-    end
 
     leads = OpenStax::Salesforce::Remote::Lead.select(:id, :accounts_uuid, :verification_status)
                                               .where(accounts_uuid: users.map(&:uuid))
