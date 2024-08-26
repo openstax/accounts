@@ -184,7 +184,7 @@ gem 'rack-cors'
 gem 'blazer'
 
 # temp fix until we update old dependencies
-gem "net-http"
+# gem "net-http"
 
 group :development, :test do
   # Run specs in parallel
