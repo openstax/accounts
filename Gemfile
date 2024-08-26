@@ -44,7 +44,7 @@ gem 'compass-rails', '~> 3.1.0'
 gem 'coffee-rails', '5.0.0'
 
 # JavaScript asset compiler
-# gem 'mini_racer'
+gem 'mini_racer'
 
 # JavaScript asset compressor
 gem 'uglifier', '>= 1.3.0'
