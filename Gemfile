@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '5.2.4.4'
+gem 'rails', '~> 5.2'
 gem 'rails-i18n', '~> 5'
 
 # Reduces boot times through caching; required in config/boot.rb
@@ -44,8 +44,7 @@ gem 'compass-rails', '~> 3.1.0'
 gem 'coffee-rails', '5.0.0'
 
 # JavaScript asset compiler
-# 0.4.0 crashes during our build, fixed in 0.5.0 (upgrade when it's out)
-gem 'mini_racer'
+# gem 'mini_racer'
 
 # JavaScript asset compressor
 gem 'uglifier', '>= 1.3.0'
@@ -61,7 +60,7 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'doorkeeper', '~> 5.1.0'
 
 # OAuth clients
-gem 'omniauth'
+gem 'omniauth', '~> 1.9'
 gem 'omniauth-identity'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
@@ -181,7 +180,11 @@ gem 'oj_mimic_json'
 # CORS for local testing/dev
 gem 'rack-cors'
 
+# Data visualization and query
 gem 'blazer'
+
+# temp fix until we update old dependencies
+gem "net-http"
 
 group :development, :test do
   # Run specs in parallel
@@ -234,9 +237,9 @@ group :development, :test do
   # Lint RSpec files
   gem 'rubocop-rspec'
 
-  gem 'faraday', '~> 1.0.0'
+  gem 'faraday'
 
-  gem 'faraday_middleware', '~> 1.0.0'
+  gem 'faraday_middleware'
 end
 
 group :development do
