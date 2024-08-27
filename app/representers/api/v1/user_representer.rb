@@ -50,6 +50,11 @@ module Api::V1
              readable: true,
              writeable: false
 
+    property :support_identifier,
+             type: String,
+             readable: true,
+             writeable: false
+
     property :consent_preferences,
              type: JSON,
              readable: true,
