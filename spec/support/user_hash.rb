@@ -11,6 +11,7 @@ def user_matcher(user, include_private_data: false)
     title: user.title,
     suffix: user.suffix,
     uuid: user.uuid,
+    support_identifier: user.support_identifier,
     consent_preferences: user.consent_preferences,
     is_test: user.is_test?,
     is_administrator: user.is_administrator?,
