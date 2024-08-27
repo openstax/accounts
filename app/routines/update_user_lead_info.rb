@@ -8,8 +8,10 @@ class UpdateUserLeadInfo
     # we are only using this to check users created in the last month
     # start_date = Time.zone.now - 1.day
     # end_date = Time.zone.now - 30.day
+    # for the query below when this is re-added
+    # .where("created_at <= ? AND created_at >= ?", start_date, end_date)
 
-    users = User.where(salesforce_contact_id: nil).where("created_at <= ? AND created_at >= ?", start_date, end_date)
+    users = User.where(salesforce_contact_id: nil)
                 .where.not(salesforce_lead_id: nil, role: :student, faculty_status: :rejected_faculty)
 
     leads = OpenStax::Salesforce::Remote::Lead.select(:id, :accounts_uuid, :verification_status)
