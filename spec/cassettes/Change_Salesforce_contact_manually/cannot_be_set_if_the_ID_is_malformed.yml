@@ -1,0 +1,59 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20Title_1_school__c,%20Accounts_UUID__c,%20LeadSource,%20Signup_Date__c,%20Renewal_Eligible__c,%20Assignable_Interest__c,%20Assignable_Adoption_Date__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27somethingwonky%27)%20LIMIT%201"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v1.10.3
+      Authorization:
+      - OAuth <salesforce_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Date:
+      - Wed, 04 Sep 2024 16:23:21 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - BrowserId=AIyLGGraEe--B1c3qM3BiQ; domain=.salesforce.com; path=/; expires=Thu,
+        04-Sep-2025 16:23:21 GMT; Max-Age=31536000; secure; SameSite=None
+      - CookieConsentPolicy=0:1; path=/; expires=Thu, 04-Sep-2025 16:23:21 GMT; Max-Age=31536000;
+        secure
+      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Thu, 04-Sep-2025 16:23:21
+        GMT; Max-Age=31536000; secure
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      Sforce-Limit-Info:
+      - api-usage=37125/5000000
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Server:
+      - sfdcedge
+      X-Sfdc-Request-Id:
+      - 96eee8bd5bfadfa6b2fc91d6f91d0ae0
+    body:
+      encoding: UTF-8
+      string: '[{"message":"\nAssignable_Adoption_Date__c FROM Contact WHERE (Id =
+        ''somethingwonky'') LIMIT 1\n                                                ^\nERROR
+        at Row:1:Column:392\ninvalid ID field: somethingwonky","errorCode":"INVALID_QUERY_FILTER_OPERATOR"}]'
+    http_version:
+  recorded_at: Wed, 04 Sep 2024 16:23:21 GMT
+recorded_with: VCR 3.0.3
