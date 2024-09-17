@@ -1,18 +1,217 @@
-<p>Welcome!</p>
+<!DOCTYPE html>
+<html style="overflow-y: hidden;">
+<head>
+	<title></title>
+	<meta content="text/html; charset=UTF-8"><meta content="width=device-width, initialscale=1.0" name="viewport"><meta content="IE=edge">
+	<style type="text/css">
+      @media screen and (max-width: 480px) {slot[style] {margin-right: 0 !important;}.columnDiv {margin-right: 0 !important;}}@media screen and (min-width: 480px) {slot[style] {margin-bottom: 0 !important;}.columnDiv {margin-bottom: 0 !important;}}
+	</style>
+	<style type="text/css">
+      @media screen and (max-width: 480px) {.contentbuilderBaseColumnRow .columnCell {display:inline-block;width:100%}}
+	</style>
+	<style type="text/css">
+      .contentpageDefaultEmailTemplatePageTemplate .contentRoot {width: 600px;}@media only screen and (max-width: 480px) {.contentpageDefaultEmailTemplatePageTemplate .contentRoot {width: 320px;}}
+	</style>
+</head>
+<body style="height: auto; min-height: auto;">
+<table cellpadding="0" cellspacing="0" class="contentpageDefaultEmailTemplatePageTemplate" id="contentpage_emailTemplateBodyContent" style="background-color: #f1f1f1;" width="100%">
+	<tbody>
+		<tr>
+			<td align="center" width="100%">
+			<table cellpadding="0" cellspacing="0" class="contentRoot" style="background-color: #FFFFFF;" width="600">
+				<tbody>
+					<tr>
+						<td style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+						<table cellpadding="0" cellspacing="0" class="contentbuilderBaseColumnRow" style="align-items: flex-start; width: 100%;">
+							<tbody>
+								<tr valign="top">
+									<td class="columnCell" style="vertical-align: top;display: inline-block; float:left" width="100%">
+									<table cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; word-break:break-word;">
+										<tbody>
+											<tr>
+												<td>
+												<table cellpadding="0" cellspacing="0"  id="contentRegion" style="width:100%; border-collapse: collapse; word-break:break-word;">
+													<tbody>
+														<tr>
+															<td align="center" style="padding-top: 15px;">
+                              <a href="<%= link_to @confirmation_url, @confirmation_url %>" target="_blank"><img alt="" src="https://openstax.cdn.salesforce-experience.com/cms/delivery/media/MC6BQDZRG2LJH63GGTYUS7JVML2E?oid=00DU0000000KwchMAC&channelId=0ap6f000000KyjfAAC" style="width: 100%; display: block; border: none; max-width: 30%; object-fit: contain;" width="180" /></a></td>
+														</tr>
+													</tbody>
+												</table>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 
-<% if @should_show_pin %>
-  <p>Enter your 6-digit PIN in your browser to confirm your email address:</p>
+						<table cellpadding="0" cellspacing="0" class="contentbuilderBaseColumnRow" style="align-items: flex-start; width: 100%;">
+							<tbody>
+								<tr valign="top">
+									<td class="columnCell" style="vertical-align: top;display: inline-block; float:left" width="100%">
+									<table cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; word-break:break-word;">
+										<tbody>
+											<tr>
+												<td>
+												<table cellpadding="0" cellspacing="0"  id="contentRegion" style="width: 100%; border-collapse: collapse; word-break: break-word; font-size: 14px">
+													<tbody>
+														<tr>
+															<td style="font-family: Arial, Helvetica, sans-serif;padding-top: 30px;padding-right: 30px;padding-bottom: 10px;padding-left: 30px;">
+															<h1 style="color: rgb(17, 17, 17); font-family: Helvetica, Arial, Helvetica, sans-serif; font-weight: bold; margin: 0px; text-align: center;">
+                                Confirm your email address
+                              </h1>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												<table cellpadding="0" cellspacing="0"  id="contentregion=" style="font-size:14px; width: 100%; border-collapse: collapse; word-break: break-word;">
+													<tbody>
+														<tr>
+															<td class="contentbuilder-html" style="padding: 0;">
+															<hr style="border-top:5px solid #d4450c; width: 70%; margin: 2rem auto;" /></td>
+														</tr>
+													</tbody>
+												</table>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												<table cellpadding="0" cellspacing="0"  id="contentRegion=" style="width: 100%; border-collapse: collapse; word-break: break-word; font-size: 14px">
+													<tbody>
+														<tr>
+															<td style="font-family: Arial, Helvetica, sans-serif;padding-top: 10px;padding-right: 30px;padding-bottom: 20px;padding-left: 30px;">
+															<p style="color: rgb(0, 0, 0); font-family: Helvetica, Arial, Helvetica, sans-serif; font-weight: normal; margin: 0px; line-height: 2;">
+                                Hello!<br />
+															<br />
+															Please complete signing up for you OpenStax Account by confirming your email address. Your pin is <b><%= @confirmation_pin %></b><br />
+															<br />
+															</p>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												<table  style="border: 0; width: 100%; border-collapse: collapse; mso-table-lspace:0pt;mso-table-rspace:0pt;">
+													<tbody>
+														<tr>
+															<td style="padding-top: 20px;padding-bottom: 20px;mso-table-lspace:0pt;mso-table-rspace:0pt;">
+															<div style="word-break:break-word; border: 0; mso-border-alt: 0; text-align:center;">
+															<div style="display: inline-block; border: 0; mso-border-alt: 0;">
+                                <a href="<%= link_to @confirmation_url, @confirmation_url %>" style="direction:ltr;display:block;text-align:center;margin:0; font-family:Helvetica, Arial, Helvetica, sans-serif; font-size:16px; padding-top: 10px;padding-right: 20px;padding-bottom: 10px;padding-left: 20px; color:#ffffff;font-weight:normal;font-style:normal;text-decoration:none;border:0;background-color:#d4450c;border-radius:50px;mso-padding-alt:0;" target="_blank">
+                                  <span>Confirm Your Email Address</span>
+                                </a>
+                              </div>
+															</div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												<table cellpadding="0" cellspacing="0"  id="contentRegion" style="width: 100%; border-collapse: collapse; word-break: break-word; font-size: 14px">
+													<tbody>
+														<tr>
+															<td style="font-family: Arial, Helvetica, sans-serif;padding-top: 30px;padding-right: 50px;padding-bottom: 50px;padding-left: 50px;">
+															<div style="text-align: center; line-height: 2">
+                                If you need any assistance, please reply to this email at&nbsp;<a href="mailto:support@openstax.org">support@openstax.org</a>.
+                              </div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 
-  <p>Your PIN: <b><%= @confirmation_pin %></b></p>
-
-  <p>If you have any trouble using this PIN, you can also click the link below to confirm your email address:</p>
-<% else %>
-  <p>Click on the link below to confirm your email address:</p>
-<% end %>
-
-<p><%= link_to @confirmation_url, @confirmation_url %></p>
-
-<p>We sent this message because someone is trying to use '<%= @email_value %>' to create an OpenStax account.  If this wasn't you, please disregard this message.</p>
-
-
-<%= render :partial => 'shared/email_closing' %>
+						<table cellpadding="0" cellspacing="0" class="contentbuilderBaseColumnRow" style="align-items: center; width: 100%; background-color:#f1f1f1;" width="100%">
+							<tbody>
+								<tr valign="middle">
+									<td class="columnCell" style="vertical-align: middle;display: inline-block; float:left" width="100%">
+									<table cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; word-break:break-word;">
+										<tbody>
+											<tr>
+												<td>
+												<table cellpadding="0" cellspacing="0"  id="contentregion" style="font-size:14px; width: 100%; border-collapse: collapse; word-break: break-word;">
+													<tbody>
+														<tr>
+															<td class="contentbuilder-html" style="padding: 0;">
+															<table style="width: 30%; margin: 2rem auto 0 auto;">
+																<tbody>
+																	<tr>
+																		<td style="text-align: center;">
+                                      <a href="https://www.facebook.com/openstax/"><img src="https://www2.openstax.org/l/218812/2023-03-02/21ctk1n/218812/1677769915zhNb62dS/Group_49.png" style="max-width: 100%; height: auto;" /></a>
+                                    </td>
+																		<td style="text-align: center;">
+                                      <a href="https://www.instagram.com/openstax/"><img src="https://www2.openstax.org/l/218812/2023-03-02/21ctk1v/218812/16777699377tuRGVJk/Vector.png" style="max-width: 100%; height: auto;" /></a>
+                                    </td>
+																		<td style="text-align: center;">
+                                      <a href="https://twitter.com/OpenStax/"><img src="https://www2.openstax.org/l/218812/2023-03-02/21ctk1r/218812/1677769928Hl4fgNGi/Vector_2.png" style="max-width: 100%; height: auto;" /></a>
+                                    </td>
+																	</tr>
+																</tbody>
+															</table>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												<table cellpadding="0" cellspacing="0"  id="contentRegion" style="width: 100%; border-collapse: collapse; word-break: break-word; font-size: 14px">
+													<tbody>
+														<tr>
+															<td style="font-family: Arial, Helvetica, sans-serif;padding-top: 20px;padding-bottom: 20px;">
+															<div style="text-align: center; font-size:11px; color:#6f6f6f; line-height: 2.5"><a href="https://openstax.org" style="font-weight: bold; color:#6f6f6f;">openstax.org</a><br />
+                                6100 Main St. MS-375 Houston, Texas 77005<br /></div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												<table cellpadding="0" cellspacing="0"  id="contentRegion" style="width:100%; border-collapse: collapse; word-break:break-word;">
+													<tbody>
+														<tr>
+															<td align="center" style="padding-top: 20px;padding-bottom: 40px;">
+                                <a href="https://rice.edu" target="_blank"><img alt="" src="https://openstax.cdn.salesforce-experience.com/cms/delivery/media/MCD7V5TURECVAULPMT2H47VAHD5I?oid=00DU0000000KwchMAC&channelId=0ap6f000000KyjfAAC" style="width: 100%; display: block; border: none; max-width: 20%; object-fit: contain;" width="120" /></a>
+                              </td>
+														</tr>
+													</tbody>
+												</table>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<img src="https://openstax.my.salesforce.com/servlet/servlet.ImageServer?oid=00DU0000000Kwch&esid=018Pc00000KtcU9&from=ext"></body>
+</html>
