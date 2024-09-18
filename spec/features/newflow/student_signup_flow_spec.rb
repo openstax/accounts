@@ -57,7 +57,7 @@ module Newflow
 
       example 'verify email by entering PIN sent in the email' do
         # ... with a link
-        pin = current_email.find('b').text
+        pin = current_email.find('#pin').text
         fill_in('confirm_pin', with: pin)
         screenshot!
         click_on('commit')
@@ -120,7 +120,7 @@ module Newflow
       expect(current_email).to be_truthy
 
         # ... with a link
-        pin = current_email.find('b').text
+        pin = current_email.find('#pin').text
         fill_in('confirm_pin', with: pin)
         screenshot!
         click_on('commit')
@@ -175,7 +175,7 @@ module Newflow
         open_email email
         # capture_email!(address: email)
         expect(current_email).to be_truthy
-        old_pin = current_email.find('b').text
+        old_pin = current_email.find('#pin').text
         old_confirmation_code_url = get_path_from_absolute_link(current_email, '#confirm-link')
 
         # edit email
@@ -196,7 +196,7 @@ module Newflow
         # a different pin is sent in the edited email
         open_email new_email
         capture_email!(address: new_email)
-        pin = current_email.find('b').text
+        pin = current_email.find('#pin').text
         expect(pin).not_to eq(old_pin)
         # ...as well as a different confirmation code url
         confirmation_code_url = get_path_from_absolute_link(current_email, '#confirm-link')
