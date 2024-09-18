@@ -24,7 +24,7 @@ class NewflowMailer < ApplicationMailer
 
     mail to: @email_value,
          subject: if @should_show_pin
-                    "Use PIN #{@confirmation_pin} to confirm your email address"
+                    "Your OpenStax account PIN has arrived: #{@confirmation_pin}"
                   else
                     'Confirm your email address'
                   end
