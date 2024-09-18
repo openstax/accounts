@@ -89,8 +89,6 @@
 															<td style="font-family: Arial, Helvetica, sans-serif;padding-top: 10px;padding-right: 30px;padding-bottom: 20px;padding-left: 30px;">
 															<p style="color: rgb(0, 0, 0); font-family: Helvetica, Arial, Helvetica, sans-serif; font-weight: normal; margin: 0px; line-height: 2;">
 																<div style="text-align: center">
-																	<h3>Please confirm <%= @email_value %> is your email.</h3>
-																	<hr>
 																	Verify your email by clicking the button below or use your pin: <b><%= @confirmation_pin %></b>
 																</div>
 															</p>
@@ -126,8 +124,8 @@
 														<tr>
 															<td style="font-family: Arial, Helvetica, sans-serif;padding-top: 30px;padding-right: 50px;padding-bottom: 50px;padding-left: 50px;">
 															<div style="text-align: center; line-height: 2">
-                                If you need any assistance, please reply to this email at&nbsp;<a href="mailto:support@openstax.org">support@openstax.org</a>.<br>
-																<small>If you did not signup for an OpenStax Account with the email <%= @email_value %>, please disregard this message.</small>
+                                If you need any assistance, please reply to this email at&nbsp;<a href="mailto:support@openstax.org">support@openstax.org</a>.<br /><br />
+																<small>If you did not signup for an OpenStax Account with the email <b><%= raw @email_value %></b>, please disregard this message.</small>
                               </div>
 															</td>
 														</tr>
