@@ -406,7 +406,10 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       sso_hash = SsoCookie.read sso_cookie
       expect(sso_hash['sub']).to eq Api::V1::UserRepresenter.new(new_user).to_hash
       expect(sso_hash['exp']).to be <= (
-        Time.current + Api::V1::UsersController::SSO_TOKEN_DURATION
+        Time.current + Api::V1::UsersController::SSO_TOKEN_INITIAL_DURATION
+      ).to_i
+      expect(sso_hash['exp']).to be >= (
+        Time.current + Api::V1::UsersController::SSO_TOKEN_MIN_DURATION
       ).to_i
 
       # Ensure the Doorkeeper token exists
