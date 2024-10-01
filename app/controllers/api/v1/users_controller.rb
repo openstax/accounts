@@ -1,5 +1,8 @@
 class Api::V1::UsersController < Api::V1::ApiController
-  SSO_TOKEN_DURATION = 6.hours
+  # New tokens last 1 day
+  SSO_TOKEN_INITIAL_DURATION = 24.hours
+  # Ensure any returned tokens last for at least 12 more hours
+  SSO_TOKEN_MIN_DURATION = 12.hours
 
   resource_description do
     api_versions "v1"
@@ -263,18 +266,22 @@ class Api::V1::UsersController < Api::V1::ApiController
       application,
       user.id,
       '',
-      SSO_TOKEN_DURATION,
+      SSO_TOKEN_INITIAL_DURATION,
       false,
     )
 
-    return access_token.token if access_token.created_at > user.updated_at
+    return access_token.token if access_token.created_at > user.updated_at &&
+                                 access_token.revoked_at.nil? && (
+                                   access_token.expires_at.nil? ||
+                                   access_token.expires_at >= Time.current + SSO_TOKEN_MIN_DURATION
+                                 )
 
     # Note: replace with create_for() in  a future Doorkeeper version
     access_token = Doorkeeper::AccessToken.create!(
       application_id: application.id,
       resource_owner_id: user.id,
       scopes: '',
-      expires_in: SSO_TOKEN_DURATION,
+      expires_in: SSO_TOKEN_INITIAL_DURATION,
       use_refresh_token: false
     )
 
