@@ -92,7 +92,7 @@ module Newflow
           expect(current_email).to be_truthy
 
           # ... with a link
-          verify_email_url = get_path_from_absolute_link(current_email, 'a')
+          verify_email_url = get_path_from_absolute_link(current_email, '#confirm-link')
           visit(verify_email_url)
 
           # Step 3

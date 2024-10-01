@@ -27,8 +27,8 @@ module Newflow
       before do
         visit newflow_signup_path(r: '/external_app_for_specs')
         find('.join-as__role.student').click
-        fill_in 'signup_first_name',	with: 'Bryan'
-        fill_in 'signup_last_name',	with: 'Dimas'
+        fill_in 'signup_first_name',	with: 'Sally'
+        fill_in 'signup_last_name',	with: 'Port'
         fill_in 'signup_email',	with: email
         fill_in 'signup_password',	with: password
         submit_signup_form
@@ -43,10 +43,10 @@ module Newflow
 
       example 'verify email by clicking link in the email' do
         # ... with a link
-        verify_email_url = get_path_from_absolute_link(current_email, 'a')
+        verify_email_url = get_path_from_absolute_link(current_email, '#confirm-link')
         visit verify_email_url
         # ... which sends you to "sign up done page"
-        expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
+        expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Sally'))
         screenshot!
 
         # can exit and go back to the app they came from
@@ -57,12 +57,12 @@ module Newflow
 
       example 'verify email by entering PIN sent in the email' do
         # ... with a link
-        pin = current_email.find('b').text
+        pin = current_email.find('#pin').text
         fill_in('confirm_pin', with: pin)
         screenshot!
         click_on('commit')
         # ... which sends you to "sign up done page"
-        expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
+        expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Sally'))
         expect(page).to have_text(
           strip_html(t(:"login_signup_form.youre_done_description", email_address: email))
         )
@@ -106,8 +106,8 @@ module Newflow
   example 'arriving from Tutor (a Doorkeeper app)' do
       app = create_tutor_application
       visit_authorize_uri(app: app, params: { go: 'student_signup' })
-      fill_in 'signup_first_name',	with: 'Bryan'
-      fill_in 'signup_last_name',	with: 'Dimas'
+      fill_in 'signup_first_name',	with: 'Sally'
+      fill_in 'signup_last_name',	with: 'Port'
       fill_in 'signup_email',	with: email
       fill_in 'signup_password',	with: password
       submit_signup_form
@@ -120,13 +120,13 @@ module Newflow
       expect(current_email).to be_truthy
 
         # ... with a link
-        pin = current_email.find('b').text
+        pin = current_email.find('#pin').text
         fill_in('confirm_pin', with: pin)
         screenshot!
         click_on('commit')
 
         # ... redirects you back to Tutor
-        expect(page).not_to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
+        expect(page).not_to have_text(t(:"login_signup_form.youre_done", first_name: 'Sally'))
         expect(page.current_path).to eq('/external_app_for_specs')
     end
 
@@ -145,8 +145,8 @@ module Newflow
       example 'user gets PIN wrong' do
         visit newflow_signup_path(r: '/external_app_for_specs')
         find('.join-as__role.student').click
-        fill_in 'signup_first_name',	with: 'Bryan'
-        fill_in 'signup_last_name',	with: 'Dimas'
+        fill_in 'signup_first_name',	with: 'Sally'
+        fill_in 'signup_last_name',	with: 'Port'
         fill_in 'signup_email',	with: email
         fill_in 'signup_password',	with: password
         submit_signup_form
@@ -164,8 +164,8 @@ module Newflow
       example 'user can change their initial email during the signup flow' do
         visit newflow_signup_path(r: '/external_app_for_specs')
         find('.join-as__role.student').click
-        fill_in 'signup_first_name',	with: 'Bryan'
-        fill_in 'signup_last_name',	with: 'Dimas'
+        fill_in 'signup_first_name',	with: 'Sally'
+        fill_in 'signup_last_name',	with: 'Port'
         fill_in 'signup_email',	with: email
         fill_in 'signup_password',	with: password
         submit_signup_form
@@ -175,8 +175,8 @@ module Newflow
         open_email email
         # capture_email!(address: email)
         expect(current_email).to be_truthy
-        old_pin = current_email.find('b').text
-        old_confirmation_code_url = get_path_from_absolute_link(current_email, 'a')
+        old_pin = current_email.find('#pin').text
+        old_confirmation_code_url = get_path_from_absolute_link(current_email, '#confirm-link')
 
         # edit email
         click_on('edit your email')
@@ -196,10 +196,10 @@ module Newflow
         # a different pin is sent in the edited email
         open_email new_email
         capture_email!(address: new_email)
-        pin = current_email.find('b').text
+        pin = current_email.find('#pin').text
         expect(pin).not_to eq(old_pin)
         # ...as well as a different confirmation code url
-        confirmation_code_url = get_path_from_absolute_link(current_email, 'a')
+        confirmation_code_url = get_path_from_absolute_link(current_email, '#confirm-link')
         expect(confirmation_code_url).not_to eq(old_confirmation_code_url)
 
         screenshot!
