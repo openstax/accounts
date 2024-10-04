@@ -172,7 +172,7 @@ gem 'intl-tel-input-rails', git: 'https://github.com/openstax/intl-tel-input-rai
 gem 'http_accept_language'
 
 # Fast JSON parsing
-gem 'oj', '~> 3.7.12'
+gem 'oj'
 
 # Replace JSON with Oj
 gem 'oj_mimic_json'
@@ -197,9 +197,9 @@ group :development, :test do
   #
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', require: false
-  # Debug in VS Code
-  gem 'ruby-debug-ide', require: false
-  gem 'debase', require: false
+  # Debug in VS Code - these do not install properly on the latest OS X
+  # gem 'ruby-debug-ide', require: false
+  # gem 'debase', require: false
 
   # Use RSpec for tests
   gem 'rspec-rails'
