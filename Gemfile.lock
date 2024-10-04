@@ -585,6 +585,9 @@ GEM
     rails-i18n (7.0.9)
       i18n (>= 0.7, < 2)
       railties (>= 6.0.0, < 8)
+    rails-settings-cached (2.9.4)
+      activerecord (>= 5.0.0)
+      railties (>= 5.0.0)
     railties (6.0.6.1)
       actionpack (= 6.0.6.1)
       activesupport (= 6.0.6.1)
@@ -867,6 +870,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd
   rails-i18n
+  rails-settings-cached
   redis-rails
   render_anywhere
   representable (~> 3.0.0)

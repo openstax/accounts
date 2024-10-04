@@ -310,8 +310,6 @@ Rails.application.routes.draw do
     resources :external_ids, only: [:destroy]
 
     mount Blazer::Engine, at: "blazer", as: 'blazer_admin'
-
-    #mount RailsSettingsUi::Engine, at: 'settings'
   end
 
   namespace 'dev' do

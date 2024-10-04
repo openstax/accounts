@@ -16,16 +16,6 @@
 module Settings
   module Db
     class Store < RailsSettings::Base
-      source Rails.root.join("config/app.yml")
-      namespace Rails.env
-
-      # Workaround (this method missing in current implementation, but RailsSettings-UI
-      # expects it -- doesn't really need to use it any more b/c RailsSettingsCached
-      # deals with defaults internally)
-      def self.defaults
-        result = RailsSettings::Default.enabled? ? RailsSettings::Default.instance : {}
-        result.with_indifferent_access
-      end
     end
 
     mattr_accessor :store

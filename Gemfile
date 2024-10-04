@@ -151,10 +151,7 @@ gem 'awesome_print'
 gem 'whenever', require: false
 
 # Admin toggles
-# gem 'rails-settings-ui', '1.3.4'
-
-# gem 'rails-settings-cached', '0.7.2'
-# gem 'dry-validation'
+gem 'rails-settings-cached'
 
 # Respond to ELB healthchecks in /ping and /ping/
 gem 'openstax_healthcheck'
