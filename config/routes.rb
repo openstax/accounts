@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/BlockLength
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
   direct :salesforce_knowledge_base do
@@ -311,7 +311,7 @@ Rails.application.routes.draw do
 
     mount Blazer::Engine, at: "blazer", as: 'blazer_admin'
 
-    mount RailsSettingsUi::Engine, at: 'settings'
+    #mount RailsSettingsUi::Engine, at: 'settings'
   end
 
   namespace 'dev' do

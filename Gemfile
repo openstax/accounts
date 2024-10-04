@@ -6,8 +6,8 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '~> 5.2'
-gem 'rails-i18n', '~> 5'
+gem 'rails', '6.0.6.1'
+gem 'rails-i18n'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
@@ -35,10 +35,10 @@ gem 'lev', '~> 10.1.0'
 gem 'bootstrap-sass', '~> 3.4.1'
 
 # SCSS stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails'
 
 # Compass stylesheets
-gem 'compass-rails', '~> 3.1.0'
+gem 'compass-rails'
 
 # CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '5.0.0'
@@ -151,10 +151,10 @@ gem 'awesome_print'
 gem 'whenever', require: false
 
 # Admin toggles
-gem 'rails-settings-ui'
+# gem 'rails-settings-ui', '1.3.4'
 
-gem 'rails-settings-cached', '0.7.2'
-gem 'dry-validation', '0.12.3'
+# gem 'rails-settings-cached', '0.7.2'
+# gem 'dry-validation'
 
 # Respond to ELB healthchecks in /ping and /ping/
 gem 'openstax_healthcheck'
