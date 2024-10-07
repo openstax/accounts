@@ -61,9 +61,9 @@ module Newflow
 
 
       if user.salesforce_lead_id
-        lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
+        lead = OpenStax::Salesforce::Remote::Lead.find_by(email: "#{user.best_email_address_for_salesforce}")
       else
-        lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        lead = OpenStax::Salesforce::Remote::Lead.new(email: "#{user.best_email_address_for_salesforce}")
       end
 
         lead.first_name = user.first_name
