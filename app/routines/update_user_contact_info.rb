@@ -123,6 +123,8 @@ class UpdateUserContactInfo
       if school.nil? && !sf_school.nil?
         users_without_cached_school += 1
         Sentry.capture_message("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
+      elsif sf_contact.school_id != user.school.salesforce_id
+        Sentry.capture_message("User #{user.id} has a mismatched school id (Salesforce: #{sf_contact.school_id}, Accounts: #{user.school.salesforce_id})")
       else
         user.school = school
       end
