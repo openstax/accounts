@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '6.0.6.1'
+gem 'rails', '6.1.7.8'
 gem 'rails-i18n'
 
 # Reduces boot times through caching; required in config/boot.rb
@@ -16,7 +16,7 @@ gem 'bootsnap', require: false
 gem 'dotenv-rails'
 
 # Threaded application server
-gem 'puma', '~> 5.6.0'
+gem 'puma'
 
 # Prevent server memory from growing until OOM
 gem 'puma_worker_killer'
@@ -29,35 +29,38 @@ gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', r
 
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
-gem 'lev', '~> 10.1.0'
-
-# Bootstrap front-end framework
-gem 'bootstrap-sass', '~> 3.4.1'
+gem 'lev'
 
 # SCSS stylesheets
 gem 'sass-rails'
 
+# Bootstrap front-end framework
+gem 'bootstrap-sass'
+
 # Compass stylesheets
-gem 'compass-rails'
+gem 'compass-rails', '~> 4.0.0'
+
+# Prevent deprecation warning coming from Compass in Sass 3.4.20
+gem 'sass', '3.4.19'
 
 # CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '5.0.0'
+gem 'coffee-rails'
 
 # JavaScript asset compiler
 gem 'mini_racer'
 
 # JavaScript asset compressor
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier'
 
 # Nicely-styled static error pages
 gem 'error_page_assets'
 gem 'render_anywhere', require: false
 
 # Password hashing
-gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt'
 
 # OAuth provider
-gem 'doorkeeper', '~> 5.1.0'
+gem 'doorkeeper'
 
 # OAuth clients
 gem 'omniauth', '~> 1.9'
@@ -70,13 +73,13 @@ gem 'omniauth-google-oauth2'
 gem 'redis-rails'
 
 # Utilities for OpenStax websites
-gem 'openstax_utilities'
+gem 'openstax_utilities', github: 'openstax/openstax_utilities', ref: '4a22dd7fb557174f805bb8cc29cd8e60695983f5'
 
 # API versioning and documentation
 gem 'openstax_api'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from'
+gem 'openstax_rescue_from', github: 'openstax/rescue_from', ref: '7a6dcfa0a70e843d2801795e151888bb9f03386a'
 
 # Sentry integration
 gem 'sentry-ruby'
@@ -116,7 +119,7 @@ gem 'representable', '~> 3.0.0'
 gem 'keyword_search', '~> 1.5.0'
 
 # ToS/PP management
-gem 'fine_print'
+gem 'fine_print', github: 'lml/fine_print', ref: '636023f68e95196dffaf295bfad3ad8051c23542'
 
 # Send users back to the correct page after login
 gem 'action_interceptor'
@@ -157,7 +160,7 @@ gem 'rails-settings-cached'
 gem 'openstax_healthcheck'
 
 # Allow Accounts routes to be accessed under an /accounts prefix (for use in CloudFront)
-gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "8298c40ec38f132fc23ea946b2b20e855fe73a49"
+gem 'openstax_path_prefixer', github: 'openstax/path_prefixer', ref: 'e3edfc70589bc90fcffba63b417260a88c1377d7'
 
 # JWE library used by the SSO cookie
 gem 'json-jwt'
@@ -220,7 +223,7 @@ group :development, :test do
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'guard-rspec'
-  gem 'guard-livereload', '~> 2.5', require: false
+  gem 'guard-livereload', require: false
 
   # Stubs HTTP requests
   gem 'webmock'
@@ -229,7 +232,7 @@ group :development, :test do
   gem 'vcr'
 
   # Lint ruby files
-  gem 'rubocop', '~> 0.76.0', require: false
+  gem 'rubocop', require: false
 
   # Lint RSpec files
   gem 'rubocop-rspec'
@@ -244,7 +247,7 @@ group :development do
   gem 'listen'
 
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 3.7'
+  gem 'web-console'
 
   gem 'i18n-tasks'
 
@@ -260,7 +263,7 @@ group :test do
   gem 'cgi'
 
   # RSpec matchers for convenience
-  gem 'shoulda-matchers', '~> 3.1'
+  gem 'shoulda-matchers'
 
   # Test database cleanup gem with multiple strategies
   gem 'database_cleaner'

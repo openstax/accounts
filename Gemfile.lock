@@ -1,4 +1,15 @@
 GIT
+  remote: https://github.com/lml/fine_print.git
+  revision: 636023f68e95196dffaf295bfad3ad8051c23542
+  ref: 636023f68e95196dffaf295bfad3ad8051c23542
+  specs:
+    fine_print (6.0.1)
+      action_interceptor
+      jquery-rails
+      rails (< 7)
+      responders
+
+GIT
   remote: https://github.com/openstax/intl-tel-input-rails.git
   revision: 3a63a495822d90bc9ca93e9541ef252fd7a0b50b
   branch: master
@@ -8,9 +19,23 @@ GIT
       sass-rails
 
 GIT
+  remote: https://github.com/openstax/openstax_utilities.git
+  revision: 4a22dd7fb557174f805bb8cc29cd8e60695983f5
+  ref: 4a22dd7fb557174f805bb8cc29cd8e60695983f5
+  specs:
+    openstax_utilities (5.1.1)
+      aws-sdk-autoscaling
+      faraday
+      faraday-http-cache
+      keyword_search
+      lev
+      rails (>= 5.0, < 8.0)
+      request_store
+
+GIT
   remote: https://github.com/openstax/path_prefixer.git
-  revision: 8298c40ec38f132fc23ea946b2b20e855fe73a49
-  ref: 8298c40ec38f132fc23ea946b2b20e855fe73a49
+  revision: e3edfc70589bc90fcffba63b417260a88c1377d7
+  ref: e3edfc70589bc90fcffba63b417260a88c1377d7
   specs:
     openstax_path_prefixer (0.0.1)
       addressable
@@ -23,44 +48,54 @@ GIT
   specs:
     pattern-library (1.1.18)
 
+GIT
+  remote: https://github.com/openstax/rescue_from.git
+  revision: 7a6dcfa0a70e843d2801795e151888bb9f03386a
+  ref: 7a6dcfa0a70e843d2801795e151888bb9f03386a
+  specs:
+    openstax_rescue_from (4.2.0)
+      rails (>= 3.1, < 7.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
-    action_interceptor (1.2.0)
+    action_interceptor (1.2.1)
       addressable
       rails (>= 3.1)
-    actioncable (6.0.6.1)
-      actionpack (= 6.0.6.1)
+    actioncable (6.1.7.8)
+      actionpack (= 6.1.7.8)
+      activesupport (= 6.1.7.8)
       nio4r (~> 2.0)
       websocket-driver (>= 0.6.1)
-    actionmailbox (6.0.6.1)
-      actionpack (= 6.0.6.1)
-      activejob (= 6.0.6.1)
-      activerecord (= 6.0.6.1)
-      activestorage (= 6.0.6.1)
-      activesupport (= 6.0.6.1)
+    actionmailbox (6.1.7.8)
+      actionpack (= 6.1.7.8)
+      activejob (= 6.1.7.8)
+      activerecord (= 6.1.7.8)
+      activestorage (= 6.1.7.8)
+      activesupport (= 6.1.7.8)
       mail (>= 2.7.1)
-    actionmailer (6.0.6.1)
-      actionpack (= 6.0.6.1)
-      actionview (= 6.0.6.1)
-      activejob (= 6.0.6.1)
+    actionmailer (6.1.7.8)
+      actionpack (= 6.1.7.8)
+      actionview (= 6.1.7.8)
+      activejob (= 6.1.7.8)
+      activesupport (= 6.1.7.8)
       mail (~> 2.5, >= 2.5.4)
       rails-dom-testing (~> 2.0)
-    actionpack (6.0.6.1)
-      actionview (= 6.0.6.1)
-      activesupport (= 6.0.6.1)
-      rack (~> 2.0, >= 2.0.8)
+    actionpack (6.1.7.8)
+      actionview (= 6.1.7.8)
+      activesupport (= 6.1.7.8)
+      rack (~> 2.0, >= 2.0.9)
       rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.2.0)
-    actiontext (6.0.6.1)
-      actionpack (= 6.0.6.1)
-      activerecord (= 6.0.6.1)
-      activestorage (= 6.0.6.1)
-      activesupport (= 6.0.6.1)
+    actiontext (6.1.7.8)
+      actionpack (= 6.1.7.8)
+      activerecord (= 6.1.7.8)
+      activestorage (= 6.1.7.8)
+      activesupport (= 6.1.7.8)
       nokogiri (>= 1.8.5)
-    actionview (6.0.6.1)
-      activesupport (= 6.0.6.1)
+    actionview (6.1.7.8)
+      activesupport (= 6.1.7.8)
       builder (~> 3.1)
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
@@ -69,27 +104,29 @@ GEM
       actionpack (>= 3.0.2, < 8.0)
       activemodel (>= 3.0.2, < 8.0)
       activesupport (>= 3.0.2, < 8.0)
-    activejob (6.0.6.1)
-      activesupport (= 6.0.6.1)
+    activejob (6.1.7.8)
+      activesupport (= 6.1.7.8)
       globalid (>= 0.3.6)
-    activemodel (6.0.6.1)
-      activesupport (= 6.0.6.1)
-    activerecord (6.0.6.1)
-      activemodel (= 6.0.6.1)
-      activesupport (= 6.0.6.1)
+    activemodel (6.1.7.8)
+      activesupport (= 6.1.7.8)
+    activerecord (6.1.7.8)
+      activemodel (= 6.1.7.8)
+      activesupport (= 6.1.7.8)
     activerecord-import (1.8.1)
       activerecord (>= 4.2)
-    activestorage (6.0.6.1)
-      actionpack (= 6.0.6.1)
-      activejob (= 6.0.6.1)
-      activerecord (= 6.0.6.1)
+    activestorage (6.1.7.8)
+      actionpack (= 6.1.7.8)
+      activejob (= 6.1.7.8)
+      activerecord (= 6.1.7.8)
+      activesupport (= 6.1.7.8)
       marcel (~> 1.0)
-    activesupport (6.0.6.1)
+      mini_mime (>= 1.1.0)
+    activesupport (6.1.7.8)
       concurrent-ruby (~> 1.0, >= 1.0.2)
-      i18n (>= 0.7, < 2)
-      minitest (~> 5.1)
-      tzinfo (~> 1.1)
-      zeitwerk (~> 2.2, >= 2.2.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     aes_key_wrap (1.1.0)
@@ -101,7 +138,7 @@ GEM
       execjs (~> 2)
     awesome_print (1.9.2)
     aws-eventstream (1.3.0)
-    aws-partitions (1.984.0)
+    aws-partitions (1.987.0)
     aws-record (2.13.2)
       aws-sdk-dynamodb (~> 1, >= 1.85.0)
     aws-sdk-autoscaling (1.121.0)
@@ -205,8 +242,10 @@ GEM
       sass (>= 3.3.0, < 3.5)
     compass-import-once (1.0.5)
       sass (>= 3.2, < 3.5)
-    compass-rails (2.0.1)
+    compass-rails (4.0.0)
       compass (~> 1.0.0)
+      sass-rails (< 5.1)
+      sprockets (< 4.0)
     concurrent-ruby (1.3.4)
     crack (1.0.0)
       bigdecimal
@@ -239,7 +278,7 @@ GEM
     diff-lcs (1.5.1)
     diffy (3.4.2)
     docile (1.4.1)
-    doorkeeper (5.1.2)
+    doorkeeper (5.7.1)
       railties (>= 5)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
@@ -296,19 +335,14 @@ GEM
     ffi (1.17.0)
     ffi (1.17.0-x86_64-darwin)
     ffi (1.17.0-x86_64-linux-gnu)
-    fine_print (6.0.1)
-      action_interceptor
-      jquery-rails
-      rails (< 7)
-      responders
     font-awesome-rails (4.7.0.8)
       railties (>= 3.2, < 8.0)
     formatador (1.1.0)
     get_process_mem (1.0.0)
       bigdecimal (>= 2.0)
       ffi (~> 1.0)
-    globalid (1.1.0)
-      activesupport (>= 5.0)
+    globalid (1.2.1)
+      activesupport (>= 6.1)
     guard (2.18.1)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -375,15 +409,15 @@ GEM
     launchy (3.0.1)
       addressable (~> 2.8)
       childprocess (~> 5.0)
-    lev (10.1.0)
+    lev (12.1.0)
       actionpack (>= 4.2)
       active_attr
       activejob
-      activemodel (>= 4.2)
+      activemodel (>= 6.1)
       activerecord (>= 4.2)
       hashie
+      openstax_transaction_retry
       transaction_isolation
-      transaction_retry
     libv8-node (21.7.2.0)
     libv8-node (21.7.2.0-x86_64-darwin)
     libv8-node (21.7.2.0-x86_64-linux)
@@ -486,33 +520,27 @@ GEM
       active_attr
       rails (>= 5.0, < 7.0)
       restforce
-    openstax_api (9.4.0)
+    openstax_api (9.6.0)
+      addressable
       doorkeeper
       exception_notification
-      lev
+      lev (>= 12.1.0)
       openstax_utilities
-      rails (>= 5.2, < 7)
+      rails (>= 6, <= 8)
       representable
       responders
       roar
-      roar-rails
+      roar-rails (>= 1)
       uber
     openstax_healthcheck (1.0.1)
       rails (>= 3.0)
-    openstax_rescue_from (4.2.0)
-      rails (>= 3.1, < 7.0)
-    openstax_salesforce (8.0.0)
+    openstax_salesforce (8.1.0)
       openstax_active_force
       rails (>= 5.0, < 7.0)
       restforce
-    openstax_utilities (5.1.1)
-      aws-sdk-autoscaling
-      faraday
-      faraday-http-cache
-      keyword_search
-      lev
-      rails (>= 5.0, < 8.0)
-      request_store
+    openstax_transaction_retry (1.2.0)
+      activerecord (>= 5.1)
+      transaction_isolation (>= 1.0.5)
     ostruct (0.6.0)
     p3p (2.0.0)
       rack (>= 1.6.2)
@@ -535,7 +563,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (6.0.1)
-    puma (5.6.9)
+    puma (6.4.3)
       nio4r (~> 2.0)
     puma_worker_killer (1.0.0)
       bigdecimal (>= 2.0)
@@ -551,20 +579,20 @@ GEM
       rack (< 3)
     rack-test (2.1.0)
       rack (>= 1.3)
-    rails (6.0.6.1)
-      actioncable (= 6.0.6.1)
-      actionmailbox (= 6.0.6.1)
-      actionmailer (= 6.0.6.1)
-      actionpack (= 6.0.6.1)
-      actiontext (= 6.0.6.1)
-      actionview (= 6.0.6.1)
-      activejob (= 6.0.6.1)
-      activemodel (= 6.0.6.1)
-      activerecord (= 6.0.6.1)
-      activestorage (= 6.0.6.1)
-      activesupport (= 6.0.6.1)
-      bundler (>= 1.3.0)
-      railties (= 6.0.6.1)
+    rails (6.1.7.8)
+      actioncable (= 6.1.7.8)
+      actionmailbox (= 6.1.7.8)
+      actionmailer (= 6.1.7.8)
+      actionpack (= 6.1.7.8)
+      actiontext (= 6.1.7.8)
+      actionview (= 6.1.7.8)
+      activejob (= 6.1.7.8)
+      activemodel (= 6.1.7.8)
+      activerecord (= 6.1.7.8)
+      activestorage (= 6.1.7.8)
+      activesupport (= 6.1.7.8)
+      bundler (>= 1.15.0)
+      railties (= 6.1.7.8)
       sprockets-rails (>= 2.0.0)
     rails-controller-testing (1.0.5)
       actionpack (>= 5.0.1.rc1)
@@ -585,15 +613,15 @@ GEM
     rails-i18n (7.0.9)
       i18n (>= 0.7, < 2)
       railties (>= 6.0.0, < 8)
-    rails-settings-cached (2.9.4)
+    rails-settings-cached (2.9.5)
       activerecord (>= 5.0.0)
       railties (>= 5.0.0)
-    railties (6.0.6.1)
-      actionpack (= 6.0.6.1)
-      activesupport (= 6.0.6.1)
+    railties (6.1.7.8)
+      actionpack (= 6.1.7.8)
+      activesupport (= 6.1.7.8)
       method_source
-      rake (>= 0.8.7)
-      thor (>= 0.20.3, < 2.0)
+      rake (>= 12.2)
+      thor (~> 1.0)
     rainbow (3.1.1)
     rake (13.2.1)
     rb-fsevent (0.11.2)
@@ -687,17 +715,15 @@ GEM
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     safely_block (0.4.1)
-    sass (3.4.25)
-    sass-rails (6.0.0)
-      sassc-rails (~> 2.1, >= 2.1.1)
+    sass (3.4.19)
+    sass-rails (5.0.8)
+      railties (>= 5.2.0)
+      sass (~> 3.1)
+      sprockets (>= 2.8, < 4.0)
+      sprockets-rails (>= 2.0, < 4.0)
+      tilt (>= 1.1, < 3)
     sassc (2.4.0)
       ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
     sd_notify (0.1.1)
     selenium-webdriver (4.10.0)
       rexml (~> 3.2, >= 3.2.5)
@@ -728,12 +754,13 @@ GEM
     spring (4.2.1)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
-    sprockets (4.2.1)
+    sprockets (3.7.5)
+      base64
       concurrent-ruby (~> 1.0)
-      rack (>= 2.2.4, < 4)
-    sprockets-rails (3.4.2)
-      actionpack (>= 5.2)
-      activesupport (>= 5.2)
+      rack (> 1, < 3)
+    sprockets-rails (3.5.2)
+      actionpack (>= 6.1)
+      activesupport (>= 6.1)
       sprockets (>= 3.0.0)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
@@ -741,17 +768,13 @@ GEM
       diffy (~> 3.0)
       nokogiri (>= 1.3.2)
     thor (1.3.2)
-    thread_safe (0.3.6)
     tilt (2.4.0)
     timecop (0.9.10)
     timeout (0.4.1)
     transaction_isolation (1.0.5)
       activerecord (>= 3.0.11)
-    transaction_retry (1.0.3)
-      activerecord (>= 3.0.11)
-      transaction_isolation (>= 1.0.2)
-    tzinfo (1.2.11)
-      thread_safe (~> 0.1)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
     uber (0.1.0)
     uglifier (4.2.1)
       execjs (>= 0.3.0, < 3)
@@ -799,10 +822,10 @@ DEPENDENCIES
   aws-sdk-cloudwatch
   aws-sdk-rails
   aws-sdk-rds
-  bcrypt (~> 3.1.7)
+  bcrypt
   blazer
   bootsnap
-  bootstrap-sass (~> 3.4.1)
+  bootstrap-sass
   byebug
   capybara
   capybara-email
@@ -810,14 +833,14 @@ DEPENDENCIES
   cgi
   chronic
   codecov
-  coffee-rails (= 5.0.0)
-  compass-rails
+  coffee-rails
+  compass-rails (~> 4.0.0)
   database_cleaner
   db-query-matchers
   delayed_job_active_record
   delayed_job_heartbeat_plugin
   delayed_job_worker_pool
-  doorkeeper (~> 5.1.0)
+  doorkeeper
   dotenv-rails
   error_page_assets
   factory_bot_rails
@@ -825,9 +848,9 @@ DEPENDENCIES
   fakeredis
   faraday
   faraday_middleware
-  fine_print
+  fine_print!
   font-awesome-rails
-  guard-livereload (~> 2.5)
+  guard-livereload
   guard-rspec
   http_accept_language
   i18n-tasks
@@ -839,7 +862,7 @@ DEPENDENCIES
   keyword_search (~> 1.5.0)
   knockoutjs-rails
   launchy
-  lev (~> 10.1.0)
+  lev
   listen
   lograge
   maruku
@@ -855,18 +878,18 @@ DEPENDENCIES
   openstax_api
   openstax_healthcheck
   openstax_path_prefixer!
-  openstax_rescue_from
+  openstax_rescue_from!
   openstax_salesforce
-  openstax_utilities
+  openstax_utilities!
   p3p
   parallel_tests
   pattern-library!
   pg
   premailer-rails
-  puma (~> 5.6.0)
+  puma
   puma_worker_killer
   rack-cors
-  rails (= 6.0.6.1)
+  rails (= 6.1.7.8)
   rails-controller-testing
   rails-erd
   rails-i18n
@@ -876,22 +899,23 @@ DEPENDENCIES
   representable (~> 3.0.0)
   rspec-instafail
   rspec-rails
-  rubocop (~> 0.76.0)
+  rubocop
   rubocop-rspec
+  sass (= 3.4.19)
   sass-rails
   sd_notify
   selenium-webdriver
   sentry-delayed_job
   sentry-rails
   sentry-ruby
-  shoulda-matchers (~> 3.1)
+  shoulda-matchers
   smarter_csv
   spring
   spring-commands-rspec
   timecop
-  uglifier (>= 1.3.0)
+  uglifier
   vcr
-  web-console (~> 3.7)
+  web-console
   webdrivers
   webmock
   whenever
