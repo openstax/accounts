@@ -395,19 +395,24 @@
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <%= f.submit 'Save', class: 'btn btn-primary' %>
-
-      <%= button_to('Delete',
-                    admin_user_path,
-                    class: 'btn btn-danger pull-right',
-                    data: {
-                      confirm: 'Are you sure you want to completely destroy this user account? This is irreversible!',
-                      disable_with: 'Destroying...'
-                    },
-                    method: :delete)
-      %>
     </div>
   </div>
 <% end %>
+
+<div class="form-group">
+  <div class="col-sm-offset-2 col-sm-10">
+    <%= link_to('Destroy User Account',
+                        admin_user_path(@user),
+                        class: 'btn btn-danger pull-right',
+                        style: 'margin-top: -50px; padding-top: -50px;',
+                        data: {
+                          confirm: 'Are you sure you want to completely destroy this user account? This is irreversible!',
+                          disable_with: 'Destroying...'
+                        },
+                        method: :delete)
+          %>
+    </div>
+  </div>
 
 <% if @user.external_ids.any? %>
   <h4>External IDs</h4>
