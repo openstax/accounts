@@ -43,9 +43,11 @@ module Admin
     end
 
     def destroy
-      security_log :user_deleted_by_admin, user_id: params[:id], username: @user.username
+      salesforce_ids = [@user.salesforce_contact_id, @user.salesforce_lead_id].collect(&:to_s)
+      security_log :user_deleted_by_admin, user_id: params[:id], uuid: @user.uuid, salesforce_ids: salesforce_ids
       @user.destroy
-      redirect_to users_url
+      redirect_to admin_users_path
+      flash[:alert] = "User account has been deleted"
     end
 
     def become
@@ -116,7 +118,7 @@ module Admin
       end
 
       # if haven't returned yet, either exploded or contact was `nil` (not found)
-      return false
+      false
     end
 
     def update_user

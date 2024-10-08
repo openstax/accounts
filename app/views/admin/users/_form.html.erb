@@ -395,6 +395,16 @@
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <%= f.submit 'Save', class: 'btn btn-primary' %>
+
+      <%= button_to('Delete',
+                    admin_user_path,
+                    class: 'btn btn-danger pull-right',
+                    data: {
+                      confirm: 'Are you sure you want to completely destroy this user account? This is irreversible!',
+                      disable_with: 'Destroying...'
+                    },
+                    method: :delete)
+      %>
     </div>
   </div>
 <% end %>
