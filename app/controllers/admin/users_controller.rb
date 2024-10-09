@@ -2,7 +2,7 @@ module Admin
   class UsersController < Admin::BaseController
     layout 'admin', except: :js_search
 
-    before_action :get_user, only: [:edit, :update, :destroy, :become]
+    before_action :get_user, only: [:edit, :update, :become, :soft_delete]
 
     # Used by dialog
     def js_search
@@ -42,12 +42,14 @@ module Admin
       end
     end
 
-    def destroy
-      salesforce_ids = [@user.salesforce_contact_id, @user.salesforce_lead_id].collect(&:to_s)
-      security_log :user_deleted_by_admin, user_id: params[:id], uuid: @user.uuid, salesforce_ids: salesforce_ids
-      @user.destroy
+    def soft_delete
+      result = SoftDeleteUser.call(@user)
+
+      security_log :user_deleted_by_admin, user: @user, admin_id: @current_user.id
+
+      # redirect_to admin_users_path
+      flash[:alert] = "Authentications and PII removed from account."
       redirect_to admin_users_path
-      flash[:alert] = "User account has been deleted"
     end
 
     def become

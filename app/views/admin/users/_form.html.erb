@@ -50,6 +50,12 @@
 <%= form_for [:admin, @user], html: {id: 'admin-user-form', class: 'form-horizontal'} do |f| %>
   <%= render "shared/error_messages", :target => @user %>
 
+  <% if @user.is_deleted? %>
+    <div class="alert alert-danger" role="alert">
+      This is a deleted user account. All authentications, external ids, and PII have been removed.
+    </div>
+  <% end %>
+
   <div class="form-group">
     <%= f.label :name, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
@@ -401,8 +407,8 @@
 
 <div class="form-group">
   <div class="col-sm-offset-2 col-sm-10">
-    <%= link_to('Destroy User Account',
-                        admin_user_path(@user),
+    <%= link_to('De-identify User Account',
+                soft_delete_admin_user_path(@user),
                         class: 'btn btn-danger pull-right',
                         style: 'margin-top: -50px; padding-top: -50px;',
                         data: {
