@@ -221,7 +221,7 @@ RSpec::Matchers.define :have_error do |field, message|
 include RSpec::Matchers::Composable
 
   match do |actual|
-    actual.errors.types.include? field and actual.errors.types[field].include? message
+    actual.errors.filter { |err| err.attribute == field }.any? { |err| err.type == message }
   end
 
   failure_message do |actual|

@@ -125,7 +125,8 @@ RSpec.describe CreateExternalUserCredentials, type: :handler do
     it 'returns an error' do
       expect(handler_call.errors).to have_offending_input(:email)
       expect(handler_call.errors.first.message).to eq(
-        I18n.t(:"login_signup_form.invalid_email_provider", email: email)
+        I18n.t(:"activerecord.errors.models.email_address.attributes.value.missing_mx_records",
+               value: email)
       )
     end
   end

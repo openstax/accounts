@@ -636,8 +636,6 @@ GEM
     regexp_parser (2.9.2)
     reline (0.5.10)
       io-console (~> 0.5)
-    render_anywhere (0.0.12)
-      rails (>= 3.0.7)
     representable (3.2.0)
       declarative (< 0.1.0)
       trailblazer-option (>= 0.1.1, < 0.2.0)
@@ -883,7 +881,6 @@ DEPENDENCIES
   rails-i18n
   rails-settings-cached
   redis-rails
-  render_anywhere
   representable
   rspec-instafail
   rspec-rails
