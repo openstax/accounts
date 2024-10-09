@@ -63,7 +63,7 @@ class ContactInfo < ApplicationRecord
   end
 
   def check_if_last_verified
-    if verified? and not user.contact_infos.verified.many? and not destroyed_by_association
+    if verified? and not user.contact_infos.verified.many? and not destroyed_by_association and not user.is_deleted?
       errors.add(:user, :last_verified)
       throw(:abort)
     end

@@ -292,6 +292,7 @@ Rails.application.routes.draw do
       get 'actions', on: :collection
       put 'mark_users_updated', on: :collection
       post 'force_update_lead', on: :member
+      delete 'soft_delete', on: :member
     end
 
     resource :reports, only: [:show]
