@@ -19,20 +19,6 @@ GIT
       sass-rails
 
 GIT
-  remote: https://github.com/openstax/openstax_utilities.git
-  revision: 4a22dd7fb557174f805bb8cc29cd8e60695983f5
-  ref: 4a22dd7fb557174f805bb8cc29cd8e60695983f5
-  specs:
-    openstax_utilities (5.1.1)
-      aws-sdk-autoscaling
-      faraday
-      faraday-http-cache
-      keyword_search
-      lev
-      rails (>= 5.0, < 8.0)
-      request_store
-
-GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: e3edfc70589bc90fcffba63b417260a88c1377d7
   ref: e3edfc70589bc90fcffba63b417260a88c1377d7
@@ -47,14 +33,6 @@ GIT
   ref: c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840
   specs:
     pattern-library (1.1.18)
-
-GIT
-  remote: https://github.com/openstax/rescue_from.git
-  revision: 7a6dcfa0a70e843d2801795e151888bb9f03386a
-  ref: 7a6dcfa0a70e843d2801795e151888bb9f03386a
-  specs:
-    openstax_rescue_from (4.2.0)
-      rails (>= 3.1, < 7.0)
 
 GEM
   remote: https://rubygems.org/
@@ -264,7 +242,6 @@ GEM
       activesupport (>= 4.0, < 7.3)
       rspec (>= 3.0)
     declarative (0.0.20)
-    declarative-option (0.1.0)
     delayed_job (4.1.12)
       activesupport (>= 3.0, < 8.0)
     delayed_job_active_record (4.1.10)
@@ -534,6 +511,8 @@ GEM
       uber
     openstax_healthcheck (1.0.1)
       rails (>= 3.0)
+    openstax_rescue_from (4.2.1)
+      rails (>= 3.1, < 7.0)
     openstax_salesforce (8.1.0)
       openstax_active_force
       rails (>= 5.0, < 7.0)
@@ -541,6 +520,14 @@ GEM
     openstax_transaction_retry (1.2.0)
       activerecord (>= 5.1)
       transaction_isolation (>= 1.0.5)
+    openstax_utilities (5.1.2)
+      aws-sdk-autoscaling
+      faraday
+      faraday-http-cache
+      keyword_search
+      lev
+      rails (>= 5.0, < 8.0)
+      request_store
     ostruct (0.6.0)
     p3p (2.0.0)
       rack (>= 1.6.2)
@@ -651,9 +638,9 @@ GEM
       io-console (~> 0.5)
     render_anywhere (0.0.12)
       rails (>= 3.0.7)
-    representable (3.0.4)
+    representable (3.2.0)
       declarative (< 0.1.0)
-      declarative-option (< 0.2.0)
+      trailblazer-option (>= 0.1.1, < 0.2.0)
       uber (< 0.2.0)
     request_store (1.7.0)
       rack (>= 1.4)
@@ -771,6 +758,7 @@ GEM
     tilt (2.4.0)
     timecop (0.9.10)
     timeout (0.4.1)
+    trailblazer-option (0.1.2)
     transaction_isolation (1.0.5)
       activerecord (>= 3.0.11)
     tzinfo (2.0.6)
@@ -878,9 +866,9 @@ DEPENDENCIES
   openstax_api
   openstax_healthcheck
   openstax_path_prefixer!
-  openstax_rescue_from!
+  openstax_rescue_from
   openstax_salesforce
-  openstax_utilities!
+  openstax_utilities
   p3p
   parallel_tests
   pattern-library!
@@ -896,7 +884,7 @@ DEPENDENCIES
   rails-settings-cached
   redis-rails
   render_anywhere
-  representable (~> 3.0.0)
+  representable
   rspec-instafail
   rspec-rails
   rubocop

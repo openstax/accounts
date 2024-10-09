@@ -11,8 +11,6 @@ tag 'OpenStax Accounts Puma'
 
 NUM_WORKERS = ENV.fetch('WEB_CONCURRENCY') { Etc.nprocessors }.to_i
 
-worker_timeout ENV.fetch('WORKER_TIMEOUT', 60).to_i
-
 stdout_redirect(
   ENV.fetch('STDOUT_LOGFILE', "#{APP_DIR}/log/puma.stdout.log"),
   ENV.fetch('STDERR_LOGFILE', "#{APP_DIR}/log/puma.stderr.log"),
@@ -51,6 +49,11 @@ end
 max_threads_count = ENV.fetch('RAILS_MAX_THREADS') { 5 }
 min_threads_count = ENV.fetch('RAILS_MIN_THREADS') { max_threads_count }
 threads min_threads_count, max_threads_count
+
+# Specifies the `worker_timeout` threshold that Puma will use to wait before
+# terminating a worker in development environments.
+#
+worker_timeout ENV.fetch('WORKER_TIMEOUT', 60).to_i
 
 if ENV['SOCKET']
   # Specifies the `socket` to which Puma will bind to receive requests.

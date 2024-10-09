@@ -73,13 +73,13 @@ gem 'omniauth-google-oauth2'
 gem 'redis-rails'
 
 # Utilities for OpenStax websites
-gem 'openstax_utilities', github: 'openstax/openstax_utilities', ref: '4a22dd7fb557174f805bb8cc29cd8e60695983f5'
+gem 'openstax_utilities'
 
 # API versioning and documentation
 gem 'openstax_api'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from', github: 'openstax/rescue_from', ref: '7a6dcfa0a70e843d2801795e151888bb9f03386a'
+gem 'openstax_rescue_from'
 
 # Sentry integration
 gem 'sentry-ruby'
@@ -113,7 +113,7 @@ gem 'delayed_job_worker_pool'
 gem 'delayed_job_heartbeat_plugin'
 
 # JSON Api builder
-gem 'representable', '~> 3.0.0'
+gem 'representable'
 
 # Keyword search
 gem 'keyword_search', '~> 1.5.0'
