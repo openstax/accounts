@@ -16,7 +16,7 @@ module Newflow
     end
 
     let(:email) do
-      Faker::Internet::free_email
+      Faker::Internet::email
     end
 
     let(:password) do
@@ -184,7 +184,7 @@ module Newflow
         # page contains tooltip
         expect(page).to have_text(t(:"login_signup_form.change_signup_email_form_tooltip"))
 
-        new_email = Faker::Internet::free_email
+        new_email = Faker::Internet.email
         fill_in('change_signup_email_email', with: new_email)
         screenshot!
         find('#login-signup-form').click

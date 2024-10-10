@@ -7,7 +7,7 @@ RSpec.describe CreateExternalUserCredentials, type: :handler do
                              state: User::EXTERNAL
   end
 
-  let(:email) { Faker::Internet.free_email }
+  let(:email) { Faker::Internet.email }
 
   let(:params) do
     {

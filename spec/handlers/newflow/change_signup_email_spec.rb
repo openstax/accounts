@@ -13,7 +13,7 @@ module Newflow
     let(:params) {
       {
         change_signup_email: {
-          email: Faker::Internet.free_email
+          email: Faker::Internet.email
         }
       }
     }

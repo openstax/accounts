@@ -3,7 +3,7 @@ FactoryBot.define do
     current_step do
       [ SheeridVerification::VERIFIED, SheeridVerification::REJECTED, 'pending' ].sample
     end
-    email { Faker::Internet.free_email }
+    email { Faker::Internet.email }
     verification_id { Faker::Internet.uuid }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }

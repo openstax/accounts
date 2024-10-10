@@ -26,7 +26,7 @@ module Newflow
         end
 
         let(:email) do
-          Faker::Internet.free_email
+          Faker::Internet.email
         end
 
         it 'creates an (unverified) user with role = instructor' do
@@ -110,7 +110,7 @@ module Newflow
         end
 
         let(:email) do
-          Faker::Internet.free_email
+          Faker::Internet.email
         end
 
         let(:params) do
