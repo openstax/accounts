@@ -9,10 +9,6 @@ module Newflow
       @email = EmailAddress.find_or_create_by(value: email&.downcase, user_id: user.id)
       @email.is_school_issued = is_school_issued
 
-      @email.customize_value_error_message(
-        error: :missing_mx_records,
-        message: I18n.t(:"login_signup_form.invalid_email_provider", email: @email.value)
-      )
       transfer_errors_from(@email, { scope: :email }, :fail_if_errors)
 
       if @email.new_record? || !@email.verified?

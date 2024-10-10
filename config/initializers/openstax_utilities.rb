@@ -9,7 +9,7 @@ OpenStax::Utilities.configure do |config|
       next
     end
 
-    next if !Rails.application.is_real_production? || current_user.is_administrator?
+    next if !is_real_production? || current_user.is_administrator?
 
     raise SecurityTransgression
   end

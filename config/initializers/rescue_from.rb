@@ -23,11 +23,15 @@ end
 
 OpenStax::RescueFrom.register_exception('Lev::SecurityTransgression', notify: false, status: :forbidden)
 
-# Exceptions in controllers are not automatically reraised in production-like environments
-ActionController::Base.use_openstax_exception_rescue
+ActiveSupport.on_load(:action_controller_base) do
+  # Exceptions in controllers are not automatically reraised in production-like environments
+  ActionController::Base.use_openstax_exception_rescue
+end
 
-# RescueFrom always reraises background exceptions so that the background job may properly fail
-ActiveJob::Base.use_openstax_exception_rescue
+ActiveSupport.on_load(:active_job) do
+  # RescueFrom always reraises background exceptions so that the background job may properly fail
+  ActiveJob::Base.use_openstax_exception_rescue
+end
 
 module OpenStax::RescueFrom
   def self.default_friendly_message

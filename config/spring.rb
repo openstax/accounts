@@ -1,6 +1,9 @@
-%w[
-  .ruby-version
-  .rbenv-vars
-  tmp/restart.txt
-  tmp/caching-dev.txt
-].each { |path| Spring.watch(path) }
+# Prevent warning on OS X
+ENV['OBJC_DISABLE_INITIALIZE_FORK_SAFETY'] = 'YES'
+
+Spring.watch(
+  ".ruby-version",
+  ".rbenv-vars",
+  "tmp/restart.txt",
+  "tmp/caching-dev.txt"
+)

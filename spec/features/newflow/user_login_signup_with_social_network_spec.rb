@@ -103,7 +103,7 @@ feature 'User logs in or signs up with a social network', js: true do
       end
 
       let(:email) do
-        Faker::Internet.free_email
+        Faker::Internet.email
       end
 
       before do
@@ -139,7 +139,7 @@ feature 'User logs in or signs up with a social network', js: true do
     end
 
     context 'when user denies us access to their email address, signs up entering their email manually' do
-      let(:email_value) { Faker::Internet.free_email }
+      let(:email_value) { Faker::Internet.email }
       let(:nil_email_value) { nil }
 
       before do
@@ -178,7 +178,7 @@ feature 'User logs in or signs up with a social network', js: true do
       end
 
       let(:email_value) do
-        Faker::Internet.free_email
+        Faker::Internet.email
       end
 
       let(:social_uid) { 'uid123' }

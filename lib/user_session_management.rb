@@ -38,7 +38,7 @@ module UserSessionManagement
     end
   end
 
-  def sign_in!(user, security_log_data: {})
+  def sign_in!(user, security_log_data = {})
     clear_login_state
 
     @current_user = user || AnonymousUser.instance

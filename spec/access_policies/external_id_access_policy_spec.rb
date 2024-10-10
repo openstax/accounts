@@ -13,16 +13,16 @@ RSpec.describe ExternalIdAccessPolicy do
 
   context 'create' do
     it 'cannot be accessed by users or untrusted apps' do
-      expect(OSU::AccessPolicy.action_allowed?(:search, anon, external_id)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:search, temp, external_id)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:search, user, external_id)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:search, new_social, external_id)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:search, admin, external_id)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:search, app, external_id)).to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:create, anon, external_id)).to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:create, temp, external_id)).to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:create, user, external_id)).to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:create, new_social, external_id)).to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:create, admin, external_id)).to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:create, app, external_id)).to eq false
     end
 
     it 'can be accessed by trusted apps' do
-      expect(OSU::AccessPolicy.action_allowed?(:search, trusted_app, User)).to eq true
+      expect(OSU::AccessPolicy.action_allowed?(:create, trusted_app, external_id)).to eq true
     end
   end
 end

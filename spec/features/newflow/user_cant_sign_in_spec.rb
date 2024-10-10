@@ -194,7 +194,7 @@ feature "User can't sign in", js: true do
     #
     # Technically: same user, same provider, different `uid`.
 
-    email_address = Faker::Internet.free_email
+    email_address = Faker::Internet.email
     user = create_newflow_user(email_address)
     authentication = FactoryBot.create :authentication, provider: 'googlenewflow', user: user
 
