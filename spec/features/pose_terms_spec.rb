@@ -8,7 +8,7 @@ describe 'Terms', type: :feature, js: true do
 
   scenario 'agrees to terms when signatures not present' do
     create_user('user','password', false)
-    log_in('user','password')
+    newflow_log_in_user('user','password')
 
     screenshot!
     expect(page).to have_content("To continue, please review and agree to the following site terms")

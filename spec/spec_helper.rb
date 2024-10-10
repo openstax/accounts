@@ -17,8 +17,12 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
-
   config.include I18nMacros
+
+  def database_cleaner_strategy
+    metadata = self.class.metadata
+    metadata[:js] || metadata[:truncation] ? :truncation : :transaction
+  end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -48,21 +52,17 @@ RSpec.configure do |config|
 
   config.prepend_before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
+    load('db/seeds.rb')
   end
 
   config.prepend_before(:all) do
-    metadata = self.class.metadata
-    DatabaseCleaner.strategy = metadata[:js] || metadata[:truncation] ? :truncation : :transaction
+    DatabaseCleaner.strategy = database_cleaner_strategy
     DatabaseCleaner.start
   end
 
   config.prepend_before(:each) do
     DatabaseCleaner.start
     EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new
-  end
-
-  config.before(:all) do
-    load('db/seeds.rb')
   end
 
   config.before(:each) do
@@ -81,10 +81,12 @@ RSpec.configure do |config|
   #    runs after the after-test cleanup capybara/rspec installs."
   config.append_after(:each) do
     DatabaseCleaner.clean
+    load('db/seeds.rb') if database_cleaner_strategy == :truncation
   end
 
   config.append_after(:all) do
     DatabaseCleaner.clean
+    load('db/seeds.rb') if database_cleaner_strategy == :truncation
   end
 
   # These two settings work together to allow you to limit a spec run

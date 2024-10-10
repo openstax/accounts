@@ -219,8 +219,8 @@ group :development, :test do
   gem 'codecov', require: false
 
   # Speedup and run specs when files change
-  gem 'spring'
-  gem 'spring-commands-rspec'
+  #gem 'spring'
+  #gem 'spring-commands-rspec'
   gem 'guard-rspec'
   gem 'guard-livereload', require: false
 

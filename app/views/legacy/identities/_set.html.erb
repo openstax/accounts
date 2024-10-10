@@ -21,10 +21,10 @@
 
   <%= lev_form_for :set_password, url: '' do |f| %>
 
-    <% fh = FormHelper::One.new(f: f,
-                                context: self,
-                                errors: all_errors,
-                                error_field_classes: "alert alert-danger") %>
+    <% fh = ::FormHelper::One.new(f: f,
+                                  context: self,
+                                  errors: all_errors,
+                                  error_field_classes: "alert alert-danger") %>
 
     <%= fh.text_field name: :password, type: :password,
                       label: :".password",

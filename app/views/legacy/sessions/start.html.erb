@@ -31,10 +31,10 @@
 
   <%= lev_form_for :login, url: lookup_login_path do |f| %>
 
-      <% fh = FormHelper::One.new(f: f,
-                                  context: self,
-                                  errors: @handler_result.try(:errors),
-                                  error_field_classes: "alert alert-danger") %>
+      <% fh = ::FormHelper::One.new(f: f,
+                                    context: self,
+                                    errors: @handler_result.try(:errors),
+                                    error_field_classes: "alert alert-danger") %>
 
       <% if @client_app  %>
           <% if @client_app.name.downcase.include? "tutor" %>

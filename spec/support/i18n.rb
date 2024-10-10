@@ -1,6 +1,6 @@
 module I18nMacros
-  def t key, *args
-      I18n.t key, *args
+  def t key, **options
+      I18n.t key, **options
   end
 end
 

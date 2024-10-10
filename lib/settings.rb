@@ -136,8 +136,8 @@ module Settings
         }
       }
       # The default here enables the old login flow in the test env
-      field :student_feature_flag, type: :boolean, default: !Rails.env.test?
-      field :educator_feature_flag, type: :boolean, default: !Rails.env.test?
+      field :student_feature_flag, type: :boolean, default: true
+      field :educator_feature_flag, type: :boolean, default: true
       field :sheer_id_base_url,
             type: :string, default: 'https://offers.sheerid.com/openstax/staging/teacher/?env=dev'
       field :number_of_days_contacts_modified, type: :integer, default: 7
