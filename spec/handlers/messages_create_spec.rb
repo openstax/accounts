@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe MessagesCreate, type: :handler do
+  include ActiveJob::TestHelper
 
   let!(:trusted_application)   {
     FactoryBot.create :doorkeeper_application, can_message_users: true,
@@ -116,6 +117,8 @@ describe MessagesCreate, type: :handler do
       expect(response).to eq(expected_response)
 
       expect(Message.count).to eq(c + 1)
+
+      perform_enqueued_jobs
 
       expect(Mail::TestMailer.deliveries.length).to eq(1)
     end

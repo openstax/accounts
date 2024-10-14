@@ -92,8 +92,7 @@ module Newflow
       # TODO: this works - something with the selector, also the id on the element is misspelled
       xit 'allows the student to reset their password' do
         visit(newflow_login_path)
-        #byebug
-        newflow_log_in_user(email_address.value, 'WRONGpassword')
+        complete_newflow_log_in_screen(email_address.value, 'WRONGpassword')
         click_link_or_button(t :"login_signup_form.forgot_password")
         expect(page.current_path).to eq(forgot_password_form_path)
         expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
@@ -104,30 +103,30 @@ module Newflow
     end
 
   example 'arriving from Tutor (a Doorkeeper app)' do
-      app = create_tutor_application
-      visit_authorize_uri(app: app, params: { go: 'student_signup' })
-      fill_in 'signup_first_name',	with: 'Sally'
-      fill_in 'signup_last_name',	with: 'Port'
-      fill_in 'signup_email',	with: email
-      fill_in 'signup_password',	with: password
-      submit_signup_form
-      screenshot!
+    app = create_tutor_application
+    visit_authorize_uri(app: app, params: { go: 'student_signup' })
+    fill_in 'signup_first_name',	with: 'Sally'
+    fill_in 'signup_last_name',	with: 'Port'
+    fill_in 'signup_email',	with: email
+    fill_in 'signup_password',	with: password
+    submit_signup_form
+    screenshot!
 
-      # sends an email address confirmation email
-      expect(page.current_path).to eq student_email_verification_form_path
-      open_email email
-      capture_email!(address: email)
-      expect(current_email).to be_truthy
+    # sends an email address confirmation email
+    expect(page.current_path).to eq student_email_verification_form_path
+    open_email email
+    capture_email!(address: email)
+    expect(current_email).to be_truthy
 
-        # ... with a link
-        pin = current_email.find('#pin').text
-        fill_in('confirm_pin', with: pin)
-        screenshot!
-        click_on('commit')
+    # ... with a link
+    pin = current_email.find('#pin').text
+    fill_in('confirm_pin', with: pin)
+    screenshot!
+    click_on('commit')
 
-        # ... redirects you back to Tutor
-        expect(page).not_to have_text(t(:"login_signup_form.youre_done", first_name: 'Sally'))
-        expect(page.current_path).to eq('/external_app_for_specs')
+    # ... redirects you back to Tutor
+    expect(page).not_to have_text(t(:"login_signup_form.youre_done", first_name: 'Sally'))
+    expect(page.current_path).to eq('/external_app_for_specs')
     end
 
     context 'not happy path' do

@@ -43,7 +43,7 @@ RSpec.describe UserSessionManagement, type: :lib do
 
     it 'set_login_state stores the given info in the session' do
       expect(session).to receive(:[]=).with(
-        :login, 'u' => 'username', 'm' => [1], 'n' => ['User'], 'p' => ['identity']
+        :login, {'u' => 'username', 'm' => [1], 'n' => ['User'], 'p' => ['identity']}
       )
       controller.set_login_state(
         username_or_email: 'username',
@@ -214,7 +214,7 @@ RSpec.describe UserSessionManagement, type: :lib do
       session = {}
       allow(controller).to receive(:session).and_return(session)
       expect(session).to receive(:[]=).with(
-        :login, 'u' => 'username', 'm' => [1], 'n' => ['User'], 'p' => ['identity']
+        :login, {'u' => 'username', 'm' => [1], 'n' => ['User'], 'p' => ['identity']}
       )
       controller.set_login_state(
         username_or_email: 'username',

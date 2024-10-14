@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe CreateExternalUserCredentials, type: :handler do
+  include ActiveJob::TestHelper
+
   let(:user)  do
     FactoryBot.create :user, receive_newsletter: false,
                              role: User::UNKNOWN_ROLE,
@@ -53,6 +55,7 @@ RSpec.describe CreateExternalUserCredentials, type: :handler do
         )
       )
       handler_call
+      perform_enqueued_jobs
     end
 
     it "sets the User's role to student" do

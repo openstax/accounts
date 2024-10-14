@@ -127,7 +127,7 @@ module Newflow
 
       it 'allows the educator to reset their password' do
         visit(newflow_login_path)
-        newflow_log_in_user(email_address.value, 'WRONGpassword')
+        complete_newflow_log_in_screen(email_address.value, 'WRONGpassword')
         find('[id=forgot-password-link]').click
         expect(page.current_path).to eq(forgot_password_form_path)
         expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
@@ -227,7 +227,7 @@ module Newflow
 
         # LOG IN
         visit(login_path(return_param))
-        newflow_log_in_user(email_value, password)
+        complete_newflow_log_in_screen(email_value, password)
 
         # Step 3
         expect_sheerid_iframe

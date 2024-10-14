@@ -54,7 +54,7 @@ feature "User can't sign in", js: true do
       # expect(current_email).to have_content('user1 and user2')
       # capture_email!
 
-      # complete_login_username_or_email_screen('user2')
+      # complete_newflow_log_in_screen('user2')
       # expect_authenticate_page
     end
 
@@ -151,7 +151,7 @@ feature "User can't sign in", js: true do
       FactoryBot.create :authentication, provider: 'google_oauth2', user: @user
       password_authentication.destroy
 
-      complete_login_username_or_email_screen('user@example.com')
+      complete_newflow_log_in_screen('user@example.com')
       screenshot!
 
       # TODO somehow simulate oauth failure so we see error message

@@ -99,11 +99,11 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     expect(page).to have_current_path newflow_login_path
 
     # try logging in with the old password
-    newflow_log_in_user('user', 'password')
+    complete_newflow_log_in_screen('user', 'password')
     expect(page).to have_content(t(:"login_signup_form.incorrect_password"))
 
     # try logging in with the new password
-    newflow_log_in_user('user', 'newpassword')
+    complete_newflow_log_in_screen('user', 'newpassword')
     visit profile_newflow_path
     expect_newflow_profile_page
     expect(page).to have_no_missing_translations

@@ -16,7 +16,7 @@ module Newflow
             return_to = capybara_url(external_app_for_specs_path)
             visit newflow_login_path(r: return_to)
             screenshot!
-            newflow_log_in_user('user@openstax.org', 'password')
+            complete_newflow_log_in_screen('user@openstax.org', 'password')
             expect(page.current_url).to eq(return_to)
             screenshot!
           end
@@ -29,7 +29,7 @@ module Newflow
             with_forgery_protection do
               arrive_from_app
               screenshot!
-              newflow_log_in_user('user@openstax.org', 'password')
+              complete_newflow_log_in_screen('user@openstax.org', 'password')
               expect_back_at_app
               screenshot!
             end
@@ -49,7 +49,7 @@ module Newflow
             with_forgery_protection do
               arrive_from_app
               screenshot!
-              newflow_log_in_user('needs_profile_user@openstax.org', 'password')
+              complete_newflow_log_in_screen('needs_profile_user@openstax.org', 'password')
               screenshot!
               expect(page.current_path).to match(signup_profile_path)
             end
@@ -65,7 +65,7 @@ module Newflow
         it 'sends the student to their profile' do
           with_forgery_protection do
             visit newflow_login_path
-            newflow_log_in_user('user@openstax.org', 'password')
+            complete_newflow_log_in_screen('user@openstax.org', 'password')
             expect(page.current_url).to match(profile_newflow_path)
           end
         end
@@ -166,7 +166,7 @@ module Newflow
       xit 'adds a message to the email input field' do
         with_forgery_protection do
           visit newflow_login_path
-          newflow_log_in_user('NOone@openstax.org', 'password')
+          complete_newflow_log_in_screen('NOone@openstax.org', 'password')
           expect(page.current_url).to match(newflow_login_path)
           field_text = find('#login_form_email + .errors.invalid-message').text
           expect(field_text).to  eq(I18n.t(:"login_signup_form.cannot_find_user"))
@@ -178,7 +178,7 @@ module Newflow
       xit 'adds a message to the password input field' do
         with_forgery_protection do
             visit newflow_login_path
-            newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+            complete_newflow_log_in_screen('user@openstax.org', 'WRONGpassword')
             expect(page.current_url).to match(newflow_login_path)
             field_text = find('#login_form_password + .errors.invalid-message').text
             expect(field_text).to  eq(I18n.t(:"login_signup_form.incorrect_password"))
@@ -191,7 +191,7 @@ module Newflow
         with_forgery_protection do
           visit newflow_login_path
           screenshot!
-          newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+          complete_newflow_log_in_screen('user@openstax.org', 'WRONGpassword')
           screenshot!
 
           click_on(I18n.t(:"login_signup_form.forgot_password"))
@@ -223,7 +223,7 @@ module Newflow
           # user is subsequently able to log in with the new password
           click_on('Log out')
           screenshot!
-          newflow_log_in_user('user@openstax.org', 'NEWpassword')
+          complete_newflow_log_in_screen('user@openstax.org', 'NEWpassword')
           expect(page).to  have_content('My Account')
         end
       end

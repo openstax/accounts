@@ -261,13 +261,12 @@ class Api::V1::UsersController < Api::V1::ApiController
   private
 
   def get_sso_token(application, user)
-    # Note: this method changes to keyword arguments in a future Doorkeeper version
     access_token = Doorkeeper::AccessToken.find_or_create_for(
-      application,
-      user.id,
-      '',
-      SSO_TOKEN_INITIAL_DURATION,
-      false,
+      application: application,
+      resource_owner: user.id,
+      scopes: '',
+      expires_in: SSO_TOKEN_INITIAL_DURATION,
+      use_refresh_token: false,
     )
 
     return access_token.token if access_token.created_at > user.updated_at &&
@@ -276,10 +275,9 @@ class Api::V1::UsersController < Api::V1::ApiController
                                    access_token.expires_at >= Time.current + SSO_TOKEN_MIN_DURATION
                                  )
 
-    # Note: replace with create_for() in  a future Doorkeeper version
-    access_token = Doorkeeper::AccessToken.create!(
-      application_id: application.id,
-      resource_owner_id: user.id,
+    access_token = Doorkeeper::AccessToken.create_for(
+      application: application.id,
+      resource_owner: user.id,
       scopes: '',
       expires_in: SSO_TOKEN_INITIAL_DURATION,
       use_refresh_token: false

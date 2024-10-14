@@ -19,24 +19,6 @@ GIT
       sass-rails
 
 GIT
-  remote: https://github.com/openstax/openstax_api.git
-  revision: 0c5a748554c8d8a14ba8201a717321a9ce996f8c
-  ref: 0c5a748554c8d8a14ba8201a717321a9ce996f8c
-  specs:
-    openstax_api (9.6.1)
-      addressable
-      doorkeeper
-      exception_notification
-      lev (>= 12.1.0)
-      openstax_utilities
-      rails (>= 6, <= 8)
-      representable
-      responders
-      roar
-      roar-rails (>= 1)
-      uber
-
-GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: e3edfc70589bc90fcffba63b417260a88c1377d7
   ref: e3edfc70589bc90fcffba63b417260a88c1377d7
@@ -515,6 +497,18 @@ GEM
       active_attr
       rails (>= 5.0, < 7.0)
       restforce
+    openstax_api (9.6.1)
+      addressable
+      doorkeeper
+      exception_notification
+      lev (>= 12.1.0)
+      openstax_utilities
+      rails (>= 6, <= 8)
+      representable
+      responders
+      roar
+      roar-rails (>= 1)
+      uber
     openstax_healthcheck (1.0.1)
       rails (>= 3.0)
     openstax_rescue_from (4.2.1)
@@ -864,7 +858,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api!
+  openstax_api
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from

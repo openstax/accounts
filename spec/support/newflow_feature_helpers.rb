@@ -33,7 +33,7 @@ def complete_newflow_log_in_screen(username_or_email, password = 'password')
   expect(page).to have_no_missing_translations
 end
 
-def newflow_log_in_user(username_or_email, password)
+def newflow_log_in_user(username_or_email, password = 'password')
   visit(newflow_login_path) unless page.current_url == newflow_login_url
   complete_newflow_log_in_screen(username_or_email, password)
 end
