@@ -30,7 +30,7 @@ RSpec.describe User, type: :model do
 
     context 'when the names start populated' do
       before(:each) {
-        user.update_attributes(first_name: "John", last_name: "Smith")
+        user.update(first_name: "John", last_name: "Smith")
       }
 
       it 'is invalid for the first name to become blank' do
@@ -125,7 +125,7 @@ RSpec.describe User, type: :model do
     it 'cannot be updated' do
       user = FactoryBot.create :user
       old_uuid = user.uuid
-      user.update_attributes(first_name: 'New')
+      user.update(first_name: 'New')
       expect(user.reload.first_name).to eq('New')
       expect(user.uuid).to eq(old_uuid)
 
@@ -146,7 +146,7 @@ RSpec.describe User, type: :model do
     it 'cannot be updated' do
       user = FactoryBot.create :user
       old_identifier = user.support_identifier
-      user.update_attributes(first_name: 'New')
+      user.update(first_name: 'New')
       expect(user.reload.first_name).to eq('New')
       expect(user.support_identifier).to eq(old_identifier)
 

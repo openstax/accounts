@@ -5,8 +5,7 @@ feature 'Admin user pages', js: true do
     before(:each) do
       @admin_user = create_admin_user
       visit '/'
-      complete_login_username_or_email_screen('admin')
-      complete_login_password_screen('password')
+      complete_newflow_log_in_screen('admin', 'password')
     end
 
     context "with a user with salesforce contact ID set" do

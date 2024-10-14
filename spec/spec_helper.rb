@@ -169,6 +169,8 @@ RSpec.configure do |config|
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
   end
+
+  config.full_backtrace = !!ENV["BACKTRACE"]
 end
 
 """
@@ -296,7 +298,7 @@ def error_msg model, *args
   end
 
   options[:message] = error
-  Lev::BetterActiveModelErrors.generate_message instance, field, :invalid, options
+  ActiveModel::Error.generate_message field, :invalid, instance, options
 end
 
 # From: https://github.com/rspec/rspec-rails/issues/925#issuecomment-164094792

@@ -19,6 +19,24 @@ GIT
       sass-rails
 
 GIT
+  remote: https://github.com/openstax/openstax_api.git
+  revision: 0c5a748554c8d8a14ba8201a717321a9ce996f8c
+  ref: 0c5a748554c8d8a14ba8201a717321a9ce996f8c
+  specs:
+    openstax_api (9.6.1)
+      addressable
+      doorkeeper
+      exception_notification
+      lev (>= 12.1.0)
+      openstax_utilities
+      rails (>= 6, <= 8)
+      representable
+      responders
+      roar
+      roar-rails (>= 1)
+      uber
+
+GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: e3edfc70589bc90fcffba63b417260a88c1377d7
   ref: e3edfc70589bc90fcffba63b417260a88c1377d7
@@ -497,18 +515,6 @@ GEM
       active_attr
       rails (>= 5.0, < 7.0)
       restforce
-    openstax_api (9.6.0)
-      addressable
-      doorkeeper
-      exception_notification
-      lev (>= 12.1.0)
-      openstax_utilities
-      rails (>= 6, <= 8)
-      representable
-      responders
-      roar
-      roar-rails (>= 1)
-      uber
     openstax_healthcheck (1.0.1)
       rails (>= 3.0)
     openstax_rescue_from (4.2.1)
@@ -653,13 +659,13 @@ GEM
       hashie (>= 1.2.0, < 6.0)
       jwt (>= 1.5.6)
     rexml (3.3.8)
-    roar (1.1.1)
-      representable (~> 3.0)
-    roar-rails (1.1.0)
+    roar (1.2.0)
+      representable (~> 3.1)
+    roar-rails (1.2.0)
       actionpack
       railties (>= 3.0.0)
       responders
-      roar (~> 1.1.0)
+      roar (~> 1.2)
       test_xml (>= 0.1.6)
       uber (< 0.2.0)
     rspec (3.13.0)
@@ -736,9 +742,6 @@ GEM
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
-    spring (4.2.1)
-    spring-commands-rspec (1.0.4)
-      spring (>= 0.9.1)
     sprockets (3.7.5)
       base64
       concurrent-ruby (~> 1.0)
@@ -861,7 +864,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api
+  openstax_api!
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
@@ -895,8 +898,6 @@ DEPENDENCIES
   sentry-ruby
   shoulda-matchers
   smarter_csv
-  spring
-  spring-commands-rspec
   timecop
   uglifier
   vcr

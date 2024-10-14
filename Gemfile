@@ -75,7 +75,7 @@ gem 'redis-rails'
 gem 'openstax_utilities'
 
 # API versioning and documentation
-gem 'openstax_api'
+gem 'openstax_api', github: 'openstax/openstax_api', ref: '0c5a748554c8d8a14ba8201a717321a9ce996f8c'
 
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from'
