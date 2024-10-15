@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_08_205808) do
+ActiveRecord::Schema.define(version: 2024_10_15_172425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -289,7 +289,7 @@ ActiveRecord::Schema.define(version: 2024_10_08_205808) do
     t.text "redirect_uri", null: false
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
-    t.string "scopes"
+    t.string "scopes", default: "", null: false
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
@@ -301,7 +301,7 @@ ActiveRecord::Schema.define(version: 2024_10_08_205808) do
     t.integer "expires_in"
     t.datetime "revoked_at"
     t.datetime "created_at", null: false
-    t.string "scopes"
+    t.string "scopes", default: "", null: false
     t.string "previous_refresh_token", default: "", null: false
     t.index ["application_id", "created_at"], name: "index_oauth_access_tokens_on_application_id_and_created_at", where: "((resource_owner_id IS NULL) AND (revoked_at IS NULL))"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
