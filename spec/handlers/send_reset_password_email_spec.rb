@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe SendResetPasswordEmail, type: :handler do
+  include ActiveJob::TestHelper
+
   let(:user) do
     create_newflow_user('user@openstax.org', 'password')
   end
@@ -17,6 +19,7 @@ describe SendResetPasswordEmail, type: :handler do
     it 'sends a password reset email' do
       expect_any_instance_of(NewflowMailer).to receive(:reset_password_email).and_call_original
       described_class.call(params: {}, caller: user)
+      perform_enqueued_jobs
     end
   end
 
@@ -25,6 +28,7 @@ describe SendResetPasswordEmail, type: :handler do
       user # create it
       expect_any_instance_of(NewflowMailer).to receive(:reset_password_email).and_call_original
       described_class.call(params: params, caller: AnonymousUser.instance)
+      perform_enqueued_jobs
     end
   end
 

@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'User claims an unclaimed account' do
+  include ActiveJob::TestHelper
+
   before do
     turn_on_student_feature_flag
   end
@@ -20,6 +22,7 @@ feature 'User claims an unclaimed account' do
   }
 
   def visit_invite_url
+    perform_enqueued_jobs
     delivery = ActionMailer::Base.deliveries.last
     match = delivery.body.encoded.match(/(confirm\/unclaimed\?code=\w+)/)
     expect(match).to_not be_nil

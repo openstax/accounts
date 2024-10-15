@@ -90,7 +90,9 @@ feature 'User logs in or signs up with a social network', js: true do
               fill_in('signup_email',	with: invalid_email)
               submit_signup_form
               screenshot!
-              expect(page).to have_content(t(:".activerecord.errors.models.email_address.attributes.value.invalid", value: invalid_email))
+              expect(page).to have_content(strip_html(
+                t(:".activerecord.errors.models.email_address.attributes.value.invalid", value: invalid_email)
+              ))
             end
           end
         end

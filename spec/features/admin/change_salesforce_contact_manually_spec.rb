@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'vcr_helper'
 
-RSpec.describe "Change Salesforce contact manually", vcr: VCR_OPTS do
+feature 'Change Salesforce contact manually', js: true, vcr: VCR_OPTS do
   before(:all) do
     VCR.use_cassette('Change_Salesforce_contact_manually/sf_setup', VCR_OPTS) do
       @proxy = SalesforceProxy.new

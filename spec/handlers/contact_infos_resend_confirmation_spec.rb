@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe ContactInfosResendConfirmation, type: :handler do
+  include ActiveJob::TestHelper
 
   let!(:contact_info) { FactoryBot.create :email_address }
   let!(:user)         { contact_info.user }
@@ -14,8 +15,8 @@ describe ContactInfosResendConfirmation, type: :handler do
         receive(:instructions).with(email_address: contact_info, send_pin: false)
       )
 
-        ContactInfosResendConfirmation.call(caller: user,
-                                          params: { id: contact_info.id })
+      ContactInfosResendConfirmation.call(caller: user, params: { id: contact_info.id })
+      perform_enqueued_jobs
     end
   end
 
