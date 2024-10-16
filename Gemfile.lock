@@ -10,6 +10,21 @@ GIT
       responders
 
 GIT
+  remote: https://github.com/lml/lev.git
+  revision: a33c93c83afea63c80b5da6317efec4bfd357df5
+  ref: a33c93c83afea63c80b5da6317efec4bfd357df5
+  specs:
+    lev (13.0.0)
+      actionpack (>= 4.2)
+      active_attr
+      activejob
+      activemodel (>= 6.1)
+      activerecord (>= 4.2)
+      hashie
+      openstax_transaction_isolation
+      openstax_transaction_retry
+
+GIT
   remote: https://github.com/openstax/intl-tel-input-rails.git
   revision: 3a63a495822d90bc9ca93e9541ef252fd7a0b50b
   branch: master
@@ -33,6 +48,23 @@ GIT
   ref: c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840
   specs:
     pattern-library (1.1.18)
+
+GIT
+  remote: https://github.com/openstax/transaction_isolation.git
+  revision: 7387fa091462118704967a7c4b2821cd0f5d9e01
+  ref: 7387fa091462118704967a7c4b2821cd0f5d9e01
+  specs:
+    openstax_transaction_isolation (2.0.0)
+      activerecord (>= 6)
+
+GIT
+  remote: https://github.com/openstax/transaction_retry.git
+  revision: 36e26d0a068756c334b9d1c671d40773bbfc9300
+  ref: 36e26d0a068756c334b9d1c671d40773bbfc9300
+  specs:
+    openstax_transaction_retry (2.0.0)
+      activerecord (>= 6)
+      openstax_transaction_isolation (>= 2)
 
 GEM
   remote: https://rubygems.org/
@@ -386,15 +418,6 @@ GEM
     launchy (3.0.1)
       addressable (~> 2.8)
       childprocess (~> 5.0)
-    lev (12.1.0)
-      actionpack (>= 4.2)
-      active_attr
-      activejob
-      activemodel (>= 6.1)
-      activerecord (>= 4.2)
-      hashie
-      openstax_transaction_retry
-      transaction_isolation
     libv8-node (21.7.2.0)
     libv8-node (21.7.2.0-x86_64-darwin)
     libv8-node (21.7.2.0-x86_64-linux)
@@ -517,9 +540,6 @@ GEM
       openstax_active_force
       rails (>= 5.0, < 7.0)
       restforce
-    openstax_transaction_retry (1.2.0)
-      activerecord (>= 5.1)
-      transaction_isolation (>= 1.0.5)
     openstax_utilities (5.1.2)
       aws-sdk-autoscaling
       faraday
@@ -557,7 +577,7 @@ GEM
       get_process_mem (>= 0.2)
       puma (>= 2.7)
     racc (1.8.1)
-    rack (2.2.9)
+    rack (2.2.10)
     rack-contrib (2.5.0)
       rack (< 4)
     rack-cors (2.0.2)
@@ -754,8 +774,6 @@ GEM
     timecop (0.9.10)
     timeout (0.4.1)
     trailblazer-option (0.1.2)
-    transaction_isolation (1.0.5)
-      activerecord (>= 3.0.11)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
@@ -845,7 +863,7 @@ DEPENDENCIES
   keyword_search (~> 1.5.0)
   knockoutjs-rails
   launchy
-  lev
+  lev!
   listen
   lograge
   maruku
@@ -863,6 +881,8 @@ DEPENDENCIES
   openstax_path_prefixer!
   openstax_rescue_from
   openstax_salesforce
+  openstax_transaction_isolation!
+  openstax_transaction_retry!
   openstax_utilities
   p3p
   parallel_tests
