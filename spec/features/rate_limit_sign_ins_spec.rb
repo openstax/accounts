@@ -129,6 +129,8 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
           expect(page).to have_content(t :"login_signup_form.cannot_find_user")
         end
 
+        # Legacy would prevent this message and just return too_many_lookup_attempts at this point,
+        # but Newflow allows it instead
         enter_bad_username
         expect(page).to have_content(t :"login_signup_form.cannot_find_user")
 
