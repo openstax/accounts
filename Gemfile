@@ -44,6 +44,7 @@ gem 'compass-rails', '~> 4.0.0'
 
 # Prevent deprecation warning coming from Compass in Sass 3.4.20
 gem 'sass', '3.4.19'
+gem 'ffi', '< 1.17'
 
 # CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails'
