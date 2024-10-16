@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe MarkContactInfoVerified, type: :routine do
+describe MarkContactInfoVerified, type: :routine do
   [
     [ :email_address, :verified? ]
   ].each do |klass, method|

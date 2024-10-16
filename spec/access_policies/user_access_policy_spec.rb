@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UserAccessPolicy do
+describe UserAccessPolicy do
 
   let!(:anon)        { AnonymousUser.instance }
   let!(:temp)        { FactoryBot.create :temp_user }

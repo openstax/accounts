@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe ContactInfosResendConfirmation, type: :handler do
-  include ActiveJob::TestHelper
-
   let!(:contact_info) { FactoryBot.create :email_address }
   let!(:user)         { contact_info.user }
 

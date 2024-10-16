@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe FindOrCreateUser do
-  include ActiveJob::TestHelper
-
   let(:user) { FactoryBot.create :user, state: 'unclaimed' }
 
   context "Given an email" do

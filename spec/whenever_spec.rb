@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'whenever schedule' do
+describe 'whenever schedule' do
   let(:schedule) { Whenever::Test::Schedule.new(file: 'config/schedule.rb') }
 
   context 'basics' do

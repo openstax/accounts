@@ -205,6 +205,8 @@ module Newflow
           expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
           screenshot!
 
+          perform_enqueued_jobs
+
           open_email('user@openstax.org')
           capture_email!
           change_password_link = get_path_from_absolute_link(current_email, 'a')

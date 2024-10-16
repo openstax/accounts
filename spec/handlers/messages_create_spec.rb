@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe MessagesCreate, type: :handler do
-  include ActiveJob::TestHelper
-
   let!(:trusted_application)   {
     FactoryBot.create :doorkeeper_application, can_message_users: true,
                        email_from_address: 'app@example.com'

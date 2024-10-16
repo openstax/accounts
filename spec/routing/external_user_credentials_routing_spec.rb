@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ExternalUserCredentialsController, type: :routing do
+describe ExternalUserCredentialsController, type: :routing do
   it "routes to #new" do
     expect(get('/external_user_credentials/new')).to route_to('external_user_credentials#new')
   end

@@ -1,8 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CreateExternalUserCredentials, type: :handler do
-  include ActiveJob::TestHelper
-
+describe CreateExternalUserCredentials, type: :handler do
   let(:user)  do
     FactoryBot.create :user, receive_newsletter: false,
                              role: User::UNKNOWN_ROLE,

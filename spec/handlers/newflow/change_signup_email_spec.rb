@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe ChangeSignupEmail, type: :handler do
-    include ActiveJob::TestHelper
-
+  describe ChangeSignupEmail, type: :handler do
     before do
       FactoryBot.create :email_address, value: before_change_email, verified: false, user: user
     end

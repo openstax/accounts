@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe LoginSignupHelper, type: :helper do
+  describe LoginSignupHelper, type: :helper do
     describe "#extract_params" do
       context 'happy path' do
         subject { helper.extract_params(url) }

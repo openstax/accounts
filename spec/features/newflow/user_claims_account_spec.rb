@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'User claims an unclaimed account' do
-  include ActiveJob::TestHelper
-
   before do
     turn_on_student_feature_flag
   end

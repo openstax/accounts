@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SignupPassword, type: :handler do
+describe SignupPassword, type: :handler do
 
   let(:pre_auth_state) {
     FactoryBot.create(:pre_auth_state, :contact_info_verified, contact_info_value: "bob@armstrong.com")

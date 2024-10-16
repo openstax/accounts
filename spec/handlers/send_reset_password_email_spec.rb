@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe SendResetPasswordEmail, type: :handler do
-  include ActiveJob::TestHelper
-
   let(:user) do
     create_newflow_user('user@openstax.org', 'password')
   end

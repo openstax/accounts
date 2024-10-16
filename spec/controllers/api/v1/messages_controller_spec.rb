@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe Api::V1::MessagesController, type: :controller, api: true, version: :v1 do
-  include ActiveJob::TestHelper
-
   let!(:untrusted_application) {
     FactoryBot.create :doorkeeper_application,
                        email_from_address: 'app@example.com'

@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe SendContactInfoConfirmation do
-  include ActiveJob::TestHelper
-
   let(:email) { FactoryBot.create(:email_address) }
 
   context 'when email address is already verified' do

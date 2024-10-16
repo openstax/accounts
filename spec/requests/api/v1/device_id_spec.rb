@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'device ID tracking',
-               type: :request, api: true, version: :v1 do
+describe 'device ID tracking', type: :request, api: true, version: :v1 do
 
   let!(:user) do
     FactoryBot.create :user_with_emails,

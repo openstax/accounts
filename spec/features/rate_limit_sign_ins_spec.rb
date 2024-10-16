@@ -126,14 +126,14 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         max_attempts_per_ip.times do
           enter_bad_username
-          expect(page).to have_content("We could not find")
+          expect(page).to have_content(t :"login_signup_form.cannot_find_user")
         end
 
         enter_bad_username
-        expect(page).to have_content(t :"controllers.sessions.too_many_lookup_attempts")
+        expect(page).to have_content(t :"login_signup_form.cannot_find_user")
 
         enter_good_username
-        expect(page).to have_content(t :"controllers.sessions.too_many_lookup_attempts")
+        expect(page).to have_content(t :"login_signup_form.too_many_login_attempts")
 
         Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username

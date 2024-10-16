@@ -34,6 +34,8 @@ module Newflow
         submit_signup_form
         screenshot!
 
+        perform_enqueued_jobs
+
         # sends an email address confirmation email
         expect(page.current_path).to eq student_email_verification_form_path
         open_email email
@@ -112,6 +114,8 @@ module Newflow
     submit_signup_form
     screenshot!
 
+    perform_enqueued_jobs
+
     # sends an email address confirmation email
     expect(page.current_path).to eq student_email_verification_form_path
     open_email email
@@ -170,6 +174,8 @@ module Newflow
         submit_signup_form
         screenshot!
 
+        perform_enqueued_jobs
+
         # an email gets sent
         open_email email
         # capture_email!(address: email)
@@ -191,6 +197,8 @@ module Newflow
         click_on('commit')
         screenshot!
         expect(page).to have_text(t(:"login_signup_form.check_your_updated_email"))
+
+        perform_enqueued_jobs
 
         # a different pin is sent in the edited email
         open_email new_email

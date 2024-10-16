@@ -3,8 +3,6 @@ require 'rails_helper'
 module Newflow
   module EducatorSignup
     describe SignupForm, type: :handler do
-      include ActiveJob::TestHelper
-
       before(:all) { load('db/seeds.rb') }
 
       context 'when success' do

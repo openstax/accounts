@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UserExternalUuid, type: :model do
+describe UserExternalUuid, type: :model do
 
   let(:user) { FactoryBot.create :user }
 

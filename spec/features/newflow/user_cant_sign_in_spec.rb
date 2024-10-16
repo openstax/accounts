@@ -49,6 +49,8 @@ feature "User can't sign in", js: true do
       # expect(page.first('input')["placeholder"]).to eq t(:"legacy.sessions.start.username_placeholder")
       # expect(page.first('input').text).to be_blank
 
+      # perform_enqueued_jobs
+
       # open_email(email_address)
       # expect(current_email).to have_content('used on more than one')
       # expect(current_email).to have_content('user1 and user2')
@@ -125,6 +127,8 @@ feature "User can't sign in", js: true do
     #   expect(page).to have_content(t(:"login_signup_form.password_reset_email_sent"))
     #   screenshot!
     #
+    #   perform_enqueued_jobs
+    #
     #   open_email('user@example.com')
     #   capture_email!
     #   change_password_link = get_path_from_absolute_link(current_email, 'a')
@@ -159,6 +163,8 @@ feature "User can't sign in", js: true do
       click_link(t :"legacy.sessions.authenticate_options.add_password")
       expect(page).to have_content(t(:"legacy.identities.send_add.we_sent_email", emails: 'user@example.com'))
       screenshot!
+
+      perform_enqueued_jobs
 
       open_email('user@example.com')
       expect(current_email).to have_content("Click here to add")

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SecurityLog, type: :model do
+describe SecurityLog, type: :model do
   subject(:security_log) { FactoryBot.create :security_log }
 
   it { should belong_to :user }

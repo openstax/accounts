@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe LoginController, type: :controller do
+  describe LoginController, type: :controller do
     before { turn_on_educator_feature_flag }
 
     describe 'GET #login_form' do

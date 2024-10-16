@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ExternalId, type: :model do
+describe ExternalId, type: :model do
   subject { FactoryBot.create :external_id }
 
   it { is_expected.to belong_to(:user) }

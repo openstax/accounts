@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ExternalIdAccessPolicy do
+describe ExternalIdAccessPolicy do
   let!(:anon)        { AnonymousUser.instance }
   let!(:temp)        { FactoryBot.create :temp_user }
   let!(:user)        { FactoryBot.create :user }

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 # Moved multiple request specs here from the controller spec
 
-RSpec.describe 'API cache header verification',
+describe 'API cache header verification',
                type: :request, api: true, version: :v1 do
 
   let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }

@@ -35,6 +35,8 @@ feature 'User manages emails', js: true do
     #   wait_for_ajax
     #   find(".unconfirmed-warning").click
     #
+    #   perform_enqueued_jobs
+    #
     #   capture_email!(address: 'user@mysite.com')
     #   expect(page).to have_no_missing_translations
     #   expect(page).to have_button(I18n.t(:"legacy.users.edit.resend_confirmation"))
@@ -48,6 +50,7 @@ feature 'User manages emails', js: true do
         find('.glyphicon-ok').click
       }
       wait_for_ajax
+      perform_enqueued_jobs
       open_email('user@mysite.com')
       original_link_path = get_path_from_absolute_link(current_email, 'a')
 
@@ -105,6 +108,7 @@ feature 'User manages emails', js: true do
         wait_for_ajax
         find(".unconfirmed-warning").click
       }
+      perform_enqueued_jobs
       capture_email!(address: 'anyone@openstax.org')
       expect(page).to have_no_missing_translations
       expect(page).to have_button(I18n.t(:"legacy.users.edit.resend_confirmation"))

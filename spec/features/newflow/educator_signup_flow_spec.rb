@@ -34,6 +34,8 @@ module Newflow
           submit_signup_form
           screenshot!
 
+          perform_enqueued_jobs
+
           # Step 2
           # sends an email address confirmation email
           expect(page.current_path).to eq(educator_email_verification_form_path)
@@ -83,6 +85,8 @@ module Newflow
           fill_in 'signup_password',	with: password
           submit_signup_form
           screenshot!
+
+          perform_enqueued_jobs
 
           # Step 2
           # sends an email address confirmation email
@@ -197,6 +201,8 @@ module Newflow
         fill_in 'signup_password',	with: password
         submit_signup_form
         screenshot!
+
+        perform_enqueued_jobs
 
         # Step 2
         # sends an email address confirmation email

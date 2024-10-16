@@ -3,8 +3,6 @@ require 'rails_helper'
 module Newflow
   module StudentSignup
     describe SignupForm, type: :handler do
-      include ActiveJob::TestHelper
-
       context 'when success' do
         before(:all) do
           DatabaseCleaner.start

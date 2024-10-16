@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe User, type: :model do
-
+describe User, type: :model do
   subject(:user) { FactoryBot.create :user }
 
   it { is_expected.to have_many :security_logs }
@@ -363,7 +362,9 @@ RSpec.describe User, type: :model do
     context 'with some manually entered emails' do
       before do
         ConfirmContactInfo[@email_a]
+        perform_enqueued_jobs
         ConfirmContactInfo[@email_c]
+        perform_enqueued_jobs
       end
 
       context 'with the user\'s email_addresses and contact_infos not yet loaded' do

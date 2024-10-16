@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UserSessionManagement, type: :lib do
+describe UserSessionManagement, type: :lib do
   let(:user_1)     { FactoryBot.create(:user) }
   let(:user_2)     { FactoryBot.create(:user) }
 

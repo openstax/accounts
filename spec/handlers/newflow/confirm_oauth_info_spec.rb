@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe ConfirmOauthInfo, type: :handler do
+  describe ConfirmOauthInfo, type: :handler do
     before do
       disable_sfdc_client
     end

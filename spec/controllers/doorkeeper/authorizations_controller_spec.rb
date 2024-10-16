@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Doorkeeper::AuthorizationsController, type: :controller do
+describe Doorkeeper::AuthorizationsController, type: :controller do
   before { controller.sign_in! user }
 
   let(:app) { FactoryBot.create :doorkeeper_application }
