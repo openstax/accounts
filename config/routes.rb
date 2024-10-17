@@ -316,7 +316,7 @@ Rails.application.routes.draw do
     resources :users, only: [:create] do
       post 'generate', on: :collection
     end
-  end
+  end unless Rails.env.production?
 
   if Rails.env.test?
     get '/external_app_for_specs' => 'external_app_for_specs#index'
