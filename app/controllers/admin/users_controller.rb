@@ -144,7 +144,7 @@ module Admin
           application_user.roles = au[:roles].split(',').map(&:strip)
           application_user
         end
-        @user.update_attributes! user_params
+        @user.update! user_params
       end
     end
   end

@@ -33,7 +33,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         log_in_correctly_with_username(password: '1234abcd')
         # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
-        expect_profile_page
+        expect_newflow_profile_page
       end
     end
 
@@ -56,7 +56,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
-          expect_profile_page
+          expect_newflow_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
@@ -87,7 +87,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         click_link (t :"layouts.application_header.sign_out")
 
         log_in_correctly_with_email(password: '1234abcd')
-        expect_profile_page
+        expect_newflow_profile_page
         # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
       end
     end
@@ -112,7 +112,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_email
-          expect_profile_page
+          expect_newflow_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
@@ -126,47 +126,49 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         max_attempts_per_ip.times do
           enter_bad_username
-          expect(page).to have_content("We don’t recognize")
+          expect(page).to have_content(t :"login_signup_form.cannot_find_user")
         end
 
+        # Legacy would prevent this message and just return too_many_lookup_attempts at this point,
+        # but Newflow allows it instead
         enter_bad_username
-        expect(page).to have_content(t :"controllers.sessions.too_many_lookup_attempts")
+        expect(page).to have_content(t :"login_signup_form.cannot_find_user")
 
         enter_good_username
-        expect(page).to have_content(t :"controllers.sessions.too_many_lookup_attempts")
+        expect(page).to have_content(t :"login_signup_form.too_many_login_attempts")
 
         Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
-          expect_profile_page
+          expect_newflow_profile_page
         end
       end
     end
   end
 
   def log_in_good_username_bad_password
-    log_in('user', SecureRandom.hex)
+    newflow_log_in_user('user', SecureRandom.hex)
   end
 
   def log_in_good_email_bad_password
-    log_in('user@example.com', SecureRandom.hex)
+    newflow_log_in_user('user@example.com', SecureRandom.hex)
   end
 
   def enter_bad_username
     visit '/'
-    complete_login_username_or_email_screen(SecureRandom.hex)
+    complete_newflow_log_in_screen(SecureRandom.hex)
   end
 
   def enter_good_username
     visit '/'
-    complete_login_username_or_email_screen('user')
+    complete_newflow_log_in_screen('user')
   end
 
   def log_in_correctly_with_username(password: 'password')
-    log_in('user', password)
+    newflow_log_in_user('user', password)
   end
 
   def log_in_correctly_with_email(password: 'password')
-    log_in('user@example.com', password)
+    newflow_log_in_user('user@example.com', password)
   end
 
   def reset_password(password:)

@@ -9,8 +9,7 @@ feature 'Add application to accounts', js: true do
   # scenario 'as an admin user' do
   #   create_admin_user
   #   visit '/'
-  #   complete_login_username_or_email_screen('admin')
-  #   complete_login_password_screen('password')
+  #   complete_newflow_log_in_screen('admin')
   #
   #   visit '/oauth/applications'
   #   expect(page).to have_content('OAuth2 Provider')

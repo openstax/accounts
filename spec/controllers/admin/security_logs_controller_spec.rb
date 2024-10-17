@@ -16,7 +16,7 @@ describe Admin::SecurityLogsController, type: :controller do
     end
 
     it 'passes search parameters to Admin::SearchSecurityLog' do
-      expect(Admin::SearchSecurityLog).to receive(:call).with(query: 'test').and_return(no_results)
+      expect(Admin::SearchSecurityLog).to receive(:call).with({query: 'test'}).and_return(no_results)
 
       get(:show, params: { search: {query: 'test'} })
     end

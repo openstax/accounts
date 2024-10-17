@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe StudentSignupController, type: :controller do
+  describe StudentSignupController, type: :controller do
     describe 'GET #student_signup_form' do
       it 'renders student signup_form' do
         get(:student_signup_form)

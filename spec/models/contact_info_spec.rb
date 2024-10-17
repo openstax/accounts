@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ContactInfo, type: :model do
+describe ContactInfo, type: :model do
   subject(:contact_info) { FactoryBot.create :email_address }
 
   it { is_expected.to validate_presence_of(:value) }

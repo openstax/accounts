@@ -18,11 +18,11 @@ class SsoCookieJar < ActionDispatch::Cookies::AbstractCookieJar
     @parent_jar.delete @@cookie_name, options.reverse_merge(@@cookie_options)
   end
 
-  def parse(name, encrypted_message, purpose: nil)
-    SsoCookie.read encrypted_message
+  def parse(name, data, purpose: nil)
+    SsoCookie.read data
   end
 
-  def commit(options)
+  def commit(name, options)
     options[:value] = SsoCookie.generate options
     options.reverse_merge! @@cookie_options
   end

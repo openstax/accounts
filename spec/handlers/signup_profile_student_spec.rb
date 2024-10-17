@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SignupProfileStudent, type: :handler do
+describe SignupProfileStudent, type: :handler do
 
   before(:each) do
     load 'db/seeds.rb'

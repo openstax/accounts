@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'vcr_helper'
 
-RSpec.describe SheeridAPI, type: :lib, vcr: VCR_OPTS do
+describe SheeridAPI, type: :lib, vcr: VCR_OPTS do
   describe '#get_verification_details' do
     context 'when success' do
       subject(:response) { described_class.get_verification_details(verification_id) }

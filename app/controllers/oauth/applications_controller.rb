@@ -69,9 +69,9 @@ module Oauth
 
     def update
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      
+
       Doorkeeper::Application.transaction do
-        if add_application_owners && @application.update_attributes(app_params)
+        if add_application_owners && @application.update(app_params)
           security_log :application_updated, application_id: @application.id,
                                             application_params: app_params
           flash[:notice] = I18n.t(
@@ -137,18 +137,18 @@ module Oauth
       member_ids = validated_member_ids
       return false if @application.errors.any?
       return true if !current_user.is_administrator? && current_user.oauth_applications.include?(@application)
-    
-      @application.owner.update_attributes(member_ids: member_ids)
+
+      @application.owner.update(member_ids: member_ids)
     end
 
     def validated_member_ids
       return [] if !params[:member_ids].present?
-    
+
       if !params[:member_ids].match(SPACE_SEPARATED_NUMBERS_REGEX)
         @application.errors.add(:owner, 'Member Ids must be a space separated list of integers')
         return false
       end
-    
+
       member_ids = params[:member_ids].split.map(&:to_i)
       member_ids.each do |member_id|
         if !User.where(id: member_id).exists?
@@ -165,7 +165,7 @@ module Oauth
 
     def authenticate_admin_or_oauth_application_owner!
       return if current_user.oauth_applications.any?
-      admin_authentication! 
+      admin_authentication!
     end
   end
 end

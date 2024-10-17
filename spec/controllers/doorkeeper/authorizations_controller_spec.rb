@@ -1,7 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Doorkeeper::AuthorizationsController, type: :controller do
+describe Doorkeeper::AuthorizationsController, type: :controller do
   before { controller.sign_in! user }
+
+  let(:app) { FactoryBot.create :doorkeeper_application }
 
   context '#create' do
     context 'when a student uses social auth' do
@@ -9,7 +11,9 @@ RSpec.describe Doorkeeper::AuthorizationsController, type: :controller do
         let(:user) { FactoryBot.create :user, state: :needs_profile }
 
         it 'redirects to /signup/profile' do
-          post :create, params: { response_type: :code }
+          post :create, params: {
+            client_id: app.uid, redirect_uri: app.redirect_uri, response_type: :code
+          }
           expect(response).to redirect_to signup_profile_url
         end
       end
@@ -17,9 +21,11 @@ RSpec.describe Doorkeeper::AuthorizationsController, type: :controller do
       context 'user with a profile' do
         let(:user) { FactoryBot.create :user, :terms_agreed }
 
-        it 'does not redirect' do
-          post :create, params: { response_type: :code }
-          expect(response).to have_http_status(:unauthorized)
+        it 'redirects to the app, not to /signup/profile' do
+          post :create, params: {
+            client_id: app.uid, redirect_uri: app.redirect_uri, response_type: :code
+          }
+          expect(response).to redirect_to a_string_matching(app.redirect_uri)
         end
       end
     end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe AuthenticateMethods, type: :lib do
+describe AuthenticateMethods, type: :lib do
   let(:user_1)     { FactoryBot.create(:user) }
 
   let(:controller) { ActionController::Base.new }

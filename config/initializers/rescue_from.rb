@@ -4,7 +4,10 @@ secrets = Rails.application.secrets
 exception_secrets = secrets.exception
 OpenStax::RescueFrom.configure do |config|
   # Show the default Rails exception debugging page on dev
-  config.raise_exceptions = EnvUtilities.load_boolean(name: 'RAISE', default: Rails.env.development?)
+  config.raise_exceptions = EnvUtilities.load_boolean(
+    name: 'RAISE',
+    default: Rails.env.development? && Rails.application.config.consider_all_requests_local
+  )
 
   config.app_name = 'Accounts'
   config.contact_name = exception_secrets[:contact_name]&.html_safe
@@ -23,11 +26,15 @@ end
 
 OpenStax::RescueFrom.register_exception('Lev::SecurityTransgression', notify: false, status: :forbidden)
 
-# Exceptions in controllers are not automatically reraised in production-like environments
-ActionController::Base.use_openstax_exception_rescue
+ActiveSupport.on_load(:action_controller_base) do
+  # Exceptions in controllers are not automatically reraised in production-like environments
+  ActionController::Base.use_openstax_exception_rescue
+end
 
-# RescueFrom always reraises background exceptions so that the background job may properly fail
-ActiveJob::Base.use_openstax_exception_rescue
+ActiveSupport.on_load(:active_job) do
+  # RescueFrom always reraises background exceptions so that the background job may properly fail
+  ActiveJob::Base.use_openstax_exception_rescue
+end
 
 module OpenStax::RescueFrom
   def self.default_friendly_message

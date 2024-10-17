@@ -49,12 +49,14 @@ feature "User can't sign in", js: true do
       # expect(page.first('input')["placeholder"]).to eq t(:"legacy.sessions.start.username_placeholder")
       # expect(page.first('input').text).to be_blank
 
+      # perform_enqueued_jobs
+
       # open_email(email_address)
       # expect(current_email).to have_content('used on more than one')
       # expect(current_email).to have_content('user1 and user2')
       # capture_email!
 
-      # complete_login_username_or_email_screen('user2')
+      # complete_newflow_log_in_screen('user2')
       # expect_authenticate_page
     end
 
@@ -125,6 +127,8 @@ feature "User can't sign in", js: true do
     #   expect(page).to have_content(t(:"login_signup_form.password_reset_email_sent"))
     #   screenshot!
     #
+    #   perform_enqueued_jobs
+    #
     #   open_email('user@example.com')
     #   capture_email!
     #   change_password_link = get_path_from_absolute_link(current_email, 'a')
@@ -151,7 +155,7 @@ feature "User can't sign in", js: true do
       FactoryBot.create :authentication, provider: 'google_oauth2', user: @user
       password_authentication.destroy
 
-      complete_login_username_or_email_screen('user@example.com')
+      complete_newflow_log_in_screen('user@example.com')
       screenshot!
 
       # TODO somehow simulate oauth failure so we see error message
@@ -159,6 +163,8 @@ feature "User can't sign in", js: true do
       click_link(t :"legacy.sessions.authenticate_options.add_password")
       expect(page).to have_content(t(:"legacy.identities.send_add.we_sent_email", emails: 'user@example.com'))
       screenshot!
+
+      perform_enqueued_jobs
 
       open_email('user@example.com')
       expect(current_email).to have_content("Click here to add")
@@ -194,7 +200,7 @@ feature "User can't sign in", js: true do
     #
     # Technically: same user, same provider, different `uid`.
 
-    email_address = Faker::Internet.free_email
+    email_address = Faker::Internet.email
     user = create_newflow_user(email_address)
     authentication = FactoryBot.create :authentication, provider: 'googlenewflow', user: user
 

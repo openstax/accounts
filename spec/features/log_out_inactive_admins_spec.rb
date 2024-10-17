@@ -15,7 +15,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   context "logged-in admin user" do
     before(:each) do
       create_admin_user
-      log_in 'admin'
+      newflow_log_in_user 'admin'
       visit admin_feature_url
     end
 
@@ -41,7 +41,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
         Timecop.travel(login_time + 31.minutes)
         visit admin_feature_url
 
-        expect(page).to have_current_path(login_path)
+        expect(page).to have_current_path(newflow_login_path)
       end
     end
 
@@ -63,7 +63,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
         Timecop.travel(login_time + 31.minutes)
         visit admin_feature_url
 
-        expect(page).to have_current_path(login_path)
+        expect(page).to have_current_path(newflow_login_path)
       end
     end
 
@@ -84,7 +84,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   context "logged-in non-admin user" do
     before(:each) do
       create_user 'user'
-      log_in 'user'
+      newflow_log_in_user 'user'
     end
 
     context "when accessing only non-admin features" do
@@ -132,7 +132,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
     scenario "cannot access user features" do
       visit non_admin_feature_url
 
-      expect(page).to have_current_path(login_path)
+      expect(page).to have_current_path(newflow_login_path)
     end
 
     scenario "can access visitor pages" do
@@ -145,7 +145,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   context "non-admin user logs in" do
     scenario "later someone makes him/her an admin" do
       current_user = create_user 'user'
-      log_in 'user'
+      newflow_log_in_user 'user'
       expect(current_user.is_administrator?).to eq false
 
       Timecop.travel(login_time + 31.minutes)
@@ -169,7 +169,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   end
 
   def non_admin_feature_url
-    "/profile"
+    "/i/profile"
   end
 
   def visitor_page_url

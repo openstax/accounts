@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Admin::PreAuthStatesController, type: :controller do
+describe Admin::PreAuthStatesController, type: :controller do
   let(:admin) { FactoryBot.create :user, :admin, :terms_agreed }
 
   before(:each) do

@@ -5,8 +5,7 @@ feature 'Admin oauth app create and edit', js: true do
     before(:each) do
       @admin_user = create_admin_user
       visit '/'
-      complete_login_username_or_email_screen('admin')
-      complete_login_password_screen('password')
+      complete_newflow_log_in_screen('admin')
     end
 
     it 'can create and edit applications' do

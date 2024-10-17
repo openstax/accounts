@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::ExternalIdRepresenter, type: :representer do
+describe Api::V1::ExternalIdRepresenter, type: :representer do
   let(:external_id)     { FactoryBot.create :external_id }
   subject(:representer) { described_class.new external_id }
 

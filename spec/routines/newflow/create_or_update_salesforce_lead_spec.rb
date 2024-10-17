@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'vcr_helper'
 
 module Newflow
-  RSpec.describe CreateOrUpdateSalesforceLead, type: :routine, vcr: VCR_OPTS do
+  describe CreateOrUpdateSalesforceLead, type: :routine, vcr: VCR_OPTS do
 
     before(:all) do
       VCR.use_cassette('Newflow_CreateOrUpdateSalesforceLead/sf_setup', VCR_OPTS) do

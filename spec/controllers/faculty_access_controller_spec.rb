@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe FacultyAccessController, type: :controller do
+describe FacultyAccessController, type: :controller do
   let(:user) do
     create_user('user')
   end

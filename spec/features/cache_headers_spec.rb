@@ -32,9 +32,9 @@ describe "Cache-Control headers", :type => :request do
 
   context "Requests should get cached headers after a while" do
     it 'status code is 200' do
-      get '/profile'
+      get profile_newflow_path
       assert_response 200
-      expect(response.headers["Cache-Control"]).to eq("no-cache, no-store")
+      expect(response.headers["Cache-Control"]).to eq("no-store")
     end
 
     it 'should not allow caching' do

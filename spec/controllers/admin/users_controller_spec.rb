@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Admin::UsersController, type: :controller do
+describe Admin::UsersController, type: :controller do
   let!(:user) { FactoryBot.create :user }
   let!(:identity) { FactoryBot.create :identity, user: user }
   let(:admin) { FactoryBot.create :user, :admin, :terms_agreed }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ContactInfoAccessPolicy do
+describe ContactInfoAccessPolicy do
 
   let!(:contact_info) { FactoryBot.create :email_address }
   let!(:anon)         { AnonymousUser.instance }

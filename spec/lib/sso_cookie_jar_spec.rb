@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SsoCookieJar, type: :lib do
+describe SsoCookieJar, type: :lib do
   let(:secrets)                { Rails.application.secrets.sso }
 
   let(:signature_public_key)   { OpenSSL::PKey::RSA.new secrets[:signature_public_key] }

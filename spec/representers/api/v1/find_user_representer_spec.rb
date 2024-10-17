@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::FindUserRepresenter, type: :representer do
+describe Api::V1::FindUserRepresenter, type: :representer do
   let(:payload)         { Hashie::Mash.new external_ids: [] }
   subject(:representer) { described_class.new payload }
 

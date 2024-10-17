@@ -1,3 +1,34 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# The following keys must be escaped otherwise they will not be retrieved by
+# the default I18n backend:
+#
+# true, false, on, off, yes, no
+#
+# Instead, surround them with single quotes.
+#
+# en:
+#   'true': 'foo'
+#
+# To learn more, please read the Rails Internationalization guide
+# available at https://guides.rubyonrails.org/i18n.html.
+
 en:
   educator_profile_form:
     complete_page_header: Complete your profile
@@ -143,7 +174,6 @@ en:
       Your new password cannot be the same as your current password.
     same_password_error: Your new password cannot be the same as your current password
     email_address_taken: Email already in use
-    invalid_email_provider: '"%{email}" is not a valid email'
     too_many_login_attempts: >-
       You have made too many login attempts recently. Please
       reset your password or try again later.
@@ -379,42 +409,6 @@ en:
 
     attention:
       please_enable_javascript: Please enable JavaScript.
-
-  settings:
-    attributes:
-      subjects:
-        name: Subjects
-        help_block: List of subjects that teachers choose from whe signing up
-      push_salesforce_lead_enabled:
-        name: 'Push leads to Salesforce?'
-        help_block: 'If checked (and SF configured), new accounts will be pushed to SF as Leads'
-      user_info_error_emails_enabled:
-        name: 'Enable user info update error emails?'
-        help_block: 'If checked (and SF configured), once-a-day user update error emails will go out'
-      send_google_analytics:
-        name: 'Send Google Analytics data?'
-        help_block: 'If checked Google Analytics data will be sent.'
-      google_analytics_code:
-        name: 'Google Analytics Code'
-        help_block: 'Example: UA-XXXXXXXX-X'
-      google_tag_manager_code:
-        name: 'Google Tag Manager Code'
-        help_block: 'Example: GTM-XXXX'
-      student_feature_flag:
-        name: New student flow feature flag
-        help_block: New student flow activated?
-      educator_feature_flag:
-        name: New educator flow feature flag
-        help_block: New educator flow activated?
-      sheer_id_base_url:
-        name: SheerID base URL
-        help_block: >-
-          ie. https://offers.sheerid.com/openstax/staging/teacher/?env=dev
-          With the parameters that pre-populate the SheerID form, the full URL will look like
-          ie. https://offers.sheerid.com/openstax/staging/teacher/?env=dev&first_name=Elon&last_name=Musk&email=ceo@spacex.com
-      number_of_days_contacts_modified:
-        name: Contacts modified in last x days
-        help_block: Retrieve contacts modified in the last X days in update_user_salesforce_info
 
   faculty_access:
     apply:

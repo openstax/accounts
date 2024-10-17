@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SearchApplicationUsers do
+describe SearchApplicationUsers do
   let!(:application) { FactoryBot.create :doorkeeper_application }
 
   let!(:user_1)          do

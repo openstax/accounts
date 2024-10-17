@@ -2,7 +2,7 @@
 require 'rails_helper'
 require 'json_and_string_parameter_filter'
 
-RSpec.describe JsonAndStringParameterFilter do
+describe JsonAndStringParameterFilter do
   let!(:string_filters) { [:Email, :last_name, :password] }
   let!(:json_key_filters) { [:password] }
   let!(:value_filters) { [Proc.new { |value| value =~ /^[^@]+@[^.]+\..+/ }] }

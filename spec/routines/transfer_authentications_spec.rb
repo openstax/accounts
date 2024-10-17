@@ -3,8 +3,9 @@ require 'rails_helper'
 describe TransferAuthentications do
   let(:target_user) { FactoryBot.create :temp_user, username: 'target_user' }
   let(:other_user) { FactoryBot.create :temp_user, username: 'other_user'}
+  let(:other_user2) { FactoryBot.create :temp_user, username: 'other_user2'}
   let(:authentication) { FactoryBot.create :authentication, user: other_user, provider: 'google' }
-  let(:authentication2) { FactoryBot.create :authentication, user: nil, provider: 'facebook' }
+  let(:authentication2) { FactoryBot.create :authentication, user: other_user2, provider: 'facebook' }
 
   it 'transfers an authentication to the target user' do
     TransferAuthentications.call(authentication, target_user)

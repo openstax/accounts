@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe SignupController, type: :controller do
+  describe SignupController, type: :controller do
     describe 'GET #welcome' do
       it 'renders welcome form/page' do
         get(:welcome)

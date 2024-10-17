@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe ChangeSignupEmail, type: :handler do
+  describe ChangeSignupEmail, type: :handler do
     before do
       FactoryBot.create :email_address, value: before_change_email, verified: false, user: user
     end
@@ -13,7 +13,7 @@ module Newflow
     let(:params) {
       {
         change_signup_email: {
-          email: Faker::Internet.free_email
+          email: Faker::Internet.email
         }
       }
     }
@@ -39,6 +39,7 @@ module Newflow
           receive(:signup_email_confirmation).once.and_call_original
         )
         described_class.call(params: params, user: user)
+        perform_enqueued_jobs
       end
     end
 

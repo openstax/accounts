@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SequentialFailure, type: :model do
+describe SequentialFailure, type: :model do
   it { should validate_presence_of(:length) }
   it { should validate_presence_of(:reference) }
   subject { SequentialFailure.confirm_by_pin.new }

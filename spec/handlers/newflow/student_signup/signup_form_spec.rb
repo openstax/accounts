@@ -32,7 +32,7 @@ module Newflow
         end
 
         let(:email) do
-          Faker::Internet.free_email
+          Faker::Internet.email
         end
 
         it 'creates an (unverified) user with role = student' do
@@ -74,6 +74,7 @@ module Newflow
             )
           )
           handler_call
+          perform_enqueued_jobs
         end
 
         it 'stores selection in User whether to receive newsletter or not' do
@@ -93,7 +94,7 @@ module Newflow
         end
 
         let(:email) do
-          Faker::Internet.free_email
+          Faker::Internet.email
         end
 
         let(:params) do
@@ -174,7 +175,8 @@ module Newflow
           result = described_class.call(params: params)
           expect(result.errors).to have_offending_input(:email)
           expect(result.errors.first.message).to eq(
-            I18n.t(:"login_signup_form.invalid_email_provider", email: 'user@baddomain.com')
+            I18n.t(:"activerecord.errors.models.email_address.attributes.value.missing_mx_records",
+                   value: 'user@baddomain.com')
           )
         end
       end

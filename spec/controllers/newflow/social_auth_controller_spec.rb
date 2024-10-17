@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe SocialAuthController, type: :controller do
+  describe SocialAuthController, type: :controller do
     describe 'GET #oauth_callback' do
       let(:info) do
         { email: 'user@openstax.org', name: Faker::Name.name }

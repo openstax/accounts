@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UserFromPreAuthState, type: :routine do
+describe UserFromPreAuthState, type: :routine do
 
   context 'an unsigned state' do
     let(:pre_auth_state) { FactoryBot.create :pre_auth_state }

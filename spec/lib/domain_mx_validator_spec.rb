@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe EmailDomainMxValidator, type: :lib do
+describe EmailDomainMxValidator, type: :lib do
   let(:invalid_provider) { 'invalidjunk123.com' }
 
   it 'delegates responsibility to a strategy object' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe School, type: :model do
+describe School, type: :model do
   subject(:school) { FactoryBot.create :school }
 
   it 'can use fuzzy search to find matching cached Schools from SheerID data' do

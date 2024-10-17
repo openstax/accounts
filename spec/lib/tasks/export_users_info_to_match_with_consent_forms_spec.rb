@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ExportUsersInfoToMatchWithConsentForms, type: :routine do
+describe ExportUsersInfoToMatchWithConsentForms, type: :routine do
 
   context "as a Lev output with student information" do
     let!(:user_1){ FactoryBot.create :user, username: "TonyStark", first_name: "Tony", last_name: "Stark" }

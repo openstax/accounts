@@ -3,9 +3,9 @@ class ApplicationUser < ApplicationRecord
                            inverse_of: :application_users
   belongs_to :user, inverse_of: :application_users
 
-  belongs_to :default_contact_info, class_name: 'ContactInfo'
+  belongs_to :default_contact_info, optional: true, class_name: 'ContactInfo'
 
-  validates_presence_of :user, :application
+  validates_presence_of :application
   validates_uniqueness_of :user_id, scope: :application_id
   validate :contact_info_belongs_to_user
 

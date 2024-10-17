@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Admin::ImportUsers, type: :routine do
+describe Admin::ImportUsers, type: :routine do
 
   let(:filename) { 'spec/fixtures/users.json' }
 

@@ -1,7 +1,7 @@
 class MessageRecipient < ApplicationRecord
   belongs_to :message, inverse_of: :message_recipients
   belongs_to :contact_info, inverse_of: :message_recipients
-  belongs_to :user, inverse_of: :message_recipients
+  belongs_to :user, optional: true, inverse_of: :message_recipients
 
   validates :message, presence: true
   validates_uniqueness_of :contact_info_id, scope: :message_id,

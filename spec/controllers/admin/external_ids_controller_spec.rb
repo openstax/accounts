@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Admin::ExternalIdsController, type: :controller do
+describe Admin::ExternalIdsController, type: :controller do
   let!(:external_id) { FactoryBot.create :external_id }
   let(:admin)        { FactoryBot.create :user, :admin, :terms_agreed }
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Legacy::UsersController, :type => :routing do
+describe Legacy::UsersController, :type => :routing do
   describe "routing" do
 
     it "routes to #edit" do

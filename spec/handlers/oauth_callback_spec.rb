@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe OauthCallback, type: :handler do
+describe OauthCallback, type: :handler do
   let(:email) { Faker::Internet.email }
 
   context 'when existing authentication found' do

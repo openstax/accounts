@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Admin::SearchSecurityLog, type: :routine do
+describe Admin::SearchSecurityLog, type: :routine do
 
   before(:each) do
     @user = FactoryBot.create :user, first_name: 'Test', last_name: 'User', username: 'TestUser'

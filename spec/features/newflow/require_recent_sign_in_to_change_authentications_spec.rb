@@ -17,7 +17,7 @@ feature 'Require recent log in to change authentications', js: true do
 
   # scenario 'adding Facebook' do
   #   visit '/'
-  #   newflow_log_in_user(email_value, 'password')
+  #   complete_newflow_log_in_screen(email_value, 'password')
   #
   #   expect(page.current_path).to eq(profile_newflow_path)
   #
@@ -48,7 +48,7 @@ feature 'Require recent log in to change authentications', js: true do
   scenario 'changing the password' do
     with_forgery_protection do
       visit '/'
-      newflow_log_in_user(email_value, 'password')
+      complete_newflow_log_in_screen(email_value, 'password')
       expect(page).to have_no_missing_translations
 
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do

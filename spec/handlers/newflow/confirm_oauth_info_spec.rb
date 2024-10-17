@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe ConfirmOauthInfo, type: :handler do
+  describe ConfirmOauthInfo, type: :handler do
     before do
       disable_sfdc_client
     end
@@ -11,7 +11,7 @@ module Newflow
         signup: {
           first_name: 'Bryan',
           last_name: 'Dimas',
-          email: Faker::Internet.free_email,
+          email: Faker::Internet.email,
           newsletter: '1',
           terms_accepted: '1',
           contract_1_id: FinePrint::Contract.first.id,

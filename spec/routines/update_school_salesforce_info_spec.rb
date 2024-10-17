@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UpdateSchoolSalesforceInfo, type: :routine do
+describe UpdateSchoolSalesforceInfo, type: :routine do
   let!(:school)                    { FactoryBot.build :school }
   let!(:deleted_school)            { FactoryBot.create :school }
   let!(:deleted_school_with_users) do

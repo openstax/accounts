@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Admin::ExportUsers, type: :routine do
+describe Admin::ExportUsers, type: :routine do
 
   before(:all) do
     @user_1 = FactoryBot.create :user_with_emails
