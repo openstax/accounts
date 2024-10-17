@@ -9,9 +9,8 @@ OpenStax::Utilities.configure do |config|
       next
     end
 
-    next if !is_real_production? || current_user.is_administrator?
-
-    raise SecurityTransgression
+    raise SecurityTransgression if Rails.application.secrets.environment_name == 'production' &&
+                                   !current_user.is_administrator?
   end
   secrets = Rails.application.secrets
   config.environment_name = secrets.environment_name
