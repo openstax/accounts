@@ -17,27 +17,6 @@ stdout_redirect(
   true
 ) if ActiveModel::Type::Boolean.new.cast(ENV.fetch('REDIRECT_STDOUT', false))
 
-before_fork do
-  require 'puma_worker_killer'
-
-  PumaWorkerKiller.config do |config|
-    # Restart workers when they start consuming too much of the RAM
-    config.ram = ENV.fetch('MAX_MEMORY') do
-      ENV.fetch('MAX_WORKER_MEMORY', 1024).to_i * NUM_WORKERS
-    end.to_i
-
-    config.frequency = 10
-
-    config.percent_usage = 0.75
-
-    config.rolling_restart_frequency = false
-
-    config.reaper_status_logs = false
-  end
-
-  PumaWorkerKiller.start
-end
-
 # https://github.com/rails/rails/blob/master/railties/lib/rails/generators/rails/app/templates/config/puma.rb.tt
 
 # Puma can serve each request in a thread from an internal thread pool.
@@ -83,6 +62,27 @@ workers NUM_WORKERS
 # process behavior so workers use less memory.
 #
 preload_app! if ActiveModel::Type::Boolean.new.cast(ENV.fetch('PRELOAD_APP', false))
+
+before_fork do
+  require 'puma_worker_killer'
+
+  PumaWorkerKiller.config do |config|
+    # Restart workers when they start consuming too much of the RAM
+    config.ram = ENV.fetch('MAX_MEMORY') do
+      ENV.fetch('MAX_WORKER_MEMORY', 1024).to_i * NUM_WORKERS
+    end.to_i
+
+    config.frequency = 10
+
+    config.percent_usage = 0.75
+
+    config.rolling_restart_frequency = false
+
+    config.reaper_status_logs = false
+  end
+
+  PumaWorkerKiller.start
+end
 
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart

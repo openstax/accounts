@@ -40,7 +40,7 @@ gem 'sass-rails'
 gem 'bootstrap-sass'
 
 # Compass stylesheets
-gem 'compass-rails', '~> 4.0.0'
+gem 'compass-rails'
 
 # Prevent deprecation warning coming from Compass in Sass 3.4.20
 gem 'sass', '3.4.19'
@@ -222,8 +222,8 @@ group :development, :test do
   gem 'codecov', require: false
 
   # Speedup and run specs when files change
-  #gem 'spring'
-  #gem 'spring-commands-rspec'
+  gem 'spring'
+  gem 'spring-commands-rspec'
   gem 'guard-rspec'
   gem 'guard-livereload', require: false
 

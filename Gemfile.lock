@@ -754,6 +754,9 @@ GEM
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
+    spring (4.2.1)
+    spring-commands-rspec (1.0.4)
+      spring (>= 0.9.1)
     sprockets (3.7.5)
       base64
       concurrent-ruby (~> 1.0)
@@ -833,7 +836,7 @@ DEPENDENCIES
   chronic
   codecov
   coffee-rails
-  compass-rails (~> 4.0.0)
+  compass-rails
   database_cleaner
   db-query-matchers
   delayed_job_active_record
@@ -911,6 +914,8 @@ DEPENDENCIES
   sentry-ruby
   shoulda-matchers
   smarter_csv
+  spring
+  spring-commands-rspec
   timecop
   uglifier
   vcr
