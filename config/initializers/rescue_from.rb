@@ -5,7 +5,8 @@ exception_secrets = secrets.exception
 OpenStax::RescueFrom.configure do |config|
   # Show the default Rails exception debugging page on dev
   config.raise_exceptions = EnvUtilities.load_boolean(
-    name: 'RAISE', default: Rails.application.config.consider_all_requests_local
+    name: 'RAISE',
+    default: Rails.env.development? && Rails.application.config.consider_all_requests_local
   )
 
   config.app_name = 'Accounts'
