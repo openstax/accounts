@@ -34,6 +34,7 @@ feature 'Admin user pages', js: true do
 
       context 'popup console' do
         it 'searches users and does not explode' do
+          Capybara.current_session.current_window.resize_to 1200, 1200
           visit '/'
           click_link 'Popup Console'
           wait_for_ajax(10) # for some reason this is slow

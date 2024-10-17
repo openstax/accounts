@@ -5,7 +5,7 @@ describe "Remove accounts path prefix" do
   let(:request) { Rack::MockRequest.new(app) }
 
   context "Requests should get routed to the appropriate controllers" do
-    it "should recieve profile info in show page" do
+    it "should receive profile info in show page" do
       expect_any_instance_of(Api::V1::UsersController).to receive(:show)
       request.get("/accounts/api/user")
     end
