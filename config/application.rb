@@ -19,8 +19,7 @@ module Accounts
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults
-    config.active_record.belongs_to_required_by_default = false
+    # Autoload all files in lib
     config.autoload_paths += %W(#{config.root}/lib)
   end
 end

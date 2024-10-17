@@ -135,7 +135,8 @@ class User < ApplicationRecord
 
   belongs_to :school, optional: true, inverse_of: :users
 
-  belongs_to :source_application, class_name: "Doorkeeper::Application", foreign_key: "source_application_id"
+  belongs_to :source_application, optional: true,
+             class_name: 'Doorkeeper::Application', foreign_key: :source_application_id
 
   has_one :identity, dependent: :destroy, inverse_of: :user
   has_one :pre_auth_state
