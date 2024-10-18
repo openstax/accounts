@@ -36,7 +36,7 @@ jobs:
         with:
           bundler-cache: true
       - run: yarn
-      - name: Ensure playwright gem and package.json versions match
+      - name: Ensure capybara-playwright-driver and package.json Playwright versions match
         run: |
           capybara_playwright_version=$(
             bundle exec ruby -e 'require "playwright"; puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip'
@@ -47,9 +47,9 @@ jobs:
           echo "Playwright version in package.json: $package_json_playwright"
 
           if [[ $ruby_gem_playwright = $package_json_playwright ]]; then
-            echo 'Versions match'
+            echo 'Versions match.'
           else
-            echo "Versions don't match"
+            echo "Versions don't match. Aborting..."
             exit 1
           fi
       # https://justin.searls.co/posts/running-rails-system-tests-with-playwright-instead-of-selenium/
