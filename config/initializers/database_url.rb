@@ -22,7 +22,7 @@ module DatabaseUrl
   end
 
   def self.db_config
-    config = YAML::load(ERB.new(IO.read(config_file)).result)
+    config = YAML::load(ERB.new(File.read(config_file)).result)
     config[env]
   end
 
