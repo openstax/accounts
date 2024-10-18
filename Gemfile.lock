@@ -901,6 +901,7 @@ DEPENDENCIES
   rails-settings-cached
   redis-rails
   representable
+  rexml
   rspec-instafail
   rspec-rails
   rubocop

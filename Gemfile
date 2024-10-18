@@ -102,6 +102,7 @@ gem 'smarter_csv'
 # API documentation
 gem 'apipie-rails'
 gem 'maruku'
+gem 'rexml'
 
 gem 'jbuilder'
 
@@ -184,9 +185,6 @@ gem 'rack-cors'
 
 # Data visualization and query
 gem 'blazer'
-
-# temp fix until we update old dependencies
-# gem "net-http"
 
 group :development, :test do
   # Run specs in parallel
