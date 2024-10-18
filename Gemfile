@@ -274,10 +274,10 @@ group :test do
 
   gem 'db-query-matchers'
 
-  # Run feature tests with Capybara + Selenium; choose which driver gems to use
+  # Run feature tests with Capybara + Playwright; choose which driver gems to use
   # based on test environment.
   gem 'capybara'
-  gem 'selenium-webdriver', require: false
+  gem 'capybara-playwright-driver'
   gem 'webdrivers', require: false
 
   # Testing emails

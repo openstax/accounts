@@ -35,8 +35,13 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Test
+      - name: Playwright
         run: |
-          bundle install --jobs 4 --retry 3
-          bundle exec rake parallel:create parallel:load_schema parallel:seed --trace
-          WORKERS=4 bundle exec rake parallel:spec
+          yarn
+          yarn playwright install
+      - name: Test
+        env:
+          WORKERS: 4
+        run: |
+          bin/rake parallel:setup
+          bin/rake parallel:spec

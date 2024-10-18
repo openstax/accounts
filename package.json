@@ -1,0 +1,13 @@
+{
+  "name": "accounts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/openstax/accounts.git",
+  "author": "OpenStax",
+  "license": "AGPL-3.0-or-later",
+  "devDependencies": {
+    "@playwright/test": "^1.48.1",
+    "@types/node": "^22.7.6"
+  },
+  "scripts": {}
+}

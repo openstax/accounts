@@ -4,62 +4,38 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile ~/.gitignore_global
 
-# Ignore bundler config.
+# Bundler config and custom gem path
 /.bundle
+/vendor/bundle
 
-# Ignore environment variables
+# Byebug history files
+.byebug_history
+
+# Codecov coverage reports
+/coverage
+
+# Environment variables
 .env
 
-# Ignore the default SQLite database.
-/db/*.sqlite3
-/db/*.sqlite3-journal
-
-# Ignore all logfiles and tempfiles.
-/log/*
-!/log/.keep
+# Logfiles and tempfiles
+/log
 /tmp
 
-# Ignore public precompiled assets
-/public/assets
+# OS X's Desktop Service Store and Unix editor temp files
+*.DS_Store
+*~
 
-# Ignore precompiled static error pages
+# Node modules (Playwright)
+node_modules/
+
+# Public precompiled assets and static error pages
+/public/assets
 /public/404.html
-/public/422.html
 /public/500.html
 /public/503.html
 
-# Ignore
-/vendor/bundle
-
-# Ignore yaml_db database files
-/db/data.yml*
-
-# Ignore Cucumber and RSpec failure information
-cucumber_rerun.txt
-.rspec_last_failures
-
-# Ignore byebug history files
-.byebug_history
-
-# Ignore webdrivers lock file
-.webdrivers_update
-
-# Ignore Coverage reports
-coverage/*
-
-# Ignore Brakeman security scan results
-brakeman.html
-
-# Ignore OS X's Desktop Service Store files
-*.DS_Store
-
-.generators
-.rakeTasks
-
-# Ignore unix editor temp files
-*~
-
-# Ignore binary created by redis-server
+# Redis-server DB dump
 dump.rdb
 
-.idea
+# RSpec failure information
+.rspec_last_failures

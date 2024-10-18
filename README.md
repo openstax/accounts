@@ -16,13 +16,8 @@ OpenStax Accounts is a centralized User Account services provider for various Op
 
 It uses OAuth mechanisms and API keys to provide these services to OpenStax products and their users.
 
-Accounts requires the repeatable read isolation level to work properly. If using PostgreSQL, add the following to your `postgresql.conf`:
-
-```Ruby
-default_transaction_isolation = 'repeatable read'
-```
-
 ## Usage — topics
+
 * [Different ways to create a user account](#different-ways-to-create-a-user-account)
 * [What happens during sign up](#what-happens-during-sign-up)
 Which records need to be created and why.
@@ -35,15 +30,181 @@ The app behavior changes depending on the value of these parameters.
 * [Salesforce](#salesforce)
 
 ## Concepts
+
 * [Lev handlers](#lev-handlers)
 * [Lev routines](#lev-routines)
 * [Leads](#"leads")
 
-## Dev Environment Setup
+## Local dev environment
 
-Accounts can be run as a normal Rails app on your machine or in a Docker container.
+Accounts can be run as a normal Rails app on your machine.
 
-### Docker
+### Initial setup
+
+First, install the required dependencies: libpq, postgresql and rbenv.
+For example, on OS X, with Homebrew:
+
+```sh
+brew install libpq postgresql rbenv ruby-build
+```
+
+Then follow any installation instructions that Homebrew may print
+to activate rbenv or to configure PostgreSQL.
+
+Once all of that is done, start PostgreSQL:
+
+```sh
+brew services start postgresql
+```
+
+Then create the PostgreSQL user that Accounts will use:
+
+```sh
+psql postgres -c "CREATE USER ox_accounts with SUPERUSER PASSWORD 'ox_accounts';"
+```
+
+Then clone the repository, navigate to it, and install the version of Ruby listed in .ruby-version:
+
+```sh
+rbenv install $(cat .ruby-version)
+```
+
+Install all the required gems:
+
+```sh
+bundle
+```
+
+Copy `.env.example` into a new `.env` file:
+
+```sh
+cp .env.example .env
+```
+
+To create a new empty database:
+
+```sh
+rails db:setup
+```
+
+Now you can run:
+
+```sh
+rails s
+```
+
+After a short delay, Accounts will start up on port 2999. Visit http://localhost:2999.
+
+### If you get an error about loading the incorrect version of some gem
+
+Calling `rails`, `rake`, etc should execute the scripts in the `bin` directory
+via rbenv shims, which should load the proper versions of your gems.
+This can be verified by running the following command:
+
+```sh
+which rails
+```
+
+The output should be something like `/Users/yourusername/.rbenv/shims/rails`.
+
+If that doesn't happen automatically, you can try one of the following:
+A. Install an rbenv plugin that does this for you, for example:
+   https://github.com/Purple-Devs/rbenv-binstubs
+B. Add `./bin` to your `$PATH` in your shell profile.
+   This is unsafe if you happen to browse untrusted projects with `bin` folders on your computer.
+C. Manually prefix all commands with `bin/`, like `bin/rails`.
+D. Manually prefix all commands with `bundle exec`.
+
+### Running background jobs
+
+Accounts in production runs background jobs using `delayed_job`.
+In the development environment, however, background jobs are run "inline", i.e. in the foreground.
+
+To actually run these jobs in the background in the development environment,
+set the environment variable `USE_REAL_BACKGROUND_JOBS=true` in your `.env` file
+and then start the `delayed_job` daemon:
+
+```sh
+rake jobs:work
+```
+
+### Running specs (automated tests)
+
+To run specs, first install playwright and its drivers:
+
+```sh
+yarn
+yarn playwright install
+```
+
+Then simply run:
+
+```sh
+rake
+```
+
+To rerun an individual test after failure, grab the command from the error message:
+
+```sh
+rspec ./spec/path/to/some_spec.rb:linenumber
+```
+
+You may have to rerun `yarn playwright install` from time to time to update your browser drivers.
+
+#### Debugging spec failures
+
+##### Debug console
+
+If you need to get a debugger into some test or application code,
+an easy way is to activate byebug like this:
+
+```sh
+export DEBUGGER=byebug
+```
+
+Then add a `debugger` statement where you want a breakpoint, save the file,
+then just rerun the test as normal and you should get a debugger console:
+
+```sh
+rspec ./spec/path/to/some_spec.rb:linenumber
+```
+
+##### Debugging exceptions thrown in feature specs
+
+When running feature specs, the default behavior is for exceptions to be rescued and
+nice error pages to be shown. This can make debugging difficult if you're not expecting an error.
+To not rescue exceptions, run with `RAISE=true`:
+
+```sh
+RAISE=true rspec ./spec/path/to/some_spec.rb:linenumber
+```
+
+The exception and backtrace may still only be displayed in `page.body`,
+so you may need to print that out.
+
+##### Debugging exceptions thrown in gems
+
+You can get a backtrace that includes gem code with:
+
+```sh
+BACKTRACE=true rspec ./spec/path/to/some_spec.rb:linenumber
+```
+
+To test changes to gems, clone the relevant gem repo and then use the following in the Gemfile:
+
+```rb
+gem 'some-gem', path: './some-gem'
+```
+
+Or to load the gem from GitHub:
+
+```rb
+gem 'some-gem', github: 'openstax/some-gem', ref: 'commit-or-branch'
+```
+
+## Docker (we have not used this in a while, it may or may not work)
+
+### Initial setup
 
 ```bash
 # build the image
@@ -54,63 +215,7 @@ $> docker-compose up -d
 $> docker-compose up -d && docker attach accounts_app_1
 ```
 
-### Directly on your machine
-
-#### Database setup
-
-If you don't have postgresql already installed, on Mac:
-
-```sh
-$ brew install postgresql
-$ brew services start postgresql
-$ psql postgres
-CREATE ROLE ox_accounts WITH LOGIN;
-ALTER USER ox_accounts WITH SUPERUSER;
-\q
-```
-
-#### Running as a normal Rails app on your machine
-
-First, ensure you have a Ruby version manager installed, such as [rbenv](https://github.com/rbenv/rbenv#installation) or RVM to manage your ruby versions. Then, install the Ruby version specified in the `.ruby-version` file (2.3.3 at the time of this writing, or above).
-
-To start running Accounts in a development environment, clone the repository and then run:
-
-```sh
-$ bundle install --without production
-```
-
-Just like with any Rails app, you need to create, migrate, and then seed the database with some default records:
-
-```sh
-$ rake db:create db:setup
-```
-
-Before starting the server, you'll need to create a  `.env` file based off of the example:
-
-```sh
-$ cp .env.example .env
-```
-
-Now you can run:
-
-```sh
-$ rails server
-```
-
-which will start Accounts up on port 2999. Visit http://localhost:2999.
-
-#### Running background jobs
-
-Accounts in production runs background jobs using `delayed_job`.
-In the development environment, however, background jobs are run "inline", i.e. in the foreground.
-
-To actually run these jobs in the background in the development environment,
-set the environment variable `USE_REAL_BACKGROUND_JOBS=true` in your `.env` file
-and then start the `delayed_job` daemon:
-
-`bin/rake jobs:work`
-
-## Running Specs (Automated Tests)
+### Running specs (automated tests)
 
 Using Docker, you can
 
@@ -133,31 +238,6 @@ $ /code> rspec ./spec/features
 $ /code> rspec ./spec/some/specific_spec.rb
 $ /code> rspec ./spec/some/specific_spec.rb:42 # the spec at line 42
 ```
-
-Or if you want to install directly on your machine...
-
-Specs require phantomjs. On Mac:
-```sh
-$ brew install phantomjs
-```
-
-To run specs,
-
-```sh
-$ rake
-```
-
-When running feature specs, the default behavior is for exceptions to be rescued and nice error pages to be shown.  This can make debugging difficult if you're not expecting an error.  To not rescue exceptions, do:
-
-```sh
-$ RAISE=true rspec
-```
-
-If you encounter issues running features specs, check the version of chromedriver you have installed.  Version 2.38 is known to work.
-
-## Debugging
-
-Set `DEBUGGER=byebug` to use byebug (e.g. in `.env`), otherwise defaults to the VS Code debugger.
 
 # Usage — topics
 
