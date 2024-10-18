@@ -9,6 +9,10 @@ end
 gem 'rails', '6.1.7.8'
 gem 'rails-i18n'
 
+# Psych 4 (included in Ruby 3.1) breaks Rails < 7
+# Remove this entry completely when updating to Rails 7
+gem 'psych', '< 4'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 

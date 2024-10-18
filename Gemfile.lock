@@ -416,9 +416,9 @@ GEM
     launchy (3.0.1)
       addressable (~> 2.8)
       childprocess (~> 5.0)
-    libv8-node (21.7.2.0)
-    libv8-node (21.7.2.0-x86_64-darwin)
-    libv8-node (21.7.2.0-x86_64-linux)
+    libv8-node (18.19.0.0)
+    libv8-node (18.19.0.0-x86_64-darwin)
+    libv8-node (18.19.0.0-x86_64-linux)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -446,8 +446,8 @@ GEM
     method_source (1.1.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
-    mini_racer (0.12.0)
-      libv8-node (~> 21.7.2.0)
+    mini_racer (0.16.0)
+      libv8-node (~> 18.19.0.0)
     minitest (5.25.1)
     msgpack (1.7.3)
     multi_json (1.15.0)
@@ -567,6 +567,7 @@ GEM
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    psych (3.3.4)
     public_suffix (6.0.1)
     puma (6.4.3)
       nio4r (~> 2.0)
@@ -891,6 +892,7 @@ DEPENDENCIES
   pattern-library!
   pg
   premailer-rails
+  psych (< 4)
   puma
   puma_worker_killer
   rack-cors
@@ -928,4 +930,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   2.3.13
+   2.3.27
