@@ -41,4 +41,4 @@ def process_error_files
       yield src, dst
     end
   end
-end
+end if Rails.env.production?

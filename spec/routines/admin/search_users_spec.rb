@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Admin::SearchUsers, type: :routine do
+describe Admin::SearchUsers, type: :routine do
 
   let!(:user_1)          do
     FactoryBot.create :user_with_emails, first_name: 'John',

@@ -26,7 +26,7 @@ class SignupStart
 
     # is there a pre_auth_state and it's email is unchanged
     if existing_pre_auth_state.try(:contact_info_value) == email
-      existing_pre_auth_state.update_attributes(role: signup_params.role)
+      existing_pre_auth_state.update(role: signup_params.role)
       outputs.pre_auth_state = existing_pre_auth_state
       # pre_auth_state may have been created in session start
       # and the the confirmation email will not yet have been sent

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UpdateSalesforceAssignableFields, type: :routine do
+describe UpdateSalesforceAssignableFields, type: :routine do
   let!(:non_assignable_student)    { FactoryBot.create :user }
 
   let!(:non_assignable_instructor) { FactoryBot.create :user, salesforce_contact_id: 'TESTCONTACT1' }

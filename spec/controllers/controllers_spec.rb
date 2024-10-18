@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Controllers affected by initializers/controllers.rb', type: :controller do
+describe 'Controllers affected by initializers/controllers.rb', type: :controller do
 
   context '#save_redirect' do
 

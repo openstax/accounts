@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Admin::ReportsController, type: :controller do
+describe Admin::ReportsController, type: :controller do
   let(:admin) { FactoryBot.create :user, :admin, :terms_agreed }
 
   before(:each) do

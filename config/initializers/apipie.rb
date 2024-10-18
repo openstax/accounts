@@ -9,7 +9,7 @@ Apipie.configure do |config|
   config.namespaced_resources    = false
   config.default_version         = 'v1'
   config.link_extension          = ''
-  config.app_info =              <<-eos
+  config.app_info =              <<-EOS
     Access to the API must be achieved through an OAuth flow or by having a user
     that is logged in to the system (with a session, etc).
 
@@ -34,5 +34,6 @@ Apipie.configure do |config|
     times these schemas aren't overly specific to the actions they are listed under, e.g. they
     always say that an `id` is required but that isn't the case when new data is being posted to
     a `create` call.
-    eos
+  EOS
+  config.validate = false
 end

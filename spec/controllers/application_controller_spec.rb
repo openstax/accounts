@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ApplicationController, type: :controller do
+describe ApplicationController, type: :controller do
 
   let!(:user)               { FactoryBot.create :user, :terms_agreed }
   let!(:app_token)          { FactoryBot.create :doorkeeper_access_token, resource_owner_id: nil }

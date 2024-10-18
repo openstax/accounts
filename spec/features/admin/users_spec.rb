@@ -5,8 +5,7 @@ feature 'Admin user pages', js: true do
     before(:each) do
       @admin_user = create_admin_user
       visit '/'
-      complete_login_username_or_email_screen('admin')
-      complete_login_password_screen('password')
+      complete_newflow_log_in_screen('admin', 'password')
     end
 
     context "with a user with salesforce contact ID set" do
@@ -35,6 +34,7 @@ feature 'Admin user pages', js: true do
 
       context 'popup console' do
         it 'searches users and does not explode' do
+          Capybara.current_session.current_window.resize_to 1200, 1200
           visit '/'
           click_link 'Popup Console'
           wait_for_ajax(10) # for some reason this is slow

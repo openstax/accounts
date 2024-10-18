@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe FindOrCreateUser do
-
   let(:user) { FactoryBot.create :user, state: 'unclaimed' }
 
   context "Given an email" do
@@ -34,6 +33,7 @@ describe FindOrCreateUser do
               email:"anunusedemail@example.com",
               first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
             ).outputs.user
+            perform_enqueued_jobs
             email = ActionMailer::Base.deliveries.last
             expect(email.subject).to match('You have been invited to join OpenStax')
           end.to change { ActionMailer::Base.deliveries.count }.by(1)

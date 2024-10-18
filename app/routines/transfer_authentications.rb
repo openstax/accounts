@@ -1,4 +1,4 @@
-# Firstly, persists or updates (with `update_attributes`) an `Authentication` for the given user.
+# Firstly, persists or updates (with `update`) an `Authentication` for the given user.
 #
 # Secondly, if the authentication(s) already belonged to a user, and
 # that user can be destroyed, then we destroy that user.
@@ -13,7 +13,7 @@ class TransferAuthentications
     authentications = [authentications] if !(authentications.is_a?(Array))
     authentications.each do |authentication|
       existing_user = authentication.user
-      authentication.update_attributes(user_id: newer_user.id)
+      authentication.update(user_id: newer_user.id)
       transfer_errors_from(authentication, {type: :verbatim}, :fail_if_errors)
 
       if existing_user && can_be_destroyed?(existing_user)

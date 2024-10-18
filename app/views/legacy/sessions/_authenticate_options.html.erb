@@ -55,7 +55,7 @@
         html: {class: 'identity-password'} do |f| %>
 
     <%
-      fh = FormHelper::One.new(
+      fh = ::FormHelper::One.new(
         f: f,
         context: self,
         errors: @errors || @handler_result.try(:errors),

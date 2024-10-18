@@ -20,6 +20,7 @@ feature 'User claims an unclaimed account' do
   }
 
   def visit_invite_url
+    perform_enqueued_jobs
     delivery = ActionMailer::Base.deliveries.last
     match = delivery.body.encoded.match(/(confirm\/unclaimed\?code=\w+)/)
     expect(match).to_not be_nil

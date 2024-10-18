@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TransferPreAuthState, type: :routine do
+describe TransferPreAuthState, type: :routine do
 
   it 'works on the happy path' do
     user = FactoryBot.create :user
