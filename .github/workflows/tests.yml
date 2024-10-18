@@ -18,10 +18,10 @@ on:
 jobs:
   tests:
     timeout-minutes: 30
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     services:
       postgres:
-        image: postgres:11
+        image: postgres:14
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -35,10 +35,25 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Playwright
+      - run: yarn
+      - name: Ensure playwright gem and package.json versions match
         run: |
-          yarn
-          yarn playwright install
+          ruby_playwright=$(bundle exec ruby -e 'require "playwright"; puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip')
+          package_json_playwright=$(yarn list --pattern @playwright/test --json | jq '.data.trees[].name | .[17:]' -r)
+          [[ $ruby_playwright = $package_json_playwright ]]
+      # https://justin.searls.co/posts/running-rails-system-tests-with-playwright-instead-of-selenium/
+      - name: Cache Playwright Chromium browser
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+      - name: Install Playwright Chromium browser (with deps)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: yarn playwright install --with-deps chromium
+      - name: Install Playwright Chromium browser deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: yarn playwright install-deps chromium
       - name: Test
         env:
           WORKERS: 4
