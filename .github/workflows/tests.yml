@@ -38,9 +38,20 @@ jobs:
       - run: yarn
       - name: Ensure playwright gem and package.json versions match
         run: |
-          ruby_playwright=$(bundle exec ruby -e 'require "playwright"; puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip')
+          capybara_playwright_version=$(
+            bundle exec ruby -e 'require "playwright"; puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip'
+          )
+          echo "Playwright version compatible with capybara-playwright-driver: $capybara_playwright_version"
+
           package_json_playwright=$(yarn list --pattern @playwright/test --json | jq '.data.trees[].name | .[17:]' -r)
-          [[ $ruby_playwright = $package_json_playwright ]]
+          echo "Playwright version in package.json: $package_json_playwright"
+
+          if [[ $ruby_gem_playwright = $package_json_playwright ]]; then
+            echo 'Versions match'
+          else
+            echo "Versions don't match"
+            exit 1
+          fi
       # https://justin.searls.co/posts/running-rails-system-tests-with-playwright-instead-of-selenium/
       - name: Cache Playwright Chromium browser
         id: playwright-cache
