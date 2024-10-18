@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Admin::ContactInfosController, type: :controller do
+describe Admin::ContactInfosController, type: :controller do
   let!(:user) { FactoryBot.create :user_with_emails }
   let(:admin) { FactoryBot.create :user, :admin, :terms_agreed }
   let(:email) { user.email_addresses.first }

@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20BillingCountry,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c,%20Total_School_Enrollment__c%20FROM%20Account%20WHERE%20(Name%20IN%20(%27RSpec%20University%27))"
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20BillingCountry,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c,%20Total_School_Enrollment__c,%20Has_Assignable_Contacts__c%20FROM%20Account%20WHERE%20(Name%20IN%20(%27RSpec%20University%27))"
     body:
       encoding: US-ASCII
       string: ''

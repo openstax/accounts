@@ -6,8 +6,12 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '~> 5.2'
-gem 'rails-i18n', '~> 5'
+gem 'rails', '6.1.7.8'
+gem 'rails-i18n'
+
+# Psych 4 (included in Ruby 3.1) breaks Rails < 7
+# Remove this entry completely when updating to Rails 7
+gem 'psych', '< 4'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
@@ -16,7 +20,7 @@ gem 'bootsnap', require: false
 gem 'dotenv-rails'
 
 # Threaded application server
-gem 'puma', '~> 5.6.0'
+gem 'puma'
 
 # Prevent server memory from growing until OOM
 gem 'puma_worker_killer'
@@ -29,35 +33,40 @@ gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', r
 
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
-gem 'lev', '~> 10.1.0'
-
-# Bootstrap front-end framework
-gem 'bootstrap-sass', '~> 3.4.1'
+gem 'lev', github: 'lml/lev', ref: 'a33c93c83afea63c80b5da6317efec4bfd357df5'
+gem 'openstax_transaction_retry', github: 'openstax/transaction_retry', ref: '36e26d0a068756c334b9d1c671d40773bbfc9300'
+gem 'openstax_transaction_isolation', github: 'openstax/transaction_isolation', ref: '7387fa091462118704967a7c4b2821cd0f5d9e01'
 
 # SCSS stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails'
+
+# Bootstrap front-end framework
+gem 'bootstrap-sass'
 
 # Compass stylesheets
-gem 'compass-rails', '~> 3.1.0'
+gem 'compass-rails'
+
+# Prevent deprecation warning coming from Compass in Sass 3.4.20
+gem 'sass', '3.4.19'
+gem 'ffi', '< 1.17'
 
 # CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '5.0.0'
+gem 'coffee-rails'
 
 # JavaScript asset compiler
 gem 'mini_racer'
 
 # JavaScript asset compressor
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier'
 
 # Nicely-styled static error pages
 gem 'error_page_assets'
-gem 'render_anywhere', require: false
 
 # Password hashing
-gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt'
 
 # OAuth provider
-gem 'doorkeeper', '~> 5.1.0'
+gem 'doorkeeper'
 
 # OAuth clients
 gem 'omniauth', '~> 1.9'
@@ -97,6 +106,7 @@ gem 'smarter_csv'
 # API documentation
 gem 'apipie-rails'
 gem 'maruku'
+gem 'rexml'
 
 gem 'jbuilder'
 
@@ -110,13 +120,13 @@ gem 'delayed_job_worker_pool'
 gem 'delayed_job_heartbeat_plugin'
 
 # JSON Api builder
-gem 'representable', '~> 3.0.0'
+gem 'representable'
 
 # Keyword search
 gem 'keyword_search', '~> 1.5.0'
 
 # ToS/PP management
-gem 'fine_print'
+gem 'fine_print', github: 'lml/fine_print', ref: '636023f68e95196dffaf295bfad3ad8051c23542'
 
 # Send users back to the correct page after login
 gem 'action_interceptor'
@@ -151,16 +161,13 @@ gem 'awesome_print'
 gem 'whenever', require: false
 
 # Admin toggles
-gem 'rails-settings-ui'
-
-gem 'rails-settings-cached', '0.7.2'
-gem 'dry-validation', '0.12.3'
+gem 'rails-settings-cached'
 
 # Respond to ELB healthchecks in /ping and /ping/
 gem 'openstax_healthcheck'
 
 # Allow Accounts routes to be accessed under an /accounts prefix (for use in CloudFront)
-gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "8298c40ec38f132fc23ea946b2b20e855fe73a49"
+gem 'openstax_path_prefixer', github: 'openstax/path_prefixer', ref: 'e3edfc70589bc90fcffba63b417260a88c1377d7'
 
 # JWE library used by the SSO cookie
 gem 'json-jwt'
@@ -172,7 +179,7 @@ gem 'intl-tel-input-rails', git: 'https://github.com/openstax/intl-tel-input-rai
 gem 'http_accept_language'
 
 # Fast JSON parsing
-gem 'oj', '~> 3.7.12'
+gem 'oj'
 
 # Replace JSON with Oj
 gem 'oj_mimic_json'
@@ -182,9 +189,6 @@ gem 'rack-cors'
 
 # Data visualization and query
 gem 'blazer'
-
-# temp fix until we update old dependencies
-# gem "net-http"
 
 group :development, :test do
   # Run specs in parallel
@@ -197,9 +201,9 @@ group :development, :test do
   #
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', require: false
-  # Debug in VS Code
-  gem 'ruby-debug-ide', require: false
-  gem 'debase', require: false
+  # Debug in VS Code - these do not install properly on the latest OS X
+  # gem 'ruby-debug-ide', require: false
+  # gem 'debase', require: false
 
   # Use RSpec for tests
   gem 'rspec-rails'
@@ -223,7 +227,7 @@ group :development, :test do
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'guard-rspec'
-  gem 'guard-livereload', '~> 2.5', require: false
+  gem 'guard-livereload', require: false
 
   # Stubs HTTP requests
   gem 'webmock'
@@ -232,7 +236,7 @@ group :development, :test do
   gem 'vcr'
 
   # Lint ruby files
-  gem 'rubocop', '~> 0.76.0', require: false
+  gem 'rubocop', require: false
 
   # Lint RSpec files
   gem 'rubocop-rspec'
@@ -247,7 +251,7 @@ group :development do
   gem 'listen'
 
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 3.7'
+  gem 'web-console'
 
   gem 'i18n-tasks'
 
@@ -263,7 +267,7 @@ group :test do
   gem 'cgi'
 
   # RSpec matchers for convenience
-  gem 'shoulda-matchers', '~> 3.1'
+  gem 'shoulda-matchers'
 
   # Test database cleanup gem with multiple strategies
   gem 'database_cleaner'

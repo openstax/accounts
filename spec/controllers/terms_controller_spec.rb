@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'byebug'
 
-RSpec.describe TermsController, type: :controller do
+describe TermsController, type: :controller do
   let(:contract) { FactoryBot.create :fine_print_contract, :published }
   let!(:user_1)  { create_user 'user1' }
   let!(:user_2)  { create_user 'user2' }

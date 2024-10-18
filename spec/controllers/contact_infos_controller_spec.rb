@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ContactInfosController, type: :controller do
+describe ContactInfosController, type: :controller do
 
   let!(:user)         { FactoryBot.create :user, :terms_agreed }
   let!(:another_user) { FactoryBot.create :user, :terms_agreed }

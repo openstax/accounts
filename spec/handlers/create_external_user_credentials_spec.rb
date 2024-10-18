@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe CreateExternalUserCredentials, type: :handler do
+describe CreateExternalUserCredentials, type: :handler do
   let(:user)  do
     FactoryBot.create :user, receive_newsletter: false,
                              role: User::UNKNOWN_ROLE,
                              state: User::EXTERNAL
   end
 
-  let(:email) { Faker::Internet.free_email }
+  let(:email) { Faker::Internet.email }
 
   let(:params) do
     {
@@ -53,6 +53,7 @@ RSpec.describe CreateExternalUserCredentials, type: :handler do
         )
       )
       handler_call
+      perform_enqueued_jobs
     end
 
     it "sets the User's role to student" do
@@ -125,7 +126,8 @@ RSpec.describe CreateExternalUserCredentials, type: :handler do
     it 'returns an error' do
       expect(handler_call.errors).to have_offending_input(:email)
       expect(handler_call.errors.first.message).to eq(
-        I18n.t(:"login_signup_form.invalid_email_provider", email: email)
+        I18n.t(:"activerecord.errors.models.email_address.attributes.value.missing_mx_records",
+               value: email)
       )
     end
   end

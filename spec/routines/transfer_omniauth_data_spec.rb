@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TransferOmniauthData, type: :routine do
+describe TransferOmniauthData, type: :routine do
 
   let(:user)      { FactoryBot.build :user }
   let(:auth_data) { OmniauthData.new auth_hash }

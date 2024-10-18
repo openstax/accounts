@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe OtherController, type: :controller do
+describe OtherController, type: :controller do
   describe 'GET #profile_newflow' do
     context 'when logged in' do
       before do

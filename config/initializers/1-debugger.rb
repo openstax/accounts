@@ -5,7 +5,7 @@ unless Rails.env.production?
     require 'byebug'
   else
     # Debug in VS Code
-    require 'ruby-debug-ide'
-    require 'debase'
+    # require 'ruby-debug-ide'
+    # require 'debase'
   end
 end

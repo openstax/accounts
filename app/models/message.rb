@@ -1,6 +1,5 @@
 class Message < ApplicationRecord
-  belongs_to :application, class_name: 'Doorkeeper::Application',
-                           inverse_of: :messages
+  belongs_to :application, class_name: 'Doorkeeper::Application', inverse_of: :messages
   belongs_to :user, inverse_of: :sent_messages
 
   has_one :body, class_name: 'MessageBody', inverse_of: :message

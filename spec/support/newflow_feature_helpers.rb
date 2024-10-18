@@ -17,8 +17,7 @@ def create_newflow_user(email, password='password', terms_agreed=nil, confirmati
   return user
 end
 
-def newflow_log_in_user(username_or_email, password)
-  visit(newflow_login_path) unless page.current_url == newflow_login_url
+def complete_newflow_log_in_screen(username_or_email, password = 'password')
   fill_in('login_form_email', with: username_or_email).native
   expect(page).to have_no_missing_translations
 
@@ -32,6 +31,11 @@ def newflow_log_in_user(username_or_email, password)
   wait_for_ajax
   screenshot!
   expect(page).to have_no_missing_translations
+end
+
+def newflow_log_in_user(username_or_email, password = 'password')
+  visit(newflow_login_path) unless page.current_url == newflow_login_url
+  complete_newflow_log_in_screen(username_or_email, password)
 end
 
 def newflow_reauthenticate_user(email, password)
@@ -56,7 +60,7 @@ end
 
 def newflow_complete_student_signup_with_whatever
   complete_student_signup_form(
-    email: Faker::Internet.free_email,
+    email: Faker::Internet.email,
     password: Faker::Internet.password(min_length: 8),
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,

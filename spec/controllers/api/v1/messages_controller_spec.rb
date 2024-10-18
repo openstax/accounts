@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe Api::V1::MessagesController, type: :controller, api: true, version: :v1 do
-
   let!(:untrusted_application) {
     FactoryBot.create :doorkeeper_application,
                        email_from_address: 'app@example.com'
@@ -97,6 +96,8 @@ describe Api::V1::MessagesController, type: :controller, api: true, version: :v1
 
       outcome = JSON.parse(response.body)
       expect(outcome.except('id')).to eq(expected_response)
+
+      perform_enqueued_jobs
 
       expect(Mail::TestMailer.deliveries.length).to eq(1)
     end

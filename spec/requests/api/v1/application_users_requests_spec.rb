@@ -2,7 +2,7 @@ require 'rails_helper'
 
 # Moved multiple request specs here from the controller spec
 
-RSpec.describe 'Api::V1::ApplicationUsers multiple requests',
+describe 'Api::V1::ApplicationUsers multiple requests',
                type: :request, api: true, version: :v1 do
 
   let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
@@ -30,8 +30,8 @@ RSpec.describe 'Api::V1::ApplicationUsers multiple requests',
                        resource_owner_id: nil
   end
 
-  let(:updated_endpoint) { "/api/application_users/updated" }
-  let(:updates_endpoint) { "/api/application_users/updates" }
+  let(:updated_endpoint) { updated_api_application_users_path }
+  let(:updates_endpoint) { updates_api_application_users_path }
 
   context "updates" do
     let(:app_user) { user_2.application_users.first }
