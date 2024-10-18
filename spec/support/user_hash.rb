@@ -45,6 +45,8 @@ def user_matcher(user, include_private_data: false)
         )
     base_hash[:signed_contract_names] = FinePrint::Contract.published.latest.signed_by(user).pluck(:name)
     base_hash[:external_ids] = a_collection_containing_exactly(*user.external_ids.map(&:external_id))
+    base_hash[:assignable_school_integrated] = user.school.has_assignable_contacts
+    base_hash[:assignable_user] = user.external_ids.any?
   end
 
   base_hash.delete_if { |k,v| v.nil? }
