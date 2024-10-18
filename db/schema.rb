@@ -361,6 +361,7 @@ ActiveRecord::Schema.define(version: 2024_10_15_172425) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "country", default: "United States", null: false
+    t.boolean "has_assignable_contacts"
     t.index ["name", "city", "state"], name: "index_schools_on_name_and_city_and_state", opclass: :gist_trgm_ops, using: :gist
     t.index ["salesforce_id"], name: "index_schools_on_salesforce_id", unique: true
     t.index ["sheerid_school_name"], name: "index_schools_on_sheerid_school_name"
@@ -472,6 +473,7 @@ ActiveRecord::Schema.define(version: 2024_10_15_172425) do
     t.jsonb "books_used_details"
     t.string "adopter_status"
     t.jsonb "consent_preferences"
+    t.boolean "is_deleted"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
