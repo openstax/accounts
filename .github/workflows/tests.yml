@@ -43,10 +43,12 @@ jobs:
           )
           echo "Playwright version compatible with capybara-playwright-driver: $capybara_playwright_version"
 
-          package_json_playwright=$(yarn list --pattern @playwright/test --json | jq '.data.trees[].name | .[17:]' -r)
-          echo "Playwright version in package.json: $package_json_playwright"
+          package_json_playwright_version=$(
+            yarn list --pattern @playwright/test --json | jq '.data.trees[].name | .[17:]' -r
+          )
+          echo "Playwright version in package.json: $package_json_playwright_version"
 
-          if [[ $ruby_gem_playwright = $package_json_playwright ]]; then
+          if [[ $capybara_playwright_version = $package_json_playwright_version ]]; then
             echo 'Versions match.'
           else
             echo "Versions don't match. Aborting..."
