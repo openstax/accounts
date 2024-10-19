@@ -14,7 +14,7 @@ AllCops:
     - config/**/*.rb
 
 # modern dev screens are large
-Layout/LineLength:
+Metrics/LineLength:
   Max: 100
 
 # Too short methods lead to extraction of single-use methods, which can make
