@@ -80,7 +80,7 @@ class UpdateUserContactInfo
       if user.faculty_status_changed?
         users_fv_status_changed += 1
         SecurityLog.create!(
-          user:       user,
+          user: user,
           event_type: :salesforce_updated_faculty_status,
           event_data: { user_id: user.id, salesforce_contact_id: sf_contact.id, old_status: old_fv_status, new_status: user.faculty_status }
         )
@@ -101,6 +101,13 @@ class UpdateUserContactInfo
                            :other_school_type
                          end
 
+      if school != user.school.salesforce_id
+        user.school = School.find_by(salesforce_id: user.school.salesforce_id)
+        user.save
+        user.reload
+        # temporarily log these changes to see how frequent they are
+        Sentry.capture_message("User #{user.id} has a mismatched school id (Salesforce: #{sf_contact.school_id}, Accounts: #{user.school.salesforce_id})")
+      end
       sf_school = sf_contact.school
       user.school_location = case sf_school&.school_location
                              when *DOMESTIC_SCHOOL_LOCATIONS
@@ -123,8 +130,6 @@ class UpdateUserContactInfo
       if school.nil? && !sf_school.nil?
         users_without_cached_school += 1
         Sentry.capture_message("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
-      elsif sf_contact.school_id != user.school.salesforce_id
-        Sentry.capture_message("User #{user.id} has a mismatched school id (Salesforce: #{sf_contact.school_id}, Accounts: #{user.school.salesforce_id})")
       else
         user.school = school
       end
