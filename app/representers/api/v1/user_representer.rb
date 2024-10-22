@@ -195,7 +195,7 @@ module Api::V1
 
     property :assignable_school_integrated,
                if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
-               getter: ->(*) { self.school.has_assignable_contacts unless self.school.nil?}
+               getter: ->(*) { self.school&.has_assignable_contacts }
 
     property :assignable_user,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
