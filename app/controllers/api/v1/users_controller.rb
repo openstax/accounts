@@ -264,7 +264,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     access_token = Doorkeeper::AccessToken.find_or_create_for(
       application: application,
       resource_owner: user.id,
-      scopes: '',
+      scopes: Doorkeeper.config.default_scopes,
       expires_in: SSO_TOKEN_INITIAL_DURATION,
       use_refresh_token: false,
     )
@@ -278,7 +278,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     access_token = Doorkeeper::AccessToken.create_for(
       application: application.id,
       resource_owner: user.id,
-      scopes: '',
+      scopes: Doorkeeper.config.default_scopes,
       expires_in: SSO_TOKEN_INITIAL_DURATION,
       use_refresh_token: false
     )
