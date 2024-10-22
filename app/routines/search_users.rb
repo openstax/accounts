@@ -47,7 +47,7 @@ class SearchUsers
       ]
     )
 
-    KeywordSearch.search(query) do |with|
+    KeywordSearch.search(query || '') do |with|
 
       with.default_keyword :any
 

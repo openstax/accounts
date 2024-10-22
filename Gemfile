@@ -123,7 +123,7 @@ gem 'delayed_job_heartbeat_plugin'
 gem 'representable'
 
 # Keyword search
-gem 'keyword_search', '~> 1.5.0'
+gem 'keyword_search'
 
 # ToS/PP management
 gem 'fine_print', github: 'lml/fine_print', ref: '636023f68e95196dffaf295bfad3ad8051c23542'

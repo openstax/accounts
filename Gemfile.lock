@@ -871,7 +871,7 @@ DEPENDENCIES
   jobba
   jquery-rails
   json-jwt
-  keyword_search (~> 1.5.0)
+  keyword_search
   knockoutjs-rails
   launchy
   lev!
