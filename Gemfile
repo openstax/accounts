@@ -16,9 +16,6 @@ gem 'psych', '< 4'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
-# Get env variables from .env file
-gem 'dotenv-rails'
-
 # Threaded application server
 gem 'puma'
 
@@ -189,6 +186,11 @@ gem 'rack-cors'
 
 # Data visualization and query
 gem 'blazer'
+
+group :development, :production do
+  # Get env variables from .env file
+  gem 'dotenv-rails'
+end
 
 group :development, :test do
   # Run specs in parallel
