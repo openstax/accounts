@@ -19,25 +19,27 @@ module Admin
     end
 
     def update
-      was_administrator = @user.is_administrator
+      User.transaction do
+        was_administrator = @user.is_administrator
 
-      respond_to do |format|
-        if change_user_password && add_email_to_user && change_salesforce_contact && update_user
-          security_log :user_updated_by_admin, user_id: params[:id], username: @user.username,
-                                               user_params: request.filtered_parameters['user']
+        respond_to do |format|
+          if change_user_password && add_email_to_user && change_salesforce_contact && update_user
+            security_log :user_updated_by_admin, user_id: params[:id], username: @user.username,
+                                                user_params: request.filtered_parameters['user']
 
-          security_log :admin_created, user_id: params[:id], username: @user.username \
-            if @user.is_administrator && !was_administrator
-          security_log :admin_deleted, user_id: params[:id], username: @user.username \
-            if !@user.is_administrator && was_administrator
+            security_log :admin_created, user_id: params[:id], username: @user.username \
+              if @user.is_administrator && !was_administrator
+            security_log :admin_deleted, user_id: params[:id], username: @user.username \
+              if !@user.is_administrator && was_administrator
 
-          security_log :trusted_launch_removed, user_id: params[:id], username: @user.username \
-            if params[:user][:keep_external_uuids] == '0'
+            security_log :trusted_launch_removed, user_id: params[:id], username: @user.username \
+              if params[:user][:keep_external_uuids] == '0'
 
-          format.html { redirect_to edit_admin_user_path(@user),
-                        notice: 'User profile was successfully updated.' }
-        else
-          format.html { render action: "edit" }
+            format.html { redirect_to edit_admin_user_path(@user),
+                          notice: 'User profile was successfully updated.' }
+          else
+            format.html { render action: "edit" }
+          end
         end
       end
     end
@@ -138,18 +140,17 @@ module Admin
       end
       user_params = params.require(:user).permit(:first_name, :last_name, :username)
 
-      User.transaction do
-        @user.application_users = (params[:application_users]&.permit!&.to_h || {}).map do |_, au|
-          application_user = @user.application_users.to_a.find do |a_user|
-            a_user.application_id == au[:application_id].to_i
-          end
-          application_user = @user.application_users.new(application_id: au[:application_id].to_i)\
-            if application_user.nil?
-          application_user.roles = au[:roles].split(',').map(&:strip)
-          application_user
+      @user.application_users = (params[:application_users]&.permit!&.to_h || {}).map do |_, au|
+        application_user = @user.application_users.to_a.find do |a_user|
+          a_user.application_id == au[:application_id].to_i
         end
-        @user.update_attributes! user_params
+        application_user = @user.application_users.new(application_id: au[:application_id].to_i)\
+          if application_user.nil?
+        application_user.roles = au[:roles].split(',').map(&:strip)
+        application_user.save!
+        application_user
       end
+      @user.update! user_params
     end
   end
 end

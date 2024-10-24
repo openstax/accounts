@@ -40,7 +40,7 @@ jobs:
 
       - run: git checkout HEAD^
 
-      # Install ruby
+      # Install base commit ruby version
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
@@ -51,16 +51,18 @@ jobs:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
         run: |
-          bundle install --jobs 4 --retry 3
-          bundle exec rake db:create db:schema:load db:seed --trace
-          bundle exec rails runner '3.times { FactoryBot.create :user }'
+          bin/rake db:create db:schema:load db:seed --trace
+          bin/rails runner '3.times { FactoryBot.create :user }'
           git checkout --force -
+
+      # Install PR ruby version
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
       # Migrate the data
       - name: Migrate
         env:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
-        run: |
-          bundle install --jobs 4 --retry 3
-          bundle exec rake db:migrate
+        run: bin/rake db:migrate

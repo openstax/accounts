@@ -89,9 +89,9 @@ module Api::V1
              writeable: false
 
     property :adopter_status,
-             if:        ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
-             type:      String,
-             readable:  true,
+             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+             type: String,
+             readable: true,
              writeable: false
 
     property :salesforce_contact_id,
@@ -192,6 +192,14 @@ module Api::V1
                writeable: false,
                if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
                getter: ->(represented:, **) { represented.external_ids.map(&:external_id) }
+
+    property :assignable_school_integrated,
+               if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+               getter: ->(*) { self.school&.has_assignable_contacts }
+
+    property :assignable_user,
+             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+             getter: ->(*) { self.external_ids.any? }
 
     def to_hash(options = {})
       # Avoid N+1 load on application_users.application

@@ -121,8 +121,10 @@ Capybara.configure do |config|
   config.default_max_wait_time = 15
 end
 
-# Whitelist the capybara host (which can change)
 RSpec.configure do |config|
+  config.include ActiveJob::TestHelper
+
+  # Whitelist the capybara host (which can change)
   config.before(:each) do
     allow(Host).to receive(:trusted_host_regexes).and_wrap_original do |m, *args|
       m.call(*args).tap do |result|

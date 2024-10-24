@@ -135,7 +135,8 @@ class User < ApplicationRecord
 
   belongs_to :school, optional: true, inverse_of: :users
 
-  belongs_to :source_application, class_name: "Doorkeeper::Application", foreign_key: "source_application_id"
+  belongs_to :source_application, optional: true,
+             class_name: 'Doorkeeper::Application', foreign_key: :source_application_id
 
   has_one :identity, dependent: :destroy, inverse_of: :user
   has_one :pre_auth_state
@@ -270,7 +271,7 @@ class User < ApplicationRecord
   # A User can also be created by a one of the consumer applications as a stand-in
   # for a person who has not yet (or may never) created an account.  In this case
   # the User model will be in the "unclaimed" state.  When the User does signup, they
-  # can claim the account and recieve all the permissions and tasks
+  # can claim the account and receive all the permissions and tasks
   # that were assigned to it in the interm.
   #
   # Once a User model is cleared for use, the state is set to "activated"

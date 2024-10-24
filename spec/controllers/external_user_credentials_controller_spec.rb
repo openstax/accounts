@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ExternalUserCredentialsController, type: :controller do
+describe ExternalUserCredentialsController, type: :controller do
   render_views
 
   let(:user)             { FactoryBot.create :user, :terms_agreed, state: User::EXTERNAL }

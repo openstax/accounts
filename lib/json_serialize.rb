@@ -50,4 +50,4 @@ class MaxJsonLengthValidator < ActiveModel::EachValidator
 
 end
 
-ActiveRecord::Base.extend JsonSerialize::ClassMethods
+ActiveSupport.on_load(:active_record) { ActiveRecord::Base.extend JsonSerialize::ClassMethods }

@@ -101,7 +101,7 @@ pl:
        W międzyczasie możesz uzyskać dostęp do wszystkich książek i zasobów
        z wyjątkiem tych, które wymagają weryfikacji instruktora.
     join_as_student_description: >-
-      Zarejestruj się jako <b>Student</b>, aby tworzyć i zapisywać 
+      Zarejestruj się jako <b>Student</b>, aby tworzyć i zapisywać
       notatki i podkreślenia w materiałach do nauki OpenStax.
     join_as_educator_description: >-
       Zarejestruj się jako <b>Nauczyciel</b>, by zgłosić nam, że korzystasz z podręcznika,
@@ -141,7 +141,6 @@ pl:
       Twoje nowe hasło nie może być takie samo jak Twoje aktualne hasło.
     same_password_error: Twoje nowe hasło nie może być takie samo jak Twoje aktualne hasło
     email_address_taken: Ten adres e-mail jest już w użyciu
-    invalid_email_provider: '"%{email}" nie jest poprawnym adresem e-mail'
     too_many_login_attempts: >-
       Limit nieudanych prób logowania na Twoje konto został przekroczony.
       Zmień hasło albo spróbuj ponownie później.

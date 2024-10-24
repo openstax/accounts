@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'rake'
 
-RSpec.describe 'doorkeeper:cleanup' do
+describe 'doorkeeper:cleanup' do
   include_context 'rake'
 
   before(:all) do

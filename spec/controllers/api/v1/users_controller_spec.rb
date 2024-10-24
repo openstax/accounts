@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
+describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
   let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
   let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, :trusted }
 
@@ -58,6 +58,12 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
   let(:is_not_gdpr_location) { nil }
 
   context "index" do
+    it "does not explode when called without params" do
+      api_get :index, trusted_application_token
+      expect(response.code).to eq('200')
+      expect(response.body_as_hash).to match({ total_count: User.count, items: [] })
+    end
+
     it "returns a single result well" do
       api_get :index, trusted_application_token, params: { q: 'first_name:bob last_name:Michaels' }
       expect(response.code).to eq('200')

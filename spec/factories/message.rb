@@ -13,8 +13,7 @@ FactoryBot.define do
     after(:build) do |message, evaluator|
       message.body ||= FactoryBot.build(:message_body, message: message)
       evaluator.recipients_count.times do
-        message.message_recipients << FactoryBot.build(:message_recipient,
-                                                        message: message)
+        message.message_recipients << FactoryBot.build(:message_recipient, message: message)
       end
     end
   end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe PasswordManagementController, type: :controller do
+  describe PasswordManagementController, type: :controller do
     describe 'GET #forgot_password_form' do
       it 'has a 200 status code' do
         get('forgot_password_form')

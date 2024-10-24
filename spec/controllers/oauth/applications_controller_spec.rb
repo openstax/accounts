@@ -79,7 +79,8 @@ module Oauth
             name: 'Some app',
             redirect_uri: 'https://www.example.com',
             can_message_users: true
-          }
+          },
+          member_ids: admin.id.to_s
         }
       )
 
@@ -89,6 +90,7 @@ module Oauth
       expect(assigns(:application).name).to eq('Some app')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.com')
       expect(assigns(:application).can_message_users).to eq(true)
+      expect(assigns(:application).owner.has_member?(admin)).to eq(true)
     end
 
     it "should let an admin edit someone else's application" do
@@ -330,7 +332,7 @@ module Oauth
             member_ids: user2.id.to_s + " uteq"
           }
         )
-        
+
         id = assigns(:application).id
         expect(id).not_to be_nil
         expect(response.body).to include "Member ids must be a space separated list of integers"
@@ -349,7 +351,7 @@ module Oauth
             member_ids: user2.id.to_s + "12345"
           }
         )
-        
+
         id = assigns(:application).id
         expect(id).not_to be_nil
         expect(response.body).to include "12345 is not a valid user id"

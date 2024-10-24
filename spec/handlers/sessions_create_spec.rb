@@ -2,7 +2,7 @@
 require 'rails_helper'
 require_relative 'sessions_create_shared_examples'
 
-RSpec.describe SessionsCreate, type: :handler do
+describe SessionsCreate, type: :handler do
 
   include_examples 'sessions create shared examples'
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::UserRepresenter, type: :representer do
+describe Api::V1::UserRepresenter, type: :representer do
   let(:user)            { FactoryBot.create :user  }
   let(:school)          { FactoryBot.create :school  }
   subject(:representer) { described_class.new(user) }
