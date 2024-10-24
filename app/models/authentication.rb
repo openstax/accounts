@@ -22,7 +22,7 @@ class Authentication < ApplicationRecord
   protected
 
   def check_not_last
-    return if user.is_deleted?
+    return if user.nil? || user.is_deleted?
 
     if user.present? && user.authentications.size <= 1 && user.activated?
       throw(:abort)
