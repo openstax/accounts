@@ -19,6 +19,6 @@ jobs:
         with:
           bundler-cache: true
       - name: Build assets
-        run: |
-          bundle install --jobs 4 --retry 3
-          bundle exec rake assets:precompile
+        env:
+          RAILS_ENV: production
+        run: bin/rake assets:precompile
