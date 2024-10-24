@@ -37,6 +37,5 @@ jobs:
           bundler-cache: true
       - name: Test
         run: |
-          bundle install --jobs 4 --retry 3
-          bundle exec rake parallel:create parallel:load_schema parallel:seed --trace
-          WORKERS=4 bundle exec rake parallel:spec
+          bin/rake parallel:create parallel:load_schema parallel:seed --trace
+          WORKERS=4 bin/rake parallel:spec
