@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v1.10.3
+      - Faraday v1.10.4
       Authorization:
       - OAuth <salesforce_access_token>
       Accept-Encoding:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 04 Sep 2024 16:23:21 GMT
+      - Tue, 08 Oct 2024 15:05:05 GMT
       Content-Type:
       - application/json;charset=UTF-8
       Transfer-Encoding:
@@ -30,32 +30,34 @@ http_interactions:
       - keep-alive
       Strict-Transport-Security:
       - max-age=63072000; includeSubDomains
-      Sforce-Limit-Info:
-      - api-usage=37099/5000000
-      Vary:
-      - Accept-Encoding
       X-Robots-Tag:
       - none
+      Sforce-Limit-Info:
+      - api-usage=73994/305000
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
+      Vary:
+      - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
       Set-Cookie:
-      - BrowserId=ADrogGraEe-4jc39-qgTow; domain=.salesforce.com; path=/; expires=Thu,
-        04-Sep-2025 16:23:21 GMT; Max-Age=31536000; secure; SameSite=None
-      - CookieConsentPolicy=0:1; path=/; expires=Thu, 04-Sep-2025 16:23:21 GMT; Max-Age=31536000;
+      - BrowserId=s5KqvoWGEe-oQ-O_-Fe-kw; domain=.salesforce.com; path=/; expires=Wed,
+        08-Oct-2025 15:05:05 GMT; Max-Age=31536000; secure; SameSite=None
+      - CookieConsentPolicy=0:1; path=/; expires=Wed, 08-Oct-2025 15:05:05 GMT; Max-Age=31536000;
         secure
-      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Thu, 04-Sep-2025 16:23:21
+      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Wed, 08-Oct-2025 15:05:05
         GMT; Max-Age=31536000; secure
       Server:
       - sfdcedge
       X-Sfdc-Request-Id:
-      - 020106f6edf1737f8fbaa74bbdc49591
+      - 0f1add6249c71c3786b963e7dbee805c
+      X-Request-Id:
+      - 0f1add6249c71c3786b963e7dbee805c
       X-Sfdc-Edge-Cache:
       - MISS
     body:
       encoding: ASCII-8BIT
       string: '{"totalSize":0,"done":true,"records":[]}'
     http_version:
-  recorded_at: Wed, 04 Sep 2024 16:23:21 GMT
+  recorded_at: Tue, 08 Oct 2024 15:05:05 GMT
 recorded_with: VCR 3.0.3

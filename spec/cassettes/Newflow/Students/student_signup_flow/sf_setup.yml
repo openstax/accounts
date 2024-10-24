@@ -2,13 +2,13 @@
 http_interactions:
 - request:
     method: post
-    uri: https://test.salesforce.com/services/oauth2/token
+    uri: https://<salesforce_login_domain>/services/oauth2/token
     body:
       encoding: US-ASCII
       string: grant_type=password&client_id=<salesforce_consumer_key>&client_secret=<salesforce_consumer_secret>&username=<salesforce_username_url>&password=<salesforce_password_url><salesforce_security_token>
     headers:
       User-Agent:
-      - Faraday v1.0.1
+      - Faraday v1.10.4
       Content-Type:
       - application/x-www-form-urlencoded
       Accept-Encoding:
@@ -21,20 +21,18 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 01 Feb 2022 00:54:06 GMT
+      - Fri, 18 Oct 2024 23:41:46 GMT
       Set-Cookie:
-      - BrowserId=dP4ZcYL5EeyWWLnuR7rniw; domain=.salesforce.com; path=/; expires=Wed,
-        01-Feb-2023 00:54:06 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:0; domain=test.salesforce.com; path=/; expires=Wed,
-        01-Feb-2023 00:54:06 GMT; Max-Age=31536000
-      - LSKey-c$CookieConsentPolicy=0:0; domain=test.salesforce.com; path=/; expires=Wed,
-        01-Feb-2023 00:54:06 GMT; Max-Age=31536000
+      - BrowserId=iWXHOY2qEe-om4-Ar5tPbw; domain=.salesforce.com; path=/; expires=Sat,
+        18-Oct-2025 23:41:46 GMT; Max-Age=31536000; secure; SameSite=None
+      - CookieConsentPolicy=0:0; path=/; expires=Sat, 18-Oct-2025 23:41:46 GMT; Max-Age=31536000;
+        secure
+      - LSKey-c$CookieConsentPolicy=0:0; path=/; expires=Sat, 18-Oct-2025 23:41:46
+        GMT; Max-Age=31536000; secure
       Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
+      - max-age=63072000; includeSubDomains
       X-Content-Type-Options:
       - nosniff
-      X-Xss-Protection:
-      - 1; mode=block
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Expires:
@@ -49,7 +47,6 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"access_token":"<salesforce_access_token>","instance_url":"<salesforce_instance_url>","id":"<salesforce_id>","token_type":"Bearer","issued_at":"1643676846645","signature":"<salesforce_signature>"}'
-    http_version:
-  recorded_at: Tue, 01 Feb 2022 00:54:06 GMT
-recorded_with: VCR 3.0.3
+      string: '{"access_token":"<salesforce_access_token>","instance_url":"<salesforce_instance_url>","id":"https://<salesforce_login_domain>/id/00DU0000000KwchMAC/005U0000005akrEIAQ","token_type":"Bearer","issued_at":"1729294906256","signature":"<salesforce_signature>"}'
+  recorded_at: Fri, 18 Oct 2024 23:41:46 GMT
+recorded_with: VCR 6.3.1
