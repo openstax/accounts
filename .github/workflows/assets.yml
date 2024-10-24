@@ -20,5 +20,6 @@ jobs:
           bundler-cache: true
       - name: Build assets
         env:
+          DISABLE_SES: true
           RAILS_ENV: production
         run: bin/rake assets:precompile
