@@ -22,4 +22,5 @@ jobs:
         env:
           DISABLE_SES: true
           RAILS_ENV: production
+          SECRET_KEY_BASE: fb1c1b629399c0ed18a89c3552955a7c378ce72a10a639df910631b702285149
         run: bin/rake assets:precompile
