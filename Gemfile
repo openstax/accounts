@@ -185,7 +185,7 @@ gem 'oj_mimic_json'
 gem 'rack-cors'
 
 # Data visualization and query
-gem 'blazer'
+gem 'blazer', '< 3.0'
 
 group :development, :production do
   # Get env variables from .env file
