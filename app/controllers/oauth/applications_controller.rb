@@ -33,31 +33,36 @@ module Oauth
     def create
       @application = Doorkeeper::Application.new(app_params)
       @application.owner = Group.new
-      @application.owner.add_member(current_user)
       @application.owner.add_owner(current_user)
 
       OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
 
       Doorkeeper::Application.transaction do
-        if add_application_owners && @application.save
-          security_log :application_created, application_id: @application.id,
-                                            application_name: @application.name
-          flash[:notice] = I18n.t(
-            :notice, scope: %i[doorkeeper flash applications create]
-          )
-          respond_to do |format|
-            format.html { redirect_to oauth_application_url(@application) }
-            format.json { render json: @application }
-          end
-        else
-          respond_to do |format|
-            format.html { render :new }
-            format.json do
-              render json: { errors: @application.errors.full_messages },
-                    status: :unprocessable_entity
+        if add_application_owners
+          # This has to happen after add_application_owners
+          # to avoid conflicts in case an admin adds themselves
+          @application.owner.add_member(current_user)
+
+          if @application.save
+            security_log :application_created, application_id: @application.id,
+                                              application_name: @application.name
+            flash[:notice] = I18n.t(
+              :notice, scope: %i[doorkeeper flash applications create]
+            )
+            respond_to do |format|
+              format.html { redirect_to oauth_application_url(@application) }
+              format.json { render json: @application }
             end
+          else
+            respond_to do |format|
+              format.html { render :new }
+              format.json do
+                render json: { errors: @application.errors.full_messages },
+                      status: :unprocessable_entity
+              end
+            end
+            raise ActiveRecord::Rollback
           end
-          raise ActiveRecord::Rollback
         end
       end
     end
