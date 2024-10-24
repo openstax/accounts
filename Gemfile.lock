@@ -533,7 +533,7 @@ GEM
       uber
     openstax_healthcheck (1.0.1)
       rails (>= 3.0)
-    openstax_rescue_from (4.2.2)
+    openstax_rescue_from (4.3.0)
       rails (>= 3.1, < 7.0)
     openstax_salesforce (8.1.0)
       openstax_active_force
