@@ -2,7 +2,7 @@ module Admin
   class UsersController < Admin::BaseController
     layout 'admin', except: :js_search
 
-    before_action :get_user, only: [:edit, :update, :destroy, :become]
+    before_action :get_user, only: [:edit, :update, :become, :soft_delete]
 
     # Used by dialog
     def js_search
@@ -44,10 +44,14 @@ module Admin
       end
     end
 
-    def destroy
-      security_log :user_deleted_by_admin, user_id: params[:id], username: @user.username
-      @user.destroy
-      redirect_to users_url
+    def soft_delete
+      result = SoftDeleteUser.call(@user)
+
+      security_log :user_deleted_by_admin, user: @user, admin_id: @current_user.id
+
+      # redirect_to admin_users_path
+      flash[:alert] = "Authentications and PII removed from account."
+      redirect_to admin_users_path
     end
 
     def become
@@ -118,7 +122,7 @@ module Admin
       end
 
       # if haven't returned yet, either exploded or contact was `nil` (not found)
-      return false
+      false
     end
 
     def update_user
