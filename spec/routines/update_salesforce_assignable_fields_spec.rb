@@ -28,7 +28,7 @@ describe UpdateSalesforceAssignableFields, type: :routine do
       )
       expect_any_instance_of(OpenStax::Salesforce::Remote::Contact).to(
         receive(:assignable_adoption_date=).with(
-          assignable_instructor.external_ids.map(&:created_at).min
+          assignable_instructor.external_ids.map(&:created_at).min.strftime('%Y-%m-%d')
         ).and_call_original
       )
       expect_any_instance_of(OpenStax::Salesforce::Remote::Contact).to receive(:save!)
