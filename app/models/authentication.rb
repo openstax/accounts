@@ -1,5 +1,7 @@
+include UserSessionManagement
+
 class Authentication < ApplicationRecord
-  belongs_to :user, inverse_of: :authentications
+  belongs_to :user, inverse_of: :authentications, optional: true
 
   validates :provider, presence: true,
                        uniqueness: { scope: :user_id },
@@ -20,6 +22,8 @@ class Authentication < ApplicationRecord
   protected
 
   def check_not_last
+    return if user.nil? || user.is_deleted?
+
     if user.present? && user.authentications.size <= 1 && user.activated?
       throw(:abort)
     end
