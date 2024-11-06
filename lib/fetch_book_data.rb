@@ -3,7 +3,7 @@ require 'net/http'
 # Service object for pulling in book data from the CMS
 class FetchBookData
   CMS_API_URL = Rails.application.secrets.cms_api_url
-  TITLES_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&locale=en&fields=_,title,book_subjects,book_state,salesforce_abbreviation"
+  TITLES_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&fields=_,title,book_subjects,book_state,salesforce_abbreviation"
   TIMEOUT = 5
   CACHE_DURATION = 1.day
 
@@ -18,8 +18,8 @@ class FetchBookData
     return [] if results.blank?
 
     items = results.fetch('items', [])
-    # All books except for "retired" ones
-    books = items.select{ |i| i['book_state'] != 'retired' }
+    # See https://github.com/openstax/openstax-cms/blob/main/books/constants.py#L7 for book states
+    books = items.reject{ %w[retired unlisted].include?(i['book_state']) }
 
     books_with_subject = []
 
