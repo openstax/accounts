@@ -225,9 +225,11 @@ group :development, :test do
   # Codecov integration
   gem 'codecov', require: false
 
-  # Speedup and run specs when files change
+  # Speedup Rails boot time
   gem 'spring'
   gem 'spring-commands-rspec'
+
+  # Run specs when files change
   gem 'guard-rspec'
   gem 'guard-livereload', require: false
 
