@@ -302,7 +302,6 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         external_ids: [ external_id.external_id ],
         id: user.id,
         sso: kind_of(String),
-        support_identifier: user.support_identifier,
         uuid: user.uuid
       )
     end
@@ -315,7 +314,6 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       expect(response.body_as_hash).to match(
         external_ids: [ external_id.external_id ],
         id: user.id,
-        support_identifier: user.support_identifier,
         uuid: user.uuid
       )
     end
@@ -360,7 +358,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       expect(response.code).to eq('201')
       new_user = User.order(:id).last
       expect(response.body_as_hash).to eq(
-        id: new_user.id, uuid: new_user.uuid, external_ids: [], support_identifier: new_user.support_identifier
+        id: new_user.id, uuid: new_user.uuid, external_ids: []
       )
     end
 
@@ -448,8 +446,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         expect(response.body_as_hash).to eq(
           id: unclaimed_user.id,
           uuid: unclaimed_user.uuid,
-          external_ids: [],
-          support_identifier: unclaimed_user.support_identifier
+          external_ids: []
         )
       end
 
@@ -459,7 +456,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
                  body: { email: user_2.contact_infos.first.value }
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
-          id: user_2.id, uuid: user_2.uuid, external_ids: [], support_identifier: user_2.support_identifier
+          id: user_2.id, uuid: user_2.uuid, external_ids: []
         )
       end
     end

@@ -30,20 +30,6 @@ describe Api::V1::FindUserRepresenter, type: :representer do
     end
   end
 
-  context 'support_identifier' do
-    it 'can be read' do
-      payload.support_identifier = SecureRandom.uuid
-      expect(representer.to_hash['support_identifier']).to eq payload.support_identifier
-    end
-
-    it 'cannot be written (attempts are silently ignored)' do
-      hash = { 'support_identifier' => SecureRandom.uuid }
-
-      expect(payload).not_to receive(:support_identifier=)
-      expect { representer.from_hash(hash) }.not_to change { payload.support_identifier }
-    end
-  end
-
   context 'external_id' do
     it 'cannot be read' do
       payload.external_id = SecureRandom.uuid
