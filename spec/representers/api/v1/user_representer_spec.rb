@@ -27,11 +27,10 @@ describe Api::V1::UserRepresenter, type: :representer do
       expect(representer.to_hash['consent_preferences']).to eq user.consent_preferences
     end
 
-    it 'cannot be written (attempts are silently ignored)' do
+    it 'can be written' do
       hash = { 'consent_preferences' => {} }
-
-      expect(user).not_to receive(:consent_preferences=)
-      expect { representer.from_hash(hash) }.not_to change { user.reload.consent_preferences }
+      expect(user).to receive(:consent_preferences=).with({}).and_call_original
+      expect { representer.from_hash(hash) }.to change { user.consent_preferences }
     end
   end
 
