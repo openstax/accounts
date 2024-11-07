@@ -146,24 +146,11 @@ module Newflow
       return nil unless user.books_used_details
 
       user.books_used_details.each do |book|
-
-        book_value = book[0]
-        if book_value.match(/\[.*\]/)
-          book_name = book_value.gsub(/\[.*\]/, '').strip # Calculus Volume 1
-          book_language = book_value[/\[(.*?)\]/, 1] # Spanish (no brackets)
-          books_json << {
-            name: book_name,
-            students: book[1]["num_students_using_book"],
-            howUsing: book[1]["how_using_book"],
-            language: book_language,
-          }
-        else
-          books_json << {
-          name: book_value,
+         books_json << {
+          name: book[0],
           students: book[1]["num_students_using_book"],
           howUsing: book[1]["how_using_book"]
         }
-        end
       end
 
       adoption_json['Books'] = books_json
