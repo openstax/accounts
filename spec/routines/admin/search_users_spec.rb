@@ -56,20 +56,6 @@ describe Admin::SearchUsers, type: :routine do
     expect(outcome).to eq [user_1]
   end
 
-  it "should match on full support_identifier" do
-    support_identifier = user_1.support_identifier
-    outcome = described_class.call("support_identifier:#{support_identifier}").outputs.items.to_a
-    expect(outcome).to eq [user_1]
-  end
-
-  it "should match on partial support_identifier" do
-    partial_support_identifier = user_1.support_identifier.first(10).last(9)
-    outcome = described_class.call(
-      "support_identifier:#{partial_support_identifier}"
-    ).outputs.items.to_a
-    expect(outcome).to eq [user_1]
-  end
-
   it "should match based on a partial email address" do
     email = user_1.contact_infos.email_addresses.order(:value).first.value.split('@').first
     outcome = described_class.call("email:#{email}").outputs.items.to_a
@@ -84,17 +70,11 @@ describe Admin::SearchUsers, type: :routine do
   end
 
   it "should match any fields when no prefix given" do
-    [ user_1, user_2, user_3, user_4 ].each_with_index do |user, index|
-      User.where(id: user.id).update_all(support_identifier: "cs_#{index}")
-    end
     outcome = described_class.call("st").outputs.items.to_a
     expect(outcome).to eq [user_4, user_3, user_1]
   end
 
   it "should match any fields when no prefix given and intersect when prefix given" do
-    [ user_1, user_2, user_3, user_4 ].each_with_index do |user, index|
-      User.where(id: user.id).update_all(support_identifier: "cs_#{index}")
-    end
     outcome = described_class.call("John first_name:John").outputs.items.to_a
     expect(outcome).to eq [user_3, user_1]
   end
@@ -105,9 +85,6 @@ describe Admin::SearchUsers, type: :routine do
   end
 
   it "should gather space-separated unprefixed search terms" do
-    [ user_1, user_2, user_3, user_4 ].each_with_index do |user, index|
-      User.where(id: user.id).update_all(support_identifier: "cs_#{index}")
-    end
     outcome = described_class.call("john strav").outputs.items.to_a
     expect(outcome).to eq [user_1]
   end
