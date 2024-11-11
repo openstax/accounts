@@ -96,16 +96,6 @@ class SearchUsers
         users = users.where(uuid: uuids_queries)
       end
 
-      if options[:admin]
-        with.keyword :support_identifier do |identifiers|
-          sanitized_identifiers = sanitize_strings(
-            identifiers, append_wildcard: true, prepend_wildcard: true
-          )
-
-          users = users.where( table[:support_identifier].matches_any(sanitized_identifiers) )
-        end
-      end
-
       with.keyword :id do |ids|
         users = users.where(id: ids)
       end
@@ -160,7 +150,6 @@ class SearchUsers
           matches_last_name = table[:last_name].matches_any(sanitized_names)
           matches_full_name = full_name.matches_any(sanitized_names)
           matches_id = table[:id].in(terms)
-          matches_support_identifier = table[:support_identifier].matches_any(sanitized_names)
 
           users = User.where(matches_first_name)
           .or(
@@ -169,8 +158,6 @@ class SearchUsers
             User.where(matches_full_name)
           ).or(
             User.where(matches_id)
-          ).or(
-            User.where(matches_support_identifier)
           )
         end
       end

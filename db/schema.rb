@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_24_162218) do
+ActiveRecord::Schema.define(version: 2024_11_07_193019) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -437,7 +437,6 @@ ActiveRecord::Schema.define(version: 2024_10_24_162218) do
     t.datetime "login_token_expires_at"
     t.integer "role", default: 0, null: false
     t.jsonb "signed_external_data"
-    t.citext "support_identifier", null: false
     t.boolean "is_test"
     t.integer "school_type", default: 0, null: false
     t.boolean "using_openstax", default: false
@@ -484,7 +483,6 @@ ActiveRecord::Schema.define(version: 2024_10_24_162218) do
     t.index ["school_id"], name: "index_users_on_school_id"
     t.index ["school_type"], name: "index_users_on_school_type"
     t.index ["source_application_id"], name: "index_users_on_source_application_id"
-    t.index ["support_identifier"], name: "index_users_on_support_identifier", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
