@@ -9,6 +9,8 @@ class ConfirmByPin
       :value
     when PreAuthState
       :contact_info_value
+    else
+      :value
     end
 
     SequentialFailure.confirm_by_pin
