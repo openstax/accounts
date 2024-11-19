@@ -9,7 +9,7 @@ class NewflowMailer < ApplicationMailer
   def reset_password_email(user:, email_address:)
     @user = user
 
-    head :forbidden if user.login_token.nil? || user.login_token_expired?
+    raise "No valid login token" if user.login_token.nil? || user.login_token_expired?
 
     mail to: "\"#{user.full_name}\" <#{email_address}>",
          subject: "Reset your OpenStax password"
