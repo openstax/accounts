@@ -66,7 +66,7 @@ gem 'bcrypt'
 gem 'doorkeeper'
 
 # OAuth clients
-gem 'omniauth', '~> 1.9'
+gem 'omniauth', '~> 2.0'
 gem 'omniauth-identity'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
