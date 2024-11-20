@@ -65,7 +65,7 @@ module HandleFailedJobInstantly
     job.fail! if fail_proc.present? && fail_proc.call(exception) ||
                  exception.try(:instantly_fail_if_in_background_job?)
 
-                 super(job, exception)
+    super(job, exception)
   end
 end
 
