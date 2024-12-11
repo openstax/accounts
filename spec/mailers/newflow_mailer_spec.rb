@@ -24,6 +24,16 @@ module Newflow
         expect(mail.body.encoded).to include('<a href="http://localhost:2999/i/verify_email_by_code/1234"')
         expect(mail.body.encoded).to include('use your pin: <b id=\'pin\'>123456</b>')
       end
+
+      it "excludes pin code" do
+        allow(ConfirmByPin).to receive(:sequential_failure_for) { Hashie::Mash.new('attempts_remaining?' => true)}
+
+        mail = NewflowMailer.signup_email_confirmation email_address: email, show_pin: false
+
+        expect(mail.subject).to eq("[OpenStax] Confirm your email address")
+        expect(mail.body.encoded).to include('<a href="http://localhost:2999/i/verify_email_by_code/1234"')
+        expect(mail.body.encoded).not_to include('use your pin: <b id=\'pin\'>123456</b>')
+      end
     end
   end
 end

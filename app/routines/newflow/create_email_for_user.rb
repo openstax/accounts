@@ -5,7 +5,7 @@ module Newflow
 
     protected ###############
 
-    def exec(email:, user:, is_school_issued: nil)
+    def exec(email:, user:, is_school_issued: nil, show_pin: nil)
       @email = EmailAddress.find_or_create_by(value: email&.downcase, user_id: user.id)
       @email.is_school_issued = is_school_issued
 
@@ -17,7 +17,9 @@ module Newflow
           event_type: :email_added_to_user,
           event_data: { email: @email }
         )
-        NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
+        NewflowMailer.signup_email_confirmation(
+          email_address: @email, show_pin: show_pin
+        ).deliver_later
       end
 
       @email.save
