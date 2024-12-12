@@ -5,7 +5,7 @@ module Newflow
 
     protected ###############
 
-    def exec(email:, user:, is_school_issued: nil, show_pin: nil)
+    def exec(email:, user:, is_school_issued: nil, show_pin: true)
       @email = EmailAddress.find_or_create_by(value: email&.downcase, user_id: user.id)
       @email.is_school_issued = is_school_issued
 
