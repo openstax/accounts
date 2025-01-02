@@ -28,11 +28,10 @@ gem 'knockoutjs-rails'
 # Using this branch in pattern library due to multiselect (until it's merged to master)
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840'
 
-# Lev framework
-# - introduces two new concepts: Routines and Handlers
-gem 'lev', github: 'lml/lev', ref: 'a33c93c83afea63c80b5da6317efec4bfd357df5'
-gem 'openstax_transaction_retry', github: 'openstax/transaction_retry', ref: '36e26d0a068756c334b9d1c671d40773bbfc9300'
-gem 'openstax_transaction_isolation', github: 'openstax/transaction_isolation', ref: '7387fa091462118704967a7c4b2821cd0f5d9e01'
+# Lev framework - introduces two new concepts: Routines and Handlers
+gem 'lev'
+gem 'openstax_transaction_retry'
+gem 'openstax_transaction_isolation'
 
 # SCSS stylesheets
 gem 'sass-rails'
