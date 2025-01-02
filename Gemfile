@@ -26,7 +26,7 @@ gem 'puma_worker_killer'
 gem 'knockoutjs-rails'
 
 # Using this branch in pattern library due to multiselect (until it's merged to master)
-gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840'
+gem 'pattern-library', github: 'openstax/pattern-library', ref: 'c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840'
 
 # Lev framework - introduces two new concepts: Routines and Handlers
 gem 'lev'
@@ -169,7 +169,7 @@ gem 'openstax_path_prefixer', github: 'openstax/path_prefixer', ref: 'e3edfc7058
 gem 'json-jwt'
 
 # international country codes javascript plugin
-gem 'intl-tel-input-rails', git: 'https://github.com/openstax/intl-tel-input-rails.git', branch: 'master'
+gem 'intl-tel-input-rails', github: 'openstax/intl-tel-input-rails', branch: 'master'
 
 # internationalization based on the `HTTP_ACCEPT_LANGUAGE` header sent by browsers
 gem 'http_accept_language'
