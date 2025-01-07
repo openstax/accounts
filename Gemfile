@@ -122,7 +122,7 @@ gem 'representable'
 gem 'keyword_search'
 
 # ToS/PP management
-gem 'fine_print', github: 'lml/fine_print', ref: '636023f68e95196dffaf295bfad3ad8051c23542'
+gem 'fine_print'
 
 # Send users back to the correct page after login
 gem 'action_interceptor'

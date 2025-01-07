@@ -1,15 +1,4 @@
 GIT
-  remote: https://github.com/lml/fine_print.git
-  revision: 636023f68e95196dffaf295bfad3ad8051c23542
-  ref: 636023f68e95196dffaf295bfad3ad8051c23542
-  specs:
-    fine_print (6.0.1)
-      action_interceptor
-      jquery-rails
-      rails (< 7)
-      responders
-
-GIT
   remote: https://github.com/openstax/intl-tel-input-rails.git
   revision: 3a63a495822d90bc9ca93e9541ef252fd7a0b50b
   branch: master
@@ -237,7 +226,7 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
-    date (3.3.4)
+    date (3.4.1)
     db-query-matchers (0.13.0)
       activesupport (>= 4.0, < 7.3)
       rspec (>= 3.0)
@@ -265,7 +254,7 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0)
     error_page_assets (0.4)
-    erubi (1.13.0)
+    erubi (1.13.1)
     eventmachine (1.2.7)
     exception_notification (4.5.0)
       actionmailer (>= 5.2, < 8)
@@ -310,6 +299,11 @@ GEM
     faraday_middleware (1.2.1)
       faraday (~> 1.0)
     ffi (1.16.3)
+    fine_print (6.0.3)
+      action_interceptor
+      jquery-rails
+      rails (< 7)
+      responders
     font-awesome-rails (4.7.0.8)
       railties (>= 3.2, < 8.0)
     formatador (1.1.0)
@@ -406,7 +400,7 @@ GEM
       activesupport (>= 4)
       railties (>= 4)
       request_store (~> 1.0)
-    loofah (2.23.0)
+    loofah (2.24.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     lumberjack (1.2.10)
@@ -423,16 +417,16 @@ GEM
       railties (>= 3.0.0, < 8)
     method_source (1.1.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.7)
+    mini_portile2 (2.8.8)
     mini_racer (0.16.0)
       libv8-node (~> 18.19.0.0)
-    minitest (5.25.1)
+    minitest (5.25.4)
     msgpack (1.7.3)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.4.1)
     nenv (0.3.0)
-    net-imap (0.5.0)
+    net-imap (0.5.5)
       date
       net-protocol
     net-pop (0.1.2)
@@ -441,13 +435,13 @@ GEM
       timeout
     net-smtp (0.5.0)
       net-protocol
-    nio4r (2.7.3)
-    nokogiri (1.16.7)
+    nio4r (2.7.4)
+    nokogiri (1.18.1)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.16.7-x86_64-darwin)
+    nokogiri (1.18.1-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.7-x86_64-linux)
+    nokogiri (1.18.1-x86_64-linux-gnu)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
@@ -566,7 +560,7 @@ GEM
       rack (>= 2.0.0)
     rack-session (1.0.2)
       rack (< 3)
-    rack-test (2.1.0)
+    rack-test (2.2.0)
       rack (>= 1.3)
     rails (6.1.7.8)
       actioncable (= 6.1.7.8)
@@ -596,9 +590,9 @@ GEM
       activesupport (>= 4.2)
       choice (~> 0.2.0)
       ruby-graphviz (~> 1.2)
-    rails-html-sanitizer (1.6.0)
+    rails-html-sanitizer (1.6.2)
       loofah (~> 2.21)
-      nokogiri (~> 1.14)
+      nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
     rails-i18n (7.0.9)
       i18n (>= 0.7, < 2)
       railties (>= 6.0.0, < 8)
@@ -759,7 +753,7 @@ GEM
     thor (1.3.2)
     tilt (2.4.0)
     timecop (0.9.10)
-    timeout (0.4.1)
+    timeout (0.4.3)
     trailblazer-option (0.1.2)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -784,7 +778,8 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     websocket (1.2.11)
-    websocket-driver (0.7.6)
+    websocket-driver (0.7.7)
+      base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     whenever (1.0.0)
@@ -837,7 +832,7 @@ DEPENDENCIES
   faraday
   faraday_middleware
   ffi (< 1.17)
-  fine_print!
+  fine_print
   font-awesome-rails
   guard-livereload
   guard-rspec
