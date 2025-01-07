@@ -15,8 +15,9 @@ class NewflowMailer < ApplicationMailer
          subject: "Reset your OpenStax password"
   end
 
-  def signup_email_confirmation(email_address:)
-    @should_show_pin = ConfirmByPin.sequential_failure_for(email_address).attempts_remaining?
+  def signup_email_confirmation(email_address:, show_pin: true)
+    @should_show_pin = show_pin != false &&
+                       ConfirmByPin.sequential_failure_for(email_address).attempts_remaining?
     @email_value = email_address.value
     @confirmation_pin = email_address.confirmation_pin
     @confirmation_code = email_address.confirmation_code

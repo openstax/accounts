@@ -49,7 +49,7 @@ describe CreateExternalUserCredentials, type: :handler do
     it 'sends a confirmation email' do
       expect_any_instance_of(NewflowMailer).to(
         receive(:signup_email_confirmation).with(
-          hash_including({ email_address: an_instance_of(EmailAddress) })
+          hash_including({ email_address: an_instance_of(EmailAddress), show_pin: false })
         )
       )
       handler_call

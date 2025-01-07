@@ -53,7 +53,7 @@ class CreateExternalUserCredentials
       password_confirmation: signup_params.password
     )
 
-    run Newflow::CreateEmailForUser, email: signup_params.email, user: outputs.user
+    run Newflow::CreateEmailForUser, email: signup_params.email, user: outputs.user, show_pin: false
 
     agree_to_terms if signup_params.terms_accepted
   end

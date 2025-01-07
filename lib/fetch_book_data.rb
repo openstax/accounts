@@ -19,7 +19,7 @@ class FetchBookData
 
     items = results.fetch('items', [])
     # See https://github.com/openstax/openstax-cms/blob/main/books/constants.py#L7 for book states
-    books = items.reject{ %w[retired unlisted].include?(i['book_state']) }
+    books = items.reject { |i| %w[retired unlisted].include?(i['book_state']) }
 
     books_with_subject = []
 
