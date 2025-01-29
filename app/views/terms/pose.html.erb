@@ -20,7 +20,7 @@
     <div class="content control-group checkboxes-section center">
       <div class="terms">
       <label>
-        <%= f.check_box :i_agree, style: "height: 1.3rem"%>
+        <%= f.check_box :i_agree, style: "height: 1.3rem" %>
         <span style="font-weight: bold;"><%= t :".have_read_terms_and_agree" %></span>
       </label>
     </div>
@@ -35,6 +35,9 @@
 
 <% content_for :javascript do %>
   <script type="text/javascript">
-      NewflowUi.enableOnChecked('#agreement_submit', '#agreement_i_agree');
+    document.addEventListener("DOMContentLoaded", function() {
+      window.scrollTo(0, 0);
+    });
+    NewflowUi.enableOnChecked('#agreement_submit', '#agreement_i_agree');
   </script>
 <% end %>
