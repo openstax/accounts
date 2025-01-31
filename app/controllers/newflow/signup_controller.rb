@@ -21,9 +21,23 @@ module Newflow
 
           if user.student?
             security_log(:student_verified_email, {user: user, message: "Student verified email."})
+            @posthog.capture({
+              distinct_id: user.uuid,
+              event: 'student_verified_email',
+              properties: {
+                  '$set': { email: user.email_addresses.first.value , name: user.full_name }
+              }
+            })
             redirect_to signup_done_path
           else
             security_log(:educator_verified_email, {user: user, message: "Educator verified email."})
+            @posthog.capture({
+              distinct_id: user.uuid,
+              event: 'educator_verified_email',
+              properties: {
+                  '$set': { email: user.email_addresses.first.value , name: user.full_name }
+              }
+            })
             redirect_to(educator_sheerid_form_path)
           end
         },
@@ -35,6 +49,13 @@ module Newflow
 
     def signup_done
       security_log(:user_viewed_signup_form, form_name: action_name)
+      @posthog.capture({
+        distinct_id: current_user.uuid,
+        event: 'user_completed_signup',
+        properties: {
+            '$set': { email: current_user.email_addresses.first.value , name: current_user.full_name }
+        }
+      })
       @first_name = current_user.first_name
       @email_address = current_user.email_addresses.first&.value
     end
@@ -49,6 +70,13 @@ module Newflow
 
     def exit_newflow_signup_if_logged_in
       if signed_in?
+        @posthog.capture({
+          distinct_id: current_user.uuid,
+          event: 'user_redirected_because_signed_in',
+          properties: {
+              '$set': { email: current_user.email_addresses.first.value , name: current_user.full_name }
+          }
+        })
         redirect_back(fallback_location: profile_newflow_path(request.query_parameters))
       end
     end

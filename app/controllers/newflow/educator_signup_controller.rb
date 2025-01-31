@@ -40,8 +40,16 @@ module Newflow
         client_app: get_client_app,
         is_BRI_book: is_BRI_book_adopter?,
         success: lambda {
-          save_unverified_user(@handler_result.outputs.user.id)
-          security_log(:educator_began_signup, { user: @handler_result.outputs.user })
+          @user = @handler_result.outputs.user
+          save_unverified_user(@user.id)
+          security_log(:educator_began_signup, { user: @user })
+          @posthog.capture({
+            distinct_id: @user.uuid,
+            event: 'educator_started_signup',
+            properties: {
+                '$set': { email: @user.email_addresses.first.value , name: @user.full_name, phone: @user.phone_number, faculty_status: @user.faculty_status }
+            }
+          })
           clear_cache_BRI_marketing
           redirect_to(educator_email_verification_form_path)
         },
@@ -91,6 +99,13 @@ module Newflow
           clear_unverified_user
           sign_in!(@handler_result.outputs.user)
           security_log(:educator_verified_email, email:@email)
+          @posthog.capture({
+            distinct_id: user.uuid,
+            event: 'educator_verified_email',
+            properties: {
+                '$set': { email: current_user.email_addresses.first.value , name: current_user.full_name, faculty_status: current_user.faculty_status }
+            }
+          })
           redirect_to(educator_sheerid_form_path)
         },
         failure: lambda {
@@ -105,6 +120,13 @@ module Newflow
 
     def educator_sheerid_form
       @sheerid_url = generate_sheer_id_url(user: current_user)
+      @posthog.capture({
+        distinct_id: current_user.uuid,
+        event: 'educator_view_sheer_id_form',
+        properties: {
+            '$set': { email: current_user.email_addresses.first.value , name: current_user.full_name, faculty_status: current_user.faculty_status }
+        }
+      })
       security_log(:user_viewed_sheerid_form, user: current_user)
     end
 
@@ -143,6 +165,13 @@ module Newflow
         user: current_user,
         success: lambda {
           user = @handler_result.outputs.user
+          @posthog.capture({
+            distinct_id: user.uuid,
+            event: 'educator_completed_profile',
+            properties: {
+                '$set': { school: current_user.school.name, faculty_status: current_user.faculty_status }
+            }
+          })
           security_log(:user_profile_complete, { user: user })
           clear_incomplete_educator
 
@@ -167,6 +196,13 @@ module Newflow
     def educator_pending_cs_verification
       security_log(:user_sent_to_cs_for_review, user: current_user)
       @email_address = current_user.email_addresses.last&.value
+      @posthog.capture({
+        distinct_id: current_user.uuid,
+        event: 'educator_pending_manual_verification',
+        properties: {
+            '$set': { email: @email_address , name: current_user.full_name, faculty_status: current_user.faculty_status }
+        }
+      })
     end
 
     private #################

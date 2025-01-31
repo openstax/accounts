@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
   before_action :complete_signup_profile
   before_action :check_if_password_expired
+  before_action :init_posthog
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
@@ -34,6 +35,19 @@ class ApplicationController < ActionController::Base
   end
 
   include Lev::HandleWith
+
+
+
+  def init_posthog
+    require 'posthog-ruby'
+    @posthog = PostHog::Client.new({
+      api_key: Rails.application.secrets.posthog_project_api_key,
+      host: "https://us.i.posthog.com",
+      on_error: Proc.new { |status, msg| print msg }
+    })
+
+    @posthog.logger.level = Logger::DEBUG
+  end
 
   respond_to :html
 

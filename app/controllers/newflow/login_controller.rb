@@ -20,6 +20,14 @@ module Newflow
           user = @handler_result.outputs.user
           Sentry.set_user(id: user.id) if Rails.env.production?
 
+          @posthog.capture({
+            distinct_id: user.uuid,
+            event: 'user_logged_in',
+            properties: {
+                '$set': { email: user.email_addresses.first.value , name: user.full_name }
+            }
+          })
+
           if user.unverified?
             save_unverified_user(user.id)
 
@@ -51,12 +59,15 @@ module Newflow
             security_log(:sign_in_failed, { reason: code, email: email, user: user })
           end
 
+          @posthog.capture({ distinct_id: email, event: 'user_login_failed'})
+
           render :login_form
         }
       )
     end
 
     def logout
+      @posthog.capture({ distinct_id: current_user.uuid, event: 'user_logged_out'})
       sign_out!
       Sentry.set_user({}) if Rails.env.production?
       redirect_back(fallback_location: newflow_login_path)
