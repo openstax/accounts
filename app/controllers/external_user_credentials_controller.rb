@@ -11,6 +11,7 @@ class ExternalUserCredentialsController < Newflow::BaseController
       CreateExternalUserCredentials,
       success: -> {
         security_log :student_created_password
+        log_posthog(current_user, "user_created_with_external_credentials")
         redirect_to @return_to
       },
       failure: -> {
@@ -41,8 +42,6 @@ class ExternalUserCredentialsController < Newflow::BaseController
 
   def authenticate_external_user!
     @user = User.find_by(id: Doorkeeper::AccessToken.find_by(token: params[:token])&.resource_owner_id)
-
-    @posthog.capture({ distinct_id: @user.uuid, event: 'user_external_authentication' })
 
     # Cannot be used by users who can already login
     raise SecurityTransgression if @user.nil? || !@user.is_external?

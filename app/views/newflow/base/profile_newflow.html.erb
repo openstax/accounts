@@ -1,6 +1,6 @@
 <%
   @parent_col_id = "profile"
-  @using_os = current_user.using_openstax
+  @using_os = current_user&.using_openstax
 %>
 
 <% content_for :head do %>
@@ -198,12 +198,10 @@ $('#username').editable({
 });
 
 OX.Profile.Name.editable($('#name'), {
-    title: "<%= current_user.title %>",
-    first_name: "<%= current_user.first_name %>",
-    last_name: "<%= current_user.last_name %>",
-    suffix: "<%= current_user.suffix %>"
+    title: "<%= current_user&.title %>",
+    first_name: "<%= current_user&.first_name %>",
+    last_name: "<%= current_user&.last_name %>",
+    suffix: "<%= current_user&.suffix %>"
 });
-
-
 </script>
 <% end # javscript content block %>

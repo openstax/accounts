@@ -39,25 +39,13 @@ module Newflow
             @last_name = user.last_name
             @email = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
-            @posthog.capture({
-              distinct_id: user.uuid,
-              event: 'student_signup_with_social',
-              properties: {
-                  '$set': { email: user.email_addresses.first.value , name: user.full_name, authentication_provider: authentication.provider }
-              }
-            })
+            log_posthog(user, "student_signup_#{authentication.provider}")
             # must confirm their social info on signup
             render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
           end
 
           sign_in!(user)
-          @posthog.capture({
-            distinct_id: user.uuid,
-            event: 'user_Logged_in_with_social',
-            properties: {
-                '$set': { email: user.email_addresses.first.value , name: user.full_name, authentication_provider: authentication.provider }
-            }
-          })
+          log_posthog(user, "user_logged_in_with_#{authentication.provider}")
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
           redirect_back(fallback_location: profile_newflow_path)
 
@@ -68,14 +56,6 @@ module Newflow
 
           code = @handler_result.errors.first.code
           authentication = @handler_result.outputs.authentication
-
-          @posthog.capture({
-            distinct_id: @email,
-            event: 'user_Logged_in_with_social_failed',
-            properties: {
-                '$set': { email: @email, authentication_provider: authentication.provider }
-            }
-          })
 
           case code
           when :should_redirect_to_signup

@@ -43,13 +43,7 @@ module Newflow
           @user = @handler_result.outputs.user
           save_unverified_user(@user.id)
           security_log(:educator_began_signup, { user: @user })
-          @posthog.capture({
-            distinct_id: @user.uuid,
-            event: 'educator_started_signup',
-            properties: {
-                '$set': { email: @user.email_addresses.first.value , name: @user.full_name, phone: @user.phone_number, faculty_status: @user.faculty_status }
-            }
-          })
+          log_posthog(@user, 'educator_started_signup')
           clear_cache_BRI_marketing
           redirect_to(educator_email_verification_form_path)
         },
@@ -99,13 +93,7 @@ module Newflow
           clear_unverified_user
           sign_in!(@handler_result.outputs.user)
           security_log(:educator_verified_email, email:@email)
-          @posthog.capture({
-            distinct_id: user.uuid,
-            event: 'educator_verified_email',
-            properties: {
-                '$set': { email: current_user.email_addresses.first.value , name: current_user.full_name, faculty_status: current_user.faculty_status }
-            }
-          })
+          log_posthog(@handler_result.outputs.user, 'educator_verified_email')
           redirect_to(educator_sheerid_form_path)
         },
         failure: lambda {
@@ -113,6 +101,7 @@ module Newflow
           @first_name = unverified_user.first_name
           @email = unverified_user.email_addresses.first.value
           security_log(:educator_verify_email_failed, email: @email)
+          log_posthog(unverified_user, "educator_verified_email_failed")
           render(:educator_email_verification_form)
         }
       )
@@ -120,13 +109,7 @@ module Newflow
 
     def educator_sheerid_form
       @sheerid_url = generate_sheer_id_url(user: current_user)
-      @posthog.capture({
-        distinct_id: current_user.uuid,
-        event: 'educator_view_sheer_id_form',
-        properties: {
-            '$set': { email: current_user.email_addresses.first.value , name: current_user.full_name, faculty_status: current_user.faculty_status }
-        }
-      })
+      log_posthog(current_user, 'educator_view_sheer_id_form')
       security_log(:user_viewed_sheerid_form, user: current_user)
     end
 
@@ -157,6 +140,7 @@ module Newflow
     def educator_profile_form
       @book_titles = book_data.titles
       security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
+      log_posthog(current_user, 'educator_viewed_profile_form')
     end
 
     def educator_complete_profile
@@ -165,13 +149,7 @@ module Newflow
         user: current_user,
         success: lambda {
           user = @handler_result.outputs.user
-          @posthog.capture({
-            distinct_id: user.uuid,
-            event: 'educator_completed_profile',
-            properties: {
-                '$set': { school: current_user.school.name, faculty_status: current_user.faculty_status }
-            }
-          })
+          log_posthog(user, 'educator_complete_profile')
           security_log(:user_profile_complete, { user: user })
           clear_incomplete_educator
 
@@ -184,6 +162,7 @@ module Newflow
         failure: lambda {
           @book_titles = book_data.titles
           security_log(:educator_sign_up_failed, user: current_user, reason: @handler_result.errors)
+          log_posthog(current_user, 'educator_complete_profile_failed')
           if @handler_result.outputs.is_on_cs_form
             redirect_to(educator_cs_verification_form_url, alert: "Please check your input and try again. Email address and School Name are required fields.")
           else
@@ -196,13 +175,7 @@ module Newflow
     def educator_pending_cs_verification
       security_log(:user_sent_to_cs_for_review, user: current_user)
       @email_address = current_user.email_addresses.last&.value
-      @posthog.capture({
-        distinct_id: current_user.uuid,
-        event: 'educator_pending_manual_verification',
-        properties: {
-            '$set': { email: @email_address , name: current_user.full_name, faculty_status: current_user.faculty_status }
-        }
-      })
+      log_posthog(current_user, 'educator_sent_to_cs_for_review')
     end
 
     private #################

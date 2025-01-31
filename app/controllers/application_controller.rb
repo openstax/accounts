@@ -36,17 +36,39 @@ class ApplicationController < ActionController::Base
 
   include Lev::HandleWith
 
-
-
   def init_posthog
+    return if Rails.env.test?
     require 'posthog-ruby'
     @posthog = PostHog::Client.new({
       api_key: Rails.application.secrets.posthog_project_api_key,
       host: "https://us.i.posthog.com",
       on_error: Proc.new { |status, msg| print msg }
     })
+  end
 
-    @posthog.logger.level = Logger::DEBUG
+  def log_posthog(user, event)
+    return if user.nil? or Rails.env.test?
+    begin
+      @posthog.capture({
+        distinct_id: user.uuid,
+        event: event,
+        properties: {
+            '$set': { email: user.email_addresses&.first&.value,
+                      name: user.full_name,
+                      uuid: user.uuid,
+                      role: user.role,
+                      faculty_status: user.faculty_status,
+                      school: user.school&.id,
+                      recent_authentication_provider: user.authentications&.last&.provider,
+                      authentication_method_count: user.authentications&.count,
+                      salesforce_contact_id: user.salesforce_contact_id,
+                      salesforce_lead_id: user.salesforce_lead_id,
+        }
+        }
+      })
+    rescue StandardError => e
+      Rails.logger.error("PostHog tracking error: #{e.message}")
+    end
   end
 
   respond_to :html

@@ -11,6 +11,7 @@
 
     <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <%= render partial: 'layouts/posthog' %>
   </head>
 
   <body class="error">
