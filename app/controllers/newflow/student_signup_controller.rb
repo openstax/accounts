@@ -16,8 +16,16 @@ module Newflow
         contracts_required: !contracts_not_required,
         client_app: get_client_app,
         success: lambda {
-          save_unverified_user(@handler_result.outputs.user.id)
-          security_log(:student_signed_up, { user: @handler_result.outputs.user })
+          user = @handler_result.outputs.user
+          save_unverified_user(user.id)
+          security_log(:student_signed_up, { user: user })
+          @posthog.capture({
+            distinct_id: user.uuid,
+            event: 'student_started_signup',
+            properties: {
+                '$set': { email: user.email_addresses.first.value, name: user.full_name }
+            }
+          })
           redirect_to student_email_verification_form_path
         },
         failure: lambda {
@@ -65,6 +73,13 @@ module Newflow
           user = @handler_result.outputs.user
           sign_in!(user)
           security_log(:student_verified_email)
+          @posthog.capture({
+            distinct_id: user.uuid,
+            event: 'student_verified_email',
+            properties: {
+                '$set': { email: user.email_addresses.first.value, name: user.full_name }
+            }
+          })
           redirect_to(signup_done_path)
         },
         failure: lambda {
