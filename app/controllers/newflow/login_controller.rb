@@ -19,8 +19,6 @@ module Newflow
           clear_signup_state
           user = @handler_result.outputs.user
 
-          log_posthog(user, 'user_logged_in')
-
           if user.unverified?
             save_unverified_user(user.id)
 
@@ -34,6 +32,7 @@ module Newflow
           end
 
           sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
+          log_posthog(user, 'user_logged_in')
 
           if current_user.student? || !current_user.is_newflow? || (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login'))
             did_user_sign_recent_privacy_notice? ? redirect_back : redirect_to_sign_privacy_notice
