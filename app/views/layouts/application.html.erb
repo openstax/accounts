@@ -23,12 +23,10 @@
     <%= javascript_include_tag "application" %>
     <%= csrf_meta_tags %>
 
-    <%= render partial: 'layouts/posthog' %>
-
     <%= yield :head if content_for?(:head) %>
 
     <% if !Rails.env.test? %>
-    <script src="https://cdn.optimizely.com/js/1345615444.js"></script>
+      <%= render partial: 'layouts/posthog' %>
     <% end %>
 
     <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
