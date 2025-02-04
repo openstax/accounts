@@ -26,6 +26,7 @@
     <%= yield :head if content_for?(:head) %>
 
     <% if !Rails.env.test? %>
+      <%= render partial: 'layouts/sentry' %>
       <%= render partial: 'layouts/posthog' %>
     <% end %>
 

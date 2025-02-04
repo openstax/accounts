@@ -29,6 +29,7 @@
         <![endif]-->
 
       <% unless Rails.env.test? %>
+        <%= render partial: 'layouts/sentry' %>
         <%= render partial: 'layouts/posthog' %>
       <% end %>
 
