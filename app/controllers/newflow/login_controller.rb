@@ -18,7 +18,6 @@ module Newflow
         success: lambda {
           clear_signup_state
           user = @handler_result.outputs.user
-          Sentry.set_user(id: user.id) if Rails.env.production?
 
           log_posthog(user, 'user_logged_in')
 

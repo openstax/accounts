@@ -17,6 +17,11 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
+    <% unless Rails.env.test? %>
+      <%= render partial: 'layouts/posthog' %>
+      <%= render partial: 'layouts/sentry' %> <!-- Sentry after Posthog to leverage integration -->
+    <% end %>
+
     <%= stylesheet_link_tag "application" %>
 
 
@@ -24,11 +29,6 @@
     <%= csrf_meta_tags %>
 
     <%= yield :head if content_for?(:head) %>
-
-    <% if !Rails.env.test? %>
-      <%= render partial: 'layouts/sentry' %>
-      <%= render partial: 'layouts/posthog' %>
-    <% end %>
 
     <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />

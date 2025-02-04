@@ -66,7 +66,7 @@ module Newflow
                 sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
               )
             )
-          when :authentication_taken || :taken
+          when :authentication_taken || 'taken'
             security_log(:authentication_transfer_failed, authentication_id: authentication.id)
             redirect_to(error_path(is_external, code), alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
           when :email_already_in_use

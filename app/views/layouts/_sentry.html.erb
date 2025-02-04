@@ -1,1 +1,22 @@
+<script type="application/javascript">
+  // Configure sentryOnLoad before adding the Loader Script
+  window.sentryOnLoad = function () {
+    Sentry.init({
+      dsn: "<%= Rails.application.secrets.sentry[:dsn] %>",
+      environment: "<%= Rails.env %>",
+      debug: true,
+      integrations: [posthog.sentryIntegration({
+        organization: 'https://openstax.sentry.io/projects/',
+        projectId: '5772471',
+        severityAllowList: ['error', 'info'] // optional: here is set to handle captureMessage (info) and captureException (error)
+      })],
+      <% unless current_user.is_anonymous? %>
+      initialScope: {
+        user: { id: "<%=  current_user&.uuid %>" },
+      },
+      <% end %>
+    });
+  };
+</script>
+
 <script src="https://js.sentry-cdn.com/bd8e394e7471499dad097c3f9f009658.min.js" crossorigin="anonymous"></script>

@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
   before_action :complete_signup_profile
   before_action :check_if_password_expired
+  before_action :set_sentry_user
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
@@ -14,7 +15,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_if_admin
-    return true if !Rails.env.production?
+    return true if Rails.env.test?
     is_admin?
   end
 
@@ -34,6 +35,11 @@ class ApplicationController < ActionController::Base
   end
 
   include Lev::HandleWith
+
+  def set_sentry_user
+    return if current_user.is_anonymous?
+    Sentry.set_user(uuid: current_user.uuid)
+  end
 
   def log_posthog(user, event)
     return if user.nil? or Rails.env.test?
