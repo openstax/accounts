@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
         }
       })
     rescue StandardError => e
-      Rails.logger.error("PostHog tracking error: #{e.message}")
+      Sentry.capture_exception(e)
     end
   end
 

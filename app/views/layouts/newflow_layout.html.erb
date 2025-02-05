@@ -6,8 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-        <%= render partial: "layouts/google_tag_manager" %>
-
         <% if @redirect_url %>
         <meta http-equiv='refresh' content='<%= @redirect_delay -%>;url=<%= @redirect_url -%>'>
         <% end %>
@@ -21,6 +19,7 @@
           <%= render partial: 'layouts/posthog' %>
           <%= render partial: 'layouts/sentry' %> <!-- Sentry after Posthog to leverage integration -->
         <% end %>
+      <%= render partial: "layouts/google_tag_manager" %>
 
         <%= stylesheet_link_tag 'newflow', media: 'all', 'data-turbolinks-track' => true %>
         <%= javascript_include_tag 'newflow', 'data-turbolinks-track' => true %>
@@ -65,7 +64,6 @@
         </div>
 
         <%= render partial: 'layouts/newflow_footer' %>
-        <%= render partial: "layouts/google_analytics" %>
 
         <%= yield :javascript %>
     </body>
