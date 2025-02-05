@@ -4,11 +4,11 @@
     Sentry.init({
       dsn: "<%= Rails.application.secrets.sentry[:dsn] %>",
       environment: "<%= Rails.env %>",
-      debug: true,
+      debug: false,
       integrations: [posthog.sentryIntegration({
         organization: 'https://openstax.sentry.io/projects/',
         projectId: '5772471',
-        severityAllowList: ['error', 'info'] // optional: here is set to handle captureMessage (info) and captureException (error)
+        severityAllowList: ['error', 'warn']
       })],
       <% unless current_user.is_anonymous? %>
       initialScope: {
