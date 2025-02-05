@@ -1,10 +1,92 @@
 <% if Rails.env.production? and Settings::GoogleAnalytics.send_google_analytics == true and !Settings::GoogleAnalytics.google_tag_manager_code.blank?  %>
 <script>
   //Code from Google
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','<%= Settings::GoogleAnalytics.google_tag_manager_code %>');
+
+
+//Code for event tracking in GA4
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+gtag('js', new Date());
+gtag('config', '<%= Settings::GoogleAnalytics.google_analytics_code %>');
+
+// Event tracking for elements with data-ga-category attributes
+document.addEventListener("DOMContentLoaded", function() {
+document.querySelectorAll("[data-ga-category]").forEach(function(element) {
+  element.addEventListener("click", function() {
+    const category = element.getAttribute("data-ga-category");
+    const action = element.getAttribute("data-ga-action");
+    const label = element.getAttribute("data-ga-label");
+
+    let eventData = {
+      event_category: category,
+      event_action: action,
+      event_label: label
+    };
+
+    if (element.hasAttribute("data-using-openstax")) {
+      eventData.adopter_status = element.getAttribute("data-using-openstax") === "true" ? "Adopter" : "Not An Adopter";
+    }
+
+    gtag('event', action, eventData);
+  });
+});
+});
+
+// Capture beforeunload event for GA4
+window.addEventListener("beforeunload", function(event) {
+if (window.location.href.includes('<%= newflow_signup_path %>') || window.location.href.includes('<%= profile_newflow_path %>')) {
+  let category = 'Account Creation';
+  let action = 'Click';
+  let label = '5-Close Window';
+
+  if (window.location.href.includes("/i/profile")) {
+    category = 'My Account';
+    label = 'Close Window';
+  }
+
+  gtag('event', action, {
+    event_category: category,
+    event_label: label
+  });
+}
+});
+
+// Show/Hide password event tracking
+function gaShowHide(buttonText) {
+let location = window.location.href.includes('<%= newflow_signup_path %>') ? 'Sign Up' : 'Login';
+
+gtag('event', 'show/hide', {
+  event_category: 'SHOW/HIDE password',
+  event_label: buttonText + ' - ' + location
+});
+}
+
+// Track page-specific events on load
+document.addEventListener("DOMContentLoaded", function() {
+if (window.location.href.includes('<%= newflow_login_path %>')) {
+  gtag('event', 'open', {
+    event_category: 'Login & Account Creation',
+    event_label: 'Referrer - ' + document.referrer
+  });
+
+} else if (window.location.href.includes('<%= profile_newflow_path %>')) {
+  gtag('event', 'Referrer', {
+    event_category: 'Profile',
+    event_label: 'Referrer - ' + document.referrer
+  });
+
+} else if (window.location.href.includes('<%= newflow_signup_path %>')) {
+  gtag('event', 'Click', {
+    event_category: 'Account Creation',
+    event_label: '1-Sign Up'
+  });
+}
+});
 </script>
 <% end %>
