@@ -66,8 +66,15 @@ module Newflow
         lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
       end
 
+      # handle if the user already has a contact for some reason (list upload, adoption form only, etc.)
       if lead.nil?
-        Sentry.capture_message("Lead for user not found #{user.uuid} not found", level: :error)
+        contact = OpenStax::Salesforce::Remote::Contact.find_by(email: user.best_email_address_for_salesforce)
+        user.salesforce_contact_id = contact.id
+        user.save!
+        return
+      else
+        # can't find anything or create the lead:: there's a problem
+        Sentry.capture_message("Lead issue for user: #{user.uuid}", level: :error)
         return
       end
 
