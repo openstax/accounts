@@ -17,7 +17,6 @@
 
         <% unless Rails.env.test? %>
           <%= render partial: 'layouts/posthog' %>
-          <%= render partial: 'layouts/sentry' %> <!-- Sentry after Posthog to leverage integration -->
         <% end %>
       <%= render partial: "layouts/google_tag_manager" %>
 

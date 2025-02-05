@@ -19,7 +19,6 @@
 
     <% unless Rails.env.test? %>
       <%= render partial: 'layouts/posthog' %>
-      <%= render partial: 'layouts/sentry' %> <!-- Sentry after Posthog to leverage integration -->
     <% end %>
 
     <%= stylesheet_link_tag "application" %>
