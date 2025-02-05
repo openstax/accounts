@@ -58,11 +58,11 @@ class ApplicationController < ActionController::Base
                       authentication_method_count: user.authentications&.count,
                       salesforce_contact_id: user.salesforce_contact_id,
                       salesforce_lead_id: user.salesforce_lead_id,
-        }
+            }
         }
       })
     rescue StandardError => e
-      Rails.logger.error("PostHog tracking error: #{e.message}")
+      Sentry.capture_exception(e)
     end
   end
 
