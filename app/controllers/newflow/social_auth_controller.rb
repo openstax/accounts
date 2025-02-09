@@ -39,11 +39,13 @@ module Newflow
             @last_name = user.last_name
             @email = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
+            log_posthog(user, "student_signup_#{authentication.provider}")
             # must confirm their social info on signup
             render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
           end
 
           sign_in!(user)
+          log_posthog(user, "user_logged_in_with_#{authentication.provider}")
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
           redirect_back(fallback_location: profile_newflow_path)
 
@@ -54,6 +56,7 @@ module Newflow
 
           code = @handler_result.errors.first.code
           authentication = @handler_result.outputs.authentication
+
           case code
           when :should_redirect_to_signup
             redirect_to(
@@ -63,7 +66,7 @@ module Newflow
                 sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
               )
             )
-          when :authentication_taken || :taken
+          when :authentication_taken || 'taken'
             security_log(:authentication_transfer_failed, authentication_id: authentication.id)
             redirect_to(error_path(is_external, code), alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
           when :email_already_in_use

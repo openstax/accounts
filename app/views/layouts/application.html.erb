@@ -17,17 +17,15 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-    <%= stylesheet_link_tag    "application" %>
+    <% unless Rails.env.test? %>
+      <%= render partial: 'layouts/posthog' %>
+    <% end %>
 
-
+    <%= stylesheet_link_tag "application" %>
     <%= javascript_include_tag "application" %>
     <%= csrf_meta_tags %>
 
     <%= yield :head if content_for?(:head) %>
-
-    <% if !Rails.env.test? %>
-    <script src="https://cdn.optimizely.com/js/1345615444.js"></script>
-    <% end %>
 
     <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -41,18 +39,12 @@
     <%= render partial: "layouts/application_header" %>
 
     <div id="application-container" class="container">
-
       <%= render(partial: "layouts/attention") unless @hide_layout_errors %>
-
       <%= render partial: "layouts/application_body" %>
-
       <%= render partial: "layouts/application_footer" %>
-      <%= render partial: "layouts/google_analytics" %>
-
     </div>
 
   <%= yield :javascript %>
 
   </body>
-
 </html>

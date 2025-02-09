@@ -11,6 +11,7 @@ class ExternalUserCredentialsController < Newflow::BaseController
       CreateExternalUserCredentials,
       success: -> {
         security_log :student_created_password
+        log_posthog(current_user, "user_created_with_external_credentials")
         redirect_to @return_to
       },
       failure: -> {
