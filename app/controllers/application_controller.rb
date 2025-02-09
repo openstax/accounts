@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def log_posthog(user, event)
-    return if user.nil? or Rails.env.test?
+    return if user.nil? or user.is_anonymous? or Rails.env.test?
     begin
       OXPosthog.posthog.capture({
         distinct_id: user.uuid,
@@ -63,6 +63,7 @@ class ApplicationController < ActionController::Base
       })
     rescue StandardError => e
       Sentry.capture_exception(e)
+      return
     end
   end
 
