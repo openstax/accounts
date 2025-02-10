@@ -2,7 +2,7 @@ module Api::V1
   class GroupRepresenter < Roar::Decorator
     include Roar::JSON
 
-    property :id, 
+    property :id,
              type: Integer,
              readable: true,
              writeable: false,
@@ -77,6 +77,18 @@ module Api::V1
                items: "integer",
                description: "The ID's of all members of groups nested in this group's subtree, including this one; For membership checking purposes"
              }
+
+    def to_hash(options = {})
+      # Avoid N+1 load on group_members.user and group_owners.user
+      ActiveRecord::Associations::Preloader.new.preload(
+        represented.group_members.to_a, user: { application_users: :application }
+      )
+      ActiveRecord::Associations::Preloader.new.preload(
+        represented.group_owners.to_a, user: { application_users: :application }
+      )
+
+      super(options)
+    end
 
   end
 end

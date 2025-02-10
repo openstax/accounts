@@ -23,12 +23,12 @@ module Api::V1
              }
 
     collection :roles,
-      type: String,
-      readable: true,
-      writeable: false,
-      schema_info: {
-        required: true,
-        description: "The User's roles in this application"
-      }
+               type: String,
+               readable: true,
+               writeable: false,
+               schema_info: {
+                 required: true,
+                 description: "The User's roles in this application"
+               }
   end
 end
