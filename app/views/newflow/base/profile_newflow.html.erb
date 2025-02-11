@@ -193,7 +193,11 @@
     <% else %>
       <hr>
       <div class="row">
-          <a href="https://<%= Rails.env %>.accounts.openstax.org/i/profile" class="btn btn-primary" style="color: #fff !important;">Update my email or password</a>
+        <% if Rails.env.production? %>
+        <a href="https://accounts.openstax.org/i/profile" class="btn btn-primary" style="color: #fff !important;width: 100%;margin:10px;">Update my email or password</a>
+        <% else %>
+          <a href="https://<%= Rails.env %>.accounts.openstax.org/i/profile" class="btn btn-primary" style="color: #fff !important;width: 100%;margin:10px;">Update my email or password</a>
+        <% end %>
       </div>
     <% end %>
 
