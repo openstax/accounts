@@ -193,11 +193,8 @@
     <% else %>
       <hr>
       <div class="row">
-        <% if Rails.env.production? %>
-        <a href="https://accounts.openstax.org/i/profile" class="btn btn-primary" style="color: #fff !important;width: 100%;margin:10px;">Update my email or password</a>
-        <% else %>
-          <a href="https://<%= Rails.env %>.accounts.openstax.org/i/profile" class="btn btn-primary" style="color: #fff !important;width: 100%;margin:10px;">Update my email or password</a>
-        <% end %>
+        <!-- TODO :: THIS NEEDS TO BE FIXED BEFORE MERGE -->
+        <a href="https://dev.accounts.openstax.org/i/profile" class="btn btn-primary" style="color: #fff !important;width: 100%;margin:10px;">Update my email or password</a>
       </div>
     <% end %>
 
@@ -229,6 +226,4 @@ OX.Profile.Name.editable($('#name'), {
 });
 </script>
 <% end # javscript content block %>
-
-<%= render partial: 'layouts/chat'  %>
 
