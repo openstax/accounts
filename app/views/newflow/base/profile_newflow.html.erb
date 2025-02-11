@@ -187,13 +187,14 @@
 
       <hr>
       <div class="row">
-        <a href="" class="btn btn-primary" style="color: #fff !important;">Find your book</a>
+        <a href="https://openstax.org/subjects" class="btn btn-primary" style="color: #fff !important; width: 100%;margin:10px;">Find your book</a>
+        <a href="https://openstax.org/adoption" class="btn btn-primary" style="color: #fff !important; width: 100%;margin:10px;">Using OpenStax? Let us know.</a>
       </div>
 
     <% else %>
       <hr>
       <div class="row">
-          <a href="" class="btn btn-primary" style="color: #fff !important;">Update my email or password</a>
+          <a href="https://<%= Rails.env %>.accounts.openstax.org/i/profile" class="btn btn-primary" style="color: #fff !important;">Update my email or password</a>
       </div>
     <% end %>
 
@@ -225,3 +226,6 @@ OX.Profile.Name.editable($('#name'), {
 });
 </script>
 <% end # javscript content block %>
+
+<%= render partial: 'layouts/chat'  %>
+
