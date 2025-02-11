@@ -10,6 +10,10 @@ module Newflow
 
     def forgot_password_form
       @email = login_failed_email
+      user = ContactInfo.find_by(value: @email)&.user
+      unless user.nil?
+        log_posthog(user, 'user_forgot_password')
+      end
     end
 
     def send_reset_password_email

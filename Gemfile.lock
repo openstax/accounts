@@ -533,6 +533,8 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.8)
+    posthog-ruby (2.5.1)
+      concurrent-ruby (~> 1)
     premailer (1.27.0)
       addressable
       css_parser (>= 1.19.0)
@@ -871,6 +873,7 @@ DEPENDENCIES
   parallel_tests
   pattern-library!
   pg
+  posthog-ruby
   premailer-rails
   psych (< 4)
   puma
