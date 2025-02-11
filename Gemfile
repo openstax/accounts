@@ -186,6 +186,9 @@ gem 'rack-cors'
 # Data visualization and query
 gem 'blazer', '< 3.0'
 
+# Product analysis, A/B testing
+gem 'posthog-ruby'
+
 group :development, :production do
   # Get env variables from .env file
   gem 'dotenv-rails'
