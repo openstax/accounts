@@ -87,7 +87,7 @@
         }
       )
     %>
-    <h1 class="title"><%= t(:"login_signup_form.profile_newflow_page_header") %></h1>
+    <h1 class="title">Hello, <%= current_user.first_name %></h1>
   </div>
 
   <div class="row name">
@@ -194,14 +194,13 @@
       <div class="row">
         <!-- TODO :: THIS NEEDS TO BE FIXED BEFORE MERGE -->
         <a href="https://dev.openstax.org/subjects" class="btn btn-primary escape-buttons">Find your book</a>
-        <a href="https://dev.openstax.org/adoption" class="btn btn-primary escape-buttons">Using OpenStax? Let us know.</a>
       </div>
 
     <% else %>
       <hr>
       <div class="row">
         <!-- TODO :: THIS NEEDS TO BE FIXED BEFORE MERGE -->
-        <a href="https://dev.accounts.openstax.org/i/profile" class="btn btn-primary escape-buttons">Update my email or password</a>
+        <a href="https://dev.accounts.openstax.org/i/profile" class="btn btn-primary escape-buttons" target="_top">Update my email or password</a>
       </div>
     <% end %>
 
