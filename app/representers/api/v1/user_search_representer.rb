@@ -19,5 +19,12 @@ module Api::V1
                  description: "The Users matching the query or a subset thereof when paginating"
                }
 
+    def to_hash(options = {})
+      # Avoid N+1 load on items
+      ActiveRecord::Associations::Preloader.new.preload represented.items.to_a, application_users: :application
+
+      super(options)
+    end
+
   end
 end
