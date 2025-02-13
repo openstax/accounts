@@ -1,29 +1,36 @@
 # Finds or creates ApplicationGroups for the given application and group_ids.
 class FindOrCreateApplicationGroups
-
-  lev_routine
+  lev_routine transaction: :read_committed
 
   protected
 
   def exec(application_id, group_ids)
-    application_groups = ApplicationGroup.where(application_id: application_id,
-                                                group_id: group_ids)
-                                         .preload(:group).to_a
-    ag_group_ids = application_groups.collect{|ag| ag.group_id}
+    outputs.application_groups = ApplicationGroup.where(
+      application_id: application_id, group_id: group_ids
+    ).to_a
 
-    # There might be a way to make this more efficient
-    group_ids.each do |group_id|
-      unless ag_group_ids.include?(group_id)
-        application_group = ApplicationGroup.create do |app_group|
-          app_group.application_id = application_id
-          app_group.group_id = group_id
-          app_group.save!
-        end
-        application_groups << application_group
-      end
-    end
+    missing_group_ids = group_ids - outputs.application_groups.map(&:group_id)
+    return if missing_group_ids.empty?
 
-    outputs[:application_groups] = application_groups
+    # Insert missing records
+    # Returns newly-inserted records only
+    # We could run this as the first query, but it would cause the id sequence to autoincrement
+    # by the number of group_ids every time this routine is called
+    # We can still do that if we switch the primary key to a uuid column
+    new_records = ApplicationGroup.import(
+      missing_group_ids.map do |group_id|
+        ApplicationGroup.new(application_id: application_id, group_id: group_id)
+      end, on_duplicate_key_ignore: true
+    ).results
+    outputs.application_groups += new_records
+
+    existing_group_ids = missing_group_ids - new_records.map(&:group_id)
+    return if existing_group_ids.empty?
+
+    # Run the first query again in case another process or thread
+    # inserted the missing records before us
+    outputs.application_groups += ApplicationGroup.where(
+      application_id: application_id, group_id: existing_group_ids
+    ).to_a
   end
-
 end
