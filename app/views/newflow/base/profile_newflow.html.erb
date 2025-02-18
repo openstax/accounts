@@ -29,7 +29,6 @@
 
   .ox-card {
     background-color: #fff;
-    border: 0.1rem solid #d5d5d5;
   }
 
   #profile .ox-card .category {
@@ -65,6 +64,12 @@
     border: 0;
   }
 
+  .escape-buttons {
+      color: #fff !important;
+      width: 100%;
+      margin:10px;
+  }
+
 </style>
 
 <%= ox_card do %>
@@ -82,7 +87,7 @@
         }
       )
     %>
-    <h1 class="title"><%= t(:"login_signup_form.profile_newflow_page_header") %></h1>
+    <h1 class="title"><%= t :"login_signup_form.profile_newflow_page_header" %>></h1>
   </div>
 
   <div class="row name">
@@ -187,13 +192,15 @@
 
       <hr>
       <div class="row">
-        <a href="" class="btn btn-primary" style="color: #fff !important;">Find your book</a>
+        <!-- TODO :: THIS NEEDS TO BE FIXED BEFORE MERGE -->
+        <a href="https://dev.openstax.org/subjects" class="btn btn-primary escape-buttons">Find your book</a>
       </div>
 
     <% else %>
       <hr>
       <div class="row">
-          <a href="" class="btn btn-primary" style="color: #fff !important;">Update my email or password</a>
+        <!-- TODO :: THIS NEEDS TO BE FIXED BEFORE MERGE -->
+        <a href="https://dev.accounts.openstax.org/i/profile" class="btn btn-primary escape-buttons" target="_top">Update my email or password</a>
       </div>
     <% end %>
 
@@ -225,3 +232,4 @@ OX.Profile.Name.editable($('#name'), {
 });
 </script>
 <% end # javscript content block %>
+
