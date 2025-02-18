@@ -1,3 +1,4 @@
+<% if Rails.application.secrets.show_chat %>
 <script type='text/javascript'>
 function initEmbeddedMessaging() {
     try {
@@ -15,3 +16,4 @@ function initEmbeddedMessaging() {
 }
 </script>
 <script type='text/javascript' src='https://openstax.my.site.com/ESWWebMessagingDeployme1716235390398/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+<% end %>
