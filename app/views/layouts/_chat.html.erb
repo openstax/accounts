@@ -1,4 +1,4 @@
-<% if Rails.application.secrets.show_chat %>
+<% if Settings::Salesforce.show_support_chat == true %>
 <script type='text/javascript'>
 function initEmbeddedMessaging() {
     try {
