@@ -237,21 +237,31 @@
     </div>
 
       <hr>
-
+      <div class="row">
         <div class="card-container">
-        <a href="https://openstax.org/subjects?utm_source=openstax_accounts&utm_medium=web&utm_campaign=profile_conversion" class="card-link">
+        <a href="https://openstax.org/subjects" class="card-link">
           <div class="card">
             <h2>Find Your Book</h2>
             <p>Discover and access textbooks and resources for your classes.</p>
           </div>
         </a>
-        <a href="https://openstax.org/adoption?utm_source=openstax_accounts&utm_medium=web&utm_campaign=profile_conversion" class="card-link">
-          <div class="card">
-              <h2>Using OpenStax?</h2>
-              <p>Let us know, it helps us continue to make great education resources!</p>
+          <% if !@using_os %>
+            <a href="https://openstax.org/adoption?utm_source=openstax_accounts&utm_medium=web&utm_campaign=profile_conversion" class="card-link">
+              <div class="card">
+                <h2>Using OpenStax?</h2>
+                <p>Let us know, it helps us continue to make great education resources!</p>
+              </div>
+            </a>
+          <% else %>
+            <a href="https://openstax.org/renewal-form?utm_source=openstax_accounts&utm_medium=web&utm_campaign=profile_conversion" class="card-link">
+              <div class="card">
+                <h2>Still Using OpenStax?</h2>
+                <p>Let us know, it helps us continue to make great education resources!</p>
+            </div>
+          </a>
           </div>
-        </a>
-        <a href="https://help.openstax.org/?utm_source=openstax_accounts&utm_medium=web&utm_campaign=profile_conversion" class="card-link" target="_blank">
+          <% end %>
+        <a href="https://help.openstax.org/" class="card-link" target="_blank">
           <div class="card">
               <h2>Get Help</h2>
               <p>Need assistance? Visit our support center for help.</p>
@@ -265,11 +275,11 @@
         </a>
       </div>
 
+
     <% else %>
       <hr>
       <div class="row">
-        <!-- TODO :: THIS NEEDS TO BE FIXED BEFORE MERGE -->
-        <a href="https://dev.accounts.openstax.org/i/profile" class="btn btn-primary escape-buttons" target="_top">Update my email or password</a>
+        <a href="/accounts/i/profile" class="btn btn-primary escape-buttons" target="_top">Update my email or password</a>
       </div>
     <% end %>
 
@@ -301,4 +311,3 @@ OX.Profile.Name.editable($('#name'), {
 });
 </script>
 <% end # javscript content block %>
-

@@ -14,6 +14,46 @@ function initEmbeddedMessaging() {
         console.error('Error loading Embedded Messaging: ', err);
     }
 }
+
+//Passing Web Context to Prechat - BEGIN
+var sFirstName = <%= current_user&.first_name %>;
+var sLastName = <%= current_user&.last_name %>;
+var sEmail = <%= current_user&.email_addresses&.last&.value %>;
+var sSchool = <%= current_user&.school&.name %>;
+var sOpenStax_UUID = <%= current_user&.uuid %>;
+
+window.addEventListener("onEmbeddedMessagingReady", e => {
+    //log event
+    console.log("onEmbeddedMessagingReady event triggered");
+
+    //set visible prechat field
+    embeddedservice_bootstrap.prechatAPI.setVisiblePrechatFields({
+        // List the pre-chat field names with the value and whether
+        // it's editable in the pre-chat form.
+        "_FirstName": {
+          "value": sFirstName,
+          "isEditableByEndUser": false
+        },
+        "_LastName": {
+          "value": sLastName,
+          "isEditableByEndUser": false
+        },
+        "_Email": {
+          "value": sEmail,
+          "isEditableByEndUser": true
+        },
+        "School": {
+          "value": sSchool,
+          "isEditableByEndUser": true
+        }
+    });
+
+    //Set invisible prechat field
+    embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
+        "OpenStax_UUID" : sOpenStax_UUID
+    });
+});
+//Passing Web Context to Prechat - END
 </script>
 <script type='text/javascript' src='https://openstax.my.site.com/ESWWebMessagingDeployme1716235390398/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 <% end %>
