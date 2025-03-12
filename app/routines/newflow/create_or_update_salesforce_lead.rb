@@ -66,6 +66,11 @@ module Newflow
         lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
       end
 
+      if lead.nil?
+        Sentry.capture_message("Lead for user not found #{user.uuid} not found", level: :error)
+        return
+      end
+
         lead.first_name = user.first_name
         lead.last_name = user.last_name
         lead.phone = user.phone_number
