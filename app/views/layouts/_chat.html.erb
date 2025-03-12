@@ -16,11 +16,11 @@ function initEmbeddedMessaging() {
 }
 
 //Passing Web Context to Prechat - BEGIN
-var sFirstName = <%= current_user&.first_name %>;
-var sLastName = <%= current_user&.last_name %>;
-var sEmail = <%= current_user&.email_addresses&.last&.value %>;
-var sSchool = <%= current_user&.school&.name %>;
-var sOpenStax_UUID = <%= current_user&.uuid %>;
+var sFirstName = "<%= current_user&.first_name %>";
+var sLastName = "<%= current_user&.last_name %>";
+var sEmail = "<%= current_user&.email_addresses&.last&.value %>";
+var sSchool = "<%= current_user&.school&.name %>";
+var sOpenStax_UUID = "<%= current_user&.uuid %>";
 
 window.addEventListener("onEmbeddedMessagingReady", e => {
     //log event
