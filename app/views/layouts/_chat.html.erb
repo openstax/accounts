@@ -16,6 +16,7 @@ function initEmbeddedMessaging() {
 }
 
 //Passing Web Context to Prechat - BEGIN
+<% unless current_user.is_anonymous? %>
 var sFirstName = "<%= current_user&.first_name %>";
 var sLastName = "<%= current_user&.last_name %>";
 var sEmail = "<%= current_user&.email_addresses&.last&.value %>";
@@ -54,6 +55,7 @@ window.addEventListener("onEmbeddedMessagingReady", e => {
     });
 });
 //Passing Web Context to Prechat - END
+<% end %>
 </script>
 <script type='text/javascript' src='https://openstax.my.site.com/ESWWebMessagingDeployme1716235390398/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 <% end %>
