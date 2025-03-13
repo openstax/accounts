@@ -19,6 +19,14 @@ module Settings
         Settings::Db.store.user_info_error_emails_enabled=bool
       end
 
+      def show_support_chat
+        Settings::Db.store.show_support_chat
+      end
+
+      def show_support_chat=(bool)
+        Settings::Db.store.show_support_chat = bool
+      end
+
     end
 
   end
