@@ -18,7 +18,7 @@ module Settings
     class Store < RailsSettings::Base
       field :push_salesforce_lead_enabled, type: :boolean, default: false
       field :user_info_error_emails_enabled, type: :boolean, default: false
-      field :show_support_chat, type: :boolean, default: true
+      field :show_support_chat, type: :boolean, default: false
       field :send_google_analytics, type: :boolean, default: false
       field :google_analytics_code, type: :string, default: 'UA-73668038-2'
       field :google_tag_manager_code, type: :string, default: 'GTM-W6N7PB'

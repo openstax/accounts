@@ -158,6 +158,8 @@ gem 'whenever', require: false
 
 # Admin toggles
 gem 'rails-settings-cached'
+# Using a fork of rails-settings-ui that has a fix for Ruby 3+
+gem 'rails-settings-ui', github: 'mwvolo/rails-settings-ui'
 
 # Respond to ELB healthchecks in /ping and /ping/
 gem 'openstax_healthcheck'
