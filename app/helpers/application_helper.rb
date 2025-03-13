@@ -176,7 +176,7 @@ module ApplicationHelper
     return if error.nil?
     return if error.message.present? && !force
 
-    # use a block for the error message so we avoid unnecesarry i18n translation
+    # use a block for the error message so we avoid unnecessary i18n translation
     error.message = yield
   end
 
