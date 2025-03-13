@@ -15,22 +15,18 @@ function initEmbeddedMessaging() {
     }
 }
 
-//Passing Web Context to Prechat - BEGIN
 <% unless current_user.is_anonymous? %>
+//Passing Web Context to Prechat - BEGIN
 var sFirstName = "<%= current_user&.first_name %>";
 var sLastName = "<%= current_user&.last_name %>";
 var sEmail = "<%= current_user&.email_addresses&.last&.value %>";
 var sSchool = "<%= current_user&.school&.name %>";
 var sOpenStax_UUID = "<%= current_user&.uuid %>";
+var sOpenStax_Id = "<%= current_user&.id %>";
+var sProduct = "Accounts";
 
 window.addEventListener("onEmbeddedMessagingReady", e => {
-    //log event
-    console.log("onEmbeddedMessagingReady event triggered");
-
-    //set visible prechat field
     embeddedservice_bootstrap.prechatAPI.setVisiblePrechatFields({
-        // List the pre-chat field names with the value and whether
-        // it's editable in the pre-chat form.
         "_firstName": {
           "value": sFirstName,
           "isEditableByEndUser": false
@@ -49,9 +45,10 @@ window.addEventListener("onEmbeddedMessagingReady", e => {
         }
     });
 
-    //Set invisible prechat field
     embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
-        "OpenStax_UUID" : sOpenStax_UUID
+        "OpenStax_UUID" : sOpenStax_UUID,
+        "OpenStax_Id" : sOpenStax_Id,
+        "Product" : sProduct
     });
 });
 //Passing Web Context to Prechat - END
