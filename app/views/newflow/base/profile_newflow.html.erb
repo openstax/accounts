@@ -29,7 +29,6 @@
 
   .ox-card {
     background-color: #fff;
-    border: 0.1rem solid #d5d5d5;
   }
 
   #profile .ox-card .category {
@@ -65,6 +64,58 @@
     border: 0;
   }
 
+  .escape-buttons {
+      color: #fff !important;
+      width: 100%;
+      margin:10px;
+  }
+
+ .card-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    width: 100%;
+}
+ .card-link {
+     text-decoration: none !important;
+ }
+.card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+.card:hover {
+    transform: translateY(-10px);
+}
+.card h2 {
+    margin-bottom: 15px;
+    color: #027eb5;
+    font-size: 15px;
+}
+.card p {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+@media (max-width: 600px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+    .card {
+        padding: 20px;
+    }
+    .card h2 {
+        font-size: 1.1em;
+    }
+}
+
 </style>
 
 <%= ox_card do %>
@@ -82,7 +133,7 @@
         }
       )
     %>
-    <h1 class="title"><%= t(:"login_signup_form.profile_newflow_page_header") %></h1>
+    <h1 class="title"><%= t :"login_signup_form.profile_newflow_page_header" %></h1>
   </div>
 
   <div class="row name">
@@ -187,13 +238,48 @@
 
       <hr>
       <div class="row">
-        <a href="" class="btn btn-primary" style="color: #fff !important;">Find your book</a>
+        <div class="card-container">
+        <a href="https://openstax.org/subjects" class="card-link">
+          <div class="card">
+            <h2>Find Your Book</h2>
+            <p>Discover and access textbooks and resources for your classes.</p>
+          </div>
+        </a>
+          <% if !@using_os %>
+            <a href="https://openstax.org/adoption?utm_source=openstax_accounts&utm_medium=web&utm_campaign=profile_conversion" class="card-link">
+              <div class="card">
+                <h2>Using OpenStax?</h2>
+                <p>Let us know, it helps us continue to make great education resources!</p>
+              </div>
+            </a>
+          <% else %>
+            <a href="https://openstax.org/renewal-form?utm_source=openstax_accounts&utm_medium=web&utm_campaign=profile_conversion" class="card-link">
+              <div class="card">
+                <h2>Still Using OpenStax?</h2>
+                <p>Let us know, it helps us continue to make great education resources!</p>
+            </div>
+          </a>
+          <% end %>
+        <a href="https://help.openstax.org/" class="card-link" target="_blank">
+          <div class="card">
+              <h2>Get Help</h2>
+              <p>Need assistance? Visit our support center for help. Email, Phone, Chat. We're here to help.</p>
+          </div>
+        </a>
+        <a href="https://www2.openstax.org/l/218812/2016-10-04/lvk" class="card-link" target="_blank">
+          <div class="card">
+              <h2>Keep in touch</h2>
+              <p>Stay updated with the latest news from OpenStax. Subscribe to our quarterly newsletter.</p>
+          </div>
+        </a>
       </div>
+      </div>
+
 
     <% else %>
       <hr>
       <div class="row">
-          <a href="" class="btn btn-primary" style="color: #fff !important;">Update my email or password</a>
+        <a href="/accounts/i/profile" class="btn btn-primary escape-buttons" target="_top">Update my email or password</a>
       </div>
     <% end %>
 

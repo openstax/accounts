@@ -1,0 +1,58 @@
+<% if Settings::Salesforce.show_support_chat == true %>
+<script type='text/javascript'>
+function initEmbeddedMessaging() {
+    try {
+        embeddedservice_bootstrap.settings.language = 'en_US';
+
+        embeddedservice_bootstrap.init(
+            '00DU0000000Kwch',
+            'Web_Messaging_Deployment',
+            'https://openstax.my.site.com/ESWWebMessagingDeployme1716235390398',
+            {scrt2URL: 'https://openstax.my.salesforce-scrt.com'}
+        );
+    } catch (err) {
+        console.error('Error loading Embedded Messaging: ', err);
+    }
+}
+
+<% unless current_user.is_anonymous? %>
+//Passing Web Context to Prechat - BEGIN
+var sFirstName = "<%= current_user&.first_name %>";
+var sLastName = "<%= current_user&.last_name %>";
+var sEmail = "<%= current_user&.email_addresses&.last&.value %>";
+var sSchool = "<%= current_user&.school&.name %>";
+var sOpenStax_UUID = "<%= current_user&.uuid %>";
+var sOpenStax_Id = "<%= current_user&.id %>";
+var sProduct = "Accounts";
+
+window.addEventListener("onEmbeddedMessagingReady", e => {
+    embeddedservice_bootstrap.prechatAPI.setVisiblePrechatFields({
+        "_firstName": {
+          "value": sFirstName,
+          "isEditableByEndUser": false
+        },
+        "_lastName": {
+          "value": sLastName,
+          "isEditableByEndUser": false
+        },
+        "_email": {
+          "value": sEmail,
+          "isEditableByEndUser": false
+        },
+        "School": {
+          "value": sSchool,
+          "isEditableByEndUser": true
+        }
+    });
+
+    embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
+        "OpenStax_UUID" : sOpenStax_UUID,
+        "OpenStax_Id" : sOpenStax_Id,
+        "Product" : sProduct
+    });
+});
+//Passing Web Context to Prechat - END
+<% end %>
+</script>
+<script type='text/javascript' src='https://openstax.my.site.com/ESWWebMessagingDeployme1716235390398/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+<% end %>
