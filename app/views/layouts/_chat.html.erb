@@ -31,15 +31,15 @@ window.addEventListener("onEmbeddedMessagingReady", e => {
     embeddedservice_bootstrap.prechatAPI.setVisiblePrechatFields({
         // List the pre-chat field names with the value and whether
         // it's editable in the pre-chat form.
-        "_FirstName": {
+        "_firstName": {
           "value": sFirstName,
-          "isEditableByEndUser": false
+          "isEditableByEndUser": true
         },
-        "_LastName": {
+        "_lastName": {
           "value": sLastName,
-          "isEditableByEndUser": false
+          "isEditableByEndUser": true
         },
-        "_Email": {
+        "_email": {
           "value": sEmail,
           "isEditableByEndUser": true
         },
