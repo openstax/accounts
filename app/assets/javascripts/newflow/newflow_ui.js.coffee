@@ -3,12 +3,18 @@ NewflowUi = do () ->
     $(selector).attr('disabled', 'disabled')
     $(selector).addClass('ui-state-disabled ui-button-disabled')
     $(selector).attr('aria-disabled', true)
+    $(selector).css({
+        'background': '#ccc',
+        'box-shadow': 'none',
+        'color': '#666'
+      })
 
   enableButton: (selector) ->
     $(selector).removeAttr('disabled')
     $(selector).removeAttr('aria-disabled')
     $(selector).removeClass('ui-state-disabled ui-button-disabled')
     $(selector).button()
+    $(selector).css({ 'background': '', 'box-shadow': '', 'color': '' })
 
   renderAndOpenDialog: (html_id, content, modal_options = {}) ->
     if $('#' + html_id).exists() then $('#' + html_id).remove()
