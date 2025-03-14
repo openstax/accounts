@@ -189,7 +189,7 @@ GEM
     capybara-screenshot (1.0.26)
       capybara (>= 1.0, < 4)
       launchy
-    cgi (0.4.1)
+    cgi (0.4.2)
     chartkick (5.1.1)
     childprocess (5.1.0)
       logger (~> 1.5)
