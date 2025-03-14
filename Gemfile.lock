@@ -1,4 +1,13 @@
 GIT
+  remote: https://github.com/mwvolo/rails-settings-ui.git
+  revision: 9b97fa39e803816e1655633ed08962149b2958a4
+  specs:
+    rails-settings-ui (2.0.0)
+      i18n
+      rails (>= 3.3)
+      rails-settings-cached (>= 2.0.0)
+
+GIT
   remote: https://github.com/openstax/intl-tel-input-rails.git
   revision: 3a63a495822d90bc9ca93e9541ef252fd7a0b50b
   branch: master
@@ -884,6 +893,7 @@ DEPENDENCIES
   rails-erd
   rails-i18n
   rails-settings-cached
+  rails-settings-ui!
   redis-rails
   representable
   rexml

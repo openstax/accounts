@@ -61,6 +61,9 @@
             </li>
 
             <li><%= link_to 'Terms', main_app.routes.url_helpers.fine_print_path %></li>
+            <li><a href="/admin/settings">Settings</a></li>
+            <li><%= link_to "OAuth Admin", main_app.routes.url_helpers.oauth_applications_path, target: '_blank' %></li>
+            <li><a href="/admin/blazer" target="_blank">Blazer</a></li>
 
 <% if false %>
             <li class="dropdown">
