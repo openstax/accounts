@@ -25,80 +25,53 @@ describe SheeridAPI, type: :lib, vcr: VCR_OPTS do
       subject(:response) { described_class.get_verification_details(verification_id) }
       let(:verification_id) { '5ef42cfaeddfdd1bd961c088' }
 
-      # TODO: add this to the new faculty states - this is relevant, it means the user was asked for documents
-      xit 'is not a relevant response' do
+      it 'is not a relevant response' do
         expect(response.relevant?).to be(false)
+      end
+    end
+
+    context 'when timeout occurs' do
+      before do
+        allow(Faraday).to receive(:get).and_raise(Net::ReadTimeout)
+      end
+
+      it 'returns a NullResponse' do
+        response = described_class.get_verification_details('timeout_id')
+        expect(response).to be_a(SheeridAPI::NullResponse)
+      end
+    end
+
+    context 'when a generic exception occurs' do
+      before do
+        allow(Faraday).to receive(:get).and_raise(StandardError)
+      end
+
+      it 'returns a NullResponse' do
+        response = described_class.get_verification_details('exception_id')
+        expect(response).to be_a(SheeridAPI::NullResponse)
       end
     end
   end
 
-  describe SheeridAPI::Response do
-    subject(:instance) { described_class.new(http_response_as_hash) }
+  describe SheeridAPI::Request do
+    let(:url) { 'https://services.sheerid.com/rest/v2/verification/test_id/details' }
 
-    let(:http_response_as_hash) do
-      {
-        "programId"=>"5e150b86ce2a5a1d94874660",
-        "trackingId"=>nil,
-        "created"=>1590680922839,
-        "updated"=>1590680942123,
-        "lastResponse"=>{
-          "verificationId"=>"5ecfdd5a7ccdbc1a94865309",
-          "currentStep"=>"success",
-          "errorIds"=>[],
-          "segment"=>"teacher",
-          "subSegment"=>nil,
-          "locale"=>"en-US",
-          "rewardCode"=>"EXAMPLE-CODE"
-        },
-        "personInfo"=>{
-          "firstName"=>"ADKLFJASDLKFJ",
-          "lastName"=>"ASDLFKASDJF",
-          "email"=>"asldkfjaklsdjf@gmail.com",
-          "birthDate"=>nil,
-          "deviceFingerprintHash"=>nil,
-          "phoneNumber"=>nil,
-          "locale"=>"en-US",
-          "metadata"=>{
-            "marketConsentValue"=>"false"
-          },
-          "organization"=>{
-            "id"=>3492117,
-            "name"=>"Aos 98 - Rcss (Boothbay Harbor, ME)"
-          },
-          "postalCode"=>"04538", "ipAddress"=>"73.155.240.73"
-        },
-        "docUploadRejectionCount"=>0
-      }
+    context 'when using GET method' do
+      it 'sends a GET request' do
+        request = described_class.new(:get, url)
+        expect(Faraday).to receive(:get).with(url, nil, SheeridAPI::Constants::HEADERS)
+        request.response
+      end
     end
 
-    example 'public interface' do
-      expect(instance).to respond_to(:success?)
-      expect(instance).to respond_to(:current_step)
-      expect(instance).to respond_to(:first_name)
-      expect(instance).to respond_to(:last_name)
-      expect(instance).to respond_to(:email)
-      expect(instance).to respond_to(:organization_name)
-    end
+    context 'when using POST method' do
+      let(:body) { { key: 'value' }.to_json }
 
-    example 'success? is true' do
-      expect(instance.success?).to be_truthy
-    end
-  end
-
-  describe SheeridAPI::NullResponse do
-    subject(:instance) { described_class.instance }
-
-    example 'public interface' do
-      expect(instance).to respond_to(:success?)
-      expect(instance).to respond_to(:current_step)
-      expect(instance).to respond_to(:first_name)
-      expect(instance).to respond_to(:last_name)
-      expect(instance).to respond_to(:email)
-      expect(instance).to respond_to(:organization_name)
-    end
-
-    example 'success? is false' do
-      expect(instance.success?).to be_falsey
+      it 'sends a POST request' do
+        request = described_class.new(:post, url, body)
+        expect(Faraday).to receive(:post).with(url, body, SheeridAPI::Constants::HEADERS)
+        request.response
+      end
     end
   end
 end
