@@ -34,7 +34,8 @@ module NewflowFormHelper
                    onkeyup: nil,
                    onkeydown: nil,
                    numberonly: false,
-                   disabled: false)
+                   disabled: false,
+                   required: false)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -58,7 +59,8 @@ module NewflowFormHelper
                       readonly: readonly,
                       onkeyup: onkeyup,
                       onkeydown: onkeydown,
-                      disabled: disabled
+                      disabled: disabled,
+                      'aria-required': required
         )
       else
         input = (
@@ -72,7 +74,8 @@ module NewflowFormHelper
                       readonly: readonly,
                       onkeyup: onkeyup,
                       onkeydown: onkeydown,
-                      disabled: disabled
+                      disabled: disabled,
+                      'aria-required': required
         )
       end
       "#{input}\n#{errors_div}".html_safe
