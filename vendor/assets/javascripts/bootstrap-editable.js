@@ -2920,7 +2920,7 @@ $(function(){
         //render clear button
         renderClear:  function() {
            if (this.options.clear) {
-               this.$clear = $('<span class="editable-clear-x"></span>');
+               this.$clear = $('<button type="button" class="editable-clear-x" aria-label="clear text"></button>');
                this.$input.after(this.$clear)
                           .css('padding-right', 24)
                           .keyup($.proxy(function(e) {

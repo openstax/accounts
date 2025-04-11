@@ -71,15 +71,15 @@ $font-path: '/accounts/fonts';
   .info .mod {
     color: #aaa;
     display: inline;
-    padding-right: 5px;
+    padding: 0.3rem;
   }
 
-  .mod {
-    color: gray;
-    cursor: pointer;
+  a.mod {
+    color: gray !important;
     &:hover {
-      color: black;
+      color: black !important;
     }
+    text-decoration: none;
   }
 
   .dim {

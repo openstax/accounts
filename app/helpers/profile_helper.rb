@@ -19,7 +19,9 @@ module ProfileHelper
       end
 
     icons = [
-      'glyphicon-pencil edit--newflow', 'glyphicon-trash delete--newflow', 'glyphicon-plus add--newflow',
+      {'label' => 'Edit', 'fragment' => 'pencil edit'},
+      {'label' => 'Delete', 'fragment' => 'trash delete'},
+      {'label' => 'Add', 'fragment' => 'plus add'}
     ]
 
     snippet = <<-SNIPPET
@@ -29,7 +31,7 @@ module ProfileHelper
       </span>
       <span class="name">#{display_name}</span>
       <span class="mod-holder">
-      #{icons.map{|icon| "<span class='glyphicon #{icon} mod'></span>"}.join}
+      #{icons.map{|icon| "<a href='#' class='glyphicon glyphicon-#{icon['fragment']}--newflow mod' aria-label='#{icon['label']} #{display_name}'></a>"}.join}
       </span>
     SNIPPET
 
@@ -75,15 +77,13 @@ module ProfileHelper
   def email_entry(value:, id:, is_verified:, is_searchable:)
     verify_link = is_verified ? '' : ""
     unconfirmed_link = is_verified ? '' : <<-EOV
-      <span class='unconfirmed-warning'>[<span class='msg editable-click'>
-        #{I18n.t(:"legacy.users.edit.unconfirmed_warning")}
-      </span>]</span>
+      <span class='unconfirmed-warning'>[#{I18n.t(:"legacy.users.edit.unconfirmed_warning")}]</span>
     EOV
 
     (
       <<-SNIPPET
         <div class="email-entry #{'verified' if is_verified}" data-id="#{id}">
-          <span class="email editable-click"><span class="value">#{value}</span></span>
+          <a href="#" class="email editable-click"><span class="value">#{value}</span></a>
           #{unconfirmed_link}
           <div class="controls">
             <div class='resend-confirmation'>
