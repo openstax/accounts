@@ -121,6 +121,12 @@ OX.Profile.Email = {
       email.set(params.response.contact_info)
     )
     # no idea why the defer is needed, but it fails (silently!) without it
-    _.defer -> input.editable('show')
+    _.defer ->
+      input.editable('show')
+      labelText = document.createTextNode('New email')
+      br = document.createElement('br')
+      label = document.querySelector('.email-entry.new label')
+      label.prepend(br)
+      label.prepend(labelText)
 
 }
