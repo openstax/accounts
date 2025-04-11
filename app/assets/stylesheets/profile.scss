@@ -74,12 +74,12 @@ $font-path: '/accounts/fonts';
     padding-right: 5px;
   }
 
-  .mod {
-    color: gray;
-    cursor: pointer;
+  a.mod {
+    color: gray !important;
     &:hover {
-      color: black;
+      color: black !important;
     }
+    text-decoration: none;
   }
 
   .dim {

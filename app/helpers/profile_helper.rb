@@ -29,7 +29,7 @@ module ProfileHelper
       </span>
       <span class="name">#{display_name}</span>
       <span class="mod-holder">
-      #{icons.map{|icon| "<span class='glyphicon #{icon} mod'></span>"}.join}
+      #{icons.map{|icon| "<a href='#' class='glyphicon #{icon} mod'></a>"}.join}
       </span>
     SNIPPET
 
@@ -83,7 +83,7 @@ module ProfileHelper
     (
       <<-SNIPPET
         <div class="email-entry #{'verified' if is_verified}" data-id="#{id}">
-          <span class="email editable-click"><span class="value">#{value}</span></span>
+          <a href="#" class="email editable-click"><span class="value">#{value}</span></a>
           #{unconfirmed_link}
           <div class="controls">
             <div class='resend-confirmation'>
