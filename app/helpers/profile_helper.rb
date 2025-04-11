@@ -19,7 +19,9 @@ module ProfileHelper
       end
 
     icons = [
-      'glyphicon-pencil edit--newflow', 'glyphicon-trash delete--newflow', 'glyphicon-plus add--newflow',
+      {'label' => 'Edit', 'fragment' => 'pencil edit'},
+      {'label' => 'Delete', 'fragment' => 'trash delete'},
+      {'label' => 'Add', 'fragment' => 'plus add'}
     ]
 
     snippet = <<-SNIPPET
@@ -29,7 +31,7 @@ module ProfileHelper
       </span>
       <span class="name">#{display_name}</span>
       <span class="mod-holder">
-      #{icons.map{|icon| "<a href='#' class='glyphicon #{icon} mod'></a>"}.join}
+      #{icons.map{|icon| "<a href='#' class='glyphicon glyphicon-#{icon['fragment']}--newflow mod' aria-label='#{icon['label']} #{display_name}'></a>"}.join}
       </span>
     SNIPPET
 
