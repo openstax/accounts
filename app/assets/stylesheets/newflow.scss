@@ -148,6 +148,18 @@ input.has-error {
 .os-multiselect {
     @extend %os-multiselect;
 
+    button.put-away {
+        height: auto;
+        border: 0;
+        background-color: transparent;
+        padding: 0 0.3rem;
+    }
+
+    button.result {
+        font-size: inherit;
+        height: auto;
+    }
+
     input[type=text] {
         min-width: 100%;
     }
