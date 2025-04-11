@@ -77,9 +77,7 @@ module ProfileHelper
   def email_entry(value:, id:, is_verified:, is_searchable:)
     verify_link = is_verified ? '' : ""
     unconfirmed_link = is_verified ? '' : <<-EOV
-      <span class='unconfirmed-warning'>[<span class='msg editable-click'>
-        #{I18n.t(:"legacy.users.edit.unconfirmed_warning")}
-      </span>]</span>
+      <span class='unconfirmed-warning'>[#{I18n.t(:"legacy.users.edit.unconfirmed_warning")}]</span>
     EOV
 
     (
