@@ -1,0 +1,147 @@
+name: Workflow Metrics
+
+on:
+  workflow_run:
+    workflows: ["Tests", "Assets", "Migrations", "CodeQL"]
+    types:
+      - completed
+  schedule:
+    - cron: '0 0 * * *' # Daily
+
+jobs:
+  collect-metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Collect Workflow Metrics
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Get workflow run data
+            const { data: runs } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: context.workflow,
+              per_page: 100,
+              status: 'completed'
+            });
+            
+            // Calculate metrics
+            const metrics = {
+              total_runs: runs.total_count,
+              success_rate: 0,
+              average_duration: 0,
+              failure_reasons: {},
+              workflow_stats: {}
+            };
+            
+            let total_duration = 0;
+            let success_count = 0;
+            
+            for (const run of runs.workflow_runs) {
+              // Calculate success rate
+              if (run.conclusion === 'success') {
+                success_count++;
+              }
+              
+              // Calculate duration
+              const duration = (new Date(run.updated_at) - new Date(run.created_at)) / 1000;
+              total_duration += duration;
+              
+              // Track failure reasons
+              if (run.conclusion === 'failure') {
+                const reason = run.conclusion || 'unknown';
+                metrics.failure_reasons[reason] = (metrics.failure_reasons[reason] || 0) + 1;
+              }
+              
+              // Track workflow-specific stats
+              if (!metrics.workflow_stats[run.name]) {
+                metrics.workflow_stats[run.name] = {
+                  total: 0,
+                  success: 0,
+                  failure: 0,
+                  average_duration: 0
+                };
+              }
+              
+              metrics.workflow_stats[run.name].total++;
+              if (run.conclusion === 'success') {
+                metrics.workflow_stats[run.name].success++;
+              } else if (run.conclusion === 'failure') {
+                metrics.workflow_stats[run.name].failure++;
+              }
+            }
+            
+            // Calculate averages
+            metrics.success_rate = (success_count / metrics.total_runs) * 100;
+            metrics.average_duration = total_duration / metrics.total_runs;
+            
+            // Calculate workflow-specific averages
+            for (const workflow in metrics.workflow_stats) {
+              const stats = metrics.workflow_stats[workflow];
+              stats.success_rate = (stats.success / stats.total) * 100;
+            }
+            
+            // Generate markdown report
+            const report = `# Workflow Metrics Report
+            Generated on: ${new Date().toISOString()}
+            
+            ## Overall Statistics
+            - Total Runs: ${metrics.total_runs}
+            - Success Rate: ${metrics.success_rate.toFixed(2)}%
+            - Average Duration: ${(metrics.average_duration / 60).toFixed(2)} minutes
+            
+            ## Failure Reasons
+            ${Object.entries(metrics.failure_reasons)
+              .map(([reason, count]) => `- ${reason}: ${count}`)
+              .join('\n')}
+            
+            ## Workflow-specific Statistics
+            ${Object.entries(metrics.workflow_stats)
+              .map(([name, stats]) => `
+              ### ${name}
+              - Total Runs: ${stats.total}
+              - Success Rate: ${stats.success_rate.toFixed(2)}%
+              - Failures: ${stats.failure}
+              `)
+              .join('\n')}
+            `;
+            
+            // Save report
+            fs.writeFileSync('workflow-metrics.md', report);
+            
+            // Create or update issue with metrics
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'workflow-metrics'
+            });
+            
+            const existingIssue = issues.find(issue => issue.title === 'Workflow Metrics Report');
+            
+            if (existingIssue) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existingIssue.number,
+                body: report
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'Workflow Metrics Report',
+                body: report,
+                labels: ['workflow-metrics']
+              });
+            }
+            
+      - name: Upload Metrics Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-metrics
+          path: workflow-metrics.md
+          retention-days: 30 
