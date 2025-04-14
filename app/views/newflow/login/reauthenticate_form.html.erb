@@ -53,7 +53,8 @@
                         <%= fh.text_field name: :email,
                                     value: email_prefill_value,
                                     placeholder: I18n.t(:"login_signup_form.email_placeholder"),
-                                    readonly: email_prefill_value.present?
+                                    readonly: email_prefill_value.present?,
+                                    required: true
                         %>
 
                     </div>
@@ -66,12 +67,13 @@
                             <%= fh.text_field name: :password,
                                         type: :password,
                                         placeholder: I18n.t(:"login_signup_form.password_label"),
-                                        autofocus: true
+                                        autofocus: true,
+                                        required: true
                             %>
-                            <span id="password-show-hide-button">
+                            <button type="button" id="password-show-hide-button">
                                 <span class="toggle-show-hide">SHOW</span>
                                 <span class="toggle-show-hide" style="display: none">HIDE</span>
-                            </span>
+                            </button>
                         </div>
                     </div>
 

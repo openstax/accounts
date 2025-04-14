@@ -214,6 +214,12 @@ label.required::after {
     position: relative;
 
     #password-show-hide-button {
+        appearance: none;
+        background-color: transparent;
+        border: none;
+        height: auto;
+        font-size: inherit;
+        padding: 0;
         position: absolute;
         top: 3.7rem;
         right: 1.8rem;
@@ -467,6 +473,12 @@ input.has-error {
             border: 0.1rem solid #d5d5d5;
             border-bottom: 0;
             box-sizing: border-box;
+
+            h2 {
+                font-size: inherit;
+                letter-spacing: inherit;
+                line-height: inherit;
+            }
         }
 
         a {

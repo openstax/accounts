@@ -29,7 +29,7 @@
                 %>
                 <div class="content role-section">
                     <div>
-                        <%= render partial: 'newflow/back_arrow', locals: { path: newflow_signup_path } %>
+                        <%= render partial: 'newflow/back_arrow', locals: { path: newflow_signup_path, name: 'welcome' } %>
                         <div class="role-button"><%= I18n.t(:"login_signup_form.student") %></div>
                     </div>
                 </div>
@@ -82,7 +82,8 @@
                     %>
                     <%= form_helper.text_field name: :first_name,
                                 placeholder: I18n.t(:"login_signup_form.first_name_label"),
-                                autofocus: true
+                                autofocus: true,
+                                required: true
                     %>
                 </div>
 
@@ -93,7 +94,8 @@
                     %>
                     <%=
                         form_helper.text_field name: :last_name,
-                        placeholder: I18n.t(:"login_signup_form.last_name_label")
+                        placeholder: I18n.t(:"login_signup_form.last_name_label"),
+                        required: true
                     %>
                 </div>
 
@@ -102,7 +104,8 @@
                     <%=
                         form_helper.text_field(
                             name: :email,
-                            placeholder: I18n.t(:"login_signup_form.email_placeholder")
+                            placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+                            required: true
                         )
                     %>
                 </div>
@@ -114,14 +117,15 @@
                             <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
                                                     class: 'field-label required'
                             %>
-                            <%= render partial: 'newflow/password_show_hide'  %>
                             <%=
                                 form_helper.text_field(
                                     name: :password,
                                     type: :password,
-                                    placeholder: I18n.t(:"login_signup_form.password_label")
+                                    placeholder: I18n.t(:"login_signup_form.password_label"),
+                                    required: true
                                 )
                             %>
+                            <%= render partial: 'newflow/password_show_hide'  %>
                             <%= render partial: 'newflow/password_tooltip' %>
                         </div>
                     </div>
