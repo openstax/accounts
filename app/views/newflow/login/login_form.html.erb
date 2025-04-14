@@ -61,7 +61,7 @@
                     %>
 
                     <div class="content control-group">
-                        <%= label_tag :email, I18n.t(:"login_signup_form.email_label"),
+                        <%= label_tag "login_form_#{:email}", I18n.t(:"login_signup_form.email_label"),
                                     class: 'field-label required'
                         %>
                         <%# input type is text instead of email bc we also support usernames %>
@@ -74,7 +74,7 @@
 
                     <div class="content control-group">
                         <div id="password-field-container">
-                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                            <%= label_tag "login_form_#{:password}", I18n.t(:"login_signup_form.password_label"),
                                     class: 'field-label required'
                             %>
                             <span id="password-show-hide-button">
