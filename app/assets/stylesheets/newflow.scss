@@ -455,6 +455,12 @@ input.has-error {
             border: 0.1rem solid #d5d5d5;
             border-bottom: 0;
             box-sizing: border-box;
+
+            h2 {
+                font-size: inherit;
+                letter-spacing: inherit;
+                line-height: inherit;
+            }
         }
 
         a {

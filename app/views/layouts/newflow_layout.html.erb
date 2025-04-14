@@ -13,7 +13,7 @@
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-        <title>OpenStax Accounts</title>
+        <title><%= @page_title + ' - ' unless @page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
 
         <% unless Rails.env.test? %>
           <%= render partial: 'layouts/posthog' %>
