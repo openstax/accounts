@@ -202,6 +202,12 @@ label.required::after {
     position: relative;
 
     #password-show-hide-button {
+        appearance: none;
+        background-color: transparent;
+        border: none;
+        height: auto;
+        font-size: inherit;
+        padding: 0;
         position: absolute;
         top: 3.7rem;
         right: 1.8rem;

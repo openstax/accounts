@@ -117,7 +117,6 @@
                             <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
                                                     class: 'field-label required'
                             %>
-                            <%= render partial: 'newflow/password_show_hide'  %>
                             <%=
                                 form_helper.text_field(
                                     name: :password,
@@ -126,6 +125,7 @@
                                     required: true
                                 )
                             %>
+                            <%= render partial: 'newflow/password_show_hide'  %>
                             <%= render partial: 'newflow/password_tooltip' %>
                         </div>
                     </div>

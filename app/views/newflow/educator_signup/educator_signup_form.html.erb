@@ -97,7 +97,6 @@
           <div id="password-field-container">
             <div class="input-with-tooltip">
               <%= label_tag(:password, I18n.t(:"login_signup_form.password_label"), class: 'field-label') %>
-              <%= render(partial: 'newflow/password_show_hide') %>
               <%=
                 fh.text_field(
                   name: :password,
@@ -106,6 +105,7 @@
                 )
               %>
               <%= render partial: 'newflow/password_tooltip' %>
+              <%= render(partial: 'newflow/password_show_hide') %>
             </div>
           </div>
         </div>
