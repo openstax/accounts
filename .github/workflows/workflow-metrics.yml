@@ -21,6 +21,12 @@ jobs:
             
             // Get workflow run data
             try {
+              // Skip collecting metrics for the Workflow Metrics workflow itself
+              if (context.workflow === 'Workflow Metrics') {
+                console.log('Skipping metrics collection for Workflow Metrics workflow');
+                return;
+              }
+              
               const { data: runs } = await github.rest.actions.listWorkflowRuns({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

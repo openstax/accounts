@@ -2,14 +2,14 @@
 
 ## Current Status
 
-![Tests](https://github.com/{owner}/{repo}/workflows/Tests/badge.svg)
-![Assets](https://github.com/{owner}/{repo}/workflows/Assets/badge.svg)
-![Migrations](https://github.com/{owner}/{repo}/workflows/Migrations/badge.svg)
-![CodeQL](https://github.com/{owner}/{repo}/workflows/CodeQL/badge.svg)
+![Tests](https://github.com/openstax/accounts/workflows/Tests/badge.svg)
+![Assets](https://github.com/openstax/accounts/workflows/Assets/badge.svg)
+![Migrations](https://github.com/openstax/accounts/workflows/Migrations/badge.svg)
+![CodeQL](https://github.com/openstax/accounts/workflows/CodeQL/badge.svg)
 
 ## Workflow Metrics
 
-Workflow metrics are collected daily and can be found in the [Workflow Metrics Report](https://github.com/{owner}/{repo}/issues?q=label%3Aworkflow-metrics) issue.
+Workflow metrics are collected daily and can be found in the [Workflow Metrics Report](https://github.com/openstax/accounts/issues?q=label%3Aworkflow-metrics) issue.
 
 ### Key Metrics
 - Success Rate
@@ -37,4 +37,4 @@ Workflow metrics are collected daily and can be found in the [Workflow Metrics R
 - Migration integrity checks
 
 ## Recent Issues
-See the [Workflow Metrics Report](https://github.com/{owner}/{repo}/issues?q=label%3Aworkflow-metrics) for detailed information about recent workflow runs and any ongoing issues. 
+See the [Workflow Metrics Report](https://github.com/openstax/accounts/issues?q=label%3Aworkflow-metrics) for detailed information about recent workflow runs and any ongoing issues. 
