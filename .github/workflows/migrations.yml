@@ -66,6 +66,7 @@ jobs:
         env:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
+          PGPASSWORD: postgres
         run: |
           bin/rake db:create db:schema:load db:seed --trace
           bin/rails runner '3.times { FactoryBot.create :user }'
@@ -84,6 +85,7 @@ jobs:
         env:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
+          PGPASSWORD: postgres
         run: |
           # Run migrations
           bin/rake db:migrate
@@ -106,6 +108,7 @@ jobs:
         env:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
+          PGPASSWORD: postgres
         run: |
           # Get the last migration version
           LAST_MIGRATION=$(bin/rails runner 'puts ActiveRecord::Base.connection.migration_context.get_all_versions.last')
