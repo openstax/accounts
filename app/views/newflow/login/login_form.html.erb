@@ -68,7 +68,8 @@
                         <%= fh.text_field name: :email,
                                     value: email_prefill_value,
                                     placeholder: I18n.t(:"login_signup_form.email_placeholder"),
-                                    autofocus: true
+                                    autofocus: true,
+                                    required: true
                         %>
                     </div>
 
@@ -83,7 +84,8 @@
                             </span>
                             <%= fh.text_field name: :password,
                                         type: :password,
-                                        placeholder: I18n.t(:"login_signup_form.password_label")
+                                        placeholder: I18n.t(:"login_signup_form.password_label"),
+                                        required: true
                             %>
                         </div>
                     </div>
