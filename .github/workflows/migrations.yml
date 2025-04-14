@@ -8,10 +8,15 @@ on:
       - synchronize
       - reopened
 
+# Add concurrency to cancel outdated workflow runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   migrations:
     timeout-minutes: 30
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:11
@@ -41,28 +46,85 @@ jobs:
       - run: git checkout HEAD^
 
       # Install base commit ruby version
-      - uses: ruby/setup-ruby@v1
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
 
       # Create data to be migrated and revert to PR merge commit
+      - name: Cache database setup
+        uses: actions/cache@v4
+        with:
+          path: |
+            tmp/cache
+            db/schema.rb
+          key: db-setup-${{ github.sha }}
+          restore-keys: |
+            db-setup-
+
       - name: Create data to be migrated
         env:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
+          PGPASSWORD: postgres
+          RAILS_ENV: test
         run: |
           bin/rake db:create db:schema:load db:seed --trace
           bin/rails runner '3.times { FactoryBot.create :user }'
+          # Export data for integrity check
+          pg_dump -U postgres -h localhost -F c -f pre_migration.dump ox_accounts_test
           git checkout --force -
 
       # Install PR ruby version
-      - uses: ruby/setup-ruby@v1
+      - name: Set up Ruby (PR version)
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
 
       # Migrate the data
-      - name: Migrate
+      - name: Migrate and verify
         env:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
-        run: bin/rake db:migrate
+          PGPASSWORD: postgres
+          RAILS_ENV: test
+        run: |
+          # Run migrations
+          bin/rake db:migrate
+          
+          # Verify data integrity
+          bin/rails runner '
+            begin
+              User.count == 3 or raise "User count mismatch"
+              puts "✅ Data integrity check passed"
+            rescue => e
+              puts "❌ Data integrity check failed: #{e.message}"
+              exit 1
+            end
+          '
+          
+          # Export post-migration data
+          pg_dump -U postgres -h localhost -F c -f post_migration.dump ox_accounts_test
+
+      - name: Upload migration artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: migration-artifacts
+          path: |
+            pre_migration.dump
+            post_migration.dump
+            log/development.log
+          retention-days: 7
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ Migration check failed. Check the [workflow run](' + context.serverUrl + '/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId + ') for details.'
+            })
