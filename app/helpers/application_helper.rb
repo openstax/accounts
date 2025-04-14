@@ -245,7 +245,7 @@ module ApplicationHelper
       end
 
       header = if header.present?
-        content_tag(:header, class: "page-header") { header }
+        content_tag(:h1, class: "page-header") { header }
       end
 
       body = capture(&block)
