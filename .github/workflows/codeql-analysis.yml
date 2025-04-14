@@ -47,10 +47,10 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         queries: |
-          security-extended
           security-and-quality
-          ruby-security-queries
-          javascript-security-queries
+          codeql-suites:security-extended
+          codeql-suites:ruby-security
+          codeql-suites:javascript-security
         source-root: .
         config: |
           paths:
