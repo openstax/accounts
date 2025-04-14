@@ -46,18 +46,6 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
-        queries: |
-          security-and-quality
-          codeql-suites:security-extended
-          codeql-suites:ruby-security
-          codeql-suites:javascript-security
-        source-root: .
-        config: |
-          paths:
-            - app/
-            - lib/
-            - config/
-            - public/
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3

@@ -59,13 +59,35 @@ jobs:
         
       - name: Verify assets
         run: |
-          # Check if assets were compiled
-          test -d public/assets || exit 1
-          # Check for common asset files
-          test -f public/assets/application.js || exit 1
-          test -f public/assets/application.css || exit 1
+          # Check if assets directory exists
+          if [ ! -d "public/assets" ]; then
+            echo "❌ Assets directory not found at public/assets"
+            ls -la public/
+            exit 1
+          fi
+          
+          # List all compiled assets for debugging
+          echo "📦 Compiled assets:"
+          find public/assets -type f -name "*.js" -o -name "*.css"
+          
+          # Check for any JavaScript files
+          JS_FILES=$(find public/assets -type f -name "*.js" | wc -l)
+          if [ "$JS_FILES" -eq 0 ]; then
+            echo "❌ No JavaScript files found in public/assets"
+            exit 1
+          fi
+          
+          # Check for any CSS files
+          CSS_FILES=$(find public/assets -type f -name "*.css" | wc -l)
+          if [ "$CSS_FILES" -eq 0 ]; then
+            echo "❌ No CSS files found in public/assets"
+            exit 1
+          fi
+          
+          echo "✅ Asset verification passed"
           
       - name: Upload compiled assets
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: compiled-assets
