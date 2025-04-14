@@ -18,7 +18,7 @@ on:
 jobs:
   tests:
     timeout-minutes: 30
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:11
