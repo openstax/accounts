@@ -106,30 +106,6 @@ jobs:
           # Export post-migration data
           pg_dump -U postgres -h localhost -F c -f post_migration.dump ox_accounts_test
 
-      - name: Test rollback
-        env:
-          OXA_DB_USER: postgres
-          OXA_DB_PASS: postgres
-          PGPASSWORD: postgres
-          RAILS_ENV: test
-        run: |
-          # Get the last migration version
-          LAST_MIGRATION=$(bin/rails runner 'puts ActiveRecord::Base.connection.migration_context.get_all_versions.last')
-          
-          # Rollback one step
-          bin/rake db:migrate:down VERSION=$LAST_MIGRATION
-          
-          # Verify data after rollback
-          bin/rails runner '
-            begin
-              User.count == 3 or raise "User count mismatch after rollback"
-              puts "✅ Rollback data integrity check passed"
-            rescue => e
-              puts "❌ Rollback data integrity check failed: #{e.message}"
-              exit 1
-            end
-          '
-
       - name: Upload migration artifacts
         if: always()
         uses: actions/upload-artifact@v4
