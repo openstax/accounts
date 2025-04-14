@@ -13,7 +13,10 @@
                     banners: @banners,
                     show_exit_icon: true) do %>
             <% lev_form_for :login_form, url: newflow_login_path do |f| %>
-                <% fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors) %>
+                <%
+                    fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors)
+                    @page_title = 'Log in'
+                %>
                     <div class="content social-section">
                         <div><%= I18n.t(:"login_signup_form.login_with") %></div>
 
@@ -58,7 +61,7 @@
                     %>
 
                     <div class="content control-group">
-                        <%= label_tag :email, I18n.t(:"login_signup_form.email_label"),
+                        <%= label_tag "login_form_#{:email}", I18n.t(:"login_signup_form.email_label"),
                                     class: 'field-label required'
                         %>
                         <%# input type is text instead of email bc we also support usernames %>
@@ -71,7 +74,7 @@
 
                     <div class="content control-group">
                         <div id="password-field-container">
-                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                            <%= label_tag "login_form_#{:password}", I18n.t(:"login_signup_form.password_label"),
                                     class: 'field-label required'
                             %>
                             <span id="password-show-hide-button">

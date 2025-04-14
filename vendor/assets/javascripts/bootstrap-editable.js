@@ -616,9 +616,9 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
     */      
     $.fn.editableform.template = '<form class="form-inline editableform">'+
     '<div class="control-group">' + 
-    '<div><div class="editable-input"></div><div class="editable-buttons"></div></div>'+
+    '<label><div class="editable-input"></div><div class="editable-buttons"></div></div>'+
     '<div class="editable-error-block"></div>' + 
-    '</div>' + 
+    '</label>' + 
     '</form>';
 
     //loading div
@@ -2920,7 +2920,7 @@ $(function(){
         //render clear button
         renderClear:  function() {
            if (this.options.clear) {
-               this.$clear = $('<span class="editable-clear-x"></span>');
+               this.$clear = $('<button type="button" class="editable-clear-x" aria-label="clear text"></button>');
                this.$input.after(this.$clear)
                           .css('padding-right', 24)
                           .keyup($.proxy(function(e) {
