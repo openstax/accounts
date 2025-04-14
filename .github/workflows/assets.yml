@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '0 0 * * 0' # weekly
 
+# Add concurrency to cancel outdated workflow runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   assets:
     timeout-minutes: 30
@@ -15,12 +20,64 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+          
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            vendor/bundle
+            .yarn-cache
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+            
+      - name: Cache compiled assets
+        uses: actions/cache@v4
+        with:
+          path: public/assets
+          key: assets-${{ github.sha }}
+          restore-keys: |
+            assets-
+            
+      - name: Install dependencies
+        run: |
+          yarn install --frozen-lockfile
+          bundle install
+          
       - name: Build assets
         env:
           DISABLE_SES: true
           RAILS_ENV: production
           SECRET_KEY_BASE: fb1c1b629399c0ed18a89c3552955a7c378ce72a10a639df910631b702285149
         run: bin/rake assets:precompile
+        
+      - name: Verify assets
+        run: |
+          # Check if assets were compiled
+          test -d public/assets || exit 1
+          # Check for common asset files
+          test -f public/assets/application.js || exit 1
+          test -f public/assets/application.css || exit 1
+          
+      - name: Upload compiled assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-assets
+          path: public/assets
+          retention-days: 7
+          
+      - name: Check for unused assets
+        run: |
+          # Find potentially unused assets (files not referenced in the codebase)
+          find public/assets -type f -name "*.js" -o -name "*.css" | while read file; do
+            filename=$(basename "$file")
+            if ! grep -r --include="*.{js,css,erb,haml}" "$filename" app/ lib/ config/ > /dev/null; then
+              echo "Warning: $file might be unused"
+            fi
+          done
