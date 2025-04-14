@@ -67,11 +67,12 @@ jobs:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
           PGPASSWORD: postgres
+          RAILS_ENV: test
         run: |
           bin/rake db:create db:schema:load db:seed --trace
           bin/rails runner '3.times { FactoryBot.create :user }'
           # Export data for integrity check
-          pg_dump -U postgres -h localhost -F c -f pre_migration.dump accounts
+          pg_dump -U postgres -h localhost -F c -f pre_migration.dump ox_accounts_test
           git checkout --force -
 
       # Install PR ruby version
@@ -86,6 +87,7 @@ jobs:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
           PGPASSWORD: postgres
+          RAILS_ENV: test
         run: |
           # Run migrations
           bin/rake db:migrate
@@ -102,13 +104,14 @@ jobs:
           '
           
           # Export post-migration data
-          pg_dump -U postgres -h localhost -F c -f post_migration.dump accounts
+          pg_dump -U postgres -h localhost -F c -f post_migration.dump ox_accounts_test
 
       - name: Test rollback
         env:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
           PGPASSWORD: postgres
+          RAILS_ENV: test
         run: |
           # Get the last migration version
           LAST_MIGRATION=$(bin/rails runner 'puts ActiveRecord::Base.connection.migration_context.get_all_versions.last')
