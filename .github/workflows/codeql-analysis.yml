@@ -51,11 +51,13 @@ jobs:
           security-and-quality
           ruby-security-queries
           javascript-security-queries
-        paths: |
-          app/
-          lib/
-          config/
-          public/
+        source-root: .
+        config: |
+          paths:
+            - app/
+            - lib/
+            - config/
+            - public/
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3
