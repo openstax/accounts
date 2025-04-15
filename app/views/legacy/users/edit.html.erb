@@ -42,7 +42,7 @@
       <% current_user.email_addresses.order(:created_at).each do |email| %>
         <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
       <% end %>
-      <%= link_to (t :".add_email_address"), '#', {id: 'add-an-email'} %>
+      <button type="button" id="add-an-email"><%= t :".add_email_address" %></button>
     </div>
   </div>
 

@@ -170,19 +170,12 @@
         <% end %>
 
   <% unless @framed %>
-        <%=
-          link_to(
-            I18n.t(:"legacy.users.edit.add_email_address"),
-            '#',
-            id: 'add-an-email',
-            data: {
-              'ga-category': 'My Account',
-              'ga-action': 'Click',
-              'ga-label': 'Add Email Address',
-              'using-openstax': @using_os
-            }
-          )
-        %>
+        <button type="button" id="add-an-email"
+          data-ga-category="My Account"
+          data-ga-action="Click"
+          data-ga-label="Add Email Address"
+          data-using-openstax="<%= @using_os %>"
+        ><%= I18n.t(:"legacy.users.edit.add_email_address") %></button>
       </div>
     </div>
 
