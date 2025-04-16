@@ -3,11 +3,9 @@ Ui = do () ->
   disableButton: (selector) ->
     $(selector).attr('disabled', 'disabled')
     $(selector).addClass('ui-state-disabled ui-button-disabled')
-    $(selector).attr('aria-disabled', true)
 
   enableButton: (selector) ->
     $(selector).removeAttr('disabled')
-    $(selector).removeAttr('aria-disabled')
     $(selector).removeClass('ui-state-disabled ui-button-disabled')
     $(selector).button()
 
