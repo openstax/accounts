@@ -148,6 +148,18 @@ input.has-error {
 .os-multiselect {
     @extend %os-multiselect;
 
+    button.put-away {
+        height: auto;
+        border: 0;
+        background-color: transparent;
+        padding: 0 0.3rem;
+    }
+
+    button.result {
+        font-size: inherit;
+        height: auto;
+    }
+
     input[type=text] {
         min-width: 100%;
     }
@@ -202,6 +214,12 @@ label.required::after {
     position: relative;
 
     #password-show-hide-button {
+        appearance: none;
+        background-color: transparent;
+        border: none;
+        height: auto;
+        font-size: inherit;
+        padding: 0;
         position: absolute;
         top: 3.7rem;
         right: 1.8rem;
