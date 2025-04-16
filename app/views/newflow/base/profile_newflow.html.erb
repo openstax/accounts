@@ -23,7 +23,7 @@
     display: none;
   }
 
-  a, .editable-click, #enable-other-sign-in, a.sign-out, #add-an-email, .resend-confirmation input[type=submit] {
+  a, #enable-other-sign-in, a.sign-out, #add-an-email, .resend-confirmation input[type=submit] {
     color: #027eb5 !important;
   }
 
@@ -170,6 +170,7 @@
         <% end %>
 
   <% unless @framed %>
+        <div id="add-an-email-editable"></div>
         <button type="button" id="add-an-email"
           data-ga-category="My Account"
           data-ga-action="Click"

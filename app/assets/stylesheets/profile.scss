@@ -101,15 +101,6 @@ $font-path: '/accounts/fonts';
     &:first-child {
       .alert { margin-top: 0; }
     }
-    .email,
-    .unconfirmed-warning .msg {
-      color: $os_link_color;
-      text-decoration: underline;
-      cursor: pointer;
-      &:hover {
-        text-decoration: none;
-      }
-    }
     .unconfirmed-warning .msg { margin: 0 0.5rem; }
     &.verified {
       .unconfirmed-warning { display: none; }
@@ -150,7 +141,8 @@ $font-path: '/accounts/fonts';
         }
       }
     }
-    &.expanded {
+    &.expanded,
+    &[aria-expanded="true"] {
       .controls {
         display: block;
       }

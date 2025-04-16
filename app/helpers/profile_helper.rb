@@ -82,8 +82,10 @@ module ProfileHelper
 
     (
       <<-SNIPPET
-        <div class="email-entry #{'verified' if is_verified}" data-id="#{id}">
-          <a href="#" class="email editable-click"><span class="value">#{value}</span></a>
+        <div class="email-entry editable-click #{'verified' if is_verified}" data-id="#{id}">
+          <button type="button" class="email" aria-expanded="false">
+            <span class="value">#{value}</span>
+          </button>
           #{unconfirmed_link}
           <div class="controls">
             <div class='resend-confirmation'>
