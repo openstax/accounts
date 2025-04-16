@@ -201,13 +201,7 @@
       </div>
       <% if other_available_providers.any? %>
       <div class="col-sm-offset-2 info col-sm-10">
-        <%=
-          link_to(
-            I18n.t(:"student_profile.enable_other_sign_in_options"),
-            nil,
-            id: 'enable-other-sign-in'
-          )
-        %>
+        <button id="enable-other-sign-in"><%= I18n.t(:"student_profile.enable_other_sign_in_options") %></button>
       </div>
       <% end %>
 
