@@ -23,7 +23,7 @@
     display: none;
   }
 
-  a, #enable-other-sign-in, a.sign-out, #add-an-email, .resend-confirmation input[type=submit] {
+  a, #enable-other-sign-in, #add-an-email, .resend-confirmation input[type=submit] {
     color: #027eb5 !important;
   }
 
@@ -120,8 +120,9 @@
 
 <%= ox_card do %>
   <div class="profile-title">
+    <h1 class="title"><%= t :"login_signup_form.profile_newflow_page_header" %></h1>
     <%=
-      link_to(
+      button_to(
         I18n.t(:"legacy.users.edit.sign_out"),
         newflow_logout_path,
         class: 'sign-out',
@@ -133,7 +134,6 @@
         }
       )
     %>
-    <h1 class="title"><%= t :"login_signup_form.profile_newflow_page_header" %></h1>
   </div>
 
   <div class="row name">

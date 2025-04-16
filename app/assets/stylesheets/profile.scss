@@ -20,11 +20,26 @@ $font-path: '/accounts/fonts';
   .alert { margin: 10px; }
 
   .profile-title {
-    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: baseline;
+
+    .title {
+      grid-column: 2;
+    }
+
+    .button_to {
+      grid-column: 3;
+      text-align: right;
+    }
 
     .sign-out {
-      position: absolute;
-      right: 0px;
+      border: 0;
+      background-color: transparent;
+      line-height: normal;
+      padding: 0.5rem;
+      height: auto;
+      color: #027eb5;
     }
   }
 
@@ -135,9 +150,14 @@ $font-path: '/accounts/fonts';
       }
       .delete {
         margin-left: 6px;
-        a {
+        button {
+          appearance: none;
+          padding: 0.2rem;
           font-size: 13px;
-          margin-left: 8px;
+          margin-left: 6px;
+          border: 0;
+          color: #027eb5;
+          background-color: transparent;
         }
       }
     }

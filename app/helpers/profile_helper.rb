@@ -93,7 +93,7 @@ module ProfileHelper
               #{button_to((I18n.t :"legacy.users.edit.resend_confirmation"), resend_confirmation_contact_info_path(id: id), method: :put )}
             </div>
             <div class="delete">
-              <span class="glyphicon glyphicon-trash"></span><a href="#">Delete</a>
+              <span class="glyphicon glyphicon-trash"></span><button type="button">Delete</button>
             </div>
             <div class="searchable-toggle">
               <label><input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"legacy.users.edit.searchable"}</label>
