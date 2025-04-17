@@ -7,6 +7,7 @@
         <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
 
         <%= newflow_login_signup_card(
+                    id: 'signup-page',
                     classes: "welcome-page",
                     header: (I18n.t(:"login_signup_form.welcome_page_header")),
                     banners: @banners) do %>

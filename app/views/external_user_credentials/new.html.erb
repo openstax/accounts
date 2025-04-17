@@ -5,6 +5,7 @@
 <div id="login-signup-form" class="without-tabs">
     <div class="content">
         <%= newflow_login_signup_card(
+                    id: 'signup-page',
                     header: (I18n.t(:"login_signup_form.signup_page_header")),
                     current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 1),
                     classes: 'signup-page') do %>

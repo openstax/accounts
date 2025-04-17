@@ -532,7 +532,7 @@ input.has-error {
                 width: 10rem;
             }
 
-            &.login.login--active, &.signup.signup--active {
+            &[aria-selected="true"] {
                 background-color: #fff;
                 border-bottom-width: 0;
             }
