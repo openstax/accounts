@@ -148,6 +148,18 @@ input.has-error {
 .os-multiselect {
     @extend %os-multiselect;
 
+    button.put-away {
+        height: auto;
+        border: 0;
+        background-color: transparent;
+        padding: 0 0.3rem;
+    }
+
+    button.result {
+        font-size: inherit;
+        height: auto;
+    }
+
     input[type=text] {
         min-width: 100%;
     }
@@ -202,6 +214,12 @@ label.required::after {
     position: relative;
 
     #password-show-hide-button {
+        appearance: none;
+        background-color: transparent;
+        border: none;
+        height: auto;
+        font-size: inherit;
+        padding: 0;
         position: absolute;
         top: 3.7rem;
         right: 1.8rem;
@@ -514,7 +532,7 @@ input.has-error {
                 width: 10rem;
             }
 
-            &.login.login--active, &.signup.signup--active {
+            &[aria-selected="true"] {
                 background-color: #fff;
                 border-bottom-width: 0;
             }
@@ -643,6 +661,7 @@ input.has-error {
         }
 
         .social-section {
+            border: 0;
             @include wider-than($phone-max) {
                 > div {
                     line-height: normal;
@@ -651,6 +670,11 @@ input.has-error {
                 .social-buttons .btn {
                     line-height: 2.8rem;
                 }
+            }
+
+            legend {
+                line-height: normal;
+                padding: 0;
             }
         }
 

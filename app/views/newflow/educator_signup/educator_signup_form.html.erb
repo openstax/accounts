@@ -17,6 +17,7 @@
     <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
 
     <%= newflow_login_signup_card(
+          id: 'signup-page',
           header: (I18n.t(:"login_signup_form.signup_page_header")),
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 4),
           classes: 'signup-page') do %>
@@ -98,7 +99,6 @@
           <div id="password-field-container">
             <div class="input-with-tooltip">
               <%= label_tag(:password, I18n.t(:"login_signup_form.password_label"), class: 'field-label') %>
-              <%= render(partial: 'newflow/password_show_hide') %>
               <%=
                 fh.text_field(
                   name: :password,
@@ -107,6 +107,7 @@
                 )
               %>
               <%= render partial: 'newflow/password_tooltip' %>
+              <%= render(partial: 'newflow/password_show_hide') %>
             </div>
           </div>
         </div>
@@ -173,4 +174,5 @@
 <script type="text/javascript">
   NewflowUi.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
   new NewflowUi.SignupEmailValidations();
+  NewflowUi.focusOnFirstErrorItem();
 </script>

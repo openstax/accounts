@@ -16,6 +16,7 @@
         <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
 
         <%= newflow_login_signup_card(
+                    id: 'signup-page',
                     header: (I18n.t(:"login_signup_form.signup_page_header")),
                     current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
                     classes: 'signup-page') do %>
@@ -82,7 +83,8 @@
                     %>
                     <%= form_helper.text_field name: :first_name,
                                 placeholder: I18n.t(:"login_signup_form.first_name_label"),
-                                autofocus: true
+                                autofocus: true,
+                                required: true
                     %>
                 </div>
 
@@ -93,7 +95,8 @@
                     %>
                     <%=
                         form_helper.text_field name: :last_name,
-                        placeholder: I18n.t(:"login_signup_form.last_name_label")
+                        placeholder: I18n.t(:"login_signup_form.last_name_label"),
+                        required: true
                     %>
                 </div>
 
@@ -102,7 +105,8 @@
                     <%=
                         form_helper.text_field(
                             name: :email,
-                            placeholder: I18n.t(:"login_signup_form.email_placeholder")
+                            placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+                            required: true
                         )
                     %>
                 </div>
@@ -114,14 +118,15 @@
                             <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
                                                     class: 'field-label required'
                             %>
-                            <%= render partial: 'newflow/password_show_hide'  %>
                             <%=
                                 form_helper.text_field(
                                     name: :password,
                                     type: :password,
-                                    placeholder: I18n.t(:"login_signup_form.password_label")
+                                    placeholder: I18n.t(:"login_signup_form.password_label"),
+                                    required: true
                                 )
                             %>
+                            <%= render partial: 'newflow/password_show_hide'  %>
                             <%= render partial: 'newflow/password_tooltip' %>
                         </div>
                     </div>
@@ -177,4 +182,5 @@
 
 <script type="text/javascript">
     NewflowUi.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
+    NewflowUi.focusOnFirstErrorItem();
 </script>

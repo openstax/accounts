@@ -8,6 +8,7 @@
         <%= render partial: 'newflow/tab_group' , locals: { active_class: 'login--active' } %>
 
         <%= newflow_login_signup_card(
+                    id: 'login-page',
                     classes: "login-page",
                     header: (I18n.t(:"login_signup_form.login_page_header")),
                     banners: @banners,
@@ -17,100 +18,104 @@
                     fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors)
                     @page_title = 'Log in'
                 %>
-                    <div class="content social-section">
-                        <div><%= I18n.t(:"login_signup_form.login_with") %></div>
+                <fieldset class="content social-section">
+                    <legend><%= I18n.t(:"login_signup_form.login_with") %></legend>
+                    <div class="social-buttons">
+                        <div class="fb-share-button">
+                            <%=
+                                link_to(
+                                    newflow_auth_path(:facebooknewflow, origin: :login_form),
+                                    class: 'facebook btn',
+                                    data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Facebook' }
+                                ) do
+                            %>
+                                <i class="social-icon fa fa-facebook"></i>
+                                <span>Facebook</span>
+                            <% end %>
+                        </div>
 
-                        <div class="social-buttons">
-
-                            <div class="fb-share-button">
-                                <%=
-                                    link_to(
-                                        newflow_auth_path(:facebooknewflow, origin: :login_form),
-                                        class: 'facebook btn',
-                                        data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Facebook' }
-                                    ) do
-                                %>
-                                    <i class="social-icon fa fa-facebook"></i>
-                                    <span>Facebook</span>
-                                <% end %>
-                            </div>
-
-                            <div class="google-share-button">
-                                <%=
-                                    link_to(
-                                        newflow_auth_path(:googlenewflow, origin: :login_form),
-                                        class: 'google btn',
-                                        data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Google' }
-                                    ) do
-                                %>
-                                    <i class="social-icon fa fa-google"></i>
-                                    <span>Google</span>
-                                <% end %>
-                            </div>
-
+                        <div class="google-share-button">
+                            <%=
+                                link_to(
+                                    newflow_auth_path(:googlenewflow, origin: :login_form),
+                                    class: 'google btn',
+                                    data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Google' }
+                                ) do
+                            %>
+                                <i class="social-icon fa fa-google"></i>
+                                <span>Google</span>
+                            <% end %>
                         </div>
                     </div>
+                </fieldset>
 
+                <%=
+                    render(
+                        partial: 'newflow/form_divider',
+                        locals: {
+                            dividing_text: I18n.t(:"login_signup_form.or_login_below")
+                        }
+                    )
+                %>
+
+                <div class="content control-group">
+                    <%= label_tag "login_form_#{:email}", I18n.t(:"login_signup_form.email_label"),
+                                class: 'field-label required'
+                    %>
+                    <%# input type is text instead of email bc we also support usernames %>
+                    <%= fh.text_field name: :email,
+                                value: email_prefill_value,
+                                placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+                                autofocus: true,
+                                required: true
+                    %>
+                </div>
+
+                <div class="content control-group">
+                    <div id="password-field-container">
+                        <%= label_tag "login_form_#{:password}", I18n.t(:"login_signup_form.password_label"),
+                                class: 'field-label required'
+                        %>
+                        <%= fh.text_field name: :password,
+                                    type: :password,
+                                    placeholder: I18n.t(:"login_signup_form.password_label"),
+                                    required: true
+                        %>
+                        <button type="button" id="password-show-hide-button">
+                            <span class="toggle-show-hide" data-ga_category='SHOW/HIDE password', data-ga_action='Click', data-ga_label='SHOW - Logon'>SHOW</span>
+                            <span class="toggle-show-hide" style="display: none">HIDE</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content">
+                    <%= f.submit I18n.t(:"login_signup_form.continue_button"),
+                                disable_with: I18n.t(:"login_signup_form.continue_button"),
+                                class: 'primary',
+                                data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Email' }
+                    %>
+                </div>
+
+                <div class="content">
                     <%=
-                        render(
-                            partial: 'newflow/form_divider',
-                            locals: {
-                                dividing_text: I18n.t(:"login_signup_form.or_login_below")
+                        link_to(
+                            I18n.t(:"login_signup_form.forgot_password"),
+                            forgot_password_form_path,
+                            id: 'forgot-password-link',
+                            data: {
+                                ga_category: 'Login',
+                                ga_action: 'Click',
+                                ga_label: 'Password Reset'
                             }
                         )
                     %>
-
-                    <div class="content control-group">
-                        <%= label_tag "login_form_#{:email}", I18n.t(:"login_signup_form.email_label"),
-                                    class: 'field-label required'
-                        %>
-                        <%# input type is text instead of email bc we also support usernames %>
-                        <%= fh.text_field name: :email,
-                                    value: email_prefill_value,
-                                    placeholder: I18n.t(:"login_signup_form.email_placeholder"),
-                                    autofocus: true
-                        %>
-                    </div>
-
-                    <div class="content control-group">
-                        <div id="password-field-container">
-                            <%= label_tag "login_form_#{:password}", I18n.t(:"login_signup_form.password_label"),
-                                    class: 'field-label required'
-                            %>
-                            <span id="password-show-hide-button">
-                                <span class="toggle-show-hide" data-ga_category='SHOW/HIDE password', data-ga_action='Click', data-ga_label='SHOW - Logon'>SHOW</span>
-                                <span class="toggle-show-hide" style="display: none">HIDE</span>
-                            </span>
-                            <%= fh.text_field name: :password,
-                                        type: :password,
-                                        placeholder: I18n.t(:"login_signup_form.password_label")
-                            %>
-                        </div>
-                    </div>
-
-                    <div class="content">
-                        <%= f.submit I18n.t(:"login_signup_form.continue_button"),
-                                    disable_with: I18n.t(:"login_signup_form.continue_button"),
-                                    class: 'primary',
-                                    data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Email' }
-                        %>
-                    </div>
-
-                    <div class="content">
-                        <%=
-                            link_to(
-                                I18n.t(:"login_signup_form.forgot_password"),
-                                forgot_password_form_path,
-                                id: 'forgot-password-link',
-                                data: {
-                                    ga_category: 'Login',
-                                    ga_action: 'Click',
-                                    ga_label: 'Password Reset'
-                                }
-                            )
-                        %>
-                    </div>
+                </div>
             <% end  %>
         <% end  %>
     </div>
 </div>
+
+<script type="text/javascript">
+    NewflowUi.focusOnFirstErrorItem();
+</script>
+
