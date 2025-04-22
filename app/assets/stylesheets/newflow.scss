@@ -191,7 +191,6 @@ select:not([multiple]) {
   &:focus {
     border: thin solid #0dc0dc;
     box-shadow: 0 0 0.4rem 0 #0dc0dc80;
-    outline: none;
   }
 }
 
@@ -670,9 +669,19 @@ $very-narrow: 37rem * $scale-factor;
             }
         }
 
-        label {
+        fieldset {
+            border: 0;
+            padding: 0;            
+        }
+
+        label,
+        legend {
             font-weight: bold;
             color: var(--greyish-brown);
+
+            :focus-visible {
+                outline: medium solid os-color(blue);
+            }
         }
 
         .social-section {
