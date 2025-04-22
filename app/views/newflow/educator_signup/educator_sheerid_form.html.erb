@@ -6,11 +6,13 @@
     <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
 
     <%= newflow_login_signup_card(
+          id: 'signup-page',
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 3, total_steps: 4),
           classes: 'signup-page') do %>
         <form>
           <div class="content control-group">
             <iframe
+              title='instructor verification'
               src=<%= @sheerid_url %>
               frameborder=0
               width="100%">

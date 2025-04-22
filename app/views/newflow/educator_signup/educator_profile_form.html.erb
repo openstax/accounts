@@ -15,6 +15,7 @@
     <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
 
     <%= newflow_login_signup_card(
+          id: 'signup-page',
           header: (I18n.t(:"educator_profile_form.complete_page_header")),
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 4, total_steps: 4),
           classes: 'signup-page completed-step') do %>
@@ -73,16 +74,9 @@
               </div>
             </div>
 
-            <div class="form-group question completed-role">
+            <fieldset class="question completed-role">
+              <legend class='field-label'><%= I18n.t(:"educator_profile_form.describe_role") %></legend>
               <div class="radio-control-group">
-                <%=
-                  label_tag(
-                    :educator_specific_role,
-                    I18n.t(:"educator_profile_form.describe_role"),
-                    class: 'field-label'
-                  )
-                %>
-
                 <div class="role newflow-mustdo-alert">
                   <%= I18n.t(:"educator_profile_form.select_option") %>
                 </div>
@@ -119,11 +113,11 @@
                   )
                 %>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="form-group question how-chosen">
+            <fieldset class="form-group question how-chosen">
+              <legend class='field-label'><%= I18n.t(:"educator_profile_form.how_textbooks_chosen") %></legend>
               <div class="radio-control-group">
-                <%= label_tag :who_chooses_books, I18n.t(:"educator_profile_form.how_textbooks_chosen"), class: 'field-label' %>
                 <div class="chosen newflow-mustdo-alert">
                   <%= I18n.t(:"educator_profile_form.select_option") %>
                 </div>
@@ -161,11 +155,11 @@
                   <%= label :using_future, I18n.t(:"educator_profile_form.chosen_by_coordinator"), class: 'custom-control-label' %>
                 </label>
               </div>
-            </div>
+            </fieldset>
 
-            <div class="form-group question how-using">
+            <fieldset class="question how-using">
+              <legend class='field-label'><%= I18n.t(:"educator_profile_form.how_using") %></legend>
               <div class="radio-control-group">
-                <%= label_tag :using_openstax_how, I18n.t(:"educator_profile_form.how_using"), class: 'field-label' %>
                 <div class="using newflow-mustdo-alert">
                   <%= I18n.t(:"educator_profile_form.select_option") %>
                 </div>
@@ -203,7 +197,7 @@
                   <%= label :using_future, I18n.t(:"educator_profile_form.using_future"), class: 'custom-control-label' %>
                 </label>
               </div>
-            </div>
+            </fieldset>
 
             <div class="form-group question books-used">
               <%=
