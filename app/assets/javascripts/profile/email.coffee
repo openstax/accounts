@@ -24,6 +24,7 @@ class Email
 
   toggleProperties: ->
     this.$el.toggleClass('expanded')
+    this.$el.find('button').attr('aria-expanded', this.$el.hasClass('expanded'))
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)
@@ -98,9 +99,10 @@ OX.Profile.Email = {
       $(el).data().email.update()
 
   onAddEmail: ->
-    email = $('#email-template').children().clone().addClass('new')
-    input = $(email).insertBefore(@addEmail).find('.email .value')
     @addEmail.hide()
+    email = $('#email-template').children().clone().addClass('new')
+    $('#add-an-email-editable').append(email)
+    input = $(email).find('.email .value')
     input.editable(
       url: BASE_URL
       params: (params) ->

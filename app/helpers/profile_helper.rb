@@ -82,8 +82,10 @@ module ProfileHelper
 
     (
       <<-SNIPPET
-        <div class="email-entry #{'verified' if is_verified}" data-id="#{id}">
-          <a href="#" class="email editable-click"><span class="value">#{value}</span></a>
+        <div class="email-entry editable-click #{'verified' if is_verified}" data-id="#{id}">
+          <button type="button" class="email" aria-expanded="false">
+            <span class="value">#{value}</span>
+          </button>
           #{unconfirmed_link}
           <div class="controls">
             <div class='resend-confirmation'>
@@ -91,7 +93,7 @@ module ProfileHelper
               #{button_to((I18n.t :"legacy.users.edit.resend_confirmation"), resend_confirmation_contact_info_path(id: id), method: :put )}
             </div>
             <div class="delete">
-              <span class="glyphicon glyphicon-trash"></span><a href="#">Delete</a>
+              <span class="glyphicon glyphicon-trash"></span><button type="button">Delete</button>
             </div>
             <div class="searchable-toggle">
               <label><input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"legacy.users.edit.searchable"}</label>
