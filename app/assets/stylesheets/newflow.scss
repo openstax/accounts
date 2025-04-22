@@ -236,11 +236,8 @@ label.required::after {
 
 .main-menu {
     box-shadow: none;
-    margin: 2rem 0 0 2rem;
-
-    @include wider-than($tablet-max + ($one-pixel-in-em * 90)) {
-        height: 2rem;
-    }
+    box-sizing: border-box;
+    padding: 2rem 0 0 2rem;
 
     .logo-wrapper {
         padding: 0;
@@ -392,6 +389,8 @@ input.has-error {
 }
 // END per-page styles
 
+$very-narrow: 37rem * $scale-factor;
+
 #login-signup-form {
     max-width: 75rem;
     border-top: 0;
@@ -400,6 +399,11 @@ input.has-error {
     margin-bottom: 3rem;
     padding-left: 1.4rem;
     padding-right: 1.4rem;
+
+    @include width-up-to($very-narrow) {
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
 
     .join-as {
         .blue-bar {
@@ -531,7 +535,7 @@ input.has-error {
                 width: 10rem;
             }
 
-            &.login.login--active, &.signup.signup--active {
+            &[aria-selected="true"] {
                 background-color: #fff;
                 border-bottom-width: 0;
             }
@@ -568,8 +572,8 @@ input.has-error {
     form {
         @include width-up-to($phone-max) {
             row-gap: 2rem;
-            padding-left: 1.4rem;
-            padding-right: 1.4rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
             padding-top: 2.2rem;
         }
 
@@ -591,6 +595,17 @@ input.has-error {
             max-width: 55.5rem;
             margin-left: auto;
             margin-right: auto;
+
+            /*
+                On narrow screens, the Sheerid form induces horizontal scrolling
+                This adjusts it to fit when on a screen between 320 and 360 px wide 
+            */
+            &.control-group {
+                @include width-up-to($very-narrow) {
+                    transform: scale(0.94) translateX(-4%);
+                    width: 108%;
+                }    
+            }
         }
 
         .role-section {
@@ -670,6 +685,7 @@ input.has-error {
         }
 
         .social-section {
+            border: 0;
             @include wider-than($phone-max) {
                 > div {
                     line-height: normal;
@@ -678,6 +694,11 @@ input.has-error {
                 .social-buttons .btn {
                     line-height: 2.8rem;
                 }
+            }
+
+            legend {
+                line-height: normal;
+                padding: 0;
             }
         }
 
@@ -771,6 +792,7 @@ input.has-error {
 
         .login-page {
             .page-header {
+                margin-top: 0;
                 padding-top: 4.5rem;
             }
 
