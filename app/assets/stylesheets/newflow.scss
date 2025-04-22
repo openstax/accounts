@@ -532,7 +532,7 @@ input.has-error {
                 width: 10rem;
             }
 
-            &.login.login--active, &.signup.signup--active {
+            &[aria-selected="true"] {
                 background-color: #fff;
                 border-bottom-width: 0;
             }
@@ -661,6 +661,7 @@ input.has-error {
         }
 
         .social-section {
+            border: 0;
             @include wider-than($phone-max) {
                 > div {
                     line-height: normal;
@@ -669,6 +670,11 @@ input.has-error {
                 .social-buttons .btn {
                     line-height: 2.8rem;
                 }
+            }
+
+            legend {
+                line-height: normal;
+                padding: 0;
             }
         }
 

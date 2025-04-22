@@ -47,6 +47,10 @@ NewflowUi = do () ->
       $(sourceSelector).on 'click', =>
         this.checkCheckedButton(targetSelector, sourceSelector)
 
+  focusOnFirstErrorItem: () ->
+    $(document).ready =>
+      document.querySelector('.has-error')?.focus()
+
   syntaxHighlight: (code) ->
     json = if typeof code is not 'string' then JSON.stringify(code, undefined, 2) else code
 
