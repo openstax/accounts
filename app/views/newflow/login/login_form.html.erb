@@ -8,6 +8,7 @@
         <%= render partial: 'newflow/tab_group' , locals: { active_class: 'login--active' } %>
 
         <%= newflow_login_signup_card(
+                    id: 'login-page',
                     classes: "login-page",
                     header: (I18n.t(:"login_signup_form.login_page_header")),
                     banners: @banners,
@@ -113,3 +114,8 @@
         <% end  %>
     </div>
 </div>
+
+<script type="text/javascript">
+    NewflowUi.focusOnFirstErrorItem();
+</script>
+

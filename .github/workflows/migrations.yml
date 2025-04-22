@@ -17,6 +17,10 @@ jobs:
   migrations:
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
     services:
       postgres:
         image: postgres:11

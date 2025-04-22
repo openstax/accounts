@@ -33,14 +33,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    - name: Cache CodeQL
-      uses: actions/cache@v4
       with:
-        path: ~/.codeql
-        key: ${{ runner.os }}-codeql-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-codeql-
+        fetch-depth: 0
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
@@ -58,7 +52,7 @@ jobs:
     - name: Upload CodeQL results
       uses: actions/upload-artifact@v4
       with:
-        name: codeql-results
+        name: codeql-results-${{ matrix.language }}
         path: |
           ./.codeql/results
           ./.codeql/logs

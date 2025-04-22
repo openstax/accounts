@@ -1,9 +1,17 @@
-<div class="tab-group">
-    <%= link_to I18n.t(:"login_signup_form.log_in"), newflow_login_path,
-                    class: "tab login #{active_class}"
+<div class="tab-group" role="tablist" aria-owns="login-page signup-page">
+    <%= link_to I18n.t(:"login_signup_form.log_in"),
+        newflow_login_path,
+        class: "tab login",
+        role: 'tab',
+        'aria-selected': active_class == 'login--active',
+        'aria-controls': 'login-page'
     %>
-    <%= link_to I18n.t(:"login_signup_form.sign_up"), newflow_signup_path,
-                    class: "tab signup #{active_class}"
+    <%= link_to I18n.t(:"login_signup_form.sign_up"),
+        newflow_signup_path,
+        class: "tab signup",
+        role: 'tab',
+        'aria-selected': active_class == 'signup--active',
+        'aria-controls': 'signup-page'
     %>
     <a class="tab tab--placeholder"></a>
     <a class="tab tab--placeholder"></a>
