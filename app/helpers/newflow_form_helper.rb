@@ -35,6 +35,7 @@ module NewflowFormHelper
                    onkeydown: nil,
                    numberonly: false,
                    disabled: false,
+                   described: nil,
                    required: false)
       return if excluded?(except: except, only: only)
 
@@ -75,6 +76,7 @@ module NewflowFormHelper
                       onkeyup: onkeyup,
                       onkeydown: onkeydown,
                       disabled: disabled,
+                      'aria-described-by': described,
                       'aria-required': required
         )
       end
