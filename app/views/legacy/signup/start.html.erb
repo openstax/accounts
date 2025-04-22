@@ -71,10 +71,12 @@
         <h3><%= t '.student_email' %></h3>
       </div>
 
-      <%= fh.text_field name: :email, value: @signup_email || signup_email, label: :'.email_placeholder' %>
+      <%= fh.text_field name: :email, value: @signup_email || signup_email, label: :'.email_placeholder',
+        described: 'school-email-warning'
+      %>
 
       <%# shows up only when faculty tries wants to use a non-edu email %>
-      <p class="warning edu">
+      <p class="warning edu" role="alert" id="school-email-warning">
         <%= t '.teacher_school_email_warning', button: (t :'.next') %>
       </p>
 
