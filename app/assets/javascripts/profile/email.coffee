@@ -11,7 +11,6 @@ class Email
     @id = this.$el.attr('data-id')
     this.$el.find('.searchable').change(@saveSearchable)
     this.$el.find('.resend-confirmation').click(@sendVerification)
-    this.$el.find('.email, .unconfirmed-warning').click(@toggleProperties)
     @update()
 
   update: ->
@@ -21,10 +20,6 @@ class Email
       delBtn.hide()
     else
       delBtn.on('click', @confirmDelete)
-
-  toggleProperties: ->
-    this.$el.toggleClass('expanded')
-    this.$el.find('button').attr('aria-expanded', this.$el.hasClass('expanded'))
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)
@@ -102,7 +97,7 @@ OX.Profile.Email = {
     @addEmail.hide()
     email = $('#email-template').children().clone().addClass('new')
     $('#add-an-email-editable').append(email)
-    input = $(email).find('.email .value')
+    input = $(email).find('summary .value')
     input.editable(
       url: BASE_URL
       params: (params) ->
