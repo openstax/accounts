@@ -118,6 +118,9 @@ $font-path: '/accounts/fonts';
   }
 
   .email-entry {
+    &:not(.new) summary {
+      display: list-item;
+    }
     &:first-child {
       .alert { margin-top: 0; }
     }
@@ -138,7 +141,6 @@ $font-path: '/accounts/fonts';
       top: 15px;
     }
     .controls {
-      display: none;
       overflow: hidden;
       margin-left: 20px;
       margin-top: 4px;
