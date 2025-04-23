@@ -71,6 +71,11 @@ $font-path: '/accounts/fonts';
     }
   }
 
+  button.editable {
+    background-color: transparent;
+    border: 0;
+  }
+
   .info {
     @media(max-width: 767px) {
       margin-left: 15px;
