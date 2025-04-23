@@ -55,6 +55,12 @@ $font-path: '/accounts/fonts';
     margin-top: 20px;
   }
 
+  #name {
+    .glyphicon {
+      margin-left: 2rem;
+    };
+  }
+
   .category {
     text-align: right;
     font-weight: bold;

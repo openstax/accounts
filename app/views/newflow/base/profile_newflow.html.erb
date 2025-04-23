@@ -142,7 +142,13 @@
       <%= I18n.t(:"legacy.users.edit.name") %>
     </div>
     <div class="col-sm-10 info">
-      <button href="#" id="name" class="editable" data-type="profile_name"><%= current_user.full_name %></button>
+      <button type="button" id="name"
+        class="editable"
+        data-type="profile_name"
+      >
+        <span class="text-content"><%= current_user.full_name %></span>
+        <span class="glyphicon glyphicon-pencil" aria-label="edit name"></span>
+      </button>
     </div>
   </div>
 
