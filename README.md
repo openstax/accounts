@@ -71,7 +71,7 @@ ALTER USER ox_accounts WITH SUPERUSER;
 
 #### Running as a normal Rails app on your machine
 
-First, ensure you have a Ruby version manager installed, such as [rbenv](https://github.com/rbenv/rbenv#installation) or RVM to manage your ruby versions. Then, install the Ruby version specified in the `.ruby-version` file (2.3.3 at the time of this writing, or above).
+First, ensure you have a Ruby version manager installed, such as [rbenv](https://github.com/rbenv/rbenv#installation) or RVM to manage your ruby versions. Then, install the Ruby version specified in the `.ruby-version` file (3.1.6 at the time of this writing, or above).
 
 To start running Accounts in a development environment, clone the repository and then run:
 

@@ -53,7 +53,6 @@ gem 'coffee-rails'
 gem 'mini_racer'
 
 # JavaScript asset compressor
-gem 'uglifier'
 
 # Nicely-styled static error pages
 gem 'error_page_assets'
@@ -315,3 +314,5 @@ group :production do
   # Consistent logging
   gem 'lograge'
 end
+
+gem "terser", "~> 1.2"
