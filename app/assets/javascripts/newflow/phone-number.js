@@ -20,7 +20,7 @@ function ParseForNumber2(object) {
 function isUSA() {
   /* Testing for USA because this formatting JS is USA format only. The   */
   /* iti__ selector is from the intlTelInput plugin (a coupling)          */
-  if ( $('#login-signup-form .iti__selected-flag').attr( "title") === "United States: +1" ) {
+  if ( $('#login-signup-form .iti__selected-country').attr( "title") === "United States: +1" ) {
     return true
   }
   else {

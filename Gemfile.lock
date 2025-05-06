@@ -9,10 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/openstax/intl-tel-input-rails.git
-  revision: 3a63a495822d90bc9ca93e9541ef252fd7a0b50b
+  revision: d315c247f8e13172d83a77cdaa67aa5280ab3086
   branch: master
   specs:
-    intl-tel-input-rails (12.3.0)
+    intl-tel-input-rails (25.3.1)
       railties (>= 3.1)
       sass-rails
 
