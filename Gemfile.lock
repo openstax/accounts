@@ -17,6 +17,16 @@ GIT
       sass-rails
 
 GIT
+  remote: https://github.com/openstax/openstax_salesforce.git
+  revision: f1ce4816e415f8e38e8d86d160e56cbae66977fa
+  ref: f1ce4816e415f8e38e8d86d160e56cbae66977fa
+  specs:
+    openstax_salesforce (8.2.0)
+      openstax_active_force
+      rails (>= 5.0, < 7.0)
+      restforce
+
+GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: e3edfc70589bc90fcffba63b417260a88c1377d7
   ref: e3edfc70589bc90fcffba63b417260a88c1377d7
@@ -515,10 +525,6 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.3.0)
       rails (>= 3.1, < 7.0)
-    openstax_salesforce (8.1.0)
-      openstax_active_force
-      rails (>= 5.0, < 7.0)
-      restforce
     openstax_transaction_isolation (2.0.0)
       activerecord (>= 6)
     openstax_transaction_retry (2.0.0)
@@ -652,8 +658,8 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    restforce (7.5.0)
-      faraday (>= 1.1.0, < 2.12.0)
+    restforce (8.0.0)
+      faraday (>= 1.1.0, < 3.0.0)
       faraday-follow_redirects (<= 0.3.0, < 1.0.0)
       faraday-multipart (>= 1.0.0, < 2.0.0)
       faraday-net_http (< 4.0.0)
@@ -858,6 +864,7 @@ DEPENDENCIES
   knockoutjs-rails
   launchy
   lev
+  libv8-node (= 18.19.0.0)
   listen
   lograge
   maruku
@@ -874,7 +881,7 @@ DEPENDENCIES
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce
+  openstax_salesforce!
   openstax_transaction_isolation
   openstax_transaction_retry
   openstax_utilities
