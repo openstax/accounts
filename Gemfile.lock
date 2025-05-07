@@ -868,7 +868,7 @@ DEPENDENCIES
   lograge
   maruku
   meta_request
-  mini_racer (= 0.16.0)
+  mini_racer
   oj
   oj_mimic_json
   omniauth (~> 1.9)
