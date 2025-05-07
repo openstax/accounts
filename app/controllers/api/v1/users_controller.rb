@@ -242,7 +242,7 @@ class Api::V1::UsersController < Api::V1::ApiController
   # external_id
   ###############################################################
 
-  api :POST, '/user/external_id', 'Creates an external id for a given user.'
+  api :POST, '/user/external-ids', 'Creates an external id for a given user.'
   description <<-EOS
     Creates an external id for a given user.
 
@@ -250,12 +250,26 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     Only trusted apps may call this API. All others will receive a 403 error.
 
-    If the external_id does not exist, it is created and 201 is returned.
+    If the external_id does not exist, it is created.
+
+    Whether or not it is created, 201 is returned.
 
     #{json_schema(Api::V1::ExternalIdRepresenter, include: [:readable, :writable])}
   EOS
   def create_external_id
-    standard_create ExternalId.new
+    model = ExternalId.new
+    consume! model
+
+    OSU::AccessPolicy.require_action_allowed! :create, current_api_user, model
+
+    if model.valid?
+      ExternalId.import [ model ], on_duplicate_key_ignore: true
+    elsif model.errors.any? { |e| e.type != :taken }
+      return render_api_errors(model.errors)
+    end
+
+    # Successful import or model already exists
+    respond_with model, { status: :created, location: nil }
   end
 
   private
