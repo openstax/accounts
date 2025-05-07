@@ -864,12 +864,11 @@ DEPENDENCIES
   knockoutjs-rails
   launchy
   lev
-  libv8-node (= 18.19.0.0)
   listen
   lograge
   maruku
   meta_request
-  mini_racer
+  mini_racer (= 0.16.0)
   oj
   oj_mimic_json
   omniauth (~> 1.9)
