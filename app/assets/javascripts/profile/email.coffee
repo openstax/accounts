@@ -24,6 +24,7 @@ class Email
 
   toggleProperties: ->
     this.$el.toggleClass('expanded')
+    this.$el.find('button').attr('aria-expanded', this.$el.hasClass('expanded'))
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)
@@ -98,9 +99,10 @@ OX.Profile.Email = {
       $(el).data().email.update()
 
   onAddEmail: ->
-    email = $('#email-template').children().clone().addClass('new')
-    input = $(email).insertBefore(@addEmail).find('.email .value')
     @addEmail.hide()
+    email = $('#email-template').children().clone().addClass('new')
+    $('#add-an-email-editable').append(email)
+    input = $(email).find('.email .value')
     input.editable(
       url: BASE_URL
       params: (params) ->
@@ -121,6 +123,12 @@ OX.Profile.Email = {
       email.set(params.response.contact_info)
     )
     # no idea why the defer is needed, but it fails (silently!) without it
-    _.defer -> input.editable('show')
+    _.defer ->
+      input.editable('show')
+      labelText = document.createTextNode('New email')
+      br = document.createElement('br')
+      label = document.querySelector('.email-entry.new label')
+      label.prepend(br)
+      label.prepend(labelText)
 
 }
