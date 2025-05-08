@@ -5,6 +5,7 @@
         <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
 
         <%= newflow_login_signup_card(
+                    id: 'signup-page',
                     classes: "signup-page",
                     header: header,
                     current_step: current_step) do %>
@@ -15,6 +16,7 @@
                         context: self,
                         errors: @handler_result&.errors
                     )
+                    @page_title = 'Sign up (confirm email)'
                 %>
 
                 <div class="content info-message">
@@ -27,7 +29,8 @@
                     %>
                     <%= form_helper.text_field name: :pin,
                                 placeholder: I18n.t(:"login_signup_form.pin_placeholder"),
-                                autofocus: true
+                                autofocus: true,
+                                required: true
                     %>
                 </div>
 

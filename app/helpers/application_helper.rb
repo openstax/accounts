@@ -222,10 +222,13 @@ module ApplicationHelper
   # NEW FLOW  #
    ###########
 
-  def newflow_login_signup_card(classes: "", header: "", banners: nil, current_step: nil, show_exit_icon: false, &block)
+  def newflow_login_signup_card(
+    classes: "", header: "", id: '',
+    banners: nil, current_step: nil, show_exit_icon: false, &block
+  )
     @hide_layout_errors = true
 
-    content_tag :div, class: "#{classes}" do
+    content_tag :div, class: classes, id: id, role: 'tabpanel' do
       step_counter = if current_step.present?
         content_tag(:div, class:  'step-counter') {
           content_tag(:div) {
@@ -238,14 +241,14 @@ module ApplicationHelper
 
       exit_icon = if show_exit_icon
         content_tag(:div, id: 'exit-icon') {
-          content_tag(:a, href: exit_accounts_path) {
+          content_tag(:a, 'aria-label': 'exit accounts', href: exit_accounts_path) {
             content_tag(:i, class: 'fa fa-times') { }
           }
         }
       end
 
       header = if header.present?
-        content_tag(:header, class: "page-header") { header }
+        content_tag(:h1, class: "page-header") { header }
       end
 
       body = capture(&block)

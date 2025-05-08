@@ -125,6 +125,7 @@
 /* IOS-style clear button for text inputs */
 .editable-clear-x {
    background: image-url('bootstrap-editable/clear.png') center center no-repeat;
+   border: 0;
    display: block;
    width: 13px;
    height: 13px;
@@ -166,14 +167,12 @@
    font-size: inherit;  /* jqueryui widget font 1.1em too big, overwrite it */
    z-index: 9990; /* should be less than select2 dropdown z-index to close dropdown first when click */
 }
-.editable-click,
 a.editable-click,
 a.editable-click:hover {
     text-decoration: none;
     border-bottom: dashed 1px #0088cc;
 }
 
-.editable-click.editable-disabled,
 a.editable-click.editable-disabled,
 a.editable-click.editable-disabled:hover {
    color: #585858;
@@ -328,9 +327,7 @@ a.editable-click.editable-disabled:hover {
   color: #000;
 }
 .datepicker table tr td.today:hover,
-.datepicker table tr td.today:hover:hover,
 .datepicker table tr td.today.disabled:hover,
-.datepicker table tr td.today.disabled:hover:hover,
 .datepicker table tr td.today:active,
 .datepicker table tr td.today:hover:active,
 .datepicker table tr td.today.disabled:active,
@@ -359,7 +356,7 @@ a.editable-click.editable-disabled:hover {
 .datepicker table tr td.today.disabled:hover.active {
   background-color: #fbf069 \9;
 }
-.datepicker table tr td.today:hover:hover {
+.datepicker table tr td.today:hover {
   color: #000;
 }
 .datepicker table tr td.today.active:hover {
@@ -395,9 +392,7 @@ a.editable-click.editable-disabled:hover {
   border-radius: 0;
 }
 .datepicker table tr td.range.today:hover,
-.datepicker table tr td.range.today:hover:hover,
 .datepicker table tr td.range.today.disabled:hover,
-.datepicker table tr td.range.today.disabled:hover:hover,
 .datepicker table tr td.range.today:active,
 .datepicker table tr td.range.today:hover:active,
 .datepicker table tr td.range.today.disabled:active,
@@ -446,9 +441,7 @@ a.editable-click.editable-disabled:hover {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 .datepicker table tr td.selected:hover,
-.datepicker table tr td.selected:hover:hover,
 .datepicker table tr td.selected.disabled:hover,
-.datepicker table tr td.selected.disabled:hover:hover,
 .datepicker table tr td.selected:active,
 .datepicker table tr td.selected:hover:active,
 .datepicker table tr td.selected.disabled:active,
@@ -497,9 +490,7 @@ a.editable-click.editable-disabled:hover {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 .datepicker table tr td.active:hover,
-.datepicker table tr td.active:hover:hover,
 .datepicker table tr td.active.disabled:hover,
-.datepicker table tr td.active.disabled:hover:hover,
 .datepicker table tr td.active:active,
 .datepicker table tr td.active:hover:active,
 .datepicker table tr td.active.disabled:active,
@@ -569,9 +560,7 @@ a.editable-click.editable-disabled:hover {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 .datepicker table tr td span.active:hover,
-.datepicker table tr td span.active:hover:hover,
 .datepicker table tr td span.active.disabled:hover,
-.datepicker table tr td span.active.disabled:hover:hover,
 .datepicker table tr td span.active:active,
 .datepicker table tr td span.active:hover:active,
 .datepicker table tr td span.active.disabled:active,

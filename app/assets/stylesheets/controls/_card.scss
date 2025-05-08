@@ -2,6 +2,7 @@
   $input-height: 50px;
   $input-border-color: darken($os_light_gray, 10%);
   $card-padding: 50px;
+  $narrow-card-padding: $normal-margin;
 
   display: block;
   margin: auto;
@@ -9,6 +10,10 @@
   background-color: $os_light_gray;
   padding: 30px $card-padding $card-padding;
   font-size: 14px;
+
+  @include width-up-to($phone-max) {
+    padding: 30px $narrow-card-padding $narrow-card-padding;
+  }
 
   &.wide {
     max-width: initial;
@@ -144,7 +149,11 @@
     justify-content: space-between;
     gap: 4rem;
 
-    @media (max-width: $screen-sm - ($card-padding * 2)) {
+    @include width-up-to($phone-max) {
+      margin: $narrow-card-padding $narrow-card-padding*-1 $narrow-card-padding*-1;
+    }
+ 
+    @media (max-width: #{$screen-sm - ($card-padding * 2)}) {
       flex-direction: column;
       gap: 1.6rem;
     }
