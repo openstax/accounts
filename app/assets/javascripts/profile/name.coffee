@@ -5,7 +5,7 @@ class OX.Profile.Name
   @editable: (el, attribs) ->
     el.editable(
       value: attribs,
-      success: (response) -> $(@).html(response.full_name)
+      success: (response) -> $(@).find('.text-content').html(response.full_name)
       validate: (attrs) ->
         if not attrs.first_name and not attrs.last_name
           OX.I18n.name.first_last_name_blank

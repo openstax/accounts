@@ -82,11 +82,11 @@ module ProfileHelper
 
     (
       <<-SNIPPET
-        <div class="email-entry editable-click #{'verified' if is_verified}" data-id="#{id}">
-          <button type="button" class="email" aria-expanded="false">
+        <details class="email-entry editable-click #{'verified' if is_verified}" data-id="#{id}">
+          <summary>
             <span class="value">#{value}</span>
-          </button>
-          #{unconfirmed_link}
+            #{unconfirmed_link}
+          </summary>
           <div class="controls">
             <div class='resend-confirmation'>
               <i class='fa fa-envelope-o'></i>
@@ -100,7 +100,7 @@ module ProfileHelper
             </div>
           </div>
           <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>
-        </div>
+        </details>
       SNIPPET
     ).html_safe
   end
