@@ -55,6 +55,12 @@ $font-path: '/accounts/fonts';
     margin-top: 20px;
   }
 
+  #name {
+    .glyphicon {
+      margin-left: 2rem;
+    };
+  }
+
   .category {
     text-align: right;
     font-weight: bold;
@@ -69,6 +75,11 @@ $font-path: '/accounts/fonts';
         display: none;
       }
     }
+  }
+
+  button.editable {
+    background-color: transparent;
+    border: 0;
   }
 
   .info {
@@ -113,6 +124,9 @@ $font-path: '/accounts/fonts';
   }
 
   .email-entry {
+    &:not(.new) summary {
+      display: list-item;
+    }
     &:first-child {
       .alert { margin-top: 0; }
     }
@@ -133,7 +147,6 @@ $font-path: '/accounts/fonts';
       top: 15px;
     }
     .controls {
-      display: none;
       overflow: hidden;
       margin-left: 20px;
       margin-top: 4px;
@@ -159,12 +172,6 @@ $font-path: '/accounts/fonts';
           color: #027eb5;
           background-color: transparent;
         }
-      }
-    }
-    &.expanded,
-    &[aria-expanded="true"] {
-      .controls {
-        display: block;
       }
     }
 
@@ -198,6 +205,9 @@ $font-path: '/accounts/fonts';
   }
 
   #add-an-email {
+    background-color: transparent;
+    border: thin solid gray;
+    border-radius: 0.3rem;
     margin-top: 10px;
     display: block;
   }
@@ -246,6 +256,10 @@ $font-path: '/accounts/fonts';
     }
   }
 
+  #enable-other-sign-in {
+    display: list-item;
+  }
+
   .enabled-providers {
     .mod-holder .add { display: none; }
     .mod-holder .add--newflow { display: none; }
@@ -258,6 +272,15 @@ $font-path: '/accounts/fonts';
   }
 
   .other-sign-in {
+    summary {
+      display: list-item;
+      margin-top: -3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .controls {
+      padding-left: 1.6rem;
+    }
     .authentication {
       .mod-holder {
         .edit   { display: none; }
@@ -267,10 +290,5 @@ $font-path: '/accounts/fonts';
       }
     }
   }
-
-  .row.other-sign-in {
-    display: none;
-  }
-
 
 }
