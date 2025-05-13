@@ -36,7 +36,8 @@ module NewflowFormHelper
                    numberonly: false,
                    disabled: false,
                    described: nil,
-                   required: false)
+                   required: false,
+                   list: nil)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -76,6 +77,7 @@ module NewflowFormHelper
                       onkeyup: onkeyup,
                       onkeydown: onkeydown,
                       disabled: disabled,
+                      list: list,
                       'aria-described-by': described,
                       'aria-required': required
         )
