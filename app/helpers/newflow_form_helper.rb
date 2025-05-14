@@ -62,7 +62,9 @@ module NewflowFormHelper
                       onkeyup: onkeyup,
                       onkeydown: onkeydown,
                       disabled: disabled,
-                      'aria-required': required
+                      'aria-required': required,
+                      'aria-errormessage': errors_div.present? ? "errors-for-#{name}" : nil,
+                      'aria-invalid': errors_div.present? ? true : nil
         )
       else
         input = (
