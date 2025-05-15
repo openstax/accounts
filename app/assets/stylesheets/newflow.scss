@@ -674,7 +674,7 @@ $very-narrow: 37rem * $scale-factor;
             padding-right: 0;
 
             background-color: #f1f1f1;
-            color: #c1c1c1;
+            color: #666666;
 
             @include title-font(2.4rem);
             text-align: center;
@@ -774,10 +774,12 @@ $very-narrow: 37rem * $scale-factor;
 
     input[type=submit] {
         &:disabled {
+            background-color: #ccc;
+            box-shadow: none;
+            color: #666;
             opacity: 0.85;
         }
 
-        -webkit-appearance: none;
         border-radius: 0;
     }
 }
