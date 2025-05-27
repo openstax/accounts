@@ -41,6 +41,10 @@
                     </div>
                 </div>
 
+                <div class="recaptcha">
+                  <%= recaptcha_with_fallback action: "#{role}_change_signup_email" %>
+                </div>
+
                 <div class="content">
                     <%=
                         f.submit(

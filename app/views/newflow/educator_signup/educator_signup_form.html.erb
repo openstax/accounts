@@ -147,6 +147,10 @@
 
         </div>
 
+        <div class="recaptcha">
+          <%= recaptcha_with_fallback action: 'educator_signup' %>
+        </div>
+
         <div class="content">
           <%=
             form.submit(
