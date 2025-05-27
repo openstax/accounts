@@ -14,7 +14,7 @@ module Recaptcha
   module Controller
     MINIMUM_SCORE = 0.2
 
-    recaptcha_secrets = Rails.secrets.recaptcha || {}
+    recaptcha_secrets = Rails.application.secrets.recaptcha || {}
 
     def self.included(base)
       base.helper View
