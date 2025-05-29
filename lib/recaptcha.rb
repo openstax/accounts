@@ -2,11 +2,13 @@
 # Our own helpers are named slightly differently to avoid conflicts
 module Recaptcha
   module View
+    DEFAULT_BADGE_POSITION = 'bottomleft'
+
     def recaptcha_with_fallback(action:, **options)
       if @recaptcha_failed
-        recaptcha_tags
+        recaptcha_tags badge: DEFAULT_BADGE_POSITION, **options
       else
-        recaptcha_v3 action: action, **options
+        recaptcha_v3 action: action, badge: DEFAULT_BADGE_POSITION, **options
       end
     end
   end
