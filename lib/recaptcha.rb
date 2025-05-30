@@ -2,14 +2,18 @@
 # Our own helpers are named slightly differently to avoid conflicts
 module Recaptcha
   module View
-    DEFAULT_BADGE_POSITION = 'bottomleft'
+    def recaptcha_with_disclaimer_and_fallback(action:, **options)
+      disclaimer = <<~HTML.squish.html_safe
+        <div class="content recaptcha-disclaimer">
+          This site is protected by reCAPTCHA and the Google
+          <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+          <a href="https://policies.google.com/terms">Terms of Service</a> apply.
+        </div>
+      HTML
 
-    def recaptcha_with_fallback(action:, **options)
-      if @recaptcha_failed
-        recaptcha_tags badge: DEFAULT_BADGE_POSITION, **options
-      else
-        recaptcha_v3 action: action, badge: DEFAULT_BADGE_POSITION, **options
-      end
+      return disclaimer if Recaptcha.configuration.site_key.blank? && Rails.env.development?
+
+      (@recaptcha_failed ? recaptcha_tags(**options) : recaptcha_v3(action: action, **options)) + disclaimer
     end
   end
 
@@ -21,15 +25,19 @@ module Recaptcha
     end
 
     def verify_recaptcha_with_fallback(**options)
-      params = {
+      force_recaptcha_failure = params[:force_recaptcha_failure] == 'true'
+
+      return !force_recaptcha_failure if Recaptcha.configuration.site_key.blank? && Rails.env.development?
+
+      options = {
         action: action_name,
         minimum_score: MINIMUM_SCORE,
         **options
       }
 
-      params[:response] = 'bogus' if Recaptcha.configuration.site_key.blank? && Rails.env.development?
+      options[:response] = 'bogus' if force_recaptcha_failure
 
-      verify_recaptcha(**params).tap { |result| @recaptcha_failed = !result }
+      verify_recaptcha(**options).tap { |result| @recaptcha_failed = !result }
     end
   end
 end

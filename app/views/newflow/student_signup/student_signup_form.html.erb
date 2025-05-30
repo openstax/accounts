@@ -160,9 +160,7 @@
 
                 </div>
 
-                <div class="recaptcha">
-                  <%= recaptcha_with_fallback action: 'student_signup' %>
-                </div>
+                <%= recaptcha_with_disclaimer_and_fallback action: 'student_signup' %>
 
                 <div class="content">
                     <%=
