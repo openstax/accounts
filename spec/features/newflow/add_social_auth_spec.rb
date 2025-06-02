@@ -17,7 +17,7 @@ feature 'Add social auth', js: true do
     visit profile_newflow_path
     expect_newflow_profile_page
 
-    click_link (t :"legacy.users.edit.enable_other_sign_in_options")
+    click_link_or_button (t :"legacy.users.edit.enable_other_sign_in_options")
     wait_for_animations
     expect(page).to have_content('Facebook')
 
@@ -39,7 +39,7 @@ feature 'Add social auth', js: true do
     visit profile_newflow_path
     expect_newflow_profile_page
 
-    click_link (t :"legacy.users.edit.enable_other_sign_in_options")
+    click_link_or_button (t :"legacy.users.edit.enable_other_sign_in_options")
     wait_for_animations
     expect(page).to have_content('Facebook')
 
@@ -61,7 +61,7 @@ feature 'Add social auth', js: true do
     visit profile_newflow_path
     expect_newflow_profile_page
 
-    click_link (t :"legacy.users.edit.enable_other_sign_in_options")
+    click_link_or_button (t :"legacy.users.edit.enable_other_sign_in_options")
     wait_for_animations
     expect(page).to have_content('Facebook')
 
