@@ -103,9 +103,9 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     expect(page).to have_content(t(:"login_signup_form.incorrect_password"))
 
     # try logging in with the new password
-    complete_newflow_log_in_screen('user', 'newpassword')
-    visit profile_newflow_path
-    expect_newflow_profile_page
+    fill_in('login_form_email', with: 'user')
+    fill_in('login_form_password', with: 'newpassword')
+    find('[type=submit]').click 
     expect(page).to have_no_missing_translations
     expect(page).to have_content(@user.full_name)
   end
