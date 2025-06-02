@@ -8,21 +8,29 @@ end
 # Our own helpers are named slightly differently to avoid conflicts
 
 module RecaptchaView
+  DISCLAIMER = <<~HTML.squish.html_safe
+    <div class="content recaptcha-disclaimer">
+      This site is protected by reCAPTCHA and the Google
+      <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+      <a href="https://policies.google.com/terms">Terms of Service</a> apply.
+    </div>
+  HTML
+
+  FAILURE_MESSAGE = <<~HTML.squish.html_safe
+    <div class="content recaptcha-failure">
+      reCAPTCHA verification failed.
+      Please try a different browser or contact support.
+    </div>
+  HTML
+
   def recaptcha_with_disclaimer_and_fallback(action:, **options)
-    disclaimer = <<~HTML.squish.html_safe
-      <div class="content recaptcha-disclaimer">
-        This site is protected by reCAPTCHA and the Google
-        <a href="https://policies.google.com/privacy">Privacy Policy</a> and
-        <a href="https://policies.google.com/terms">Terms of Service</a> apply.
-      </div>
+    return DISCLAIMER if Recaptcha.configuration.site_key.blank? && Rails.env.development?
+
+    recaptcha_or_message = @recaptcha_failed ? FAILURE_MESSAGE : recaptcha_v3(action: action, **options)
+
+    recaptcha_or_message + DISCLAIMER + <<~HTML.squish.html_safe
+      <input type="hidden" name="force_recaptcha_failure" value="#{params[:force_recaptcha_failure]}">
     HTML
-
-    return disclaimer if Recaptcha.configuration.site_key.blank? && Rails.env.development?
-
-    (@recaptcha_failed ? recaptcha_tags(**options) : recaptcha_v3(action: action, **options)) + disclaimer + \
-      <<~HTML.squish.html_safe
-        <input type="hidden" name="force_recaptcha_failure" value="#{params[:force_recaptcha_failure]}">
-      HTML
   end
 end
 
