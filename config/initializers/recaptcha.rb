@@ -19,7 +19,7 @@ module RecaptchaView
   FAILURE_MESSAGE = <<~HTML.squish.html_safe
     <div class="content recaptcha-failure">
       reCAPTCHA verification failed.
-      Please try a different browser or contact support.
+      Please try a different browser or <a href="https://help.openstax.org">contact support</a>.
     </div>
   HTML
 
