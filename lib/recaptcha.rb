@@ -1,46 +1,44 @@
 # recaptcha_tags, recaptcha_v3, and verify_recaptcha come from the recaptcha gem
 # Our own helpers are named slightly differently to avoid conflicts
-module Recaptcha
-  module View
-    def recaptcha_with_disclaimer_and_fallback(action:, **options)
-      disclaimer = <<~HTML.squish.html_safe
-        <div class="content recaptcha-disclaimer">
-          This site is protected by reCAPTCHA and the Google
-          <a href="https://policies.google.com/privacy">Privacy Policy</a> and
-          <a href="https://policies.google.com/terms">Terms of Service</a> apply.
-        </div>
+module RecaptchaView
+  def recaptcha_with_disclaimer_and_fallback(action:, **options)
+    disclaimer = <<~HTML.squish.html_safe
+      <div class="content recaptcha-disclaimer">
+        This site is protected by reCAPTCHA and the Google
+        <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+        <a href="https://policies.google.com/terms">Terms of Service</a> apply.
+      </div>
+    HTML
+
+    return disclaimer if Recaptcha.configuration.site_key.blank? && Rails.env.development?
+
+    (@recaptcha_failed ? recaptcha_tags(**options) : recaptcha_v3(action: action, **options)) + disclaimer + \
+      <<~HTML.squish.html_safe
+        <input type="hidden" name="force_recaptcha_failure" value="#{params[:force_recaptcha_failure]}">
       HTML
+  end
+end
 
-      return disclaimer if Recaptcha.configuration.site_key.blank? && Rails.env.development?
+module RecaptchaController
+  MINIMUM_SCORE = 0.2
 
-      (@recaptcha_failed ? recaptcha_tags(**options) : recaptcha_v3(action: action, **options)) + disclaimer + \
-        <<~HTML.squish.html_safe
-          <input type="hidden" name="force_recaptcha_failure" value="#{params[:force_recaptcha_failure]}">
-        HTML
-    end
+  def self.included(base)
+    base.helper RecaptchaView
   end
 
-  module Controller
-    MINIMUM_SCORE = 0.2
+  def verify_recaptcha_with_fallback(**options)
+    force_recaptcha_failure = params[:force_recaptcha_failure] == 'true'
 
-    def self.included(base)
-      base.helper View
-    end
+    return !force_recaptcha_failure if Recaptcha.configuration.site_key.blank? && Rails.env.development?
 
-    def verify_recaptcha_with_fallback(**options)
-      force_recaptcha_failure = params[:force_recaptcha_failure] == 'true'
+    options = {
+      action: action_name,
+      minimum_score: MINIMUM_SCORE,
+      **options
+    }
 
-      return !force_recaptcha_failure if Recaptcha.configuration.site_key.blank? && Rails.env.development?
+    options[:response] = 'bogus' if force_recaptcha_failure
 
-      options = {
-        action: action_name,
-        minimum_score: MINIMUM_SCORE,
-        **options
-      }
-
-      options[:response] = 'bogus' if force_recaptcha_failure
-
-      verify_recaptcha(**options).tap { |result| @recaptcha_failed = !result }
-    end
+    verify_recaptcha(**options).tap { |result| @recaptcha_failed = !result }
   end
 end
