@@ -13,7 +13,10 @@ module Recaptcha
 
       return disclaimer if Recaptcha.configuration.site_key.blank? && Rails.env.development?
 
-      (@recaptcha_failed ? recaptcha_tags(**options) : recaptcha_v3(action: action, **options)) + disclaimer
+      (@recaptcha_failed ? recaptcha_tags(**options) : recaptcha_v3(action: action, **options)) + disclaimer + \
+        <<~HTML.squish.html_safe
+          <input type="hidden" name="force_recaptcha_failure" value="#{params[:force_recaptcha_failure]}">
+        HTML
     end
   end
 
