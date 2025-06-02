@@ -612,6 +612,10 @@ $very-narrow: 37rem * $scale-factor;
               font-size: 1rem;
               margin-top: -1.5rem;
             }
+
+            &.recaptcha-failure {
+              color: red;
+            }
         }
 
         .role-section {
