@@ -68,7 +68,6 @@ jobs:
 
       - name: Test
         id: test
-        continue-on-error: true
         run: |
           bin/rake parallel:create parallel:load_schema parallel:seed --trace
           WORKERS=4 bin/rake parallel:spec
