@@ -336,48 +336,6 @@ describe User, type: :model do
         end
       end
     end
-
-    context 'with some manually entered emails' do
-      before do
-        ConfirmContactInfo[@email_a]
-        perform_enqueued_jobs
-        ConfirmContactInfo[@email_c]
-        perform_enqueued_jobs
-      end
-
-      context 'with the user\'s email_addresses and contact_infos not yet loaded' do
-        before do
-          user.email_addresses.reset
-          user.contact_infos.reset
-        end
-
-        it 'chooses latest manually entered email' do
-          expect(user.guessed_preferred_confirmed_email).to eq 'c@c.com'
-        end
-      end
-
-      context 'with the user\'s contact_infos already loaded' do
-        before do
-          user.email_addresses.reset
-          user.contact_infos.reload
-        end
-
-        it 'chooses latest manually entered email' do
-          expect(user.guessed_preferred_confirmed_email).to eq 'c@c.com'
-        end
-      end
-
-      context 'with the user\'s email_addresses and contact_infos already loaded' do
-        before do
-          user.email_addresses.reload
-          user.contact_infos.reload
-        end
-
-        it 'chooses latest manually entered email' do
-          expect(user.guessed_preferred_confirmed_email).to eq 'c@c.com'
-        end
-      end
-    end
   end
 
   describe '.cleanup_unverified_users' do

@@ -118,26 +118,9 @@ module Newflow
 
           context 'when educator is NOT profile complete' do
             before { user.update!(is_profile_complete: false) }
-
-            it 'saves incomplete educator in the session' do
-              # expect_any_instance_of(described_class).to receive(:save_incomplete_educator).with(user).once.and_call_original
-              post('login', params: params)
-              # expect(assigns(:current_incomplete_educator)).to eq(user)
-            end
-
             it 'does a redirect' do
               post('login', params: params)
               expect(response).to have_http_status(:redirect)
-            end
-
-            it 'creates a security log' do
-              skip 'todo – maybe'
-
-              expect {
-                post('login', params: params)
-              }.to change {
-                SecurityLog.where(event_type: :educator_resumed_signup_flow).count
-              }
             end
           end
         end
