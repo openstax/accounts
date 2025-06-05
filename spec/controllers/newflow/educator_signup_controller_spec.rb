@@ -163,10 +163,6 @@ module Newflow
       end
     end
 
-    describe 'GET #educator_sheerid_form' do
-      it 'requires a logged in user'
-    end
-
     describe 'POST #sheerid_webhook' do
       let(:handler) { EducatorSignup::SheeridWebhook }
 
@@ -193,18 +189,6 @@ module Newflow
           end
         end
       end
-    end
-
-    describe 'GET #educator_profile_form' do
-      it 'renders'
-    end
-
-    describe 'POST #educator_complete' do
-      it ''
-    end
-
-    describe 'POST #educator_verify_email_by_pin' do
-      it ''
     end
   end
 end
