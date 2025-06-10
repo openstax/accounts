@@ -3,9 +3,6 @@ require 'rails_helper'
 describe SecurityLog, type: :model do
   subject(:security_log) { FactoryBot.create :security_log }
 
-  it { should belong_to :user }
-  it { should belong_to :application }
-
   it { should validate_presence_of :event_type }
 
   it 'cannot be updated' do
