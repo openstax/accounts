@@ -66,16 +66,6 @@ describe ContactInfosController, type: :controller do
       expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
     end
 
-    # TODO: let's get this on dev and see the 500 - I can't reproduce
-    xit "returns error if code doesn't match" do
-      get(:confirm, params: { code: 'abcd' })
-      #byebug
-      expect(response.code).to eq('400')
-      expect(response.body).to have_no_missing_translations
-      expect(response.body).to have_content(t :"contact_infos.confirm.verification_code_not_found")
-      expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
-    end
-
     it "returns success if code matches" do
       get(:confirm, params: { code: @email.confirmation_code })
       expect(response).to be_successful

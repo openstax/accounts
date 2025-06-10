@@ -72,10 +72,6 @@ module Newflow
       end
 
       context 'user interface' do
-        # example 'Forgot your password? link takes user to reset password form' do
-        #   visit newflow_login_path
-        #   expect(find('#forgot-passwork-link')['href']).to match(forgot_password_form_path)
-        # end
 
         example 'SHOW/HIDE link for password field shows and hides password' do
           visit newflow_login_path
@@ -161,76 +157,5 @@ module Newflow
         expect(page.current_path).to match(student_email_verification_form_path)
       end
     end
-
-    context 'no user found with such email' do
-      xit 'adds a message to the email input field' do
-        with_forgery_protection do
-          visit newflow_login_path
-          complete_newflow_log_in_screen('NOone@openstax.org', 'password')
-          expect(page.current_url).to match(newflow_login_path)
-          field_text = find('#login_form_email + .errors.invalid-message').text
-          expect(field_text).to  eq(I18n.t(:"login_signup_form.cannot_find_user"))
-        end
-      end
-    end
-
-    context 'wrong password for account with such email' do
-      xit 'adds a message to the password input field' do
-        with_forgery_protection do
-            visit newflow_login_path
-            complete_newflow_log_in_screen('user@openstax.org', 'WRONGpassword')
-            expect(page.current_url).to match(newflow_login_path)
-            field_text = find('#login_form_password + .errors.invalid-message').text
-            expect(field_text).to  eq(I18n.t(:"login_signup_form.incorrect_password"))
-          end
-      end
-    end
-
-    context 'forgot password' do
-      xit 'enables the user to reset their password' do
-        with_forgery_protection do
-          visit newflow_login_path
-          screenshot!
-          complete_newflow_log_in_screen('user@openstax.org', 'WRONGpassword')
-          screenshot!
-
-          click_on(I18n.t(:"login_signup_form.forgot_password"))
-          expect(page).to have_content(I18n.t(:"login_signup_form.reset_my_password_description"))
-          # pre-populates the email for them since they already typed it in the login form
-          expect(find('#forgot_password_form_email')['value']).to eq('user@openstax.org')
-          screenshot!
-          click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
-          screenshot!
-
-          expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
-          screenshot!
-
-          perform_enqueued_jobs
-
-          open_email('user@openstax.org')
-          capture_email!
-          change_password_link = get_path_from_absolute_link(current_email, 'a')
-          expect(change_password_link).to include(change_password_form_path)
-
-          # set the new password
-          visit change_password_link
-          expect(page).to have_content(I18n.t(:"login_signup_form.enter_new_password_description"))
-          fill_in('change_password_form_password', with: 'NEWpassword')
-          screenshot!
-          find('#login-signup-form').click
-          wait_for_animations
-          click_button('Log in')
-          screenshot!
-
-          # user is subsequently able to log in with the new password
-          click_on('Log out')
-          screenshot!
-          complete_newflow_log_in_screen('user@openstax.org', 'NEWpassword')
-          expect(page).to  have_content('My Account')
-        end
-      end
-    end
-
-    # logging in with facebook and google is tested in unit tests as well as manually
   end
 end
