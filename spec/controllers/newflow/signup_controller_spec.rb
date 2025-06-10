@@ -9,14 +9,6 @@ module Newflow
       end
     end
 
-    describe 'GET #change_signup_email_form' do
-      it 'assigns the email instance variable'
-    end
-
-    describe 'GET #verify_email_by_code' do
-      it ''
-    end
-
     describe 'GET #signup_done' do
       before do
         user = FactoryBot.create(:user)
