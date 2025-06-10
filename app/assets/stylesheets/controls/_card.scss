@@ -135,7 +135,7 @@
   section,
   .warning,
   .form-group {
-    & + *:not(.footer):not(.alert):not(.warning):not(.errors) {
+    & + *:not(.footer):not(.alert):not(.warning):not(.errors):not(.help-block) {
       margin-top: $os-section-spacing;
     }
   }
