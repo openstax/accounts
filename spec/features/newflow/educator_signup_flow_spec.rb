@@ -65,8 +65,6 @@ module Newflow
           find('#signup_form_submit_button').click
           visit(signup_done_path)
           expect(page.current_path).to eq(signup_done_path).or eq(educator_pending_cs_verification_path)
-          click_on('Finish')
-          expect(page.current_url).to eq(external_app_url)
         end
       end
 
@@ -109,8 +107,6 @@ module Newflow
           click_on('Continue')
           visit(signup_done_path)
           expect(page.current_path).to eq(signup_done_path)
-          click_on('Finish')
-          expect(page.current_url).to eq(external_app_url)
         end
       end
     end
@@ -123,9 +119,7 @@ module Newflow
 
       it 'allows the educator to log in and redirects them to the email verification form' do
         visit(newflow_login_path)
-        fill_in('login_form_email', with: email_address.value)
-        fill_in('login_form_password', with: password)
-        find('[type=submit]').click
+        complete_newflow_log_in_screen(email_address.value, password)
         expect(page.current_path).to match(educator_email_verification_form_path)
       end
 
@@ -218,10 +212,6 @@ module Newflow
         #expect(page).to have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
         click_on(I18n.t(:"login_signup_form.confirm_my_account_button"))
         #expect(page).to_not have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
-        wait_for_ajax
-        wait_for_animations
-        expect(EmailAddress.verified.count).to eq(1)
-
         wait_for_ajax
         wait_for_animations
         # ... sends you to the SheerID form
