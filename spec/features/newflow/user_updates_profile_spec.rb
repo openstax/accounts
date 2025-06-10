@@ -15,7 +15,7 @@ feature 'User updates profile', js: true do
       fill_in 'first_name', with: 'testuser'
       screenshot!
       find('.glyphicon-ok').click
-      expect(page).to have_link('testuser')
+      expect(page).to have_button('testuser')
       screenshot!
     end
 
