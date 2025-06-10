@@ -593,8 +593,7 @@ $very-narrow: 37rem * $scale-factor;
 
         > .content {
             max-width: 55.5rem;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
 
             /*
                 On narrow screens, the Sheerid form induces horizontal scrolling
