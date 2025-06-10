@@ -90,18 +90,6 @@ module Newflow
         find('[type=submit]').click
         expect(page.current_path).to match(student_email_verification_form_path)
       end
-
-      # TODO: this works - something with the selector, also the id on the element is misspelled
-      xit 'allows the student to reset their password' do
-        visit(newflow_login_path)
-        complete_newflow_log_in_screen(email_address.value, 'WRONGpassword')
-        click_link_or_button(t :"login_signup_form.forgot_password")
-        expect(page.current_path).to eq(forgot_password_form_path)
-        expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
-        screenshot!
-        click_link_or_button(t :"login_signup_form.forgot_password")
-        screenshot!
-      end
     end
 
   example 'arriving from Tutor (a Doorkeeper app)' do
