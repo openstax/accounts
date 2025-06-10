@@ -61,7 +61,9 @@ module NewflowFormHelper
                       onkeyup: onkeyup,
                       onkeydown: onkeydown,
                       disabled: disabled,
-                      'aria-required': required
+                      'aria-required': required,
+                      'aria-errormessage': errors_div.present? ? "errors-for-#{name}" : nil,
+                      'aria-invalid': errors_div.present? ? true : nil
         )
       else
         input = (
@@ -77,7 +79,9 @@ module NewflowFormHelper
                       onkeydown: onkeydown,
                       disabled: disabled,
                       'aria-described-by': described,
-                      'aria-required': required
+                      'aria-required': required,
+                      'aria-errormessage': errors_div.present? ? "errors-for-#{name}" : nil,
+                      'aria-invalid': errors_div.present? ? true : nil
         )
       end
       "#{input}\n#{errors_div}".html_safe
@@ -126,7 +130,7 @@ module NewflowFormHelper
 
       return '' if field_errors.empty?
 
-      c.content_tag(:div, class: "errors invalid-message") do
+      c.content_tag(:div, class: "errors invalid-message", id: "errors-for-#{name}") do
         # TODO: show multiple error messages per field when the pattern-library is fixed.
         error_divs = field_errors.map do |field_error|
           field_error.translate.html_safe
