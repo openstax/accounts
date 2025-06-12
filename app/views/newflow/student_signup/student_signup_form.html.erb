@@ -111,6 +111,19 @@
                     %>
                 </div>
 
+                <div class="content control-group">
+                    <%= label_tag :school, I18n.t(:"educator_profile_form.school_name"), class: 'field-label' %>
+                    <%=
+                        form_helper.text_field(
+                            name: :school,
+                            placeholder: I18n.t(:"educator_profile_form.school_name"),
+                            required: false,
+                            list: 'school-list'
+                        )
+                    %>
+                    <datalist id='school-list'>
+                    </datalist>
+                </div>
 
                 <div class="content control-group">
                     <div id="password-field-container">
@@ -185,4 +198,5 @@
 <script type="text/javascript">
     NewflowUi.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
     NewflowUi.focusOnFirstErrorItem();
+    NewflowUi.attachSchoolList(`[name="signup[school]"]`)
 </script>
