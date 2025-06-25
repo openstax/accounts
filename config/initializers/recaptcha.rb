@@ -4,6 +4,8 @@ Recaptcha.configure do |config|
   config.secret_key = recaptcha_secrets[:secret_key]
 end
 
+STUB_RECAPTCHA = !Rails.env.production? && Recaptcha.configuration.site_key.blank?
+
 # recaptcha_tags, recaptcha_v3, and verify_recaptcha come from the recaptcha gem
 # Our own helpers are named slightly differently to avoid conflicts
 
@@ -24,7 +26,7 @@ module RecaptchaView
   HTML
 
   def recaptcha_with_disclaimer_and_fallback(action:, **options)
-    return DISCLAIMER if Recaptcha.configuration.site_key.blank? && Rails.env.development?
+    return DISCLAIMER if STUB_RECAPTCHA
 
     recaptcha_or_message = @recaptcha_failed ? FAILURE_MESSAGE : recaptcha_v3(action: action, **options)
 
@@ -44,7 +46,7 @@ module RecaptchaController
   def verify_recaptcha_with_fallback(**options)
     force_recaptcha_failure = params[:force_recaptcha_failure] == 'true'
 
-    return !force_recaptcha_failure if Recaptcha.configuration.site_key.blank? && Rails.env.development?
+    return !force_recaptcha_failure if STUB_RECAPTCHA
 
     options = {
       action: action_name,

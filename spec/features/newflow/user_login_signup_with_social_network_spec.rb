@@ -120,7 +120,7 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page).to have_current_path(profile_newflow_path)
             end
         end
       end
@@ -133,7 +133,7 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page).to have_current_path(profile_newflow_path)
             end
           end
         end
@@ -168,7 +168,7 @@ feature 'User logs in or signs up with a social network', js: true do
       scenario 'user can subsequently log in' do
         simulate_login_signup_with_social(name: 'Elon Musk', email: nil_email_value) do
           click_on('Facebook')
-          expect(page.current_path).to match(profile_newflow_path)
+          expect(page).to have_current_path(profile_newflow_path)
           expect(page).to have_content(email_value)
         end
       end
@@ -200,7 +200,7 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page).to have_current_path(profile_newflow_path)
 
               # A `facebooknewflow` auth was created since the user already had a `facebook` one
               expect(user.authentications.count).to eq(2)
@@ -217,7 +217,7 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page).to have_current_path(profile_newflow_path)
               expect(page).to have_content(email_value)
             end
           end
