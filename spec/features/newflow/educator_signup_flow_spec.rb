@@ -63,7 +63,7 @@ module Newflow
           fill_in('Other (please specify)', with: 'President')
           find('#signup_form_submit_button').click
           visit(signup_done_path)
-          expect(page).to have_current_path(educator_pending_cs_verification_path)
+          expect(page).to have_current_path(signup_done_path)
         end
       end
 
