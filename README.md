@@ -164,7 +164,7 @@ Set `DEBUGGER=byebug` to use byebug (e.g. in `.env`), otherwise defaults to the 
 ## Different ways to create a user account
 
 ### User arrives at the signup page
-The most straightforward way to sign up is by visiting the `signup_path`  without any parameters in the URL and without any state in the session.
+The most straightforward way to sign up is by visiting the `newflow_signup_path`  without any parameters in the URL and without any state in the session.
 
 ### User arrives at a restricted page (one which calls `authenticate_user!`) **with** _signed parameters_
 `authenticate_user!` calls `use_signed_params` which is used to either 1) automatically log in users or 2) prefill/preselect their information in the sign up forms like their `role` and `email` address.
