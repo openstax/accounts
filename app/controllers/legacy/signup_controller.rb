@@ -11,6 +11,8 @@ module Legacy
 
     before_action :check_ready_for_profile, only: [:profile]
 
+    before_action :exit_signup_if_logged_in, only: [:start]
+
     helper_method :signup_email, :instructor_has_selected_subject
 
     def start
@@ -76,6 +78,10 @@ module Legacy
 
     def instructor_has_selected_subject(key)
       params[:profile] && params[:profile][:subjects] && params[:profile][:subjects][key] == '1'
+    end
+
+    def exit_signup_if_logged_in
+      redirect_to(root_path, notice: (I18n.t :"legacy.signup.exit_if_logged_in.already_logged_in")) if signed_in?
     end
 
   end
