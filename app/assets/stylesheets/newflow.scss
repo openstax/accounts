@@ -270,8 +270,9 @@ label.required::after {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 9.4rem;
+        width: max-content;
         height: 100%;
+        padding: 0 1.5rem;
 
         background-color: #f5f5f5;
         border-radius: 1.5rem;
