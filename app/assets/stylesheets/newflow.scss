@@ -605,6 +605,16 @@ $very-narrow: 37rem * $scale-factor;
                     transform: scale(0.94) translateX(-4%);
                     width: 108%;
                 }    
+
+                // Override international telephone widget color
+                .iti__dial-code {
+                    color: #666;
+                }
+
+                input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="radio"]):not([type="checkbox"]),
+                textarea {
+                    border-color: #949494;
+                }
             }
         }
 
