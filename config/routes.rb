@@ -153,14 +153,6 @@ Rails.application.routes.draw do
 
   scope 'signup', controller: 'legacy/signup', as: 'signup' do
     get '/', action: :start
-    post '/', action: :start
-    get 'password'
-    get 'social'
-
-    get 'verify_email'
-    post 'verify_email'
-
-    get 'verify_by_token'
 
     get 'profile'
     post 'profile'

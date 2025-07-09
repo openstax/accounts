@@ -159,8 +159,8 @@ def visit_authorize_uri(app: @app, params: {})
                          "#{'&' + params.to_query if params.any?}"
 end
 
-def app_callback_url(app: nil)
-  /^#{(app || @app).redirect_uri}\?code=.+$/
+def app_callback_regex(app: nil)
+  /^#{Addressable::URI.parse((app || @app).redirect_uri).path}\?code=.+$/
 end
 
 def with_error_pages
@@ -247,7 +247,7 @@ def expect_sign_up_page
 end
 
 def expect_authenticate_page
-  expect(page.body).to match(/Hello.*!/)
+  expect(page).to have_body(/Hello.*!/)
 end
 
 def expect_social_sign_up_page
@@ -273,7 +273,7 @@ def arrive_from_app(app: nil, params: {}, do_expect: true)
 end
 
 def expect_back_at_app(app: nil)
-  expect(page.current_url).to match(app_callback_url(app: app || @app))
+  expect(page).to have_current_path(app_callback_regex(app: app || @app))
 end
 
 def expect_signup_verify_screen

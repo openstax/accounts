@@ -78,7 +78,7 @@ module NewflowFormHelper
                       onkeydown: onkeydown,
                       disabled: disabled,
                       list: list,
-                      'aria-described-by': described,
+                      'aria-describedby': described,
                       'aria-required': required
         )
       end

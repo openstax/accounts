@@ -103,7 +103,8 @@
                 fh.text_field(
                   name: :password,
                   type: :password,
-                  placeholder: I18n.t(:"login_signup_form.password_label")
+                  placeholder: I18n.t(:"login_signup_form.password_label"),
+                  described: 'password-tooltip'
                 )
               %>
               <%= render partial: 'newflow/password_tooltip' %>
@@ -146,6 +147,8 @@
           </div>
 
         </div>
+
+        <%= recaptcha_with_disclaimer_and_fallback action: 'educator_signup' %>
 
         <div class="content">
           <%=
