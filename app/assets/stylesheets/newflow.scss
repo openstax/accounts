@@ -598,23 +598,33 @@ $very-narrow: 37rem * $scale-factor;
 
             /*
                 On narrow screens, the Sheerid form induces horizontal scrolling
-                This adjusts it to fit when on a screen between 320 and 360 px wide 
+                This adjusts it to fit when on a screen between 320 and 360 px wide
             */
             &.control-group {
                 @include width-up-to($very-narrow) {
                     transform: scale(0.94) translateX(-4%);
                     width: 108%;
-                }    
-
-                // Override international telephone widget color
-                .iti__dial-code {
-                    color: #666;
                 }
+            }
 
-                input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="radio"]):not([type="checkbox"]),
-                textarea {
-                    border-color: #949494;
-                }
+            &.recaptcha-disclaimer {
+              color: #aaa;
+              font-size: 1rem;
+              margin-top: -1.5rem;
+            }
+
+            &.recaptcha-failure {
+              color: red;
+            }    
+
+            // Override international telephone widget color
+            .iti__dial-code {
+                color: #666;
+            }
+
+            input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="radio"]):not([type="checkbox"]),
+            textarea {
+                border-color: #949494;
             }
         }
 
@@ -681,7 +691,7 @@ $very-narrow: 37rem * $scale-factor;
 
         fieldset {
             border: 0;
-            padding: 0;            
+            padding: 0;
         }
 
         label,
@@ -1057,3 +1067,5 @@ $very-narrow: 37rem * $scale-factor;
         }
     }
 }
+
+.grecaptcha-badge { visibility: hidden; }

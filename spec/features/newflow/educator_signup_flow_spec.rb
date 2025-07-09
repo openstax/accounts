@@ -15,7 +15,6 @@ module Newflow
     let(:password) { Faker::Internet.password(min_length: 8) }
     let(:sheerid_iframe_page_title) { 'Verify your instructor status' }
     let(:iframe_submit_button_text) { 'Verify my instructor status' }
-    let(:external_app_url) { capybara_url(external_app_for_specs_path) }
     let(:return_param) { { r: external_app_for_specs_path } }
 
     context 'happy path' do
@@ -38,7 +37,7 @@ module Newflow
 
           # Step 2
           # sends an email address confirmation email
-          expect(page.current_path).to eq(educator_email_verification_form_path)
+          expect(page).to have_current_path(educator_email_verification_form_path)
           open_email(email_value)
           capture_email!(address: email_value)
           expect(current_email).to be_truthy
@@ -64,7 +63,7 @@ module Newflow
           fill_in('Other (please specify)', with: 'President')
           find('#signup_form_submit_button').click
           visit(signup_done_path)
-          expect(page.current_path).to eq(signup_done_path).or eq(educator_pending_cs_verification_path)
+          expect(page).to have_current_path(signup_done_path)
         end
       end
 
@@ -72,7 +71,7 @@ module Newflow
         it 'all works' do
           visit(login_path(return_param))
           click_on(I18n.t(:"login_signup_form.sign_up"))
-          expect(page.current_path).to eq(newflow_signup_path)
+          expect(page).to have_current_path(newflow_signup_path)
           click_on(I18n.t(:"login_signup_form.educator"))
 
           # Step 1
@@ -88,7 +87,7 @@ module Newflow
 
           # Step 2
           # sends an email address confirmation email
-          expect(page.current_path).to eq(educator_email_verification_form_path)
+          expect(page).to have_current_path(educator_email_verification_form_path)
           open_email(email_value)
           capture_email!(address: email_value)
           expect(current_email).to be_truthy
@@ -106,7 +105,7 @@ module Newflow
           fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
           click_on('Continue')
           visit(signup_done_path)
-          expect(page.current_path).to eq(signup_done_path)
+          expect(page).to have_current_path(signup_done_path)
         end
       end
     end
@@ -120,14 +119,14 @@ module Newflow
       it 'allows the educator to log in and redirects them to the email verification form' do
         visit(newflow_login_path)
         complete_newflow_log_in_screen(email_address.value, password)
-        expect(page.current_path).to match(educator_email_verification_form_path)
+        expect(page).to have_current_path(educator_email_verification_form_path)
       end
 
       it 'allows the educator to reset their password' do
         visit(newflow_login_path)
         complete_newflow_log_in_screen(email_address.value, 'WRONGpassword')
         find('[id=forgot-password-link]').click
-        expect(page.current_path).to eq(forgot_password_form_path)
+        expect(page).to have_current_path(forgot_password_form_path)
         expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
         screenshot!
         click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
@@ -194,13 +193,14 @@ module Newflow
         fill_in 'signup_email',	with: email_value
         fill_in 'signup_password',	with: password
         submit_signup_form
+        expect(page).to have_current_path(educator_email_verification_form_path)
+
         screenshot!
 
         perform_enqueued_jobs
 
         # Step 2
         # sends an email address confirmation email
-        expect(page.current_path).to eq(educator_email_verification_form_path)
         open_email(email_value)
         capture_email!(address: email_value)
         expect(current_email).to be_truthy
@@ -237,10 +237,10 @@ module Newflow
         fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
         click_on('Continue')
         visit(educator_pending_cs_verification_path)
-        expect(page.current_path).to eq(educator_pending_cs_verification_path)
+        expect(page).to have_current_path(educator_pending_cs_verification_path)
         click_on('Finish')
         wait_for_ajax
-        expect(page.current_url).to eq(external_app_url)
+        expect(page).to have_current_path(external_app_for_specs_path)
       end
     end
   end

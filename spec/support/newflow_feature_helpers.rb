@@ -41,7 +41,7 @@ end
 def newflow_reauthenticate_user(email, password)
   wait_for_animations
   wait_for_ajax
-  expect(page.current_path).to eq(reauthenticate_form_path)
+  expect(page).to have_current_path(reauthenticate_form_path)
   expect(find('#login_form_email').value).to eq(email) # email should be pre-populated
   fill_in('login_form_password', with: password)
   screenshot!
@@ -80,7 +80,7 @@ def turn_on_educator_feature_flag
 end
 
 def newflow_click_sign_up(role:)
-  click_on (t :"login_signup_form.sign_up") unless page.current_path == newflow_signup_path
+  click_on(t :"login_signup_form.sign_up") unless page.current_path == newflow_signup_path
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"login_signup_form.welcome_page_header")
   find(".join-as__role.#{role}").click
@@ -102,11 +102,11 @@ def expect_newflow_profile_page
 end
 
 def newflow_expect_signup_verify_screen
-  expect(page.current_path).to eq(student_email_verification_form_path)
+  expect(page).to have_current_path(student_email_verification_form_path)
 end
 
 def newflow_expect_sign_up_page
-  expect(page.current_path).to eq(newflow_signup_path)
+  expect(page).to have_current_path(newflow_signup_path)
   expect(page).to have_no_missing_translations
 end
 
@@ -182,16 +182,20 @@ end
 
 def expect_student_sign_up_page
   expect(page).to have_no_missing_translations
-  expect(page.current_path).to eq(newflow_signup_student_path)
+  expect(page).to have_current_path(newflow_signup_student_path)
 end
 
 def expect_educator_sign_up_page
   expect(page).to have_no_missing_translations
-  expect(page.current_path).to eq(educator_signup_path)
+  expect(page).to have_current_path(educator_signup_path)
+end
+
+def external_public_path
+  external_app_for_specs_path + '/public'
 end
 
 def external_public_url
-  capybara_url(external_app_for_specs_path) + '/public'
+  capybara_url(external_public_path)
 end
 
 def expect_sheerid_iframe
@@ -213,7 +217,7 @@ def expect_sheerid_iframe
     # expect(page).not_to have_text('Verification Limit Exceeded', exact: false)
     # click_on('Verify my instructor status')
     # click_on('Continue')
-    # expect(page.current_path).to eq(educator_profile_form_path)
+    # expect(page).to have_current_path(educator_profile_form_path)
 
     # find('#sid-teacher-school').click
     # <div class="sid-organization-list__item sid-organization-list__item--highlighted" id="downshift-0-item-0" role="option" aria-selected="true" style="position: absolute; top: 0px; left: 0px; width: auto; height: 42px;">Rice University (Houston, TX)</div>
@@ -224,7 +228,7 @@ end
 
 def expect_educator_step_4_page
   visit(educator_profile_form_path)
-  expect(page.current_path).to eq(educator_profile_form_path)
+  expect(page).to have_current_path(educator_profile_form_path)
 end
 
 def select_educator_role(role)

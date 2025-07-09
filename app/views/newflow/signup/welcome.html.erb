@@ -1,7 +1,3 @@
-<%
-    conditional_educator_signup_path = Settings::FeatureFlags.educator_feature_flag ? educator_signup_path : signup_path(set_param_to_permit_legacy_flow)
-%>
-
 <div id="login-signup-form">
     <div class="content">
         <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
@@ -38,7 +34,7 @@
                         </div>
 
                         <div>
-                            <%= link_to conditional_educator_signup_path, data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2B-Educator' } do %>
+                            <%= link_to educator_signup_path, data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2B-Educator' } do %>
                                 <div class="join-as__role educator">
                                     <h2><%= I18n.t(:"login_signup_form.educator") %></h2>
                                     <%= image_tag('educator-icon.svg') %>
