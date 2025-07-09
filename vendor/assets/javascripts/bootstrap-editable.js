@@ -45,6 +45,9 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
             if(this.options.showbuttons === 'bottom') {
                 $btn.addClass('editable-buttons-bottom');
             }
+            // Customized by OpenStax for accessibility
+            $btn.find('.editable-submit').attr('aria-label', 'save');
+            $btn.find('.editable-cancel').attr('aria-label', 'cancel');
         },
         /**
         Renders editableform
