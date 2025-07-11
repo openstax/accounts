@@ -13,11 +13,10 @@ module Newflow
       describe 'using SSO cookie' do
         it 'sends the student back to the specified return URL' do
           with_forgery_protection do
-            return_to = capybara_url(external_app_for_specs_path)
-            visit newflow_login_path(r: return_to)
+            visit newflow_login_path(r: capybara_url(external_app_for_specs_path))
             screenshot!
             complete_newflow_log_in_screen('user@openstax.org', 'password')
-            expect(page.current_url).to eq(return_to)
+            expect(page).to have_current_path(external_app_for_specs_path)
             screenshot!
           end
         end
@@ -51,7 +50,7 @@ module Newflow
               screenshot!
               complete_newflow_log_in_screen('needs_profile_user@openstax.org', 'password')
               screenshot!
-              expect(page.current_path).to match(signup_profile_path)
+              expect(page).to have_current_path(signup_profile_path)
             end
           end
         end
@@ -66,7 +65,7 @@ module Newflow
           with_forgery_protection do
             visit newflow_login_path
             complete_newflow_log_in_screen('user@openstax.org', 'password')
-            expect(page.current_url).to match(profile_newflow_path)
+            expect(page).to have_current_path(profile_newflow_path)
           end
         end
       end
@@ -110,7 +109,7 @@ module Newflow
                 find('#exit-icon a').click
                 wait_for_animations
                 wait_for_ajax
-                expect(page.current_url).to match(external_public_url)
+                expect(page).to have_current_path(external_public_path)
               end
             end
 
@@ -123,7 +122,7 @@ module Newflow
                   find('#exit-icon a').click
                   wait_for_animations
                   wait_for_ajax
-                  expect(page.current_url).to match(external_public_url)
+                  expect(page).to have_current_path(external_public_path)
                 end
               end
             end
@@ -136,7 +135,7 @@ module Newflow
                 find('#exit-icon a').click
                 wait_for_animations
                 wait_for_ajax
-                expect(page.current_url).to match(external_public_url)
+                expect(page).to have_current_path(external_public_path)
               end
             end
           end
@@ -154,7 +153,7 @@ module Newflow
         fill_in('login_form_email', with: email_address.value)
         fill_in('login_form_password', with: 'password')
         find('[type=submit]').click
-        expect(page.current_path).to match(student_email_verification_form_path)
+        expect(page).to have_current_path(student_email_verification_form_path)
       end
     end
   end

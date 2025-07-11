@@ -1,14 +1,9 @@
 module Legacy
   class SignupController < ApplicationController
 
-    include LegacyHelper
-
     PROFILE_TIMEOUT = 30.minutes
 
-    before_action :redirect_to_newflow_if_enabled, only: [:start]
-
-    skip_before_action :authenticate_user!,
-                      only: [:start, :verify_email, :verify_by_token, :password, :social, :profile]
+    skip_before_action :authenticate_user!, only: [:profile, :start]
 
     skip_before_action :complete_signup_profile
 
@@ -16,67 +11,13 @@ module Legacy
 
     before_action :check_ready_for_profile, only: [:profile]
 
-    before_action :restart_if_missing_pre_auth_state, only: [:verify_email, :password, :social]
-    before_action :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
-    before_action :check_ready_for_password_or_social, only: [:password, :social]
+    before_action :exit_signup_if_logged_in, only: [:start]
 
     helper_method :signup_email, :instructor_has_selected_subject
 
     def start
-      if request.post?
-        handle_with(SignupStart,
-                    existing_pre_auth_state: pre_auth_state,
-                    return_to: session[:return_to],
-                    session: self,
-                    success: lambda do
-                      save_pre_auth_state(@handler_result.outputs.pre_auth_state)
-                      redirect_to action: :verify_email
-                    end,
-                    failure: lambda do
-                      @role = params[:signup].try(:[],:role)
-                      @signup_email = params[:signup].try(:[],:email)
-                      render :start
-                    end)
-      else
-        @role = signup_role # select whatever value the role was previously set to
-      end
+      redirect_to newflow_signup_path(request.query_parameters)
     end
-
-    def verify_email
-      render and return if request.get?
-
-      handle_with(SignupVerifyEmail,
-                  pre_auth_state: pre_auth_state,
-                  session: self,
-                  success: lambda do
-                    redirect_to action: (pre_auth_state.signed_student? ? :profile : :password)
-                  end,
-                  failure: lambda do
-                    @handler_result.errors.each do | error |  # TODO move to view?
-                      error.message = I18n.t(:"legacy.signup.verify_email.#{error.code}", default: error.message)
-                    end
-                    render :verify_email
-                  end)
-    end
-
-    def verify_by_token
-      handle_with(SignupVerifyByToken,
-                  session: self,
-                  success: lambda do
-                    @handler_result.outputs.pre_auth_state.tap do |state|
-                      session[:return_to] ||= state.return_to
-                      save_pre_auth_state(state)
-                    end
-                    redirect_to action: (pre_auth_state.signed_student? ? :profile : :password)
-                  end,
-                  failure: lambda do
-                    # TODO spec this and set an error message
-                    redirect_to action: :start
-                  end)
-    end
-
-    def password; end
-    def social; end
 
     def profile
       if request.post?
@@ -133,20 +74,6 @@ module Legacy
     def fail_signup
       clear_pre_auth_state
       raise SecurityTransgression
-    end
-
-    def restart_if_missing_pre_auth_state
-      redirect_to signup_path(set_param_to_permit_legacy_flow) if pre_auth_state.nil?
-    end
-
-    def check_ready_for_password_or_social
-      if pre_auth_state.nil?
-        redirect_to action: :start
-      elsif !pre_auth_state.is_contact_info_verified?
-        redirect_to action: :verify_email
-      else
-        true
-      end
     end
 
     def instructor_has_selected_subject(key)

@@ -114,6 +114,9 @@ gem 'delayed_job_worker_pool'
 # Ensure background jobs unlock if a delayed_job worker crashes
 gem 'delayed_job_heartbeat_plugin'
 
+# Bot prevention
+gem 'recaptcha'
+
 # JSON Api builder
 gem 'representable'
 
