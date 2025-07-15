@@ -78,7 +78,7 @@
                 %>
 
                 <div class="content control-group">
-                    <%= label_tag :first_name, I18n.t(:"login_signup_form.first_name_label"),
+                    <%= label_tag :signup_first_name, I18n.t(:"login_signup_form.first_name_label"),
                                 class: 'field-label required'
                     %>
                     <%= form_helper.text_field name: :first_name,
@@ -90,7 +90,7 @@
 
                 <div class="content control-group">
                     <%=
-                        label_tag :last_name, I18n.t(:"login_signup_form.last_name_label"),
+                        label_tag :signup_last_name, I18n.t(:"login_signup_form.last_name_label"),
                         class: 'field-label required'
                     %>
                     <%=
@@ -101,7 +101,7 @@
                 </div>
 
                 <div class="content control-group">
-                    <%= label_tag :email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
+                    <%= label_tag :signup_email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
                     <%=
                         form_helper.text_field(
                             name: :email,
@@ -112,7 +112,7 @@
                 </div>
 
                 <div class="content control-group">
-                    <%= label_tag :school, I18n.t(:"educator_profile_form.school_name"), class: 'field-label' %>
+                    <%= label_tag :signup_school, I18n.t(:"educator_profile_form.school_name"), class: 'field-label' %>
                     <%=
                         form_helper.text_field(
                             name: :school,
@@ -128,7 +128,7 @@
                 <div class="content control-group">
                     <div id="password-field-container">
                         <div class="input-with-tooltip">
-                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                            <%= label_tag :signup_password, I18n.t(:"login_signup_form.password_label"),
                                                     class: 'field-label required'
                             %>
                             <%=
