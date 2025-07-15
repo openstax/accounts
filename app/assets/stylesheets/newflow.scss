@@ -1003,6 +1003,10 @@ $very-narrow: 37rem * $scale-factor;
 
 .tooltip {
     padding-bottom: 2rem !important;
+
+    h2 {
+        @include title-font(1.8rem);
+    }
 }
 
 .input-with-tooltip {
