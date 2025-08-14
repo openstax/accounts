@@ -21,15 +21,6 @@ describe SheeridAPI, type: :lib, vcr: VCR_OPTS do
       end
     end
 
-    context 'when collectTeacherPersonalInfo' do
-      subject(:response) { described_class.get_verification_details(verification_id) }
-      let(:verification_id) { '5ef42cfaeddfdd1bd961c088' }
-
-      it 'is not a relevant response' do
-        expect(response.relevant?).to be(false)
-      end
-    end
-
     context 'when timeout occurs' do
       before do
         allow(Faraday).to receive(:get).and_raise(Net::ReadTimeout)

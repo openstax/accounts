@@ -20,11 +20,26 @@ $font-path: '/accounts/fonts';
   .alert { margin: 10px; }
 
   .profile-title {
-    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: baseline;
+
+    .title {
+      grid-column: 2;
+    }
+
+    .button_to {
+      grid-column: 3;
+      text-align: right;
+    }
 
     .sign-out {
-      position: absolute;
-      right: 0px;
+      border: 0;
+      background-color: transparent;
+      line-height: normal;
+      padding: 0.5rem;
+      height: auto;
+      color: #027eb5;
     }
   }
 
@@ -38,6 +53,12 @@ $font-path: '/accounts/fonts';
 
   .row.name {
     margin-top: 20px;
+  }
+
+  #name {
+    .glyphicon {
+      margin-left: 2rem;
+    }
   }
 
   .category {
@@ -56,6 +77,11 @@ $font-path: '/accounts/fonts';
     }
   }
 
+  button.editable {
+    background-color: transparent;
+    border: 0;
+  }
+
   .info {
     @media(max-width: 767px) {
       margin-left: 15px;
@@ -71,15 +97,15 @@ $font-path: '/accounts/fonts';
   .info .mod {
     color: #aaa;
     display: inline;
-    padding-right: 5px;
+    padding: 0.3rem;
   }
 
-  .mod {
-    color: gray;
-    cursor: pointer;
+  a.mod {
+    color: gray !important;
     &:hover {
-      color: black;
+      color: black !important;
     }
+    text-decoration: none;
   }
 
   .dim {
@@ -98,17 +124,11 @@ $font-path: '/accounts/fonts';
   }
 
   .email-entry {
+    &:not(.new) summary {
+      display: list-item;
+    }
     &:first-child {
       .alert { margin-top: 0; }
-    }
-    .email,
-    .unconfirmed-warning .msg {
-      color: $os_link_color;
-      text-decoration: underline;
-      cursor: pointer;
-      &:hover {
-        text-decoration: none;
-      }
     }
     .unconfirmed-warning .msg { margin: 0 0.5rem; }
     &.verified {
@@ -127,7 +147,6 @@ $font-path: '/accounts/fonts';
       top: 15px;
     }
     .controls {
-      display: none;
       overflow: hidden;
       margin-left: 20px;
       margin-top: 4px;
@@ -144,15 +163,15 @@ $font-path: '/accounts/fonts';
       }
       .delete {
         margin-left: 6px;
-        a {
+        button {
+          appearance: none;
+          padding: 0.2rem;
           font-size: 13px;
-          margin-left: 8px;
+          margin-left: 6px;
+          border: 0;
+          color: #027eb5;
+          background-color: transparent;
         }
-      }
-    }
-    &.expanded {
-      .controls {
-        display: block;
       }
     }
 
@@ -186,6 +205,9 @@ $font-path: '/accounts/fonts';
   }
 
   #add-an-email {
+    background-color: transparent;
+    border: thin solid gray;
+    border-radius: 0.3rem;
     margin-top: 10px;
     display: block;
   }
@@ -234,6 +256,10 @@ $font-path: '/accounts/fonts';
     }
   }
 
+  #enable-other-sign-in {
+    display: list-item;
+  }
+
   .enabled-providers {
     .mod-holder .add { display: none; }
     .mod-holder .add--newflow { display: none; }
@@ -246,6 +272,15 @@ $font-path: '/accounts/fonts';
   }
 
   .other-sign-in {
+    summary {
+      display: list-item;
+      margin-top: -3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .controls {
+      padding-left: 1.6rem;
+    }
     .authentication {
       .mod-holder {
         .edit   { display: none; }
@@ -255,10 +290,5 @@ $font-path: '/accounts/fonts';
       }
     }
   }
-
-  .row.other-sign-in {
-    display: none;
-  }
-
 
 }

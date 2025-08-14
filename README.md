@@ -71,7 +71,7 @@ ALTER USER ox_accounts WITH SUPERUSER;
 
 #### Running as a normal Rails app on your machine
 
-First, ensure you have a Ruby version manager installed, such as [rbenv](https://github.com/rbenv/rbenv#installation) or RVM to manage your ruby versions. Then, install the Ruby version specified in the `.ruby-version` file (2.3.3 at the time of this writing, or above).
+First, ensure you have a Ruby version manager installed, such as [rbenv](https://github.com/rbenv/rbenv#installation) or RVM to manage your ruby versions. Then, install the Ruby version specified in the `.ruby-version` file (3.1.6 at the time of this writing, or above).
 
 To start running Accounts in a development environment, clone the repository and then run:
 
@@ -164,7 +164,7 @@ Set `DEBUGGER=byebug` to use byebug (e.g. in `.env`), otherwise defaults to the 
 ## Different ways to create a user account
 
 ### User arrives at the signup page
-The most straightforward way to sign up is by visiting the `signup_path`  without any parameters in the URL and without any state in the session.
+The most straightforward way to sign up is by visiting the `newflow_signup_path`  without any parameters in the URL and without any state in the session.
 
 ### User arrives at a restricted page (one which calls `authenticate_user!`) **with** _signed parameters_
 `authenticate_user!` calls `use_signed_params` which is used to either 1) automatically log in users or 2) prefill/preselect their information in the sign up forms like their `role` and `email` address.

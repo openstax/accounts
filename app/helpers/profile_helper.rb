@@ -19,7 +19,9 @@ module ProfileHelper
       end
 
     icons = [
-      'glyphicon-pencil edit--newflow', 'glyphicon-trash delete--newflow', 'glyphicon-plus add--newflow',
+      {'label' => 'Edit', 'fragment' => 'pencil edit'},
+      {'label' => 'Delete', 'fragment' => 'trash delete'},
+      {'label' => 'Add', 'fragment' => 'plus add'}
     ]
 
     snippet = <<-SNIPPET
@@ -29,7 +31,7 @@ module ProfileHelper
       </span>
       <span class="name">#{display_name}</span>
       <span class="mod-holder">
-      #{icons.map{|icon| "<span class='glyphicon #{icon} mod'></span>"}.join}
+      #{icons.map{|icon| "<a href='#' class='glyphicon glyphicon-#{icon['fragment']}--newflow mod' aria-label='#{icon['label']} #{display_name}'></a>"}.join}
       </span>
     SNIPPET
 
@@ -75,30 +77,30 @@ module ProfileHelper
   def email_entry(value:, id:, is_verified:, is_searchable:)
     verify_link = is_verified ? '' : ""
     unconfirmed_link = is_verified ? '' : <<-EOV
-      <span class='unconfirmed-warning'>[<span class='msg editable-click'>
-        #{I18n.t(:"legacy.users.edit.unconfirmed_warning")}
-      </span>]</span>
+      <span class='unconfirmed-warning'>[#{I18n.t(:"legacy.users.edit.unconfirmed_warning")}]</span>
     EOV
 
     (
       <<-SNIPPET
-        <div class="email-entry #{'verified' if is_verified}" data-id="#{id}">
-          <span class="email editable-click"><span class="value">#{value}</span></span>
-          #{unconfirmed_link}
+        <details class="email-entry editable-click #{'verified' if is_verified}" data-id="#{id}">
+          <summary>
+            <span class="value">#{value}</span>
+            #{unconfirmed_link}
+          </summary>
           <div class="controls">
             <div class='resend-confirmation'>
               <i class='fa fa-envelope-o'></i>
               #{button_to((I18n.t :"legacy.users.edit.resend_confirmation"), resend_confirmation_contact_info_path(id: id), method: :put )}
             </div>
             <div class="delete">
-              <span class="glyphicon glyphicon-trash"></span><a href="#">Delete</a>
+              <span class="glyphicon glyphicon-trash"></span><button type="button">Delete</button>
             </div>
             <div class="searchable-toggle">
               <label><input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"legacy.users.edit.searchable"}</label>
             </div>
           </div>
           <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>
-        </div>
+        </details>
       SNIPPET
     ).html_safe
   end

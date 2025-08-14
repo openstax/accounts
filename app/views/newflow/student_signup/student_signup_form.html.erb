@@ -7,6 +7,8 @@
         # TODO: show them in a modal instead of new tab
         # link_to contract.title, term_path(contract), remote: true
     }
+
+    @page_title = 'Sign up (student)'
 %>
 
 <div id="login-signup-form">
@@ -14,6 +16,7 @@
         <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
 
         <%= newflow_login_signup_card(
+                    id: 'signup-page',
                     header: (I18n.t(:"login_signup_form.signup_page_header")),
                     current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
                     classes: 'signup-page') do %>
@@ -27,7 +30,7 @@
                 %>
                 <div class="content role-section">
                     <div>
-                        <%= render partial: 'newflow/back_arrow', locals: { path: newflow_signup_path } %>
+                        <%= render partial: 'newflow/back_arrow', locals: { path: newflow_signup_path, name: 'welcome' } %>
                         <div class="role-button"><%= I18n.t(:"login_signup_form.student") %></div>
                     </div>
                 </div>
@@ -75,51 +78,69 @@
                 %>
 
                 <div class="content control-group">
-                    <%= label_tag :first_name, I18n.t(:"login_signup_form.first_name_label"),
+                    <%= label_tag :signup_first_name, I18n.t(:"login_signup_form.first_name_label"),
                                 class: 'field-label required'
                     %>
                     <%= form_helper.text_field name: :first_name,
                                 placeholder: I18n.t(:"login_signup_form.first_name_label"),
-                                autofocus: true
+                                autofocus: true,
+                                required: true
                     %>
                 </div>
 
                 <div class="content control-group">
                     <%=
-                        label_tag :last_name, I18n.t(:"login_signup_form.last_name_label"),
+                        label_tag :signup_last_name, I18n.t(:"login_signup_form.last_name_label"),
                         class: 'field-label required'
                     %>
                     <%=
                         form_helper.text_field name: :last_name,
-                        placeholder: I18n.t(:"login_signup_form.last_name_label")
+                        placeholder: I18n.t(:"login_signup_form.last_name_label"),
+                        required: true
                     %>
                 </div>
 
                 <div class="content control-group">
-                    <%= label_tag :email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
+                    <%= label_tag :signup_email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
                     <%=
                         form_helper.text_field(
                             name: :email,
-                            placeholder: I18n.t(:"login_signup_form.email_placeholder")
+                            placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+                            required: true
                         )
                     %>
                 </div>
 
+                <div class="content control-group">
+                    <%= label_tag :signup_school, I18n.t(:"educator_profile_form.school_name"), class: 'field-label' %>
+                    <%=
+                        form_helper.text_field(
+                            name: :school,
+                            placeholder: I18n.t(:"educator_profile_form.school_name"),
+                            required: false,
+                            list: 'school-list'
+                        )
+                    %>
+                    <datalist id='school-list'>
+                    </datalist>
+                </div>
 
                 <div class="content control-group">
                     <div id="password-field-container">
                         <div class="input-with-tooltip">
-                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                            <%= label_tag :signup_password, I18n.t(:"login_signup_form.password_label"),
                                                     class: 'field-label required'
                             %>
-                            <%= render partial: 'newflow/password_show_hide'  %>
                             <%=
                                 form_helper.text_field(
                                     name: :password,
                                     type: :password,
-                                    placeholder: I18n.t(:"login_signup_form.password_label")
+                                    placeholder: I18n.t(:"login_signup_form.password_label"),
+                                    required: true,
+                                    described: 'password-tooltip'
                                 )
                             %>
+                            <%= render partial: 'newflow/password_show_hide'  %>
                             <%= render partial: 'newflow/password_tooltip' %>
                         </div>
                     </div>
@@ -153,6 +174,8 @@
 
                 </div>
 
+                <%= recaptcha_with_disclaimer_and_fallback action: 'student_signup' %>
+
                 <div class="content">
                     <%=
                         form.submit(
@@ -175,4 +198,6 @@
 
 <script type="text/javascript">
     NewflowUi.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
+    NewflowUi.focusOnFirstErrorItem();
+    NewflowUi.attachSchoolList(`[name="signup[school]"]`)
 </script>

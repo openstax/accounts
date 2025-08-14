@@ -53,7 +53,6 @@ gem 'coffee-rails'
 gem 'mini_racer'
 
 # JavaScript asset compressor
-gem 'uglifier'
 
 # Nicely-styled static error pages
 gem 'error_page_assets'
@@ -114,6 +113,9 @@ gem 'delayed_job_worker_pool'
 
 # Ensure background jobs unlock if a delayed_job worker crashes
 gem 'delayed_job_heartbeat_plugin'
+
+# Bot prevention
+gem 'recaptcha'
 
 # JSON Api builder
 gem 'representable'
@@ -315,3 +317,5 @@ group :production do
   # Consistent logging
   gem 'lograge'
 end
+
+gem "terser", "~> 1.2"

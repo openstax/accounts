@@ -25,19 +25,20 @@ module Newflow
 
     context 'signup happy path' do
       before do
-        visit newflow_signup_path(r: '/external_app_for_specs')
+        visit newflow_signup_path(r: external_app_for_specs_path)
         find('.join-as__role.student').click
         fill_in 'signup_first_name',	with: 'Sally'
         fill_in 'signup_last_name',	with: 'Port'
         fill_in 'signup_email',	with: email
         fill_in 'signup_password',	with: password
         submit_signup_form
+        expect(page).to have_current_path student_email_verification_form_path
+
         screenshot!
 
         perform_enqueued_jobs
 
         # sends an email address confirmation email
-        expect(page.current_path).to eq student_email_verification_form_path
         open_email email
         capture_email!(address: email)
         expect(current_email).to be_truthy
@@ -53,7 +54,7 @@ module Newflow
 
         # can exit and go back to the app they came from
         find('#exit-icon a').click
-        expect(page.current_path).to eq('/external_app_for_specs')
+        expect(page).to have_current_path(external_app_for_specs_path)
         screenshot!
       end
 
@@ -72,7 +73,7 @@ module Newflow
 
         # can exit and go back to the app they came from
         find('#exit-icon a').click
-        expect(page.current_path).to eq('/external_app_for_specs')
+        expect(page).to have_current_path(external_app_for_specs_path)
         screenshot!
       end
     end
@@ -88,49 +89,37 @@ module Newflow
         fill_in('login_form_email', with: email_address.value)
         fill_in('login_form_password', with: password)
         find('[type=submit]').click
-        expect(page.current_path).to match(student_email_verification_form_path)
-      end
-
-      # TODO: this works - something with the selector, also the id on the element is misspelled
-      xit 'allows the student to reset their password' do
-        visit(newflow_login_path)
-        complete_newflow_log_in_screen(email_address.value, 'WRONGpassword')
-        click_link_or_button(t :"login_signup_form.forgot_password")
-        expect(page.current_path).to eq(forgot_password_form_path)
-        expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
-        screenshot!
-        click_link_or_button(t :"login_signup_form.forgot_password")
-        screenshot!
+        expect(page).to have_current_path(student_email_verification_form_path)
       end
     end
 
-  example 'arriving from Tutor (a Doorkeeper app)' do
-    app = create_tutor_application
-    visit_authorize_uri(app: app, params: { go: 'student_signup' })
-    fill_in 'signup_first_name',	with: 'Sally'
-    fill_in 'signup_last_name',	with: 'Port'
-    fill_in 'signup_email',	with: email
-    fill_in 'signup_password',	with: password
-    submit_signup_form
-    screenshot!
+    example 'arriving from Tutor (a Doorkeeper app)' do
+      app = create_tutor_application
+      visit_authorize_uri(app: app, params: { go: 'student_signup' })
+      fill_in 'signup_first_name',	with: 'Sally'
+      fill_in 'signup_last_name',	with: 'Port'
+      fill_in 'signup_email',	with: email
+      fill_in 'signup_password',	with: password
+      submit_signup_form
+      screenshot!
 
-    perform_enqueued_jobs
+      perform_enqueued_jobs
 
-    # sends an email address confirmation email
-    expect(page.current_path).to eq student_email_verification_form_path
-    open_email email
-    capture_email!(address: email)
-    expect(current_email).to be_truthy
+      # sends an email address confirmation email
+      expect(page).to have_current_path student_email_verification_form_path
+      open_email email
+      capture_email!(address: email)
+      expect(current_email).to be_truthy
 
-    # ... with a link
-    pin = current_email.find('#pin').text
-    fill_in('confirm_pin', with: pin)
-    screenshot!
-    click_on('commit')
+      # ... with a link
+      pin = current_email.find('#pin').text
+      fill_in('confirm_pin', with: pin)
+      screenshot!
+      click_on('commit')
 
-    # ... redirects you back to Tutor
-    expect(page).not_to have_text(t(:"login_signup_form.youre_done", first_name: 'Sally'))
-    expect(page.current_path).to eq('/external_app_for_specs')
+      # ... redirects you back to Tutor
+      expect(page).to have_no_text(t(:"login_signup_form.youre_done", first_name: 'Sally'))
+      expect(page).to have_current_path(/\/external_app_for_specs\?code=.+/)
     end
 
     context 'not happy path' do
@@ -146,7 +135,7 @@ module Newflow
       end
 
       example 'user gets PIN wrong' do
-        visit newflow_signup_path(r: '/external_app_for_specs')
+        visit newflow_signup_path(r: external_app_for_specs_path)
         find('.join-as__role.student').click
         fill_in 'signup_first_name',	with: 'Sally'
         fill_in 'signup_last_name',	with: 'Port'
@@ -165,7 +154,7 @@ module Newflow
 
     context 'change signup email' do
       example 'user can change their initial email during the signup flow' do
-        visit newflow_signup_path(r: '/external_app_for_specs')
+        visit newflow_signup_path(r: external_app_for_specs_path)
         find('.join-as__role.student').click
         fill_in 'signup_first_name',	with: 'Sally'
         fill_in 'signup_last_name',	with: 'Port'
@@ -210,7 +199,7 @@ module Newflow
         expect(confirmation_code_url).not_to eq(old_confirmation_code_url)
 
         screenshot!
-        expect(page.current_path).to eq(student_email_verification_form_updated_email_path)
+        expect(page).to have_current_path(student_email_verification_form_updated_email_path)
       end
     end
 
@@ -219,14 +208,14 @@ module Newflow
                           can_access_private_user_data: true,
                           can_skip_oauth_screen: true, name: 'Tutor')
 
-    # We want to provide a local "external" redirect uri so our specs aren't actually
-    # making HTTP calls against real external URLs like "example.com"
-    server = Capybara.current_session.try(:server)
-    redirect_uri = "http://#{server.host}:#{server.port}#{external_app_for_specs_path}"
-    app.update_column(:redirect_uri, redirect_uri)
+      # We want to provide a local "external" redirect uri so our specs aren't actually
+      # making HTTP calls against real external URLs like "example.com"
+      server = Capybara.current_session.try(:server)
+      redirect_uri = "http://#{server.host}:#{server.port}#{external_app_for_specs_path}"
+      app.update_column(:redirect_uri, redirect_uri)
 
-    FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
-    app
+      FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
+      app
     end
   end
 end

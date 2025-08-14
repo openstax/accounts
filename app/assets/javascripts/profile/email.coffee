@@ -11,7 +11,6 @@ class Email
     @id = this.$el.attr('data-id')
     this.$el.find('.searchable').change(@saveSearchable)
     this.$el.find('.resend-confirmation').click(@sendVerification)
-    this.$el.find('.email, .unconfirmed-warning').click(@toggleProperties)
     @update()
 
   update: ->
@@ -21,9 +20,6 @@ class Email
       delBtn.hide()
     else
       delBtn.on('click', @confirmDelete)
-
-  toggleProperties: ->
-    this.$el.toggleClass('expanded')
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)
@@ -98,9 +94,10 @@ OX.Profile.Email = {
       $(el).data().email.update()
 
   onAddEmail: ->
-    email = $('#email-template').children().clone().addClass('new')
-    input = $(email).insertBefore(@addEmail).find('.email .value')
     @addEmail.hide()
+    email = $('#email-template').children().clone().addClass('new')
+    $('#add-an-email-editable').append(email)
+    input = $(email).find('summary .value')
     input.editable(
       url: BASE_URL
       params: (params) ->
@@ -121,6 +118,12 @@ OX.Profile.Email = {
       email.set(params.response.contact_info)
     )
     # no idea why the defer is needed, but it fails (silently!) without it
-    _.defer -> input.editable('show')
+    _.defer ->
+      input.editable('show')
+      labelText = document.createTextNode('New email')
+      br = document.createElement('br')
+      label = document.querySelector('.email-entry.new label')
+      label.prepend(br)
+      label.prepend(labelText)
 
 }

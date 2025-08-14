@@ -2,7 +2,6 @@ NewflowUi = do () ->
   disableButton: (selector) ->
     $(selector).attr('disabled', 'disabled')
     $(selector).addClass('ui-state-disabled ui-button-disabled')
-    $(selector).attr('aria-disabled', true)
     $(selector).css({
         'background': '#ccc',
         'box-shadow': 'none',
@@ -11,7 +10,6 @@ NewflowUi = do () ->
 
   enableButton: (selector) ->
     $(selector).removeAttr('disabled')
-    $(selector).removeAttr('aria-disabled')
     $(selector).removeClass('ui-state-disabled ui-button-disabled')
     $(selector).button()
     $(selector).css({ 'background': '', 'box-shadow': '', 'color': '' })
@@ -49,6 +47,10 @@ NewflowUi = do () ->
       $(sourceSelector).on 'click', =>
         this.checkCheckedButton(targetSelector, sourceSelector)
 
+  focusOnFirstErrorItem: () ->
+    $(document).ready =>
+      document.querySelector('.has-error')?.focus()
+
   syntaxHighlight: (code) ->
     json = if typeof code is not 'string' then JSON.stringify(code, undefined, 2) else code
 
@@ -71,5 +73,25 @@ NewflowUi = do () ->
         return '<span class="' + cls + '">' + match + '</span>'
     )
 
+  attachSchoolList: (selector) ->
+    el = document.querySelector(selector)
+    listEl = document.getElementById(el.getAttribute('list'))
+    el.addEventListener('input', ({target}) ->
+      value = target.value
+      if (value.length > 3)
+        fetchSchools(target.value, listEl)
+      else
+        listEl.innerHTML = ''
+    )
+
+schoolQueryUrl = 'https://openstax.org/apps/cms/api/salesforce/schools/?search='
+fetchSchools = _.debounce(
+  (query, listEl) ->
+    fetch "#{schoolQueryUrl}#{query}", {method: "GET"}
+    .then (r) -> r.json()
+    .then (arr) -> arr.map (entry) => "<option value=\"#{entry.name}\"></option>)"
+    .then (arr) -> listEl.innerHTML = arr.join '\n'
+  500
+)
 
 this.NewflowUi = NewflowUi

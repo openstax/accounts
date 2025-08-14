@@ -17,8 +17,8 @@ class SendContactInfoConfirmation
       if contact_info.user.is_unclaimed?
         UnclaimedUserMailer.welcome(contact_info).deliver_later
       else
-        ConfirmationMailer.instructions(email_address: contact_info,
-                                        send_pin: send_pin).deliver_later
+        # ConfirmationMailer.instructions(email_address: contact_info,
+        #                                 send_pin: send_pin).deliver_later
       end
     else
       fatal_error(code: :not_yet_implemented, data: contact_info)

@@ -181,7 +181,9 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
 
             if(msg === false) {
                 $group.removeClass($.fn.editableform.errorGroupClass);
-                $block.removeClass($.fn.editableform.errorBlockClass).empty().hide(); 
+                $block.removeClass($.fn.editableform.errorBlockClass).empty().hide();
+                // Customized by OpenStax for accessibility
+                $group.find('input').removeAttr('aria-invalid aria-errormessage');
             } else {
                 //convert newline to <br> for more pretty error display
                 if(msg) {
@@ -193,6 +195,9 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
                 }
                 $group.addClass($.fn.editableform.errorGroupClass);
                 $block.addClass($.fn.editableform.errorBlockClass).html(msg).show();
+                // Customized by OpenStax for accessibility
+                $group.find('input').attr('aria-errormessage', $block.attr('id'))
+                    .attr('aria-invalid', 'true');
             }
         },
 
@@ -616,9 +621,10 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
     */      
     $.fn.editableform.template = '<form class="form-inline editableform">'+
     '<div class="control-group">' + 
-    '<div><div class="editable-input"></div><div class="editable-buttons"></div></div>'+
-    '<div class="editable-error-block"></div>' + 
-    '</div>' + 
+    '<label><div class="editable-input"></div><div class="editable-buttons"></div></div>'+
+    // Customized by OpenStax for accessibility
+    '<div class="editable-error-block" role="alert" id="editable-alert"></div>' + 
+    '</label>' + 
     '</form>';
 
     //loading div
@@ -2920,7 +2926,7 @@ $(function(){
         //render clear button
         renderClear:  function() {
            if (this.options.clear) {
-               this.$clear = $('<span class="editable-clear-x"></span>');
+               this.$clear = $('<button type="button" class="editable-clear-x" aria-label="clear text"></button>');
                this.$input.after(this.$clear)
                           .css('padding-right', 24)
                           .keyup($.proxy(function(e) {

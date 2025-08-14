@@ -23,12 +23,16 @@
     display: none;
   }
 
-  a, .editable-click, #enable-other-sign-in, a.sign-out, #add-an-email, .resend-confirmation input[type=submit] {
+  a,
+  #enable-other-sign-in,
+  #add-an-email,
+  button.editable,
+  .resend-confirmation input[type=submit] {
     color: #027eb5 !important;
   }
 
   .ox-card {
-    background-color: #fff;
+    background-color: transparent;
   }
 
   #profile .ox-card .category {
@@ -42,7 +46,6 @@
   #newflow-footer {
       font-size: 10px;
       text-align: center;
-      margin-top: 8rem;
   }
 
   #newflow-footer--copyright a {
@@ -56,7 +59,7 @@
   }
 
   .ox-card {
-    height: 90rem;
+    min-height: 90rem;
   }
 
   .btn-primary {
@@ -72,10 +75,8 @@
 
  .card-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
-    max-width: 1000px;
-    width: 100%;
 }
  .card-link {
      text-decoration: none !important;
@@ -120,11 +121,13 @@
 
 <%= ox_card do %>
   <div class="profile-title">
+    <h1 class="title"><%= t :"login_signup_form.profile_newflow_page_header" %></h1>
     <%=
-      link_to(
+      button_to(
         I18n.t(:"legacy.users.edit.sign_out"),
         newflow_logout_path,
         class: 'sign-out',
+        method: :get,
         data: {
           'ga-category': 'Logout',
           'ga-action': 'Click',
@@ -133,7 +136,6 @@
         }
       )
     %>
-    <h1 class="title"><%= t :"login_signup_form.profile_newflow_page_header" %></h1>
   </div>
 
   <div class="row name">
@@ -141,7 +143,13 @@
       <%= I18n.t(:"legacy.users.edit.name") %>
     </div>
     <div class="col-sm-10 info">
-      <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.full_name %></a>
+      <button type="button" id="name"
+        class="editable"
+        data-type="profile_name"
+      >
+        <span class="text-content"><%= current_user.full_name %></span>
+        <span class="glyphicon glyphicon-pencil" aria-label="edit name"></span>
+      </button>
     </div>
   </div>
 
@@ -170,19 +178,13 @@
         <% end %>
 
   <% unless @framed %>
-        <%=
-          link_to(
-            I18n.t(:"legacy.users.edit.add_email_address"),
-            '#',
-            id: 'add-an-email',
-            data: {
-              'ga-category': 'My Account',
-              'ga-action': 'Click',
-              'ga-label': 'Add Email Address',
-              'using-openstax': @using_os
-            }
-          )
-        %>
+        <div id="add-an-email-editable"></div>
+        <button type="button" id="add-an-email"
+          data-ga-category="My Account"
+          data-ga-action="Click"
+          data-ga-label="Add Email Address"
+          data-using-openstax="<%= @using_os %>"
+        ><%= I18n.t(:"legacy.users.edit.add_email_address") %></button>
       </div>
     </div>
 
@@ -205,36 +207,26 @@
           <%= newflow_way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
         <% end %>
       </div>
-      <% if other_available_providers.any? %>
-      <div class="col-sm-offset-2 info col-sm-10">
-        <%=
-          link_to(
-            I18n.t(:"student_profile.enable_other_sign_in_options"),
-            nil,
-            id: 'enable-other-sign-in'
-          )
-        %>
-      </div>
-      <% end %>
-
     </div>
 
-    <div class="row other-sign-in">
-      <div class="col-sm-2 category">
-        <%= I18n.t(:"student_profile.other_sign_in_options_html").html_safe %>
+    <% if other_available_providers.any? %>
+      <div class="row other-sign-in">
+        <details class="col-sm-10 col-sm-offset-2 info providers">
+          <summary><%= I18n.t(:"student_profile.enable_other_sign_in_options") %></summary>
+          <div class="controls">
+            <% other_available_providers.each do |provider| %>
+              <%=
+                newflow_way_to_login(
+                  provider: provider,
+                  has_authentication: false,
+                  current_providers: current_providers
+                )
+              %>
+            <% end %>
+          </div>
+        </details>
       </div>
-      <div class="col-sm-10 info providers">
-        <% other_available_providers.each do |provider| %>
-          <%=
-            newflow_way_to_login(
-              provider: provider,
-              has_authentication: false,
-              current_providers: current_providers
-            )
-          %>
-        <% end %>
-      </div>
-    </div>
+    <% end %>
 
       <hr>
       <div class="row">
