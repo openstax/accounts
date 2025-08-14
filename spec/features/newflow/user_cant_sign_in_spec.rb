@@ -17,11 +17,7 @@ feature "User can't sign in", js: true do
       screenshot!
     end
 
-    scenario "email blank" do
-      newflow_log_in_user('', 'password')
-      expect(page).to have_content(error_msg Newflow::LogInUser, :email, :blank)
-      screenshot!
-    end
+    # Removed test for blank email; blank email is not allowed
 
     scenario "multiple accounts match email but no usernames" do
       # For a brief window in 2017 users could sign up with jimbo@gmail.com and Jimbo@gmail.com

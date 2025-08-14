@@ -223,7 +223,7 @@ label.required::after {
         top: 3.7rem;
         right: 1.8rem;
 
-        color: #027EB5;
+        color: #0070af;
         font-weight: bold;
         cursor: pointer;
 
@@ -308,6 +308,10 @@ input.has-error {
 .center {
     text-align: center;
     margin: 0 auto;
+}
+
+.flush-left p {
+    padding-left: 0;
 }
 
 .policy {
@@ -622,6 +626,11 @@ $very-narrow: 37rem * $scale-factor;
                 color: #666;
             }
 
+            // Add contrasting border to active item for accessibility
+            .iti__highlight {
+                border: thin solid #888;
+            }
+
             input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="radio"]):not([type="checkbox"]),
             textarea {
                 border-color: #949494;
@@ -665,7 +674,7 @@ $very-narrow: 37rem * $scale-factor;
             padding-right: 0;
 
             background-color: #f1f1f1;
-            color: #c1c1c1;
+            color: #666666;
 
             @include title-font(2.4rem);
             text-align: center;
@@ -765,10 +774,12 @@ $very-narrow: 37rem * $scale-factor;
 
     input[type=submit] {
         &:disabled {
+            background-color: #ccc;
+            box-shadow: none;
+            color: #666;
             opacity: 0.85;
         }
 
-        -webkit-appearance: none;
         border-radius: 0;
     }
 }
