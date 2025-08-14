@@ -162,7 +162,7 @@ module Newflow
             sheerid_doc_upload_rejection_reasons: verification.doc_upload_rejection_reasons,
             sheerid_error_ids: verification.error_ids,
             sheerid_metadata: verification.metadata
-          ) if verification.program_id.present?
+          )
 
           SecurityLog.create!(event_type: :school_added_to_user_from_sheerid_webhook, user: user, event_data: { school: user.school })
         end
