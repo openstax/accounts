@@ -1,14 +1,8 @@
+require_relative 'constants'
+
 module SheeridAPI
   class Request
-
-    AUTHORIZATION_HEADER = "Bearer #{Rails.application.secrets.sheerid_api_secret}"
-    HEADERS = {
-      'Authorization': AUTHORIZATION_HEADER,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }.freeze
-
-    private_constant(:AUTHORIZATION_HEADER, :HEADERS)
+    include Constants
 
     def initialize(http_method, url, request_body = nil)
       @http_method = http_method
@@ -20,28 +14,43 @@ module SheeridAPI
       @response ||= call_api
     end
 
-    private #################
+    private
 
     def call_api
-      http_response = Faraday.send(@http_method, @url, @request_body, HEADERS)
-      return Response.new(parse_body(http_response.body))
-    rescue Net::ReadTimeout => ee
-      message = 'SheeridAPI: timeout'
-      Sentry.capture_message(message)
-      Rails.logger.warn(message)
-      return NullResponse.instance
+      http_response = send_request
+      Response.new(parse_body(http_response.body))
+    rescue Net::ReadTimeout
+      handle_timeout
     rescue => ee
-      # We don't want explosions here to trickle out and impact callers
-      Sentry.capture_exception(ee)
-      Rails.logger.warn(ee)
-      return NullResponse.instance
+      handle_exception(ee)
     end
 
-    private
+    def send_request
+      case @http_method
+      when :get
+        Faraday.get(@url, @request_body, HEADERS)
+      when :post
+        Faraday.post(@url, @request_body, HEADERS)
+      else
+        raise ArgumentError, "Unsupported HTTP method: #{@http_method}"
+      end
+    end
 
     def parse_body(response)
       JSON.parse(response).to_h
     end
 
+    def handle_timeout
+      message = 'SheeridAPI: timeout'
+      Sentry.capture_message(message)
+      Rails.logger.warn(message)
+      NullResponse.instance
+    end
+
+    def handle_exception(exception)
+      Sentry.capture_exception(exception)
+      Rails.logger.warn(exception)
+      NullResponse.instance
+    end
   end
 end
