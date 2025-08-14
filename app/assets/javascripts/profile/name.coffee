@@ -18,8 +18,8 @@ class OX.Profile.Name
   @defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults,
     tpl: () -> """
        <div><input type="text" name="title" class="form-control input-sm" placeholder="#{OX.I18n.name.title}"></div>
-       <div><input type="text" name="first_name" class="form-control input-sm" placeholder="#{OX.I18n.name.first_name}"></div>
-       <div><input type="text" name="last_name" class="form-control input-sm" placeholder="#{OX.I18n.name.last_name}"></div>
+       <div><input type="text" name="first_name" aria-label="first name (required)" required class="form-control input-sm" placeholder="#{OX.I18n.name.first_name}"></div>
+       <div><input type="text" name="last_name" aria-label="last name (required)" required class="form-control input-sm" placeholder="#{OX.I18n.name.last_name}"></div>
        <div><input type="text" name="suffix" class="form-control input-sm" placeholder="#{OX.I18n.name.suffix}"></div>
     """
     inputclass: ''
