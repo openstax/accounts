@@ -626,6 +626,11 @@ $very-narrow: 37rem * $scale-factor;
                 color: #666;
             }
 
+            // Add contrasting border to active item for accessibility
+            .iti__highlight {
+                border: thin solid #888;
+            }
+
             input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="radio"]):not([type="checkbox"]),
             textarea {
                 border-color: #949494;
