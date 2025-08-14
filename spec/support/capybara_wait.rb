@@ -21,7 +21,7 @@ module CapybaraWait
   end
 
   def finished_all_animations?
-    has_jquery? ? page.evaluate_script('$(":animated").length').zero? : true
+    has_jquery? ? page.evaluate_script('jQuery(":animated").length').zero? : true
   end
 end
 
