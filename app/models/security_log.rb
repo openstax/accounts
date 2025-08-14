@@ -109,6 +109,8 @@ class SecurityLog < ApplicationRecord
     user_lead_id_updated_from_salesforce
     sheerid_webhook_ignored
     sheerid_api_call_failed
+    sheerid_webhook_duplicate_ignored
+    sheerid_webhook_doc_upload_required
   ]
 
   json_serialize :event_data, Hash

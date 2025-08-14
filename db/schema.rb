@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_11_07_193019) do
+ActiveRecord::Schema.define(version: 2025_08_14_215101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -409,6 +409,27 @@ ActiveRecord::Schema.define(version: 2024_11_07_193019) do
     t.string "organization_name"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "program_id"
+    t.string "segment"
+    t.string "sub_segment"
+    t.string "locale"
+    t.string "reward_code"
+    t.string "organization_id"
+    t.string "postal_code"
+    t.string "country"
+    t.string "phone_number"
+    t.string "birth_date"
+    t.string "ip_address"
+    t.string "device_fingerprint_hash"
+    t.integer "doc_upload_rejection_count", default: 0
+    t.text "doc_upload_rejection_reasons", default: [], array: true
+    t.text "error_ids", default: [], array: true
+    t.jsonb "metadata", default: {}
+    t.index ["error_ids"], name: "index_sheerid_verifications_on_error_ids", using: :gin
+    t.index ["metadata"], name: "index_sheerid_verifications_on_metadata", using: :gin
+    t.index ["organization_id"], name: "index_sheerid_verifications_on_organization_id"
+    t.index ["program_id"], name: "index_sheerid_verifications_on_program_id"
+    t.index ["segment"], name: "index_sheerid_verifications_on_segment"
   end
 
   create_table "user_external_uuids", id: :serial, force: :cascade do |t|
@@ -473,6 +494,19 @@ ActiveRecord::Schema.define(version: 2024_11_07_193019) do
     t.string "adopter_status"
     t.jsonb "consent_preferences"
     t.boolean "is_deleted"
+    t.string "sheerid_program_id"
+    t.string "sheerid_segment"
+    t.string "sheerid_organization_id"
+    t.string "sheerid_postal_code"
+    t.string "sheerid_country"
+    t.string "sheerid_phone_number"
+    t.string "sheerid_birth_date"
+    t.string "sheerid_ip_address"
+    t.string "sheerid_device_fingerprint_hash"
+    t.integer "sheerid_doc_upload_rejection_count", default: 0
+    t.text "sheerid_doc_upload_rejection_reasons", default: [], array: true
+    t.text "sheerid_error_ids", default: [], array: true
+    t.jsonb "sheerid_metadata", default: {}
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
@@ -482,6 +516,11 @@ ActiveRecord::Schema.define(version: 2024_11_07_193019) do
     t.index ["salesforce_contact_id"], name: "index_users_on_salesforce_contact_id"
     t.index ["school_id"], name: "index_users_on_school_id"
     t.index ["school_type"], name: "index_users_on_school_type"
+    t.index ["sheerid_error_ids"], name: "index_users_on_sheerid_error_ids", using: :gin
+    t.index ["sheerid_metadata"], name: "index_users_on_sheerid_metadata", using: :gin
+    t.index ["sheerid_organization_id"], name: "index_users_on_sheerid_organization_id"
+    t.index ["sheerid_program_id"], name: "index_users_on_sheerid_program_id"
+    t.index ["sheerid_segment"], name: "index_users_on_sheerid_segment"
     t.index ["source_application_id"], name: "index_users_on_source_application_id"
     t.index ["username"], name: "index_users_on_username", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true

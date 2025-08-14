@@ -66,6 +66,8 @@ class UpdateUserContactInfo
                                 :rejected_faculty
                               when "rejected_by_sheerid"
                                 :rejected_by_sheerid
+                              when "pending_sheerid"
+                                :pending_sheerid
                               when "incomplete_signup"
                                 :incomplete_signup
                               when "no_faculty_info"
