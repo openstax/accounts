@@ -153,6 +153,9 @@ gem 'chronic'
 # Salesforce
 gem 'openstax_salesforce'
 
+# see https://stackoverflow.com/a/79361034
+gem 'concurrent-ruby', '1.3.4'
+
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
 
