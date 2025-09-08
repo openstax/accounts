@@ -142,6 +142,7 @@ module Settings
       field :sheer_id_base_url,
             type: :string, default: 'https://offers.sheerid.com/openstax/staging/teacher/?env=dev'
       field :number_of_days_contacts_modified, type: :integer, default: 7
+      field :minimum_recaptcha_score, type: :float, default: 0.2
     end
 
     mattr_accessor :store
