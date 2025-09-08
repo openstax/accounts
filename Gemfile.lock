@@ -398,6 +398,7 @@ GEM
       openstax_transaction_isolation
       openstax_transaction_retry
     libv8-node (18.19.0.0)
+    libv8-node (18.19.0.0-arm64-darwin)
     libv8-node (18.19.0.0-x86_64-darwin)
     libv8-node (18.19.0.0-x86_64-linux)
     listen (3.9.0)
@@ -447,6 +448,8 @@ GEM
     nio4r (2.7.4)
     nokogiri (1.18.8)
       mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    nokogiri (1.18.8-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.18.8-x86_64-darwin)
       racc (~> 1.4)
@@ -804,6 +807,7 @@ GEM
     zeitwerk (2.6.18)
 
 PLATFORMS
+  arm64-darwin
   ruby
   x86_64-darwin
   x86_64-linux
