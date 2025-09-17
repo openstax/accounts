@@ -663,7 +663,7 @@ GEM
       faraday-net_http (< 4.0.0)
       hashie (>= 1.2.0, < 6.0)
       jwt (>= 1.5.6)
-    rexml (3.3.9)
+    rexml (3.4.2)
     roar (1.2.0)
       representable (~> 3.1)
     roar-rails (1.2.0)
