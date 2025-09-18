@@ -37,8 +37,6 @@ module RecaptchaView
 end
 
 module RecaptchaController
-  MINIMUM_SCORE = 0.2
-
   def self.included(base)
     base.helper RecaptchaView
   end
@@ -50,7 +48,7 @@ module RecaptchaController
 
     options = {
       action: action_name,
-      minimum_score: MINIMUM_SCORE,
+      minimum_score: Settings::Db.store.minimum_recaptcha_score,
       **options
     }
 

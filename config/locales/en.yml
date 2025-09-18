@@ -434,6 +434,9 @@ en:
       number_of_days_contacts_modified:
         name: Contacts modified in last x days
         help_block: Retrieve contacts modified in the last X days in update_user_salesforce_info
+      minimum_recaptcha_score:
+        name: Minimum reCAPTCHA score allowed to register a new account
+        help_block: Humans should score closer to 1, bots should score closer to 0
 
   layouts:
     application_footer:
