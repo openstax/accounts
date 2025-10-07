@@ -23,17 +23,15 @@ class OX.Profile.Name
        <div><input type="text" name="suffix" class="form-control input-sm" placeholder="#{OX.I18n.name.suffix}"></div>
     """
     inputclass: ''
-
   )
 
   constructor: (options) ->
     # We defer evaluating template until construction, as otherwise it would try
-    # to read values if OX.I18n before its initialisation.
+    # to read values of OX.I18n before its initialisation.
     defaults = OX.Profile.Name.defaults
-    defaults = $.extend(defaults, {
+    this.init('profile_name', {}, $.extend(defaults, {
       tpl: defaults.tpl(),
-    })
-    this.init('profile_name', options, OX.Profile.Name.defaults)
+    }))
 
 
 $.fn.editabletypes.profile_name = OX.Profile.Name
@@ -72,5 +70,4 @@ $.extend(OX.Profile.Name.prototype, {
   autosubmit: ->
     this.$input.keydown (e) ->
       $(this).closest('form').submit() if e.which is 13
-
 })

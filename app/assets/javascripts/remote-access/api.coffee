@@ -3,7 +3,7 @@
 OxAccount.Api = {
 
   displayProfile: ->
-    OxAccount.Host.setUrl("/profile")
+    OxAccount.Host.setUrl("/i/profile")
 
   displayLogin: (url) ->
     OxAccount.Host.setUrl("/remote/start_login?start=#{url}")

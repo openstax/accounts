@@ -343,6 +343,7 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
                 if(typeof this.options.url === 'function') { //user's function
                     return this.options.url.call(this.options.scope, params);
                 } else {  
+                    console.info('*** Submit to', this.options);
                     //send ajax to server and return deferred object
                     return $.ajax($.extend({
                         url     : this.options.url,
@@ -928,7 +929,7 @@ Applied as jQuery method.
         init: function(element, options) {
             this.$element = $(element);
             //since 1.4.1 container do not use data-* directly as they already merged into options.
-            this.options = $.extend({}, $.fn.editableContainer.defaults, options);         
+            this.options = $.extend({}, $.fn.editableContainer.defaults, options);
             this.splitOptions();
             
             //set scope of form callbacks to element
