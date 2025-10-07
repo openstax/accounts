@@ -5,7 +5,7 @@
     <script type="text/javascript">
       window.OX = window.OX || {};
       OX.I18n = <%= (t :javascript).to_json.html_safe %>;
-      OX.url_prefix = "<%= request.script_name %>";
+      OX.url_prefix = "/accounts";
     </script>
 
     <%= render partial: "layouts/google_tag_manager" %>
