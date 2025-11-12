@@ -21,7 +21,6 @@ namespace :accounts do
       if lead.nil?
         Newflow::CreateOrUpdateSalesforceLead.call(user: user)
       else
-        # set the lead id, this will update their status in UpdateUserLeadInfo
         user.salesforce_lead_id = lead.id
         user.save
       end
