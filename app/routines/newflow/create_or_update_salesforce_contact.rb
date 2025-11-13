@@ -125,7 +125,7 @@ module Newflow
       SecurityLog.create!(
         user: user,
         event_type: :attempting_to_create_user_contact,
-        event_data: { contact_data: contact }
+        event_data: { contact_id: contact.id }
       )
 
       if contact.save
