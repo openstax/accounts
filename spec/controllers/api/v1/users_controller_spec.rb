@@ -408,7 +408,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
       sso_cookie = parsed_response['sso']
       sso_hash = SsoCookie.read sso_cookie
-      expect(sso_hash['sub']).to eq Api::V1::UserRepresenter.new(new_user).to_hash
+      expect(sso_hash['sub']).to eq Api::V1::SsoCookieRepresenter.new(new_user).to_hash
       expect(sso_hash['exp']).to be <= (
         Time.current + Api::V1::UsersController::SSO_TOKEN_INITIAL_DURATION
       ).to_i
