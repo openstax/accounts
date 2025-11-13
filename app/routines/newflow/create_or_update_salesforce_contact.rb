@@ -3,6 +3,7 @@ module Newflow
 
     lev_routine active_job_enqueue_options: { queue: :salesforce }
 
+    LEAD_SOURCE = 'Account Creation'
     DEFAULT_REFERRING_APP_NAME = 'Accounts'
 
     ADOPTION_STATUS_FROM_USER = {
@@ -83,7 +84,7 @@ module Newflow
       contact.first_name = user.first_name
       contact.last_name = user.last_name
       contact.phone = user.phone_number
-      contact.lead_source = DEFAULT_REFERRING_APP_NAME
+      contact.lead_source = LEAD_SOURCE
       contact.role = sf_role
       contact.position = sf_position
       contact.title = user.other_role_name
