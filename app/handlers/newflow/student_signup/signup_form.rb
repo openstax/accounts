@@ -85,7 +85,7 @@ module Newflow
           role: :student,
           first_name: signup_params.first_name,
           last_name: signup_params.last_name,
-          self_reported_school: signup_params.school,
+          self_reported_school: signup_params.school_name,
           phone_number: signup_params.phone_number,
           receive_newsletter: signup_params.newsletter,
           source_application: options[:client_app],
