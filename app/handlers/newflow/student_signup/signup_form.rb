@@ -11,7 +11,7 @@ module Newflow
         attribute :first_name, type: String
         attribute :last_name, type: String
         attribute :email, type: String
-        attribute :school_name, type: String
+        attribute :school, type: String
         attribute :password, type: String
         attribute :is_title_1_school, type: boolean
         attribute :newsletter, type: boolean
@@ -85,7 +85,7 @@ module Newflow
           role: :student,
           first_name: signup_params.first_name,
           last_name: signup_params.last_name,
-          self_reported_school: signup_params.school_name,
+          self_reported_school: signup_params.school,
           phone_number: signup_params.phone_number,
           receive_newsletter: signup_params.newsletter,
           source_application: options[:client_app],
