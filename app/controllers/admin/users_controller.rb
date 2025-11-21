@@ -69,8 +69,8 @@ module Admin
       redirect_to actions_admin_users_path, notice: 'Incremented unread update count'
     end
 
-    def force_update_lead
-      Newflow::CreateOrUpdateSalesforceLead.call(user: get_user)
+    def force_update_contact
+      Newflow::CreateOrUpdateSalesforceContact.call(user: get_user)
     end
 
     protected

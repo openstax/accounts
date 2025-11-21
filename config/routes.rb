@@ -283,7 +283,7 @@ Rails.application.routes.draw do
       get 'js_search', on: :collection
       get 'actions', on: :collection
       put 'mark_users_updated', on: :collection
-      post 'force_update_lead', on: :member
+      post 'force_update_contact', on: :member
       delete 'soft_delete', on: :member
     end
 
