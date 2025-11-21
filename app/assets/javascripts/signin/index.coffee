@@ -1,5 +1,5 @@
-##= require_self
-##= require ./login
+#= require_self
+#= require ./login
 
 window.OX ||= {}
 window.OX.Signin ||= {}
