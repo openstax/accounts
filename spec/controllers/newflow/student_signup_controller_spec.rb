@@ -169,13 +169,13 @@ module Newflow
         }
 
         before do
-          user = User.last
-          user.update_attribute('state', 'unverified')
-          session[:unverified_user_id] = user.id
           allow(Settings::Recaptcha).to receive(:disabled?) { true }
         end
 
         it 'bypasses recaptcha verification and allows email change' do
+          user = User.last
+          user.update_attribute('state', 'unverified')
+          session[:unverified_user_id] = user.id
           expect_any_instance_of(described_class).not_to receive(:verify_recaptcha)
           post(:student_change_signup_email, params: params)
           expect(response).to redirect_to(student_email_verification_form_updated_email_path)
