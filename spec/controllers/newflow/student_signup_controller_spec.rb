@@ -94,8 +94,8 @@ module Newflow
         let(:params) do
           {
             signup: {
-              first_name: 'Bryan',
-              last_name: 'Dimas',
+              first_name: Faker::Name.first_name,
+              last_name: Faker::Name.last_name,
               email: 'user2@openstax.org',
               password: 'password',
               newsletter: false,
