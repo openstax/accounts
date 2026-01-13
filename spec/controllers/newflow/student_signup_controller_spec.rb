@@ -89,6 +89,34 @@ module Newflow
           }
         end
       end
+
+      context 'when recaptcha is disabled' do
+        let(:params) do
+          {
+            signup: {
+              first_name: Faker::Name.first_name,
+              last_name: Faker::Name.last_name,
+              email: 'user2@openstax.org',
+              password: 'password',
+              newsletter: false,
+              terms_accepted: true,
+              contract_1_id: FinePrint::Contract.first.id,
+              contract_2_id: FinePrint::Contract.second.id,
+              role: :student
+            }
+          }
+        end
+
+        before do
+          allow(Settings::Recaptcha).to receive(:disabled?) { true }
+        end
+
+        it 'bypasses recaptcha verification and allows signup' do
+          expect_any_instance_of(described_class).not_to receive(:verify_recaptcha)
+          post(:student_signup, params: params)
+          expect(response).to redirect_to(student_email_verification_form_path)
+        end
+      end
     end
 
     describe 'POST #student_change_signup_email' do
@@ -128,6 +156,29 @@ module Newflow
 
           post(:student_change_signup_email, params: params)
           expect(response).to render_template(:student_change_signup_email_form)
+        end
+      end
+
+      context 'when recaptcha is disabled' do
+        let(:params) {
+          {
+            change_signup_email: {
+              email: 'newemail@openstax.org'
+            }
+          }
+        }
+
+        before do
+          allow(Settings::Recaptcha).to receive(:disabled?) { true }
+        end
+
+        it 'bypasses recaptcha verification and allows email change' do
+          user = User.last
+          user.update_attribute('state', 'unverified')
+          session[:unverified_user_id] = user.id
+          expect_any_instance_of(described_class).not_to receive(:verify_recaptcha)
+          post(:student_change_signup_email, params: params)
+          expect(response).to redirect_to(student_email_verification_form_updated_email_path)
         end
       end
     end
