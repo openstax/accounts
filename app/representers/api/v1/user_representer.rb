@@ -161,6 +161,8 @@ module Api::V1
              }
 
     collection :contact_infos,
+               readable: true,
+               writeable: false,
                if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
                decorator: ContactInfoRepresenter
 
@@ -189,10 +191,16 @@ module Api::V1
                getter: ->(represented:, **) { represented.external_ids.map(&:external_id) }
 
     property :assignable_school_integrated,
-               if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
-               getter: ->(*) { self.school&.has_assignable_contacts }
+             type: :boolean,
+             readable: true,
+             writeable: false,
+             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+             getter: ->(*) { self.school&.has_assignable_contacts }
 
     property :assignable_user,
+             type: :boolean,
+             readable: true,
+             writeable: false,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
              getter: ->(*) { self.external_ids.any? }
 
