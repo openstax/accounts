@@ -43,8 +43,8 @@ module Newflow
             @user = @handler_result.outputs.user
             save_unverified_user(@user.id)
             log_data = { user: @user }
-            if params[:r].present?
-              log_data[:message] = "Redirect: #{params[:r]}"
+            if stored_url.present?
+              log_data[:message] = "Redirect: #{stored_url}"
             end
             security_log(:educator_began_signup, log_data)
             log_posthog(@user, 'educator_started_signup')
