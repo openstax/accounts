@@ -54,7 +54,16 @@ module UserSessionManagement
       # Set the SSO cookie
       sso_cookie_jar.subject = SsoCookie.user_hash(@current_user)
 
-      security_log :sign_in_successful, security_log_data
+      # Include redirect URL in security log if available
+      log_data = security_log_data.dup
+      if respond_to?(:stored_url)
+        redirect_url = stored_url
+        if redirect_url.present?
+          log_data[:message] = "Redirect: #{redirect_url}"
+        end
+      end
+
+      security_log :sign_in_successful, log_data
     end
 
     @current_user
