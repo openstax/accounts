@@ -31,7 +31,11 @@ module Newflow
             return
           end
 
-          sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
+          log_data = {'email': @handler_result.outputs.email}
+          if stored_url.present?
+            log_data[:message] = "Redirect: #{stored_url}"
+          end
+          sign_in!(user, security_log_data: log_data)
           log_posthog(user, 'user_logged_in')
 
           if current_user.student? || !current_user.is_newflow? || (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login'))
