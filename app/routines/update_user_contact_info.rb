@@ -73,9 +73,9 @@ class UpdateUserContactInfo
                                when NilClass
                                  :no_faculty_info
                                else
-                                 Sentry.capture_message("Unknown faculty_verified field: '#{
-                                   sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
-                                 :no_faculty_info # default to safe fallback
+                                 message = "Unknown faculty_verified field: '#{sf_contact.faculty_verified}' on contact #{sf_contact.id}"
+                                 Sentry.capture_message(message)
+                                 raise(message)
                              end
 
       # Don't overwrite confirmed or pending faculty status with incomplete/no_info
