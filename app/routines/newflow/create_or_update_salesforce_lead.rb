@@ -69,7 +69,7 @@ module Newflow
           SecurityLog.create!(
             user: user,
             event_type: :salesforce_lead_not_found_by_id,
-            event_data: { 
+            event_data: {
               salesforce_lead_id: user.salesforce_lead_id,
               error: e.class.name,
               error_message: e.message
