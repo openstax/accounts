@@ -1,4 +1,6 @@
 class UpdateUserContactInfo
+  class UnknownFacultyVerifiedError < StandardError; end
+
   COLLEGE_TYPES = [
     'College/University (4)',
     'Technical/Community College (2)',
@@ -52,40 +54,42 @@ class UpdateUserContactInfo
         SecurityLog.create!(
           user: user,
           event_type: :user_contact_id_updated_from_salesforce,
-          event_data: { previous_contact_id: previous_contact_id,new_contact_id: sf_contact.id }
+          event_data: { previous_contact_id: previous_contact_id, new_contact_id: sf_contact.id }
         )
       end
 
       old_fv_status = user.faculty_status
+      # Map Salesforce faculty_verified values to our string-based enum values
+      # Using explicit case statement for clarity on valid values and to raise for unknown values
       new_status = case sf_contact.faculty_verified
                                when "confirmed_faculty"
-                                 :confirmed_faculty
+                                 "confirmed_faculty"
                                when "pending_faculty"
-                                 :pending_faculty
+                                 "pending_faculty"
                                when "rejected_faculty"
-                                 :rejected_faculty
+                                 "rejected_faculty"
                                when "rejected_by_sheerid"
-                                 :rejected_by_sheerid
+                                 "rejected_by_sheerid"
                                when "incomplete_signup"
-                                 :incomplete_signup
+                                 "incomplete_signup"
                                when "no_faculty_info"
-                                 :no_faculty_info
+                                 "no_faculty_info"
                                when NilClass
-                                 :no_faculty_info
+                                 "no_faculty_info"
                                else
                                  message = "Unknown faculty_verified field: '#{sf_contact.faculty_verified}' on contact #{sf_contact.id}"
                                  Sentry.capture_message(message)
-                                 raise(message)
+                                 raise UnknownFacultyVerifiedError, message
                              end
 
       # Don't overwrite confirmed or pending faculty status with incomplete/no_info
       # Don't overwrite confirmed with pending
       should_update_status = true
       if user.faculty_status == "confirmed_faculty" &&
-         [:pending_faculty, :incomplete_signup, :no_faculty_info].include?(new_status)
+         ["pending_faculty", "incomplete_signup", "no_faculty_info"].include?(new_status)
         should_update_status = false
       elsif user.faculty_status == "pending_faculty" &&
-            [:incomplete_signup, :no_faculty_info].include?(new_status)
+            ["incomplete_signup", "no_faculty_info"].include?(new_status)
         should_update_status = false
       end
 
