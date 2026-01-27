@@ -64,18 +64,19 @@ module Newflow
       if user.salesforce_lead_id
         begin
           lead = OpenStax::Salesforce::Remote::Lead.find(user.salesforce_lead_id)
-        rescue => e
+        rescue StandardError => e
           # Log when the stored lead ID doesn't correspond to an existing lead or find fails
           SecurityLog.create!(
             user: user,
             event_type: :salesforce_lead_not_found_by_id,
             event_data: { 
               salesforce_lead_id: user.salesforce_lead_id,
-              error: e.class.name
+              error: e.class.name,
+              error_message: e.message
             }
           )
           Sentry.capture_message(
-            "Salesforce lead ID #{user.salesforce_lead_id} not found for user #{user.id}, will search by email. Error: #{e.class.name}"
+            "Salesforce lead ID #{user.salesforce_lead_id} not found for user #{user.id}, will search by email. Error: #{e.class.name}: #{e.message}"
           )
           lead = nil
         end
