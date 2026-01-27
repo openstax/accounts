@@ -44,6 +44,9 @@ module RecaptchaController
   def verify_recaptcha_with_fallback(**options)
     force_recaptcha_failure = params[:force_recaptcha_failure] == 'true'
 
+    # Return true if recaptcha is disabled via admin setting
+    return true if Settings::Recaptcha.disabled?
+
     return !force_recaptcha_failure if STUB_RECAPTCHA
 
     options = {

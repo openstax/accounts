@@ -52,8 +52,7 @@ module UserSessionManagement
       session[:last_admin_activity] = DateTime.now.to_s if @current_user.is_administrator?
 
       # Set the SSO cookie
-      user_hash = Api::V1::UserRepresenter.new(@current_user).to_hash
-      sso_cookie_jar.subject = user_hash
+      sso_cookie_jar.subject = SsoCookie.user_hash(@current_user)
 
       security_log :sign_in_successful, security_log_data
     end

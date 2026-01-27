@@ -437,6 +437,9 @@ en:
       minimum_recaptcha_score:
         name: Minimum reCAPTCHA score allowed to register a new account
         help_block: Humans should score closer to 1, bots should score closer to 0
+      disable_recaptcha:
+        name: Disable reCAPTCHA
+        help_block: 'Disable reCAPTCHA verification for all users. WARNING: This bypasses bot protection and should only be used temporarily when the reCAPTCHA service is unavailable.'
 
   layouts:
     application_footer:
@@ -564,6 +567,7 @@ en:
         unconfirmed_warning: unconfirmed
         password: Password
         searchable: Let other users find me by this email.
+        self_reported_school: Self-reported school
 
     signup:
       # In fields `first_name`, `last_name`, `email_address` and `username`

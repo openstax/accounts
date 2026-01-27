@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   root to: 'static_pages#home'
 
   direct :salesforce_knowledge_base do
-    'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
+    'https://help.openstax.org/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
   scope controller: 'other' do

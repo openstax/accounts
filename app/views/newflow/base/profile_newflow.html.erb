@@ -164,6 +164,16 @@
   </div>
   <% end %>
 
+  <% if current_user.self_reported_school.present? %>
+  <div class="row">
+    <div class="col-sm-2 category">
+      <%= I18n.t(:"legacy.users.edit.self_reported_school") %>
+    </div>
+    <div class="col-sm-10 info">
+      <%= current_user.self_reported_school %>
+    </div>
+  </div>
+  <% end %>
 
     <div class="row">
       <div class="col-sm-2 category">
