@@ -20,6 +20,15 @@ class UpdateUserContactInfo
     "Not Adopter" => false
   }
 
+  VALID_FACULTY_STATUSES = [
+    "confirmed_faculty",
+    "pending_faculty",
+    "rejected_faculty",
+    "rejected_by_sheerid",
+    "incomplete_signup",
+    "no_faculty_info"
+  ].freeze
+
   def self.call
     new.call
   end
@@ -60,27 +69,17 @@ class UpdateUserContactInfo
 
       old_fv_status = user.faculty_status
       # Map Salesforce faculty_verified values to our string-based enum values
-      # Using explicit case statement for clarity on valid values and to raise for unknown values
-      new_status = case sf_contact.faculty_verified
-                               when "confirmed_faculty"
-                                 "confirmed_faculty"
-                               when "pending_faculty"
-                                 "pending_faculty"
-                               when "rejected_faculty"
-                                 "rejected_faculty"
-                               when "rejected_by_sheerid"
-                                 "rejected_by_sheerid"
-                               when "incomplete_signup"
-                                 "incomplete_signup"
-                               when "no_faculty_info"
-                                 "no_faculty_info"
-                               when NilClass
-                                 "no_faculty_info"
-                               else
-                                 message = "Unknown faculty_verified field: '#{sf_contact.faculty_verified}' on contact #{sf_contact.id}"
-                                 Sentry.capture_message(message)
-                                 raise UnknownFacultyVerifiedError, message
-                             end
+      # nil maps to no_faculty_info; unknown values raise an error
+      faculty_verified = sf_contact.faculty_verified
+      new_status = if faculty_verified.nil?
+                     "no_faculty_info"
+                   elsif VALID_FACULTY_STATUSES.include?(faculty_verified)
+                     faculty_verified
+                   else
+                     message = "Unknown faculty_verified field: '#{faculty_verified}' on contact #{sf_contact.id}"
+                     Sentry.capture_message(message)
+                     raise UnknownFacultyVerifiedError, message
+                   end
 
       # Don't overwrite confirmed or pending faculty status with incomplete/no_info
       # Don't overwrite confirmed with pending
