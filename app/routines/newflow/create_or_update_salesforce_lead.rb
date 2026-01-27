@@ -80,7 +80,7 @@ module Newflow
           )
           lead = nil
         end
-        
+
         # If lead wasn't found by ID or find raised an exception, try email search
         if lead.nil?
           lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
