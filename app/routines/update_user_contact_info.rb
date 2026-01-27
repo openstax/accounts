@@ -83,6 +83,7 @@ class UpdateUserContactInfo
 
       # Don't overwrite confirmed or pending faculty status with incomplete/no_info
       # Don't overwrite confirmed with pending
+      # Don't overwrite rejected_faculty with incomplete/no_info
       should_update_status = true
       if user.faculty_status == "confirmed_faculty" &&
          ["pending_faculty", "incomplete_signup", "no_faculty_info"].include?(new_status)

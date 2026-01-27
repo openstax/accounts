@@ -60,7 +60,33 @@ module Newflow
       end
 
 
+      lead = nil
       if user.salesforce_lead_id
+        begin
+          lead = OpenStax::Salesforce::Remote::Lead.find(user.salesforce_lead_id)
+        rescue StandardError => e
+          # Log when the stored lead ID doesn't correspond to an existing lead or find fails
+          SecurityLog.create!(
+            user: user,
+            event_type: :salesforce_lead_not_found_by_id,
+            event_data: {
+              salesforce_lead_id: user.salesforce_lead_id,
+              error: e.class.name,
+              error_message: e.message
+            }
+          )
+          Sentry.capture_message(
+            "Salesforce lead ID #{user.salesforce_lead_id} not found for user #{user.id}, will search by email. Error: #{e.class.name}: #{e.message}"
+          )
+          lead = nil
+        end
+
+        # If lead wasn't found by ID or find raised an exception, try email search
+        if lead.nil?
+          lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
+        end
+      else
+        # No stored lead ID, search by email
         lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
       end
 
@@ -68,35 +94,35 @@ module Newflow
         lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
       end
 
-        lead.first_name = user.first_name
-        lead.last_name = user.last_name
-        lead.phone = user.phone_number
-        lead.source = LEAD_SOURCE
-        lead.application_source = DEFAULT_REFERRING_APP_NAME
-        lead.role = sf_role
-        lead.position = sf_position
-        lead.title = user.other_role_name
-        lead.who_chooses_books = user.who_chooses_books
-        lead.subject_interest = user.which_books
-        lead.num_students = user.how_many_students
-        lead.adoption_status = ADOPTION_STATUS_FROM_USER[user.using_openstax_how]
-        lead.adoption_json = adoption_json
-        lead.os_accounts_id = user.id
-        lead.accounts_uuid = user.uuid
-        lead.school = user.most_accurate_school_name
-        lead.city = user.most_accurate_school_city
-        lead.country = user.most_accurate_school_country
-        lead.verification_status = user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status
-        lead.b_r_i_marketing = user.is_b_r_i_user?
-        lead.title_1_school = user.title_1_school?
-        lead.newsletter = user.receive_newsletter?
-        lead.newsletter_opt_in = user.receive_newsletter?
-        lead.self_reported_school = user.self_reported_school
-        lead.sheerid_school_name = user.sheerid_reported_school
-        lead.account_id = sf_school_id
-        lead.school_id = sf_school_id
-        lead.signup_date = user.created_at.strftime("%Y-%m-%dT%T.%L%z")
-        lead.tracking_parameters = "#{Rails.application.secrets.openstax_url}/accounts/i/signup/"
+      lead.first_name = user.first_name
+      lead.last_name = user.last_name
+      lead.phone = user.phone_number
+      lead.source = LEAD_SOURCE
+      lead.application_source = DEFAULT_REFERRING_APP_NAME
+      lead.role = sf_role
+      lead.position = sf_position
+      lead.title = user.other_role_name
+      lead.who_chooses_books = user.who_chooses_books
+      lead.subject_interest = user.which_books
+      lead.num_students = user.how_many_students
+      lead.adoption_status = ADOPTION_STATUS_FROM_USER[user.using_openstax_how]
+      lead.adoption_json = adoption_json
+      lead.os_accounts_id = user.id
+      lead.accounts_uuid = user.uuid
+      lead.school = user.most_accurate_school_name
+      lead.city = user.most_accurate_school_city
+      lead.country = user.most_accurate_school_country
+      lead.verification_status = user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status
+      lead.b_r_i_marketing = user.is_b_r_i_user?
+      lead.title_1_school = user.title_1_school?
+      lead.newsletter = user.receive_newsletter?
+      lead.newsletter_opt_in = user.receive_newsletter?
+      lead.self_reported_school = user.self_reported_school
+      lead.sheerid_school_name = user.sheerid_reported_school
+      lead.account_id = sf_school_id
+      lead.school_id = sf_school_id
+      lead.signup_date = user.created_at.strftime("%Y-%m-%dT%T.%L%z")
+      lead.tracking_parameters = "#{Rails.application.secrets.openstax_url}/accounts/i/signup/"
 
       state = user.most_accurate_school_state
       unless state.blank?
