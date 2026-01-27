@@ -59,33 +59,33 @@ class UpdateUserContactInfo
       old_fv_status = user.faculty_status
       new_status = case sf_contact.faculty_verified
                                when "confirmed_faculty"
-                                 :confirmed_faculty
+                                 "confirmed_faculty"
                                when "pending_faculty"
-                                 :pending_faculty
+                                 "pending_faculty"
                                when "rejected_faculty"
-                                 :rejected_faculty
+                                 "rejected_faculty"
                                when "rejected_by_sheerid"
-                                 :rejected_by_sheerid
+                                 "rejected_by_sheerid"
                                when "incomplete_signup"
-                                 :incomplete_signup
+                                 "incomplete_signup"
                                when "no_faculty_info"
-                                 :no_faculty_info
+                                 "no_faculty_info"
                                when NilClass
-                                 :no_faculty_info
+                                 "no_faculty_info"
                                else
-                                 message = "Unknown faculty_verified field: '#{sf_contact.faculty_verified}' on contact #{sf_contact.id}"
-                                 Sentry.capture_message(message)
-                                 raise(message)
+                                 Sentry.capture_message("Unknown faculty_verified field: '#{
+                                   sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
+                                 "no_faculty_info" # default to safe fallback
                              end
 
       # Don't overwrite confirmed or pending faculty status with incomplete/no_info
       # Don't overwrite confirmed with pending
       should_update_status = true
       if user.faculty_status == "confirmed_faculty" &&
-         [:pending_faculty, :incomplete_signup, :no_faculty_info].include?(new_status)
+         ["pending_faculty", "incomplete_signup", "no_faculty_info"].include?(new_status)
         should_update_status = false
       elsif user.faculty_status == "pending_faculty" &&
-            [:incomplete_signup, :no_faculty_info].include?(new_status)
+            ["incomplete_signup", "no_faculty_info"].include?(new_status)
         should_update_status = false
       end
 
