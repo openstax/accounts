@@ -2,6 +2,49 @@
 http_interactions:
 - request:
     method: get
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Title,%20Subject__c,%20Subject_Interest__c,%20Company,%20City,%20State,%20StateCode,%20Country,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20AdoptionsJSON__c,%20Number_of_Students__c,%20Accounts_ID__c,%20Accounts_UUID__c,%20Application_Source__c,%20Role__c,%20Position__c,%20who_chooses_books__c,%20FV_Status__c,%20BRI_Marketing__c,%20Title_1_school__c,%20SheerID_School_Name__c,%20Instant_Conversion__c,%20Signup_Date__c,%20Self_Reported_School__c,%20Tracking_Parameters__c,%20Account_ID__c,%20School__c%20FROM%20Lead%20WHERE%20(Email%20=%20NULL)%20LIMIT%201"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v1.10.3
+      Authorization:
+      - OAuth <salesforce_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 04 Sep 2024 16:55:25 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      X-Robots-Tag:
+      - none
+      Server:
+      - sfdcedge
+    body:
+      encoding: ASCII-8BIT
+      string: '{"totalSize":0,"done":true,"records":[]}'
+    http_version:
+  recorded_at: Wed, 04 Sep 2024 16:55:25 GMT
+- request:
+    method: get
     uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20BillingCountry,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c,%20Total_School_Enrollment__c,%20Has_Assignable_Contacts__c%20FROM%20Account%20WHERE%20(Name%20=%20%27Find%20Me%20A%20Home%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
