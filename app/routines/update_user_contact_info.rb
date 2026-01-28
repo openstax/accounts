@@ -89,7 +89,7 @@ class UpdateUserContactInfo
             ["incomplete_signup", "no_faculty_info"].include?(new_status)
         should_update_status = false
       elsif user.faculty_status == "rejected_faculty" &&
-            [:incomplete_signup, :no_faculty_info].include?(new_status)
+            ["incomplete_signup", "no_faculty_info"].include?(new_status)
         should_update_status = false
       end
 
