@@ -57,14 +57,14 @@ module Newflow
           post(:student_signup, params: params)
 
           log = SecurityLog.where(event_type: :student_signed_up).last
-          expect(log.event_data['message']).to eq("Redirect: #{redirect_url}")
+          expect(log.event_data['redirect']).to eq(redirect_url)
         end
 
         it 'does not include redirect URL in security log message when absent' do
           post(:student_signup, params: params)
 
           log = SecurityLog.where(event_type: :student_signed_up).last
-          expect(log.event_data['message']).to be_nil
+          expect(log.event_data['redirect']).to be_nil
         end
 
         it 'redirects to student_email_verification_form_path' do
