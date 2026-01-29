@@ -25,22 +25,7 @@ class FindOrCreateUser
   # Attempt to find a user by either the external_id, username, or email address
   def find_user(options)
     if options[:external_id].present?
-      query = { external_id: options[:external_id] }
-
-      query[:role] = [ options[:role], 'unknown_role' ] unless options[:role].nil?
-
-      external_ids = ExternalId.where(query).to_a
-
-      if options[:role].nil?
-        external_id = external_ids.first
-      else
-        # First try to find ExternalId with matching role
-        external_id = external_ids.find { |external_id| external_id.role == options[:role].to_s }
-        # If no result, try to find ExternalId with unknown_role for backwards compatibility
-        external_id = external_ids.find(&:unknown_role?) if external_id.nil?
-      end
-
-      external_id&.user
+      ExternalId.find_by_external_id_and_role(options[:external_id], options[:role])&.user
     elsif options[:username].present?
       User.find_by(username: options[:username])
     elsif options[:email].present?
