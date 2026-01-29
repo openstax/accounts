@@ -274,7 +274,7 @@ describe UpdateUserContactInfo, type: :routine do
 
   describe 'SecurityLog creation for faculty status changes' do
     before { stub_sentry }
-    let!(:user) { FactoryBot.create :user, faculty_status: :no_faculty_info, uuid: 'test-uuid-007' }
+    let!(:user) { FactoryBot.create :user, faculty_status: :no_faculty_info, uuid: 'test-uuid-007', salesforce_contact_id: 'SF_CONTACT_001' }
 
     it 'creates a SecurityLog when faculty status changes' do
       sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty')
@@ -295,13 +295,10 @@ describe UpdateUserContactInfo, type: :routine do
       sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'pending_faculty')
       stub_salesforce_contacts([sf_contact])
 
-      # Only expecting contact_id update log, not faculty status log
+      # Faculty status is preserved, so no SecurityLog should be created
       expect {
         described_class.call
-      }.to change { SecurityLog.count }.by(1)
-
-      log = SecurityLog.last
-      expect(log.event_type).to eq('user_contact_id_updated_from_salesforce')
+      }.not_to change { SecurityLog.count }
     end
   end
 
