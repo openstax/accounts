@@ -70,7 +70,7 @@ module Newflow
             post('login', params: params)
 
             log = SecurityLog.where(event_type: :sign_in_successful).last
-            expect(log.event_data['message']).to eq("Redirect: #{redirect_url}")
+            expect(log.event_data['redirect']).to eq(redirect_url)
           end
 
           it 'does not include redirect URL in security log message when absent' do
@@ -141,7 +141,7 @@ module Newflow
               post('login', params: params)
 
               log = SecurityLog.where(event_type: :sign_in_successful).last
-              expect(log.event_data['message']).to eq("Redirect: #{redirect_url}")
+              expect(log.event_data['redirect']).to eq(redirect_url)
             end
 
             it 'does not include redirect URL in security log message when absent' do
