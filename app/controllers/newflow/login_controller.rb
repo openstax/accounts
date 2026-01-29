@@ -33,7 +33,7 @@ module Newflow
 
           log_data = {'email': @handler_result.outputs.email}
           if stored_url.present?
-            log_data[:message] = "Redirect: #{stored_url}"
+            log_data[:redirect] = stored_url
           end
           sign_in!(user, log_data)
           log_posthog(user, 'user_logged_in')
