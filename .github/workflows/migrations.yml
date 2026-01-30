@@ -120,3 +120,29 @@ jobs:
             post_migration.dump
             log/development.log
           retention-days: 7
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.info('No pull request context found; skipping notification.');
+              return;
+            }
+
+            const body = [
+              '⚠️ Migration checks **failed** for this pull request.',
+              '',
+              '- Please review the workflow logs for details.',
+              '- Migration artifacts (`pre_migration.dump`, `post_migration.dump`, and logs) have been uploaded as workflow run artifacts.',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              issue_number: pr.number,
+              body,
+            });
