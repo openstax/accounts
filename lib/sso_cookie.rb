@@ -14,7 +14,7 @@ module SsoCookie
   @encryption_method = secrets[:encryption_method]
 
   def self.user_hash(user)
-    Api::V1::UserRepresenter.new(user).to_hash
+    Api::V1::SsoCookieRepresenter.new(user).to_hash
   end
 
   # This method is used in 2 different ways:

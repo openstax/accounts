@@ -75,6 +75,7 @@ module NewflowFormHelper
                       class: desired_class_name,
                       data: data(only: only, except: except),
                       autofocus: autofocus,
+                      list: list,
                       readonly: readonly,
                       onkeyup: onkeyup,
                       onkeydown: onkeydown,

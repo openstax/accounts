@@ -42,7 +42,11 @@ module Newflow
           success: lambda {
             @user = @handler_result.outputs.user
             save_unverified_user(@user.id)
-            security_log(:educator_began_signup, { user: @user })
+            log_data = { user: @user }
+            if stored_url.present?
+              log_data[:redirect] = stored_url
+            end
+            security_log(:educator_began_signup, log_data)
             log_posthog(@user, 'educator_started_signup')
             clear_cache_BRI_marketing
             redirect_to(educator_email_verification_form_path)
