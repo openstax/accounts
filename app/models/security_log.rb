@@ -107,6 +107,7 @@ class SecurityLog < ApplicationRecord
     attempted_to_add_school_not_cached_yet
     school_added_to_user_from_sheerid_webhook
     user_lead_id_updated_from_salesforce
+    salesforce_lead_not_found_by_id
   ]
 
   json_serialize :event_data, Hash
