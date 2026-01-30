@@ -45,8 +45,26 @@ module Newflow
           expect {
             post(:student_signup, params: params)
           }.to change {
-            SecurityLog.where(event_type: :sign_up_successful, user: User.last)
+            SecurityLog.where(event_type: :student_signed_up, user: User.last).count
           }
+        end
+
+        it 'includes redirect URL in security log message when present' do
+          redirect_url = "https://openstax.org/books/biology-2e"
+          # GET student_signup_form with `?r=URL` stores the url
+          get(:student_signup_form, params: { r: redirect_url })
+
+          post(:student_signup, params: params)
+
+          log = SecurityLog.where(event_type: :student_signed_up).last
+          expect(log.event_data['redirect']).to eq(redirect_url)
+        end
+
+        it 'does not include redirect URL in security log message when absent' do
+          post(:student_signup, params: params)
+
+          log = SecurityLog.where(event_type: :student_signed_up).last
+          expect(log.event_data['redirect']).to be_nil
         end
 
         it 'redirects to student_email_verification_form_path' do
