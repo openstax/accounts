@@ -161,10 +161,6 @@ class User < ApplicationRecord
 
   attribute :is_not_gdpr_location, :boolean, default: nil
 
-  def lead
-    OpenStax::Salesforce::Remote::Lead.find_by(email: best_email_address_for_salesforce)
-  end
-
   def contact
     OpenStax::Salesforce::Remote::Contact.find(salesforce_contact_id)
   end

@@ -108,7 +108,7 @@ module Newflow
 
         transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
 
-        CreateOrUpdateSalesforceLead.perform_later(user: @user)
+        CreateOrUpdateSalesforceContact.perform_later(user: @user)
 
         #output the user to the lev handler
         outputs.user = @user
