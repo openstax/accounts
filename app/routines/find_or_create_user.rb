@@ -25,7 +25,7 @@ class FindOrCreateUser
   # Attempt to find a user by either the external_id, username, or email address
   def find_user(options)
     if options[:external_id].present?
-      User.joins(:external_ids).find_by(external_ids: { external_id: options[:external_id] })
+      ExternalId.find_by_external_id_and_role(options[:external_id], options[:role])&.user
     elsif options[:username].present?
       User.find_by(username: options[:username])
     elsif options[:email].present?

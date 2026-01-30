@@ -485,7 +485,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       end.to change { ExternalId.count }.by(1)
       expect(response).to have_http_status :created
       expect(response.body_as_hash).to eq(
-        user_id: valid_body[:user_id], external_id: valid_body[:external_id]
+        user_id: valid_body[:user_id], external_id: valid_body[:external_id], role: 'unknown_role'
       )
     end
 
