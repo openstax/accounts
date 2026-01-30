@@ -160,7 +160,13 @@ RSpec.describe Newflow::EducatorSignup::SheeridWebhook do
     end
 
     it "ignores webhooks for confirmed users with different verification_id" do
-      user.update!(sheerid_verification_id: 'old-verification-id', faculty_status: User::CONFIRMED_FACULTY)
+      user.update!(
+        sheerid_verification_id: 'old-verification-id', 
+        faculty_status: User::CONFIRMED_FACULTY,
+        first_name: 'Original First',
+        last_name: 'Original Last',
+        sheerid_reported_school: 'Original School'
+      )
       
       # New webhook with different verification_id
       new_verification = FactoryBot.create :sheerid_verification, 
@@ -192,8 +198,12 @@ RSpec.describe Newflow::EducatorSignup::SheeridWebhook do
         described_class.handle(params: { verification_id: 'new-verification-id' })
       }.not_to change { user.reload.faculty_status }
 
-      # Check that the user's verification_id was not updated
-      expect(user.reload.sheerid_verification_id).to eq 'old-verification-id'
+      # Check that the user's fields were not updated
+      user.reload
+      expect(user.sheerid_verification_id).to eq 'old-verification-id'
+      expect(user.first_name).to eq 'Original First'
+      expect(user.last_name).to eq 'Original Last'
+      expect(user.sheerid_reported_school).to eq 'Original School'
       
       # Check for the ignored webhook log specifically
       ignored_log = SecurityLog.where(user: user, event_type: 'sheerid_webhook_ignored').last
