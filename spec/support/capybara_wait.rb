@@ -9,7 +9,12 @@ module CapybaraWait
   end
 
   def finished_all_ajax_requests?
-    has_jquery? ? page.evaluate_script('jQuery.active').zero? : true
+    return true unless has_jquery?
+    begin
+      page.evaluate_script('jQuery.active').zero?
+    rescue Selenium::WebDriver::Error::JavascriptError
+      true
+    end
   end
 
   def wait_for_animations(timeout = Capybara.default_max_wait_time, interval = 0.1)
@@ -21,7 +26,12 @@ module CapybaraWait
   end
 
   def finished_all_animations?
-    has_jquery? ? page.evaluate_script('jQuery(":animated").length').zero? : true
+    return true unless has_jquery?
+    begin
+      page.evaluate_script('jQuery(":animated").length').zero?
+    rescue Selenium::WebDriver::Error::JavascriptError
+      true
+    end
   end
 end
 
