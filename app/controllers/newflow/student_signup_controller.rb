@@ -1,6 +1,5 @@
 module Newflow
   class StudentSignupController < SignupController
-
     before_action(:restart_signup_if_missing_unverified_user, only: %i[
         student_change_signup_email_form
         student_change_signup_email
@@ -11,24 +10,32 @@ module Newflow
     )
 
     def student_signup
-      handle_with(
-        StudentSignup::SignupForm,
-        contracts_required: !contracts_not_required,
-        client_app: get_client_app,
-        success: lambda {
-          user = @handler_result.outputs.user
-          save_unverified_user(user.id)
-          security_log(:student_signed_up, { user: user })
-          log_posthog(user, "student_started_signup")
-          redirect_to student_email_verification_form_path
-        },
-        failure: lambda {
-          email = @handler_result.outputs.email
-          error_codes = @handler_result.errors.map(&:code)
-          security_log(:student_sign_up_failed, { reason: error_codes, email: email })
-          render :student_signup_form
-        }
-      )
+      if verify_recaptcha_with_fallback
+        handle_with(
+          StudentSignup::SignupForm,
+          contracts_required: !contracts_not_required,
+          client_app: get_client_app,
+          success: lambda {
+            user = @handler_result.outputs.user
+            save_unverified_user(user.id)
+            log_data = { user: user }
+            if stored_url.present?
+              log_data[:redirect] = stored_url
+            end
+            security_log(:student_signed_up, log_data)
+            log_posthog(user, "student_started_signup")
+            redirect_to student_email_verification_form_path
+          },
+          failure: lambda {
+            email = @handler_result.outputs.email
+            error_codes = @handler_result.errors.map(&:code)
+            security_log(:student_sign_up_failed, { reason: error_codes, email: email })
+            render :student_signup_form
+          }
+        )
+      else
+        render :student_signup_form
+      end
     end
 
     def student_change_signup_email_form
@@ -36,17 +43,22 @@ module Newflow
     end
 
     def student_change_signup_email
-      handle_with(
-        ChangeSignupEmail,
-        user: unverified_user,
-        success: lambda {
-          redirect_to student_email_verification_form_updated_email_path
-        },
-        failure: lambda {
-          @email = unverified_user.email_addresses.first.value
-          render :student_change_signup_email_form
-        }
-      )
+      if verify_recaptcha_with_fallback
+        handle_with(
+          ChangeSignupEmail,
+          user: unverified_user,
+          success: lambda {
+            redirect_to student_email_verification_form_updated_email_path
+          },
+          failure: lambda {
+            @email = unverified_user.email_addresses.first.value
+            render :student_change_signup_email_form
+          }
+        )
+      else
+        @email = unverified_user.email_addresses.first.value
+        render :student_change_signup_email_form
+      end
     end
 
     def student_email_verification_form

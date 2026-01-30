@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
+RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
   let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
   let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, :trusted }
 
@@ -241,6 +241,9 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       user_2.reload
       expect(user_2.first_name).to eq 'Jerry'
       expect(user_2.last_name).to eq 'Mouse'
+      expect(response.body_as_hash).to eq Api::V1::UserRepresenter.new(user_2).to_hash(
+        { user_options: { include_private_data: true } }
+      ).deep_symbolize_keys
     end
 
     it "should not let id be specified" do
@@ -408,7 +411,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
       sso_cookie = parsed_response['sso']
       sso_hash = SsoCookie.read sso_cookie
-      expect(sso_hash['sub']).to eq Api::V1::UserRepresenter.new(new_user).to_hash
+      expect(sso_hash['sub']).to eq Api::V1::SsoCookieRepresenter.new(new_user).to_hash
       expect(sso_hash['exp']).to be <= (
         Time.current + Api::V1::UsersController::SSO_TOKEN_INITIAL_DURATION
       ).to_i

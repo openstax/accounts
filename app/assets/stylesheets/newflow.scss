@@ -223,7 +223,7 @@ label.required::after {
         top: 3.7rem;
         right: 1.8rem;
 
-        color: #027EB5;
+        color: #0070af;
         font-weight: bold;
         cursor: pointer;
 
@@ -270,8 +270,9 @@ label.required::after {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 9.4rem;
+        width: max-content;
         height: 100%;
+        padding: 0 1.5rem;
 
         background-color: #f5f5f5;
         border-radius: 1.5rem;
@@ -307,6 +308,10 @@ input.has-error {
 .center {
     text-align: center;
     margin: 0 auto;
+}
+
+.flush-left p {
+    padding-left: 0;
 }
 
 .policy {
@@ -593,18 +598,42 @@ $very-narrow: 37rem * $scale-factor;
 
         > .content {
             max-width: 55.5rem;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
 
             /*
                 On narrow screens, the Sheerid form induces horizontal scrolling
-                This adjusts it to fit when on a screen between 320 and 360 px wide 
+                This adjusts it to fit when on a screen between 320 and 360 px wide
             */
             &.control-group {
                 @include width-up-to($very-narrow) {
                     transform: scale(0.94) translateX(-4%);
                     width: 108%;
-                }    
+                }
+            }
+
+            &.recaptcha-disclaimer {
+              color: #aaa;
+              font-size: 1rem;
+              margin-top: -1.5rem;
+            }
+
+            &.recaptcha-failure {
+              color: red;
+            }    
+
+            // Override international telephone widget color
+            .iti__dial-code {
+                color: #666;
+            }
+
+            // Add contrasting border to active item for accessibility
+            .iti__highlight {
+                border: thin solid #888;
+            }
+
+            input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="radio"]):not([type="checkbox"]),
+            textarea {
+                border-color: #949494;
             }
         }
 
@@ -645,7 +674,7 @@ $very-narrow: 37rem * $scale-factor;
             padding-right: 0;
 
             background-color: #f1f1f1;
-            color: #c1c1c1;
+            color: #666666;
 
             @include title-font(2.4rem);
             text-align: center;
@@ -671,7 +700,7 @@ $very-narrow: 37rem * $scale-factor;
 
         fieldset {
             border: 0;
-            padding: 0;            
+            padding: 0;
         }
 
         label,
@@ -745,10 +774,12 @@ $very-narrow: 37rem * $scale-factor;
 
     input[type=submit] {
         &:disabled {
+            background-color: #ccc;
+            box-shadow: none;
+            color: #666;
             opacity: 0.85;
         }
 
-        -webkit-appearance: none;
         border-radius: 0;
     }
 }
@@ -983,6 +1014,10 @@ $very-narrow: 37rem * $scale-factor;
 
 .tooltip {
     padding-bottom: 2rem !important;
+
+    h2 {
+        @include title-font(1.8rem);
+    }
 }
 
 .input-with-tooltip {
@@ -1046,4 +1081,13 @@ $very-narrow: 37rem * $scale-factor;
             text-decoration: none;
         }
     }
+}
+
+.grecaptcha-badge { visibility: hidden; }
+
+.ui-state-disabled,
+.ui-button-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
 }

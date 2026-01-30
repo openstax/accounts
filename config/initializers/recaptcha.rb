@@ -1,0 +1,62 @@
+recaptcha_secrets = Rails.application.secrets.recaptcha || {}
+Recaptcha.configure do |config|
+  config.site_key = recaptcha_secrets[:site_key]
+  config.secret_key = recaptcha_secrets[:secret_key]
+end
+
+STUB_RECAPTCHA = !Rails.env.production? && Recaptcha.configuration.site_key.blank?
+
+# recaptcha_tags, recaptcha_v3, and verify_recaptcha come from the recaptcha gem
+# Our own helpers are named slightly differently to avoid conflicts
+
+module RecaptchaView
+  DISCLAIMER = <<~HTML.squish.html_safe
+    <div class="content recaptcha-disclaimer">
+      This site is protected by reCAPTCHA and the Google
+      <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+      <a href="https://policies.google.com/terms">Terms of Service</a> apply.
+    </div>
+  HTML
+
+  FAILURE_MESSAGE = <<~HTML.squish.html_safe
+    <div class="content recaptcha-failure">
+      reCAPTCHA verification failed.
+      Please try a different browser or <a href="https://help.openstax.org">contact support</a>.
+    </div>
+  HTML
+
+  def recaptcha_with_disclaimer_and_fallback(action:, **options)
+    return DISCLAIMER if STUB_RECAPTCHA
+
+    recaptcha_or_message = @recaptcha_failed ? FAILURE_MESSAGE : recaptcha_v3(action: action, **options)
+
+    recaptcha_or_message + DISCLAIMER + <<~HTML.squish.html_safe
+      <input type="hidden" name="force_recaptcha_failure" value="#{params[:force_recaptcha_failure]}">
+    HTML
+  end
+end
+
+module RecaptchaController
+  def self.included(base)
+    base.helper RecaptchaView
+  end
+
+  def verify_recaptcha_with_fallback(**options)
+    force_recaptcha_failure = params[:force_recaptcha_failure] == 'true'
+
+    # Return true if recaptcha is disabled via admin setting
+    return true if Settings::Recaptcha.disabled?
+
+    return !force_recaptcha_failure if STUB_RECAPTCHA
+
+    options = {
+      action: action_name,
+      minimum_score: Settings::Db.store.minimum_recaptcha_score,
+      **options
+    }
+
+    options[:response] = 'bogus' if force_recaptcha_failure
+
+    verify_recaptcha(**options).tap { |result| @recaptcha_failed = !result }
+  end
+end

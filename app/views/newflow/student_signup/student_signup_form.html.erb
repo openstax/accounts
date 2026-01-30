@@ -78,7 +78,7 @@
                 %>
 
                 <div class="content control-group">
-                    <%= label_tag :first_name, I18n.t(:"login_signup_form.first_name_label"),
+                    <%= label_tag :signup_first_name, I18n.t(:"login_signup_form.first_name_label"),
                                 class: 'field-label required'
                     %>
                     <%= form_helper.text_field name: :first_name,
@@ -90,7 +90,7 @@
 
                 <div class="content control-group">
                     <%=
-                        label_tag :last_name, I18n.t(:"login_signup_form.last_name_label"),
+                        label_tag :signup_last_name, I18n.t(:"login_signup_form.last_name_label"),
                         class: 'field-label required'
                     %>
                     <%=
@@ -101,7 +101,7 @@
                 </div>
 
                 <div class="content control-group">
-                    <%= label_tag :email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
+                    <%= label_tag :signup_email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
                     <%=
                         form_helper.text_field(
                             name: :email,
@@ -111,11 +111,24 @@
                     %>
                 </div>
 
+                <div class="content control-group">
+                    <%= label_tag :signup_school, I18n.t(:"educator_profile_form.school_name"), class: 'field-label' %>
+                    <%=
+                        form_helper.text_field(
+                            name: :school,
+                            placeholder: I18n.t(:"educator_profile_form.school_name"),
+                            required: false,
+                            list: 'school-list'
+                        )
+                    %>
+                    <datalist id='school-list'>
+                    </datalist>
+                </div>
 
                 <div class="content control-group">
                     <div id="password-field-container">
                         <div class="input-with-tooltip">
-                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                            <%= label_tag :signup_password, I18n.t(:"login_signup_form.password_label"),
                                                     class: 'field-label required'
                             %>
                             <%=
@@ -123,7 +136,8 @@
                                     name: :password,
                                     type: :password,
                                     placeholder: I18n.t(:"login_signup_form.password_label"),
-                                    required: true
+                                    required: true,
+                                    described: 'password-tooltip'
                                 )
                             %>
                             <%= render partial: 'newflow/password_show_hide'  %>
@@ -160,6 +174,8 @@
 
                 </div>
 
+                <%= recaptcha_with_disclaimer_and_fallback action: 'student_signup' %>
+
                 <div class="content">
                     <%=
                         form.submit(
@@ -183,4 +199,5 @@
 <script type="text/javascript">
     NewflowUi.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
     NewflowUi.focusOnFirstErrorItem();
+    NewflowUi.attachSchoolList(`[name="signup[school]"]`)
 </script>

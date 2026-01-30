@@ -1,6 +1,5 @@
 module Newflow
   class EducatorSignupController < SignupController
-
     include EducatorSignupHelper
 
     skip_forgery_protection(only: :sheerid_webhook)
@@ -34,24 +33,32 @@ module Newflow
     )
 
     def educator_signup
-      handle_with(
-        EducatorSignup::SignupForm,
-        contracts_required: !contracts_not_required,
-        client_app: get_client_app,
-        is_BRI_book: is_BRI_book_adopter?,
-        success: lambda {
-          @user = @handler_result.outputs.user
-          save_unverified_user(@user.id)
-          security_log(:educator_began_signup, { user: @user })
-          log_posthog(@user, 'educator_started_signup')
-          clear_cache_BRI_marketing
-          redirect_to(educator_email_verification_form_path)
-        },
-        failure: lambda {
-          security_log(:educator_sign_up_failed, { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
-          render :educator_signup_form
-        }
-      )
+      if verify_recaptcha_with_fallback
+        handle_with(
+          EducatorSignup::SignupForm,
+          contracts_required: !contracts_not_required,
+          client_app: get_client_app,
+          is_BRI_book: is_BRI_book_adopter?,
+          success: lambda {
+            @user = @handler_result.outputs.user
+            save_unverified_user(@user.id)
+            log_data = { user: @user }
+            if stored_url.present?
+              log_data[:redirect] = stored_url
+            end
+            security_log(:educator_began_signup, log_data)
+            log_posthog(@user, 'educator_started_signup')
+            clear_cache_BRI_marketing
+            redirect_to(educator_email_verification_form_path)
+          },
+          failure: lambda {
+            security_log(:educator_sign_up_failed, { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
+            render :educator_signup_form
+          }
+        )
+      else
+        render :educator_signup_form
+      end
     end
 
     def educator_change_signup_email_form
@@ -60,17 +67,22 @@ module Newflow
     end
 
     def educator_change_signup_email
-      handle_with(
-        ChangeSignupEmail,
-        user: unverified_user,
-        success: lambda {
-          redirect_to(educator_email_verification_form_updated_email_path)
-        },
-        failure: lambda {
-          @email = unverified_user.email_addresses.first.value
-          render(:educator_change_signup_email_form)
-        }
-      )
+      if verify_recaptcha_with_fallback
+        handle_with(
+          ChangeSignupEmail,
+          user: unverified_user,
+          success: lambda {
+            redirect_to(educator_email_verification_form_updated_email_path)
+          },
+          failure: lambda {
+            @email = unverified_user.email_addresses.first.value
+            render :educator_change_signup_email_form
+          }
+        )
+      else
+        @email = unverified_user.email_addresses.first.value
+        render :educator_change_signup_email_form
+      end
     end
 
     def educator_email_verification_form
@@ -220,6 +232,5 @@ module Newflow
         )
       end
     end
-
   end
 end
