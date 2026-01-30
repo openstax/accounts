@@ -158,6 +158,58 @@ RSpec.describe Newflow::EducatorSignup::SheeridWebhook do
       expect(duplicate_log).to be_present
       expect(duplicate_log.event_data['reason']).to eq "Duplicate webhook for already processed verification"
     end
+
+    it "ignores webhooks for confirmed users with different verification_id" do
+      user.update!(
+        sheerid_verification_id: 'old-verification-id', 
+        faculty_status: User::CONFIRMED_FACULTY,
+        first_name: 'Original First',
+        last_name: 'Original Last',
+        sheerid_reported_school: 'Original School'
+      )
+      
+      # New webhook with different verification_id
+      new_verification = FactoryBot.create :sheerid_verification, 
+        email: email_address.value,
+        organization_name: school.sheerid_school_name, 
+        current_step: 'success',
+        verification_id: 'new-verification-id'
+      
+      new_verification_details = SheeridAPI::Response.new(
+        'lastResponse' => { 
+          'currentStep' => 'success',
+          'verificationId' => 'new-verification-id',
+          'segment' => 'teacher'
+        },
+        'programId' => '5e150b86ce2a5a1d94874660',
+        'personInfo' => {
+          'firstName' => 'Different',
+          'lastName' => 'Name',
+          'email' => email_address.value,
+          'organization' => { 
+            'name' => school.sheerid_school_name 
+          }
+        }
+      )
+      
+      allow(SheeridAPI).to receive(:get_verification_details).with('new-verification-id').and_return(new_verification_details)
+      
+      expect {
+        described_class.handle(params: { verification_id: 'new-verification-id' })
+      }.not_to change { user.reload.faculty_status }
+
+      # Check that the user's fields were not updated
+      user.reload
+      expect(user.sheerid_verification_id).to eq 'old-verification-id'
+      expect(user.first_name).to eq 'Original First'
+      expect(user.last_name).to eq 'Original Last'
+      expect(user.sheerid_reported_school).to eq 'Original School'
+      
+      # Check for the ignored webhook log specifically
+      ignored_log = SecurityLog.where(user: user, event_type: 'sheerid_webhook_ignored').last
+      expect(ignored_log).to be_present
+      expect(ignored_log.event_data['reason']).to eq "User already confirmed"
+    end
   end
 
   context "enhanced data handling" do

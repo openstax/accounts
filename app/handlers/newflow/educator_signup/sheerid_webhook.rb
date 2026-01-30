@@ -29,6 +29,9 @@ module Newflow
           return
         end
 
+        # Return early if user is already confirmed faculty to avoid overwriting their status
+        return if should_ignore_webhook_for_confirmed_user?(user, verification_id, verification_details)
+        
         handle_user_verification(user, verification_id, verification_details)
         update_user_with_verification_data(user, verification, verification_details)
         process_verification_step(user, verification_id, verification_details)
@@ -120,10 +123,24 @@ module Newflow
         )
       end
 
+      def should_ignore_webhook_for_confirmed_user?(user, verification_id, details)
+        return false unless user.faculty_status == User::CONFIRMED_FACULTY
+        
+        SecurityLog.create!(
+          event_type: :sheerid_webhook_ignored, 
+          user: user, 
+          event_data: { 
+            reason: "User already confirmed",
+            verification_id: verification_id,
+            current_step: details.current_step
+          }
+        )
+        outputs.verification_id = verification_id
+        true
+      end
+
       def handle_user_verification(user, verification_id, details)
-        if user.faculty_status == User::CONFIRMED_FACULTY
-          SecurityLog.create!(event_type: :sheerid_webhook_ignored, user: user, event_data: { reason: "User already confirmed" })
-        elsif verification_id.present? && user.sheerid_verification_id.blank?
+        if verification_id.present? && user.sheerid_verification_id.blank?
           user.update!(sheerid_verification_id: verification_id)
           SecurityLog.create!(event_type: :sheerid_verification_id_added_to_user_from_webhook, user: user, event_data: { verification_id: verification_id })
         elsif verification_id.present? && user.sheerid_verification_id != verification_id
