@@ -1,0 +1,143 @@
+<%
+  today = Time.zone.today
+  current_school_year_start = today.month >= 8 ? today.year : today.year - 1
+  school_year_range = (current_school_year_start - 2)..(current_school_year_start + 2)
+  current_school_year_label = "#{current_school_year_start} - #{(current_school_year_start + 1).to_s[-2, 2]}"
+  school_year_options = school_year_range.to_a.map do |year|
+    next_year_suffix = (year + 1).to_s[-2, 2]
+    label = "#{year} - #{next_year_suffix}"
+    [label, label]
+  end
+
+  book_scope = Book.all
+  book_scope = book_scope.where(book_state: %w[live deprecated]) if Book.column_names.include?('book_state')
+
+  saved_book_ids =
+    if defined?(current_user) && current_user.present?
+      UserBook.where(user_id: current_user.id).pluck(:book_id)
+    else
+      []
+    end
+
+  saved_books = book_scope.where(id: saved_book_ids).order(title: :asc)
+  other_books = book_scope.where.not(id: saved_book_ids).order(title: :asc)
+  book_options = (saved_books + other_books).map { |book| [book.title, book.title] }
+
+  book_row_markup = capture do
+%>
+  <div class="report-adoption__row" data-report-adoption-row>
+    <div class="report-adoption__row-header">
+      <span class="report-adoption__row-title" data-report-adoption-row-label>Adoption</span>
+      <button type="button"
+              class="account-books__remove-btn account-books__remove-btn--prompt report-adoption__remove-row"
+              data-report-adoption-remove>
+        Remove
+      </button>
+    </div>
+
+    <div class="report-adoption__row-grid">
+      <div class="report-adoption__field report-adoption__field--book">
+        <label>Book</label>
+        <select name="books[][name]"
+                class="form-control">
+          <option value="">Select a book</option>
+          <% book_options.each do |label, value| %>
+            <option value="<%= value %>"><%= label %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="report-adoption__field report-adoption__field--year">
+        <label>School year</label>
+        <select name="books[][school_year]"
+                class="form-control"
+                data-report-adoption-school-year>
+          <option value="">Select school year</option>
+          <% school_year_options.each do |label, value| %>
+            <option value="<%= value %>"><%= label %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="report-adoption__field report-adoption__field--students">
+        <label>
+          Students
+          <span class="report-adoption__info-icon"
+                title="Total number of students using OpenStax for the full academic year."
+                data-tooltip="Total number of students using OpenStax for the full academic year."
+                tabindex="0"
+                aria-label="Total number of students using OpenStax for the full academic year.">i</span>
+        </label>
+        <input type="number"
+               name="books[][students]"
+               class="form-control"
+               min="0"
+               placeholder="e.g., 120"
+               data-report-adoption-students />
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div class="modal fade report-adoption-modal"
+     id="reportAdoptionModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="reportAdoptionModalLabel"
+     aria-modal="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="report-adoption__header-text">
+          <h5 class="modal-title" id="reportAdoptionModalLabel">Report an adoption</h5>
+          <p class="report-adoption__header-helper">
+            A quick update helps OpenStax support your courses and keep resources students affordable.
+          </p>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="report-adoption__callout">
+          Reporting helps OpenStax measure student impact and continuing supporting high-quality learning resources.
+        </div>
+        <%= form_tag '#',
+                      method: :post,
+                      id: 'report-adoption-form',
+                      class: 'report-adoption__form',
+                      data: { current_school_year: current_school_year_label } do %>
+
+          <div class="report-adoption__books" data-report-adoption-books>
+            <%= book_row_markup.html_safe %>
+          </div>
+
+          <template id="report-adoption-book-template">
+            <%= book_row_markup.html_safe %>
+          </template>
+
+          <div class="report-adoption__summary" data-report-adoption-summary>
+            <div class="report-adoption__summary-label">Reported impact</div>
+            <div class="report-adoption__summary-value" data-report-adoption-summary-value>—</div>
+            <div class="report-adoption__summary-subtext" data-report-adoption-summary-subtext>Across — books</div>
+          </div>
+
+          <div class="report-adoption__footer">
+            <div class="report-adoption__footer-left">
+              <button type="button"
+                      class="account-profile__security-link report-adoption__add-book"
+                      data-report-adoption-add>
+                + Add another book
+              </button>
+              <p class="report-adoption__helper-text">You can add multiple books before saving.</p>
+            </div>
+
+            <%= submit_tag 'Save (coming soon)',
+                           class: 'ox-button ox-button--solid',
+                           disabled: true %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

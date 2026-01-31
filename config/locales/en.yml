@@ -85,7 +85,7 @@ en:
     educator: Educator / Researcher
     step_counter: Step %{current_step} of %{total_steps}
     login_page_header: Log in to your OpenStax account
-    login_with: 'Log in with:'
+    login_with: 'LOG IN WITH:'
     signup_with: 'Sign up with:'
     signup_page_header: Set up your account
     confirmation_page_header: Hi, %{first_name}! Confirm your email.
@@ -99,7 +99,8 @@ en:
     check_your_updated_email: Check your updated email
     havent_received_message: Still haven't received an email? %{contact_us}
     contact_us: Contact us
-    welcome_page_header: Welcome! Join OpenStax as
+    welcome_page_header: Create Your OpenStax Account
+    choose_role_divider: SELECT YOUR ROLE TO CONTINUE
     email_placeholder: me@myemail.com
     phone_number_placeholder: '(555)555-5555'
     school_issued_email_placeholder: email@myschool.edu
@@ -178,7 +179,7 @@ en:
       You have made too many login attempts recently. Please
       reset your password or try again later.
     profile_newflow_page_header: My Account
-    how_you_log_in: How you log in
+    how_you_log_in: Log in method
     sign_in_option_already_used: >-
         That login option is already used by someone else. If that someone is
         you, remove it from your other account and try again.
@@ -437,9 +438,6 @@ en:
       minimum_recaptcha_score:
         name: Minimum reCAPTCHA score allowed to register a new account
         help_block: Humans should score closer to 1, bots should score closer to 0
-      disable_recaptcha:
-        name: Disable reCAPTCHA
-        help_block: 'Disable reCAPTCHA verification for all users. WARNING: This bypasses bot protection and should only be used temporarily when the reCAPTCHA service is unavailable.'
 
   layouts:
     application_footer:

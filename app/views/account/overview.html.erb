@@ -1,0 +1,233 @@
+<% school_supports_assignable = current_user.school&.has_assignable_contacts? %>
+<% assignable_enabled = current_user.external_ids.exists? %>
+<% dismissed_assignable_callout = cookies[:dismissed_assignable_callout] == 'true' %>
+<% allow_callout_persistence = !current_user.is_administrator? %>
+<% is_verified_instructor = current_user.confirmed_faculty? %>
+<% pending_instructor = !is_verified_instructor && !current_user.incomplete_signup? && !current_user.rejected_faculty? %>
+<% incomplete_signup = current_user.incomplete_signup? %>
+<% show_assignable_callout = school_supports_assignable && is_verified_instructor && !assignable_enabled && (!dismissed_assignable_callout || current_user.is_administrator?) %>
+
+<div class="account-layout">
+  <%= render 'account/navigation' %>
+  <div class="account-layout__content">
+    <% if show_assignable_callout %>
+      <div class="account-callout account-callout--assignable" id="assignable-callout">
+        <div class="account-callout__text">
+          <p class="account-callout__eyebrow">OpenStax Assignable</p>
+          <h3>Assignable is available at <%= current_user.school&.name || 'your institution' %></h3>
+          <p>
+            Good news — <%= current_user.school&.name || 'your institution' %> supports OpenStax Assignable.
+            Use Assignable to give your students auto-graded practice and keep grades synced, all within your LMS.
+          </p>
+          <p>You can choose whether and when to use it — support is available if you’d like help getting started.</p>
+        </div>
+        <div class="account-callout__actions">
+          <%= link_to 'Learn more', 'https://openstax.org/assignable', class: 'account-callout__button account-callout__button--ghost', target: '_blank', rel: 'noopener' %>
+          <%= link_to 'Set up Assignable', 'https://openstax.org/assignable/setup', class: 'account-callout__button account-callout__button--primary', target: '_blank', rel: 'noopener' %>
+        </div>
+        <button type="button"
+                class="account-callout__dismiss js-dismiss-callout"
+                aria-label="Dismiss Assignable message"
+                data-dismiss-target="assignable-callout"
+                data-persist-dismissal="<%= allow_callout_persistence %>">
+          &times;
+        </button>
+      </div>
+    <% end %>
+
+    <% if pending_instructor %>
+      <div class="account-callout account-callout--pending" id="verification-callout">
+        <div class="account-callout__text">
+          <p class="account-callout__eyebrow account-callout__eyebrow--alert">Action required</p>
+          <h3>Complete instructor verification</h3>
+          <p>Verifying your instructor status unlocks instructor-only resources, downloadable assets, and Assignable tools.</p>
+          <p>Finish verification today to keep your educator access active.</p>
+        </div>
+        <div class="account-callout__actions">
+          <%= link_to 'Verify now',
+                      'https://help.openstax.org/s/article/Requesting-Instructor-only-access-to-the-resources-on-openstax-org',
+                      class: 'account-callout__button account-callout__button--primary',
+                      target: '_blank',
+                      rel: 'noopener' %>
+        </div>
+      </div>
+    <% elsif incomplete_signup %>
+      <div class="account-callout account-callout--pending" id="complete-signup-callout">
+        <div class="account-callout__text">
+          <p class="account-callout__eyebrow account-callout__eyebrow--alert">Finish signing up</p>
+          <h3>Complete your instructor profile</h3>
+          <p>We still need a bit more information to activate your instructor access.</p>
+          <p>Finish the signup flow to verify your teaching role and unlock instructor-only resources.</p>
+        </div>
+        <div class="account-callout__actions">
+          <%= link_to 'Complete signup',
+                      newflow_signup_path,
+                      class: 'account-callout__button account-callout__button--primary' %>
+        </div>
+      </div>
+    <% end %>
+
+    <% school_name = current_user&.school&.name.presence || current_user&.self_reported_school.presence %>
+    <% faculty_status = current_user&.faculty_status.to_s %>
+    <% instructor_status =
+        case faculty_status
+        when 'confirmed_faculty' then 'Verified'
+        when 'pending_faculty', 'pending_sheerid' then 'Pending verification'
+        when 'rejected_faculty', 'rejected_by_sheerid' then 'Not verified'
+        when 'incomplete_signup' then 'Incomplete signup'
+        when 'no_faculty_info', '' then 'Not verified'
+        else faculty_status.titleize
+        end %>
+
+    <%= render(
+          'shared/account_layout_shell',
+          locals: {
+            title: 'Your OpenStax Account',
+            description: 'This is your home base for managing OpenStax teaching tools, resources, and account access.'
+          }
+        ) do %>
+
+      <div class="account-shell__body account-overview">
+        <% role_label = current_user.role.present? ? current_user.role.titleize : 'Instructor' %>
+        <% account_health =
+             if pending_instructor
+               'Verification needed'
+             elsif incomplete_signup
+               'Finish signup'
+             else
+               'All set'
+             end %>
+
+        <header class="account-overview__header">
+          <h1 class="account-overview__title">
+            Welcome back<% if current_user&.first_name.present? %>, <%= current_user.first_name %><% end %>
+          </h1>
+
+          <p class="account-overview__subtitle">
+            <% if school_name.present? %>
+              You’re signed in as an instructor at <strong><%= school_name %></strong>. Access your teaching tools, resources, and account settings from here.
+            <% else %>
+              Access your teaching tools, resources, and account settings from here. Add your school to personalize your experience.
+              <a class="account-overview__inline-link" href="/i/account/profile">Update profile</a>
+            <% end %>
+          </p>
+
+          <div class="account-profile__section-card account-overview__summary-card">
+            <div class="account-profile__field">
+              <div class="account-profile__label">Role</div>
+              <div class="account-profile__value"><%= role_label %></div>
+            </div>
+            <div class="account-profile__field">
+              <div class="account-profile__label">School</div>
+              <div class="account-profile__value"><%= school_name.presence || 'Add your school' %></div>
+            </div>
+            <div class="account-profile__field">
+              <div class="account-profile__label">Instructor status</div>
+              <div class="account-profile__value"><%= instructor_status %></div>
+            </div>
+            <div class="account-profile__field">
+              <div class="account-profile__label">Account health</div>
+              <div class="account-profile__value"><%= account_health %></div>
+            </div>
+          </div>
+          <p class="account-overview__note account-overview__note--inline">
+            Need changes? Manage details in
+            <a href="/i/account/profile">Profile</a> and <a href="/i/account/security">Security</a>.
+          </p>
+        </header>
+
+        <section class="account-profile__section account-overview__section" aria-label="Primary actions">
+          <div class="account-shell__section-header">
+            <h2>Quick actions</h2>
+            <p>Jump straight to the tools you use most often.</p>
+          </div>
+        
+          
+          <% quick_actions = [
+               { icon: 'fa fa-file', title: 'Teaching resources', body: 'Download instructor materials, adoption tools, and LMS integrations.', href: '#', cta: 'View resources →' },
+               { icon: 'fa fa-pencil', title: 'Report usage', body: "Share how you're using OpenStax this term.", button: true, cta: 'Report usage →' },
+               { icon: 'fa fa-plug', title: 'LMS / Assignable setup', body: 'Connect Assignable tools to Canvas, Blackboard, and more.', href: 'https://openstax.org/assignable/setup', cta: 'View setup guide →', external: true },
+               { icon: 'fa fa-book', title: 'Find a book', body: 'Browse OpenStax textbooks and matching instructor resources.', href: 'https://openstax.org/subjects', cta: 'Browse subjects →', external: true },
+               { icon: 'fa fa-life-ring', title: 'Get help', body: 'Search FAQs, file a ticket, or email our support team.', href: '/i/account/support', cta: 'Go to support →' },
+               { icon: 'fa fa-envelope', title: 'Keep in touch', body: 'Get OpenStax updates about new books, webinars, and instructor opportunities.', href: 'https://openstax.org/newsletters', cta: 'Subscribe →', external: true }
+             ] %>
+
+          <div class="resource-cards account-overview__quick-cards">
+            <div class="card-container">
+              <% quick_actions.each do |action| %>
+                <% if action[:button] %>
+                  <div class="card card--button">
+                    <span class="card-icon <%= action[:icon] %>" aria-hidden="true"></span>
+                    <h2><%= action[:title] %></h2>
+                    <p><%= action[:body] %></p>
+                    <button type="button"
+                            class="card-action card-action--button"
+                            data-report-adoption-trigger="true">
+                      <%= action[:cta] %>
+                    </button>
+                  </div>
+                <% else %>
+                  <a class="card-link"
+                     href="<%= action[:href] %>"
+                     <%= action[:external] ? 'target="_blank" rel="noopener"' : '' %>>
+                    <div class="card">
+                      <span class="card-icon <%= action[:icon] %>" aria-hidden="true"></span>
+                      <h2><%= action[:title] %></h2>
+                      <p><%= action[:body] %></p>
+                      <span class="card-action"><%= action[:cta] %></span>
+                    </div>
+                  </a>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </section>
+
+
+        <section class="account-profile__section account-overview__section" aria-label="OpenStax status">
+          <div class="account-shell__section-header">
+            <h2>OpenStax status</h2>
+            <p>Current health of OpenStax services.</p>
+          </div>
+          <div class="account-profile__section-card">
+            <div class="account-profile__field">
+              <div class="account-profile__label">Systems</div>
+              <div class="account-profile__value">
+                <div class="account-overview__status-line">
+                  <span class="account-overview__status-light" aria-hidden="true"></span>
+                  <span>We’re fully operational.</span>
+                </div>
+                <a class="account-overview__status-link"
+                   href="https://status.openstax.org"
+                   target="_blank"
+                   rel="noopener">
+                  View full status <span class="account-overview__external-icon" aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<% if show_assignable_callout %>
+  <% content_for :javascript do %>
+    <script>
+      document.addEventListener('click', function(event) {
+        var dismissButton = event.target.closest('.js-dismiss-callout');
+        if (!dismissButton) { return; }
+        var targetId = dismissButton.getAttribute('data-dismiss-target');
+        var target = document.getElementById(targetId);
+        if (target) { target.remove(); }
+        var persist = dismissButton.getAttribute('data-persist-dismissal') === 'true';
+        if (persist) {
+          var expiry = new Date();
+          expiry.setFullYear(expiry.getFullYear() + 1);
+          document.cookie = "dismissed_assignable_callout=true;path=/;expires=" + expiry.toUTCString();
+        }
+      });
+    </script>
+  <% end %>
+<% end %>

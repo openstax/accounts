@@ -1,0 +1,139 @@
+<% all_providers = OmniauthData::VALID_PROVIDERS %>
+<% oldflow_providers = %w(facebook google_oauth2) %>
+<% current_providers = all_providers & current_user.authentications.collect(&:provider) - oldflow_providers %>
+
+<section class="account-profile__section">
+  <div class="account-shell__section-header">
+    <h2>Account basics</h2>
+    <p>Update your name, school, and primary email information.</p>
+  </div>
+
+  <div class="account-profile__section-card">
+    <div class="account-profile__field">
+      <div class="account-profile__label">Name</div>
+    <div class="account-profile__value account-profile__value--name">
+      <div class="account-profile__name-row">
+        <span class="account-profile__text"><%= current_user.full_name %></span>
+        <button type="button"
+          id="name"
+          class="editable account-profile__edit-button"
+          data-type="profile_name"
+          aria-label="Edit name">
+          <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+    <div class="account-profile__field">
+      <div class="account-profile__label">Self-reported school</div>
+      <div class="account-profile__value">
+        <%= current_user.self_reported_school.presence || 'Not provided' %>
+        <span class="account-profile__help"
+          data-tooltip="Need to change the school on your account? Email support@openstax.org."
+          aria-label="Need to change the school on your account? Email support@openstax.org."
+          tabindex="0">i</span>
+      </div>
+    </div>
+
+    <div class="account-profile__field">
+      <div class="account-profile__label">Joined OpenStax</div>
+      <div class="account-profile__value">
+        <%= current_user.created_at&.strftime("%B %-d, %Y") || "Not available" %>
+      </div>
+    </div>
+
+    <div class="account-profile__field">
+      <div class="account-profile__label">Adoption status</div>
+      <div class="account-profile__value">
+        <% if @last_adoption_reported_at.blank? %>
+          No adoptions reported
+        <% elsif @current_year_has_confirmed_adoption %>
+          Up to date (last reported <%= @last_adoption_reported_at.strftime("%B %-d, %Y") %>)
+        <% else %>
+          Needs updates (last reported <%= @last_adoption_reported_at.strftime("%B %-d, %Y") %>)
+        <% end %>
+      </div>
+    </div>
+
+    <div class="account-profile__field">
+      <div class="account-profile__label">Instructor verification status</div>
+      <% value_classes = "account-profile__value" %>
+      <% value_classes << " account-profile__value--stacked" if !current_user.confirmed_faculty? %>
+      <div class="<%= value_classes %>">
+        <% if current_user.confirmed_faculty? %>
+          Verified
+          <% tooltip_text = "You have been confirmed as a verified instructor. You have access to all instructor resources provided by OpenStax." %>
+          <% verification_cta = nil %>
+          <span class="account-profile__help"
+            data-tooltip="<%= tooltip_text %>"
+            aria-label="<%= tooltip_text %>"
+            tabindex="0">i</span>
+        <% elsif current_user.rejected_faculty? || current_user.rejected_by_sheerid? %>
+          Not verified
+          <% tooltip_text = "We cannot verify your status as an instructor. Contact support@openstax.org with questions or concerns." %>
+          <% verification_cta = { text: "Get help with verification", url: "https://help.openstax.org/s/article/My-request-to-access-Instructor-Resources-was-rejected" } %>
+        <% else %>
+          Pending review
+          <% tooltip_text = "We're still reviewing your account. Contact support@openstax.org with questions or concerns." %>
+          <% verification_cta = { text: "Verify my instructor status", url: "https://help.openstax.org/s/article/Requesting-Instructor-only-access-to-the-resources-on-openstax-org" } %>
+        <% end %>
+        <% if verification_cta.present? %>
+          <%= link_to verification_cta[:text], verification_cta[:url],
+                class: "account-profile__security-link account-profile__security-link--secondary",
+                target: "_blank", rel: "noopener" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="account-profile__field">
+      <div class="account-profile__label">Emails</div>
+      <div class="account-profile__value">
+        <ul class="account-profile__list">
+          <% current_user.email_addresses.order(:created_at).each do |email| %>
+            <li>
+              <%= email.value %>
+              <% if email.verified? %>
+                <span class="account-profile__badge account-profile__badge--verified"
+                  title="Email verified"
+                  aria-label="Email verified"
+                  data-tooltip="Email verified">
+                  <i class="fa fa-check"></i>
+                </span>
+              <% else %>
+                <em class="account-profile__pending-email">Pending verification</em>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+        <%= link_to 'Manage your emails', account_security_path, class: 'account-profile__security-link' %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="account-profile__section">
+  <div class="account-shell__section-header">
+    <h2>Sign-in method(s)</h2>
+    <p>Review how you access your account and add other options if needed.</p>
+  </div>
+
+  <div class="account-profile__section-card">
+    <div class="account-profile__field">
+      <div class="account-profile__label">Current methods</div>
+      <div class="account-profile__value">
+        <% if current_providers.any? %>
+          <ul class="account-profile__list">
+          <% current_providers.each do |provider| %>
+            <% provider_label = provider == 'identity' ? 'Password' : provider.titleize %>
+            <li><%= provider_label %></li>
+          <% end %>
+          </ul>
+        <% else %>
+          <p>You have no linked providers.</p>
+        <% end %>
+        <%= link_to 'Enable other login options', account_security_path, class: 'account-profile__security-link account-security__add-email' %>
+      </div>
+    </div>
+  </div>
+</section>

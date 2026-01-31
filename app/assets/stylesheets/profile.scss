@@ -7,7 +7,7 @@ $font-path: '/accounts/fonts';
     height: 2rem;
     margin: 2rem 0 0 2rem;
 
-    .logo-wrapper {
+    .logo {
         padding: 0;
 
          @include width-up-to($phone-max) {
@@ -18,30 +18,6 @@ $font-path: '/accounts/fonts';
 
 #profile .ox-card {
   .alert { margin: 10px; }
-
-  .profile-title {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: baseline;
-
-    .title {
-      grid-column: 2;
-    }
-
-    .button_to {
-      grid-column: 3;
-      text-align: right;
-    }
-
-    .sign-out {
-      border: 0;
-      background-color: transparent;
-      line-height: normal;
-      padding: 0.5rem;
-      height: auto;
-      color: #027eb5;
-    }
-  }
 
   .col-sm-2 {
     padding: 0;
@@ -121,12 +97,15 @@ $font-path: '/accounts/fonts';
     .fa-stack {
       left: -3px;
     }
+    .fa-stack-1x,  .fa-stack-2x {
+      color: var(--accent, $os_link_color);
+    }
+    .mod {
+      text-decoration: none !important;
+    }
   }
 
   .email-entry {
-    &:not(.new) summary {
-      display: list-item;
-    }
     &:first-child {
       .alert { margin-top: 0; }
     }
@@ -146,7 +125,57 @@ $font-path: '/accounts/fonts';
       left: -20px;
       top: 15px;
     }
-    .controls {
+
+    .email-entry__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: default;
+    }
+
+    .email-entry__value {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-weight: 600;
+      align-items: center;
+    }
+
+    .unconfirmed-warning {
+      font-weight: normal;
+    }
+
+    .email-entry__toggle {
+      border: none;
+      background: transparent;
+      color: #027eb5;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .editable-input input {
+      width: 100%;
+      border: 1px solid #d7dde6;
+      border-radius: 0.3rem;
+      padding: 0.75rem 0.9rem;
+      background: #fff;
+      font-size: 1rem;
+      color: $os_dark;
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+
+    .editable-input input:focus {
+      outline: none;
+      border-color: #027eb5;
+      box-shadow: 0 0 0 2px rgba(2, 126, 181, 0.2);
+    }
+
+    .email-entry__controls {
+      display: none;
       overflow: hidden;
       margin-left: 20px;
       margin-top: 4px;
@@ -165,42 +194,58 @@ $font-path: '/accounts/fonts';
         margin-left: 6px;
         button {
           appearance: none;
-          padding: 0.2rem;
+          padding: 0.3rem 0.6rem;
           font-size: 13px;
-          margin-left: 6px;
+          margin-left: 0;
           border: 0;
-          color: #027eb5;
+          color: lighten(black, 30%);
           background-color: transparent;
+          font-weight: 600;
+        }
+
+        button:hover,
+        button:focus {
+          color: #b91c1c;
+          outline: none;
         }
       }
     }
 
+    &.is-open .email-entry__controls {
+      display: block;
+    }
+
     .resend-confirmation {
       margin-left: 7px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: lighten(black, 40%);
 
-      form {
-        display: inline;
-        div { display: inline; }
+      .resend-confirmation__form {
+        margin: 0;
       }
 
-      input {
+      button {
+        border: 1px solid rgba(11, 106, 162, 0.35);
+        border-radius: 0.3rem;
+        background: #fff;
         color: $os_link_color;
-        padding: 0;
+        padding: 0.5rem 1.2rem;
+        font-weight: 600;
         font-size: 13px;
-        display: inline;
-        border: 0;
-        background: transparent;
-        height: 20px;
-        margin-left: 3px;
+        cursor: pointer;
       }
 
-      input[type=submit] {
-        line-height: unset;
+      button:hover,
+      button:focus {
+        border-color: $os_link_color;
+        outline: none;
       }
     }
     &.new {
       .editable-click { border-bottom: 0; }
-      .resend-confirmation, .unconfirmed-warning, .controls { display: none; }
+      .resend-confirmation, .unconfirmed-warning, .email-entry__controls { display: none; }
     }
   }
 
@@ -210,6 +255,10 @@ $font-path: '/accounts/fonts';
     border-radius: 0.3rem;
     margin-top: 10px;
     display: block;
+  }
+
+  #add-an-email-editable {
+    padding-bottom: 1rem;
   }
 
 

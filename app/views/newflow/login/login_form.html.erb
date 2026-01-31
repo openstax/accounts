@@ -5,7 +5,7 @@
 
 <div id="login-signup-form">
     <div class="content">
-        <%= render partial: 'newflow/tab_group' , locals: { active_class: 'login--active' } %>
+        <%= render partial: 'newflow/tab_group', locals: { active_class: 'login--active' } %>
 
         <%= newflow_login_signup_card(
                     id: 'login-page',
@@ -19,7 +19,6 @@
                     @page_title = 'Log in'
                 %>
                 <fieldset class="content social-section">
-                    <legend><%= I18n.t(:"login_signup_form.login_with") %></legend>
                     <div class="social-buttons">
                         <div class="fb-share-button">
                             <%=
@@ -49,47 +48,41 @@
                     </div>
                 </fieldset>
 
-                <%=
-                    render(
-                        partial: 'newflow/form_divider',
-                        locals: {
-                            dividing_text: I18n.t(:"login_signup_form.or_login_below")
-                        }
-                    )
-                %>
+      <%=
+        render(
+          partial: 'newflow/form_divider',
+          locals: { dividing_text: I18n.t(:"login_signup_form.or_login_below") }
+        )
+      %>
 
-                <p class="content">Fields marked with an asterisk (*) are required</p>
-                <div class="content control-group">
-                    <%= label_tag "login_form_#{:email}", I18n.t(:"login_signup_form.email_label"),
-                                class: 'field-label required'
-                    %>
-                    <%# input type is text instead of email bc we also support usernames %>
-                    <%= fh.text_field name: :email,
-                                value: email_prefill_value,
-                                placeholder: I18n.t(:"login_signup_form.email_placeholder"),
-                                autofocus: true,
-                                required: true
-                    %>
-                </div>
+      <p class="content form-helper-text">Fields marked with a * are required</p>
 
-                <div class="content control-group">
-                    <div id="password-field-container">
-                        <%= label_tag "login_form_#{:password}", I18n.t(:"login_signup_form.password_label"),
-                                class: 'field-label required'
-                        %>
-                        <%= fh.text_field name: :password,
-                                    type: :password,
-                                    placeholder: I18n.t(:"login_signup_form.password_label"),
-                                    required: true
-                        %>
-                        <button type="button" id="password-show-hide-button">
-                            <span class="toggle-show-hide" data-ga_category='SHOW/HIDE password', data-ga_action='Click', data-ga_label='SHOW - Logon'>SHOW</span>
-                            <span class="toggle-show-hide" style="display: none">HIDE</span>
-                        </button>
-                    </div>
-                </div>
+      <div class="content control-group">
+        <%= label_tag "login_form_#{:email}", I18n.t(:"login_signup_form.email_label"),
+                      class: 'field-label required' %>
+        <%= fh.text_field name: :email,
+                          value: email_prefill_value,
+                          placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+                          autofocus: true,
+                          required: true %>
+      </div>
 
-                <div class="content">
+      <div class="content control-group">
+        <div id="password-field-container">
+          <%= label_tag "login_form_#{:password}", I18n.t(:"login_signup_form.password_label"),
+                        class: 'field-label required' %>
+          <%= fh.text_field name: :password,
+                            type: :password,
+                            placeholder: I18n.t(:"login_signup_form.password_label"),
+                            required: true %>
+          <button type="button" id="password-show-hide-button">
+            <span class="toggle-show-hide" data-ga_category='SHOW/HIDE password', data-ga_action='Click', data-ga_label='SHOW - Logon'>SHOW</span>
+            <span class="toggle-show-hide" style="display: none">HIDE</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
                     <%= f.submit I18n.t(:"login_signup_form.continue_button"),
                                 disable_with: I18n.t(:"login_signup_form.continue_button"),
                                 class: 'primary',
@@ -133,4 +126,3 @@
     $requiredInputs.on('input', handleDisable);
     handleDisable();
 </script>
-

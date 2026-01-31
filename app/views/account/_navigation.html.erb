@@ -1,0 +1,11 @@
+<nav class="account-shell__nav">
+  <ul>
+    <% @account_nav_items.each do |item| %>
+      <% path_helper = item[:path] %>
+      <% active = @account_nav_current == item[:key] %>
+      <li class="<%= active ? 'active' : '' %>">
+        <%= link_to item[:label], send(path_helper), class: (active ? 'active' : nil) %>
+      </li>
+    <% end %>
+  </ul>
+</nav>
