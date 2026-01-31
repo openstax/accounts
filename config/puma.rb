@@ -1,6 +1,6 @@
 require 'rails'
 require 'active_model'
-require 'dotenv/rails-now'
+require "dotenv/load"
 
 require_relative 'dev_url_options'
 

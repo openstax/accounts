@@ -102,7 +102,7 @@ module Admin
       end
 
       if new_id.downcase == 'remove'
-        flash[:notice] = 'Removed the Salesforce Contact ID'
+        flash[:notice] = 'Salesforce Contact ID successfully updated (removed)'
         @user.salesforce_contact_id = nil
         return @user.save
       end
@@ -112,7 +112,7 @@ module Admin
 
         if contact.present?
           # The contact really exists, so save its ID to the User
-          flash[:notice] = 'Updated Salesforce Contact'
+          flash[:notice] = 'Salesforce Contact successfully updated'
           @user.salesforce_contact_id = new_id
           return @user.save
         else

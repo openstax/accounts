@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'vcr_helper'
 
 module Newflow
   module StudentSignup

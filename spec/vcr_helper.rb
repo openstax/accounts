@@ -45,11 +45,9 @@ VCR.configure do |c|
     # 'chrome' for selenium via docker
     c.ignore_hosts(IPSocket.getaddress(Socket.gethostname), "chrome")
   else
-    require 'webdrivers'
-    # To avoid issues with the gem `webdrivers`, we must ignore the driver hosts
-    # See https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock
-    driver_hosts = Webdrivers::Common.subclasses.map { |driver| URI(driver.base_url).host }
-    c.ignore_hosts(*driver_hosts)
+    # Selenium-manager (built into selenium-webdriver 4.6+) handles driver downloads
+    # Ignore hosts used for chromedriver downloads in case VCR intercepts them
+    c.ignore_hosts('storage.googleapis.com', 'googlechromelabs.github.io', 'edgedl.me.gvt1.com')
   end
 
   %w(
