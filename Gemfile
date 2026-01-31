@@ -280,11 +280,9 @@ group :test do
 
   gem 'db-query-matchers'
 
-  # Run feature tests with Capybara + Selenium; choose which driver gems to use
-  # based on test environment.
+  # Run feature tests with Capybara + Selenium
   gem 'capybara'
   gem 'selenium-webdriver', require: false
-  gem 'webdrivers', require: false
 
   # Testing emails
   gem 'capybara-email'
