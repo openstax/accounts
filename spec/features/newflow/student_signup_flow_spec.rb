@@ -1,6 +1,4 @@
 require 'rails_helper'
-require 'vcr_helper'
-require 'byebug'
 module Newflow
   feature 'Student signup flow', js: true do
      before do
