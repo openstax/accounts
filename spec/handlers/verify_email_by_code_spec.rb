@@ -1,21 +1,13 @@
 require 'rails_helper'
-require 'vcr_helper'
 
-describe VerifyEmailByCode, type: :handler, vcr: VCR_OPTS do
+describe VerifyEmailByCode, type: :handler do
   subject(:handler_call) { described_class.call(params: params) }
 
   let(:params) { { code: email.confirmation_code } }
   let(:email) { FactoryBot.create(:email_address, user: user) }
   let(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: role) }
 
-  before(:all) do
-    VCR.use_cassette('Newflow_VerifyEmailByCode/sf_setup', VCR_OPTS) do
-      @proxy = SalesforceProxy.new
-      @proxy.setup_cassette
-    end
-  end
-
-    context 'when student' do
+  context 'when student' do
       let(:role) { User.roles[:student] }
 
       it 'verifies the email address found by the given code' do

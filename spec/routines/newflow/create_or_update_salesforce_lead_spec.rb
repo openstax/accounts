@@ -1,15 +1,7 @@
 require 'rails_helper'
-require 'vcr_helper'
 
 module Newflow
-  describe CreateOrUpdateSalesforceLead, type: :routine, vcr: VCR_OPTS do
-
-    before(:all) do
-      VCR.use_cassette('Newflow_CreateOrUpdateSalesforceLead/sf_setup', VCR_OPTS) do
-        @proxy = SalesforceProxy.new
-        @proxy.setup_cassette
-      end
-    end
+  describe CreateOrUpdateSalesforceLead, type: :routine do
 
     let(:user) do
       User.create do |u|
@@ -32,6 +24,53 @@ module Newflow
         u.using_openstax_how = "as_primary"
         u.is_profile_complete = true
       end
+    end
+
+    before do
+      # Mock the Salesforce School lookup for "Find Me A Home"
+      mock_school = double('School', id: 'test_school_sf_id')
+      allow(OpenStax::Salesforce::Remote::School).to receive(:find_by).with(name: 'Find Me A Home').and_return(mock_school)
+      
+      # Mock the Lead find_by and save operations
+      mock_lead = double('Lead', 
+        id: 'test_lead_id',
+        email: user.best_email_address_for_salesforce
+      )
+      allow(mock_lead).to receive(:first_name=)
+      allow(mock_lead).to receive(:last_name=)
+      allow(mock_lead).to receive(:phone=)
+      allow(mock_lead).to receive(:source=)
+      allow(mock_lead).to receive(:application_source=)
+      allow(mock_lead).to receive(:role=)
+      allow(mock_lead).to receive(:position=)
+      allow(mock_lead).to receive(:title=)
+      allow(mock_lead).to receive(:who_chooses_books=)
+      allow(mock_lead).to receive(:subject_interest=)
+      allow(mock_lead).to receive(:num_students=)
+      allow(mock_lead).to receive(:adoption_status=)
+      allow(mock_lead).to receive(:adoption_json=)
+      allow(mock_lead).to receive(:os_accounts_id=)
+      allow(mock_lead).to receive(:accounts_uuid=)
+      allow(mock_lead).to receive(:school=)
+      allow(mock_lead).to receive(:city=)
+      allow(mock_lead).to receive(:country=)
+      allow(mock_lead).to receive(:verification_status=)
+      allow(mock_lead).to receive(:b_r_i_marketing=)
+      allow(mock_lead).to receive(:title_1_school=)
+      allow(mock_lead).to receive(:newsletter=)
+      allow(mock_lead).to receive(:newsletter_opt_in=)
+      allow(mock_lead).to receive(:self_reported_school=)
+      allow(mock_lead).to receive(:sheerid_school_name=)
+      allow(mock_lead).to receive(:account_id=)
+      allow(mock_lead).to receive(:school_id=)
+      allow(mock_lead).to receive(:signup_date=)
+      allow(mock_lead).to receive(:tracking_parameters=)
+      allow(mock_lead).to receive(:state_code=)
+      allow(mock_lead).to receive(:state=)
+      allow(mock_lead).to receive(:save).and_return(true)
+      
+      allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+      allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
     end
 
     it 'works on the happy path' do

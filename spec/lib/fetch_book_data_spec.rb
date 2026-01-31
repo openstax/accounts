@@ -1,7 +1,6 @@
 require 'rails_helper'
-require 'vcr_helper'
 
-describe FetchBookData, type: :lib, vcr: VCR_OPTS do
+describe FetchBookData, type: :lib do
   describe '#titles' do
     subject(:actual_titles) { described_class.new.titles }
 

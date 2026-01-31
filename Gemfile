@@ -241,9 +241,6 @@ group :development, :test do
   # Stubs HTTP requests
   gem 'webmock'
 
-  # Records HTTP requests
-  gem 'vcr'
-
   # Lint ruby files
   gem 'rubocop', require: false
 

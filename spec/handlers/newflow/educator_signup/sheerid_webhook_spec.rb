@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'vcr_helper'
 
 #describe Newflow::EducatorSignup::SheeridWebhook, type: :routine, vcr: VCR_OPTS do
 describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do

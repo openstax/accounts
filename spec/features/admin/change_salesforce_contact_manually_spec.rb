@@ -1,14 +1,6 @@
 require 'rails_helper'
-require 'vcr_helper'
 
-feature 'Change Salesforce contact manually', js: true, vcr: VCR_OPTS do
-  before(:all) do
-    VCR.use_cassette('Change_Salesforce_contact_manually/sf_setup', VCR_OPTS) do
-      @proxy = SalesforceProxy.new
-      @proxy.setup_cassette
-    end
-  end
-
+feature 'Change Salesforce contact manually', js: true do
   before(:each) do
     @admin_user = create_admin_user
     visit '/'
@@ -29,17 +21,23 @@ feature 'Change Salesforce contact manually', js: true, vcr: VCR_OPTS do
   end
 
   it 'can be set if the Contact exists in SF' do
-    contact = @proxy.new_contact
-    fill_in 'user_salesforce_contact_id', with: contact.id
+    valid_contact_id = '0030v000002Wo0qAAC'
+    mock_contact = double('Contact', id: valid_contact_id)
+    allow(OpenStax::Salesforce::Remote::Contact).to receive(:find).with(valid_contact_id).and_return(mock_contact)
+    
+    fill_in 'user_salesforce_contact_id', with: valid_contact_id
     click_button 'Save'
     expect(page).to have_content('successfully updated')
     @target_user.reload
-    expect(@target_user.salesforce_contact_id).to eq contact.id
+    expect(@target_user.salesforce_contact_id).to eq valid_contact_id
   end
 
   it 'cannot be set if the Contact does not exist in SF' do
     @target_user.update_attribute(:salesforce_contact_id, 'original')
-    fill_in 'user_salesforce_contact_id', with: '0010v000002Wo0qAAC'
+    invalid_contact_id = '0010v000002Wo0qAAC'
+    allow(OpenStax::Salesforce::Remote::Contact).to receive(:find).with(invalid_contact_id).and_return(nil)
+    
+    fill_in 'user_salesforce_contact_id', with: invalid_contact_id
     click_button 'Save'
     expect(page).to have_content("Can't find")
     @target_user.reload
@@ -48,7 +46,10 @@ feature 'Change Salesforce contact manually', js: true, vcr: VCR_OPTS do
 
   it 'cannot be set if the ID is malformed' do
     @target_user.update_attribute(:salesforce_contact_id, 'original')
-    fill_in 'user_salesforce_contact_id', with: 'somethingwonky'
+    malformed_id = 'somethingwonky'
+    allow(OpenStax::Salesforce::Remote::Contact).to receive(:find).with(malformed_id).and_raise(StandardError.new('Invalid ID'))
+    
+    fill_in 'user_salesforce_contact_id', with: malformed_id
     click_button 'Save'
     expect(page).to have_content('Failed')
     @target_user.reload
