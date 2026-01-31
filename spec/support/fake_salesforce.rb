@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # FakeSalesforce provides in-memory stubs for OpenStax::Salesforce::Remote classes,
-# eliminating the need for VCR cassettes in specs that interact with Salesforce.
 #
 # Usage in specs:
 #
