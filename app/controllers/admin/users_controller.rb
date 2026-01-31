@@ -21,9 +21,11 @@ module Admin
     def update
       User.transaction do
         was_administrator = @user.is_administrator
+        old_updated_at = @user.updated_at
 
         respond_to do |format|
           if change_user_password && add_email_to_user && change_salesforce_contact && update_user
+            @user.touch if @user.updated_at == old_updated_at
             security_log :user_updated_by_admin, user_id: params[:id], username: @user.username,
                                                 user_params: request.filtered_parameters['user']
 
@@ -100,7 +102,7 @@ module Admin
       end
 
       if new_id.downcase == 'remove'
-        flash[:notice] = 'Removed the Salesforce Contact ID'
+        flash[:notice] = 'Salesforce Contact ID successfully updated (removed)'
         @user.salesforce_contact_id = nil
         return @user.save
       end
@@ -110,7 +112,7 @@ module Admin
 
         if contact.present?
           # The contact really exists, so save its ID to the User
-          flash[:notice] = 'Updated Salesforce Contact'
+          flash[:notice] = 'Salesforce Contact successfully updated'
           @user.salesforce_contact_id = new_id
           return @user.save
         else

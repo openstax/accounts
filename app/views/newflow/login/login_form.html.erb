@@ -58,6 +58,7 @@
                     )
                 %>
 
+                <p class="content">Fields marked with an asterisk (*) are required</p>
                 <div class="content control-group">
                     <%= label_tag "login_form_#{:email}", I18n.t(:"login_signup_form.email_label"),
                                 class: 'field-label required'
@@ -92,7 +93,8 @@
                     <%= f.submit I18n.t(:"login_signup_form.continue_button"),
                                 disable_with: I18n.t(:"login_signup_form.continue_button"),
                                 class: 'primary',
-                                data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Email' }
+                                data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Email' },
+                                disabled: 'disabled'
                     %>
                 </div>
 
@@ -117,5 +119,18 @@
 
 <script type="text/javascript">
     NewflowUi.focusOnFirstErrorItem();
+    const $requiredInputs = $('form input[aria-required="true"]');
+    const handleDisable = () => {
+        const disableSubmit = $requiredInputs.toArray().some((i) => i.value.length == 0);
+
+        if (disableSubmit) {
+            NewflowUi.disableButton('form [type="submit"]');
+        } else {
+            NewflowUi.enableButton('form [type="submit"]');
+        }    
+    }
+
+    $requiredInputs.on('input', handleDisable);
+    handleDisable();
 </script>
 

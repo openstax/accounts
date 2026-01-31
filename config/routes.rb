@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   root to: 'static_pages#home'
 
   direct :salesforce_knowledge_base do
-    'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
+    'https://help.openstax.org/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
   scope controller: 'other' do
@@ -153,14 +153,6 @@ Rails.application.routes.draw do
 
   scope 'signup', controller: 'legacy/signup', as: 'signup' do
     get '/', action: :start
-    post '/', action: :start
-    get 'password'
-    get 'social'
-
-    get 'verify_email'
-    post 'verify_email'
-
-    get 'verify_by_token'
 
     get 'profile'
     post 'profile'

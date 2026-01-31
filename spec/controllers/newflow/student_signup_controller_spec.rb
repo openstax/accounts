@@ -45,8 +45,26 @@ module Newflow
           expect {
             post(:student_signup, params: params)
           }.to change {
-            SecurityLog.where(event_type: :sign_up_successful, user: User.last)
+            SecurityLog.where(event_type: :student_signed_up, user: User.last).count
           }
+        end
+
+        it 'includes redirect URL in security log message when present' do
+          redirect_url = "https://openstax.org/books/biology-2e"
+          # GET student_signup_form with `?r=URL` stores the url
+          get(:student_signup_form, params: { r: redirect_url })
+
+          post(:student_signup, params: params)
+
+          log = SecurityLog.where(event_type: :student_signed_up).last
+          expect(log.event_data['redirect']).to eq(redirect_url)
+        end
+
+        it 'does not include redirect URL in security log message when absent' do
+          post(:student_signup, params: params)
+
+          log = SecurityLog.where(event_type: :student_signed_up).last
+          expect(log.event_data['redirect']).to be_nil
         end
 
         it 'redirects to student_email_verification_form_path' do
@@ -87,6 +105,34 @@ module Newflow
           }.to change {
             SecurityLog.student_sign_up_failed.count
           }
+        end
+      end
+
+      context 'when recaptcha is disabled' do
+        let(:params) do
+          {
+            signup: {
+              first_name: Faker::Name.first_name,
+              last_name: Faker::Name.last_name,
+              email: 'user2@openstax.org',
+              password: 'password',
+              newsletter: false,
+              terms_accepted: true,
+              contract_1_id: FinePrint::Contract.first.id,
+              contract_2_id: FinePrint::Contract.second.id,
+              role: :student
+            }
+          }
+        end
+
+        before do
+          allow(Settings::Recaptcha).to receive(:disabled?) { true }
+        end
+
+        it 'bypasses recaptcha verification and allows signup' do
+          expect_any_instance_of(described_class).not_to receive(:verify_recaptcha)
+          post(:student_signup, params: params)
+          expect(response).to redirect_to(student_email_verification_form_path)
         end
       end
     end
@@ -130,6 +176,29 @@ module Newflow
           expect(response).to render_template(:student_change_signup_email_form)
         end
       end
+
+      context 'when recaptcha is disabled' do
+        let(:params) {
+          {
+            change_signup_email: {
+              email: 'newemail@openstax.org'
+            }
+          }
+        }
+
+        before do
+          allow(Settings::Recaptcha).to receive(:disabled?) { true }
+        end
+
+        it 'bypasses recaptcha verification and allows email change' do
+          user = User.last
+          user.update_attribute('state', 'unverified')
+          session[:unverified_user_id] = user.id
+          expect_any_instance_of(described_class).not_to receive(:verify_recaptcha)
+          post(:student_change_signup_email, params: params)
+          expect(response).to redirect_to(student_email_verification_form_updated_email_path)
+        end
+      end
     end
 
     describe 'GET #student_email_verification_form' do
@@ -159,10 +228,6 @@ module Newflow
         get('student_email_verification_form_updated_email')
         expect(response.status).to eq(302)
       end
-    end
-
-    describe 'POST #student_verify_email_by_pin' do
-      it ''
     end
   end
 end

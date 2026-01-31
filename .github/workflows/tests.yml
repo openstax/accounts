@@ -40,16 +40,16 @@ jobs:
           POSTGRES_PASSWORD: ${{ env.OXA_DB_PASS }}
 
     steps:
-      - uses: actions/checkout@v4
-      
+      - uses: actions/checkout@v6
+
       - name: Set up Ruby ${{ matrix.ruby-version }}
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
-          
+
       - name: Cache PostgreSQL data
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /tmp/postgres-data
           key: postgres-${{ matrix.postgres-version }}-${{ hashFiles('**/Gemfile.lock') }}
@@ -57,7 +57,7 @@ jobs:
             postgres-${{ matrix.postgres-version }}-
 
       - name: Cache test results
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             tmp/cache
@@ -68,95 +68,16 @@ jobs:
 
       - name: Test
         id: test
-        continue-on-error: true
         run: |
           bin/rake parallel:create parallel:load_schema parallel:seed --trace
           WORKERS=4 bin/rake parallel:spec
-          
+
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-${{ matrix.ruby-version }}
           path: |
             tmp/parallel_*
             log/test.log
           retention-days: 14
-          
-      - name: Generate Test Report
-        if: always()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const path = require('path');
-            
-            // Read test results
-            const testLog = fs.readFileSync('log/test.log', 'utf8');
-            const parallelLogs = fs.readdirSync('tmp')
-              .filter(file => file.startsWith('parallel_'))
-              .map(file => fs.readFileSync(`tmp/${file}`, 'utf8'));
-            
-            // Parse test results
-            const failures = [];
-            const errors = [];
-            
-            // Parse test.log
-            const testLogLines = testLog.split('\n');
-            for (const line of testLogLines) {
-              if (line.includes('FAILED') || line.includes('Error:')) {
-                failures.push(line.trim());
-              }
-            }
-            
-            // Parse parallel logs
-            for (const log of parallelLogs) {
-              const lines = log.split('\n');
-              for (const line of lines) {
-                if (line.includes('FAILED') || line.includes('Error:')) {
-                  failures.push(line.trim());
-                }
-              }
-            }
-            
-            // Generate report
-            const report = `# Test Results Report
-            ## Summary
-            - Ruby Version: ${{ matrix.ruby-version }}
-            - PostgreSQL Version: ${{ matrix.postgres-version }}
-            - Status: ${{ steps.test.outcome }}
-            
-            ## Failures (${failures.length})
-            ${failures.map(f => `- ${f}`).join('\n')}
-            
-            ## Test Log Excerpt
-            \`\`\`
-            ${testLogLines.slice(-50).join('\n')}
-            \`\`\`
-            `;
-            
-            // Save report
-            fs.writeFileSync('test-report.md', report);
-            
-      - name: Upload Test Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report-${{ matrix.ruby-version }}
-          path: test-report.md
-          retention-days: 14
-          
-      - name: Notify on failure
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const report = fs.readFileSync('test-report.md', 'utf8');
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `❌ Tests failed for Ruby ${{ matrix.ruby-version }}.\n\n${report}\n\nCheck the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for more details.`
-            });

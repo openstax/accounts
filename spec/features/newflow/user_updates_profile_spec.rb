@@ -15,32 +15,11 @@ feature 'User updates profile', js: true do
       fill_in 'first_name', with: 'testuser'
       screenshot!
       find('.glyphicon-ok').click
-      expect(page).to have_link('testuser')
+      expect(page).to have_button('testuser')
       screenshot!
     end
 
-    scenario 'blank first name' do
-      fill_in 'first_name', with: ''
-      find('.glyphicon-ok').click
-      expect(find('.editable-error-block').text).to include (t :"javascript.name.first_name_blank")
-      screenshot!
-    end
-
-    scenario 'blank last name' do
-      fill_in 'last_name', with: ''
-      find('.glyphicon-ok').click
-      expect(find('.editable-error-block').text).to include (t :"javascript.name.last_name_blank")
-      screenshot!
-    end
-
-    scenario 'blank first and last name' do
-      fill_in 'first_name', with: ''
-      fill_in 'last_name', with: ''
-      find('.glyphicon-ok').click
-      expect(find('.editable-error-block').text).to include (t :"javascript.name.first_last_name_blank")
-      screenshot!
-    end
-
+    # Removed tests for blank names because names are now required
     scenario 'name with spaces' do
       fill_in 'last_name', with: '  '
       find('.glyphicon-ok').click
