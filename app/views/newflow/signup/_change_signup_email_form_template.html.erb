@@ -1,13 +1,14 @@
 <div id="login-signup-form">
     <div class="content">
-        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
+        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active' } %>
 
         <%= newflow_login_signup_card(
                     id: 'signup-page',
                     classes: "signup-page",
                     header: I18n.t(:"login_signup_form.change_signup_email_form_page_header"),
                     current_step: current_step,
-                    banners: @banners) do %>
+                    banners: @banners,
+                    show_exit_icon: true) do %>
             <% lev_form_for :change_signup_email, url: submit_to_path do |f| %>
                 <% fh = NewflowFormHelper::Newflow.new(f: f,
                                             context: self,

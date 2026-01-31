@@ -1,0 +1,29 @@
+<% header_logo =
+     begin
+       image_tag 'openstax-logo.svg', alt: 'OpenStax', class: 'os-header__logo-img'
+     rescue Sprockets::Rails::Helper::AssetNotFound
+       content_tag(:span, 'openstax', class: 'os-header__logo-text')
+     end
+%>
+<% upper_corner_console = nil %>
+<% if respond_to?(:signed_in?) && signed_in? %>
+  <% upper_corner_console = render(partial: 'shared/upper_corner_console').presence %>
+<% end %>
+
+<header class="os-header" role="banner">
+  <div class="os-header__inner">
+    <div class="os-header__brand-block">
+      <%= link_to main_app.root_path, class: 'os-header__brand', 'aria-label': 'OpenStax home' do %>
+        <%= header_logo %>
+      <% end %>
+    </div>
+
+    <div class="os-header__actions">
+      <%= upper_corner_console if upper_corner_console.present? %>
+      <%= link_to 'Go to OpenStax.org', 'https://www.openstax.org', class: 'os-header__cta os-header__cta--ghost', target: '_blank', rel: 'noopener noreferrer' %>
+      <% if respond_to?(:signed_in?) && signed_in? && main_app.respond_to?(:logout_path) %>
+        <%= link_to 'Log out', main_app.logout_path, class: 'os-header__cta os-header__cta--primary' %>
+      <% end %>
+    </div>
+  </div>
+</header>

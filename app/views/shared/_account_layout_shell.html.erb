@@ -1,0 +1,22 @@
+<%
+  shell_title = local_assigns[:title]
+  shell_description = local_assigns[:description]
+%>
+
+<%= ox_card(classes: "account-shell") do %>
+  <% if shell_title.present? || shell_description.present? %>
+    <div class="profile-title account-shell__header">
+      <% if shell_title.present? %>
+        <h1 class="title"><%= shell_title %></h1>
+      <% end %>
+    </div>
+
+    <% if shell_description.present? %>
+      <p class="account-shell__description"><%= shell_description %></p>
+    <% end %>
+  <% end %>
+
+  <div class="account-shell__body">
+    <%= yield if block_given? %>
+  </div>
+<% end %>

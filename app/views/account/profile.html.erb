@@ -1,0 +1,31 @@
+<% content_for :head do %>
+  <%= javascript_include_tag "profile" %>
+<% end %>
+
+<% content_for :javascript do %>
+  <script>
+    $.fn.editable.defaults.mode = 'inline';
+    $.fn.editable.defaults.send = "always";
+    $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
+    $.fn.editable.defaults.url = "<%= profile_path %>";
+
+    OX.Profile.Name.editable($('#name'), {
+      title: "<%= j current_user.title %>",
+      first_name: "<%= j current_user.first_name %>",
+      last_name: "<%= j current_user.last_name %>",
+      suffix: "<%= j current_user.suffix %>"
+    });
+  </script>
+<% end %>
+
+<div class="account-layout">
+  <%= render 'account/navigation' %>
+  <div class="account-layout__content">
+    <%= render(
+          'shared/account_layout_shell',
+          locals: { title: @account_shell_title, description: @account_shell_description }
+        ) do %>
+      <%= render 'account/profile_account_details' %>
+    <% end %>
+  </div>
+</div>

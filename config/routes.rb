@@ -4,7 +4,21 @@ Rails.application.routes.draw do
   root to: 'static_pages#home'
 
   direct :salesforce_knowledge_base do
-    'https://help.openstax.org/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
+    'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
+  end
+
+  get 'i/account-shell-preview', to: 'static_pages#account_shell_preview', as: :account_shell_preview
+
+  scope 'i/account', controller: 'account' do
+    get '/', action: :overview, as: :account_overview
+    get '/profile', action: :profile, as: :account_profile
+    get '/security', action: :security, as: :account_security
+    get '/books', action: :books, as: :account_books
+    get '/impact', action: :impact, as: :account_impact
+    get '/support', action: :support, as: :account_support
+
+    post '/books/saved', to: 'account/saved_books#create', as: :account_saved_books
+    delete '/books/saved/:id', to: 'account/saved_books#destroy', as: :account_saved_book
   end
 
   scope controller: 'other' do

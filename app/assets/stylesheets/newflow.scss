@@ -5,23 +5,6 @@ $font-path: '/accounts/fonts';
 @import "newflow_colors";
 @import "intlTelInput";
 
-html {
-    font-family: 'Neue Helvetica W01', sans-serif;
-}
-
-body {
-    @include width-up-to($phone-max) {
-        .content {
-            padding-left: 0;
-            padding-right: 0;
-        }
-    }
-
-    @include set-font(body-regular);
-    background-color: #fff;
-    color: var(--greyish-brown);
-}
-
 .banner {
     background-color: #d9edf7;
     padding: 1rem;
@@ -93,9 +76,11 @@ body {
 }
 
 .form-helper-text {
-  font-weight: normal;
-  font-style: italic;
-  margin: 1rem 0;
+  font-size: 0.95rem;
+  color: #5c6a7a;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  text-transform: none;
 }
 
 input.has-error {
@@ -217,11 +202,11 @@ label.required::after {
         background-color: transparent;
         border: none;
         height: auto;
-        font-size: inherit;
+        font-size: 1rem;
         padding: 0;
         position: absolute;
-        top: 3.7rem;
-        right: 1.8rem;
+        top: 3.4rem;
+        right: 1rem;
 
         color: #0070af;
         font-weight: bold;
@@ -229,21 +214,7 @@ label.required::after {
 
         @include wider-than($phone-max) {
             // more space to the right on desktop for users who use a password manager
-            right: 3.6rem;
-        }
-    }
-}
-
-.main-menu {
-    box-shadow: none;
-    box-sizing: border-box;
-    padding: 2rem 0 0 2rem;
-
-    .logo-wrapper {
-        padding: 0;
-
-        @include width-up-to($phone-max) {
-            margin: auto;
+            right: 3.2rem;
         }
     }
 }
@@ -274,25 +245,12 @@ label.required::after {
         height: 100%;
         padding: 0 1.5rem;
 
-        background-color: #f5f5f5;
+        background-color: #ffffff;
         border-radius: 1.5rem;
     }
 
     span {
         @include title-font(1.4rem);
-    }
-}
-
-#exit-icon {
-    border-left: 0.1rem solid #d5d5d5;
-    border-right: 0.1rem solid #d5d5d5;
-    padding: 1.5rem 0 0 1.5rem;
-
-    a {
-        float: right;
-        padding-right: 3rem;
-        padding-top: 1rem;
-        color: var(--greyish-brown);
     }
 }
 
@@ -411,15 +369,6 @@ $very-narrow: 37rem * $scale-factor;
     }
 
     .join-as {
-        .blue-bar {
-            height: 1rem;
-            background-color: #007297;
-        }
-
-        .green-bar {
-            height: 1rem;
-            background-color: #0c9372;
-        }
 
         @include width-up-to($phone-max) {
             display: flex;
@@ -433,16 +382,28 @@ $very-narrow: 37rem * $scale-factor;
             }
 
             .join-as__role {
-                height: 15rem;
+                min-height: 10rem;
                 display: flex;
-                flex-direction: column;
-                justify-content: center;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 1.2rem;
+                text-align: left;
+
+                h2 {
+                    margin: 0;
+                    text-align: left;
+                }
+
+                img {
+                    width: 48px;
+                    height: 48px;
+                }
             }
 
             .join-as__description {
                 margin-top: 3rem;
                 margin-bottom: 3rem;
-                @include set-font(body-regular);
+                font-size: 1.4rem;
             }
         }
 
@@ -462,49 +423,65 @@ $very-narrow: 37rem * $scale-factor;
 
             .join-as__role {
                 display: flex;
-                flex-direction: column;
-                justify-content: center;
+                align-items: center;
+                min-height: 10rem;
+                padding: 2rem;
+                text-align: left;
+                gap: 1.5rem;
 
-                height: 26rem;
+                h2 {
+                    margin: 0;
+                    text-align: left;
+                }
+
+                img {
+                    width: 56px;
+                    height: 56px;
+                }
             }
 
             .join-as__description {
                 margin-top: 3rem;
-                @include set-font(body-regular);
+                font-size: 1.4rem;
             }
         }
 
         .join-as__role {
             @include title-font(2.4rem);
-            text-align: center;
+            text-align: left;
             position: relative;
             border: 0.1rem solid #d5d5d5;
-            border-bottom: 0;
+            border-bottom: 0.1rem solid #d5d5d5;
             box-sizing: border-box;
+            letter-spacing: normal;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border-radius: 0.3rem;
 
             h2 {
                 font-size: inherit;
                 letter-spacing: inherit;
                 line-height: inherit;
+                margin: 0;
             }
         }
 
         a {
-            color: unset;
+            color: #0f3554;
             text-decoration: none;
-            // bcus `box-sizing: border-box` on hover isn't doing the job:
-            border: 0.1rem solid #fff;
+            border: 1px solid #d7dde6;
+            background: #f4f7fb;
+            border-radius: 0.3rem;
 
             &:hover {
-                border: 0.1rem solid #0dc0dc;
-                box-shadow: 0 0 .4rem rgba(13, 192, 220, 0.4);
+                background: #e9eef6;
+                border-color: #d7dde6;
             }
         }
 
         .join-as__role img {
-            position: absolute;
-            bottom: 0;
-            left: 2rem;
+            width: 3rem;
         }
     }
 
@@ -554,7 +531,29 @@ $very-narrow: 37rem * $scale-factor;
             cursor: default;
             border: 0;
             border-bottom: 0.1rem solid #d5d5d5;
-            background-color: #fff; // TODO: use a shared variable
+            background-color: transparent;
+        }
+
+        .tab.tab--exit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.8rem 1rem;
+            border: 0;
+            border-bottom: 0.1rem solid #d5d5d5;
+            color: var(--greyish-brown);
+            text-decoration: none;
+            background: transparent;
+            font-size: 1.4rem;
+
+            i {
+                font-size: 1.4rem;
+            }
+
+            &:hover {
+                color: #222;
+            }
         }
     }
 
@@ -562,6 +561,7 @@ $very-narrow: 37rem * $scale-factor;
         border-left: 0.1rem solid #d5d5d5;
         border-right: 0.1rem solid #d5d5d5;
         text-align: center;
+        background: #ffffff;
 
         @include width-up-to($phone-max) {
             @include set-font(h4);
@@ -634,6 +634,7 @@ $very-narrow: 37rem * $scale-factor;
             input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="radio"]):not([type="checkbox"]),
             textarea {
                 border-color: #949494;
+                border-radius: 0.3rem;
             }
         }
 
@@ -779,14 +780,45 @@ $very-narrow: 37rem * $scale-factor;
             color: #666;
             opacity: 0.85;
         }
-
-        border-radius: 0;
     }
 }
 
 // Improve vertical spacing
 
 #login-signup-form  {
+    .login-page,
+    .signup-page,
+    .welcome-page {
+        position: relative;
+        background: #ffffff;
+    }
+
+    #exit-icon {
+        position: absolute;
+        top: 1.2rem;
+        right: 1.2rem;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #4c5968;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        z-index: 3;
+
+        .fa {
+            font-size: 1.1rem;
+        }
+
+        &:hover {
+            color: #122b48;
+            background: #ffffff;
+        }
+    }
+
     .warning {
         &.edu, &.mistype {
             color: #c22032;
@@ -824,7 +856,7 @@ $very-narrow: 37rem * $scale-factor;
         .login-page {
             .page-header {
                 margin-top: 0;
-                padding-top: 4.5rem;
+                padding-top: 2.5rem;
             }
 
             form {
@@ -837,6 +869,13 @@ $very-narrow: 37rem * $scale-factor;
 
             [type="submit"] {
                 margin-top: 1rem;
+            }
+        }
+
+        .signup-page {
+            .page-header {
+                margin-top: 0;
+                padding-top: 2.5rem;
             }
         }
     }
@@ -869,7 +908,7 @@ $very-narrow: 37rem * $scale-factor;
 
         .login-page {
             .page-header {
-                padding-top: 8rem;
+                padding-top: 5rem;
             }
 
             form {
@@ -881,9 +920,16 @@ $very-narrow: 37rem * $scale-factor;
             }
         }
 
+        .signup-page {
+            .page-header {
+                padding-top: 5rem;
+            }
+        }
+
         .welcome-page {
             .page-header {
-                padding-top: 8rem;
+                padding-top: 5rem;
+                padding-bottom: 3rem;
             }
 
             form {
@@ -905,6 +951,19 @@ $very-narrow: 37rem * $scale-factor;
         @include wider-than($phone-max) {
             margin-bottom: 2rem;
             margin-top: 1.2rem;
+        }
+
+        border-radius: 0.3rem;
+        background-color: #f26b21;
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        padding: 0.85rem 1.4rem;
+
+        &:hover {
+            background-color: #e3631f;
+            text-decoration: none;
         }
     }
 }
@@ -933,12 +992,19 @@ $very-narrow: 37rem * $scale-factor;
 // Social buttons
 
 .social-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0 1rem;
+
     > div {
-        display: inline-block;
+        display: inline-flex;
     }
 
     .fb-share-button {
-        margin-right: 0.6rem;
+        margin-right: 0;
     }
 
     .fb-share-button a {
@@ -960,21 +1026,30 @@ $very-narrow: 37rem * $scale-factor;
     }
 
     .btn {
-        text-align: left;
-
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
         border: 0;
-        display: inline-block;
+        border-radius: 0.3rem;
+        padding: 0.75rem 1.4rem;
+        min-width: 14rem;
+        box-shadow: 0 6px 16px rgba(15, 32, 64, 0.08);
+        font-weight: 600;
+        letter-spacing: normal;
         touch-action: manipulation;
-        font-weight: 500;
         transition: all 0.2s ease-in-out;
+    }
+
+    .btn span {
+        white-space: nowrap;
     }
 }
 
 @include width-up-to($phone-max) {
     .social-buttons {
         .btn {
-            height: 3.5rem;
-            padding: 0;
+            width: 100%;
         }
 
         a {
@@ -1004,7 +1079,6 @@ $very-narrow: 37rem * $scale-factor;
         }
 
         .social-icon {
-            padding-left: 2.5rem;
             padding-right: 1.6rem;
         }
     }
@@ -1062,24 +1136,6 @@ $very-narrow: 37rem * $scale-factor;
 
     &.success {
         color:  #63A524;
-    }
-}
-
-#newflow-footer {
-    text-align: center;
-
-    #footer-rice-logo-image {
-        max-height: 3.7rem;
-        margin-bottom: 1.2rem;
-    }
-
-    #newflow-footer--copyright {
-        font-size: 1rem;
-
-        a {
-            color: #000;
-            text-decoration: none;
-        }
     }
 }
 

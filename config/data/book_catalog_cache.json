@@ -1,0 +1,2401 @@
+{
+    "meta": {
+        "total_count": 126
+    },
+    "items": [
+        {
+            "id": 873,
+            "meta": {
+                "slug": "additive-manufacturing-essentials",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/873/",
+                "html_url": "https://openstax.org/details/books/additive-manufacturing-essentials",
+                "first_published_at": "2025-02-18T15:26:43.439502-06:00",
+                "locale": "en"
+            },
+            "title": "Additive Manufacturing Essentials",
+            "book_state": "live",
+            "book_uuid": "851baf99-d993-44bf-8b4d-5b0cadfe2445",
+            "salesforce_name": "Additive Manufacturing Essentials",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/additive_manufacturing_web_card.svg",
+            "publish_date": "2025-03-05",
+            "webview_rex_link": "https://openstax.org/books/additive-manufacturing-essentials/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 867,
+            "meta": {
+                "slug": "algebra-1",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/867/",
+                "html_url": "https://openstax.org/details/books/algebra-1",
+                "first_published_at": "2025-01-13T16:09:02.282000-06:00",
+                "locale": "en"
+            },
+            "title": "Algebra 1",
+            "book_state": "live",
+            "book_uuid": "c437e8a1-8b36-4723-ba43-b2afd6abad0c",
+            "salesforce_name": "Algebra 1",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/algebra_1_web_card.svg",
+            "publish_date": "2025-06-04",
+            "webview_rex_link": "https://openstax.org/books/algebra-1/pages/quick-start",
+            "assignable_book": true
+        },
+        {
+            "id": 38,
+            "meta": {
+                "slug": "algebra-and-trigonometry",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/38/",
+                "html_url": "https://openstax.org/details/books/algebra-and-trigonometry",
+                "first_published_at": "2016-03-09T09:53:01.890636-06:00",
+                "locale": "en"
+            },
+            "title": "Algebra and Trigonometry",
+            "book_state": "retired",
+            "book_uuid": "13ac107a-f15f-49d2-97e8-60ab2e3b519c",
+            "salesforce_name": "Algebra and Trigonometry",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/algebra_trigonometry.svg",
+            "publish_date": "2015-02-13",
+            "webview_rex_link": "https://openstax.org/books/algebra-and-trigonometry/pages/1-introduction-to-prerequisites",
+            "assignable_book": false
+        },
+        {
+            "id": 553,
+            "meta": {
+                "slug": "algebra-and-trigonometry-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/553/",
+                "html_url": "https://openstax.org/details/books/algebra-and-trigonometry-2e",
+                "first_published_at": "2021-12-02T15:49:18.084000-06:00",
+                "locale": "en"
+            },
+            "title": "Algebra and Trigonometry 2e",
+            "book_state": "live",
+            "book_uuid": "eaefdaf1-bda0-4ada-a9fe-f1c065bfcc4e",
+            "salesforce_name": "Algebra and Trigonometry",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/algebra_trigonometry_2e.svg",
+            "publish_date": "2021-12-21",
+            "webview_rex_link": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-introduction-to-prerequisites",
+            "assignable_book": false
+        },
+        {
+            "id": 84,
+            "meta": {
+                "slug": "american-government",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/84/",
+                "html_url": "https://openstax.org/details/books/american-government",
+                "first_published_at": "2016-05-13T16:29:19.973695-05:00",
+                "locale": "en"
+            },
+            "title": "American Government",
+            "book_state": "retired",
+            "book_uuid": "5bcc0e59-7345-421d-8507-a1e4608685e8",
+            "salesforce_name": "American Government",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/american_government.svg",
+            "publish_date": "2016-07-14",
+            "webview_rex_link": "",
+            "assignable_book": false
+        },
+        {
+            "id": 300,
+            "meta": {
+                "slug": "american-government-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/300/",
+                "html_url": "https://openstax.org/details/books/american-government-2e",
+                "first_published_at": "2019-02-21T09:53:33.034397-06:00",
+                "locale": "en"
+            },
+            "title": "American Government 2e",
+            "book_state": "retired",
+            "book_uuid": "9d8df601-4f12-4ac1-8224-b450bf739e5f",
+            "salesforce_name": "American Government",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/american_government_2e_book_card.svg",
+            "publish_date": "2019-02-21",
+            "webview_rex_link": "https://openstax.org/books/american-government-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 518,
+            "meta": {
+                "slug": "american-government-3e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/518/",
+                "html_url": "https://openstax.org/details/books/american-government-3e",
+                "first_published_at": "2021-07-06T16:02:12.632000-05:00",
+                "locale": "en"
+            },
+            "title": "American Government 3e",
+            "book_state": "deprecated",
+            "book_uuid": "30e47181-f52c-4a91-9c11-33380c428268",
+            "salesforce_name": "American Government",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/american_government_3e_web_card.svg",
+            "publish_date": "2021-07-28",
+            "webview_rex_link": "https://openstax.org/books/american-government-3e/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 35,
+            "meta": {
+                "slug": "anatomy-and-physiology",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/35/",
+                "html_url": "https://openstax.org/details/books/anatomy-and-physiology",
+                "first_published_at": "2016-03-09T09:48:12.654796-06:00",
+                "locale": "en"
+            },
+            "title": "Anatomy and Physiology",
+            "book_state": "retired",
+            "book_uuid": "14fb4ad7-39a1-4eee-ab6e-3ef2482e3e22",
+            "salesforce_name": "Anatomy & Physiology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/anatomy_physiology.svg",
+            "publish_date": "2013-04-25",
+            "webview_rex_link": "https://openstax.org/books/anatomy-and-physiology/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 585,
+            "meta": {
+                "slug": "anatomy-and-physiology-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/585/",
+                "html_url": "https://openstax.org/details/books/anatomy-and-physiology-2e",
+                "first_published_at": "2022-03-25T10:54:32.774000-05:00",
+                "locale": "en"
+            },
+            "title": "Anatomy and Physiology 2e",
+            "book_state": "live",
+            "book_uuid": "4fd99458-6fdf-49bc-8688-a6dc17a1268d",
+            "salesforce_name": "Anatomy & Physiology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/anatomy_and_physiology_2e_webcard.svg",
+            "publish_date": "2022-04-20",
+            "webview_rex_link": "https://openstax.org/books/anatomy-and-physiology-2e/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 47,
+            "meta": {
+                "slug": "college-physics-ap-courses",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/47/",
+                "html_url": "https://openstax.org/details/books/college-physics-ap-courses",
+                "first_published_at": "2016-03-09T10:01:26.391128-06:00",
+                "locale": "en"
+            },
+            "title": "The AP Physics Collection",
+            "book_state": "retired",
+            "book_uuid": "8d04a686-d5e8-4798-a27d-c608e4d0e187",
+            "salesforce_name": "AP Physics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/college_physics_for_ap_course_book_card.svg",
+            "publish_date": "2015-08-12",
+            "webview_rex_link": "https://openstax.org/books/college-physics-ap-courses/pages/1-connection-for-ap-r-courses",
+            "assignable_book": false
+        },
+        {
+            "id": 81,
+            "meta": {
+                "slug": "astronomy",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/81/",
+                "html_url": "https://openstax.org/details/books/astronomy",
+                "first_published_at": "2016-04-22T12:11:50.319882-05:00",
+                "locale": "en"
+            },
+            "title": "Astronomy",
+            "book_state": "retired",
+            "book_uuid": "2e737be8-ea65-48c3-aa0a-9f35b4c6a966",
+            "salesforce_name": "Astronomy",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/astronomy.svg",
+            "publish_date": "2016-10-13",
+            "webview_rex_link": "https://openstax.org/books/astronomy/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 576,
+            "meta": {
+                "slug": "astronomy-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/576/",
+                "html_url": "https://openstax.org/details/books/astronomy-2e",
+                "first_published_at": "2022-02-18T11:36:04.150000-06:00",
+                "locale": "en"
+            },
+            "title": "Astronomy 2e",
+            "book_state": "live",
+            "book_uuid": "4c29f9e5-a53d-42c0-bdb5-091990527d79",
+            "salesforce_name": "Astronomy",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/astronomy_2e_webcard.svg",
+            "publish_date": "2022-03-09",
+            "webview_rex_link": "https://openstax.org/books/astronomy-2e/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 121,
+            "meta": {
+                "slug": "biology",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/121/",
+                "html_url": "https://openstax.org/details/books/biology",
+                "first_published_at": "2016-12-16T09:52:20.369252-06:00",
+                "locale": "en"
+            },
+            "title": "Biology",
+            "book_state": "retired",
+            "book_uuid": "185cbf87-c72e-48f5-b51e-f14f21b5eabd",
+            "salesforce_name": "Biology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/biology.svg",
+            "publish_date": "2016-10-21",
+            "webview_rex_link": "https://openstax.org/books/biology/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 207,
+            "meta": {
+                "slug": "biology-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/207/",
+                "html_url": "https://openstax.org/details/books/biology-2e",
+                "first_published_at": "2018-03-09T15:44:46.846000-06:00",
+                "locale": "en"
+            },
+            "title": "Biology 2e",
+            "book_state": "live",
+            "book_uuid": "8d50a0af-948b-4204-a71d-4826cba765b8",
+            "salesforce_name": "Biology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/biology_book_card_2e.svg",
+            "publish_date": "2018-03-28",
+            "webview_rex_link": "https://openstax.org/books/biology-2e/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 162,
+            "meta": {
+                "slug": "biology-ap-courses",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/162/",
+                "html_url": "https://openstax.org/details/books/biology-ap-courses",
+                "first_published_at": "2017-07-27T09:56:13.901000-05:00",
+                "locale": "en"
+            },
+            "title": "Biology for AP® Courses",
+            "book_state": "live",
+            "book_uuid": "6c322e32-9fb0-4c4d-a1d7-20c95c5c7af2",
+            "salesforce_name": "AP Biology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/biology_AP.svg",
+            "publish_date": "2018-03-08",
+            "webview_rex_link": "https://openstax.org/books/biology-ap-courses/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 261,
+            "meta": {
+                "slug": "business-ethics",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/261/",
+                "html_url": "https://openstax.org/details/books/business-ethics",
+                "first_published_at": "2018-09-24T11:43:19.961933-05:00",
+                "locale": "en"
+            },
+            "title": "Business Ethics",
+            "book_state": "live",
+            "book_uuid": "914ac66e-e1ec-486d-8a9c-97b0f7a99774",
+            "salesforce_name": "Introductory Business Ethics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/business_ethics_card.svg",
+            "publish_date": "2018-09-24",
+            "webview_rex_link": "https://openstax.org/books/business-ethics/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 340,
+            "meta": {
+                "slug": "business-law-i-essentials",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/340/",
+                "html_url": "https://openstax.org/details/books/business-law-i-essentials",
+                "first_published_at": "2019-09-27T09:25:32.654295-05:00",
+                "locale": "en"
+            },
+            "title": "Business Law I Essentials",
+            "book_state": "live",
+            "book_uuid": "464a3fba-68c1-426a-99f9-597e739dc911",
+            "salesforce_name": "Business Law I Essentials",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/business_law_l_essentials_web_card.svg",
+            "publish_date": "2019-09-27",
+            "webview_rex_link": "https://openstax.org/books/business-law-i-essentials/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 74,
+            "meta": {
+                "slug": "calculus-volume-1",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/74/",
+                "html_url": "https://openstax.org/details/books/calculus-volume-1",
+                "first_published_at": "2016-03-10T14:37:26.063000-06:00",
+                "locale": "en"
+            },
+            "title": "Calculus Volume 1",
+            "book_state": "live",
+            "book_uuid": "8b89d172-2927-466f-8661-01abc7ccdba4",
+            "salesforce_name": "Calculus Volume 1",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/calculus-v1.svg",
+            "publish_date": "2016-03-30",
+            "webview_rex_link": "https://openstax.org/books/calculus-volume-1/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 75,
+            "meta": {
+                "slug": "calculus-volume-2",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/75/",
+                "html_url": "https://openstax.org/details/books/calculus-volume-2",
+                "first_published_at": "2016-03-10T14:37:26.063000-06:00",
+                "locale": "en"
+            },
+            "title": "Calculus Volume 2",
+            "book_state": "live",
+            "book_uuid": "1d39a348-071f-4537-85b6-c98912458c3c",
+            "salesforce_name": "Calculus Volume 2",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/calculus-v2.svg",
+            "publish_date": "2016-03-30",
+            "webview_rex_link": "https://openstax.org/books/calculus-volume-2/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 76,
+            "meta": {
+                "slug": "calculus-volume-3",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/76/",
+                "html_url": "https://openstax.org/details/books/calculus-volume-3",
+                "first_published_at": "2016-03-10T14:37:26.063000-06:00",
+                "locale": "en"
+            },
+            "title": "Calculus Volume 3",
+            "book_state": "live",
+            "book_uuid": "a31cd793-2162-4e9e-acb5-6e6bbd76a5fa",
+            "salesforce_name": "Calculus Volume 3",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/calculus-v3.svg",
+            "publish_date": "2016-03-30",
+            "webview_rex_link": "https://openstax.org/books/calculus-volume-3/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 43,
+            "meta": {
+                "slug": "chemistry",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/43/",
+                "html_url": "https://openstax.org/details/books/chemistry",
+                "first_published_at": "2016-03-09T09:57:39.246931-06:00",
+                "locale": "en"
+            },
+            "title": "Chemistry",
+            "book_state": "retired",
+            "book_uuid": "85abf193-2bd2-4908-8563-90b8a7ac8df6",
+            "salesforce_name": "Chemistry",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/chemistry.svg",
+            "publish_date": "2015-03-11",
+            "webview_rex_link": "",
+            "assignable_book": false
+        },
+        {
+            "id": 298,
+            "meta": {
+                "slug": "chemistry-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/298/",
+                "html_url": "https://openstax.org/details/books/chemistry-2e",
+                "first_published_at": "2019-02-14T10:31:54.509000-06:00",
+                "locale": "en"
+            },
+            "title": "Chemistry 2e",
+            "book_state": "live",
+            "book_uuid": "7fccc9cf-9b71-44f6-800b-f9457fd64335",
+            "salesforce_name": "Chemistry",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/chemistry_2e_book_card.svg",
+            "publish_date": "2019-02-14",
+            "webview_rex_link": "https://openstax.org/books/chemistry-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 299,
+            "meta": {
+                "slug": "chemistry-atoms-first-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/299/",
+                "html_url": "https://openstax.org/details/books/chemistry-atoms-first-2e",
+                "first_published_at": "2019-02-14T09:43:18.022000-06:00",
+                "locale": "en"
+            },
+            "title": "Chemistry: Atoms First 2e",
+            "book_state": "live",
+            "book_uuid": "d9b85ee6-c57f-4861-8208-5ddf261e9c5f",
+            "salesforce_name": "Chemistry: Atoms First",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/chemistry_atoms_first_2e_book_card.svg",
+            "publish_date": "2019-02-14",
+            "webview_rex_link": "https://openstax.org/books/chemistry-atoms-first-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 93,
+            "meta": {
+                "slug": "chemistry-atoms-first",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/93/",
+                "html_url": "https://openstax.org/details/books/chemistry-atoms-first",
+                "first_published_at": "2016-07-19T11:18:52.182148-05:00",
+                "locale": "en"
+            },
+            "title": "Chemistry: Atoms First",
+            "book_state": "retired",
+            "book_uuid": "4539ae23-1ccc-421e-9b25-843acbb6c4b0",
+            "salesforce_name": "Chemistry: Atoms First",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/Chmistry-Atoms-First.svg",
+            "publish_date": "2016-07-15",
+            "webview_rex_link": "",
+            "assignable_book": false
+        },
+        {
+            "id": 814,
+            "meta": {
+                "slug": "clinical-nursing-skills",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/814/",
+                "html_url": "https://openstax.org/details/books/clinical-nursing-skills",
+                "first_published_at": "2024-06-11T11:52:59.259000-05:00",
+                "locale": "en"
+            },
+            "title": "Clinical Nursing Skills",
+            "book_state": "live",
+            "book_uuid": "75dc0490-e1d0-4c96-b05a-d59274e287cc",
+            "salesforce_name": "Clinical Nursing Skills",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/clinical_nursing_skills_web_card.svg",
+            "publish_date": "2024-06-26",
+            "webview_rex_link": "https://openstax.org/books/clinical-nursing-skills/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 39,
+            "meta": {
+                "slug": "college-algebra",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/39/",
+                "html_url": "https://openstax.org/details/books/college-algebra",
+                "first_published_at": "2016-03-09T09:54:06.207750-06:00",
+                "locale": "en"
+            },
+            "title": "College Algebra",
+            "book_state": "retired",
+            "book_uuid": "9b08c294-057f-4201-9f48-5d6ad992740d",
+            "salesforce_name": "College Algebra",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/college_algebra.svg",
+            "publish_date": "2015-02-13",
+            "webview_rex_link": "https://openstax.org/books/college-algebra/pages/1-introduction-to-prerequisites",
+            "assignable_book": false
+        },
+        {
+            "id": 550,
+            "meta": {
+                "slug": "college-algebra-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/550/",
+                "html_url": "https://openstax.org/details/books/college-algebra-2e",
+                "first_published_at": "2021-12-02T15:27:45.192000-06:00",
+                "locale": "en"
+            },
+            "title": "College Algebra 2e",
+            "book_state": "live",
+            "book_uuid": "35d7cce2-48dd-4403-b6a5-e828cb5a17da",
+            "salesforce_name": "College Algebra",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/college_algebra_2e_web_card.svg",
+            "publish_date": "2021-12-21",
+            "webview_rex_link": "https://openstax.org/books/college-algebra-2e/pages/1-introduction-to-prerequisites",
+            "assignable_book": false
+        },
+        {
+            "id": 443,
+            "meta": {
+                "slug": "college-algebra-corequisite-support",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/443/",
+                "html_url": "https://openstax.org/details/books/college-algebra-corequisite-support",
+                "first_published_at": "2020-07-21T15:04:47.336104-05:00",
+                "locale": "en"
+            },
+            "title": "College Algebra with Corequisite Support",
+            "book_state": "retired",
+            "book_uuid": null,
+            "salesforce_name": "College Algebra with Corequisite Support",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/college_algebra__with_corequisite_support_web_card.svg",
+            "publish_date": "2020-09-23",
+            "webview_rex_link": "https://openstax.org/books/college-algebra-corequisite-support/pages/1-introduction-to-prerequisites",
+            "assignable_book": false
+        },
+        {
+            "id": 554,
+            "meta": {
+                "slug": "college-algebra-corequisite-support-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/554/",
+                "html_url": "https://openstax.org/details/books/college-algebra-corequisite-support-2e",
+                "first_published_at": "2021-12-02T15:59:05.284000-06:00",
+                "locale": "en"
+            },
+            "title": "College Algebra 2e with Corequisite Support",
+            "book_state": "live",
+            "book_uuid": "59024a63-2b1a-4631-94c5-ae275a77b587",
+            "salesforce_name": "College Algebra with Corequisite Support",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/college_algebra_with_corequisite_support_2e.svg",
+            "publish_date": "2021-12-21",
+            "webview_rex_link": "https://openstax.org/books/college-algebra-corequisite-support-2e/pages/1-introduction-to-prerequisites",
+            "assignable_book": false
+        },
+        {
+            "id": 31,
+            "meta": {
+                "slug": "college-physics",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/31/",
+                "html_url": "https://openstax.org/details/books/college-physics",
+                "first_published_at": "2016-03-09T09:05:28.982257-06:00",
+                "locale": "en"
+            },
+            "title": "College Physics",
+            "book_state": "retired",
+            "book_uuid": "031da8d3-b525-429c-80cf-6c8ed997733a",
+            "salesforce_name": "College Physics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/physics.svg",
+            "publish_date": "2012-06-21",
+            "webview_rex_link": "https://openstax.org/books/college-physics/pages/1-introduction-to-science-and-the-realm-of-physics-physical-quantities-and-units",
+            "assignable_book": false
+        },
+        {
+            "id": 603,
+            "meta": {
+                "slug": "college-physics-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/603/",
+                "html_url": "https://openstax.org/details/books/college-physics-2e",
+                "first_published_at": "2022-06-24T11:12:49.206000-05:00",
+                "locale": "en"
+            },
+            "title": "College Physics 2e",
+            "book_state": "live",
+            "book_uuid": "a31df062-930a-4f46-8953-605711e6d204",
+            "salesforce_name": "College Physics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/college_physics_2e.svg",
+            "publish_date": "2022-07-13",
+            "webview_rex_link": "https://openstax.org/books/college-physics-2e/pages/1-introduction-to-science-and-the-realm-of-physics-physical-quantities-and-units",
+            "assignable_book": false
+        },
+        {
+            "id": 604,
+            "meta": {
+                "slug": "college-physics-ap-courses-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/604/",
+                "html_url": "https://openstax.org/details/books/college-physics-ap-courses-2e",
+                "first_published_at": "2022-06-24T11:23:59.533000-05:00",
+                "locale": "en"
+            },
+            "title": "College Physics For AP® Courses 2e",
+            "book_state": "live",
+            "book_uuid": "fc65697b-5a9e-4dfe-ac03-035129f7be28",
+            "salesforce_name": "AP Physics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/college_physics_for_ap_course_2e.svg",
+            "publish_date": "2022-07-19",
+            "webview_rex_link": "https://openstax.org/books/college-physics-ap-courses-2e/pages/1-connection-for-ap-r-courses",
+            "assignable_book": false
+        },
+        {
+            "id": 506,
+            "meta": {
+                "slug": "college-physics-courseware",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/506/",
+                "html_url": "https://openstax.org/details/books/college-physics-courseware",
+                "first_published_at": "2021-03-24T13:33:46.911602-05:00",
+                "locale": "en"
+            },
+            "title": "College Physics with Courseware",
+            "book_state": "retired",
+            "book_uuid": null,
+            "salesforce_name": null,
+            "cover_url": "",
+            "publish_date": "2021-03-24",
+            "webview_rex_link": "",
+            "assignable_book": false
+        },
+        {
+            "id": 382,
+            "meta": {
+                "slug": "college-success",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/382/",
+                "html_url": "https://openstax.org/details/books/college-success",
+                "first_published_at": "2020-02-10T11:17:32.330000-06:00",
+                "locale": "en"
+            },
+            "title": "College Success",
+            "book_state": "live",
+            "book_uuid": "e8668a14-9a7d-4d74-b58c-3681f8351224",
+            "salesforce_name": "College Success",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/college_success_web_card.svg",
+            "publish_date": "2020-03-27",
+            "webview_rex_link": "https://openstax.org/books/college-success/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 694,
+            "meta": {
+                "slug": "college-success-concise",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/694/",
+                "html_url": "https://openstax.org/details/books/college-success-concise",
+                "first_published_at": "2023-03-30T12:06:41.884000-05:00",
+                "locale": "en"
+            },
+            "title": "College Success Concise",
+            "book_state": "live",
+            "book_uuid": "62a49025-8cd8-407c-9cfb-c7eba55cf1c6",
+            "salesforce_name": "College Success Concise",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/college_success_concise_web_card.svg",
+            "publish_date": "2023-04-19",
+            "webview_rex_link": "https://openstax.org/books/college-success-concise/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 34,
+            "meta": {
+                "slug": "concepts-biology",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/34/",
+                "html_url": "https://openstax.org/details/books/concepts-biology",
+                "first_published_at": "2016-03-09T09:47:29.653246-06:00",
+                "locale": "en"
+            },
+            "title": "Concepts of Biology",
+            "book_state": "live",
+            "book_uuid": "b3c1e1d2-839c-42b0-a314-e119a8aafbdd",
+            "salesforce_name": "Concepts of Biology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/concpets_biology_eZrc8yQ.svg",
+            "publish_date": "2013-04-25",
+            "webview_rex_link": "https://openstax.org/books/concepts-biology/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 689,
+            "meta": {
+                "slug": "contemporary-mathematics",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/689/",
+                "html_url": "https://openstax.org/details/books/contemporary-mathematics",
+                "first_published_at": "2023-03-08T14:08:14.732899-06:00",
+                "locale": "en"
+            },
+            "title": "Contemporary Mathematics",
+            "book_state": "live",
+            "book_uuid": "7193a423-3ad7-4ac6-98dd-90c70e4724b7",
+            "salesforce_name": "Contemporary Math",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/contemporary_mathematics_web_card.svg",
+            "publish_date": "2023-03-22",
+            "webview_rex_link": "https://openstax.org/books/contemporary-mathematics/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 130,
+            "meta": {
+                "slug": "elementary-algebra",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/130/",
+                "html_url": "https://openstax.org/details/books/elementary-algebra",
+                "first_published_at": "2017-02-13T15:16:38.440710-06:00",
+                "locale": "en"
+            },
+            "title": "Elementary Algebra",
+            "book_state": "retired",
+            "book_uuid": "0889907c-f0ef-496a-bcb8-2a5bb121717f",
+            "salesforce_name": "Elementary Algebra",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/elementary-algebra.svg",
+            "publish_date": "2017-02-22",
+            "webview_rex_link": "https://openstax.org/books/elementary-algebra/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 414,
+            "meta": {
+                "slug": "elementary-algebra-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/414/",
+                "html_url": "https://openstax.org/details/books/elementary-algebra-2e",
+                "first_published_at": "2020-03-23T10:48:54.491000-05:00",
+                "locale": "en"
+            },
+            "title": "Elementary Algebra 2e",
+            "book_state": "live",
+            "book_uuid": "55931856-c627-418b-a56f-1dd0007683a8",
+            "salesforce_name": "Elementary Algebra",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/elementary_algebra_2e_web_card.svg",
+            "publish_date": "2020-04-22",
+            "webview_rex_link": "https://openstax.org/books/elementary-algebra-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 314,
+            "meta": {
+                "slug": "entrepreneurship",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/314/",
+                "html_url": "https://openstax.org/details/books/entrepreneurship",
+                "first_published_at": "2019-04-15T14:36:29.383897-05:00",
+                "locale": "en"
+            },
+            "title": "Entrepreneurship",
+            "book_state": "live",
+            "book_uuid": null,
+            "salesforce_name": "Entrepreneurship",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/entrepreneurship_book_card_2k8vDF2.svg",
+            "publish_date": "2020-01-16",
+            "webview_rex_link": "https://openstax.org/books/entrepreneurship/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 190,
+            "meta": {
+                "slug": "fizyka-dla-szkół-wyższych-tom-1",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/190/",
+                "html_url": "https://openstax.org/details/books/fizyka-dla-szkół-wyższych-tom-1",
+                "first_published_at": "2017-12-05T14:46:42.214564-06:00",
+                "locale": "en"
+            },
+            "title": "Fizyka dla szkół wyższych. Tom 1",
+            "book_state": "unlisted",
+            "book_uuid": "4eaa8f03-88a8-485a-a777-dd3602f6c13e",
+            "salesforce_name": null,
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/university_physics_book_card_outlined.svg",
+            "publish_date": "2017-12-05",
+            "webview_rex_link": "https://openstax.org/books/fizyka-dla-szk%C3%B3%C5%82-wy%C5%BCszych-tom-1/pages/1-wstep",
+            "assignable_book": false
+        },
+        {
+            "id": 219,
+            "meta": {
+                "slug": "fizyka-dla-szkół-wyższych-tom-2",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/219/",
+                "html_url": "https://openstax.org/details/books/fizyka-dla-szkół-wyższych-tom-2",
+                "first_published_at": "2018-06-18T12:34:42.916050-05:00",
+                "locale": "en"
+            },
+            "title": "Fizyka dla szkół wyższych. Tom 2",
+            "book_state": "unlisted",
+            "book_uuid": "16ab5b96-4598-45f9-993c-b8d78d82b0c6",
+            "salesforce_name": null,
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/university_physics_book_card_volume_2_1.svg",
+            "publish_date": "2018-06-11",
+            "webview_rex_link": "https://openstax.org/books/fizyka-dla-szk%C3%B3%C5%82-wy%C5%BCszych-tom-2/pages/1-wstep",
+            "assignable_book": false
+        },
+        {
+            "id": 245,
+            "meta": {
+                "slug": "fizyka-dla-szkół-wyższych-tom-3",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/245/",
+                "html_url": "https://openstax.org/details/books/fizyka-dla-szkół-wyższych-tom-3",
+                "first_published_at": "2018-08-09T10:57:12.454940-05:00",
+                "locale": "en"
+            },
+            "title": "Fizyka dla szkół wyższych. Tom 3",
+            "book_state": "unlisted",
+            "book_uuid": "bb62933e-f20a-4ffc-90aa-97b36c296c3e",
+            "salesforce_name": null,
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/university_physics_book_card_volume_3_TdcUIkT.svg",
+            "publish_date": "2018-06-11",
+            "webview_rex_link": "https://openstax.org/books/fizyka-dla-szk%C3%B3%C5%82-wy%C5%BCszych-tom-3/pages/1-wstep",
+            "assignable_book": false
+        },
+        {
+            "id": 870,
+            "meta": {
+                "slug": "foundations-information-systems",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/870/",
+                "html_url": "https://openstax.org/details/books/foundations-information-systems",
+                "first_published_at": "2025-02-12T09:33:56.603000-06:00",
+                "locale": "en"
+            },
+            "title": "Foundations of Information Systems",
+            "book_state": "live",
+            "book_uuid": "372b4fed-e101-433d-9ba2-6ab71f087543",
+            "salesforce_name": "Foundations of Information Systems",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/foundations_of_information_systems_web_card.svg",
+            "publish_date": "2025-03-05",
+            "webview_rex_link": "https://openstax.org/books/foundations-information-systems/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 815,
+            "meta": {
+                "slug": "fundamentals-nursing",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/815/",
+                "html_url": "https://openstax.org/details/books/fundamentals-nursing",
+                "first_published_at": "2024-06-17T11:42:38.504000-05:00",
+                "locale": "en"
+            },
+            "title": "Fundamentals of Nursing",
+            "book_state": "live",
+            "book_uuid": "4738cffb-5d2b-49c0-8368-47cb6dafdaa6",
+            "salesforce_name": "Fundamentals of Nursing",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/fundamentals_of_nursing_web_card.svg",
+            "publish_date": "2024-09-04",
+            "webview_rex_link": "https://openstax.org/books/fundamentals-nursing/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 131,
+            "meta": {
+                "slug": "intermediate-algebra",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/131/",
+                "html_url": "https://openstax.org/details/books/intermediate-algebra",
+                "first_published_at": "2017-02-17T15:15:54.212862-06:00",
+                "locale": "en"
+            },
+            "title": "Intermediate Algebra",
+            "book_state": "retired",
+            "book_uuid": "02776133-d49d-49cb-bfaa-67c7f61b25a1",
+            "salesforce_name": "Intermediate Algebra",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/intermediate-algebra.svg",
+            "publish_date": "2017-03-14",
+            "webview_rex_link": "https://openstax.org/books/intermediate-algebra/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 418,
+            "meta": {
+                "slug": "intermediate-algebra-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/418/",
+                "html_url": "https://openstax.org/details/books/intermediate-algebra-2e",
+                "first_published_at": "2020-04-15T09:08:40.749000-05:00",
+                "locale": "en"
+            },
+            "title": "Intermediate Algebra 2e",
+            "book_state": "live",
+            "book_uuid": "4664c267-cd62-4a99-8b28-1cb9b3aee347",
+            "salesforce_name": "Intermediate Algebra",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/intermediate_algebra_2e_web_card_GzBTGtH.svg",
+            "publish_date": "2020-05-06",
+            "webview_rex_link": "https://openstax.org/books/intermediate-algebra-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 573,
+            "meta": {
+                "slug": "introduction-anthropology",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/573/",
+                "html_url": "https://openstax.org/details/books/introduction-anthropology",
+                "first_published_at": "2022-02-14T13:10:00.339629-06:00",
+                "locale": "en"
+            },
+            "title": "Introduction to Anthropology",
+            "book_state": "live",
+            "book_uuid": null,
+            "salesforce_name": "Introduction to Anthropology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introduction_to_anthropology.svg",
+            "publish_date": "2022-02-23",
+            "webview_rex_link": "https://openstax.org/books/introduction-anthropology/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 844,
+            "meta": {
+                "slug": "introduction-behavioral-neuroscience",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/844/",
+                "html_url": "https://openstax.org/details/books/introduction-behavioral-neuroscience",
+                "first_published_at": "2024-10-21T16:21:48.233000-05:00",
+                "locale": "en"
+            },
+            "title": "Introduction to Behavioral Neuroscience",
+            "book_state": "live",
+            "book_uuid": "44175f46-f8f3-41e4-ab0d-35c454db6db8",
+            "salesforce_name": "Introduction to Behavioral Neuroscience",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introduction_to_behavioral_neuroscience_web_card.svg",
+            "publish_date": "2024-11-13",
+            "webview_rex_link": "https://openstax.org/books/introduction-behavioral-neuroscience/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 259,
+            "meta": {
+                "slug": "introduction-business",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/259/",
+                "html_url": "https://openstax.org/details/books/introduction-business",
+                "first_published_at": "2018-09-18T05:37:19.622356-05:00",
+                "locale": "en"
+            },
+            "title": "Introduction to Business",
+            "book_state": "live",
+            "book_uuid": "4e09771f-a8aa-40ce-9063-aa58cc24e77f",
+            "salesforce_name": "Introduction to Business",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introduction_to_business.svg",
+            "publish_date": "2018-09-19",
+            "webview_rex_link": "https://openstax.org/books/introduction-business/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 847,
+            "meta": {
+                "slug": "introduction-computer-science",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/847/",
+                "html_url": "https://openstax.org/details/books/introduction-computer-science",
+                "first_published_at": "2024-10-29T11:09:01.451000-05:00",
+                "locale": "en"
+            },
+            "title": "Introduction to Computer Science",
+            "book_state": "live",
+            "book_uuid": "4f06ce31-1d04-410f-8328-ac4e02c4f217",
+            "salesforce_name": "Introduction to Computer Science",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introduction_to_computer_science_web_card.svg",
+            "publish_date": "2024-11-13",
+            "webview_rex_link": "https://openstax.org/books/introduction-computer-science/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 489,
+            "meta": {
+                "slug": "introduction-intellectual-property",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/489/",
+                "html_url": "https://openstax.org/details/books/introduction-intellectual-property",
+                "first_published_at": "2021-01-29T10:11:30.829000-06:00",
+                "locale": "en"
+            },
+            "title": "Introduction to Intellectual Property",
+            "book_state": "live",
+            "book_uuid": "1b4ee0ce-ee89-44fa-a5e7-a0db9f0c94b1",
+            "salesforce_name": "Introduction to Intellectual Property",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introduction_to_intellectual_property_web_card.svg",
+            "publish_date": "2021-02-22",
+            "webview_rex_link": "https://openstax.org/books/introduction-intellectual-property/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 601,
+            "meta": {
+                "slug": "introduction-philosophy",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/601/",
+                "html_url": "https://openstax.org/details/books/introduction-philosophy",
+                "first_published_at": "2022-05-31T16:16:00.566000-05:00",
+                "locale": "en"
+            },
+            "title": "Introduction to Philosophy",
+            "book_state": "live",
+            "book_uuid": "fe58be6f-3b61-4e16-b3b6-db6924f0b2f2",
+            "salesforce_name": "Introduction to Philosophy",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introduction_to_philosophy_webcard.svg",
+            "publish_date": "2022-06-15",
+            "webview_rex_link": "https://openstax.org/books/introduction-philosophy/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 598,
+            "meta": {
+                "slug": "introduction-political-science",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/598/",
+                "html_url": "https://openstax.org/details/books/introduction-political-science",
+                "first_published_at": "2022-05-02T12:12:10.100000-05:00",
+                "locale": "en"
+            },
+            "title": "Introduction to Political Science",
+            "book_state": "live",
+            "book_uuid": "89060098-2918-4037-8ebe-d90622d7a6bf",
+            "salesforce_name": "Introduction to Political Science",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introduction_to_political_science_webcard.svg",
+            "publish_date": "2022-05-18",
+            "webview_rex_link": "https://openstax.org/books/introduction-political-science/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 775,
+            "meta": {
+                "slug": "introduction-python-programming",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/775/",
+                "html_url": "https://openstax.org/details/books/introduction-python-programming",
+                "first_published_at": "2024-02-23T11:29:03.734000-06:00",
+                "locale": "en"
+            },
+            "title": "Introduction to Python Programming",
+            "book_state": "live",
+            "book_uuid": "8d08a72f-5463-4856-b05c-58b0d65f5e61",
+            "salesforce_name": "Introduction to Python Programming",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introduction_to_python_programming_web_card.svg",
+            "publish_date": "2024-03-13",
+            "webview_rex_link": "https://openstax.org/books/introduction-python-programming/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 466,
+            "meta": {
+                "slug": "introduction-sociology",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/466/",
+                "html_url": "https://openstax.org/details/books/introduction-sociology",
+                "first_published_at": "2020-09-28T14:13:44.133141-05:00",
+                "locale": "en"
+            },
+            "title": "Introduction to Sociology",
+            "book_state": "retired",
+            "book_uuid": null,
+            "salesforce_name": "Introduction to Sociology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/Head_IntroSociology1e.svg",
+            "publish_date": "2012-06-21",
+            "webview_rex_link": "",
+            "assignable_book": false
+        },
+        {
+            "id": 32,
+            "meta": {
+                "slug": "introduction-sociology-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/32/",
+                "html_url": "https://openstax.org/details/books/introduction-sociology-2e",
+                "first_published_at": "2016-03-09T09:45:10.681907-06:00",
+                "locale": "en"
+            },
+            "title": "Introduction to Sociology 2e",
+            "book_state": "retired",
+            "book_uuid": "02040312-72c8-441e-a685-20e9333f3e1d",
+            "salesforce_name": "Introduction to Sociology 2e",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/sociology_2e.svg",
+            "publish_date": "2015-04-24",
+            "webview_rex_link": "https://openstax.org/books/introduction-sociology-2e/pages/1-introduction-to-sociology",
+            "assignable_book": false
+        },
+        {
+            "id": 515,
+            "meta": {
+                "slug": "introduction-sociology-3e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/515/",
+                "html_url": "https://openstax.org/details/books/introduction-sociology-3e",
+                "first_published_at": "2021-05-21T14:28:29.291000-05:00",
+                "locale": "en"
+            },
+            "title": "Introduction to Sociology 3e",
+            "book_state": "live",
+            "book_uuid": "746f171e-0d6a-4ef2-b69d-367880872f4a",
+            "salesforce_name": "Introduction to Sociology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introduction_to_sociology_3e_web_card.svg",
+            "publish_date": "2021-06-03",
+            "webview_rex_link": "https://openstax.org/books/introduction-sociology-3e/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 189,
+            "meta": {
+                "slug": "introductory-business-statistics",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/189/",
+                "html_url": "https://openstax.org/details/books/introductory-business-statistics",
+                "first_published_at": "2017-11-30T11:15:17.997949-06:00",
+                "locale": "en"
+            },
+            "title": "Introductory Business Statistics",
+            "book_state": "retired",
+            "book_uuid": "b56bb9e9-5eb8-48ef-9939-88b1b12ce22f",
+            "salesforce_name": "Introductory Business Statistics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/IntroductoryBusinessStatistics-bookcard.svg",
+            "publish_date": "2017-11-29",
+            "webview_rex_link": "https://openstax.org/books/introductory-business-statistics/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 751,
+            "meta": {
+                "slug": "introductory-business-statistics-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/751/",
+                "html_url": "https://openstax.org/details/books/introductory-business-statistics-2e",
+                "first_published_at": "2023-11-21T09:57:29.749000-06:00",
+                "locale": "en"
+            },
+            "title": "Introductory Business Statistics 2e",
+            "book_state": "live",
+            "book_uuid": "547026cb-a330-4809-94bf-126be5f62381",
+            "salesforce_name": "Introductory Business Statistics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introductory_business_statistics_2e_web_card.svg",
+            "publish_date": "2023-12-13",
+            "webview_rex_link": "https://openstax.org/books/introductory-business-statistics-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 36,
+            "meta": {
+                "slug": "introductory-statistics",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/36/",
+                "html_url": "https://openstax.org/details/books/introductory-statistics",
+                "first_published_at": "2016-03-09T09:49:10.790493-06:00",
+                "locale": "en"
+            },
+            "title": "Introductory Statistics",
+            "book_state": "retired",
+            "book_uuid": "30189442-6998-4686-ac05-ed152b91b9de",
+            "salesforce_name": "Introductory Statistics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/statistics.svg",
+            "publish_date": "2013-09-19",
+            "webview_rex_link": "https://openstax.org/books/introductory-statistics/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 750,
+            "meta": {
+                "slug": "introductory-statistics-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/750/",
+                "html_url": "https://openstax.org/details/books/introductory-statistics-2e",
+                "first_published_at": "2023-11-20T12:12:04.200000-06:00",
+                "locale": "en"
+            },
+            "title": "Introductory Statistics 2e",
+            "book_state": "live",
+            "book_uuid": "c4b474e4-4e3b-4232-b35c-2c3535bfae73",
+            "salesforce_name": "Introductory Statistics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introductory_statistics_2e_web_card.svg",
+            "publish_date": "2023-12-13",
+            "webview_rex_link": "https://openstax.org/books/introductory-statistics-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 391,
+            "meta": {
+                "slug": "life-liberty-and-pursuit-happiness",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/391/",
+                "html_url": "https://openstax.org/details/books/life-liberty-and-pursuit-happiness",
+                "first_published_at": "2020-06-29T12:21:35.660572-05:00",
+                "locale": "en"
+            },
+            "title": "Life, Liberty, and the Pursuit of Happiness",
+            "book_state": "retired",
+            "book_uuid": "36004586-651c-4ded-af87-203aca22d946",
+            "salesforce_name": "Life, Liberty and the Pursuit of Happiness",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/life_libery_and_the_pursuit_of_happiness_QFfFHz3.svg",
+            "publish_date": "2020-07-06",
+            "webview_rex_link": "https://tutor.openstax.org/",
+            "assignable_book": false
+        },
+        {
+            "id": 834,
+            "meta": {
+                "slug": "lifespan-development",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/834/",
+                "html_url": "https://openstax.org/details/books/lifespan-development",
+                "first_published_at": "2024-08-28T15:31:38.426297-05:00",
+                "locale": "en"
+            },
+            "title": "Lifespan Development",
+            "book_state": "live",
+            "book_uuid": "03481f82-baf1-407d-9bac-e614dae0a694",
+            "salesforce_name": "Lifespan Development",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/lifespan_development_lifespan_development_web_card.svg",
+            "publish_date": "2024-10-16",
+            "webview_rex_link": "https://openstax.org/books/lifespan-development/pages/1-what-does-psychology-say",
+            "assignable_book": true
+        },
+        {
+            "id": 843,
+            "meta": {
+                "slug": "marketing-podstawy",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/843/",
+                "html_url": "https://openstax.org/details/books/marketing-podstawy",
+                "first_published_at": "2024-10-17T12:35:05.598254-05:00",
+                "locale": "en"
+            },
+            "title": "Marketing Podstawy",
+            "book_state": "unlisted",
+            "book_uuid": "834a50e2-a7ad-4f31-872e-16807cfe4f44",
+            "salesforce_name": "Principles of Marketing (Polish)",
+            "cover_url": "",
+            "publish_date": "2024-11-13",
+            "webview_rex_link": "https://openstax.org/books/marketing-podstawy/pages/1-wprowadzenie",
+            "assignable_book": false
+        },
+        {
+            "id": 813,
+            "meta": {
+                "slug": "maternal-newborn-nursing",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/813/",
+                "html_url": "https://openstax.org/details/books/maternal-newborn-nursing",
+                "first_published_at": "2024-06-11T09:49:32.369000-05:00",
+                "locale": "en"
+            },
+            "title": "Maternal-Newborn Nursing",
+            "book_state": "live",
+            "book_uuid": "63229ab9-f9ed-4be4-9d2b-ad5035a02f72",
+            "salesforce_name": "Maternal Newborn Nursing",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/maternal-newborn_nursing_web_card.svg",
+            "publish_date": "2024-06-26",
+            "webview_rex_link": "https://openstax.org/books/maternal-newborn-nursing/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 820,
+            "meta": {
+                "slug": "medical-surgical-nursing",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/820/",
+                "html_url": "https://openstax.org/details/books/medical-surgical-nursing",
+                "first_published_at": "2024-07-23T16:20:10.066000-05:00",
+                "locale": "en"
+            },
+            "title": "Medical-Surgical Nursing",
+            "book_state": "live",
+            "book_uuid": "cede1974-4a2e-47e9-bf60-8ab91962bb1f",
+            "salesforce_name": "Medical-Surgical Nursing",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/medical-surgical_nursing_web_card.svg",
+            "publish_date": "2024-10-16",
+            "webview_rex_link": "https://openstax.org/books/medical-surgical-nursing/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 83,
+            "meta": {
+                "slug": "microbiology",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/83/",
+                "html_url": "https://openstax.org/details/books/microbiology",
+                "first_published_at": "2016-04-26T10:41:48.505000-05:00",
+                "locale": "en"
+            },
+            "title": "Microbiology",
+            "book_state": "live",
+            "book_uuid": "e42bd376-624b-4c0f-972f-e0c57998e765",
+            "salesforce_name": "Microbiology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/microbiology.svg",
+            "publish_date": "2016-11-01",
+            "webview_rex_link": "https://openstax.org/books/microbiology/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 743,
+            "meta": {
+                "slug": "makroekonomia-podstawy",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/743/",
+                "html_url": "https://openstax.org/details/books/makroekonomia-podstawy",
+                "first_published_at": "2023-10-13T15:09:31.326255-05:00",
+                "locale": "en"
+            },
+            "title": "Makroekonomia – Podstawy",
+            "book_state": "unlisted",
+            "book_uuid": "823ae3e1-57c4-44c5-b54a-310091040cf6",
+            "salesforce_name": "Principles of Macroeconomics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/makroekonomia_square.svg",
+            "publish_date": "2023-11-01",
+            "webview_rex_link": "https://openstax.org/books/makroekonomia-podstawy/pages/1-wprowadzenie-do-rozdzialu",
+            "assignable_book": false
+        },
+        {
+            "id": 610,
+            "meta": {
+                "slug": "mikroekonomia-podstawy",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/610/",
+                "html_url": "https://openstax.org/details/books/mikroekonomia-podstawy",
+                "first_published_at": "2022-08-25T11:45:18.903056-05:00",
+                "locale": "en"
+            },
+            "title": "Mikroekonomia – Podstawy",
+            "book_state": "unlisted",
+            "book_uuid": "c9cbc0aa-3afa-448b-8048-3ca2e0ee2f6a",
+            "salesforce_name": null,
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/mikroekonomia_square.svg",
+            "publish_date": "2022-09-07",
+            "webview_rex_link": "https://openstax.org/books/mikroekonomia-podstawy/pages/1-wprowadzenie-do-rozdzialu",
+            "assignable_book": false
+        },
+        {
+            "id": 771,
+            "meta": {
+                "slug": "nutrition",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/771/",
+                "html_url": "https://openstax.org/details/books/nutrition",
+                "first_published_at": "2024-02-19T15:36:32.335000-06:00",
+                "locale": "en"
+            },
+            "title": "Nutrition for Nurses",
+            "book_state": "live",
+            "book_uuid": "7db4d55f-5c0e-4c05-8b72-841685444165",
+            "salesforce_name": "Nutrition for Nurses",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/nutrition_for_nurses_web_card.svg",
+            "publish_date": "2024-03-20",
+            "webview_rex_link": "https://openstax.org/books/nutrition/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 707,
+            "meta": {
+                "slug": "organic-chemistry",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/707/",
+                "html_url": "https://openstax.org/details/books/organic-chemistry",
+                "first_published_at": "2023-04-25T16:01:08.164000-05:00",
+                "locale": "en"
+            },
+            "title": "Organic Chemistry: A Tenth Edition",
+            "book_state": "live",
+            "book_uuid": "6c2f7d1d-fbad-42e8-b977-9b903e6cb83b",
+            "salesforce_name": "Organic Chemistry",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/organic_chemistry_web_card.svg",
+            "publish_date": "2023-09-20",
+            "webview_rex_link": "https://openstax.org/books/organic-chemistry/pages/dedication-and-preface",
+            "assignable_book": false
+        },
+        {
+            "id": 315,
+            "meta": {
+                "slug": "organizational-behavior",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/315/",
+                "html_url": "https://openstax.org/details/books/organizational-behavior",
+                "first_published_at": "2019-04-15T14:39:27.380592-05:00",
+                "locale": "en"
+            },
+            "title": "Organizational Behavior",
+            "book_state": "live",
+            "book_uuid": "2d941ab9-ac5b-4eb8-b21c-965d36a4f296",
+            "salesforce_name": "Organizational Behavior",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/organizational_behavior_book_card.svg",
+            "publish_date": "2019-06-05",
+            "webview_rex_link": "https://openstax.org/books/organizational-behavior/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 770,
+            "meta": {
+                "slug": "pharmacology",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/770/",
+                "html_url": "https://openstax.org/details/books/pharmacology",
+                "first_published_at": "2024-02-15T17:29:15.719000-06:00",
+                "locale": "en"
+            },
+            "title": "Pharmacology for Nurses",
+            "book_state": "live",
+            "book_uuid": "2f805b43-bce4-4379-add2-4fbf46700e4c",
+            "salesforce_name": "Pharmacology for Nurses",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/pharmacology_for_nurses_web_card.svg",
+            "publish_date": "2024-05-29",
+            "webview_rex_link": "https://openstax.org/books/pharmacology/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 415,
+            "meta": {
+                "slug": "physics",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/415/",
+                "html_url": "https://openstax.org/details/books/physics",
+                "first_published_at": "2020-03-26T17:09:27.082000-05:00",
+                "locale": "en"
+            },
+            "title": "Physics",
+            "book_state": "live",
+            "book_uuid": "cce64fde-f448-43b8-ae88-27705cceb0da",
+            "salesforce_name": "HS Physics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/high_school_physics_web_card.svg",
+            "publish_date": "2020-03-26",
+            "webview_rex_link": "https://openstax.org/books/physics/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 772,
+            "meta": {
+                "slug": "population-health",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/772/",
+                "html_url": "https://openstax.org/details/books/population-health",
+                "first_published_at": "2024-02-20T10:53:16.199000-06:00",
+                "locale": "en"
+            },
+            "title": "Population Health for Nurses",
+            "book_state": "live",
+            "book_uuid": "9331ec14-7ea7-4415-a8dd-ee34f0c5f9c4",
+            "salesforce_name": "Population Health for Nurses",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/population_health_for_nurses_web_card.svg",
+            "publish_date": "2024-05-15",
+            "webview_rex_link": "https://openstax.org/books/population-health/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 46,
+            "meta": {
+                "slug": "prealgebra",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/46/",
+                "html_url": "https://openstax.org/details/books/prealgebra",
+                "first_published_at": "2016-03-09T10:00:11.787802-06:00",
+                "locale": "en"
+            },
+            "title": "Prealgebra",
+            "book_state": "retired",
+            "book_uuid": "caa57dab-41c7-455e-bd6f-f443cda5519c",
+            "salesforce_name": "Prealgebra",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/prealgebra_1.svg",
+            "publish_date": "2015-09-25",
+            "webview_rex_link": "https://openstax.org/books/prealgebra/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 392,
+            "meta": {
+                "slug": "prealgebra-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/392/",
+                "html_url": "https://openstax.org/details/books/prealgebra-2e",
+                "first_published_at": "2020-03-02T15:22:33.670000-06:00",
+                "locale": "en"
+            },
+            "title": "Prealgebra 2e",
+            "book_state": "live",
+            "book_uuid": "f0fa90be-fca8-43c9-9aad-715c0a2cee2b",
+            "salesforce_name": "Prealgebra",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/prealgebra_2e_web_card_FoepHLS.svg",
+            "publish_date": "2020-03-11",
+            "webview_rex_link": "https://openstax.org/books/prealgebra-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 37,
+            "meta": {
+                "slug": "precalculus",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/37/",
+                "html_url": "https://openstax.org/details/books/precalculus",
+                "first_published_at": "2016-03-09T09:50:20.975884-06:00",
+                "locale": "en"
+            },
+            "title": "Precalculus",
+            "book_state": "retired",
+            "book_uuid": "fd53eae1-fa23-47c7-bb1b-972349835c3c",
+            "salesforce_name": "Precalculus",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/precalculus.svg",
+            "publish_date": "2014-10-23",
+            "webview_rex_link": "https://openstax.org/books/precalculus/pages/1-introduction-to-functions",
+            "assignable_book": false
+        },
+        {
+            "id": 551,
+            "meta": {
+                "slug": "precalculus-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/551/",
+                "html_url": "https://openstax.org/details/books/precalculus-2e",
+                "first_published_at": "2021-12-02T15:40:23.883000-06:00",
+                "locale": "en"
+            },
+            "title": "Precalculus 2e",
+            "book_state": "live",
+            "book_uuid": "f021395f-fd63-46cd-ab95-037c6f051730",
+            "salesforce_name": "Precalculus",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/precalculus_2e.svg",
+            "publish_date": "2021-12-21",
+            "webview_rex_link": "https://openstax.org/books/precalculus-2e/pages/1-introduction-to-functions",
+            "assignable_book": false
+        },
+        {
+            "id": 720,
+            "meta": {
+                "slug": "preparing-for-college-success",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/720/",
+                "html_url": "https://openstax.org/details/books/preparing-for-college-success",
+                "first_published_at": "2023-06-21T14:03:43.594000-05:00",
+                "locale": "en"
+            },
+            "title": "Preparing for College Success",
+            "book_state": "live",
+            "book_uuid": "503d9717-0d3a-409f-893e-d25740d237dc",
+            "salesforce_name": "Preparing for College Success",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/preparing_for_college_success_web_card.svg",
+            "publish_date": "2023-07-12",
+            "webview_rex_link": "https://openstax.org/books/preparing-for-college-success/pages/1-1-what-are-the-benefits-of-college",
+            "assignable_book": false
+        },
+        {
+            "id": 303,
+            "meta": {
+                "slug": "principles-financial-accounting",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/303/",
+                "html_url": "https://openstax.org/details/books/principles-financial-accounting",
+                "first_published_at": "2019-02-26T13:46:30.136513-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Accounting, Volume 1: Financial Accounting",
+            "book_state": "live",
+            "book_uuid": "9ab4ba6d-1e48-486d-a2de-38ae1617ca84",
+            "salesforce_name": "Principles of Accounting Volume 1: Financial Accounting",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/principles_of_acounting_volume_1_book_card.svg",
+            "publish_date": "2019-04-11",
+            "webview_rex_link": "https://openstax.org/books/principles-financial-accounting/pages/1-why-it-matters",
+            "assignable_book": false
+        },
+        {
+            "id": 292,
+            "meta": {
+                "slug": "principles-managerial-accounting",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/292/",
+                "html_url": "https://openstax.org/details/books/principles-managerial-accounting",
+                "first_published_at": "2019-01-25T11:24:11.351563-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Accounting, Volume 2: Managerial Accounting",
+            "book_state": "live",
+            "book_uuid": "920d1c8a-606c-4888-bfd4-d1ee27ce1795",
+            "salesforce_name": "Principles of Accounting Volume 2: Managerial Accounting",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/principles_of_acounting_volume_2_book_card_Vu9ykSz.svg",
+            "publish_date": "2019-02-14",
+            "webview_rex_link": "https://openstax.org/books/principles-managerial-accounting/pages/1-why-it-matters",
+            "assignable_book": false
+        },
+        {
+            "id": 865,
+            "meta": {
+                "slug": "principles-data-science",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/865/",
+                "html_url": "https://openstax.org/details/books/principles-data-science",
+                "first_published_at": "2025-01-06T09:40:59.270848-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Data Science",
+            "book_state": "live",
+            "book_uuid": "54ef6090-af3e-47f9-8277-4a312aff4b2c",
+            "salesforce_name": "Principles of Data Science",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/principles_of_data_science_web_card.svg",
+            "publish_date": "2025-01-24",
+            "webview_rex_link": "https://openstax.org/books/principles-data-science/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 40,
+            "meta": {
+                "slug": "principles-economics",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/40/",
+                "html_url": "https://openstax.org/details/books/principles-economics",
+                "first_published_at": "2016-03-09T09:55:09.132673-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Economics",
+            "book_state": "retired",
+            "book_uuid": "69619d2b-68f0-44b0-b074-a9b2bf90b2c6",
+            "salesforce_name": "Principles of Economics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/economics_8mNeBU3.svg",
+            "publish_date": "2017-03-19",
+            "webview_rex_link": "",
+            "assignable_book": true
+        },
+        {
+            "id": 177,
+            "meta": {
+                "slug": "principles-economics-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/177/",
+                "html_url": "https://openstax.org/details/books/principles-economics-2e",
+                "first_published_at": "2017-11-01T11:54:44.174463-05:00",
+                "locale": "en"
+            },
+            "title": "Principles of Economics 2e",
+            "book_state": "retired",
+            "book_uuid": "bc498e1f-efe9-43a0-8dea-d3569ad09a82",
+            "salesforce_name": "Principles of Economics 2e",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/principles_of_economics_2e_web_card.svg",
+            "publish_date": "2017-10-11",
+            "webview_rex_link": "https://openstax.org/books/principles-economics-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 620,
+            "meta": {
+                "slug": "principles-economics-3e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/620/",
+                "html_url": "https://openstax.org/details/books/principles-economics-3e",
+                "first_published_at": "2022-12-01T12:01:43.992000-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Economics 3e",
+            "book_state": "live",
+            "book_uuid": "4c34671f-b057-4918-8796-38ca1b2f4151",
+            "salesforce_name": "Principles of Economics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/Economics3e_webcard.svg",
+            "publish_date": "2022-12-14",
+            "webview_rex_link": "https://openstax.org/books/principles-economics-3e/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 583,
+            "meta": {
+                "slug": "principles-finance",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/583/",
+                "html_url": "https://openstax.org/details/books/principles-finance",
+                "first_published_at": "2022-03-09T11:17:30.547000-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Finance",
+            "book_state": "live",
+            "book_uuid": "052b8372-0c5e-4ff6-8fd3-326377e9e91f",
+            "salesforce_name": "Principles of Finance",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/principles_of_finance.svg",
+            "publish_date": "2022-03-24",
+            "webview_rex_link": "https://openstax.org/books/principles-finance/pages/1-why-it-matters",
+            "assignable_book": false
+        },
+        {
+            "id": 41,
+            "meta": {
+                "slug": "principles-macroeconomics",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/41/",
+                "html_url": "https://openstax.org/details/books/principles-macroeconomics",
+                "first_published_at": "2016-03-09T09:56:04.159079-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Macroeconomics",
+            "book_state": "retired",
+            "book_uuid": "4061c832-098e-4b3c-a1d9-7eb593a2cb31",
+            "salesforce_name": "Principles of Macroeconomics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/macro_economics.svg",
+            "publish_date": "2014-03-19",
+            "webview_rex_link": "",
+            "assignable_book": false
+        },
+        {
+            "id": 178,
+            "meta": {
+                "slug": "principles-macroeconomics-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/178/",
+                "html_url": "https://openstax.org/details/books/principles-macroeconomics-2e",
+                "first_published_at": "2017-11-08T12:14:11.093682-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Macroeconomics 2e",
+            "book_state": "retired",
+            "book_uuid": "27f59064-990e-48f1-b604-5188b9086c29",
+            "salesforce_name": "Principles of Macroeconomics 2e",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/principles_of_macrcoeconomics_2e_web_card.svg",
+            "publish_date": "2017-10-11",
+            "webview_rex_link": "https://openstax.org/books/principles-macroeconomics-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 622,
+            "meta": {
+                "slug": "principles-macroeconomics-3e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/622/",
+                "html_url": "https://openstax.org/details/books/principles-macroeconomics-3e",
+                "first_published_at": "2022-12-01T17:04:42.990000-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Macroeconomics 3e",
+            "book_state": "live",
+            "book_uuid": "aff0c733-b223-4dfb-aad6-297bd361bdcf",
+            "salesforce_name": "Principles of Macroeconomics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/principles-macroeconomics-3e-web-card.svg",
+            "publish_date": "2022-12-14",
+            "webview_rex_link": "https://openstax.org/books/principles-macroeconomics-3e/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 48,
+            "meta": {
+                "slug": "principles-macroeconomics-ap-courses",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/48/",
+                "html_url": "https://openstax.org/details/books/principles-macroeconomics-ap-courses",
+                "first_published_at": "2016-03-09T10:02:28.621686-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Macroeconomics for AP® Courses",
+            "book_state": "retired",
+            "book_uuid": "33076054-ec1d-4417-8824-ce354efe42d0",
+            "salesforce_name": "Principles of Macroeconomics for AP® Courses",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/principles_of_macroeconomics_for_ap_courses_book_card.svg",
+            "publish_date": "2015-08-18",
+            "webview_rex_link": "",
+            "assignable_book": false
+        },
+        {
+            "id": 186,
+            "meta": {
+                "slug": "principles-macroeconomics-ap-courses-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/186/",
+                "html_url": "https://openstax.org/details/books/principles-macroeconomics-ap-courses-2e",
+                "first_published_at": "2017-11-29T11:53:53.654175-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Macroeconomics for AP® Courses 2e",
+            "book_state": "retired",
+            "book_uuid": "9117cf8c-a8a3-4875-8361-9cb0f1fc9362",
+            "salesforce_name": "Principles of Macroeconomics for AP Courses 2e",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/APMacroeconomics2e-bookcard.svg",
+            "publish_date": "2017-11-29",
+            "webview_rex_link": "https://openstax.org/books/principles-macroeconomics-ap-courses-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 304,
+            "meta": {
+                "slug": "principles-management",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/304/",
+                "html_url": "https://openstax.org/details/books/principles-management",
+                "first_published_at": "2019-02-28T14:08:03.807631-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Management",
+            "book_state": "live",
+            "book_uuid": "c3acb2ab-7d5c-45ad-b3cd-e59673fedd4e",
+            "salesforce_name": "Principles of Management",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/principles_of_management_book_card.svg",
+            "publish_date": "2019-03-20",
+            "webview_rex_link": "https://openstax.org/books/principles-management/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 629,
+            "meta": {
+                "slug": "principles-marketing",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/629/",
+                "html_url": "https://openstax.org/details/books/principles-marketing",
+                "first_published_at": "2023-01-06T14:26:50.727627-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Marketing",
+            "book_state": "live",
+            "book_uuid": "2731eee8-0eb1-4d80-ae83-01b4af642ff6",
+            "salesforce_name": "Principles of Marketing",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/principles.marketing.web.card.svg",
+            "publish_date": "2023-01-25",
+            "webview_rex_link": "https://openstax.org/books/principles-marketing/pages/1-unit-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 42,
+            "meta": {
+                "slug": "principles-microeconomics",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/42/",
+                "html_url": "https://openstax.org/details/books/principles-microeconomics",
+                "first_published_at": "2016-03-09T09:57:02.235352-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Microeconomics",
+            "book_state": "retired",
+            "book_uuid": "ea2f225e-6063-41ca-bcd8-36482e15ef65",
+            "salesforce_name": "Principles of Microeconomics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/micro_economics.svg",
+            "publish_date": "2014-03-19",
+            "webview_rex_link": "",
+            "assignable_book": false
+        },
+        {
+            "id": 155,
+            "meta": {
+                "slug": "principles-microeconomics-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/155/",
+                "html_url": "https://openstax.org/details/books/principles-microeconomics-2e",
+                "first_published_at": "2017-06-28T11:30:43.785365-05:00",
+                "locale": "en"
+            },
+            "title": "Principles of Microeconomics 2e",
+            "book_state": "retired",
+            "book_uuid": "5c09762c-b540-47d3-9541-dda1f44f16e5",
+            "salesforce_name": "Principles of Microeconomics 2e",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/micro_economics_2e.svg",
+            "publish_date": "2017-09-15",
+            "webview_rex_link": "https://openstax.org/books/principles-microeconomics-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 621,
+            "meta": {
+                "slug": "principles-microeconomics-3e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/621/",
+                "html_url": "https://openstax.org/details/books/principles-microeconomics-3e",
+                "first_published_at": "2022-12-01T16:30:31.021000-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Microeconomics 3e",
+            "book_state": "live",
+            "book_uuid": "759181db-a886-4a98-8f5c-770a83a78832",
+            "salesforce_name": "Principles of Microeconomics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/principles-microeconomics-3e-web-card.svg",
+            "publish_date": "2022-12-14",
+            "webview_rex_link": "https://openstax.org/books/principles-microeconomics-3e/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 49,
+            "meta": {
+                "slug": "principles-microeconomics-ap-courses",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/49/",
+                "html_url": "https://openstax.org/details/books/principles-microeconomics-ap-courses",
+                "first_published_at": "2016-03-09T10:02:43.769668-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Microeconomics for AP® Courses",
+            "book_state": "retired",
+            "book_uuid": "ca344e2d-6731-43cd-b851-a7b3aa0b37aa",
+            "salesforce_name": "Principles of Microeconomics for AP® Courses",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/micro_economics_AP_2vxFCOM.svg",
+            "publish_date": "2015-08-18",
+            "webview_rex_link": "",
+            "assignable_book": false
+        },
+        {
+            "id": 188,
+            "meta": {
+                "slug": "principles-microeconomics-ap-courses-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/188/",
+                "html_url": "https://openstax.org/details/books/principles-microeconomics-ap-courses-2e",
+                "first_published_at": "2017-11-29T11:55:46.299107-06:00",
+                "locale": "en"
+            },
+            "title": "Principles of Microeconomics for AP® Courses 2e",
+            "book_state": "retired",
+            "book_uuid": "636cbfd9-4e37-4575-83ab-9dec9029ca4e",
+            "salesforce_name": "Principles of Microeconomics for AP Courses",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/APMicroeconomics2e-bookcard.svg",
+            "publish_date": "2017-11-29",
+            "webview_rex_link": "https://openstax.org/books/principles-microeconomics-ap-courses-2e/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 470,
+            "meta": {
+                "slug": "psychologia-polska",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/470/",
+                "html_url": "https://openstax.org/details/books/psychologia-polska",
+                "first_published_at": "2020-10-21T10:57:08.779853-05:00",
+                "locale": "en"
+            },
+            "title": "Psychologia",
+            "book_state": "unlisted",
+            "book_uuid": "728df0bb-e07f-489d-91e3-4734a5932f92",
+            "salesforce_name": null,
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/psychologia_web_card_IbdOQGw.svg",
+            "publish_date": "2020-12-17",
+            "webview_rex_link": "https://openstax.org/books/psychologia-polska/pages/1-wprowadzenie",
+            "assignable_book": false
+        },
+        {
+            "id": 810,
+            "meta": {
+                "slug": "psychiatric-mental-health",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/810/",
+                "html_url": "https://openstax.org/details/books/psychiatric-mental-health",
+                "first_published_at": "2024-05-24T12:43:51.393461-05:00",
+                "locale": "en"
+            },
+            "title": "Psychiatric-Mental Health Nursing",
+            "book_state": "live",
+            "book_uuid": "652f4496-b33e-4b0f-8c8c-a712da36c7a3",
+            "salesforce_name": "Psychiatric-Mental Health Nursing",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/psychiatric-mental_health_nursing_web_card.svg",
+            "publish_date": "2024-06-12",
+            "webview_rex_link": "https://openstax.org/books/psychiatric-mental-health/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 45,
+            "meta": {
+                "slug": "psychology",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/45/",
+                "html_url": "https://openstax.org/details/books/psychology",
+                "first_published_at": "2016-03-09T09:58:52.534763-06:00",
+                "locale": "en"
+            },
+            "title": "Psychology",
+            "book_state": "retired",
+            "book_uuid": "4abf04bf-93a0-45c3-9cbc-2cefd46e68cc",
+            "salesforce_name": "Psychology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/psychology.svg",
+            "publish_date": "2014-12-08",
+            "webview_rex_link": "https://openstax.org/books/psychology/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 417,
+            "meta": {
+                "slug": "psychology-2e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/417/",
+                "html_url": "https://openstax.org/details/books/psychology-2e",
+                "first_published_at": "2020-04-03T16:43:00.824673-05:00",
+                "locale": "en"
+            },
+            "title": "Psychology 2e",
+            "book_state": "live",
+            "book_uuid": "06aba565-9432-40f6-97ee-b8a361f118a8",
+            "salesforce_name": "Psychology",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/psychology_2e_web_card_Nic1ENA.svg",
+            "publish_date": "2020-04-22",
+            "webview_rex_link": "https://openstax.org/books/psychology-2e/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 413,
+            "meta": {
+                "slug": "statistics",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/413/",
+                "html_url": "https://openstax.org/details/books/statistics",
+                "first_published_at": "2020-03-27T10:07:53.129000-05:00",
+                "locale": "en"
+            },
+            "title": "Statistics",
+            "book_state": "live",
+            "book_uuid": "394a1101-fd8f-4875-84fa-55f15b06ba66",
+            "salesforce_name": "HS Statistics",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/high_school_statistics_web_card.svg",
+            "publish_date": "2020-03-27",
+            "webview_rex_link": "https://openstax.org/books/statistics/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 44,
+            "meta": {
+                "slug": "us-history",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/44/",
+                "html_url": "https://openstax.org/details/books/us-history",
+                "first_published_at": "2016-03-09T09:58:20.010727-06:00",
+                "locale": "en"
+            },
+            "title": "U.S. History",
+            "book_state": "live",
+            "book_uuid": "a7ba2fb8-8925-4987-b182-5f4429d48daa",
+            "salesforce_name": "U.S. History",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/US_history.svg",
+            "publish_date": "2014-12-30",
+            "webview_rex_link": "https://openstax.org/books/us-history/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 82,
+            "meta": {
+                "slug": "university-physics-volume-1",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/82/",
+                "html_url": "https://openstax.org/details/books/university-physics-volume-1",
+                "first_published_at": "2016-04-22T12:13:54.743000-05:00",
+                "locale": "en"
+            },
+            "title": "University Physics Volume 1",
+            "book_state": "live",
+            "book_uuid": "d50f6e32-0fda-46ef-a362-9bd36ca7c97d",
+            "salesforce_name": "University Physics Volume 1",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/university_physics_volume_1_web_card.svg",
+            "publish_date": "2016-09-19",
+            "webview_rex_link": "https://openstax.org/books/university-physics-volume-1/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 94,
+            "meta": {
+                "slug": "university-physics-volume-2",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/94/",
+                "html_url": "https://openstax.org/details/books/university-physics-volume-2",
+                "first_published_at": "2016-04-22T12:13:54.743000-05:00",
+                "locale": "en"
+            },
+            "title": "University Physics Volume 2",
+            "book_state": "live",
+            "book_uuid": "7a0f9770-1c44-4acd-9920-1cd9a99f2a1e",
+            "salesforce_name": "University Physics Volume 2",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/university_physics_volume_2_web_card.svg",
+            "publish_date": "2016-10-06",
+            "webview_rex_link": "https://openstax.org/books/university-physics-volume-2/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 95,
+            "meta": {
+                "slug": "university-physics-volume-3",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/95/",
+                "html_url": "https://openstax.org/details/books/university-physics-volume-3",
+                "first_published_at": "2016-04-22T12:13:54.743000-05:00",
+                "locale": "en"
+            },
+            "title": "University Physics Volume 3",
+            "book_state": "live",
+            "book_uuid": "af275420-6050-4707-995c-57b9cc13c358",
+            "salesforce_name": "University Physics Volume 3",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/university_physics_volume_3_web_card.svg",
+            "publish_date": "2016-09-29",
+            "webview_rex_link": "https://openstax.org/books/university-physics-volume-3/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 690,
+            "meta": {
+                "slug": "world-history-volume-1",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/690/",
+                "html_url": "https://openstax.org/details/books/world-history-volume-1",
+                "first_published_at": "2023-03-14T11:16:54.514198-05:00",
+                "locale": "en"
+            },
+            "title": "World History, Volume 1: to 1500",
+            "book_state": "live",
+            "book_uuid": "685e3163-1032-4529-bb3a-f97a54407214",
+            "salesforce_name": "World History, Volume 1: to 1500",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/World_History_volume_1_WebCard.svg",
+            "publish_date": "2023-04-19",
+            "webview_rex_link": "https://openstax.org/books/world-history-volume-1/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 745,
+            "meta": {
+                "slug": "workplace-software-skills",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/745/",
+                "html_url": "https://openstax.org/details/books/workplace-software-skills",
+                "first_published_at": "2023-10-19T13:10:21.786067-05:00",
+                "locale": "en"
+            },
+            "title": "Workplace Software and Skills",
+            "book_state": "live",
+            "book_uuid": "3d2454dc-2735-4e24-a7e0-f89a79893699",
+            "salesforce_name": "Workplace Software and Skills",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/workplace_software_and_skills_web_card.svg",
+            "publish_date": "2023-11-29",
+            "webview_rex_link": "https://openstax.org/books/workplace-software-skills/pages/1-chapter-scenario",
+            "assignable_book": false
+        },
+        {
+            "id": 623,
+            "meta": {
+                "slug": "world-history-volume-2",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/623/",
+                "html_url": "https://openstax.org/details/books/world-history-volume-2",
+                "first_published_at": "2022-12-02T12:13:13.241697-06:00",
+                "locale": "en"
+            },
+            "title": "World History, Volume 2: from 1400",
+            "book_state": "live",
+            "book_uuid": "685e3163-1032-4529-bb3a-f97a54412704",
+            "salesforce_name": "World History, Volume 2: from 1400",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/World_History_volume_2_WebCard_uh6dUHf.svg",
+            "publish_date": "2022-12-14",
+            "webview_rex_link": "https://openstax.org/books/world-history-volume-2/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 555,
+            "meta": {
+                "slug": "writing-guide",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/555/",
+                "html_url": "https://openstax.org/details/books/writing-guide",
+                "first_published_at": "2021-12-03T09:34:44.080522-06:00",
+                "locale": "en"
+            },
+            "title": "Writing Guide with Handbook",
+            "book_state": "live",
+            "book_uuid": "ee7ce46b-0972-4b2c-bc6e-8998c785cd57",
+            "salesforce_name": "Writing Guide with Handbook",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/writing_guide_with_handbook_web_card.svg",
+            "publish_date": "2021-12-21",
+            "webview_rex_link": "https://openstax.org/books/writing-guide/pages/1-introduction",
+            "assignable_book": false
+        },
+        {
+            "id": 931,
+            "meta": {
+                "slug": "american-government-4e",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/931/",
+                "html_url": "https://openstax.org/details/books/american-government-4e",
+                "first_published_at": "2025-07-08T13:28:43.028000-05:00",
+                "locale": "en"
+            },
+            "title": "American Government 4e",
+            "book_state": "live",
+            "book_uuid": "cf61aefd-61e9-4bee-8340-db083e1898d9",
+            "salesforce_name": "American Government",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/american_government_4e_web_card.svg",
+            "publish_date": "2025-07-23",
+            "webview_rex_link": "https://openstax.org/books/american-government-4e/pages/1-introduction",
+            "assignable_book": true
+        },
+        {
+            "id": 939,
+            "meta": {
+                "slug": "zywienie",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/939/",
+                "html_url": "https://openstax.org/details/books/zywienie",
+                "first_published_at": "2025-09-16T09:19:17.885000-05:00",
+                "locale": "en"
+            },
+            "title": "Zywienie",
+            "book_state": "unlisted",
+            "book_uuid": "86922e8e-fc18-4fa6-af62-0e0e2e0f8df0",
+            "salesforce_name": "zywienie",
+            "cover_url": "",
+            "publish_date": "2025-10-01",
+            "webview_rex_link": "https://openstax.org/books/zywienie/pages/1-wprowadzenie",
+            "assignable_book": false
+        },
+        {
+            "id": 578,
+            "meta": {
+                "slug": "cálculo-volumen-1",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/578/",
+                "html_url": "https://openstax.org/details/books/cálculo-volumen-1",
+                "first_published_at": "2022-02-28T13:39:36.855000-06:00",
+                "locale": "es"
+            },
+            "title": "Cálculo volumen 1",
+            "book_state": "live",
+            "book_uuid": "8635f0be-e734-4cd1-a10e-8063e5b863b6",
+            "salesforce_name": "Cálculo 1",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/calculo_volumen_1_cover_card_JYKrbmA.svg",
+            "publish_date": "2022-03-24",
+            "webview_rex_link": "https://openstax.org/books/c%C3%A1lculo-volumen-1/pages/1-introduccion",
+            "assignable_book": false
+        },
+        {
+            "id": 579,
+            "meta": {
+                "slug": "cálculo-volumen-2",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/579/",
+                "html_url": "https://openstax.org/details/books/cálculo-volumen-2",
+                "first_published_at": "2022-02-28T13:43:33.142000-06:00",
+                "locale": "es"
+            },
+            "title": "Cálculo volumen 2",
+            "book_state": "live",
+            "book_uuid": "8079f22f-c0a0-43ed-bb35-871d8d9743f3",
+            "salesforce_name": "Cálculo 2",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/calculo_volumen_2_cover_card_YGgZ01m.svg",
+            "publish_date": "2022-03-24",
+            "webview_rex_link": "https://openstax.org/books/c%C3%A1lculo-volumen-2/pages/1-introduccion",
+            "assignable_book": false
+        },
+        {
+            "id": 580,
+            "meta": {
+                "slug": "cálculo-volumen-3",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/580/",
+                "html_url": "https://openstax.org/details/books/cálculo-volumen-3",
+                "first_published_at": "2022-02-28T15:03:40.837000-06:00",
+                "locale": "es"
+            },
+            "title": "Cálculo volumen 3",
+            "book_state": "live",
+            "book_uuid": "21b1d0df-a716-4205-8e86-0d0787b2c991",
+            "salesforce_name": "Cálculo 3",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/calculo_volumen_3_cover_card_vMhM8wT.svg",
+            "publish_date": "2022-03-24",
+            "webview_rex_link": "https://openstax.org/books/c%C3%A1lculo-volumen-3/pages/1-introduccion",
+            "assignable_book": false
+        },
+        {
+            "id": 534,
+            "meta": {
+                "slug": "física-universitaria-volumen-1",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/534/",
+                "html_url": "https://openstax.org/details/books/física-universitaria-volumen-1",
+                "first_published_at": "2021-09-10T14:30:10.653341-05:00",
+                "locale": "es"
+            },
+            "title": "Física universitaria volumen 1",
+            "book_state": "live",
+            "book_uuid": "175c88b6-f89b-4eba-9514-bc45e2139a1d",
+            "salesforce_name": "Física universitaria volumen 1",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/fisica_universitaria_volumen_1_1_ry14xdG.svg",
+            "publish_date": "2021-09-28",
+            "webview_rex_link": "https://openstax.org/books/f%C3%ADsica-universitaria-volumen-1/pages/1-introduccion",
+            "assignable_book": false
+        },
+        {
+            "id": 547,
+            "meta": {
+                "slug": "física-universitaria-volumen-2",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/547/",
+                "html_url": "https://openstax.org/details/books/física-universitaria-volumen-2",
+                "first_published_at": "2021-11-05T13:53:59.915269-05:00",
+                "locale": "es"
+            },
+            "title": "Física universitaria volumen 2",
+            "book_state": "live",
+            "book_uuid": "da02605d-6d69-447c-a9b9-caf06dc4f413",
+            "salesforce_name": "Física universitaria volumen 2",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/fisica_universitaria_volumen_2_1.svg",
+            "publish_date": "2021-11-17",
+            "webview_rex_link": "https://openstax.org/books/f%C3%ADsica-universitaria-volumen-2/pages/1-introduccion",
+            "assignable_book": false
+        },
+        {
+            "id": 548,
+            "meta": {
+                "slug": "física-universitaria-volumen-3",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/548/",
+                "html_url": "https://openstax.org/details/books/física-universitaria-volumen-3",
+                "first_published_at": "2021-11-05T13:54:21.919697-05:00",
+                "locale": "es"
+            },
+            "title": "Física universitaria volumen 3",
+            "book_state": "live",
+            "book_uuid": "b647a9b9-7631-45a1-a8e7-5acc3a44fc01",
+            "salesforce_name": "Física universitaria volumen 3",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/fisica_universitaria_volumen_3_1.svg",
+            "publish_date": "2021-11-17",
+            "webview_rex_link": "https://openstax.org/books/f%C3%ADsica-universitaria-volumen-3/pages/1-introduccion",
+            "assignable_book": false
+        },
+        {
+            "id": 564,
+            "meta": {
+                "slug": "introducción-estadística",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/564/",
+                "html_url": "https://openstax.org/details/books/introducción-estadística",
+                "first_published_at": "2022-01-26T08:42:39.013225-06:00",
+                "locale": "es"
+            },
+            "title": "Introducción a la estadística",
+            "book_state": "live",
+            "book_uuid": "e53d6c8b-fd9e-4a28-8930-c564ca6fd77d",
+            "salesforce_name": "Introducción a la estadística",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introduccion_a_la_estadistica.svg",
+            "publish_date": "2022-02-14",
+            "webview_rex_link": "https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/1-introduccion",
+            "assignable_book": false
+        },
+        {
+            "id": 565,
+            "meta": {
+                "slug": "introducción-estadística-empresarial",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/565/",
+                "html_url": "https://openstax.org/details/books/introducción-estadística-empresarial",
+                "first_published_at": "2022-01-26T09:06:47.308071-06:00",
+                "locale": "es"
+            },
+            "title": "Introducción a la estadística empresarial",
+            "book_state": "live",
+            "book_uuid": "f346fe75-ae39-4d11-ad32-d80c03df58cb",
+            "salesforce_name": "Introducción a la estadística empresarial",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/introduccion_a_la_estadistica_empresarial.svg",
+            "publish_date": "2022-02-14",
+            "webview_rex_link": "https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica-empresarial/pages/1-introduccion",
+            "assignable_book": false
+        },
+        {
+            "id": 597,
+            "meta": {
+                "slug": "precálculo-2ed",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/597/",
+                "html_url": "https://openstax.org/details/books/precálculo-2ed",
+                "first_published_at": "2022-05-02T15:52:17.156734-05:00",
+                "locale": "es"
+            },
+            "title": "Precálculo 2ed",
+            "book_state": "live",
+            "book_uuid": "52f5163f-a7e1-4545-b0fa-8001df262ca9",
+            "salesforce_name": "Precálculo",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/precalculo_2ed_WebCard_oFhHBTC.svg",
+            "publish_date": "2022-05-18",
+            "webview_rex_link": "https://openstax.org/books/prec%C3%A1lculo-2ed/pages/1-introduccion",
+            "assignable_book": false
+        },
+        {
+            "id": 599,
+            "meta": {
+                "slug": "química-2ed",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/599/",
+                "html_url": "https://openstax.org/details/books/química-2ed",
+                "first_published_at": "2022-05-20T12:57:37.058444-05:00",
+                "locale": "es"
+            },
+            "title": "Química 2ed",
+            "book_state": "live",
+            "book_uuid": "462aa3f1-d65d-4cd9-a5ee-3214f95769b8",
+            "salesforce_name": "Química 2ed",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/quimica_2ed_webcard.svg",
+            "publish_date": "2022-06-02",
+            "webview_rex_link": "https://openstax.org/books/qu%C3%ADmica-2ed/pages/1-introduccion",
+            "assignable_book": false
+        },
+        {
+            "id": 600,
+            "meta": {
+                "slug": "química-comenzando-átomos-2ed",
+                "type": "books.Book",
+                "detail_url": "https://openstax.org/apps/cms/api/v2/pages/600/",
+                "html_url": "https://openstax.org/details/books/química-comenzando-átomos-2ed",
+                "first_published_at": "2022-05-20T12:57:30.274659-05:00",
+                "locale": "es"
+            },
+            "title": "Química: Comenzando con los átomos 2ed",
+            "book_state": "live",
+            "book_uuid": "9702782f-fd50-4310-92ac-d29d39065419",
+            "salesforce_name": "Química: Comenzando con los átomos 2ed",
+            "cover_url": "https://assets.openstax.org/oscms-prodcms/media/documents/quimica_comenzando_con_los_atomos_2ed_webcard.svg",
+            "publish_date": "2022-06-02",
+            "webview_rex_link": "https://openstax.org/books/qu%C3%ADmica-comenzando-%C3%A1tomos-2ed/pages/1-introduccion",
+            "assignable_book": false
+        }
+    ]
+}

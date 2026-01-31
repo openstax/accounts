@@ -1,0 +1,338 @@
+.impact-page {
+  .impact-toggle {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border: 1px solid #d7dde6;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+    background: #fff;
+    min-width: 240px;
+ 
+  }
+
+  .impact-toggle__item {
+    padding: 0.55rem 1.5rem;
+    font-size: 0.95rem;
+    border: none;
+    background: transparent;
+    color: #475467;
+    background: transparent;
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+  }
+
+  .impact-toggle__item.is-active {
+    background: #0b6aa2;
+    color: #fff;
+  }
+
+  .impact-toggle__item:focus-visible {
+    outline: 2px solid #0b6aa2;
+    outline-offset: 2px;
+  }
+
+  .account-impact__hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .account-impact__hero-text {
+    flex: 1 1 320px;
+  }
+
+  .account-impact__panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    border: 1px solid #d7dde6;
+    border-radius: 18px;
+    background: #f8fafc;
+    padding: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .account-impact__panel-summary {
+    flex: 2 1 360px;
+  }
+
+  .account-impact__panel-actions {
+    flex: 1 1 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .account-impact__journey {
+    flex: 1 1 100%;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dfe6ef;
+  }
+
+  .account-impact__panel-kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #0b6aa2;
+    margin-bottom: 0.5rem;
+  }
+
+  .impact-lead {
+    margin-top: 0.75rem;
+    color: #334155;
+    font-size: 1rem;
+  }
+
+  .impact-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .impact-strip__item {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid #e0e7ef;
+    border-radius: 1rem;
+    background: #fff;
+    min-height: 96px;
+  }
+
+  .impact-strip__celebration {
+    border: none;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.4rem;
+  }
+
+  .impact-strip__celebration-body {
+    display: flex;
+    gap: 0.85rem;
+    align-items: center;
+  }
+
+  .impact-strip__celebration-icon {
+    width: 3rem;
+    height: 3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #f97316;
+  }
+
+  .impact-strip__celebration-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .impact-strip__celebration-text {
+    margin: 0.1rem 0 0 3.2rem;
+    color: #475569;
+    font-size: 0.95rem;
+  }
+
+  .impact-strip__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    background: rgba(11, 106, 162, 0.12);
+    color: #0b6aa2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .impact-strip__icon--students {
+    background: rgba(52, 211, 153, 0.18);
+    color: #047857;
+  }
+
+  .impact-strip__icon--books {
+    background: rgba(249, 115, 22, 0.16);
+    color: #c2410c;
+  }
+
+  .impact-strip__icon--savings {
+    background: rgba(99, 102, 241, 0.18);
+    color: #3730a3;
+  }
+
+  .impact-strip__label {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+  }
+
+  .impact-strip__meta {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .impact-strip__value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0.1rem 0 0;
+  }
+
+  .impact-strip--locked {
+    opacity: 0.65;
+    pointer-events: none;
+  }
+
+  .impact-strip__item--locked {
+    position: relative;
+    border-style: dashed;
+  }
+
+  .impact-strip__lock {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.8rem;
+    font-size: 0.85rem;
+    color: #94a3b8;
+  }
+
+  .impact-milestone {
+    margin-top: 1rem;
+    font-weight: 600;
+    color: #0f3554;
+    text-align: center;
+  }
+
+  .account-impact__details {
+    margin-top: 2rem;
+  }
+
+  .impact-hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .impact-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(11, 106, 162, 0.06);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .impact-hero > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .impact-hero--quiet::before {
+    opacity: 0.35;
+  }
+
+  .impact-badge__wrapper,
+  .impact-badge__wrapper_locked {
+    display: flex;
+    align-items: center;
+  }
+
+  .impact-badge,
+  .impact-badge_locked {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    background: rgba(11, 106, 162, 0.08);
+    border: 1px solid rgba(11, 106, 162, 0.14);
+  }
+
+  .impact-badge__icon,
+  .impact-badge__icon_locked {
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #f97316;
+    font-size: 1.2rem;
+  }
+   .impact-badge__icon_locked {
+    color: #0b6aa2;
+   }
+
+  .impact-badge__title {
+    margin: 0;
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 1.2rem;
+  }
+
+  .impact-badge__meta {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #475569;
+  }
+
+  .impact-badge--muted {
+    opacity: 0.8;
+  }
+
+  .impact-locked {
+    margin-top: 1.25rem;
+    width: 100%;
+  }
+
+  .impact-locked__caption {
+    margin: 0 0 0.6rem;
+    font-size: 0.92rem;
+    color: #475569;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .impact-hero::before {
+      background: rgba(11, 106, 162, 0.06);
+    }
+  }
+
+  /* Quality check:
+     - verify contrast/readability
+     - verify motif stays inside border radius
+     - verify no layout shift
+     - verify Safari/Chrome/Firefox acceptable
+  */
+
+  @media (max-width: 600px) {
+    .account-impact__panel {
+      padding: 1.25rem;
+    }
+
+    .account-impact__panel-actions {
+      width: 100%;
+    }
+
+    .impact-toggle {
+      width: 100%;
+    }
+
+    .impact-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+  }
+}

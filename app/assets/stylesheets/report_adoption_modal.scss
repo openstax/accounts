@@ -1,0 +1,315 @@
+.report-adoption-modal {
+  font-size: 1rem;
+}
+
+.report-adoption-modal .modal-dialog {
+  max-width: 960px;
+  width: 100%;
+  margin: 1.5rem auto;
+}
+
+.report-adoption-modal .modal-content {
+  border-radius: 18px;
+  border: 1px solid #dde3ef;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+}
+
+.report-adoption-modal .modal-header {
+  border-bottom: 1px solid #f0f2f6;
+  padding: 1.75rem 1.75rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.report-adoption-modal .modal-header:before, 
+.report-adoption-modal .modal-header:after {
+  display: none;
+  content: " ";
+}
+
+.report-adoption-modal .modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: #111827;
+}
+
+.report-adoption__header-helper {
+  font-size: 0.95rem;
+  color: #4b5563;
+  margin: 0;
+}
+
+.report-adoption-modal .modal-body {
+  padding: 2rem;
+}
+
+.report-adoption__callout {
+  background: #eef6ff;
+  border: 1px solid #d6e7ff;
+  border-radius: 12px;
+  padding: 0.85rem 1.1rem 0.85rem 2.7rem;
+  font-size: 0.95rem;
+  color: #0f3554;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.report-adoption__callout::before {
+  content: "i";
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: #0b6aa2;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.report-adoption__books {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.report-adoption__row {
+  border: 1px solid #eaecf0;
+  border-radius: 12px;
+  padding: 1rem 1.25rem 1.25rem;
+  background: #fff;
+}
+
+.report-adoption__row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.report-adoption__row-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.report-adoption__row-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 1rem;
+  row-gap: 1rem;
+  align-items: flex-start;
+}
+
+.report-adoption__field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #667085;
+  font-size: 0.85rem;
+}
+
+.report-adoption__field select,
+.report-adoption__field input {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid #d7dde6;
+  font-size: 0.95rem;
+  padding: 0 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.report-adoption__field select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #98a2b3 50%),
+    linear-gradient(135deg, #98a2b3 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) calc(50% - 2px),
+    calc(100% - 14px) calc(50% - 2px);
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.report-adoption__field select:focus,
+.report-adoption__field input:focus {
+  border-color: #0b6aa2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(11, 106, 162, 0.2);
+}
+
+.report-adoption__field select option {
+  color: #0f172a;
+  font-weight: 500;
+  padding: 0.4rem 0.6rem;
+  background: #fff;
+}
+
+.report-adoption__field select option:hover,
+.report-adoption__field select option:focus {
+  background: rgba(11, 106, 162, 0.12);
+}
+
+.report-adoption__row-header .account-books__remove-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #98a2b3;
+  font-size: 0.85rem;
+  text-decoration: underline;
+}
+
+.report-adoption__row-header .account-books__remove-btn:hover,
+.report-adoption__row-header .account-books__remove-btn:focus {
+  color: #d92c20;
+}
+
+.report-adoption__remove-row.is-hidden {
+  visibility: hidden;
+}
+
+.report-adoption__info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  border: 1px solid rgba(15, 53, 84, 0.35);
+  font-size: 0.8rem;
+  margin-left: 0.35rem;
+  color: #0f3554;
+  cursor: help;
+  position: relative;
+  background: #fff;
+}
+
+.report-adoption__info-icon::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f3554;
+  color: #fff;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  min-width: 180px;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.2);
+  z-index: 5;
+}
+
+.report-adoption__info-icon::before {
+  content: "";
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #0f3554;
+  opacity: 0;
+  transition: opacity 120ms ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.report-adoption__info-icon:hover::after,
+.report-adoption__info-icon:focus::after,
+.report-adoption__info-icon:hover::before,
+.report-adoption__info-icon:focus::before {
+  opacity: 1;
+}
+
+.report-adoption__summary {
+  border: 1px solid #eaecf0;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.report-adoption__summary-label {
+  font-size: 0.85rem;
+  color: #667085;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.report-adoption__summary-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.report-adoption__summary-subtext {
+  font-size: 0.95rem;
+  color: #475467;
+}
+
+.report-adoption__helper-text {
+  color: #6b7280;
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.report-adoption__footer {
+  border-top: 1px solid #eaecf0;
+  background: #f9fafb;
+  padding: 1rem 1.25rem;
+  margin: 0 -1.25rem -1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.report-adoption__footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.report-adoption__footer .ox-button {
+  min-width: 200px;
+}
+
+@media (max-width: 768px) {
+  .report-adoption-modal .modal-body {
+    padding: 1.25rem;
+  }
+
+  .report-adoption__row-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-adoption__footer {
+    flex-direction: column;
+    align-items: stretch;
+    margin: 0;
+    padding: 1rem;
+  }
+}

@@ -5,7 +5,11 @@ class OX.Profile.Name
   @editable: (el, attribs) ->
     el.editable(
       value: attribs,
-      success: (response) -> $(@).find('.text-content').html(response.full_name)
+      success: (response) ->
+        $(@).find('.text-content').html(response.full_name)
+        $container = $(@).closest('.account-profile__value--name')
+        $display = $container.find('.account-profile__text')
+        $display.text(response.full_name) if $display.length
       validate: (attrs) ->
         if not attrs.first_name and not attrs.last_name
           OX.I18n.name.first_last_name_blank

@@ -1,0 +1,59 @@
+<% openstax_footer_logo =
+     begin
+       image_tag 'openstax-logo-white.svg', alt: 'OpenStax', class: 'os-footer__logo-img'
+     rescue Sprockets::Rails::Helper::AssetNotFound
+       begin
+         image_tag 'openstax-logo.svg', alt: 'OpenStax', class: 'os-footer__logo-img os-footer__logo-img--dark'
+       rescue Sprockets::Rails::Helper::AssetNotFound
+         content_tag(:span, 'openstax', class: 'os-footer__logo-text')
+       end
+     end
+%>
+<% rice_mark =
+     begin
+       image_tag 'rice_logo_reversed.png', alt: 'Rice University', class: 'os-footer__rice-img'
+     rescue Sprockets::Rails::Helper::AssetNotFound
+       begin
+         image_tag 'rice_logo.svg', alt: 'Rice University', class: 'os-footer__rice-img os-footer__rice-img--dark'
+       rescue Sprockets::Rails::Helper::AssetNotFound
+         content_tag(:span, 'RICE', class: 'os-footer__rice-text')
+       end
+     end
+%>
+<% terms_href = main_app.respond_to?(:terms_path) ? main_app.terms_path : '#'
+   privacy_href = if main_app.respond_to?(:privacy_path)
+                    main_app.privacy_path
+                  elsif main_app.respond_to?(:privacy_policy_path)
+                    main_app.privacy_policy_path
+                  else
+                    '#'
+                  end
+   contact_href = if main_app.respond_to?(:salesforce_knowledge_base_url)
+                    main_app.salesforce_knowledge_base_url
+                  else
+                    '#'
+                  end
+%>
+
+<footer class="os-footer" role="contentinfo">
+  <div class="os-footer__inner">
+    <div class="os-footer__brand">
+      <%= link_to main_app.root_path, class: 'os-footer__brand-link', 'aria-label': 'OpenStax home' do %>
+        <%= openstax_footer_logo %>
+      <% end %>
+    </div>
+
+    <nav class="os-footer__links" aria-label="Footer navigation">
+      <%= link_to 'Terms of Use', terms_href, class: 'os-footer__link' %>
+      <%= link_to 'Privacy', privacy_href, class: 'os-footer__link' %>
+      <%= link_to 'Contact Support', contact_href, class: 'os-footer__link', target: ('_blank' unless contact_href == '#'), rel: (contact_href == '#' ? nil : 'noopener noreferrer') %>
+    </nav>
+
+    <div class="os-footer__legal">
+      <%= link_to 'https://www.rice.edu', class: 'os-footer__rice-link', target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Rice University' do %>
+        <%= rice_mark %>
+      <% end %>
+      <span class="os-footer__copyright">&copy; <%= Time.current.year %> Rice University. All rights reserved.</span>
+    </div>
+  </div>
+</footer>

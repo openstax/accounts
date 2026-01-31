@@ -154,6 +154,7 @@ class User < ApplicationRecord
   has_many :member_groups, through: :group_members, source: :group
   has_many :oauth_applications, through: :member_groups
   has_many :security_logs
+  has_many :user_books, dependent: :destroy
 
   delegate_to_routine :destroy
 

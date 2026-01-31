@@ -1,0 +1,190 @@
+<div class="account-layout impact-page">
+  <%= render 'account/navigation' %>
+  <div class="account-layout__content">
+    <%= render(
+          'shared/account_layout_shell',
+          locals: { title: @account_shell_title, description: @account_shell_description }
+        ) do %>
+      <% current_view = @view == 'current' %>
+      <% preview_current_year = current_view && !@current_year_has_adoptions %>
+      <% preview_lifetime = !current_view && !@lifetime_adoptions.any? %>
+      <% badge_subtext = impact_badge_subtext(@badge_last_reported_at) %>
+      <% panel_stats = current_view ? @current_year_stats : @lifetime_stats %>
+      <% panel_has_adoptions = @active_adoptions.any? %>
+      <% panel_heading =
+           if current_view
+             @current_year_has_adoptions ? "Thank you for reporting your adoption impact for #{@current_school_year}!" : "Share your adoption impact for #{@current_school_year}"
+           else
+             'Your OpenStax impact over time'
+           end %>
+      <% panel_copy =
+           if current_view
+             'A quick report helps us reflect your student reach and makes it easier for our team to support instructors where they need it most.'
+           else
+             impact_lead_sentence(has_adoptions: @active_has_adoptions, stats: @active_stats)
+           end %>
+      <% cta_label = current_view ? 'Report an adoption' : 'Add to your impact' %>
+
+      <section class="account-impact__hero">
+        <div class="account-impact__hero-text">
+          <h2>Celebrate your impact</h2>
+          <p>Your adoption reports help us recognize your teaching, understand student reach, and keep your OpenStax story current.</p>
+        </div>
+        <nav class="impact-toggle" aria-label="Impact view">
+          <%= link_to 'Current year',
+                      account_impact_path(view: 'current'),
+                      class: "impact-toggle__item #{current_view ? 'is-active' : ''}",
+                      aria: { selected: current_view } %>
+          <%= link_to 'Lifetime',
+                      account_impact_path(view: 'lifetime'),
+                      class: "impact-toggle__item #{current_view ? '' : 'is-active'}",
+                      aria: { selected: !current_view } %>
+        </nav>
+      </section>
+
+      <% hero_panel_classes = ['account-impact__panel', 'impact-hero'] %>
+      <% hero_panel_classes << 'impact-hero--quiet' if preview_current_year || preview_lifetime %>
+      <section class="<%= hero_panel_classes.join(' ') %>">
+        <div class="account-impact__panel-summary">
+          <p class="account-impact__panel-kicker"><%= current_view ? 'CURRENT SCHOOL YEAR' : 'LIFETIME IMPACT' %></p>
+          <h3><%= panel_heading %></h3>
+          <p><%= panel_copy %></p>
+
+        </div>
+        <div class="account-impact__panel-actions">
+          <%= link_to cta_label,
+                      '#',
+                      class: 'account-impact__cta',
+                      data: { report_adoption_trigger: true } %>
+          <p class="account-impact__microcopy">
+            <% if preview_current_year %>
+              Submit your first adoption; it only takes a minute.
+            <% elsif preview_lifetime %>
+              Report an adoption to unlock your lifetime summary.
+            <% else %>
+              Takes about a minute. You can include multiple books.
+            <% end %>
+          </p>
+        </div>
+
+        
+
+        <% if preview_current_year %>
+        
+          <div class="impact-locked" aria-label="Preview — report an adoption to populate these totals.">
+            <% locked_items = [
+              { label: 'Adoptions reported', icon_class: 'fa fa-check-circle' },
+              { label: 'Students supported', icon_class: 'fa fa-users' },
+              { label: 'Estimated student savings', icon_class: 'fa fa-dollar' },
+            ] %>
+            <div class="impact-strip impact-strip--locked" role="list">
+            <div class="impact-badge__wrapper_locked">
+                  <div class="impact-badge_locked <%= preview_current_year ? 'impact-badge--muted' : '' %>">
+                    <span class="impact-badge__icon_locked fa fa-lock" aria-hidden="true"></span>
+                    <div>
+                      <p class="impact-badge__title">Unlock today!</p>
+                      <p class="impact-badge__meta">Once you report, your year summary and reported adoptions will appear here.</p>
+                    </div>
+                  </div>
+                </div>
+              <% locked_items.each do |item| %>
+                <div class="impact-strip__item impact-strip__item--locked" role="listitem">
+                  <span class="impact-strip__icon <%= item[:icon_class] %>" aria-hidden="true"></span>
+                  <div class="impact-strip__meta">
+                    <p class="impact-strip__label"><%= item[:label] %></p>
+                    <p class="impact-strip__value">—</p>
+                  </div>
+                  <span class="impact-strip__lock fa fa-lock" aria-hidden="true"></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% elsif preview_lifetime %>
+          <div class="impact-locked" aria-label="Preview — report an adoption to populate these totals.">
+            <% locked_items = [
+              { label: 'Years reported', icon_class: 'fa fa-clock-o' },
+              { label: 'Books reported', icon_class: 'fa fa-book' },
+              { label: 'Students supported', icon_class: 'fa fa-users' },
+              { label: 'Estimated student savings', icon_class: 'fa fa-dollar' }
+            ] %>
+            <div class="impact-strip impact-strip--locked" role="list">
+              <% locked_items.each do |item| %>
+                <div class="impact-strip__item impact-strip__item--locked" role="listitem">
+                  <span class="impact-strip__icon <%= item[:icon_class] %>" aria-hidden="true"></span>
+                  <div class="impact-strip__meta">
+                    <p class="impact-strip__label"><%= item[:label] %></p>
+                    <p class="impact-strip__value">—</p>
+                  </div>
+                  <span class="impact-strip__lock fa fa-lock" aria-hidden="true"></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% else %>
+          <div class="account-impact__journey">
+            <% strip_items = [] %>
+            <% if current_view %>
+              <% strip_items << { key: :adoptions, label: 'Adoptions reported', value: @active_adoptions.count, icon: 'adoptions', icon_class: 'fa fa-check-circle', animate: true, format: 'integer' } %>
+            <% else %>
+              <% strip_items << { key: :years, label: 'Years reported', value: @active_stats[:years].to_i, icon: 'years', icon_class: 'fa fa-clock-o', animate: true, format: 'integer' } %>
+              <% strip_items << { key: :books, label: 'Books reported', value: @active_stats[:books].to_i, icon: 'books', icon_class: 'fa fa-book', animate: true, format: 'integer' } %>
+            <% end %>
+            <% strip_items << { key: :students, label: 'Students supported', value: @active_stats[:students].to_i, icon: 'students', icon_class: 'fa fa-users', animate: true, format: 'integer' } %>
+            <% strip_items << { key: :savings, label: 'Estimated student savings', value: @active_stats[:savings].to_f, icon: 'savings', icon_class: 'fa fa-dollar', animate: true, format: 'currency' } %>
+
+            <div class="impact-strip" role="list">
+              <% if current_view %>
+                <div class="impact-badge__wrapper">
+                  <div class="impact-badge <%= preview_current_year ? 'impact-badge--muted' : '' %>">
+                    <span class="impact-badge__icon fa fa-star" aria-hidden="true"></span>
+                    <div>
+                      <p class="impact-badge__title">You're up to date.</p>
+                      <p class="impact-badge__meta"><%= badge_subtext %></p>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              <% strip_items.each do |item| %>
+                <div class="impact-strip__item impact-strip__item--<%= item[:icon] %>" role="listitem">
+                  <span class="impact-strip__icon impact-strip__icon--<%= item[:icon] %> <%= item[:icon_class] %>" aria-hidden="true"></span>
+                  <div class="impact-strip__meta">
+                    <p class="impact-strip__label"><%= item[:label] %></p>
+                    <% format = item[:format] || 'integer' %>
+                    <% if item[:animate] %>
+                      <p class="impact-strip__value"
+                         data-countup-target="<%= item[:value] %>"
+                         data-countup-format="<%= format %>"><%= impact_countup_value(item[:value], format) %></p>
+                    <% else %>
+                      <p class="impact-strip__value"><%= impact_countup_value(item[:value], format) %></p>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+
+            <% if @active_has_adoptions %>
+              <p class="impact-milestone"><%= impact_milestone_text(@active_stats) %></p>
+            <% end %>
+          </div>
+        <% end %>
+      </section>
+
+      <% show_details = current_view ? @current_year_has_adoptions : @lifetime_adoptions.any? %>
+      <% if show_details %>
+      <section class="account-impact__details">
+        <div class="account-shell__section-header">
+          <h2><%= current_view ? "Your reported adoptions for #{@current_school_year}" : 'All reported adoptions' %></h2>
+          <p><%= current_view ? 'Report your adoptions to keep this year’s impact up to date.' : 'Browse every adoption you’ve shared over time.' %></p>
+        </div>
+
+        <%= render 'account/impact_table',
+                   adoptions: @active_adoptions,
+                   empty_title: current_view ? 'No adoptions reported yet' : 'No adoptions reported yet',
+                   empty_body: current_view ?
+                                "Report your adoptions for #{@current_school_year} to keep your impact up to date." :
+                                'Report an adoption to start building your OpenStax impact history.' %>
+      </section>
+      <% end %>
+    <% end %>
+  </div>
+</div>

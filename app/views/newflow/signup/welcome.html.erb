@@ -1,12 +1,13 @@
 <div id="login-signup-form">
     <div class="content">
-        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
+        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active' } %>
 
         <%= newflow_login_signup_card(
                     id: 'signup-page',
                     classes: "welcome-page",
                     header: (I18n.t(:"login_signup_form.welcome_page_header")),
-                    banners: @banners) do %>
+                    banners: @banners,
+                    show_exit_icon: true) do %>
             <% lev_form_for :login, url: '' do |form| %>
                 <%
                     fh = NewflowFormHelper::Newflow.new(
@@ -16,14 +17,19 @@
                     )
                     @page_title = 'Sign up'
                 %>
+                <%= render(
+                      partial: 'newflow/form_divider',
+                      locals: { dividing_text: I18n.t(:"login_signup_form.choose_role_divider") }
+                    ) %>
+
                 <div class="content">
                     <div class="join-as">
 
                         <div>
                             <%= link_to (get_alternate_signup_url || newflow_signup_student_path), data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2A-Student' } do %>
                                 <div class="join-as__role student">
-                                    <h2><%= I18n.t(:"login_signup_form.student") %></h2>
                                     <%= image_tag('student-icon.svg') %>
+                                    <h2><%= I18n.t(:"login_signup_form.student") %></h2>
                                 </div>
                                 <div class="blue-bar"></div>
                             <% end %>
@@ -36,8 +42,8 @@
                         <div>
                             <%= link_to educator_signup_path, data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2B-Educator' } do %>
                                 <div class="join-as__role educator">
-                                    <h2><%= I18n.t(:"login_signup_form.educator") %></h2>
                                     <%= image_tag('educator-icon.svg') %>
+                                    <h2><%= I18n.t(:"login_signup_form.educator") %></h2>
                                 </div>
                                 <div class="green-bar"></div>
                             <% end %>
@@ -49,6 +55,7 @@
 
                     </div>
                 </div>
+
             <% end %>
         <% end %>
     </div>

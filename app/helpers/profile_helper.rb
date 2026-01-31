@@ -26,8 +26,7 @@ module ProfileHelper
 
     snippet = <<-SNIPPET
       <span class="icon fa-stack fa-lg">
-        <i class="fa fa-square fa-stack-2x #{provider}-bkg"></i>
-        <i class="fa fa-#{icon_class} fa-stack-1x fa-inverse"></i>
+        <i class="fa fa-#{icon_class} fa-stack-1x"></i>
       </span>
       <span class="name">#{display_name}</span>
       <span class="mod-holder">
@@ -62,8 +61,7 @@ module ProfileHelper
 
     snippet = <<-SNIPPET
       <span class="icon fa-stack fa-lg">
-        <i class="fa fa-square fa-stack-2x #{provider}-bkg"></i>
-        <i class="fa fa-#{icon_class} fa-stack-1x fa-inverse"></i>
+        <i class="fa fa-#{icon_class} fa-stack-1x"></i>
       </span>
       <span class="name">#{display_name}</span>
       <span class="mod-holder">
@@ -76,31 +74,58 @@ module ProfileHelper
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
     verify_link = is_verified ? '' : ""
-    unconfirmed_link = is_verified ? '' : <<-EOV
-      <span class='unconfirmed-warning'>[#{I18n.t(:"legacy.users.edit.unconfirmed_warning")}]</span>
-    EOV
+    unconfirmed_link =
+      if is_verified || id.blank?
+        ''
+      else
+        <<-EOV
+          <span class='unconfirmed-warning'>Pending</span>
+        EOV
+      end
+
+    searchable_checked = is_searchable ? 'checked="checked"' : ''
+
+    resend_form = form_tag(resend_confirmation_contact_info_path(id: id), method: :put, class: "resend-confirmation__form") do
+      button_tag(
+        (I18n.t :"legacy.users.edit.resend_confirmation"),
+        class: "account-security__add-email account-security__resend-button"
+      )
+    end
+
+    toggle_content = if id.present?
+      "
+      <button type=\"button\" class=\"email-entry__toggle\" aria-label=\"Manage #{value} settings\" aria-expanded=\"false\">
+      <span class=\"glyphicon glyphicon-pencil\"></span>
+      </button></div>
+      <div class=\"controls email-entry__controls\" aria-hidden=\"true\">
+            <div class='resend-confirmation'>
+              #{resend_form}
+            </div>
+            <div class='delete'>
+              <button type='button' class='account-security__delete-button'>Remove</button>
+            </div>
+            <div class=\"searchable-toggle\">
+              <label><input type=\"checkbox\" class='searchable' #{searchable_checked}> #{I18n.t :"legacy.users.edit.searchable"}</label>
+            </div>
+          </div>
+          <i class=\"spinner fa fa-spinner fa-spin fa-lg\" style=\"display:none\"></i>
+            "
+    else
+      "</div>"
+    end
 
     (
       <<-SNIPPET
-        <details class="email-entry editable-click #{'verified' if is_verified}" data-id="#{id}">
-          <summary>
-            <span class="value">#{value}</span>
-            #{unconfirmed_link}
-          </summary>
-          <div class="controls">
-            <div class='resend-confirmation'>
-              <i class='fa fa-envelope-o'></i>
-              #{button_to((I18n.t :"legacy.users.edit.resend_confirmation"), resend_confirmation_contact_info_path(id: id), method: :put )}
+        <div class="email-entry editable-click #{'verified' if is_verified}" data-id="#{id}">
+          <div class="email-entry__header">
+            <div class="email-entry__value">
+              <span class="value">#{value}</span>
+              #{unconfirmed_link}
             </div>
-            <div class="delete">
-              <span class="glyphicon glyphicon-trash"></span><button type="button">Delete</button>
-            </div>
-            <div class="searchable-toggle">
-              <label><input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"legacy.users.edit.searchable"}</label>
-            </div>
-          </div>
-          <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>
-        </details>
+              #{toggle_content}
+         
+      
+        </div>
       SNIPPET
     ).html_safe
   end

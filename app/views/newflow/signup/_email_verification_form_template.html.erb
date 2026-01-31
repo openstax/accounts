@@ -2,13 +2,14 @@
 
 <div id="login-signup-form">
     <div class="content">
-        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
+        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active' } %>
 
         <%= newflow_login_signup_card(
                     id: 'signup-page',
                     classes: "signup-page",
                     header: header,
-                    current_step: current_step) do %>
+                    current_step: current_step,
+                    show_exit_icon: true) do %>
             <% lev_form_for :confirm, url: submit_to_path do |form| %>
                 <%
                     form_helper = NewflowFormHelper::Newflow.new(
