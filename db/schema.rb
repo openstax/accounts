@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_12_19_000000) do
+ActiveRecord::Schema.define(version: 2024_11_10_120002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -45,10 +45,10 @@ ActiveRecord::Schema.define(version: 2024_12_19_000000) do
     t.integer "likely_to_adopt_score"
     t.bigint "user_id"
     t.bigint "school_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.string "salesforce_book_id"
     t.decimal "savings", precision: 14, scale: 2
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["salesforce_account_id", "school_year"], name: "index_adoptions_on_sf_account_and_school_year"
     t.index ["salesforce_account_id"], name: "index_adoptions_on_salesforce_account_id"
     t.index ["salesforce_book_id"], name: "index_adoptions_on_salesforce_book_id"
@@ -168,10 +168,10 @@ ActiveRecord::Schema.define(version: 2024_12_19_000000) do
     t.string "salesforce_name"
     t.boolean "assignable_book", default: false, null: false
     t.string "webview_rex_link"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.string "html_url"
     t.string "salesforce_book_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["book_uuid"], name: "index_books_on_book_uuid", unique: true
     t.index ["salesforce_book_id"], name: "index_books_on_salesforce_book_id", unique: true
   end
@@ -470,9 +470,9 @@ ActiveRecord::Schema.define(version: 2024_12_19_000000) do
 
   create_table "user_books", force: :cascade do |t|
     t.bigint "user_id", null: false
+    t.bigint "book_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "book_id", null: false
     t.index ["book_id"], name: "index_user_books_on_book_id"
     t.index ["user_id", "book_id"], name: "index_user_books_on_user_id_and_book_id", unique: true
     t.index ["user_id"], name: "index_user_books_on_user_id"
@@ -540,11 +540,9 @@ ActiveRecord::Schema.define(version: 2024_12_19_000000) do
     t.string "adopter_status"
     t.jsonb "consent_preferences"
     t.boolean "is_deleted"
-    t.date "assignable_adoption_date"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
-    t.index ["assignable_adoption_date"], name: "index_users_on_assignable_adoption_date"
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"

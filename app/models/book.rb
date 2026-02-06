@@ -17,7 +17,11 @@ class Book < ApplicationRecord
     book.cover_url        = attrs[:cover_url].to_s if attrs[:cover_url].present?
     book.salesforce_name  = attrs[:salesforce_name].to_s if attrs[:salesforce_name].present?
     if attrs[:salesforce_book_id].present?
-      book.salesforce_book_id = attrs[:salesforce_book_id].to_s
+      sf_id = attrs[:salesforce_book_id].to_s
+      if book.salesforce_book_id != sf_id
+        where.not(id: book.id).where(salesforce_book_id: sf_id).update_all(salesforce_book_id: nil)
+      end
+      book.salesforce_book_id = sf_id
     end
 
     if attrs.key?(:assignable_book)

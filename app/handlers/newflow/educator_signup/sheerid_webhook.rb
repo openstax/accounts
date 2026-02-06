@@ -136,7 +136,7 @@ module Newflow
             event_data: { verification: verification_details_from_sheerid.inspect })
         end
 
-        CreateOrUpdateSalesforceLead.perform_later(user: user)
+        CreateOrUpdateSalesforceLead.perform_later(user: user) if Settings::Salesforce.push_leads_enabled
 
 
         SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)
