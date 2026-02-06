@@ -42,8 +42,8 @@ RSpec.describe Salesforce::AdoptionSync do
   end
 
   describe '#apply_relationships' do
-    let(:school) { create(:school, salesforce_id: '001SCHOOL') }
-    let(:user)   { create(:user, salesforce_contact_id: '003CONTACT') }
+    let(:school) { FactoryBot.create(:school, salesforce_id: '001SCHOOL') }
+    let(:user)   { FactoryBot.create(:user, salesforce_contact_id: '003CONTACT') }
     let(:book)   { Book.create!(book_uuid: 'bk-uuid', title: 'Test Book', salesforce_book_id: 'bk-uuid') }
 
     it 'assigns matching school and user' do

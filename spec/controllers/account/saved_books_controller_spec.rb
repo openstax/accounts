@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Account::SavedBooksController, type: :controller do
-  let(:user) { FactoryBot.create(:user) }
+  let(:user) { FactoryBot.create(:user, :terms_agreed) }
   let(:catalog_entry) do
     {
       book_uuid: 'abc-123',
