@@ -46,7 +46,7 @@ module Newflow
         screenshot!
 
         # can exit and go back to the app they came from
-        find('#exit-icon a').click
+        find('#exit-icon').click
         expect(page).to have_current_path(external_app_for_specs_path)
         screenshot!
       end
@@ -65,7 +65,7 @@ module Newflow
         screenshot!
 
         # can exit and go back to the app they came from
-        find('#exit-icon a').click
+        find('#exit-icon').click
         expect(page).to have_current_path(external_app_for_specs_path)
         screenshot!
       end
