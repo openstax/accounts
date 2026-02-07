@@ -1,9 +1,16 @@
 module SalesforceTestHelper
-  # Replaces disable_sfdc_client - stubs ActiveForce so no real SF calls happen
+  # Replaces disable_sfdc_client - stubs ActiveForce so no real SF calls happen.
+  # Returns a double that raises on most calls so `rescue nil` in views works correctly,
+  # but accepts method_missing silently for routine SF client operations.
   def disable_sfdc_client
+    client = double('sfdc_client')
+    allow(client).to receive(:instance_url).and_raise(RuntimeError, 'SF client disabled in test')
+    allow(client).to receive(:authenticate!).and_return(nil)
+    allow(client).to receive(:describe).and_return(nil)
+    allow(client).to receive(:query).and_return([])
     allow(ActiveForce)
       .to receive(:sfdc_client)
-      .and_return(double('null object').as_null_object)
+      .and_return(client)
   end
 
   # Stubs SF Lead creation/lookup to return a mock lead
