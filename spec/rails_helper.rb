@@ -3,7 +3,6 @@ ENV['RAILS_ENV'] ||= 'test'
 require 'simplecov_helper'
 require File.expand_path('../../config/environment', __FILE__)
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
-require 'openstax/salesforce/spec_helpers'
 require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/email/rspec'
@@ -11,8 +10,6 @@ require 'shoulda/matchers'
 require 'parallel_tests'
 require 'database_cleaner'
 require 'spec_helper'
-
-include OpenStax::Salesforce::SpecHelpers
 
 # https://github.com/colszowka/simplecov/issues/369#issuecomment-313493152
 # Load rake tasks so they can be tested.
@@ -88,7 +85,11 @@ else
     current_time = Time.current
 
     if update_time.nil? || current_time - update_time > 60
-      Webdrivers::Chromedriver.update
+      begin
+        Webdrivers::Chromedriver.update
+      rescue StandardError => e
+        warn "[webdrivers] Chromedriver update failed: #{e.message}"
+      end
 
       file.rewind
       file.write current_time.iso8601
@@ -175,8 +176,3 @@ class ActionDispatch::TestResponse
   end
 end
 
-def disable_sfdc_client
-  allow(ActiveForce)
-    .to receive(:sfdc_client)
-    .and_return(double('null object').as_null_object)
-end
