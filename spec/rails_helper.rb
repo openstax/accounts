@@ -96,6 +96,9 @@ else
       file.flush
       file.truncate file.pos
     end
+
+    # Pin the version so the gem won't try to re-check (and hit SSL) when Selenium starts
+    Webdrivers::Chromedriver.required_version = Webdrivers::Chromedriver.current_version
   ensure
     file.flock File::LOCK_UN
   end
