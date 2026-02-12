@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_11_07_193019) do
+ActiveRecord::Schema.define(version: 2026_01_28_161718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -175,7 +175,8 @@ ActiveRecord::Schema.define(version: 2024_11_07_193019) do
     t.string "external_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["external_id"], name: "index_external_ids_on_external_id", unique: true
+    t.integer "role", default: 0, null: false
+    t.index ["external_id", "role"], name: "index_external_ids_on_external_id_and_role", unique: true
     t.index ["user_id"], name: "index_external_ids_on_user_id"
   end
 

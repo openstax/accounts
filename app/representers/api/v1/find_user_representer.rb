@@ -20,6 +20,16 @@ module Api::V1
                description: "External ID to search by"
              }
 
+    property :role,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+               description: "Role to search by (optional), one of #{
+                 User.roles.keys.map(&:to_s).inspect
+               }"
+             }
+
     collection :external_ids,
                type: String,
                readable: true,
