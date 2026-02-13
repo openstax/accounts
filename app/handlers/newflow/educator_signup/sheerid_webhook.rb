@@ -136,7 +136,7 @@ module Newflow
             event_data: { verification: verification_details_from_sheerid.inspect })
         end
 
-        CreateOrUpdateSalesforceLead.perform_later(user: user)
+        CreateOrUpdateSalesforceContact.perform_later(user: user)
 
 
         SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)
