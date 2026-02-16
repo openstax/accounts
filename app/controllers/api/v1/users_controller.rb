@@ -153,7 +153,11 @@ class Api::V1::UsersController < Api::V1::ApiController
     raise SecurityTransgression unless current_human_user
     security_log :user_updated, user_params: JSON.parse(request.body.read)
     request.body.rewind
-    standard_update(User.find(current_human_user.id))
+    standard_update(
+      User.find(current_human_user.id),
+      Api::V1::UserRepresenter,
+      { include_private_data: true }
+    )
   end
 
   ###############################################################
@@ -180,7 +184,9 @@ class Api::V1::UsersController < Api::V1::ApiController
     payload = consume!(Hashie::Mash.new, represent_with: Api::V1::FindUserRepresenter)
 
     user = if payload.external_id.present?
-      User.joins(:external_ids).find_by!(external_ids: { external_id: payload.external_id })
+      external_id = ExternalId.find_by_external_id_and_role(payload.external_id, payload.role)
+      raise ActiveRecord::RecordNotFound unless external_id
+      external_id.user
     elsif payload.uuid.present?
       User.find_by!(uuid: payload.uuid)
     else

@@ -61,6 +61,24 @@ module Newflow
               SecurityLog.where(event_type: :sign_in_successful).count
             }
           end
+
+          it 'includes redirect URL in security log message when present' do
+            redirect_url = "https://openstax.org/books/biology-2e"
+            # GET login_form with `?r=URL` stores the url
+            get('login_form', params: { r: redirect_url })
+
+            post('login', params: params)
+
+            log = SecurityLog.where(event_type: :sign_in_successful).last
+            expect(log.event_data['redirect']).to eq(redirect_url)
+          end
+
+          it 'does not include redirect URL in security log message when absent' do
+            post('login', params: params)
+
+            log = SecurityLog.where(event_type: :sign_in_successful).last
+            expect(log.event_data['message']).to be_nil
+          end
         end
 
         describe 'educators' do
@@ -113,6 +131,24 @@ module Newflow
               }.to change {
                 SecurityLog.where(event_type: :sign_in_successful).count
               }
+            end
+
+            it 'includes redirect URL in security log message when present' do
+              redirect_url = "https://openstax.org/books/chemistry-2e"
+              # GET login_form with `?r=URL` stores the url
+              get('login_form', params: { r: redirect_url })
+
+              post('login', params: params)
+
+              log = SecurityLog.where(event_type: :sign_in_successful).last
+              expect(log.event_data['redirect']).to eq(redirect_url)
+            end
+
+            it 'does not include redirect URL in security log message when absent' do
+              post('login', params: params)
+
+              log = SecurityLog.where(event_type: :sign_in_successful).last
+              expect(log.event_data['message']).to be_nil
             end
           end
 

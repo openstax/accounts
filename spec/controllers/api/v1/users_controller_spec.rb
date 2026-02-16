@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
+RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
   let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
   let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, :trusted }
 
@@ -241,6 +241,9 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       user_2.reload
       expect(user_2.first_name).to eq 'Jerry'
       expect(user_2.last_name).to eq 'Mouse'
+      expect(response.body_as_hash).to eq Api::V1::UserRepresenter.new(user_2).to_hash(
+        { user_options: { include_private_data: true } }
+      ).deep_symbolize_keys
     end
 
     it "should not let id be specified" do
@@ -482,7 +485,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       end.to change { ExternalId.count }.by(1)
       expect(response).to have_http_status :created
       expect(response.body_as_hash).to eq(
-        user_id: valid_body[:user_id], external_id: valid_body[:external_id]
+        user_id: valid_body[:user_id], external_id: valid_body[:external_id], role: 'unknown_role'
       )
     end
 
