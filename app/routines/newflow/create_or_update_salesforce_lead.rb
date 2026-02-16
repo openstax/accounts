@@ -78,16 +78,7 @@ module Newflow
           Sentry.capture_message(
             "Salesforce lead ID #{user.salesforce_lead_id} not found for user #{user.id}, will search by email. Error: #{e.class.name}: #{e.message}"
           )
-          lead = nil
         end
-
-        # If lead wasn't found by ID or find raised an exception, try email search
-        if lead.nil?
-          lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
-        end
-      else
-        # No stored lead ID, search by email
-        lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
       end
 
       if lead.nil?
