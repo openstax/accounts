@@ -5,5 +5,5 @@ describe ExternalId, type: :model do
 
   it { is_expected.to belong_to(:user) }
   it { is_expected.to validate_presence_of(:external_id) }
-  it { is_expected.to validate_uniqueness_of(:external_id) }
+  it { is_expected.to validate_uniqueness_of(:external_id).scoped_to(:role) }
 end
