@@ -76,13 +76,66 @@ module Newflow
             }
           )
           Sentry.capture_message(
-            "Salesforce lead ID #{user.salesforce_lead_id} not found for user #{user.id}, will search by email. Error: #{e.class.name}: #{e.message}"
+            "Salesforce lead ID #{user.salesforce_lead_id} not found for user #{user.id}, will search by UUID and email. Error: #{e.class.name}: #{e.message}"
           )
         end
       end
 
+      # If no lead found by stored ID, search for existing lead by UUID
+      if lead.nil?
+        lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
+        if lead
+          SecurityLog.create!(
+            user: user,
+            event_type: :salesforce_lead_found_by_uuid,
+            event_data: { lead_id: lead.id }
+          )
+        end
+      end
+
+      # If still no lead found, search by email
+      if lead.nil?
+        lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
+        if lead
+          SecurityLog.create!(
+            user: user,
+            event_type: :salesforce_lead_found_by_email,
+            event_data: { lead_id: lead.id, email: user.best_email_address_for_salesforce }
+          )
+        end
+      end
+
+      # If user has a contact (already converted from lead), don't create a new lead
+      if lead.nil? && user.salesforce_contact_id.present?
+        begin
+          contact = OpenStax::Salesforce::Remote::Contact.find(user.salesforce_contact_id)
+          if contact
+            SecurityLog.create!(
+              user: user,
+              event_type: :user_already_has_contact_not_creating_lead,
+              event_data: { contact_id: user.salesforce_contact_id }
+            )
+            # User already has a contact, return without creating a lead
+            outputs.lead = nil
+            outputs.user = user
+            return
+          end
+        rescue StandardError => e
+          # Contact not found, proceed with lead creation
+          Sentry.capture_message(
+            "Salesforce contact ID #{user.salesforce_contact_id} not found for user #{user.id}, will create lead. Error: #{e.class.name}: #{e.message}"
+          )
+        end
+      end
+
+      # Only create a new lead if none exists
       if lead.nil?
         lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        SecurityLog.create!(
+          user: user,
+          event_type: :creating_new_salesforce_lead,
+          event_data: { email: user.best_email_address_for_salesforce, uuid: user.uuid }
+        )
       end
 
       lead.first_name = user.first_name
