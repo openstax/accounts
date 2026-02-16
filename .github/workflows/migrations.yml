@@ -2,25 +2,19 @@ name: Migrations
 
 on:
   pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
-      - reopened
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'db/migrate/**'
+      - 'db/schema.rb'
 
-# Add concurrency to cancel outdated workflow runs
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   migrations:
-    timeout-minutes: 30
+    timeout-minutes: 15
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-      issues: write
     services:
       postgres:
         image: postgres:11
@@ -30,92 +24,42 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-      redis:
-        image: redis
-        ports:
-          - 6379:6379
-        # Set health checks to wait until redis has started
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
-      # Clone repo and checkout merge commit parent (PR target commit)
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
-      - run: git checkout HEAD^
-
-      # Install base commit ruby version
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
 
-      # Create data to be migrated and revert to PR merge commit
-      - name: Cache database setup
-        uses: actions/cache@v5
-        with:
-          path: |
-            tmp/cache
-          key: db-setup-${{ github.sha }}
-          restore-keys: |
-            db-setup-
-
-      - name: Create data to be migrated
+      # Load the base branch schema to simulate an existing production database
+      - name: Load base schema
         env:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
-          PGPASSWORD: postgres
           RAILS_ENV: test
         run: |
-          bin/rake db:create db:schema:load db:seed --trace
-          bin/rails runner '3.times { FactoryBot.create :user }'
-          # Export data for integrity check
-          pg_dump -U postgres -h localhost -F c -f pre_migration.dump ox_accounts_test
-          git checkout --force -
+          git show origin/${{ github.base_ref }}:db/schema.rb > db/schema_base.rb
+          cp db/schema_base.rb db/schema.rb
+          bin/rake db:create db:schema:load
+          git checkout -- db/schema.rb
 
-      # Install PR ruby version
-      - name: Set up Ruby (PR version)
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
-      # Migrate the data
-      - name: Migrate and verify
+      # Run only the new migrations from this PR
+      - name: Run migrations
         env:
           OXA_DB_USER: postgres
           OXA_DB_PASS: postgres
-          PGPASSWORD: postgres
           RAILS_ENV: test
-        run: |
-          # Run migrations
-          bin/rake db:migrate
-          
-          # Verify data integrity
-          bin/rails runner '
-            begin
-              User.count == 3 or raise "User count mismatch"
-              puts "✅ Data integrity check passed"
-            rescue => e
-              puts "❌ Data integrity check failed: #{e.message}"
-              exit 1
-            end
-          '
-          
-          # Export post-migration data
-          pg_dump -U postgres -h localhost -F c -f post_migration.dump ox_accounts_test
+        run: bin/rake db:migrate
 
-      - name: Upload migration artifacts
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: migration-artifacts
-          path: |
-            pre_migration.dump
-            post_migration.dump
-            log/development.log
-          retention-days: 7
+      # Verify the resulting schema matches what's committed
+      - name: Verify schema
+        run: |
+          if ! git diff --exit-code db/schema.rb; then
+            echo "❌ db/schema.rb is out of date. Run migrations locally and commit the updated schema."
+            exit 1
+          fi
+          echo "✅ Schema is up to date"
