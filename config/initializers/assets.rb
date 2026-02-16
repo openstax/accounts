@@ -23,6 +23,7 @@ Rails.application.config.assets.precompile += %w(
   intTelInput.css
   libphonenumber/utils.js
   syntax_highlight.css
+  global_layout.css
   newflow.css
   newflow_colors.css
   newflow.js

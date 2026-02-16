@@ -18,6 +18,48 @@ ActiveRecord::Schema.define(version: 2026_01_28_161718) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
+  create_table "adoptions", force: :cascade do |t|
+    t.string "salesforce_id", null: false
+    t.string "adoption_number"
+    t.string "salesforce_name"
+    t.string "adoption_type"
+    t.string "school_year"
+    t.integer "base_year"
+    t.string "terms_used"
+    t.string "how_using"
+    t.text "languages", default: [], array: true
+    t.integer "students"
+    t.date "class_start_date"
+    t.date "confirmation_date"
+    t.string "confirmation_type"
+    t.text "notes"
+    t.text "tracking_parameters"
+    t.string "assignable_adoption_status"
+    t.integer "assignable_assignments_created_count"
+    t.date "assignable_first_assignment_created_date"
+    t.date "assignable_most_recent_created_date"
+    t.string "salesforce_account_id"
+    t.string "salesforce_contact_id"
+    t.string "salesforce_opportunity_id"
+    t.boolean "rollover_status", default: false, null: false
+    t.integer "likely_to_adopt_score"
+    t.bigint "user_id"
+    t.bigint "school_id"
+    t.string "salesforce_book_id"
+    t.decimal "savings", precision: 14, scale: 2
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["salesforce_account_id", "school_year"], name: "index_adoptions_on_sf_account_and_school_year"
+    t.index ["salesforce_account_id"], name: "index_adoptions_on_salesforce_account_id"
+    t.index ["salesforce_book_id"], name: "index_adoptions_on_salesforce_book_id"
+    t.index ["salesforce_contact_id", "school_year"], name: "index_adoptions_on_sf_contact_and_school_year"
+    t.index ["salesforce_contact_id"], name: "index_adoptions_on_salesforce_contact_id"
+    t.index ["salesforce_id"], name: "index_adoptions_on_salesforce_id", unique: true
+    t.index ["salesforce_opportunity_id"], name: "index_adoptions_on_salesforce_opportunity_id"
+    t.index ["school_id"], name: "index_adoptions_on_school_id"
+    t.index ["user_id"], name: "index_adoptions_on_user_id"
+  end
+
   create_table "application_groups", id: :serial, force: :cascade do |t|
     t.integer "application_id", null: false
     t.integer "group_id", null: false
@@ -117,6 +159,21 @@ ActiveRecord::Schema.define(version: 2026_01_28_161718) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
+  end
+
+  create_table "books", force: :cascade do |t|
+    t.string "book_uuid", null: false
+    t.string "title", null: false
+    t.string "cover_url"
+    t.string "salesforce_name"
+    t.boolean "assignable_book", default: false, null: false
+    t.string "webview_rex_link"
+    t.string "html_url"
+    t.string "salesforce_book_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["book_uuid"], name: "index_books_on_book_uuid", unique: true
+    t.index ["salesforce_book_id"], name: "index_books_on_salesforce_book_id", unique: true
   end
 
   create_table "contact_infos", id: :serial, force: :cascade do |t|
@@ -412,6 +469,16 @@ ActiveRecord::Schema.define(version: 2026_01_28_161718) do
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
+  create_table "user_books", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "book_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["book_id"], name: "index_user_books_on_book_id"
+    t.index ["user_id", "book_id"], name: "index_user_books_on_user_id_and_book_id", unique: true
+    t.index ["user_id"], name: "index_user_books_on_user_id"
+  end
+
   create_table "user_external_uuids", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "uuid", null: false
@@ -488,9 +555,13 @@ ActiveRecord::Schema.define(version: 2026_01_28_161718) do
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
+  add_foreign_key "adoptions", "schools"
+  add_foreign_key "adoptions", "users"
   add_foreign_key "external_ids", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "user_books", "books"
+  add_foreign_key "user_books", "users"
   add_foreign_key "users", "oauth_applications", column: "source_application_id"
   add_foreign_key "users", "schools"
 end

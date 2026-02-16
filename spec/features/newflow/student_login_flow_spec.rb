@@ -106,7 +106,7 @@ module Newflow
             it 'takes user back to app' do
               with_forgery_protection do
                 arrive_from_app(app: app)
-                find('#exit-icon a').click
+                find('#exit-icon').click
                 wait_for_animations
                 wait_for_ajax
                 expect(page).to have_current_path(external_public_path)
@@ -119,7 +119,7 @@ module Newflow
                   arrive_from_app(app: app)
                   click_on(I18n.t(:"login_signup_form.sign_up"))
                   click_on(I18n.t(:"login_signup_form.log_in"))
-                  find('#exit-icon a').click
+                  find('#exit-icon').click
                   wait_for_animations
                   wait_for_ajax
                   expect(page).to have_current_path(external_public_path)
@@ -132,7 +132,7 @@ module Newflow
             it 'takes user back to `r`eturn url' do
               with_forgery_protection do
                 visit(newflow_login_path(r: external_public_url))
-                find('#exit-icon a').click
+                find('#exit-icon').click
                 wait_for_animations
                 wait_for_ajax
                 expect(page).to have_current_path(external_public_path)

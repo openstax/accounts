@@ -1,0 +1,360 @@
+<div class="account-layout">
+  <%= render 'account/navigation' %>
+  <div class="account-layout__content">
+    <%= render(
+          'shared/account_layout_shell',
+          locals: {
+            title: 'My OpenStax Books',
+            description: 'Your personal library of OpenStax titles and teaching tools.'
+          }
+        ) do %>
+      <div class="account-books" data-saved-book-ids="<%= @saved_books.map { |saved| saved.book&.book_uuid }.compact.to_json %>">
+        <section class="account-profile__section">
+          <div class="account-shell__section-header">
+            <h2>My OpenStax books</h2>
+            <p>Save books to quickly access book pages, instructor resources, and course materials.</p>
+          </div>
+
+          <% if @saved_books.any? %>
+            <ul class="account-books__saved-list">
+              <% @saved_books.each do |saved_book| %>
+                <% book = saved_book.book %>
+                <% next unless book %>
+                <% book_link = book.html_url.presence || book.webview_rex_link %>
+                <% assignable_class = book.assignable_book? ? '' : 'account-books__saved-media--placeholder' %>
+                <li class="account-books__saved-card" data-book-remove data-confirm-state="default">
+                  <div class="account-books__saved-media <%= assignable_class %>">
+                    <% if book.assignable_book? %>
+                      <span class="account-books__badge">Available in Assignable</span>
+                    <% else %>
+                      <span class="account-books__badge account-books__badge--placeholder" aria-hidden="true"></span>
+                    <% end %>
+                    <div class="account-books__saved-cover-wrap">
+                      <% if book.cover_url.present? %>
+                        <% cover_img = image_tag(book.cover_url, alt: "#{book.title} cover", class: 'account-books__cover account-books__cover--saved') %>
+                        <% if book_link.present? %>
+                          <%= link_to book_link, target: '_blank', rel: 'noopener', class: 'account-books__saved-cover-link' do %>
+                            <%= cover_img %>
+                          <% end %>
+                        <% else %>
+                          <%= cover_img %>
+                        <% end %>
+                      <% else %>
+                        <div class="account-books__cover account-books__cover--placeholder" aria-hidden="true">OS</div>
+                      <% end %>
+                    </div>
+                  </div>
+                  <div class="account-books__saved-body">
+                    <% if book_link.present? %>
+                      <%= link_to book.title,
+                                  book_link,
+                                  target: '_blank',
+                                  rel: 'noopener',
+                                  class: 'account-books__saved-title account-books__saved-title--link' %>
+                    <% else %>
+                      <p class="account-books__saved-title"><%= book.title %></p>
+                    <% end %>
+                  </div>
+                  <div class="account-books__saved-actions">
+                    <% if book_link.present? %>
+                      <%= link_to 'View book',
+                                  book_link,
+                                  target: '_blank',
+                                  rel: 'noopener',
+                                  class: 'account-books__view-link account-books__view-link--full' %>
+                    <% end %>
+                    <div class="account-books__remove-actions">
+                      <button type="button"
+                              class="account-books__remove-btn account-books__remove-btn--prompt"
+                              data-remove-toggle>
+                        Remove
+                      </button>
+                      <%= button_to 'Are you sure?',
+                                    account_saved_book_path(saved_book),
+                                    method: :delete,
+                                    class: 'account-books__remove-btn account-books__remove-btn--confirm',
+                                    data: { remove_confirm: true } %>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="account-books__empty">You have not saved any books yet.</p>
+          <% end %>
+        </section>
+
+        <section class="account-profile__section">
+          <div class="account-shell__section-header">
+            <h2>Search the catalog</h2>
+            <p>Find an OpenStax title and add it to your saved list.</p>
+          </div>
+
+          <div class="account-profile__section-card account-books__search-card"
+               data-books-search="<%= j((@available_books_for_select || []).to_json) %>">
+            <div class="account-books__search-input">
+              <label for="account-books-search">Search by title</label>
+              <input type="text"
+                     id="account-books-search"
+                     placeholder="Type a book name"
+                     data-books-search-input>
+            </div>
+            <div class="account-books__search-results" data-books-search-results>
+              <% if @available_books_for_select.any? %>
+                <p class="account-books__search-empty">Start typing to find a book.</p>
+              <% else %>
+                <p class="account-books__search-empty">All available books are already saved to your profile.</p>
+              <% end %>
+            </div>
+          </div>
+
+          <p class="account-books__note">Looking for something else? Browse the full library at
+            <a href="https://openstax.org/subjects" target="_blank" rel="noopener">openstax.org/subjects</a>.</p>
+        </section>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<% content_for :javascript do %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var container = document.querySelector('[data-books-search]');
+      if (!container) { return; }
+
+      var booksData;
+      try {
+        booksData = JSON.parse(container.getAttribute('data-books-search') || '[]');
+      } catch (error) {
+        booksData = [];
+      }
+
+      var input = container.querySelector('[data-books-search-input]');
+      var results = container.querySelector('[data-books-search-results]');
+      var authenticityToken = "<%= j form_authenticity_token %>";
+      var savedIdsData = container.closest('.account-books').getAttribute('data-saved-book-ids') || '[]';
+      var savedList = document.querySelector('.account-books__saved-list');
+      var savedBookIds = [];
+      try {
+        savedBookIds = JSON.parse(savedIdsData);
+      } catch (error) {
+        savedBookIds = [];
+      }
+      var addUrl = "<%= account_saved_books_path %>";
+      var bookApiUrl = "<%= raw(BookCatalog::BOOKS_URL.to_s) %>";
+      var allowedStates = ['live', 'deprecated'];
+      var PULSE_DURATION = 750;
+
+      var escapeHTML = function(text) {
+        return text.replace(/[&<>"']/g, function(char) {
+          return ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          })[char];
+        });
+      };
+
+      var filterSaved = function(collection) {
+        if (!Array.isArray(collection)) { return []; }
+        return collection.filter(function(book) {
+          return savedBookIds.indexOf((book.book_uuid || '').toString()) === -1;
+        });
+      };
+
+      var renderMessage = function(message) {
+        results.innerHTML = '<p class="account-books__search-empty">' + message + '</p>';
+      };
+
+      var pulseSavedList = function() {
+        if (!savedList) { return; }
+        savedList.classList.add('account-books__saved-list--pulse');
+        setTimeout(function() {
+          savedList.classList.remove('account-books__saved-list--pulse');
+        }, PULSE_DURATION);
+      };
+
+      var normalizeApiItems = function(data) {
+        if (!data || !data.items) { return []; }
+
+        return data.items
+          .filter(function(item) {
+            return allowedStates.indexOf((item.book_state || '').toLowerCase()) !== -1;
+          })
+          .map(function(item) {
+            return {
+              title: item.title,
+              book_uuid: item.book_uuid,
+              cover_url: item.cover_url,
+              assignable_book: item.assignable_book,
+              webview_rex_link: item.webview_rex_link,
+              html_url: (item.meta && item.meta.html_url) || ''
+            };
+          });
+      };
+
+      var renderResults = function(query) {
+        if (!booksData.length) {
+          renderMessage('All available books are already saved to your profile.');
+          return;
+        }
+
+        var normalized = query.trim().toLowerCase();
+        var list = booksData.filter(function(book) {
+          if (!normalized) { return true; }
+          return (book.title || '').toLowerCase().indexOf(normalized) !== -1;
+        });
+
+        if (!list.length) {
+          renderMessage('No books found. Try another title.');
+          return;
+        }
+
+        var html = list.map(function(book) {
+          var titleRaw = book.title || 'OpenStax book';
+          var title = escapeHTML(titleRaw);
+          var subtitle = book.assignable_book
+            ? '<span class="account-books__badge">Available in Assignable</span>'
+            : '<span class="account-books__badge account-books__badge--placeholder" aria-hidden="true"></span>';
+          var coverContent = book.cover_url
+            ? '<img src="' + escapeHTML(book.cover_url) + '" alt="' + title + ' cover" class="account-books__cover">'
+            : '<div class="account-books__cover account-books__cover--placeholder" aria-hidden="true">OS</div>';
+          var titleContent = '<p class="account-books__saved-title">' + title + '</p>';
+          var isAlreadySaved = savedBookIds.indexOf(book.book_uuid) !== -1;
+          var buttonText = isAlreadySaved ? 'Saved' : 'Save book';
+          var buttonClass = 'account-books__submit' + (isAlreadySaved ? ' account-books__submit--disabled' : '');
+          var buttonState = isAlreadySaved ? ' disabled aria-disabled="true"' : '';
+
+          return [
+            '<div class="account-books__search-result">',
+              '<div class="account-books__saved-meta">',
+                coverContent,
+                '<div>',
+                  titleContent,
+                  subtitle,
+                '</div>',
+              '</div>',
+              '<form method="post" action="' + addUrl + '" class="account-books__quick-add"' + (isAlreadySaved ? ' aria-disabled="true"' : '') + '>',
+                '<input type="hidden" name="authenticity_token" value="' + authenticityToken + '">',
+                '<input type="hidden" name="book_uuid" value="' + escapeHTML(book.book_uuid) + '">',
+                '<input type="hidden" name="title" value="' + escapeHTML(titleRaw) + '">',
+                '<input type="hidden" name="cover_url" value="' + (book.cover_url ? escapeHTML(book.cover_url) : '') + '">',
+                '<input type="hidden" name="salesforce_name" value="' + (book.salesforce_name ? escapeHTML(book.salesforce_name) : '') + '">',
+                '<input type="hidden" name="webview_rex_link" value="' + (book.webview_rex_link ? escapeHTML(book.webview_rex_link) : '') + '">',
+                '<input type="hidden" name="html_url" value="' + (book.html_url ? escapeHTML(book.html_url) : '') + '">',
+                '<input type="hidden" name="assignable_book" value="' + (book.assignable_book ? 'true' : 'false') + '">',
+                '<button type="submit" class="' + buttonClass + '"' + buttonState + '>' + buttonText + '</button>',
+                '<span class="account-books__submit--status" aria-live="polite">Saved ✓</span>',
+              '</form>',
+            '</div>'
+          ].join('');
+        }).join('');
+
+        results.innerHTML = html;
+      };
+
+      var fetchBooksFromApi = function() {
+        if (!bookApiUrl) { return; }
+
+        renderMessage('Loading book catalog...');
+
+        fetch(bookApiUrl, { credentials: 'omit' })
+          .then(function(response) {
+            if (!response.ok) { throw new Error('Network response was not ok'); }
+            return response.json();
+          })
+          .then(function(payload) {
+            booksData = filterSaved(normalizeApiItems(payload));
+            renderResults(input.value || '');
+          })
+          .catch(function() {
+            booksData = filterSaved(<%= raw((@available_books_for_select || []).to_json) %>);
+            renderResults(input.value || '');
+          });
+      };
+
+      input.addEventListener('input', function() {
+        renderResults(this.value || '');
+      });
+
+      booksData = filterSaved(booksData);
+
+      if (booksData.length) {
+        renderResults('');
+      } else {
+        fetchBooksFromApi();
+      }
+
+      document.querySelectorAll('[data-book-remove]').forEach(function(item) {
+        var toggleButton = item.querySelector('[data-remove-toggle]');
+        if (!toggleButton) { return; }
+
+        toggleButton.addEventListener('click', function() {
+          item.dataset.confirmState = 'prompt';
+        });
+      });
+
+      document.addEventListener('click', function(event) {
+        document.querySelectorAll('[data-book-remove][data-confirm-state="prompt"]').forEach(function(item) {
+          var removeButton = item.querySelector('[data-remove-toggle]');
+          var confirmButton = item.querySelector('[data-remove-confirm]');
+
+          if (removeButton && removeButton.contains(event.target)) { return; }
+          if (confirmButton && confirmButton.contains(event.target)) { return; }
+
+          item.dataset.confirmState = 'default';
+        });
+      });
+
+      document.addEventListener('click', function(event) {
+        var quickAddButton = event.target.closest('.account-books__quick-add button');
+        if (!quickAddButton || quickAddButton.disabled) { return; }
+
+        var form = quickAddButton.closest('form');
+        if (!form) { return; }
+
+        event.preventDefault();
+        quickAddButton.disabled = true;
+        quickAddButton.classList.add('account-books__submit--disabled');
+
+        var row = form.closest('.account-books__search-result');
+        if (row) {
+          row.classList.add('account-books__search-result--saving');
+        }
+
+        pulseSavedList();
+
+        form.classList.add('account-books__quick-add--status-visible');
+
+        setTimeout(function() {
+          form.submit();
+        }, 800);
+      });
+
+      document.addEventListener('click', function(event) {
+        var confirmBtn = event.target.closest('.account-books__remove-btn--confirm');
+        if (!confirmBtn) { return; }
+
+        var form = confirmBtn.closest('form');
+        if (!form || form.dataset.animating === 'true') { return; }
+
+        event.preventDefault();
+        form.dataset.animating = 'true';
+
+        var card = form.closest('[data-book-remove]');
+        if (card) {
+          card.classList.add('account-books__saved-card--removing');
+          var handleAnimationEnd = function() {
+            card.removeEventListener('animationend', handleAnimationEnd);
+            form.submit();
+          };
+          card.addEventListener('animationend', handleAnimationEnd);
+        } else {
+          form.submit();
+        }
+      });
+    });
+  </script>
+<% end %>

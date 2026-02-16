@@ -18,10 +18,10 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
     <% unless Rails.env.test? %>
-      <%= render partial: 'layouts/posthog' %>
+      <%#= render partial: 'layouts/posthog' %>
     <% end %>
 
-    <%= stylesheet_link_tag "application" %>
+    <%= stylesheet_link_tag "application", "global_layout" %>
     <%= javascript_include_tag "application" %>
     <%= csrf_meta_tags %>
 
@@ -32,20 +32,23 @@
 
   </head>
 
-  <body class="<%= controller_name %> <%= action_name %>">
+  <body class="os-app <%= controller_name %> <%= action_name %>">
     <%= render partial: "layouts/tag_manager_snippet" %>
     <%= render partial: "layouts/application_js_hooks" %>
-    <%= render "shared/upper_corner_console" %>
-    <%= render partial: "layouts/application_header" %>
+    <%= render partial: "shared/header" %>
 
     <div id="application-container" class="container">
       <%= render(partial: "layouts/attention") unless @hide_layout_errors %>
-      <%= render partial: "layouts/application_body" %>
-      <%= render partial: "layouts/application_footer" %>
+      <main class="os-main">
+        <%= render partial: "layouts/application_body" %>
+      </main>
     </div>
+
+    <%= render partial: "shared/footer" %>
 
   <%= yield :javascript %>
   <%= render partial: 'layouts/chat'  %>
+  <%= render partial: 'shared/report_adoption_modal' %>
 
   </body>
 </html>

@@ -15,9 +15,7 @@ feature 'User updates password on profile screen', js: true do
     find('[data-provider=identity] .edit--newflow').click
     newflow_complete_add_password_screen
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(
-      ActionView::Base.full_sanitizer.sanitize t(:"legacy.users.edit.how_you_sign_in_html")
-    )
+    expect(page).to have_content(t(:"login_signup_form.how_you_log_in"))
     expect(page).to have_css('[data-provider=identity]')
   end
 end

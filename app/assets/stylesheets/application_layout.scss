@@ -5,21 +5,6 @@
 @import "mixins/flexbox";
 
 
-body {
-  background-color: $application_background_color;
-  color:            $os_gray;
-  margin-top:       0px;
-  background: image_url('bg-login.jpg') no-repeat center center fixed;
-  background-size: cover;
-  margin-bottom: $application_footer_height + 20px;
-}
-
-body, p, ol, ul, td, a {
-  font-family: $os_font_family;
-  font-size:   14px;
-  font-weight: normal;
-}
-
 #page-heading {
   padding: 10px 0 18px;
   font-size:  20px;
@@ -128,24 +113,6 @@ body, p, ol, ul, td, a {
     }
   }
 
-}
-
-#upper-corner-console {
-  position: absolute;
-  top: 0;
-  right: 0;
-  color: white;
-  margin-right: 0.5rem;
-  text-align: right;
-
-  a {
-    text-decoration: underline;
-    color: white;
-  }
-
-  #clock.highlight {
-    color: rgba(255,255,255,0.5);
-  }
 }
 
 @-ms-viewport{

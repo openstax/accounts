@@ -240,11 +240,11 @@ module ApplicationHelper
       end
 
       exit_icon = if show_exit_icon
-        content_tag(:div, id: 'exit-icon') {
-          content_tag(:a, 'aria-label': 'exit accounts', href: exit_accounts_path) {
-            content_tag(:i, class: 'fa fa-times') { }
-          }
-        }
+        link_to exit_accounts_path,
+                id: 'exit-icon',
+                'aria-label': t(:"login_signup_form.exit_accounts_link", default: 'Exit OpenStax Accounts') do
+          content_tag(:i, '', class: 'fa fa-times', aria: { hidden: true })
+        end
       end
 
       header = if header.present?
@@ -253,7 +253,7 @@ module ApplicationHelper
 
       body = capture(&block)
 
-      "#{step_counter}\n#{exit_icon}\n#{header}\n#{body}".html_safe
+      "#{exit_icon}\n#{step_counter}\n#{header}\n#{body}".html_safe
     end
   end
 

@@ -1,0 +1,15 @@
+<div class="account-layout">
+  <%= render 'account/navigation' %>
+  <div class="account-layout__content">
+    <%= render(
+          'shared/account_layout_shell',
+          locals: { title: @account_shell_title, description: @account_shell_description }
+        ) do %>
+      <div class="account-shell__section-header">
+        <h2>Get help from OpenStax</h2>
+        <p>Choose the best way to reach our support team.</p>
+      </div>
+      <%= render 'shared/support_section' %>
+    <% end %>
+  </div>
+</div>

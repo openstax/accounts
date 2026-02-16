@@ -61,7 +61,6 @@ jobs:
         with:
           path: |
             tmp/cache
-            db/schema.rb
           key: db-setup-${{ github.sha }}
           restore-keys: |
             db-setup-

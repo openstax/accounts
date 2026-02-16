@@ -161,7 +161,7 @@ feature 'User logs in or signs up with a social network', js: true do
             have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email_value)))
           )
           click_on('Finish')
-          click_on('Log out')
+          first(:link_or_button, 'Log out').click
         end
       end
 

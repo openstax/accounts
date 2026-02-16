@@ -1,0 +1,47 @@
+<div class="resource-cards">
+  <div class="card-container">
+  <a href="https://openstax.org/subjects" class="card-link">
+    <div class="card">
+      <span class="card-icon fa fa-book"></span>
+      <h2>Find Your Book</h2>
+      <p>Discover and access textbooks and resources for your classes.</p>
+      <span class="card-action">Browse subjects →</span>
+    </div>
+  </a>
+  <% if !@using_os %>
+    <a href="https://openstax.org/adoption?utm_source=openstax_accounts&utm_medium=web&utm_campaign=profile_conversion" class="card-link">
+      <div class="card">
+        <span class="card-icon fa fa-check-circle"></span>
+        <h2>Using OpenStax?</h2>
+        <p>Let us know, it helps us continue to make great education resources!</p>
+        <span class="card-action">Confirm adoption →</span>
+      </div>
+    </a>
+  <% else %>
+    <a href="https://openstax.org/renewal-form?utm_source=openstax_accounts&utm_medium=web&utm_campaign=profile_conversion" class="card-link">
+      <div class="card">
+        <span class="card-icon fa fa-refresh"></span>
+        <h2>Still Using OpenStax?</h2>
+        <p>Let us know, it helps us continue to make great education resources!</p>
+        <span class="card-action">Send renewal →</span>
+      </div>
+    </a>
+  <% end %>
+  <a href="https://help.openstax.org/" class="card-link" target="_blank">
+    <div class="card">
+        <span class="card-icon fa fa-life-ring"></span>
+        <h2>Get Help</h2>
+        <p>Need assistance? Visit our support center for help. Email, Phone, Chat. We're here to help.</p>
+        <span class="card-action">Visit support center →</span>
+    </div>
+  </a>
+  <a href="https://www2.openstax.org/l/218812/2016-10-04/lvk" class="card-link" target="_blank">
+    <div class="card">
+        <span class="card-icon fa fa-envelope"></span>
+        <h2>Keep in touch</h2>
+        <p>Stay updated with the latest news from OpenStax. Subscribe to our quarterly newsletter.</p>
+        <span class="card-action">Subscribe →</span>
+    </div>
+  </a>
+</div>
+</div>

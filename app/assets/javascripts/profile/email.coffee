@@ -9,6 +9,9 @@ class Email
     _.bindAll(@, _.functions(@)...)
     this.$el = $(@el)
     @id = this.$el.attr('data-id')
+    this.$toggle = this.$el.find('.email-entry__toggle')
+    this.$controls = this.$el.find('.email-entry__controls')
+    this.$toggle.on('click', @toggleControls)
     this.$el.find('.searchable').change(@saveSearchable)
     this.$el.find('.resend-confirmation').click(@sendVerification)
     @update()
@@ -82,6 +85,18 @@ class Email
       .error(OX.Alert.displayInsideElement(@$el))
       .complete(@toggleSpinner)
 
+  toggleControls: (ev) ->
+    ev.preventDefault()
+    expanded = not @$el.hasClass('is-open')
+    if expanded
+      $('.email-entry.is-open').each ->
+        $(this).removeClass('is-open')
+        $(this).find('.email-entry__controls').attr('aria-hidden', true)
+        $(this).find('.email-entry__toggle').attr('aria-expanded', false)
+    @$el.toggleClass('is-open', expanded)
+    this.$toggle.attr('aria-expanded', expanded)
+    this.$controls.attr('aria-hidden', !expanded)
+
 OX.Profile.Email = {
 
   initialize: ->
@@ -97,7 +112,7 @@ OX.Profile.Email = {
     @addEmail.hide()
     email = $('#email-template').children().clone().addClass('new')
     $('#add-an-email-editable').append(email)
-    input = $(email).find('summary .value')
+    input = $(email).find('.value')
     input.editable(
       url: BASE_URL
       params: (params) ->
@@ -120,7 +135,7 @@ OX.Profile.Email = {
     # no idea why the defer is needed, but it fails (silently!) without it
     _.defer ->
       input.editable('show')
-      labelText = document.createTextNode('New email')
+      labelText = document.createTextNode('Add new email')
       br = document.createElement('br')
       label = document.querySelector('.email-entry.new label')
       label.prepend(br)

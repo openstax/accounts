@@ -1,0 +1,192 @@
+<%
+  account_shell_layout = local_assigns[:account_shell]
+  all_providers = OmniauthData::VALID_PROVIDERS
+  oldflow_providers = %w(facebook google_oauth2)
+  newflow_providers = %w(facebooknewflow googlenewflow)
+
+  # The `all providers &` enforces a standard sort order
+  current_providers = all_providers & current_user.authentications.collect(&:provider) - oldflow_providers
+  other_available_providers = all_providers - current_providers - ['twitter', oldflow_providers].flatten
+%>
+
+<% if account_shell_layout %>
+<section class="account-profile__section">
+    <div class="account-shell__section-header">
+      <h2>Emails</h2>
+      <p>Primary emails receive account notifications and verification links.</p>
+    </div>
+    <div class="account-profile__section-card">
+      <div class="account-profile__field">
+        <div class="account-profile__label">Email addresses</div>
+        <div class="account-profile__value account-profile__value--stacked account-security__value">
+          <div id="email-template">
+            <%= email_entry(value: "", id: "", is_verified: false, is_searchable: "") %>
+          </div>
+          <div class="account-security__email-list">
+            <% current_user.email_addresses.order(:created_at).each do |email| %>
+              <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
+            <% end %>
+          </div>
+
+          <% unless @framed %>
+            <div id="add-an-email-editable"></div>
+            <button type="button" id="add-an-email"
+              class="account-security__add-email"
+              data-ga-category="My Account"
+              data-ga-action="Click"
+              data-ga-label="Add Email Address"
+              data-using-openstax="<%= @using_os %>">
+              <%= I18n.t(:"legacy.users.edit.add_email_address") %>
+            </button>
+          <% else %>
+            <%= link_to 'Manage emails on the security page →',
+                        account_security_path,
+                        class: 'account-profile__security-link' %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="account-profile__section">
+    <div class="account-shell__section-header">
+      <h2>Sign-in methods</h2>
+      <p>Enable multiple providers so you never lose access.</p>
+    </div>
+    <div class="account-profile__section-card">
+      <div class="account-profile__field">
+        <div class="account-profile__label">Current methods</div>
+        <div class="account-profile__value account-profile__value--stacked account-security__value">
+          <div class="account-security__auth-list">
+            <% current_providers.each do |provider| %>
+              <%= newflow_way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
+            <% end %>
+          </div>
+
+          <% if other_available_providers.any? %>
+            <% if @framed %>
+              <%= link_to 'Add other sign-in options on the security page →',
+                          account_security_path,
+                          class: 'account-profile__security-link account-profile__security-link--secondary' %>
+            <% else %>
+              <details class="account-security__other-providers">
+                <summary><%= I18n.t(:"student_profile.enable_other_sign_in_options") %></summary>
+                <div class="account-security__auth-list account-security__auth-list--other">
+                  <% other_available_providers.each do |provider| %>
+                    <%= newflow_way_to_login(
+                          provider: provider,
+                          has_authentication: false,
+                          current_providers: current_providers
+                        ) %>
+                  <% end %>
+                </div>
+              </details>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </section>
+<% else %>
+  <div class="row">
+    <div class="col-sm-2 category">
+      <%= t(:"legacy.users.edit.email_addresses") %>
+    </div>
+    <div id="email-template">
+      <%= email_entry(value: "", id: "", is_verified: false, is_searchable: "") %>
+    </div>
+    <div class="col-sm-10 info">
+      <% current_user.email_addresses.order(:created_at).each do |email| %>
+        <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
+      <% end %>
+
+      <% unless @framed %>
+        <div id="add-an-email-editable"></div>
+        <button type="button" id="add-an-email"
+          data-ga-category="My Account"
+          data-ga-action="Click"
+          data-ga-label="Add Email Address"
+          data-using-openstax="<%= @using_os %>"
+        ><%= I18n.t(:"legacy.users.edit.add_email_address") %></button>
+      <% else %>
+        <%= link_to 'Manage emails on the security page →',
+                    account_security_path,
+                    class: 'account-profile__security-link' %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @framed %>
+    <hr>
+    <div class="row">
+      <a href="/accounts/i/profile" class="btn btn-primary escape-buttons" target="_top">Update my email or password</a>
+    </div>
+  <% else %>
+    <div class="row enabled-providers">
+      <div class="col-sm-2 category">
+        <%= t(:"login_signup_form.how_you_log_in") %>
+      </div>
+      <div class="col-sm-10 info providers">
+        <% current_providers.each do |provider| %>
+          <%= newflow_way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
+        <% end %>
+      </div>
+    </div>
+
+      <% if other_available_providers.any? %>
+        <div class="row other-sign-in">
+          <% if @framed %>
+            <div class="col-sm-10 col-sm-offset-2 info providers">
+              <%= link_to 'Add other sign-in options on the security page →',
+                          account_security_path,
+                          class: 'account-profile__security-link' %>
+            </div>
+          <% else %>
+            <details class="col-sm-10 col-sm-offset-2 info providers">
+              <summary><%= I18n.t(:"student_profile.enable_other_sign_in_options") %></summary>
+              <div class="controls">
+                <% other_available_providers.each do |provider| %>
+                  <%=
+                    newflow_way_to_login(
+                      provider: provider,
+                      has_authentication: false,
+                      current_providers: current_providers
+                    )
+                  %>
+                <% end %>
+              </div>
+            </details>
+          <% end %>
+        </div>
+      <% end %>
+  <% end %>
+<% end %>
+
+<% content_for :javascript do %>
+  <script type="text/javascript">
+    $.fn.editable.defaults.mode = 'inline';
+    $.fn.editable.defaults.send = "always";
+    $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
+    $.fn.editable.defaults.url = "<%= profile_path %>";
+
+    var $username = $('#username');
+    if ($username.length) {
+      $username.editable({
+        success: function(response, newValue) {
+          $('#session-info .username').text(newValue);
+        }
+      });
+    }
+
+    var $name = $('#name');
+    if ($name.length) {
+      OX.Profile.Name.editable($name, {
+          title: "<%= current_user.title %>",
+          first_name: "<%= current_user.first_name %>",
+          last_name: "<%= current_user.last_name %>",
+          suffix: "<%= current_user.suffix %>"
+      });
+    }
+
+  </script>
+<% end %>
