@@ -20,15 +20,6 @@ class UpdateUserContactInfo
     "Not Adopter" => false
   }
 
-  VALID_FACULTY_STATUSES = [
-    "confirmed_faculty",
-    "pending_faculty",
-    "rejected_faculty",
-    "rejected_by_sheerid",
-    "incomplete_signup",
-    "no_faculty_info"
-  ].freeze
-
   def self.call
     new.call
   end
@@ -73,7 +64,7 @@ class UpdateUserContactInfo
       faculty_verified = sf_contact.faculty_verified
       new_status = if faculty_verified.nil?
                      "no_faculty_info"
-                   elsif VALID_FACULTY_STATUSES.include?(faculty_verified)
+                   elsif User::VALID_FACULTY_STATUSES.include?(faculty_verified)
                      faculty_verified
                    else
                      message = "Unknown faculty_verified field: '#{faculty_verified}' on contact #{sf_contact.id}"
