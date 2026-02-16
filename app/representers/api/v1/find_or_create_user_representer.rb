@@ -121,7 +121,7 @@ module Api::V1
              readable: false,
              writeable: true,
              schema_info: {
-                description: "The role to assign to the newly created user, one of #{
+                description: "The role to assign to the newly created user and external_id, one of #{
                   User.roles.keys.map(&:to_s).inspect
                 }"
              }

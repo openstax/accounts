@@ -11,5 +11,10 @@ module Api::V1
              type: String,
              readable: true,
              writeable: true
+
+    property :role,
+             type: String,
+             readable: true,
+             writeable: true
   end
 end
