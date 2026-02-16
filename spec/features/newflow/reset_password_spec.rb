@@ -22,6 +22,7 @@ feature 'Password reset', js: true do
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       find('[data-provider=identity] .edit--newflow').click
+      expect(page).to have_current_path(reauthenticate_form_path)
       expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
 
       click_link(t(:"login_signup_form.forgot_password"))
