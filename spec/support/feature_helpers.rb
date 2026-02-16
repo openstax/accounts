@@ -5,7 +5,8 @@ def create_user(username, password='password', terms_agreed=nil)
                           :terms_agreed :
                           :terms_not_agreed
 
-  return if User.find_by_username(username).present?
+  existing = User.find_by_username(username)
+  return existing if existing.present?
 
   user = FactoryBot.create :user, terms_agreed_option, username: username
   identity = FactoryBot.create :identity, user: user, password: password
