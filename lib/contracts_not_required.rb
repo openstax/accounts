@@ -42,6 +42,7 @@ module ContractsNotRequired
   end
 
   def all_user_apps_skip_terms?
+    return false if current_user.nil?
     current_user.applications.any? &&
     current_user.applications.all?{|app| app.skip_terms? }
   end
