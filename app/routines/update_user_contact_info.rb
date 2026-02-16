@@ -82,6 +82,9 @@ class UpdateUserContactInfo
       elsif user.faculty_status == "pending_faculty" &&
             ["incomplete_signup", "no_faculty_info"].include?(new_status)
         should_update_status = false
+      elsif user.faculty_status == "rejected_faculty" &&
+            ["incomplete_signup", "no_faculty_info"].include?(new_status)
+        should_update_status = false
       end
 
       user.faculty_status = new_status if should_update_status
