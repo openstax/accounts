@@ -108,6 +108,10 @@ class SecurityLog < ApplicationRecord
     school_added_to_user_from_sheerid_webhook
     user_lead_id_updated_from_salesforce
     salesforce_lead_not_found_by_id
+    salesforce_lead_found_by_uuid
+    salesforce_lead_found_by_email
+    user_already_has_contact_not_creating_lead
+    creating_new_salesforce_lead
   ]
 
   json_serialize :event_data, Hash
