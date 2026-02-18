@@ -1,11 +1,10 @@
 require 'rails_helper'
-require 'posthog'
 
 RSpec.describe OXPosthog, type: :lib do
   let(:posthog_client) { instance_double(PostHog::Client) }
 
   let(:school) do
-    create(:school,
+    FactoryBot.create(:school,
       name: 'Test University',
       city: 'Houston',
       state: 'TX',
@@ -17,7 +16,7 @@ RSpec.describe OXPosthog, type: :lib do
   end
 
   let(:user) do
-    create(:user,
+    FactoryBot.create(:user,
       state: User::ACTIVATED,
       role: :instructor,
       faculty_status: 'confirmed_faculty',
@@ -78,7 +77,7 @@ RSpec.describe OXPosthog, type: :lib do
               grant_tutor_access: true,
               country_code: 'US',
               receive_newsletter: true,
-              is_administrator: false,
+              is_administrator: user.is_administrator,
             )
           )
         )
@@ -175,7 +174,7 @@ RSpec.describe OXPosthog, type: :lib do
     end
 
     it 'uses best_email_address_for_salesforce for email' do
-      email = create(:email_address, user: user, verified: true)
+      email = FactoryBot.create(:email_address, user: user, verified: true)
       user.reload
 
       described_class.log(user, 'signed_up')

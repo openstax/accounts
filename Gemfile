@@ -13,6 +13,10 @@ gem 'rails-i18n'
 # Remove this entry completely when updating to Rails 7
 gem 'psych', '< 4'
 
+# Logger 1.6+ removed the top-level ::Logger constant that Rails 6.1's
+# LoggerThreadSafeLevel expects. Pin to < 1.6 until upgrading to Rails 7.
+gem 'logger', '< 1.6'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 

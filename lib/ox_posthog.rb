@@ -1,4 +1,4 @@
-require 'posthog-ruby'
+require 'posthog'
 
 class OXPosthog
   def self.posthog

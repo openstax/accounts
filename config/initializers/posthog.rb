@@ -1,1 +1,1 @@
-require Rails.root.join("lib/posthog")
+require Rails.root.join("lib/ox_posthog")
