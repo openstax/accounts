@@ -37,8 +37,6 @@ class OXPosthog
           is_sheerid_verified: user.is_sheerid_verified,
           which_books: user.which_books,
           how_many_students: user.how_many_students,
-          title_1_school: user.title_1_school,
-          grant_tutor_access: user.grant_tutor_access,
           country_code: user.country_code,
           receive_newsletter: user.receive_newsletter,
           is_administrator: user.is_administrator,
