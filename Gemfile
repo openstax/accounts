@@ -191,7 +191,7 @@ gem 'rack-cors'
 gem 'blazer', '< 3.0'
 
 # Product analysis, A/B testing
-gem 'posthog-ruby'
+gem 'posthog-ruby', '~> 3.5'
 
 group :development, :production do
   # Get env variables from .env file
