@@ -13,7 +13,6 @@ Rails.application.config.assets.precompile += %w(
   admin.css
   admin.js
   profile.js
-  signup.js
   signin.js
   faculty_access.js
   remote-access.js
@@ -24,7 +23,6 @@ Rails.application.config.assets.precompile += %w(
   libphonenumber/utils.js
   syntax_highlight.css
   newflow.css
-  newflow_colors.css
   newflow.js
   newflow/educator_signup_email_validations.js
 )
