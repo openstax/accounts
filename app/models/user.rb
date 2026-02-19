@@ -243,6 +243,10 @@ class User < ApplicationRecord
     !!is_test
   end
 
+  def has_external_id?
+    external_ids.exists?
+  end
+
   def is_anonymous?
     false
   end

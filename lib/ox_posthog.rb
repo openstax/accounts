@@ -40,6 +40,7 @@ class OXPosthog
           country_code: user.country_code,
           receive_newsletter: user.receive_newsletter,
           is_administrator: user.is_administrator,
+          has_external_id: user.has_external_id?,
         },
         '$set_once': {
           uuid: user.uuid,

@@ -73,11 +73,10 @@ RSpec.describe OXPosthog, type: :lib do
               is_sheerid_verified: true,
               which_books: 'Biology',
               how_many_students: '100-200',
-              title_1_school: false,
-              grant_tutor_access: true,
               country_code: 'US',
               receive_newsletter: true,
               is_administrator: user.is_administrator,
+              has_external_id: false,
             )
           )
         )

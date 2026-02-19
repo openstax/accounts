@@ -34,6 +34,7 @@
             title_1_school: <%= current_user&.title_1_school || false %>,
             country_code: "<%= current_user&.country_code %>",
             is_administrator: <%= current_user&.is_administrator || false %>,
+            has_external_id: <%= current_user&.has_external_id? || false %>,
           },
           {
             uuid: "<%= current_user&.uuid %>",
