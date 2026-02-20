@@ -222,7 +222,7 @@ GEM
       compass (~> 1.0.0)
       sass-rails (< 5.1)
       sprockets (< 4.0)
-    concurrent-ruby (1.3.4)
+    concurrent-ruby (1.3.6)
     crack (1.0.0)
       bigdecimal
       rexml
@@ -404,7 +404,7 @@ GEM
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    logger (1.6.1)
+    logger (1.5.3)
     lograge (0.14.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -545,7 +545,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.9)
-    posthog-ruby (2.5.1)
+    posthog-ruby (3.5.4)
       concurrent-ruby (~> 1)
     premailer (1.27.0)
       addressable
@@ -864,6 +864,7 @@ DEPENDENCIES
   launchy
   lev
   listen
+  logger (< 1.6)
   lograge
   maruku
   meta_request
@@ -887,7 +888,7 @@ DEPENDENCIES
   parallel_tests
   pattern-library!
   pg
-  posthog-ruby
+  posthog-ruby (~> 3.5)
   premailer-rails
   psych (< 4)
   puma
