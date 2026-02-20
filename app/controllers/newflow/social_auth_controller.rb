@@ -39,13 +39,13 @@ module Newflow
             @last_name = user.last_name
             @email = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
-            log_posthog(user, 'student_signup_social', { provider: authentication.provider })
+            log_posthog(user, 'student_signup_social', { provider: authentication.provider, client_app: get_client_app&.name })
             # must confirm their social info on signup
             render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
           end
 
           sign_in!(user)
-          log_posthog(user, 'user_logged_in_social', { provider: authentication.provider })
+          log_posthog(user, 'user_logged_in_social', { provider: authentication.provider, client_app: get_client_app&.name })
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
           redirect_back(fallback_location: profile_newflow_path)
 
