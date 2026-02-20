@@ -6,6 +6,12 @@ module Newflow
 
     # Log in (or sign up and then log in) a user using a social (OAuth) provider
     def oauth_callback
+      # omniauth.auth is nil when this route is hit directly without going through
+      # OmniAuth middleware (e.g. bots, expired sessions, unknown provider).
+      unless request.env['omniauth.auth']
+        redirect_to(newflow_login_path, alert: I18n.t(:"controllers.sessions.trouble_with_provider")) and return
+      end
+
       # If state is not assigned, then doorkeeper uses a random string
       # So if state is not decodable we assume they are in the normal signup flow
       @token = verify_token(params[:state])
@@ -88,6 +94,7 @@ module Newflow
 
             # Send the error to Sentry
             Sentry.capture_message(error_message)
+            redirect_to(newflow_login_path, alert: I18n.t(:"controllers.sessions.trouble_with_provider", default: "We had trouble signing you in with your social account. Please try again."))
           end
         }
       )
