@@ -307,7 +307,10 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(parsed_response['sso']).to be_kind_of(String)
       expect(parsed_response['external_ids']).to be_a(Array)
       expect(parsed_response['external_ids'].length).to eq 1
-      expect(parsed_response['external_ids'].first['external_id']).to eq external_id.external_id
+      # external_ids is a collection of objects with user_id, external_id, and role
+      external_id_obj = parsed_response['external_ids'].first
+      expect(external_id_obj).to be_a(Hash)
+      expect(external_id_obj['external_id']).to eq external_id.external_id
     end
 
     it "should find a user by uuid for a trusted app" do
@@ -320,7 +323,10 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(parsed_response['uuid']).to eq user.uuid
       expect(parsed_response['external_ids']).to be_a(Array)
       expect(parsed_response['external_ids'].length).to eq 1
-      expect(parsed_response['external_ids'].first['external_id']).to eq external_id.external_id
+      # external_ids is a collection of objects with user_id, external_id, and role
+      external_id_obj = parsed_response['external_ids'].first
+      expect(external_id_obj).to be_a(Hash)
+      expect(external_id_obj['external_id']).to eq external_id.external_id
     end
 
     it "should not find a user that does not exist" do
