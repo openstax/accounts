@@ -301,13 +301,13 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                 trusted_application_token,
                 body: valid_external_id_body
       expect(response).to have_http_status :ok
-      response_hash = response.body_as_hash
-      expect(response_hash[:id]).to eq user.id
-      expect(response_hash[:uuid]).to eq user.uuid
-      expect(response_hash[:sso]).to be_kind_of(String)
-      expect(response_hash[:external_ids]).to be_a(Array)
-      expect(response_hash[:external_ids].length).to eq 1
-      expect(response_hash[:external_ids].first[:external_id]).to eq external_id.external_id
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response['id']).to eq user.id
+      expect(parsed_response['uuid']).to eq user.uuid
+      expect(parsed_response['sso']).to be_kind_of(String)
+      expect(parsed_response['external_ids']).to be_a(Array)
+      expect(parsed_response['external_ids'].length).to eq 1
+      expect(parsed_response['external_ids'].first['external_id']).to eq external_id.external_id
     end
 
     it "should find a user by uuid for a trusted app" do
@@ -315,12 +315,12 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                 trusted_application_token,
                 body: valid_uuid_body
       expect(response).to have_http_status :ok
-      response_hash = response.body_as_hash
-      expect(response_hash[:id]).to eq user.id
-      expect(response_hash[:uuid]).to eq user.uuid
-      expect(response_hash[:external_ids]).to be_a(Array)
-      expect(response_hash[:external_ids].length).to eq 1
-      expect(response_hash[:external_ids].first[:external_id]).to eq external_id.external_id
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response['id']).to eq user.id
+      expect(parsed_response['uuid']).to eq user.uuid
+      expect(parsed_response['external_ids']).to be_a(Array)
+      expect(parsed_response['external_ids'].length).to eq 1
+      expect(parsed_response['external_ids'].first['external_id']).to eq external_id.external_id
     end
 
     it "should not find a user that does not exist" do
