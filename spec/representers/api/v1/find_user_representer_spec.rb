@@ -52,7 +52,7 @@ describe Api::V1::FindUserRepresenter, type: :representer do
       expect(result).to be_a(Array)
       expect(result.length).to eq 1
       expect(result.first['external_id']).to eq external_id_obj.external_id
-      expect(result.first['user_id']).to eq external_id_obj.user_id
+      expect(result.first).not_to have_key('user_id')
       expect(result.first['role']).to eq external_id_obj.role
     end
 
