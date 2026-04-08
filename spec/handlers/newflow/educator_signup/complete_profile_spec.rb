@@ -69,6 +69,90 @@ module Newflow
           end
         end
 
+        context 'DATA-297: student count on as_future path with feature flag enabled' do
+          before do
+            allow(Settings::FeatureFlags).to receive(:student_count_all_paths) { true }
+          end
+
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_of_interest: ['Test Book'],
+                using_openstax_how: Newflow::EducatorSignup::CompleteProfile::AS_FUTURE,
+                educator_specific_role: Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR,
+                total_students_not_using: '42',
+              }
+            }
+          end
+
+          it "stores the standalone student count" do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '42'
+          end
+        end
+
+        context 'DATA-297: student count on as_recommending path with feature flag enabled' do
+          before do
+            allow(Settings::FeatureFlags).to receive(:student_count_all_paths) { true }
+          end
+
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR,
+                total_students_not_using: '25',
+              }
+            }
+          end
+
+          it "stores the standalone student count" do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '25'
+          end
+        end
+
+        context 'DATA-297: student count on as_future path with feature flag disabled' do
+          before do
+            allow(Settings::FeatureFlags).to receive(:student_count_all_paths) { false }
+          end
+
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_of_interest: ['Test Book'],
+                using_openstax_how: Newflow::EducatorSignup::CompleteProfile::AS_FUTURE,
+                educator_specific_role: Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR,
+                total_students_not_using: '99',
+              }
+            }
+          end
+
+          it "stores 0 when feature flag is off (no per-book details provided)" do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '0'
+          end
+        end
+
+        context 'DATA-297: as_primary path still calculates per-book total with feature flag enabled' do
+          before do
+            allow(Settings::FeatureFlags).to receive(:student_count_all_paths) { true }
+          end
+
+          it "calculates the correct total number of students from per-book details" do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '14'
+          end
+        end
+
         context 'books used details' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR }
 

@@ -17,6 +17,7 @@ class NewflowUi.EducatorComplete
 
     @books_used = @findOrLogNotFound(@form, '.books-used')
     @books_of_interest = @findOrLogNotFound(@form, '.books-of-interest')
+    @total_students_not_using = @findOrLogNotFound(@form, '.total-students-not-using')
 
     # input fields locators
     @school_name_input = @findOrLogNotFound(@school_name, 'input')
@@ -44,6 +45,8 @@ class NewflowUi.EducatorComplete
     @books_used_max = @findOrLogNotFound(@form, '.books-used .used-limit.newflow-mustdo-alert')
     @please_select_books_of_interest = @findOrLogNotFound(@form, '.books-of-interest .books-of-interest.newflow-mustdo-alert')
     @books_of_interest_max = @findOrLogNotFound(@form, '.books-of-interest .books-of-interest-limit.newflow-mustdo-alert')
+    @please_fill_out_total_students_not_using = @findOrLogNotFound(@form, '.total-students-not-using .total-students-not-using.newflow-mustdo-alert')
+    @total_students_not_using_input = if @total_students_not_using && @total_students_not_using.length then @findOrLogNotFound(@total_students_not_using, 'input') else null
 
     # event listeners
     @school_name_input.on('input', @onSchoolNameChange)
@@ -56,6 +59,7 @@ class NewflowUi.EducatorComplete
 
     @books_used_select.change(@onBooksUsedChange)
     @books_of_interest_select.change(@onBooksOfInterestChange)
+    @total_students_not_using_input.on('input', @onTotalStudentsNotUsingChange) if @total_students_not_using_input
 
     @findOrLogNotFound(@form, 'form').submit(@onSubmit)
 
@@ -71,6 +75,7 @@ class NewflowUi.EducatorComplete
     @how_using.hide()
     @books_used.hide()
     @books_of_interest.hide()
+    @total_students_not_using.hide() if @total_students_not_using
 
     # Hide all validations messages
     @please_fill_out_school.hide()
@@ -80,6 +85,7 @@ class NewflowUi.EducatorComplete
     @books_used_max.hide()
     @please_select_books_of_interest.hide()
     @books_of_interest_max.hide()
+    @please_fill_out_total_students_not_using.hide() if @please_fill_out_total_students_not_using
 
   findOrLogNotFound: (parent, selector) ->
     if (found = parent.find(selector))
@@ -110,6 +116,7 @@ class NewflowUi.EducatorComplete
     books_used_details_valid = @checkBooksUsedValid()
     books_of_interest_valid = @checkBooksOfInterestValid()
     books_of_interest_valid_max = @checkBooksOfInterestValidMax()
+    total_students_not_using_valid = @checkTotalStudentsNotUsingValid()
 
     if not (
         school_name_valid and
@@ -121,7 +128,8 @@ class NewflowUi.EducatorComplete
         books_used_valid_max and
         books_used_details_valid and
         books_of_interest_valid_max and
-        books_of_interest_valid)
+        books_of_interest_valid and
+        total_students_not_using_valid)
       ev.preventDefault()
 
   checkSchoolNameValid: () ->
@@ -288,6 +296,7 @@ class NewflowUi.EducatorComplete
       @books_of_interest.hide()
       @how_chosen.hide()
       @hideTotalNumStudents
+      @hideTotalStudentsNotUsing()
       @how_using.hide()
       @please_fill_out_other.hide()
 
@@ -303,6 +312,9 @@ class NewflowUi.EducatorComplete
   onHowChosenChange: ->
     @please_select_chosen.hide()
 
+  isAdministratorSelected: ->
+    @findOrLogNotFound($(document), '#signup_educator_specific_role_administrator').is(':checked')
+
   onHowUsingChange: ->
     @please_select_using.hide()
 
@@ -313,6 +325,11 @@ class NewflowUi.EducatorComplete
       @updateBooksUsedFields(@books_used_select.val())
       @please_select_books_used.hide()
       @please_select_books_of_interest.hide()
+      # administrators always show the standalone student count; non-admins hide it for as_primary
+      if @isAdministratorSelected()
+        @showTotalStudentsNotUsing('administrator')
+      else
+        @hideTotalStudentsNotUsing()
     else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_recommending').is(':checked') )
       @books_of_interest.show()
 
@@ -320,6 +337,10 @@ class NewflowUi.EducatorComplete
       @removeBooksUsedFields()
       @please_select_books_used.hide()
       @please_select_books_of_interest.hide()
+      if @isAdministratorSelected()
+        @showTotalStudentsNotUsing('administrator')
+      else
+        @showTotalStudentsNotUsing('as_recommending')
     else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_future').is(':checked') )
       @books_of_interest.show()
 
@@ -327,6 +348,10 @@ class NewflowUi.EducatorComplete
       @removeBooksUsedFields()
       @please_select_books_used.hide()
       @please_select_books_of_interest.hide()
+      if @isAdministratorSelected()
+        @showTotalStudentsNotUsing('administrator')
+      else
+        @showTotalStudentsNotUsing('as_future')
 
   onBooksUsedChange: ->
     @updateBooksUsedFields(@books_used_select.val())
@@ -338,6 +363,42 @@ class NewflowUi.EducatorComplete
 
     @please_select_books_of_interest.hide()
     @continue.prop('disabled', false)
+
+  onTotalStudentsNotUsingChange: ->
+    @please_fill_out_total_students_not_using.hide() if @please_fill_out_total_students_not_using
+
+  checkTotalStudentsNotUsingValid: () ->
+    return true unless @total_students_not_using && @total_students_not_using.length && @total_students_not_using.is(':visible')
+
+    if @total_students_not_using_input && @total_students_not_using_input.val()
+      @please_fill_out_total_students_not_using.hide() if @please_fill_out_total_students_not_using
+      true
+    else
+      @please_fill_out_total_students_not_using.show() if @please_fill_out_total_students_not_using
+      false
+
+  showTotalStudentsNotUsing: (path) ->
+    return unless @total_students_not_using && @total_students_not_using.length
+
+    # Hide all contextual labels then show the right one
+    @total_students_not_using.find('.students-label-as-future').hide()
+    @total_students_not_using.find('.students-label-as-recommending').hide()
+    @total_students_not_using.find('.students-label-administrator').hide()
+
+    switch path
+      when 'as_future'
+        @total_students_not_using.find('.students-label-as-future').show()
+      when 'as_recommending'
+        @total_students_not_using.find('.students-label-as-recommending').show()
+      when 'administrator'
+        @total_students_not_using.find('.students-label-administrator').show()
+
+    @total_students_not_using.show()
+
+  hideTotalStudentsNotUsing: ->
+    return unless @total_students_not_using && @total_students_not_using.length
+    @total_students_not_using.hide()
+    @please_fill_out_total_students_not_using.hide() if @please_fill_out_total_students_not_using
 
   removeBooksUsedFields: () ->
     clonedNodes = document.querySelectorAll('div[data-book-name]')

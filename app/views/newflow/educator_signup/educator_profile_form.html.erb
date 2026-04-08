@@ -290,6 +290,36 @@
               %>
             </div>
 
+            <% if Settings::FeatureFlags.student_count_all_paths %>
+              <%# DATA-297: Standalone student count field for as_future / as_recommending / administrator paths %>
+              <div class="form-group question total-students-not-using" style="display: none;">
+                <%= label_tag :total_students_not_using, class: 'field-label total-students-label' do %>
+                  <span class="students-label-as-future" style="display: none;">
+                    <%= I18n.t(:"educator_profile_form.num_students_as_future_label") %>
+                  </span>
+                  <span class="students-label-as-recommending" style="display: none;">
+                    <%= I18n.t(:"educator_profile_form.num_students_as_recommending_label") %>
+                  </span>
+                  <span class="students-label-administrator" style="display: none;">
+                    <%= I18n.t(:"educator_profile_form.num_students_administrator_label") %>
+                  </span>
+                <% end %>
+                <div class="form-helper-text">
+                  <%= I18n.t(:"educator_profile_form.num_students_other_path_supplemental") %>
+                </div>
+                <div class="total-students-not-using newflow-mustdo-alert" style="display: none;">
+                  <%= I18n.t(:"educator_profile_form.fill_out") %>
+                </div>
+                <%=
+                  fh.text_field(
+                    name: :total_students_not_using,
+                    placeholder: I18n.t(:"educator_profile_form.num_students_other_path_placeholder"),
+                    numberonly: true
+                  )
+                %>
+              </div>
+            <% end %>
+
           </div>
 
           <%= f.hidden_field :is_school_not_supported_by_sheerid, value: is_school_not_supported_by_sheerid? %>

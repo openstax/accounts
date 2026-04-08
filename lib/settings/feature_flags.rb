@@ -22,6 +22,15 @@ module Settings
         Settings::Db.store.educator_feature_flag = bool
       end
 
+      # DATA-297: Show student count on all educator signup paths
+      def student_count_all_paths
+        Settings::Db.store.student_count_all_paths
+      end
+
+      def student_count_all_paths=(bool)
+        Settings::Db.store.student_count_all_paths = bool
+      end
+
     end
   end
 end

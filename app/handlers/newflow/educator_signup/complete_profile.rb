@@ -30,6 +30,7 @@ module Newflow
         attribute :books_used_details, type: Object
         attribute :books_of_interest, type: Object
         attribute :is_cs_form, type: Object
+        attribute :total_students_not_using, type: String
 
         validates(
           :educator_specific_role,
@@ -65,8 +66,19 @@ module Newflow
                              signup_params.is_country_not_supported_by_sheerid == 'true' ||
                              user.is_sheerid_unviable? || @is_on_cs_form)
 
-        total_students = books_used_details.values.inject(0) do |total, book|
-          total + book["num_students_using_book"].to_i rescue 0
+        # DATA-297: Collect student count on all signup paths
+        # For as_primary: sum per-book student counts (existing behavior)
+        # For as_future / as_recommending / administrator: use the standalone total_students_not_using field
+        if signup_params.using_openstax_how == AS_PRIMARY
+          total_students = books_used_details.values.inject(0) do |total, book|
+            total + book["num_students_using_book"].to_i rescue 0
+          end
+        elsif Settings::FeatureFlags.student_count_all_paths
+          total_students = signup_params.total_students_not_using.to_i
+        else
+          total_students = books_used_details.values.inject(0) do |total, book|
+            total + book["num_students_using_book"].to_i rescue 0
+          end
         end
 
         @user.update!(
