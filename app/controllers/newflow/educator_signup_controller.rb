@@ -151,6 +151,7 @@ module Newflow
 
     def educator_profile_form
       @book_titles = book_data.titles
+      @books_by_subject = book_data.books_by_subject
       security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
       log_posthog(current_user, 'educator_viewed_profile_form')
     end
@@ -182,6 +183,7 @@ module Newflow
         },
         failure: lambda {
           @book_titles = book_data.titles
+          @books_by_subject = book_data.books_by_subject
           security_log(:educator_sign_up_failed, user: current_user, reason: @handler_result.errors)
           log_posthog(current_user, 'educator_complete_profile_failed')
           if @handler_result.outputs.is_on_cs_form

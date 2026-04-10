@@ -1,0 +1,44 @@
+<div class="book-picker" data-field-name="<%= field_name %>">
+  <input type="text"
+         class="book-picker-search"
+         placeholder="<%= I18n.t(:'educator_profile_form.book_picker_search_placeholder') %>"
+         autocomplete="off">
+
+  <div class="book-picker-selections"></div>
+
+  <p class="book-picker-subtitle">
+    <%= I18n.t(:'educator_profile_form.book_picker_select_up_to') %>
+    <br>
+    <em><%= I18n.t(:'educator_profile_form.book_picker_select_up_to_titles') %></em>
+  </p>
+
+  <div class="book-picker-subjects">
+    <% (books_by_subject || []).each do |subject| %>
+      <div class="book-picker-subject" data-subject="<%= subject[:subject_name] %>">
+        <button type="button" class="book-picker-subject-header">
+          <span class="subject-name"><%= subject[:subject_name] %></span>
+          <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="book-picker-subject-body" style="display: none;">
+          <% subject[:books].each do |book| %>
+            <label class="book-tile" data-title="<%= book[:title] %>">
+              <% if book[:cover_url].present? %>
+                <img src="<%= book[:cover_url] %>"
+                     alt="<%= book[:title] %>"
+                     class="book-tile-cover"
+                     loading="lazy">
+              <% end %>
+              <span class="book-tile-title"><%= book[:title] %></span>
+              <input type="checkbox"
+                     name="signup[<%= field_name %>][]"
+                     value="<%= book[:salesforce_abbreviation] %>"
+                     class="book-tile-checkbox"
+                     data-cover-url="<%= book[:cover_url] %>"
+                     data-book-title="<%= book[:title] %>">
+            </label>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

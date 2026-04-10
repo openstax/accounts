@@ -2,9 +2,8 @@ class NewflowUi.EducatorComplete
 
   constructor: ->
     _.bindAll(@, 'onSchoolNameChange', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onHowChosenChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onTotalNumStudentsChange', 'onSubmit', 'attachBookUsedEvents')
-    @initBooksUsedMultiSelect()
-    @initBooksOfInterestMultiSelect()
     @form = $('.signup-page.completed-step')
+    @initBookPickers()
 
     # fields locators
     @school_name = @findOrLogNotFound(@form, '.school-name-visible')
@@ -28,9 +27,7 @@ class NewflowUi.EducatorComplete
     @how_chosen_radio = @findOrLogNotFound(@how_chosen, "input")
     @how_using_radio = @findOrLogNotFound(@how_using, "input")
 
-    # book selections
-    @books_used_select = @findOrLogNotFound(@books_used, "select")
-    @books_of_interest_select = @findOrLogNotFound(@books_of_interest, "select")
+    # book selections (now using accordion checkboxes instead of selects)
 
     # total num students
     @total_num_students_input = @findOrLogNotFound(@total_num_students, 'input') if @total_num_students.length
@@ -60,8 +57,6 @@ class NewflowUi.EducatorComplete
     @how_chosen_radio.change(@onHowChosenChange)
     @how_using_radio.change(@onHowUsingChange)
 
-    @books_used_select.change(@onBooksUsedChange)
-    @books_of_interest_select.change(@onBooksOfInterestChange)
     @total_num_students_input?.on('keyup change blur', @onTotalNumStudentsChange)
 
     @findOrLogNotFound(@form, 'form').submit(@onSubmit)
@@ -96,14 +91,6 @@ class NewflowUi.EducatorComplete
     else
       console.log('Couldn\'t find ', selector)
       return null
-
-  initBooksUsedMultiSelect: ->
-    books_used = document.getElementById('signup_books_used')
-    osMultiSelect(books_used)
-
-  initBooksOfInterestMultiSelect: ->
-    books_of_interest = document.getElementById('signup_books_of_interest')
-    osMultiSelect(books_of_interest)
 
   onSubmit: (ev) ->
     school_name_valid = @checkSchoolNameValid()
@@ -215,7 +202,7 @@ class NewflowUi.EducatorComplete
   checkBooksUsedValid: () ->
     return true if @books_used.is(":hidden")
 
-    if @books_used_select.val()
+    if @getSelectedBooks('books_used').length > 0
       @please_select_books_used.hide()
       true
     else
@@ -223,7 +210,7 @@ class NewflowUi.EducatorComplete
       false
 
   checkBooksUsedValidMax: () ->
-    if @books_used_select.val() == null || @books_used_select.val().length < 6
+    if @getSelectedBooks('books_used').length < 6
       @books_used_max.hide()
       true
     else
@@ -233,7 +220,7 @@ class NewflowUi.EducatorComplete
   checkBooksOfInterestValid: () ->
     return true if @books_of_interest.is(":hidden")
 
-    if @books_of_interest_select.val()
+    if @getSelectedBooks('books_of_interest').length > 0
       @please_select_books_of_interest.hide()
       true
     else
@@ -241,7 +228,7 @@ class NewflowUi.EducatorComplete
       false
 
   checkBooksOfInterestValidMax: () ->
-    if @books_of_interest_select.val() == null || @books_of_interest_select.val().length < 6
+    if @getSelectedBooks('books_of_interest').length < 6
       @books_of_interest_max.hide()
       true
     else
@@ -326,7 +313,7 @@ class NewflowUi.EducatorComplete
 
       @books_of_interest.hide()
       @hideTotalNumStudents()
-      @updateBooksUsedFields(@books_used_select.val())
+      @updateBooksUsedFields(@getSelectedBooks('books_used'))
       @please_select_books_used.hide()
       @please_select_books_of_interest.hide()
     else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_recommending').is(':checked') )
@@ -347,11 +334,13 @@ class NewflowUi.EducatorComplete
       @please_select_books_of_interest.hide()
 
   onBooksUsedChange: ->
-    @updateBooksUsedFields(@books_used_select.val())
+    @updateBooksUsedFields(@getSelectedBooks('books_used'))
+    @enforceMaxBooks('books_used')
     @checkBooksUsedValidMax()
     @please_select_books_used.hide()
 
   onBooksOfInterestChange: ->
+    @enforceMaxBooks('books_of_interest')
     @checkBooksOfInterestValidMax()
 
     @please_select_books_of_interest.hide()
@@ -384,6 +373,14 @@ class NewflowUi.EducatorComplete
           for book_name_placeholder in book_name_placeholders
             book_name_node = document.createTextNode(book)
             book_name_placeholder.parentNode.replaceChild(book_name_node, book_name_placeholder)
+
+          # Set cover image from the book tile's data attribute
+          coverCheckbox = @form.find(".book-tile-checkbox[value='#{book}']")
+          coverUrl = coverCheckbox.data('cover-url')
+          coverImages = clonedNode.querySelectorAll("[data-placeholder-id='used-book-cover']")
+          for coverImg in coverImages
+            coverImg.setAttribute('src', coverUrl || '')
+            coverImg.setAttribute('alt', book)
 
           clonedNode.querySelectorAll('label, select, input').forEach (element) ->
             element.removeAttribute('disabled')
@@ -459,3 +456,92 @@ class NewflowUi.EducatorComplete
     else
       @total_num_students_alert?.show()
       false
+
+  # Book Picker Accordion methods
+
+  initBookPickers: ->
+    _this = @
+
+    # Accordion toggle: click subject header to expand/collapse
+    @form.on 'click', '.book-picker-subject-header', (e) ->
+      e.preventDefault()
+      body = $(this).siblings('.book-picker-subject-body')
+      body.slideToggle(200)
+      icon = $(this).find('.fa')
+      icon.toggleClass('fa-caret-down fa-caret-up')
+
+    # Search filtering
+    @form.on 'input', '.book-picker-search', (e) ->
+      query = $(this).val().toLowerCase()
+      picker = $(this).closest('.book-picker')
+
+      # Toggle .search-hidden class on tiles (works even inside collapsed parents)
+      picker.find('.book-tile').each ->
+        title = $(this).data('title').toLowerCase()
+        if query.length > 0 && title.indexOf(query) < 0
+          $(this).addClass('search-hidden')
+        else
+          $(this).removeClass('search-hidden')
+
+      # Show/hide subjects based on matching books
+      picker.find('.book-picker-subject').each ->
+        matchingBooks = $(this).find('.book-tile:not(.search-hidden)').length
+        if matchingBooks == 0
+          $(this).hide()
+        else
+          $(this).show()
+          if query.length > 0
+            $(this).find('.book-picker-subject-body').show()
+            $(this).find('.fa').removeClass('fa-caret-down').addClass('fa-caret-up')
+          else
+            $(this).find('.book-picker-subject-body').hide()
+            $(this).find('.fa').removeClass('fa-caret-up').addClass('fa-caret-down')
+
+    # Checkbox change handlers (delegated)
+    @form.on 'change', '.book-picker[data-field-name="books_used"] .book-tile-checkbox', ->
+      tile = $(this).closest('.book-tile')
+      tile.toggleClass('selected', this.checked)
+      _this.updateSelectedTags('books_used')
+      _this.onBooksUsedChange()
+
+    @form.on 'change', '.book-picker[data-field-name="books_of_interest"] .book-tile-checkbox', ->
+      tile = $(this).closest('.book-tile')
+      tile.toggleClass('selected', this.checked)
+      _this.updateSelectedTags('books_of_interest')
+      _this.onBooksOfInterestChange()
+
+    # Tag removal (delegated)
+    @form.on 'click', '.book-picker-tag .remove-tag', (e) ->
+      e.preventDefault()
+      value = $(this).closest('.book-picker-tag').data('value')
+      fieldName = $(this).closest('.book-picker').data('field-name')
+      checkbox = _this.form.find(".book-picker[data-field-name='#{fieldName}'] .book-tile-checkbox[value='#{value}']")
+      checkbox.prop('checked', false).trigger('change')
+
+  getSelectedBooks: (fieldName) ->
+    checked = @form.find(".book-picker[data-field-name='#{fieldName}'] .book-tile-checkbox:checked")
+    checked.map(-> $(this).val()).get()
+
+  enforceMaxBooks: (fieldName) ->
+    picker = @form.find(".book-picker[data-field-name='#{fieldName}']")
+    selected = picker.find('.book-tile-checkbox:checked').length
+    if selected >= 5
+      picker.find('.book-tile-checkbox:not(:checked)').each ->
+        $(this).prop('disabled', true)
+        $(this).closest('.book-tile').addClass('disabled')
+    else
+      picker.find('.book-tile-checkbox:disabled').each ->
+        $(this).prop('disabled', false)
+        $(this).closest('.book-tile').removeClass('disabled')
+
+  updateSelectedTags: (fieldName) ->
+    picker = @form.find(".book-picker[data-field-name='#{fieldName}']")
+    container = picker.find('.book-picker-selections')
+    container.empty()
+    picker.find('.book-tile-checkbox:checked').each ->
+      title = $(this).data('book-title')
+      value = $(this).val()
+      tag = $('<span class="book-picker-tag"></span>').attr('data-value', value)
+      tag.text(title)
+      tag.append(' <span class="remove-tag">&times;</span>')
+      container.append(tag)

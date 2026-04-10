@@ -214,56 +214,45 @@
                 <%= I18n.t(:"educator_profile_form.select_option_limit_5") %>
               </div>
 
-              <%= fh.select name: :books_used,
-                            options: grouped_options_for_select(@book_titles),
-                            autofocus: true,
-                            multiple: true,
-                            custom_class: 'os-multiselect'
-              %>
+              <%= render partial: 'newflow/educator_signup/book_picker',
+                         locals: { field_name: 'books_used', books_by_subject: @books_by_subject } %>
             </div>
 
-            <div data-template-id="used-book-info">
-              <div class="form-group question students-using-book">
-                <%= label_tag nil, class: 'field-label' do %>
-                  <%= I18n.t(:"educator_profile_form.num_students_using_book_base") %>
-                  <span data-placeholder-id="used-book-name"></span>
-                  <%= I18n.t(:"educator_profile_form.num_students_using_book_time_period") %>
-
-                  <div class="form-helper-text">
-                    <%= I18n.t(:"educator_profile_form.num_students_using_book_supplemental") %>
-                  </div>
-
-                  <div class="num-using-book newflow-mustdo-alert" style="display: none">
-                    <%= I18n.t(:"educator_profile_form.fill_out") %>
-                  </div>
-                  <%=
-                    fh.text_field(
-                    name: 'books_used_details[%placeholder-book-name%]num_students_using_book',
-                    placeholder: "#{I18n.t(:'educator_profile_form.num_students_using_book_placeholder')}",
-                    autofocus: true,
-                    numberonly: true,
-                    disabled: true
-                    )
-                  %>
-                <% end %>
+            <div data-template-id="used-book-info" class="book-detail-card">
+              <div class="book-detail-header">
+                <img src="" data-placeholder-id="used-book-cover" class="book-detail-cover" alt="">
+                <span data-placeholder-id="used-book-name" class="book-detail-title"></span>
               </div>
-
-              <div class="form-group question how-using-book">
-                <%= label_tag nil, class: 'field-label' do %>
-                  <%= I18n.t(:"educator_profile_form.how_using_book_base") %>
-                  <span data-placeholder-id="used-book-name">
-                  </span><%= I18n.t(:"educator_profile_form.how_using_book_tail") %>
-
-                  <div class="using-book newflow-mustdo-alert"  style="display: none">
-                    <%= I18n.t(:"educator_profile_form.fill_out") %>
+              <div class="book-detail-body">
+                <p class="book-detail-helper"><%= I18n.t(:"educator_profile_form.include_ta_sections") %></p>
+                <div class="book-detail-fields">
+                  <div class="book-detail-field students-using-book">
+                    <%= label_tag nil, I18n.t(:"educator_profile_form.students_per_semester"), class: 'field-label' %>
+                    <div class="num-using-book newflow-mustdo-alert" style="display: none">
+                      <%= I18n.t(:"educator_profile_form.fill_out") %>
+                    </div>
+                    <%=
+                      fh.text_field(
+                        name: 'books_used_details[%placeholder-book-name%]num_students_using_book',
+                        placeholder: I18n.t(:'educator_profile_form.num_students_using_book_placeholder'),
+                        autofocus: false,
+                        numberonly: true,
+                        disabled: true
+                      )
+                    %>
                   </div>
-
-                  <%= fh.select name: 'books_used_details[%placeholder-book-name%]how_using_book',
-                      options: options_for_select([['', '']] + I18n.t(:"educator_profile_form.how_using_book_options")),
-                      autofocus: true,
-                      disabled: true
-                      %>
-                <% end %>
+                  <div class="book-detail-field how-using-book">
+                    <%= label_tag nil, I18n.t(:"educator_profile_form.how_using_this_book"), class: 'field-label' %>
+                    <div class="using-book newflow-mustdo-alert" style="display: none">
+                      <%= I18n.t(:"educator_profile_form.fill_out") %>
+                    </div>
+                    <%= fh.select name: 'books_used_details[%placeholder-book-name%]how_using_book',
+                        options: options_for_select([['', '']] + I18n.t(:"educator_profile_form.how_using_book_options")),
+                        autofocus: false,
+                        disabled: true
+                    %>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -282,12 +271,8 @@
                 <%= I18n.t(:"educator_profile_form.select_option_limit_5") %>
               </div>
 
-              <%= fh.select name: :books_of_interest,
-                            options: grouped_options_for_select(@book_titles),
-                            autofocus: true,
-                            multiple: true,
-                            custom_class: 'os-multiselect'
-              %>
+              <%= render partial: 'newflow/educator_signup/book_picker',
+                         locals: { field_name: 'books_of_interest', books_by_subject: @books_by_subject } %>
             </div>
 
             <% if Settings::FeatureFlags.collect_student_count_all_paths %>

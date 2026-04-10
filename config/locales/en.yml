@@ -55,6 +55,12 @@ en:
     num_students_future_recommending: "Approx. how many students would you teach each year with OpenStax?"
     num_students_administrator: "What is your average annual class size?"
     num_students_total_placeholder: "Number of students"
+    book_picker_search_placeholder: "Search for a book..."
+    book_picker_select_up_to: "Select up to 5"
+    book_picker_select_up_to_titles: "Select titles you are using even if the edition number is different."
+    include_ta_sections: "Include sections taught by TAs that you oversee"
+    students_per_semester: "Students per semester"
+    how_using_this_book: "How are you using this book?"
     subjects_of_interest: Subjects of interest
     books_used: Which textbook(s) are you currently using?
     books_of_interest: Books of interest
