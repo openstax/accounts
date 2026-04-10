@@ -29,6 +29,7 @@ module Newflow
         attribute :books_used, type: Object
         attribute :books_used_details, type: Object
         attribute :books_of_interest, type: Object
+        attribute :total_num_students, type: String
         attribute :is_cs_form, type: Object
 
         validates(
@@ -65,8 +66,16 @@ module Newflow
                              signup_params.is_country_not_supported_by_sheerid == 'true' ||
                              user.is_sheerid_unviable? || @is_on_cs_form)
 
-        total_students = books_used_details.values.inject(0) do |total, book|
-          total + book["num_students_using_book"].to_i rescue 0
+        total_students = if signup_params.using_openstax_how == AS_PRIMARY
+          books_used_details.values.inject(0) do |total, book|
+            total + book["num_students_using_book"].to_i rescue 0
+          end
+        elsif Settings::FeatureFlags.collect_student_count_all_paths
+          signup_params.total_num_students.to_i
+        else
+          books_used_details.values.inject(0) do |total, book|
+            total + book["num_students_using_book"].to_i rescue 0
+          end
         end
 
         @user.update!(
@@ -170,6 +179,13 @@ module Newflow
 
         if role == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
           param_error(:books_of_interest, :books_of_interest_must_be_entered)
+        end
+
+        if Settings::FeatureFlags.collect_student_count_all_paths &&
+           signup_params.using_openstax_how != AS_PRIMARY &&
+           role != OTHER &&
+           signup_params.total_num_students.blank?
+          param_error(:total_num_students, :fill_out)
         end
 
         if @is_on_cs_form

@@ -290,6 +290,31 @@
               %>
             </div>
 
+            <% if Settings::FeatureFlags.collect_student_count_all_paths %>
+              <div class="form-group question total-num-students"
+                   data-label-default="<%= I18n.t(:'educator_profile_form.num_students_future_recommending') %>"
+                   data-label-admin="<%= I18n.t(:'educator_profile_form.num_students_administrator') %>">
+                <%= label_tag(
+                      :total_num_students,
+                      I18n.t(:"educator_profile_form.num_students_future_recommending"),
+                      class: 'field-label',
+                      id: 'total-num-students-label'
+                    )
+                %>
+                <div class="total-num-students-alert newflow-mustdo-alert">
+                  <%= I18n.t(:"educator_profile_form.fill_out") %>
+                </div>
+                <%=
+                  fh.text_field(
+                    name: :total_num_students,
+                    placeholder: I18n.t(:"educator_profile_form.num_students_total_placeholder"),
+                    autofocus: false,
+                    numberonly: true
+                  )
+                %>
+              </div>
+            <% end %>
+
           </div>
 
           <%= f.hidden_field :is_school_not_supported_by_sheerid, value: is_school_not_supported_by_sheerid? %>

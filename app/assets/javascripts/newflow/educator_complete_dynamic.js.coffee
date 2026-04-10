@@ -1,7 +1,7 @@
 class NewflowUi.EducatorComplete
 
   constructor: ->
-    _.bindAll(@, 'onSchoolNameChange', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onHowChosenChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onSubmit', 'attachBookUsedEvents')
+    _.bindAll(@, 'onSchoolNameChange', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onHowChosenChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onTotalNumStudentsChange', 'onSubmit', 'attachBookUsedEvents')
     @initBooksUsedMultiSelect()
     @initBooksOfInterestMultiSelect()
     @form = $('.signup-page.completed-step')
@@ -17,6 +17,7 @@ class NewflowUi.EducatorComplete
 
     @books_used = @findOrLogNotFound(@form, '.books-used')
     @books_of_interest = @findOrLogNotFound(@form, '.books-of-interest')
+    @total_num_students = @findOrLogNotFound(@form, '.total-num-students')
 
     # input fields locators
     @school_name_input = @findOrLogNotFound(@school_name, 'input')
@@ -30,6 +31,11 @@ class NewflowUi.EducatorComplete
     # book selections
     @books_used_select = @findOrLogNotFound(@books_used, "select")
     @books_of_interest_select = @findOrLogNotFound(@books_of_interest, "select")
+
+    # total num students
+    @total_num_students_input = @findOrLogNotFound(@total_num_students, 'input') if @total_num_students.length
+    @total_num_students_label = @findOrLogNotFound(@form, '#total-num-students-label')
+    @total_num_students_alert = @findOrLogNotFound(@form, '.total-num-students-alert.newflow-mustdo-alert')
 
     # error messages locators
     @please_fill_out_school = @findOrLogNotFound(@form, '.school-name.newflow-mustdo-alert')
@@ -56,6 +62,7 @@ class NewflowUi.EducatorComplete
 
     @books_used_select.change(@onBooksUsedChange)
     @books_of_interest_select.change(@onBooksOfInterestChange)
+    @total_num_students_input?.on('keyup change blur', @onTotalNumStudentsChange)
 
     @findOrLogNotFound(@form, 'form').submit(@onSubmit)
 
@@ -71,10 +78,12 @@ class NewflowUi.EducatorComplete
     @how_using.hide()
     @books_used.hide()
     @books_of_interest.hide()
+    @total_num_students?.hide()
 
     # Hide all validations messages
     @please_fill_out_school.hide()
     @please_select_role.hide()
+    @total_num_students_alert?.hide()
 
     @please_select_books_used.hide()
     @books_used_max.hide()
@@ -110,6 +119,7 @@ class NewflowUi.EducatorComplete
     books_used_details_valid = @checkBooksUsedValid()
     books_of_interest_valid = @checkBooksOfInterestValid()
     books_of_interest_valid_max = @checkBooksOfInterestValidMax()
+    total_num_students_valid = @checkTotalNumStudentsValid()
 
     if not (
         school_name_valid and
@@ -121,7 +131,8 @@ class NewflowUi.EducatorComplete
         books_used_valid_max and
         books_used_details_valid and
         books_of_interest_valid_max and
-        books_of_interest_valid)
+        books_of_interest_valid and
+        total_num_students_valid)
       ev.preventDefault()
 
   checkSchoolNameValid: () ->
@@ -267,6 +278,7 @@ class NewflowUi.EducatorComplete
       @please_select_using.hide()
 
       @hideBookUsedFields()
+      @hideTotalNumStudents()
 
       @onHowUsingChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_administrator').is(':checked') && @checkSchoolNameValid())
@@ -279,6 +291,7 @@ class NewflowUi.EducatorComplete
       @please_select_using.hide()
 
       @hideBookUsedFields()
+      @hideTotalNumStudents()
 
       @onHowUsingChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked') )
@@ -287,9 +300,11 @@ class NewflowUi.EducatorComplete
       @books_used.hide()
       @books_of_interest.hide()
       @how_chosen.hide()
-      @hideTotalNumStudents
+      @hideTotalNumStudents()
       @how_using.hide()
       @please_fill_out_other.hide()
+
+    @updateTotalNumStudentsLabel()
 
     if @checkSchoolNameValid()
       @continue.prop('disabled', false)
@@ -310,11 +325,13 @@ class NewflowUi.EducatorComplete
       @books_used.show()
 
       @books_of_interest.hide()
+      @hideTotalNumStudents()
       @updateBooksUsedFields(@books_used_select.val())
       @please_select_books_used.hide()
       @please_select_books_of_interest.hide()
     else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_recommending').is(':checked') )
       @books_of_interest.show()
+      @showTotalNumStudents()
 
       @books_used.hide()
       @removeBooksUsedFields()
@@ -322,6 +339,7 @@ class NewflowUi.EducatorComplete
       @please_select_books_of_interest.hide()
     else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_future').is(':checked') )
       @books_of_interest.show()
+      @showTotalNumStudents()
 
       @books_used.hide()
       @removeBooksUsedFields()
@@ -408,3 +426,36 @@ class NewflowUi.EducatorComplete
   showBookUsedFields: ->
     @form.find('.students-using-book').show()
     @form.find('.how-using-book').show()
+
+  showTotalNumStudents: ->
+    return unless @total_num_students?.length
+    @total_num_students.show()
+    @updateTotalNumStudentsLabel()
+
+  hideTotalNumStudents: ->
+    return unless @total_num_students?.length
+    @total_num_students.hide()
+    @total_num_students_alert?.hide()
+
+  updateTotalNumStudentsLabel: ->
+    return unless @total_num_students_label?.length
+    isAdmin = @findOrLogNotFound($(document), '#signup_educator_specific_role_administrator').is(':checked')
+    container = @total_num_students
+    if isAdmin
+      @total_num_students_label.text(container.data('label-admin'))
+    else
+      @total_num_students_label.text(container.data('label-default'))
+
+  onTotalNumStudentsChange: ->
+    @total_num_students_alert?.hide()
+
+  checkTotalNumStudentsValid: () ->
+    return true unless @total_num_students?.length
+    return true if @total_num_students.is(":hidden")
+
+    if @total_num_students_input?.val()
+      @total_num_students_alert?.hide()
+      true
+    else
+      @total_num_students_alert?.show()
+      false

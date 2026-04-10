@@ -101,6 +101,129 @@ module Newflow
         end
       end
 
+      context 'with total_num_students on non-primary paths' do
+        before do
+          allow(Settings::FeatureFlags).to receive(:collect_student_count_all_paths).and_return(true)
+        end
+
+        context 'as_recommending with total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor',
+                total_num_students: '150'
+              }
+            }
+          end
+
+          it 'saves the total_num_students value' do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '150'
+          end
+        end
+
+        context 'as_future with total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_future',
+                educator_specific_role: 'instructor',
+                total_num_students: '200'
+              }
+            }
+          end
+
+          it 'saves the total_num_students value' do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '200'
+          end
+        end
+
+        context 'as_recommending without total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor'
+              }
+            }
+          end
+
+          it 'returns a validation error' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :total_num_students }).to be true
+          end
+        end
+
+        context 'as_primary still uses per-book summing' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: ['Algebra and Trigonometry', 'Physics'],
+                books_used_details: {
+                  'Algebra and Trigonometry' => {
+                    'num_students_using_book' => '12',
+                    'how_using_book' => 'As the core textbook for my course'
+                  },
+                  'Physics' => {
+                    'num_students_using_book' => '2',
+                    'how_using_book' => 'As an optional/recommended textbook for my course'
+                  }
+                },
+                using_openstax_how: 'as_primary',
+                educator_specific_role: 'instructor',
+                total_num_students: '999'
+              }
+            }
+          end
+
+          it 'ignores total_num_students and sums per-book counts' do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '14'
+          end
+        end
+      end
+
+      context 'with feature flag off' do
+        before do
+          allow(Settings::FeatureFlags).to receive(:collect_student_count_all_paths).and_return(false)
+        end
+
+        context 'as_recommending falls back to books_used_details sum' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor'
+              }
+            }
+          end
+
+          it 'stores 0 (no books_used_details for this path)' do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '0'
+          end
+        end
+      end
+
       context 'with invalid params' do
         context 'other must be filled out' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::OTHER }
