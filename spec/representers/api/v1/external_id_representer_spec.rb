@@ -5,8 +5,8 @@ describe Api::V1::ExternalIdRepresenter, type: :representer do
   subject(:representer) { described_class.new external_id }
 
   context 'user_id' do
-    it 'can be read' do
-      expect(representer.to_hash['user_id']).to eq external_id.user_id
+    it 'cannot be read' do
+      expect(representer.to_hash).not_to have_key('user_id')
     end
 
     it 'can be written' do
