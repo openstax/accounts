@@ -101,6 +101,23 @@ module Newflow
       end
     end
 
+    describe 'when lead save fails' do
+      it 'logs to SecurityLog and Sentry' do
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(nil)
+
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(false)
+        allow(mock_lead).to receive(:errors).and_return(double(full_messages: ['Some SF error']))
+
+        described_class.call(user: user)
+
+        expect(SecurityLog.where(event_type: :salesforce_lead_save_failed).count).to eq(1)
+        expect(Sentry).to have_received(:capture_message).with(/Salesforce lead save failed for user #{user.id}/)
+      end
+    end
+
     describe 'when user already has a contact' do
       let(:existing_contact) do
         contact = OpenStruct.new(id: 'SF_CONTACT_123')
