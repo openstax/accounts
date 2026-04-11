@@ -41,30 +41,8 @@ class ApplicationController < ActionController::Base
     Sentry.set_user(uuid: current_user.uuid)
   end
 
-  def log_posthog(user, event)
-    return if user.nil? or user.is_anonymous? or Rails.env.test?
-    begin
-      OXPosthog.posthog.capture({
-        distinct_id: user.uuid,
-        event: event,
-        properties: {
-            '$set': { email: user.email_addresses&.first&.value,
-                      name: user.full_name,
-                      uuid: user.uuid,
-                      role: user.role,
-                      faculty_status: user.faculty_status,
-                      school: user.school&.id,
-                      recent_authentication_provider: user.authentications&.last&.provider,
-                      authentication_method_count: user.authentications&.count,
-                      salesforce_contact_id: user.salesforce_contact_id,
-                      salesforce_lead_id: user.salesforce_lead_id,
-        }
-        }
-      })
-    rescue StandardError => e
-      Sentry.capture_exception(e)
-      return
-    end
+  def log_posthog(user, event, extra_props = {})
+    OXPosthog.log(user, event, extra_props)
   end
 
   respond_to :html

@@ -31,13 +31,12 @@ module Api::V1
              }
 
     collection :external_ids,
-               type: String,
                readable: true,
                writeable: false,
                schema_info: {
                  description: "The user's external_ids"
                },
-               getter: ->(represented:, **) { represented.external_ids.map(&:external_id) }
+               decorator: ExternalIdRepresenter
 
     property :is_test,
              type: :boolean,

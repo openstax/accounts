@@ -138,6 +138,10 @@ module Newflow
 
         CreateOrUpdateSalesforceLead.perform_later(user: user)
 
+        OXPosthog.log(user, 'sheerid_verification_received', {
+          result: verification.current_step,
+          school_matched: user.school.present?,
+        })
 
         SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)
         outputs.verification_id = verification_id

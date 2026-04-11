@@ -47,7 +47,7 @@ module Newflow
               log_data[:redirect] = stored_url
             end
             security_log(:educator_began_signup, log_data)
-            log_posthog(@user, 'educator_started_signup')
+            log_posthog(@user, 'educator_started_signup', { client_app: get_client_app&.name })
             clear_cache_BRI_marketing
             redirect_to(educator_email_verification_form_path)
           },
@@ -161,7 +161,16 @@ module Newflow
         user: current_user,
         success: lambda {
           user = @handler_result.outputs.user
-          log_posthog(user, 'educator_complete_profile')
+          log_posthog(user, 'educator_complete_profile', {
+            educator_specific_role: user.role,
+            using_openstax_how: user.using_openstax_how,
+            who_chooses_books: user.who_chooses_books,
+            books_used: user.which_books,
+            books_used_count: user.books_used_details&.keys&.length || 0,
+            total_students: user.how_many_students,
+            did_use_sheerid: !user.is_educator_pending_cs_verification,
+            is_cs_form: !!user.is_educator_pending_cs_verification,
+          })
           security_log(:user_profile_complete, { user: user })
           clear_incomplete_educator
 
