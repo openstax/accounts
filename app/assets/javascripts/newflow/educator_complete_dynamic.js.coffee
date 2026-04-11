@@ -242,7 +242,10 @@ class NewflowUi.EducatorComplete
   onRoleChange: ->
     @please_select_role.hide()
 
-    if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_instructor').is(':checked') && @checkSchoolNameValid() )
+    isInstructor = @findOrLogNotFound($(document), '#signup_educator_specific_role_instructor').is(':checked')
+    isK12Teacher = @findOrLogNotFound($(document), '#signup_educator_specific_role_k12_teacher').is(':checked')
+
+    if ( (isInstructor || isK12Teacher) && @checkSchoolNameValid() )
       @how_using.show()
       @how_chosen.show()
 
@@ -283,11 +286,11 @@ class NewflowUi.EducatorComplete
       @onHowUsingChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked') )
       @other_specify.show()
+      @showTotalNumStudents()
 
       @books_used.hide()
       @books_of_interest.hide()
       @how_chosen.hide()
-      @hideTotalNumStudents()
       @how_using.hide()
       @please_fill_out_other.hide()
 
@@ -437,9 +440,12 @@ class NewflowUi.EducatorComplete
   updateTotalNumStudentsLabel: ->
     return unless @total_num_students_label?.length
     isAdmin = @findOrLogNotFound($(document), '#signup_educator_specific_role_administrator').is(':checked')
+    isOther = @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked')
     container = @total_num_students
     if isAdmin
       @total_num_students_label.text(container.data('label-admin'))
+    else if isOther
+      @total_num_students_label.text(container.data('label-other'))
     else
       @total_num_students_label.text(container.data('label-default'))
 

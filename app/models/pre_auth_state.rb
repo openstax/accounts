@@ -41,7 +41,7 @@ class PreAuthState < ApplicationRecord
   end
 
   def signed_instructor?
-    signed_role? && role == 'instructor'
+    signed_role? && %w[instructor k12_teacher].include?(role)
   end
 
   def signed_external_uuid

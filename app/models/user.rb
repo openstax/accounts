@@ -23,6 +23,7 @@ class User < ApplicationRecord
     ADJUNCT_ROLE = :adjunct,
     HOMESCHOOL_ROLE = :homeschool,
     RESEARCHER_ROLE = :researcher,
+    K12_TEACHER_ROLE = :k12_teacher,
   ].freeze
 
   VALID_FACULTY_STATUSES = [

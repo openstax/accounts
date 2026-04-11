@@ -5,6 +5,7 @@
     <%
       educator_complete_roles = [
         [ I18n.t(:'educator_profile_form.instructor'), 'instructor', false ],
+        [ I18n.t(:'educator_profile_form.k12_teacher'), 'k12_teacher', false ],
         [ I18n.t(:'educator_profile_form.researcher'), 'researcher', false ],
         [ I18n.t(:'educator_profile_form.administrator'), 'administrator', false ],
         [ I18n.t(:'educator_profile_form.other'), 'other', false ]
@@ -278,7 +279,8 @@
             <% if Settings::FeatureFlags.collect_student_count_all_paths %>
               <div class="form-group question total-num-students"
                    data-label-default="<%= I18n.t(:'educator_profile_form.num_students_future_recommending') %>"
-                   data-label-admin="<%= I18n.t(:'educator_profile_form.num_students_administrator') %>">
+                   data-label-admin="<%= I18n.t(:'educator_profile_form.num_students_administrator') %>"
+                   data-label-other="<%= I18n.t(:'educator_profile_form.num_students_other') %>">
                 <%= label_tag(
                       :total_num_students,
                       I18n.t(:"educator_profile_form.num_students_future_recommending"),

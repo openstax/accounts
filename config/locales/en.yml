@@ -35,6 +35,7 @@ en:
     school_name: School name
     describe_role: Which of the following best describes your role?
     instructor: Instructor
+    k12_teacher: K-12 Teacher
     researcher: Researcher
     administrator: Administrator
     other: Other educational staff
@@ -54,6 +55,7 @@ en:
     num_students_using_book_placeholder:  Number of students using this book per semester
     num_students_future_recommending: "Approx. how many students would you teach each year with OpenStax?"
     num_students_administrator: "What is your average annual class size?"
+    num_students_other: "Approx. how many students does your institution serve annually?"
     num_students_total_placeholder: "Number of students"
     book_picker_search_placeholder: "Search for a book..."
     book_picker_select_up_to: "Select up to 5"
