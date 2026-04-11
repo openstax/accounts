@@ -1,37 +1,46 @@
-<%# This file is the same as the application layout except that for whatever reason methods that use
+<%# This file is the same as the newflow layout except that for whatever reason methods that use
     the asset pipeline cannot be called here so tags are passed in from the static error template %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
     <%= yield :stylesheet_tag %>
 
     <title><%= @page_title + ' - ' unless @page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
 
-  <body class="error">
-    <%= render partial: "layouts/application_header" %>
+  <body>
+    <div class="main-menu">
+      <span class="logo-wrapper">
+        <span class="logo">
+          <a href="/" aria-label="OpenStax Home Page">
+            <%= yield :logo_image %>
+          </a>
+        </span>
+      </span>
+    </div>
 
-    <div id="application-container" class="container">
-      <%= render partial: "layouts/application_body" %>
+    <div class="content">
+      <%= yield %>
+    </div>
 
-      <div id="application-footer" class="row">
-        <div class="col-sm-12">
-          <div id="footer-rice-logo">
-            <%= link_to "http://www.rice.edu" do %>
-              <%= yield :rice_logo %>
-            <% end %>
-          </div>
+    <div class="content" id="newflow-footer">
+      <div>
+        <a href="http://www.rice.edu">
+          <%= yield :rice_logo %>
+        </a>
+      </div>
 
-          <div id="footer-copyright">
-            <%= link_to OpenStax::Utilities::Text.copyright('2013', COPYRIGHT_HOLDER), main_app.copyright_path %> |
-            <%= link_to 'Terms of Use', main_app.terms_path %>
-          </div>
-        </div>
+      <div id="newflow-footer--copyright">
+        <%= link_to OpenStax::Utilities::Text.copyright('2013', COPYRIGHT_HOLDER), main_app.copyright_path %> |
+        <%= link_to 'Terms of Use', main_app.terms_path %>
       </div>
     </div>
   </body>
