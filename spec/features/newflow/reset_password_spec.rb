@@ -20,8 +20,9 @@ feature 'Password reset', js: true do
     visit profile_newflow_path
     expect(page).to have_current_path(profile_newflow_path)
 
-    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER + 1.second) do
       find('[data-provider=identity] .edit--newflow').click
+      expect(page).not_to have_current_path(profile_newflow_path)
       expect(page).to have_current_path(reauthenticate_form_path)
       expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
 
