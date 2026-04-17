@@ -24,5 +24,17 @@ module Newflow
       current_user
     end
 
+    def educator_copy_audience
+      case user&.school_type
+      when 'k12_school', 'high_school', 'home_school' then :k12
+      else :default
+      end
+    end
+
+    def educator_copy(key)
+      scoped = "educator_profile_form.#{educator_copy_audience}.#{key}"
+      I18n.t(scoped, default: I18n.t("educator_profile_form.#{key}"))
+    end
+
   end
 end

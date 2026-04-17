@@ -11,6 +11,36 @@ module Newflow
       end
     end
 
+    describe 'GET #educator_profile_form' do
+      render_views
+      let(:user) { FactoryBot.create(:user, role: User::INSTRUCTOR_ROLE, school_type: school_type, is_profile_complete: false) }
+
+      before do
+        allow_any_instance_of(FetchBookData).to receive(:titles).and_return([])
+        controller.sign_in!(user)
+      end
+
+      context 'when the user is affiliated with a K-12 school' do
+        let(:school_type) { :k12_school }
+
+        it 'labels the instructor role radio as "K-12 Teacher"' do
+          get(:educator_profile_form)
+          expect(response.body).to include('K-12 Teacher')
+          expect(response.body).to_not match(/>\s*Instructor\s*</)
+        end
+      end
+
+      context 'when the user has a default (non-K-12) school type' do
+        let(:school_type) { :college }
+
+        it 'labels the instructor role radio as "Instructor"' do
+          get(:educator_profile_form)
+          expect(response.body).to match(/>\s*Instructor\s*</)
+          expect(response.body).to_not include('K-12 Teacher')
+        end
+      end
+    end
+
     describe 'POST #educator_signup' do
       before do
         load('db/seeds.rb') # create the FinePrint contracts
