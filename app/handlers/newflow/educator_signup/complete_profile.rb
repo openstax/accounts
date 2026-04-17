@@ -5,7 +5,6 @@ module Newflow
       OTHER = 'other'
       AS_PRIMARY = 'as_primary'
       INSTRUCTOR = 'instructor'
-      K12_TEACHER = 'k12_teacher'
       AS_FUTURE = 'as_future'
 
       lev_handler
@@ -36,7 +35,7 @@ module Newflow
         validates(
           :educator_specific_role,
           inclusion: {
-            in: %w(instructor k12_teacher researcher administrator other),
+            in: %w(instructor researcher administrator other),
           }
         )
       end
@@ -168,7 +167,7 @@ module Newflow
           param_error(:other_role_name, :other_must_be_entered)
         end
 
-        if [INSTRUCTOR, K12_TEACHER].include?(role) && signup_params.using_openstax_how == AS_PRIMARY
+        if role == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY
           if books_used.blank?
             param_error(:books_used, :books_used_must_be_entered)
           end
@@ -178,7 +177,7 @@ module Newflow
           end
         end
 
-        if [INSTRUCTOR, K12_TEACHER].include?(role) && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
+        if role == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
           param_error(:books_of_interest, :books_of_interest_must_be_entered)
         end
 

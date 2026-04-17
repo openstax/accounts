@@ -242,10 +242,7 @@ class NewflowUi.EducatorComplete
   onRoleChange: ->
     @please_select_role.hide()
 
-    isInstructor = @findOrLogNotFound($(document), '#signup_educator_specific_role_instructor').is(':checked')
-    isK12Teacher = @findOrLogNotFound($(document), '#signup_educator_specific_role_k12_teacher').is(':checked')
-
-    if ( (isInstructor || isK12Teacher) && @checkSchoolNameValid() )
+    if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_instructor').is(':checked') && @checkSchoolNameValid() )
       @how_using.show()
       @how_chosen.show()
 
