@@ -381,6 +381,7 @@ class NewflowUi.EducatorComplete
 
           # Set cover image from the book tile's data attribute
           coverUrl = coverCheckbox.data('cover-url')
+          bookTitle = coverCheckbox.data('book-title') || book
           coverImages = clonedNode.querySelectorAll("[data-placeholder-id='used-book-cover']")
           for coverImg in coverImages
             coverImg.setAttribute('src', coverUrl || '')
