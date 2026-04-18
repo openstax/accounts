@@ -292,6 +292,8 @@ class NewflowUi.EducatorComplete
       @how_chosen.hide()
       @hideTotalNumStudents
       @how_using.hide()
+      @expected_start_semester.hide()
+      @expected_start_semester_select.val('')
       @please_fill_out_other.hide()
 
     if @checkSchoolNameValid()
