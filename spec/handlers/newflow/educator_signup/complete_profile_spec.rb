@@ -144,6 +144,98 @@ module Newflow
           end
         end
       end
+
+      describe 'expected_start_semester' do
+        let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR }
+
+        context 'when using_openstax_how is as_primary' do
+          let(:using_openstax_how) { Newflow::EducatorSignup::CompleteProfile::AS_PRIMARY }
+          let(:params) do
+            {
+              signup: {
+                school_name: 'Test School',
+                books_used: books_used,
+                books_used_details: books_used_details,
+                using_openstax_how: using_openstax_how,
+                educator_specific_role: educator_specific_role
+              }
+            }
+          end
+
+          it 'persists a valid value' do
+            params[:signup][:expected_start_semester] = 'this_semester'
+            handle
+            user.reload
+            expect(user.expected_start_semester).to eq('this_semester')
+          end
+
+          it 'rejects an unknown value as nil' do
+            params[:signup][:expected_start_semester] = 'not_a_real_value'
+            handle
+            user.reload
+            expect(user.expected_start_semester).to be_nil
+          end
+
+          it 'persists nil when the value is blank' do
+            params[:signup][:expected_start_semester] = ''
+            handle
+            user.reload
+            expect(user.expected_start_semester).to be_nil
+          end
+
+          it 'persists nil when the field is omitted entirely' do
+            handle
+            user.reload
+            expect(user.expected_start_semester).to be_nil
+          end
+        end
+
+        context 'when using_openstax_how is as_recommending' do
+          let(:using_openstax_how) { 'as_recommending' }
+          let(:books_used) { [] }
+          let(:books_used_details) { {} }
+          let(:params) do
+            {
+              signup: {
+                school_name: 'Test School',
+                books_of_interest: ['Test Book'],
+                using_openstax_how: using_openstax_how,
+                educator_specific_role: educator_specific_role,
+                expected_start_semester: 'next_semester'
+              }
+            }
+          end
+
+          it 'persists a valid value' do
+            handle
+            user.reload
+            expect(user.expected_start_semester).to eq('next_semester')
+          end
+        end
+
+        context 'when using_openstax_how is as_future' do
+          let(:using_openstax_how) { Newflow::EducatorSignup::CompleteProfile::AS_FUTURE }
+          let(:books_used) { [] }
+          let(:books_used_details) { {} }
+          let(:params) do
+            {
+              signup: {
+                school_name: 'Test School',
+                books_of_interest: ['Test Book'],
+                using_openstax_how: using_openstax_how,
+                educator_specific_role: educator_specific_role,
+                expected_start_semester: 'next_semester'
+              }
+            }
+          end
+
+          it 'persists nil (path guard rejects adopter-only value)' do
+            handle
+            user.reload
+            expect(user.expected_start_semester).to be_nil
+          end
+        end
+      end
     end
   end
 end
