@@ -257,5 +257,61 @@ module Newflow
         end
       end
     end
+
+    describe 'PostHog event for educator_complete_profile' do
+      render_views
+      let(:user) { create_newflow_user('educator@openstax.org', 'password', nil, nil, 'instructor') }
+
+      before do
+        disable_sfdc_client if defined?(disable_sfdc_client)
+        allow(OXPosthog).to receive(:log)
+        controller.sign_in! user
+      end
+
+      it 'includes expected_start_semester in the props hash' do
+        post :educator_complete_profile, params: {
+          signup: {
+            school_name: 'Test School',
+            educator_specific_role: 'instructor',
+            using_openstax_how: 'as_primary',
+            who_chooses_books: 'instructor',
+            books_used: ['Algebra and Trigonometry'],
+            books_used_details: {
+              'Algebra and Trigonometry' => {
+                'num_students_using_book' => '30',
+                'how_using_book' => 'As the core textbook for my course'
+              }
+            },
+            expected_start_semester: 'this_semester'
+          }
+        }
+
+        expect(OXPosthog).to have_received(:log).with(
+          kind_of(User),
+          'educator_complete_profile',
+          hash_including(expected_start_semester: 'this_semester')
+        )
+      end
+
+      it 'sends nil for users on the as_future path' do
+        post :educator_complete_profile, params: {
+          signup: {
+            school_name: 'Test School',
+            educator_specific_role: 'instructor',
+            using_openstax_how: 'as_future',
+            who_chooses_books: 'instructor',
+            books_of_interest: ['Algebra and Trigonometry'],
+            books_used: [],
+            expected_start_semester: 'this_semester'
+          }
+        }
+
+        expect(OXPosthog).to have_received(:log).with(
+          kind_of(User),
+          'educator_complete_profile',
+          hash_including(expected_start_semester: nil)
+        )
+      end
+    end
   end
 end
