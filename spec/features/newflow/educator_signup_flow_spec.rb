@@ -195,7 +195,7 @@ module Newflow
           Settings::FeatureFlags.expected_start_semester_enabled = false
         end
 
-        it 'shows the dropdown when as_primary is selected and persists the selection on submit' do
+        it 'shows the dropdown when as_primary is selected and retains the selected value' do
           visit(educator_profile_form_path)
           expect_educator_step_4_page
           select_educator_role('instructor')
@@ -217,7 +217,7 @@ module Newflow
           find('#signup_using_openstax_how_as_primary').click
 
           select 'Next semester', from: 'signup_expected_start_semester'
-          expect(find('#signup_expected_start_semester', visible: false).value).to eq('next_semester')
+          expect(find('#signup_expected_start_semester').value).to eq('next_semester')
 
           find('#signup_using_openstax_how_as_future').click
 
