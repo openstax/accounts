@@ -198,6 +198,7 @@ module Newflow
             {
               signup: {
                 school_name: 'Test School',
+                books_used: [],
                 books_of_interest: ['Test Book'],
                 using_openstax_how: using_openstax_how,
                 educator_specific_role: educator_specific_role,
@@ -221,6 +222,7 @@ module Newflow
             {
               signup: {
                 school_name: 'Test School',
+                books_used: [],
                 books_of_interest: ['Test Book'],
                 using_openstax_how: using_openstax_how,
                 educator_specific_role: educator_specific_role,

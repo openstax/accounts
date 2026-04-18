@@ -148,7 +148,7 @@ module Newflow
       end
 
       def books_used
-        Array(signup_params.books_used).reject{ |b| b.blank? }
+        signup_params.books_used.reject{ |b| b.blank? }
       end
 
       def books_used_details
@@ -158,7 +158,7 @@ module Newflow
       end
 
       def books_of_interest
-        Array(signup_params.books_of_interest).reject{ |b| b.blank? }
+        signup_params.books_of_interest.reject{ |b| b.blank? }
       end
 
       def check_params
