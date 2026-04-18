@@ -139,12 +139,17 @@ module Newflow
         allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
       end
 
-      it 'assigns the SF picklist label when user.expected_start_semester is set' do
-        user.update_column(:expected_start_semester, 'this_semester')
-
-        described_class.call(user: user)
-
-        expect(mock_lead.expected_start_semester).to eq('This semester')
+      [
+        ['this_semester',      'This semester'],
+        ['next_semester',      'Next semester'],
+        ['next_academic_year', 'Next academic year'],
+        ['just_exploring',     'Just exploring']
+      ].each do |db_value, expected_label|
+        it "maps #{db_value.inspect} to #{expected_label.inspect}" do
+          user.update_column(:expected_start_semester, db_value)
+          described_class.call(user: user)
+          expect(mock_lead.expected_start_semester).to eq(expected_label)
+        end
       end
 
       it 'assigns nil when user.expected_start_semester is nil' do
