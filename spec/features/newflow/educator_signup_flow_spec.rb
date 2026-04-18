@@ -176,6 +176,80 @@ module Newflow
       end
     end
 
+    context 'DATA-301: expected start semester' do
+      before { mock_current_user(user) }
+
+      let(:user) do
+        FactoryBot.create(
+          :user, is_newflow: true, role: User::INSTRUCTOR_ROLE,
+          is_profile_complete: false, sheerid_verification_id: Faker::Alphanumeric.alphanumeric
+        )
+      end
+
+      context 'when the feature flag is on' do
+        before do
+          Settings::FeatureFlags.expected_start_semester_enabled = true
+        end
+
+        after do
+          Settings::FeatureFlags.expected_start_semester_enabled = false
+        end
+
+        it 'shows the dropdown when as_primary is selected and persists the selection on submit' do
+          visit(educator_profile_form_path)
+          expect_educator_step_4_page
+          select_educator_role('instructor')
+          find('#signup_who_chooses_books_instructor').click
+          find('#signup_using_openstax_how_as_primary').click
+
+          expect(page).to have_selector('.expected-start-semester', visible: true)
+
+          select 'Next semester', from: 'signup_expected_start_semester'
+
+          expect(find('#signup_expected_start_semester').value).to eq('next_semester')
+        end
+
+        it 'hides the dropdown and clears the value when as_future is selected after as_primary' do
+          visit(educator_profile_form_path)
+          expect_educator_step_4_page
+          select_educator_role('instructor')
+          find('#signup_who_chooses_books_instructor').click
+          find('#signup_using_openstax_how_as_primary').click
+
+          select 'Next semester', from: 'signup_expected_start_semester'
+          expect(find('#signup_expected_start_semester', visible: false).value).to eq('next_semester')
+
+          find('#signup_using_openstax_how_as_future').click
+
+          expect(page).to have_no_selector('.expected-start-semester', visible: true)
+          expect(find('#signup_expected_start_semester', visible: false).value).to eq('')
+        end
+
+        it 'shows the dropdown when as_recommending is selected' do
+          visit(educator_profile_form_path)
+          expect_educator_step_4_page
+          select_educator_role('instructor')
+          find('#signup_who_chooses_books_instructor').click
+          find('#signup_using_openstax_how_as_recommending').click
+
+          expect(page).to have_selector('.expected-start-semester', visible: true)
+        end
+      end
+
+      context 'when the feature flag is off' do
+        before do
+          Settings::FeatureFlags.expected_start_semester_enabled = false
+        end
+
+        it 'does not render the dropdown' do
+          visit(educator_profile_form_path)
+          expect_educator_step_4_page
+          expect(page).to have_no_selector('.expected-start-semester')
+          expect(page).to have_no_content(I18n.t(:"educator_profile_form.expected_start_semester"))
+        end
+      end
+    end
+
     context 'when educator stops signup flow, logs out, after completing step 2' do
       let(:sheerid_verification) do
         FactoryBot.create(:sheerid_verification, email: email_value)
