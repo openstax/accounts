@@ -103,7 +103,7 @@ class NewflowUi.EducatorComplete
 
     books_used_valid = @checkBooksUsedValid()
     books_used_valid_max = @checkBooksUsedValidMax()
-    books_used_details_valid = @checkBooksUsedValid()
+    books_used_details_valid = @checkBooksUsedDetailsValid()
     books_of_interest_valid = @checkBooksOfInterestValid()
     books_of_interest_valid_max = @checkBooksOfInterestValidMax()
     total_num_students_valid = @checkTotalNumStudentsValid()
@@ -369,18 +369,22 @@ class NewflowUi.EducatorComplete
           clonedNode.removeAttribute('data-template-id')
           clonedNode.setAttribute('data-book-name', book)
 
+          # Use the checkbox value for identifiers/submission, but use the
+          # human-readable title for visible text in the cloned UI.
+          coverCheckbox = @form.find(".book-tile-checkbox[value='#{book}']")
+          bookTitle = coverCheckbox.data('book-title') || book
+
           book_name_placeholders = clonedNode.querySelectorAll("[data-placeholder-id='used-book-name']")
           for book_name_placeholder in book_name_placeholders
-            book_name_node = document.createTextNode(book)
+            book_name_node = document.createTextNode(bookTitle)
             book_name_placeholder.parentNode.replaceChild(book_name_node, book_name_placeholder)
 
           # Set cover image from the book tile's data attribute
-          coverCheckbox = @form.find(".book-tile-checkbox[value='#{book}']")
           coverUrl = coverCheckbox.data('cover-url')
           coverImages = clonedNode.querySelectorAll("[data-placeholder-id='used-book-cover']")
           for coverImg in coverImages
             coverImg.setAttribute('src', coverUrl || '')
-            coverImg.setAttribute('alt', book)
+            coverImg.setAttribute('alt', bookTitle)
 
           clonedNode.querySelectorAll('label, select, input').forEach (element) ->
             element.removeAttribute('disabled')
@@ -462,6 +466,19 @@ class NewflowUi.EducatorComplete
 
   # Book Picker Accordion methods
 
+  initializeBookPickersState: ->
+    for fieldName in ['books_used', 'books_of_interest']
+      picker = @form.find(".book-picker[data-field-name='#{fieldName}']")
+      continue unless picker.length
+
+      picker.find('.book-tile-checkbox').each ->
+        $(this).closest('.book-tile').toggleClass('selected', this.checked)
+
+      @updateSelectedTags(fieldName)
+
+    @onBooksUsedChange()
+    @onBooksOfInterestChange()
+
   initBookPickers: ->
     _this = @
 
@@ -521,6 +538,8 @@ class NewflowUi.EducatorComplete
       checkbox = _this.form.find(".book-picker[data-field-name='#{fieldName}'] .book-tile-checkbox[value='#{value}']")
       checkbox.prop('checked', false).trigger('change')
 
+    @initializeBookPickersState()
+
   getSelectedBooks: (fieldName) ->
     checked = @form.find(".book-picker[data-field-name='#{fieldName}'] .book-tile-checkbox:checked")
     checked.map(-> $(this).val()).get()
@@ -545,6 +564,10 @@ class NewflowUi.EducatorComplete
       title = $(this).data('book-title')
       value = $(this).val()
       tag = $('<span class="book-picker-tag"></span>').attr('data-value', value)
+      removeButton = $('<button type="button" class="remove-tag"></button>')
+        .attr('aria-label', "Remove #{title}")
+        .text('×')
       tag.text(title)
-      tag.append(' <span class="remove-tag">&times;</span>')
+      tag.append(' ')
+      tag.append(removeButton)
       container.append(tag)

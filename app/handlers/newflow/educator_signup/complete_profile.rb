@@ -66,17 +66,8 @@ module Newflow
                              signup_params.is_country_not_supported_by_sheerid == 'true' ||
                              user.is_sheerid_unviable? || @is_on_cs_form)
 
-        total_students = if signup_params.using_openstax_how == AS_PRIMARY
-          books_used_details.values.inject(0) do |total, book|
-            total + book["num_students_using_book"].to_i rescue 0
-          end
-        elsif Settings::FeatureFlags.collect_student_count_all_paths
-          signup_params.total_num_students.to_i
-        else
-          books_used_details.values.inject(0) do |total, book|
-            total + book["num_students_using_book"].to_i rescue 0
-          end
-        end
+        total_students = calculate_total_students
+        return if errors?
 
         @user.update!(
           role: signup_params.educator_specific_role,
@@ -122,6 +113,53 @@ module Newflow
         #output the user to the lev handler
         outputs.user = @user
 
+      end
+
+      protected
+
+      def calculate_total_students
+        if signup_params.using_openstax_how == AS_PRIMARY
+          sum_book_student_counts
+        elsif Settings::FeatureFlags.collect_student_count_all_paths
+          validate_student_count!(
+            signup_params.total_num_students,
+            :total_num_students,
+            'Total number of students must be a whole number greater than 0'
+          )
+        else
+          sum_book_student_counts
+        end
+      end
+
+      def sum_book_student_counts
+        books_used_details.values.each_with_index.inject(0) do |total, (book, index)|
+          count = validate_student_count!(
+            book["num_students_using_book"],
+            :"books_used_details_#{index}_num_students_using_book",
+            'Number of students using each book must be a whole number greater than 0'
+          )
+          return nil if count.nil?
+
+          total + count
+        end
+      end
+
+      def validate_student_count!(value, field, message)
+        if value.blank?
+          errors.add(field, message)
+          return nil
+        end
+
+        count = Integer(value, 10)
+        if count <= 0
+          errors.add(field, message)
+          return nil
+        end
+
+        count
+      rescue ArgumentError, TypeError
+        errors.add(field, message)
+        nil
       end
 
       private #################
