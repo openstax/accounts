@@ -33,7 +33,7 @@ module Newflow
 
     def educator_copy(key)
       scoped = "educator_profile_form.#{educator_copy_audience}.#{key}"
-      I18n.t(scoped, default: I18n.t("educator_profile_form.#{key}"))
+      I18n.t(scoped, default: :"educator_profile_form.#{key}")
     end
 
   end
