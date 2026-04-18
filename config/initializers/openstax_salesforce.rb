@@ -2,6 +2,12 @@
 # also be copied to the application's initializers by running the install
 # task. Because this code can get run multiple times, make sure to only put
 # code here that is amenable to that.
+
+# Extend the gem's Lead class with fields not yet in the published gem version.
+OpenStax::Salesforce::Remote::Lead.field(
+  :expected_start_semester, from: 'Expected_Start_Semester__c'
+)
+
 OpenStax::Salesforce.configure do |config|
   salesforce_secrets = Rails.application.secrets.salesforce
 

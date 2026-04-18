@@ -125,5 +125,43 @@ module Newflow
         expect(SecurityLog.where(event_type: :creating_new_salesforce_lead).count).to eq(0)
       end
     end
+
+    describe 'expected_start_semester assignment' do
+      let(:mock_lead) do
+        lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(lead).to receive(:save).and_return(true)
+        allow(lead).to receive(:id).and_return('SF_LEAD_999')
+        lead
+      end
+
+      before do
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+      end
+
+      it 'assigns the SF picklist label when user.expected_start_semester is set' do
+        user.update_column(:expected_start_semester, 'this_semester')
+
+        described_class.call(user: user)
+
+        expect(mock_lead.expected_start_semester).to eq('This semester')
+      end
+
+      it 'assigns nil when user.expected_start_semester is nil' do
+        user.update_column(:expected_start_semester, nil)
+
+        described_class.call(user: user)
+
+        expect(mock_lead.expected_start_semester).to be_nil
+      end
+
+      it 'assigns nil when user.expected_start_semester is an unrecognized value' do
+        user.update_column(:expected_start_semester, 'garbage')
+
+        described_class.call(user: user)
+
+        expect(mock_lead.expected_start_semester).to be_nil
+      end
+    end
   end
 end
