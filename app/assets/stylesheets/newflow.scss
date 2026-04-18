@@ -270,6 +270,11 @@ input.has-error {
   gap: 0.8rem;
   &:last-child { border-bottom: none; }
   &:hover { background-color: #f9f9f9; }
+  &:focus-within {
+    background-color: #f9f9f9;
+    outline: 2px solid #0dc0dc;
+    outline-offset: 2px;
+  }
   &.selected {
     background-color: rgba(13, 192, 220, 0.08);
     border-left-color: #0dc0dc;
@@ -285,10 +290,15 @@ input.has-error {
 
 .book-tile-checkbox {
   position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .book-tile-cover {
