@@ -169,6 +169,13 @@ module Newflow
             expect(user.expected_start_semester).to eq('this_semester')
           end
 
+          it 'persists just_exploring (covers the fourth allow-list value)' do
+            params[:signup][:expected_start_semester] = 'just_exploring'
+            handle
+            user.reload
+            expect(user.expected_start_semester).to eq('just_exploring')
+          end
+
           it 'rejects an unknown value as nil' do
             params[:signup][:expected_start_semester] = 'not_a_real_value'
             handle
@@ -191,7 +198,7 @@ module Newflow
         end
 
         context 'when using_openstax_how is as_recommending' do
-          let(:using_openstax_how) { 'as_recommending' }
+          let(:using_openstax_how) { Newflow::EducatorSignup::CompleteProfile::AS_RECOMMENDING }
           let(:books_used) { [] }
           let(:books_used_details) { {} }
           let(:params) do
