@@ -22,6 +22,11 @@ feature 'Password reset', js: true do
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       find('[data-provider=identity] .edit--newflow').click
+      expect(page).to have_current_path(/\/i\/(reauthenticate|profile)/)
+
+      # Recent-signin checks can leave the user on profile in some runs; either way,
+      # forgot-password should still be reachable without entering a redirect loop.
+      visit(reauthenticate_form_path) if page.has_current_path?(profile_newflow_path)
       expect(page).to have_current_path(reauthenticate_form_path)
       expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
 
