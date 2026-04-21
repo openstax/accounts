@@ -26,7 +26,7 @@ feature 'Password reset', js: true do
 
       # Recent-signin checks can leave the user on profile in some runs; either way,
       # forgot-password should still be reachable without entering a redirect loop.
-      visit(reauthenticate_form_path) if page.has_current_path?(profile_newflow_path)
+      visit(reauthenticate_form_path) if page.has_current_path?(profile_newflow_path, wait: 0)
       expect(page).to have_current_path(reauthenticate_form_path)
       expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
 

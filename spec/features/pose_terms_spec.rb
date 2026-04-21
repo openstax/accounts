@@ -18,7 +18,7 @@ describe 'Terms', type: :feature, js: true do
       screenshot!
       expect(page).to have_content("To continue, please review and agree to the following site terms")
       expect(page).to have_content(t :"terms.pose.contract_acceptance_required")
-      find(:css, '#agreement_i_agree').click
+      check 'agreement_i_agree'
       click_button (t :"terms.pose.agree")
       wait_for_animations
       wait_for_ajax
