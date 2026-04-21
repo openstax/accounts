@@ -6,6 +6,11 @@ module Newflow
       AS_PRIMARY = 'as_primary'
       INSTRUCTOR = 'instructor'
       AS_FUTURE = 'as_future'
+      AS_RECOMMENDING = 'as_recommending'
+
+      EXPECTED_START_SEMESTERS = %w[
+        this_semester next_semester next_academic_year just_exploring
+      ].freeze
 
       lev_handler
 
@@ -30,6 +35,7 @@ module Newflow
         attribute :books_used_details, type: Object
         attribute :books_of_interest, type: Object
         attribute :is_cs_form, type: Object
+        attribute :expected_start_semester, type: String
 
         validates(
           :educator_specific_role,
@@ -79,7 +85,8 @@ module Newflow
           books_used_details: books_used_details,
           self_reported_school: signup_params.school_name,
           is_profile_complete: true,
-          is_educator_pending_cs_verification: !@did_use_sheerid
+          is_educator_pending_cs_verification: !@did_use_sheerid,
+          expected_start_semester: expected_start_semester
         )
         # If anything happens during lead creation, it's helpful for us to have this on the log.
         SecurityLog.create!(user: user, event_type: :user_profile_complete, event_data: { books_used_details: books_used_details })
@@ -117,6 +124,13 @@ module Newflow
 
       private #################
 
+      def expected_start_semester
+        return nil if signup_params.expected_start_semester.blank?
+        return nil unless EXPECTED_START_SEMESTERS.include?(signup_params.expected_start_semester)
+        return nil unless [AS_PRIMARY, AS_RECOMMENDING].include?(signup_params.using_openstax_how)
+        signup_params.expected_start_semester
+      end
+
       def other_role_name
         signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil
       end
@@ -134,7 +148,7 @@ module Newflow
       end
 
       def books_used
-        signup_params.books_used.reject{ |b| b.blank? }
+        Array(signup_params.books_used).reject{ |b| b.blank? }
       end
 
       def books_used_details
@@ -144,7 +158,7 @@ module Newflow
       end
 
       def books_of_interest
-        signup_params.books_of_interest.reject{ |b| b.blank? }
+        Array(signup_params.books_of_interest).reject{ |b| b.blank? }
       end
 
       def check_params

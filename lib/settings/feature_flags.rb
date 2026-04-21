@@ -22,6 +22,14 @@ module Settings
         Settings::Db.store.educator_feature_flag = bool
       end
 
+      def expected_start_semester_enabled
+        Settings::Db.store.expected_start_semester_enabled
+      end
+
+      def expected_start_semester_enabled=(bool)
+        Settings::Db.store.expected_start_semester_enabled = bool
+      end
+
     end
   end
 end

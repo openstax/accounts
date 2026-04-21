@@ -170,6 +170,7 @@ module Newflow
             total_students: user.how_many_students,
             did_use_sheerid: !user.is_educator_pending_cs_verification,
             is_cs_form: !!user.is_educator_pending_cs_verification,
+            expected_start_semester: user.expected_start_semester
           })
           security_log(:user_profile_complete, { user: user })
           clear_incomplete_educator
