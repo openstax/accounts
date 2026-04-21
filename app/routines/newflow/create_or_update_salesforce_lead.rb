@@ -30,9 +30,12 @@ module Newflow
       sf_school_id = user.school&.salesforce_id
       # no school attached to user? Set to Find Me A Home
       unless sf_school_id
-        sf_school_id = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home').id
+        fallback_school = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home')
+        raise "Salesforce 'Find Me A Home' school not found — cannot assign fallback school for user #{user.id}" unless fallback_school
+
+        sf_school_id = fallback_school.id
         user.school = School.find_by(salesforce_id: sf_school_id)
-        user.save
+        user.save!
       end
 
       if user.role == 'student'
@@ -58,7 +61,7 @@ module Newflow
         # User has not completed their profile
         user.faculty_status = :incomplete_signup
       end
-
+      user.save!
 
       lead = nil
       if user.salesforce_lead_id
@@ -196,16 +199,23 @@ module Newflow
             event_data: { lead_id: lead.id.to_s }
           )
         else
-          if lead.errors.messages.inspect.include? == 'INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY'
-            Sentry.capture_message("Invalid school (#{user.school.salesforce_id}) for user (#{user.id})")
-          end
           SecurityLog.create!(
             user: user,
             event_type: :educator_sign_up_failed,
-            event_data: { lead_id: lead.id }
+            event_data: { lead_id: lead.id, user_errors: user.errors.full_messages }
           )
-          Sentry.capture_message("User #{user.id} was not successfully saved with lead #{lead.id}")
+          Sentry.capture_message("User #{user.id} was not successfully saved with lead #{lead.id}: #{user.errors.full_messages.join(', ')}")
         end
+      else
+        if lead.errors&.full_messages.to_s.include?('INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY')
+          Sentry.capture_message("Invalid school (#{user.school&.salesforce_id}) for user (#{user.id})")
+        end
+        SecurityLog.create!(
+          user: user,
+          event_type: :salesforce_lead_save_failed,
+          event_data: { lead_errors: lead.errors&.full_messages, email: user.best_email_address_for_salesforce }
+        )
+        Sentry.capture_message("Salesforce lead save failed for user #{user.id}: #{lead.errors&.full_messages&.join(', ')}")
       end
 
       outputs.lead = lead

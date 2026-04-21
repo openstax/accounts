@@ -4,12 +4,19 @@ require 'net/http'
 class FetchBookData
   CMS_API_URL = Rails.application.secrets.cms_api_url
   TITLES_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&fields=_,title,book_subjects,book_state,salesforce_abbreviation"
+  SUBJECTS_URL = "#{CMS_API_URL}v2/pages/subjects/"
   TIMEOUT = 5
   CACHE_DURATION = 1.day
 
   def titles
     @titles ||= Rails.cache.fetch('BookData.titles', expires_in: CACHE_DURATION) do
       fetch_titles
+    end
+  end
+
+  def books_by_subject
+    @books_by_subject ||= Rails.cache.fetch('BookData.books_by_subject', expires_in: CACHE_DURATION) do
+      fetch_books_by_subject
     end
   end
 
@@ -38,6 +45,36 @@ class FetchBookData
     }
 
     books_with_subject
+  end
+
+  def fetch_books_by_subject
+    results = cms_fetch(SUBJECTS_URL)
+    return [] if results.blank?
+
+    books = results.fetch('books', [])
+    books = books.reject { |b| %w[retired unlisted].include?(b['book_state']) }
+    books = books.select { |b| b['salesforce_abbreviation'].present? && b['title'].present? }
+
+    subject_map = {}
+
+    books.each do |book|
+      subjects = book.fetch('subjects', [])
+      subjects.each do |subject_name|
+        subject_map[subject_name] ||= []
+        subject_map[subject_name] << {
+          title: book['title'],
+          salesforce_abbreviation: book['salesforce_abbreviation'],
+          cover_url: book['cover_url']
+        }
+      end
+    end
+
+    subject_map.sort_by { |name, _| name }.map do |name, subject_books|
+      {
+        subject_name: name,
+        books: subject_books.sort_by { |b| b[:title] }.uniq { |b| b[:salesforce_abbreviation] }
+      }
+    end
   end
 
   private ###################

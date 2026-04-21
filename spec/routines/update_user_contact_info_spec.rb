@@ -306,7 +306,7 @@ describe UpdateUserContactInfo, type: :routine do
 
       expect {
         described_class.call
-      }.to raise_error
+      }.to raise_error(UpdateUserContactInfo::UnknownFacultyVerifiedError)
     end
   end
 end
