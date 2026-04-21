@@ -3,7 +3,6 @@ class NewflowUi.EducatorComplete
   constructor: ->
     _.bindAll(@, 'onSchoolNameChange', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onHowChosenChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onTotalNumStudentsChange', 'onSubmit', 'attachBookUsedEvents')
     @form = $('.signup-page.completed-step')
-    @initBookPickers()
 
     # fields locators
     @school_name = @findOrLogNotFound(@form, '.school-name-visible')
@@ -84,6 +83,10 @@ class NewflowUi.EducatorComplete
     @books_used_max.hide()
     @please_select_books_of_interest.hide()
     @books_of_interest_max.hide()
+
+    # Wire up the book picker after locators are in place so that
+    # initializeBookPickersState -> onBooks*Change can safely reference them.
+    @initBookPickers()
 
   findOrLogNotFound: (parent, selector) ->
     if (found = parent.find(selector))
