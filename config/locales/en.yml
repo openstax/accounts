@@ -83,6 +83,12 @@ en:
     school_issued_email_must_be_entered: Please enter your school-issued email address
     school_issued_email_is_invalid: Please enter a valid email address
     school_issued_email_is_taken: Email already in use
+    expected_start_semester: When do you plan to start using OpenStax?
+    expected_start_semester_options:
+      this_semester: This semester
+      next_semester: Next semester
+      next_academic_year: Next academic year
+      just_exploring: Just exploring
 
   login_signup_form:
     cant_be_blank: can't be blank

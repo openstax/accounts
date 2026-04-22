@@ -16,6 +16,8 @@ class NewflowUi.EducatorComplete
     @books_used = @findOrLogNotFound(@form, '.books-used')
     @books_of_interest = @findOrLogNotFound(@form, '.books-of-interest')
     @total_num_students = @findOrLogNotFound(@form, '.total-num-students')
+    @expected_start_semester = @findOrLogNotFound(@form, '.expected-start-semester')
+    @expected_start_semester_select = @findOrLogNotFound(@expected_start_semester, 'select')
 
     # input fields locators
     @school_name_input = @findOrLogNotFound(@school_name, 'input')
@@ -73,6 +75,7 @@ class NewflowUi.EducatorComplete
     @books_used.hide()
     @books_of_interest.hide()
     @total_num_students?.hide()
+    @expected_start_semester.hide()
 
     # Hide all validations messages
     @please_fill_out_school.hide()
@@ -292,6 +295,8 @@ class NewflowUi.EducatorComplete
       @books_of_interest.hide()
       @how_chosen.hide()
       @how_using.hide()
+      @expected_start_semester.hide()
+      @expected_start_semester_select.val('')
       @please_fill_out_other.hide()
 
     @updateTotalNumStudentsLabel()
@@ -319,6 +324,7 @@ class NewflowUi.EducatorComplete
       @updateBooksUsedFields(@getSelectedBooks('books_used'))
       @please_select_books_used.hide()
       @please_select_books_of_interest.hide()
+      @expected_start_semester.show()
     else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_recommending').is(':checked') )
       @books_of_interest.show()
       @showTotalNumStudents()
@@ -327,6 +333,7 @@ class NewflowUi.EducatorComplete
       @removeBooksUsedFields()
       @please_select_books_used.hide()
       @please_select_books_of_interest.hide()
+      @expected_start_semester.show()
     else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_future').is(':checked') )
       @books_of_interest.show()
       @showTotalNumStudents()
@@ -335,6 +342,8 @@ class NewflowUi.EducatorComplete
       @removeBooksUsedFields()
       @please_select_books_used.hide()
       @please_select_books_of_interest.hide()
+      @expected_start_semester.hide()
+      @expected_start_semester_select.val('')
 
   onBooksUsedChange: ->
     @updateBooksUsedFields(@getSelectedBooks('books_used'))

@@ -257,5 +257,100 @@ module Newflow
         end
       end
     end
+
+    describe 'PostHog event for educator_complete_profile' do
+      render_views
+      let(:user) { create_newflow_user('educator@openstax.org', 'password', nil, nil, 'instructor') }
+
+      before do
+        disable_sfdc_client if defined?(disable_sfdc_client)
+        allow(OXPosthog).to receive(:log)
+        controller.sign_in! user
+      end
+
+      it 'includes expected_start_semester in the props hash' do
+        post :educator_complete_profile, params: {
+          signup: {
+            school_name: 'Test School',
+            educator_specific_role: 'instructor',
+            using_openstax_how: 'as_primary',
+            who_chooses_books: 'instructor',
+            books_used: ['Algebra and Trigonometry'],
+            books_used_details: {
+              'Algebra and Trigonometry' => {
+                'num_students_using_book' => '30',
+                'how_using_book' => 'As the core textbook for my course'
+              }
+            },
+            expected_start_semester: 'this_semester'
+          }
+        }
+
+        expect(OXPosthog).to have_received(:log).with(
+          kind_of(User),
+          'educator_complete_profile',
+          hash_including(expected_start_semester: 'this_semester')
+        )
+      end
+
+      it 'sends nil for users on the as_future path' do
+        post :educator_complete_profile, params: {
+          signup: {
+            school_name: 'Test School',
+            educator_specific_role: 'instructor',
+            using_openstax_how: 'as_future',
+            who_chooses_books: 'instructor',
+            books_of_interest: ['Algebra and Trigonometry'],
+            books_used: [],
+            expected_start_semester: 'this_semester'
+          }
+        }
+
+        expect(OXPosthog).to have_received(:log).with(
+          kind_of(User),
+          'educator_complete_profile',
+          hash_including(expected_start_semester: nil)
+        )
+      end
+    end
+
+    describe 'GET #educator_profile_form renders the expected_start_semester fieldset' do
+      render_views
+      let(:user) { create_newflow_user('educator2@openstax.org', 'password', nil, nil, 'instructor') }
+
+      before do
+        user.update!(is_profile_complete: false)
+        controller.sign_in! user
+      end
+
+      context 'when the feature flag is off' do
+        before { allow(Settings::FeatureFlags).to receive(:expected_start_semester_enabled).and_return(false) }
+
+        it 'does not render the expected_start_semester fieldset' do
+          get :educator_profile_form
+          expect(response.body).not_to include(I18n.t(:"educator_profile_form.expected_start_semester"))
+          expect(response.body).not_to include('signup[expected_start_semester]')
+        end
+      end
+
+      context 'when the feature flag is on' do
+        before { allow(Settings::FeatureFlags).to receive(:expected_start_semester_enabled).and_return(true) }
+
+        it 'renders the expected_start_semester fieldset and the four options' do
+          get :educator_profile_form
+          expect(response.body).to include(I18n.t(:"educator_profile_form.expected_start_semester"))
+          expect(response.body).to include('signup[expected_start_semester]')
+          expect(response.body).to include('This semester')
+          expect(response.body).to include('Next semester')
+          expect(response.body).to include('Next academic year')
+          expect(response.body).to include('Just exploring')
+        end
+
+        it 'renders the fieldset with display:none so JS shows it conditionally (Task 8)' do
+          get :educator_profile_form
+          expect(response.body).to match(/<fieldset[^>]*class="[^"]*expected-start-semester[^"]*"[^>]*style="display: none;?"/)
+        end
+      end
+    end
   end
 end
