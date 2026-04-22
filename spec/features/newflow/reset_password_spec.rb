@@ -20,7 +20,7 @@ feature 'Password reset', js: true do
     visit profile_newflow_path
     expect(page).to have_current_path(profile_newflow_path)
 
-    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER + 1.second) do
       find('[data-provider=identity] .edit--newflow').click
       expect(page).to have_current_path(/\/i\/(reauthenticate|profile)/)
 

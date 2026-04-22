@@ -1,9 +1,7 @@
 class NewflowUi.EducatorComplete
 
   constructor: ->
-    _.bindAll(@, 'onSchoolNameChange', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onHowChosenChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onSubmit', 'attachBookUsedEvents')
-    @initBooksUsedMultiSelect()
-    @initBooksOfInterestMultiSelect()
+    _.bindAll(@, 'onSchoolNameChange', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onHowChosenChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onTotalNumStudentsChange', 'onSubmit', 'attachBookUsedEvents')
     @form = $('.signup-page.completed-step')
 
     # fields locators
@@ -17,6 +15,7 @@ class NewflowUi.EducatorComplete
 
     @books_used = @findOrLogNotFound(@form, '.books-used')
     @books_of_interest = @findOrLogNotFound(@form, '.books-of-interest')
+    @total_num_students = @findOrLogNotFound(@form, '.total-num-students')
 
     # input fields locators
     @school_name_input = @findOrLogNotFound(@school_name, 'input')
@@ -27,9 +26,12 @@ class NewflowUi.EducatorComplete
     @how_chosen_radio = @findOrLogNotFound(@how_chosen, "input")
     @how_using_radio = @findOrLogNotFound(@how_using, "input")
 
-    # book selections
-    @books_used_select = @findOrLogNotFound(@books_used, "select")
-    @books_of_interest_select = @findOrLogNotFound(@books_of_interest, "select")
+    # book selections (now using accordion checkboxes instead of selects)
+
+    # total num students
+    @total_num_students_input = @findOrLogNotFound(@total_num_students, 'input') if @total_num_students.length
+    @total_num_students_label = @findOrLogNotFound(@form, '#total-num-students-label')
+    @total_num_students_alert = @findOrLogNotFound(@form, '.total-num-students-alert.newflow-mustdo-alert')
 
     # error messages locators
     @please_fill_out_school = @findOrLogNotFound(@form, '.school-name.newflow-mustdo-alert')
@@ -54,8 +56,7 @@ class NewflowUi.EducatorComplete
     @how_chosen_radio.change(@onHowChosenChange)
     @how_using_radio.change(@onHowUsingChange)
 
-    @books_used_select.change(@onBooksUsedChange)
-    @books_of_interest_select.change(@onBooksOfInterestChange)
+    @total_num_students_input?.on('keyup change blur', @onTotalNumStudentsChange)
 
     @findOrLogNotFound(@form, 'form').submit(@onSubmit)
 
@@ -71,15 +72,21 @@ class NewflowUi.EducatorComplete
     @how_using.hide()
     @books_used.hide()
     @books_of_interest.hide()
+    @total_num_students?.hide()
 
     # Hide all validations messages
     @please_fill_out_school.hide()
     @please_select_role.hide()
+    @total_num_students_alert?.hide()
 
     @please_select_books_used.hide()
     @books_used_max.hide()
     @please_select_books_of_interest.hide()
     @books_of_interest_max.hide()
+
+    # Wire up the book picker after locators are in place so that
+    # initializeBookPickersState -> onBooks*Change can safely reference them.
+    @initBookPickers()
 
   findOrLogNotFound: (parent, selector) ->
     if (found = parent.find(selector))
@@ -87,14 +94,6 @@ class NewflowUi.EducatorComplete
     else
       console.log('Couldn\'t find ', selector)
       return null
-
-  initBooksUsedMultiSelect: ->
-    books_used = document.getElementById('signup_books_used')
-    osMultiSelect(books_used)
-
-  initBooksOfInterestMultiSelect: ->
-    books_of_interest = document.getElementById('signup_books_of_interest')
-    osMultiSelect(books_of_interest)
 
   onSubmit: (ev) ->
     school_name_valid = @checkSchoolNameValid()
@@ -107,9 +106,10 @@ class NewflowUi.EducatorComplete
 
     books_used_valid = @checkBooksUsedValid()
     books_used_valid_max = @checkBooksUsedValidMax()
-    books_used_details_valid = @checkBooksUsedValid()
+    books_used_details_valid = @checkBooksUsedDetailsValid()
     books_of_interest_valid = @checkBooksOfInterestValid()
     books_of_interest_valid_max = @checkBooksOfInterestValidMax()
+    total_num_students_valid = @checkTotalNumStudentsValid()
 
     if not (
         school_name_valid and
@@ -121,7 +121,8 @@ class NewflowUi.EducatorComplete
         books_used_valid_max and
         books_used_details_valid and
         books_of_interest_valid_max and
-        books_of_interest_valid)
+        books_of_interest_valid and
+        total_num_students_valid)
       ev.preventDefault()
 
   checkSchoolNameValid: () ->
@@ -204,7 +205,7 @@ class NewflowUi.EducatorComplete
   checkBooksUsedValid: () ->
     return true if @books_used.is(":hidden")
 
-    if @books_used_select.val()
+    if @getSelectedBooks('books_used').length > 0
       @please_select_books_used.hide()
       true
     else
@@ -212,7 +213,7 @@ class NewflowUi.EducatorComplete
       false
 
   checkBooksUsedValidMax: () ->
-    if @books_used_select.val() == null || @books_used_select.val().length < 6
+    if @getSelectedBooks('books_used').length < 6
       @books_used_max.hide()
       true
     else
@@ -222,7 +223,7 @@ class NewflowUi.EducatorComplete
   checkBooksOfInterestValid: () ->
     return true if @books_of_interest.is(":hidden")
 
-    if @books_of_interest_select.val()
+    if @getSelectedBooks('books_of_interest').length > 0
       @please_select_books_of_interest.hide()
       true
     else
@@ -230,7 +231,7 @@ class NewflowUi.EducatorComplete
       false
 
   checkBooksOfInterestValidMax: () ->
-    if @books_of_interest_select.val() == null || @books_of_interest_select.val().length < 6
+    if @getSelectedBooks('books_of_interest').length < 6
       @books_of_interest_max.hide()
       true
     else
@@ -267,6 +268,7 @@ class NewflowUi.EducatorComplete
       @please_select_using.hide()
 
       @hideBookUsedFields()
+      @hideTotalNumStudents()
 
       @onHowUsingChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_administrator').is(':checked') && @checkSchoolNameValid())
@@ -279,17 +281,20 @@ class NewflowUi.EducatorComplete
       @please_select_using.hide()
 
       @hideBookUsedFields()
+      @hideTotalNumStudents()
 
       @onHowUsingChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked') )
       @other_specify.show()
+      @showTotalNumStudents()
 
       @books_used.hide()
       @books_of_interest.hide()
       @how_chosen.hide()
-      @hideTotalNumStudents
       @how_using.hide()
       @please_fill_out_other.hide()
+
+    @updateTotalNumStudentsLabel()
 
     if @checkSchoolNameValid()
       @continue.prop('disabled', false)
@@ -310,11 +315,13 @@ class NewflowUi.EducatorComplete
       @books_used.show()
 
       @books_of_interest.hide()
-      @updateBooksUsedFields(@books_used_select.val())
+      @hideTotalNumStudents()
+      @updateBooksUsedFields(@getSelectedBooks('books_used'))
       @please_select_books_used.hide()
       @please_select_books_of_interest.hide()
     else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_recommending').is(':checked') )
       @books_of_interest.show()
+      @showTotalNumStudents()
 
       @books_used.hide()
       @removeBooksUsedFields()
@@ -322,6 +329,7 @@ class NewflowUi.EducatorComplete
       @please_select_books_of_interest.hide()
     else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_future').is(':checked') )
       @books_of_interest.show()
+      @showTotalNumStudents()
 
       @books_used.hide()
       @removeBooksUsedFields()
@@ -329,11 +337,13 @@ class NewflowUi.EducatorComplete
       @please_select_books_of_interest.hide()
 
   onBooksUsedChange: ->
-    @updateBooksUsedFields(@books_used_select.val())
+    @updateBooksUsedFields(@getSelectedBooks('books_used'))
+    @enforceMaxBooks('books_used')
     @checkBooksUsedValidMax()
     @please_select_books_used.hide()
 
   onBooksOfInterestChange: ->
+    @enforceMaxBooks('books_of_interest')
     @checkBooksOfInterestValidMax()
 
     @please_select_books_of_interest.hide()
@@ -362,10 +372,23 @@ class NewflowUi.EducatorComplete
           clonedNode.removeAttribute('data-template-id')
           clonedNode.setAttribute('data-book-name', book)
 
+          # Use the checkbox value for identifiers/submission, but use the
+          # human-readable title for visible text in the cloned UI.
+          coverCheckbox = @form.find(".book-tile-checkbox[value='#{book}']")
+          bookTitle = coverCheckbox.data('book-title') || book
+
           book_name_placeholders = clonedNode.querySelectorAll("[data-placeholder-id='used-book-name']")
           for book_name_placeholder in book_name_placeholders
-            book_name_node = document.createTextNode(book)
+            book_name_node = document.createTextNode(bookTitle)
             book_name_placeholder.parentNode.replaceChild(book_name_node, book_name_placeholder)
+
+          # Set cover image from the book tile's data attribute
+          coverUrl = coverCheckbox.data('cover-url')
+          bookTitle = coverCheckbox.data('book-title') || book
+          coverImages = clonedNode.querySelectorAll("[data-placeholder-id='used-book-cover']")
+          for coverImg in coverImages
+            coverImg.setAttribute('src', coverUrl || '')
+            coverImg.setAttribute('alt', bookTitle)
 
           clonedNode.querySelectorAll('label, select, input').forEach (element) ->
             element.removeAttribute('disabled')
@@ -408,3 +431,147 @@ class NewflowUi.EducatorComplete
   showBookUsedFields: ->
     @form.find('.students-using-book').show()
     @form.find('.how-using-book').show()
+
+  showTotalNumStudents: ->
+    return unless @total_num_students?.length
+    @total_num_students.show()
+    @updateTotalNumStudentsLabel()
+
+  hideTotalNumStudents: ->
+    return unless @total_num_students?.length
+    @total_num_students.hide()
+    @total_num_students_alert?.hide()
+
+  updateTotalNumStudentsLabel: ->
+    return unless @total_num_students_label?.length
+    isAdmin = @findOrLogNotFound($(document), '#signup_educator_specific_role_administrator').is(':checked')
+    isOther = @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked')
+    container = @total_num_students
+    if isAdmin
+      @total_num_students_label.text(container.data('label-admin'))
+    else if isOther
+      @total_num_students_label.text(container.data('label-other'))
+    else
+      @total_num_students_label.text(container.data('label-default'))
+
+  onTotalNumStudentsChange: ->
+    @total_num_students_alert?.hide()
+
+  checkTotalNumStudentsValid: () ->
+    return true unless @total_num_students?.length
+    return true if @total_num_students.is(":hidden")
+
+    if @total_num_students_input?.val()
+      @total_num_students_alert?.hide()
+      true
+    else
+      @total_num_students_alert?.show()
+      false
+
+  # Book Picker Accordion methods
+
+  initializeBookPickersState: ->
+    for fieldName in ['books_used', 'books_of_interest']
+      picker = @form.find(".book-picker[data-field-name='#{fieldName}']")
+      continue unless picker.length
+
+      picker.find('.book-tile-checkbox').each ->
+        $(this).closest('.book-tile').toggleClass('selected', this.checked)
+
+      @updateSelectedTags(fieldName)
+
+    @onBooksUsedChange()
+    @onBooksOfInterestChange()
+
+  initBookPickers: ->
+    _this = @
+
+    # Accordion toggle: click subject header to expand/collapse
+    @form.on 'click', '.book-picker-subject-header', (e) ->
+      e.preventDefault()
+      body = $(this).siblings('.book-picker-subject-body')
+      body.slideToggle(200)
+      icon = $(this).find('.fa')
+      icon.toggleClass('fa-caret-down fa-caret-up')
+
+    # Search filtering
+    @form.on 'input', '.book-picker-search', (e) ->
+      query = $(this).val().toLowerCase()
+      picker = $(this).closest('.book-picker')
+
+      # Toggle .search-hidden class on tiles (works even inside collapsed parents)
+      picker.find('.book-tile').each ->
+        title = $(this).data('title').toLowerCase()
+        if query.length > 0 && title.indexOf(query) < 0
+          $(this).addClass('search-hidden')
+        else
+          $(this).removeClass('search-hidden')
+
+      # Show/hide subjects based on matching books
+      picker.find('.book-picker-subject').each ->
+        matchingBooks = $(this).find('.book-tile:not(.search-hidden)').length
+        if matchingBooks == 0
+          $(this).hide()
+        else
+          $(this).show()
+          if query.length > 0
+            $(this).find('.book-picker-subject-body').show()
+            $(this).find('.fa').removeClass('fa-caret-down').addClass('fa-caret-up')
+          else
+            $(this).find('.book-picker-subject-body').hide()
+            $(this).find('.fa').removeClass('fa-caret-up').addClass('fa-caret-down')
+
+    # Checkbox change handlers (delegated)
+    @form.on 'change', '.book-picker[data-field-name="books_used"] .book-tile-checkbox', ->
+      tile = $(this).closest('.book-tile')
+      tile.toggleClass('selected', this.checked)
+      _this.updateSelectedTags('books_used')
+      _this.onBooksUsedChange()
+
+    @form.on 'change', '.book-picker[data-field-name="books_of_interest"] .book-tile-checkbox', ->
+      tile = $(this).closest('.book-tile')
+      tile.toggleClass('selected', this.checked)
+      _this.updateSelectedTags('books_of_interest')
+      _this.onBooksOfInterestChange()
+
+    # Tag removal (delegated)
+    @form.on 'click', '.book-picker-tag .remove-tag', (e) ->
+      e.preventDefault()
+      value = $(this).closest('.book-picker-tag').data('value')
+      fieldName = $(this).closest('.book-picker').data('field-name')
+      checkbox = _this.form.find(".book-picker[data-field-name='#{fieldName}'] .book-tile-checkbox[value='#{value}']")
+      checkbox.prop('checked', false).trigger('change')
+
+    @initializeBookPickersState()
+
+  getSelectedBooks: (fieldName) ->
+    checked = @form.find(".book-picker[data-field-name='#{fieldName}'] .book-tile-checkbox:checked")
+    checked.map(-> $(this).val()).get()
+
+  enforceMaxBooks: (fieldName) ->
+    picker = @form.find(".book-picker[data-field-name='#{fieldName}']")
+    selected = picker.find('.book-tile-checkbox:checked').length
+    if selected >= 5
+      picker.find('.book-tile-checkbox:not(:checked)').each ->
+        $(this).prop('disabled', true)
+        $(this).closest('.book-tile').addClass('disabled')
+    else
+      picker.find('.book-tile-checkbox:disabled').each ->
+        $(this).prop('disabled', false)
+        $(this).closest('.book-tile').removeClass('disabled')
+
+  updateSelectedTags: (fieldName) ->
+    picker = @form.find(".book-picker[data-field-name='#{fieldName}']")
+    container = picker.find('.book-picker-selections')
+    container.empty()
+    picker.find('.book-tile-checkbox:checked').each ->
+      title = $(this).data('book-title')
+      value = $(this).val()
+      tag = $('<span class="book-picker-tag"></span>').attr('data-value', value)
+      removeButton = $('<button type="button" class="remove-tag"></button>')
+        .attr('aria-label', "Remove #{title}")
+        .text('×')
+      tag.text(title)
+      tag.append(' ')
+      tag.append(removeButton)
+      container.append(tag)
