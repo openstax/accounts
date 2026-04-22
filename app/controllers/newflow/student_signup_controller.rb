@@ -86,7 +86,7 @@ module Newflow
           @first_name = unverified_user.first_name
           @email = unverified_user.email_addresses.first.value
           security_log(:student_verify_email_failed, email: @email)
-          render(:email_verification_form)
+          render(:student_email_verification_form)
         }
       )
     end
