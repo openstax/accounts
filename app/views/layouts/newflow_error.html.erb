@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+        <title><%= @page_title + ' - ' unless @page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
+
+        <%= stylesheet_link_tag 'newflow', media: 'all' %>
+        <%= csrf_meta_tags %>
+    </head>
+    <body>
+        <div class="main-menu">
+            <span class="logo-wrapper">
+                <span class="logo">
+                    <%= link_to logo_url, 'aria-label': 'OpenStax Home Page' do %>
+                        <%= image_tag 'openstax-logo.svg', class: 'logo-color', alt: 'OpenStax logo' %>
+                    <% end %>
+                </span>
+            </span>
+        </div>
+
+        <div class="content">
+            <%= yield %>
+        </div>
+
+        <%= render partial: 'layouts/newflow_footer' %>
+    </body>
+</html>
