@@ -75,6 +75,21 @@ en:
     school_issued_email_is_taken: Email already in use
     k12:
       instructor: K-12 Teacher
+      administrator: School or district administrator
+      other: Other school staff
+      complete_page_header: Complete your teacher profile
+      school_name: School or district name
+      describe_role: Which best describes your role at your school?
+      how_textbooks_chosen: How are textbooks chosen at your school or district?
+      chosen_by_instructor: Teachers choose textbooks for their classes
+      chosen_by_coordinator: School or district coordinator chooses the textbook
+      using_primary_textbook: Using an OpenStax book as my primary textbook
+      using_recommending_openstax: Recommending the book — my students use a different one
+      books_used: Which OpenStax book(s) are you using?
+      books_of_interest: Which OpenStax book(s) are you interested in?
+      include_ta_sections: Include all students across your classes
+      students_per_semester: Students per school year
+      num_students_using_book_placeholder: Number of students using this book per school year
 
   login_signup_form:
     cant_be_blank: can't be blank
