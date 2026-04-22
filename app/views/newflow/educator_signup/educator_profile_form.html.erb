@@ -4,10 +4,10 @@
   <div class="content">
     <%
       educator_complete_roles = [
-        [ I18n.t(:'educator_profile_form.instructor'), 'instructor', false ],
-        [ I18n.t(:'educator_profile_form.researcher'), 'researcher', false ],
-        [ I18n.t(:'educator_profile_form.administrator'), 'administrator', false ],
-        [ I18n.t(:'educator_profile_form.other'), 'other', false ]
+        [ educator_copy(:instructor), 'instructor', false ],
+        [ educator_copy(:researcher), 'researcher', false ],
+        [ educator_copy(:administrator), 'administrator', false ],
+        [ educator_copy(:other), 'other', false ]
       ]
     %>
 
@@ -16,7 +16,7 @@
 
     <%= newflow_login_signup_card(
           id: 'signup-page',
-          header: (I18n.t(:"educator_profile_form.complete_page_header")),
+          header: educator_copy(:complete_page_header),
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 4, total_steps: 4),
           classes: 'signup-page completed-step') do %>
     <% lev_form_for :signup, url: educator_complete_profile_path do |f| %>
@@ -38,17 +38,17 @@
                 <%=
                   label_tag(
                     :school_name,
-                    I18n.t(:"educator_profile_form.school_name"),
+                    educator_copy(:school_name),
                     class: 'field-label'
                   )
                 %>
                 <div class="school-name newflow-mustdo-alert">
-                  <%= I18n.t(:"educator_profile_form.school_name_must_be_entered") %>
+                  <%= educator_copy(:school_name_must_be_entered) %>
                 </div>
                 <%=
                   fh.text_field(
                     name: :school_name,
-                    placeholder: I18n.t(:"educator_profile_form.school_name"),
+                    placeholder: educator_copy(:school_name),
                     autofocus: true
                   )
                 %>
@@ -60,14 +60,14 @@
                 <%=
                   label_tag(
                     :school_issued_email,
-                    I18n.t(:"educator_profile_form.school_issued_email"),
+                    educator_copy(:school_issued_email),
                     class: 'field-label'
                   )
                 %>
                 <%=
                   fh.text_field(
                     name: :school_issued_email,
-                    placeholder: I18n.t(:"educator_profile_form.school_issued_email"),
+                    placeholder: educator_copy(:school_issued_email),
                     value: user.email_addresses.last&.value
                   )
                 %>
@@ -75,10 +75,10 @@
             </div>
 
             <fieldset class="question completed-role">
-              <legend class='field-label'><%= I18n.t(:"educator_profile_form.describe_role") %></legend>
+              <legend class='field-label'><%= educator_copy(:describe_role) %></legend>
               <div class="radio-control-group">
                 <div class="role newflow-mustdo-alert">
-                  <%= I18n.t(:"educator_profile_form.select_option") %>
+                  <%= educator_copy(:select_option) %>
                 </div>
 
                 <% educator_complete_roles.each do |(role, id, selected)| %>
@@ -99,16 +99,16 @@
               </div>
 
               <div class="other-specify">
-                <%= label_tag :other_role_name, I18n.t(:"educator_profile_form.other_please_specify"),
+                <%= label_tag :other_role_name, educator_copy(:other_please_specify),
                               class: 'field-label'
                 %>
                 <div class="other newflow-mustdo-alert">
-                  <%= I18n.t(:"educator_profile_form.fill_out") %>
+                  <%= educator_copy(:fill_out) %>
                 </div>
                 <%=
                   fh.text_field(
                     name: :other_role_name,
-                    placeholder: I18n.t(:"educator_profile_form.other_please_specify"),
+                    placeholder: educator_copy(:other_please_specify),
                     autofocus: true
                   )
                 %>
@@ -116,10 +116,10 @@
             </fieldset>
 
             <fieldset class="form-group question how-chosen">
-              <legend class='field-label'><%= I18n.t(:"educator_profile_form.how_textbooks_chosen") %></legend>
+              <legend class='field-label'><%= educator_copy(:how_textbooks_chosen) %></legend>
               <div class="radio-control-group">
                 <div class="chosen newflow-mustdo-alert">
-                  <%= I18n.t(:"educator_profile_form.select_option") %>
+                  <%= educator_copy(:select_option) %>
                 </div>
                 <label>
                   <%=
@@ -130,7 +130,7 @@
                       class: 'completed-role custom-control-input'
                     )
                   %>
-                  <%= label :using_primary_textbook, I18n.t(:"educator_profile_form.chosen_by_instructor"), class: 'custom-control-label' %>
+                  <%= label :using_primary_textbook, educator_copy(:chosen_by_instructor), class: 'custom-control-label' %>
                 </label>
                 <label>
                   <%=
@@ -141,7 +141,7 @@
                       class: 'completed-role custom-control-input'
                     )
                   %>
-                  <%= label :using_recommending_openstax, I18n.t(:"educator_profile_form.chosen_by_committee"), class: 'custom-control-label' %>
+                  <%= label :using_recommending_openstax, educator_copy(:chosen_by_committee), class: 'custom-control-label' %>
                 </label>
                 <label>
                   <%=
@@ -152,16 +152,16 @@
                       class: 'completed-role custom-control-input'
                     )
                   %>
-                  <%= label :using_future, I18n.t(:"educator_profile_form.chosen_by_coordinator"), class: 'custom-control-label' %>
+                  <%= label :using_future, educator_copy(:chosen_by_coordinator), class: 'custom-control-label' %>
                 </label>
               </div>
             </fieldset>
 
             <fieldset class="question how-using">
-              <legend class='field-label'><%= I18n.t(:"educator_profile_form.how_using") %></legend>
+              <legend class='field-label'><%= educator_copy(:how_using) %></legend>
               <div class="radio-control-group">
                 <div class="using newflow-mustdo-alert">
-                  <%= I18n.t(:"educator_profile_form.select_option") %>
+                  <%= educator_copy(:select_option) %>
                 </div>
                 <label>
                   <%=
@@ -172,7 +172,7 @@
                       class: 'completed-role custom-control-input'
                     )
                   %>
-                  <%= label :using_primary_textbook, I18n.t(:"educator_profile_form.using_primary_textbook"), class: 'custom-control-label' %>
+                  <%= label :using_primary_textbook, educator_copy(:using_primary_textbook), class: 'custom-control-label' %>
                 </label>
                 <label>
                   <%=
@@ -183,7 +183,7 @@
                       class: 'completed-role custom-control-input'
                     )
                   %>
-                  <%= label :using_recommending_openstax, I18n.t(:"educator_profile_form.using_recommending_openstax"), class: 'custom-control-label' %>
+                  <%= label :using_recommending_openstax, educator_copy(:using_recommending_openstax), class: 'custom-control-label' %>
                 </label>
                 <label>
                   <%=
@@ -194,7 +194,7 @@
                       class: 'completed-role custom-control-input'
                     )
                   %>
-                  <%= label :using_future, I18n.t(:"educator_profile_form.using_future"), class: 'custom-control-label' %>
+                  <%= label :using_future, educator_copy(:using_future), class: 'custom-control-label' %>
                 </label>
               </div>
             </fieldset>
@@ -220,15 +220,15 @@
               <%=
                 label_tag(
                   :books_used,
-                  I18n.t(:"educator_profile_form.books_used"),
+                  educator_copy(:books_used),
                   class: 'field-label'
                 )
               %>
               <div class="used newflow-mustdo-alert">
-                <%= I18n.t(:"educator_profile_form.select_option") %>
+                <%= educator_copy(:select_option) %>
               </div>
               <div class="used-limit newflow-mustdo-alert">
-                <%= I18n.t(:"educator_profile_form.select_option_limit_5") %>
+                <%= educator_copy(:select_option_limit_5) %>
               </div>
 
               <%= render partial: 'newflow/educator_signup/book_picker',
@@ -241,17 +241,17 @@
                 <span data-placeholder-id="used-book-name" class="book-detail-title"></span>
               </div>
               <div class="book-detail-body">
-                <p class="book-detail-helper"><%= I18n.t(:"educator_profile_form.include_ta_sections") %></p>
+                <p class="book-detail-helper"><%= educator_copy(:include_ta_sections) %></p>
                 <div class="book-detail-fields">
                   <div class="book-detail-field students-using-book">
-                    <%= label_tag nil, I18n.t(:"educator_profile_form.students_per_semester"), class: 'field-label' %>
+                    <%= label_tag nil, educator_copy(:students_per_semester), class: 'field-label' %>
                     <div class="num-using-book newflow-mustdo-alert" style="display: none">
-                      <%= I18n.t(:"educator_profile_form.fill_out") %>
+                      <%= educator_copy(:fill_out) %>
                     </div>
                     <%=
                       fh.text_field(
                         name: 'books_used_details[%placeholder-book-name%]num_students_using_book',
-                        placeholder: I18n.t(:'educator_profile_form.num_students_using_book_placeholder'),
+                        placeholder: educator_copy(:num_students_using_book_placeholder),
                         autofocus: false,
                         numberonly: true,
                         disabled: true
@@ -259,9 +259,9 @@
                     %>
                   </div>
                   <div class="book-detail-field how-using-book">
-                    <%= label_tag nil, I18n.t(:"educator_profile_form.how_using_this_book"), class: 'field-label' %>
+                    <%= label_tag nil, educator_copy(:how_using_this_book), class: 'field-label' %>
                     <div class="using-book newflow-mustdo-alert" style="display: none">
-                      <%= I18n.t(:"educator_profile_form.fill_out") %>
+                      <%= educator_copy(:fill_out) %>
                     </div>
                     <%= fh.select name: 'books_used_details[%placeholder-book-name%]how_using_book',
                         options: options_for_select([['', '']] + I18n.t(:"educator_profile_form.how_using_book_options")),
@@ -277,15 +277,15 @@
               <%=
                 label_tag(
                   :books_of_interest,
-                  I18n.t(:"educator_profile_form.books_of_interest"),
+                  educator_copy(:books_of_interest),
                   class: 'field-label'
                 )
               %>
               <div class="books-of-interest newflow-mustdo-alert">
-                <%= I18n.t(:"educator_profile_form.select_option") %>
+                <%= educator_copy(:select_option) %>
               </div>
               <div class="books-of-interest-limit newflow-mustdo-alert">
-                <%= I18n.t(:"educator_profile_form.select_option_limit_5") %>
+                <%= educator_copy(:select_option_limit_5) %>
               </div>
 
               <%= render partial: 'newflow/educator_signup/book_picker',

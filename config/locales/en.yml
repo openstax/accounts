@@ -89,6 +89,8 @@ en:
       next_semester: Next semester
       next_academic_year: Next academic year
       just_exploring: Just exploring
+    k12:
+      instructor: K-12 Teacher
 
   login_signup_form:
     cant_be_blank: can't be blank
