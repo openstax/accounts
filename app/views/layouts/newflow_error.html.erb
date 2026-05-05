@@ -14,15 +14,7 @@
         <%= csrf_meta_tags %>
     </head>
     <body>
-        <div class="main-menu">
-            <span class="logo-wrapper">
-                <span class="logo">
-                    <%= link_to logo_url, 'aria-label': 'OpenStax Home Page' do %>
-                        <%= image_tag 'openstax-logo.svg', class: 'logo-color', alt: 'OpenStax logo' %>
-                    <% end %>
-                </span>
-            </span>
-        </div>
+        <%= render partial: 'layouts/main_menu' %>
 
         <div class="content">
             <%= yield %>
