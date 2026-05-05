@@ -1,14 +1,20 @@
-<% content_for :application_body do %>
-  <h3 class='rescue-from'><%= @message %> (<%= @code %>)</h3>
+<div id="login-signup-form" class="without-tabs">
+  <div class="content">
+    <div class="error-page">
+      <h1 class="page-header"><%= @message %> (<%= @code %>)</h1>
 
-  <p class='rescue-from'>
-    <% if @error_id and @did_notify %>
-      <%= t :".apology_message_long_html", code: @code,
-                                           contact_info: openstax_rescue_from_contact_info,
-                                           error_id: @error_id %>
-    <% else %>
-      <%= t :".apology_message_html", code: @code,
-                                      contact_info: openstax_rescue_from_contact_info %>
-    <% end %>
-  </p>
-<% end %>
+      <div class="error-page-body">
+        <p>
+          <% if @error_id and @did_notify %>
+            <%= t :".apology_message_long_html", code: @code,
+                                                 contact_info: openstax_rescue_from_contact_info,
+                                                 error_id: @error_id %>
+          <% else %>
+            <%= t :".apology_message_html", code: @code,
+                                            contact_info: openstax_rescue_from_contact_info %>
+          <% end %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
