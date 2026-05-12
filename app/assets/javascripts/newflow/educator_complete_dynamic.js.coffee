@@ -72,12 +72,12 @@ class NewflowUi.EducatorComplete
     @how_using.hide()
     @books_used.hide()
     @books_of_interest.hide()
-    @total_num_students?.hide()
+    @total_num_students.hide()
 
     # Hide all validations messages
     @please_fill_out_school.hide()
     @please_select_role.hide()
-    @total_num_students_alert?.hide()
+    @total_num_students_alert.hide()
 
     @please_select_books_used.hide()
     @books_used_max.hide()

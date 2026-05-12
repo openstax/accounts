@@ -35,7 +35,6 @@ module Newflow
 
         sf_school_id = fallback_school.id
         user.school = School.find_by(salesforce_id: sf_school_id)
-        user.save!
       end
 
       if user.role == 'student'
