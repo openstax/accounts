@@ -158,7 +158,7 @@ module Newflow
               find('#signup_using_openstax_how_as_primary').click
             end
 
-            it 'shows "Books used"' do
+            it 'shows the book selection label' do
               expect(page).to have_text(I18n.t(:"educator_profile_form.books_used"))
             end
           end
@@ -168,7 +168,7 @@ module Newflow
               find('#signup_using_openstax_how_as_recommending').click
             end
 
-            it 'shows "Books of interest"' do
+            it 'shows the book selection label' do
               expect(page).to have_text(I18n.t(:"educator_profile_form.books_of_interest"))
             end
           end
