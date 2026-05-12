@@ -52,9 +52,19 @@ en:
     num_students_using_book_time_period: each semester?
     num_students_using_book_supplemental: Include sections taught by TAs that you oversee
     num_students_using_book_placeholder:  Number of students using this book per semester
+    num_students_future_recommending: "Approx. how many students would you teach each year with OpenStax?"
+    num_students_administrator: "What is your average annual class size?"
+    num_students_other: "Approx. how many students does your institution serve annually?"
+    num_students_total_placeholder: "Number of students"
+    book_picker_search_placeholder: "Search for a book..."
+    book_picker_select_up_to: "Select up to 5"
+    book_picker_select_up_to_titles: "Select titles you are using even if the edition number is different."
+    include_ta_sections: "Include sections taught by TAs that you oversee"
+    students_per_semester: "Students per semester"
+    how_using_this_book: "How are you using this book?"
     subjects_of_interest: Subjects of interest
-    books_used: Which textbook(s) are you currently using?
-    books_of_interest: Books of interest
+    books_used: Which OpenStax book(s)?
+    books_of_interest: Which OpenStax book(s)?
     using_primary_textbook: Using an OpenStax book as our primary textbook
     using_recommending_openstax: Recommending the book -- my students buy a different one
     using_future: Interested in using OpenStax in the future
@@ -79,6 +89,23 @@ en:
       next_semester: Next semester
       next_academic_year: Next academic year
       just_exploring: Just exploring
+    k12:
+      instructor: K-12 Teacher
+      administrator: School or district administrator
+      other: Other school staff
+      complete_page_header: Complete your teacher profile
+      school_name: School or district name
+      describe_role: Which best describes your role at your school?
+      how_textbooks_chosen: How are textbooks chosen at your school or district?
+      chosen_by_instructor: Teachers choose textbooks for their classes
+      chosen_by_coordinator: School or district coordinator chooses the textbook
+      using_primary_textbook: Using an OpenStax book as my primary textbook
+      using_recommending_openstax: Recommending the book — my students use a different one
+      books_used: Which OpenStax book(s) are you using?
+      books_of_interest: Which OpenStax book(s) are you interested in?
+      include_ta_sections: Include all students across your classes
+      students_per_semester: Students per school year
+      num_students_using_book_placeholder: Number of students using this book per school year
 
   login_signup_form:
     cant_be_blank: can't be blank
@@ -433,6 +460,9 @@ en:
       educator_feature_flag:
         name: New educator flow feature flag
         help_block: New educator flow activated?
+      collect_student_count_all_paths:
+        name: Collect student count on all signup paths
+        help_block: Show student count field on as_future and as_recommending paths?
       sheer_id_base_url:
         name: SheerID base URL
         help_block: >-

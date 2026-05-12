@@ -30,6 +30,14 @@ module Settings
         Settings::Db.store.expected_start_semester_enabled = bool
       end
 
+      def collect_student_count_all_paths
+        Settings::Db.store.collect_student_count_all_paths
+      end
+
+      def collect_student_count_all_paths=(bool)
+        Settings::Db.store.collect_student_count_all_paths = bool
+      end
+
     end
   end
 end
