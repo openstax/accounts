@@ -14,15 +14,6 @@ module Newflow
 
     private_constant(:ADOPTION_STATUS_FROM_USER)
 
-    EXPECTED_START_SEMESTER_LABELS = {
-      this_semester:      'This semester',
-      next_semester:      'Next semester',
-      next_academic_year: 'Next academic year',
-      just_exploring:     'Just exploring'
-    }.with_indifferent_access.freeze
-
-    private_constant(:EXPECTED_START_SEMESTER_LABELS)
-
     protected #################
 
     def exec(user:)
@@ -161,7 +152,7 @@ module Newflow
       lead.subject_interest = user.which_books
       lead.num_students = user.how_many_students
       lead.adoption_status = ADOPTION_STATUS_FROM_USER[user.using_openstax_how]
-      lead.expected_start_semester = EXPECTED_START_SEMESTER_LABELS[user.expected_start_semester]
+      lead.expected_start_semester = expected_start_semester_label_for(user.expected_start_semester)
       lead.adoption_json = adoption_json
       lead.os_accounts_id = user.id
       lead.accounts_uuid = user.uuid
@@ -229,6 +220,11 @@ module Newflow
 
       outputs.lead = lead
       outputs.user = user
+    end
+
+    def expected_start_semester_label_for(key)
+      return nil if key.blank?
+      I18n.t(:'educator_profile_form.expected_start_semester_options')[key.to_sym]
     end
 
     def build_book_adoption_json_for_salesforce(user)

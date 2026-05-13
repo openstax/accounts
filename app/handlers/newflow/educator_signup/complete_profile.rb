@@ -8,10 +8,6 @@ module Newflow
       AS_FUTURE = 'as_future'
       AS_RECOMMENDING = 'as_recommending'
 
-      EXPECTED_START_SEMESTERS = %w[
-        this_semester next_semester next_academic_year just_exploring
-      ].freeze
-
       lev_handler
 
       uses_routine CreateEmailForUser, translations: {
@@ -172,10 +168,11 @@ module Newflow
       private #################
 
       def expected_start_semester
-        return nil if signup_params.expected_start_semester.blank?
-        return nil unless EXPECTED_START_SEMESTERS.include?(signup_params.expected_start_semester)
+        key = signup_params.expected_start_semester
+        return nil if key.blank?
+        return nil unless I18n.t(:'educator_profile_form.expected_start_semester_options').key?(key.to_sym)
         return nil unless [AS_PRIMARY, AS_RECOMMENDING].include?(signup_params.using_openstax_how)
-        signup_params.expected_start_semester
+        key
       end
 
       def other_role_name
