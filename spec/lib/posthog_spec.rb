@@ -30,7 +30,6 @@ RSpec.describe OXPosthog, type: :lib do
       which_books: 'Biology',
       how_many_students: '100-200',
       title_1_school: false,
-      grant_tutor_access: true,
       country_code: 'US',
       receive_newsletter: true,
       is_administrator: false,

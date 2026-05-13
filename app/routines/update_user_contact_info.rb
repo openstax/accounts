@@ -130,7 +130,6 @@ class UpdateUserContactInfo
 
       user.adopter_status = sf_contact.adoption_status
       user.is_kip = sf_school&.is_kip || sf_school&.is_child_of_kip
-      user.grant_tutor_access = sf_contact.grant_tutor_access
 
       if school.nil? && !sf_school.nil?
         users_without_cached_school += 1
@@ -153,11 +152,9 @@ class UpdateUserContactInfo
     contacts ||= OpenStax::Salesforce::Remote::Contact.select(
                      :id,
                      :email,
-                     :email_alt,
                      :faculty_verified,
                      :school_type,
                      :adoption_status,
-                     :grant_tutor_access,
                      :accounts_uuid
                    )
                    .where("Accounts_UUID__c != null")
