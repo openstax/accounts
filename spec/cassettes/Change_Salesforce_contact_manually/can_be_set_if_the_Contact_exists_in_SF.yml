@@ -186,7 +186,7 @@ http_interactions:
   recorded_at: Tue, 08 Oct 2024 15:05:08 GMT
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20Title_1_school__c,%20Accounts_UUID__c,%20LeadSource,%20Signup_Date__c,%20Renewal_Eligible__c,%20Assignable_Interest__c,%20Assignable_Adoption_Date__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27003Pc00000NsWSHIA3%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20All_Emails__c,%20Adoption_Status__c,%20Accounts_UUID__c,%20LeadSource,%20Signup_Date__c,%20Assignable_Interest__c,%20Assignable_Adoption_Date__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27003Pc00000NsWSHIA3%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
@@ -242,8 +242,8 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v51.0/sobjects/Contact/003Pc00000NsWSHIA3"},"Id":"003Pc00000NsWSHIA3","Name":"Ricardo
-        Reynolds","FirstName":"Ricardo","LastName":"Reynolds","Email":"coy_mante@rennerryan.co","Email_alt__c":null,"Faculty_Confirmed_Date__c":null,"FV_Status__c":null,"LastModifiedDate":"2024-10-08T15:05:08.000+0000","AccountId":null,"School_Type__c":null,"SendFacultyVerificationTo__c":null,"All_Emails__c":"coy_mante@rennerryan.co","Adoption_Status__c":"Not
-        Adopter","Grant_Tutor_Access__c":false,"Title_1_school__c":false,"Accounts_UUID__c":null,"LeadSource":null,"Signup_Date__c":null,"Renewal_Eligible__c":false,"Assignable_Interest__c":null,"Assignable_Adoption_Date__c":null}]}'
+        Reynolds","FirstName":"Ricardo","LastName":"Reynolds","Email":"coy_mante@rennerryan.co","FV_Status__c":null,"LastModifiedDate":"2024-10-08T15:05:08.000+0000","AccountId":null,"School_Type__c":null,"All_Emails__c":"coy_mante@rennerryan.co","Adoption_Status__c":"Not
+        Adopter","Accounts_UUID__c":null,"LeadSource":null,"Signup_Date__c":null,"Assignable_Interest__c":null,"Assignable_Adoption_Date__c":null}]}'
     http_version:
   recorded_at: Tue, 08 Oct 2024 15:05:08 GMT
 recorded_with: VCR 3.0.3

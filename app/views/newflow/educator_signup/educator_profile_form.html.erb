@@ -199,6 +199,23 @@
               </div>
             </fieldset>
 
+            <% if Settings::FeatureFlags.expected_start_semester_enabled %>
+              <fieldset class="form-group question expected-start-semester" style="display: none;">
+                <legend class='field-label'>
+                  <%= I18n.t(:"educator_profile_form.expected_start_semester") %>
+                </legend>
+                <%=
+                  fh.select(
+                    name: :expected_start_semester,
+                    options: options_for_select(
+                      [['', '']] +
+                      I18n.t(:"educator_profile_form.expected_start_semester_options").map { |key, display| [display, key.to_s] }
+                    )
+                  )
+                %>
+              </fieldset>
+            <% end %>
+
             <div class="form-group question books-used">
               <%=
                 label_tag(
