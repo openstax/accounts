@@ -6,8 +6,7 @@ module SalesforceSpecHelpers
       accounts_uuid: uuid,
       faculty_verified: faculty_verified,
       school_type: 'College/University (4)',
-      adoption_status: 'Not Adopter',
-      grant_tutor_access: false
+      adoption_status: 'Not Adopter'
     )
 
     # Mock the school association
