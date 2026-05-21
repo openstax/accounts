@@ -156,7 +156,7 @@ gem 'chronic'
 
 # Salesforce
 gem 'restforce'
-gem 'activeforce'
+gem 'openstax_active_force'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'

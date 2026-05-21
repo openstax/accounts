@@ -80,12 +80,6 @@ GEM
       actionpack (>= 3.0.2, < 8.0)
       activemodel (>= 3.0.2, < 8.0)
       activesupport (>= 3.0.2, < 8.0)
-    activeforce (1.9.1)
-      blockenspiel
-      fastercsv
-      rails (>= 3.0)
-      rest-client
-      savon (~> 1.0)
     activejob (6.1.7.8)
       activesupport (= 6.1.7.8)
       globalid (>= 0.3.6)
@@ -112,9 +106,6 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     aes_key_wrap (1.1.0)
-    akami (1.2.2)
-      gyoku (>= 0.4.0)
-      nokogiri
     apipie-rails (1.4.2)
       actionpack (>= 5.0)
       activesupport (>= 5.0)
@@ -176,7 +167,6 @@ GEM
       chartkick (>= 3.2)
       railties (>= 5)
       safely_block (>= 0.1.1)
-    blockenspiel (0.5.0)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
     bootstrap-sass (3.4.1)
@@ -263,7 +253,6 @@ GEM
     diff-lcs (1.5.1)
     diffy (3.4.2)
     docile (1.4.1)
-    domain_name (0.6.20240107)
     doorkeeper (5.7.1)
       railties (>= 5)
     dotenv (2.8.1)
@@ -318,7 +307,6 @@ GEM
     faraday-retry (1.0.3)
     faraday_middleware (1.2.1)
       faraday (~> 1.0)
-    fastercsv (1.5.5)
     ffi (1.16.3)
     fine_print (6.0.3)
       action_interceptor
@@ -352,21 +340,14 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
-    gyoku (0.4.6)
-      builder (>= 2.1.2)
     hashdiff (1.1.1)
     hashie (5.0.0)
     highline (3.1.1)
       reline
     htmlentities (4.3.4)
-    http-accept (1.7.0)
-    http-cookie (1.1.6)
-      domain_name (~> 0.5)
     http_accept_language (2.1.1)
     http_parser.rb (0.8.0)
     httpclient (2.8.3)
-    httpi (1.1.1)
-      rack
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     i18n-tasks (1.0.14)
@@ -445,10 +426,6 @@ GEM
       rack-contrib (>= 1.1, < 3)
       railties (>= 3.0.0, < 8)
     method_source (1.1.0)
-    mime-types (3.7.0)
-      logger
-      mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0414)
     mini_mime (1.1.5)
     mini_portile2 (2.8.8)
     mini_racer (0.16.0)
@@ -468,7 +445,6 @@ GEM
       timeout
     net-smtp (0.5.0)
       net-protocol
-    netrc (0.11.0)
     nio4r (2.7.4)
     nokogiri (1.18.8)
       mini_portile2 (~> 2.8.2)
@@ -479,7 +455,6 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.8-x86_64-linux-gnu)
       racc (~> 1.4)
-    nori (1.1.5)
     notiffany (0.1.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
@@ -523,6 +498,10 @@ GEM
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
+    openstax_active_force (1.1.1)
+      active_attr
+      rails (>= 5.0, < 7.0)
+      restforce
     openstax_api (9.6.1)
       addressable
       doorkeeper
@@ -673,11 +652,6 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rest-client (2.1.0)
-      http-accept (>= 1.7.0, < 2.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 4.0)
-      netrc (~> 0.8)
     restforce (7.5.0)
       faraday (>= 1.1.0, < 2.12.0)
       faraday-follow_redirects (<= 0.3.0, < 1.0.0)
@@ -747,14 +721,6 @@ GEM
       tilt (>= 1.1, < 3)
     sassc (2.4.0)
       ffi (~> 1.9)
-    savon (1.2.0)
-      akami (~> 1.2.0)
-      builder (>= 2.1.2)
-      gyoku (~> 0.4.5)
-      httpi (~> 1.1.0)
-      nokogiri (>= 1.4.0)
-      nori (~> 1.1.0)
-      wasabi (~> 2.5.0)
     sd_notify (0.1.1)
     selenium-webdriver (4.10.0)
       rexml (~> 3.2, >= 3.2.5)
@@ -809,9 +775,6 @@ GEM
     vcr (6.3.1)
       base64
     version_gem (1.1.4)
-    wasabi (2.5.1)
-      httpi (~> 1.0)
-      nokogiri (>= 1.4.0)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -847,7 +810,6 @@ PLATFORMS
 
 DEPENDENCIES
   action_interceptor
-  activeforce
   activerecord-import
   apipie-rails
   awesome_print
@@ -910,6 +872,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
+  openstax_active_force
   openstax_api
   openstax_healthcheck
   openstax_path_prefixer!
