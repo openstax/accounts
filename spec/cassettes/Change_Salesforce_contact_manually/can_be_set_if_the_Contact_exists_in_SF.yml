@@ -186,7 +186,7 @@ http_interactions:
   recorded_at: Tue, 08 Oct 2024 15:05:08 GMT
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20All_Emails__c,%20Adoption_Status__c,%20Accounts_UUID__c,%20LeadSource,%20Signup_Date__c,%20Assignable_Interest__c,%20Assignable_Adoption_Date__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27003Pc00000NsWSHIA3%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20All_Emails__c,%20Adoption_Status__c,%20Accounts_UUID__c,%20LeadSource,%20Signup_Date__c,%20Assignable_Interest__c,%20Assignable_Adoption_Date__c,%20MasterRecordId,%20IsDeleted%20FROM%20Contact%20WHERE%20(Id%20=%20%27003Pc00000NsWSHIA3%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''

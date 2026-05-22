@@ -56,33 +56,6 @@ module SalesforceSpecHelpers
     ActiveForce.clear_sfdc_client!
   end
 
-  # Absorbed from the openstax_salesforce gem's SpecHelpers. Constrains an
-  # ActiveForce query to records matching the given conditions (LIKE matches
-  # for any string value containing '%'). Useful in sandbox-backed VCR specs
-  # where you want to ignore unrelated rows.
-  def limit_salesforce_queries(remote_class, **conditions)
-    allow(remote_class).to receive(:query) do
-      like_conditions = {}
-      other_conditions = {}
-      conditions.each_pair do |key, value|
-        if value.is_a?(String) && value.include?('%')
-          like_conditions[key] = value
-        else
-          other_conditions[key] = value
-        end
-      end
-      remote_class.original_query.where(other_conditions)
-    end
-  end
-
-  def limit_salesforce_queries_by_token(remote_class, token)
-    case remote_class.new
-    when Salesforce::Records::Contact, Salesforce::Records::Lead
-      limit_salesforce_queries(remote_class, last_name: "%#{token}")
-    else
-      raise "Don't know how to apply to #{remote_class}"
-    end
-  end
 end
 
 RSpec.configure do |config|

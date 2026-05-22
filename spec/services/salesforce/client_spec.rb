@@ -8,6 +8,8 @@ RSpec.describe Salesforce::Client do
       c.security_token = 't'
       c.consumer_key = 'ck'
       c.consumer_secret = 'cs'
+      c.api_version = '61.0'
+      c.login_domain = 'test.salesforce.com'
     end
   end
 
