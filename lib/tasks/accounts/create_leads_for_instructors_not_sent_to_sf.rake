@@ -21,7 +21,7 @@ namespace :accounts do
       if lead.nil?
         Newflow::CreateOrUpdateSalesforceLead.call(user: user)
       else
-        # set the lead id, this will update their status in UpdateUserLeadInfo
+        # set the lead id; Reconcile will verify it and attach a Contact when one exists
         user.salesforce_lead_id = lead.id
         user.save
       end
