@@ -1,0 +1,60 @@
+<h1>Salesforce drift findings</h1>
+
+<%= form_with url: admin_salesforce_drift_findings_path, method: :get, local: true do %>
+  <label>
+    Category:
+    <%= select_tag :category,
+          options_for_select([['All', nil]] + @categories.map { |c| [c, c] }, params[:category]) %>
+  </label>
+  <%= submit_tag 'Filter', name: nil %>
+<% end %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>User</th>
+      <th>SF Record</th>
+      <th>First seen</th>
+      <th>Last seen</th>
+      <th>Details</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @findings.each do |f| %>
+      <tr>
+        <td><%= f.category %></td>
+        <td>
+          <% if f.user_id %>
+            <%= link_to f.user_id, edit_admin_user_path(f.user_id) %>
+          <% else %>
+            &mdash;
+          <% end %>
+        </td>
+        <td>
+          <% if f.salesforce_record_id.present? %>
+            <% sf_host = Rails.application.secrets.dig(:salesforce, :instance_url) %>
+            <% if sf_host.present? %>
+              <%= link_to "#{f.salesforce_record_type}/#{f.salesforce_record_id}",
+                          "#{sf_host}/#{f.salesforce_record_id}", target: '_blank', rel: 'noopener' %>
+            <% else %>
+              <%= "#{f.salesforce_record_type}/#{f.salesforce_record_id}" %>
+            <% end %>
+          <% else %>
+            &mdash;
+          <% end %>
+        </td>
+        <td><%= f.first_seen_at.strftime('%Y-%m-%d %H:%M') %></td>
+        <td><%= f.last_seen_at.strftime('%Y-%m-%d %H:%M') %></td>
+        <td><pre><%= JSON.pretty_generate(f.details) rescue f.details.inspect %></pre></td>
+        <td>
+          <%= button_to 'Mark resolved', admin_salesforce_drift_finding_path(f),
+                method: :patch, data: { confirm: 'Mark resolved?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p><%= pluralize(@findings.size, 'open finding') %> shown (max 500).</p>
