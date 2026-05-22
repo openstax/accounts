@@ -113,6 +113,29 @@ class SecurityLog < ApplicationRecord
     user_already_has_contact_not_creating_lead
     creating_new_salesforce_lead
     salesforce_lead_save_failed
+    salesforce_lookup_started
+    salesforce_lookup_matched_by_stored_id
+    salesforce_lookup_matched_by_uuid
+    salesforce_lookup_matched_by_email
+    salesforce_lookup_stored_id_disowned
+    salesforce_lookup_email_collision
+    salesforce_upsert_lead_begin
+    salesforce_upsert_lead_saved
+    salesforce_upsert_lead_save_failed
+    salesforce_upsert_lead_skipped_user_has_contact
+    salesforce_lead_id_persist_retry
+    salesforce_lead_id_persist_failed
+    salesforce_stale_contact_id_cleared
+    salesforce_contact_skipped_merged_or_deleted
+    salesforce_contact_id_swapped
+    salesforce_contact_id_conflict
+    salesforce_user_school_not_cached
+    salesforce_reconcile_user_ok
+    salesforce_reconcile_contact_id_cleared
+    salesforce_reconcile_followed_merge
+    salesforce_reconcile_attached_from_conversion
+    salesforce_link_restored_by_reconcile
+    salesforce_contact_id_orphaned
   ]
 
   json_serialize :event_data, Hash
