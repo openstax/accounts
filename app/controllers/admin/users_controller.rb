@@ -12,6 +12,14 @@ module Admin
 
     def index; end
 
+    def edit
+      @salesforce_timeline = SecurityLog
+                               .where(user_id: @user.id)
+                               .where("event_type LIKE 'salesforce_%'")
+                               .order(created_at: :asc)
+                               .limit(500)
+    end
+
     # Used by full console page
     def search
       security_log :users_searched_by_admin, search: params[:search]
