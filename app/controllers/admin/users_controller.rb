@@ -108,7 +108,7 @@ module Admin
       end
 
       begin
-        contact = OpenStax::Salesforce::Remote::Contact.find(new_id)
+        contact = Salesforce::Records::Contact.find(new_id)
 
         if contact.present?
           # The contact really exists, so save its ID to the User

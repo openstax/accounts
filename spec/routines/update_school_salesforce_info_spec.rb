@@ -64,17 +64,17 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
       attrs['id'] = attrs.delete('salesforce_id')
       attrs['school_location'] = attrs.delete('location')
 
-      OpenStax::Salesforce::Remote::School.new attrs
+      Salesforce::Records::School.new attrs
     end
 
     select_query = instance_double(ActiveForce::ActiveQuery)
-    expect(OpenStax::Salesforce::Remote::School).to(
+    expect(Salesforce::Records::School).to(
       receive(:select).with(:id).and_return(select_query)
     )
     expect(select_query).to receive(:where).with(id: kind_of(Array)).and_return(sf_schools)
 
     order_query = instance_double(ActiveForce::ActiveQuery)
-    expect(OpenStax::Salesforce::Remote::School).to(
+    expect(Salesforce::Records::School).to(
       receive(:order).with(:Id).and_return(order_query)
     )
     expect(order_query).to receive(:limit).with(described_class::BATCH_SIZE).and_return(sf_schools)

@@ -14,7 +14,7 @@ class UpdateUserLeadInfo
     users = User.where(salesforce_contact_id: nil)
                 .where.not(salesforce_lead_id: nil, role: :student, faculty_status: :rejected_faculty)
 
-    leads = OpenStax::Salesforce::Remote::Lead.select(:id, :accounts_uuid, :verification_status)
+    leads = Salesforce::Records::Lead.select(:id, :accounts_uuid, :verification_status)
                                               .where(accounts_uuid: users.map(&:uuid))
                                               .to_a
                                               .index_by(&:accounts_uuid)

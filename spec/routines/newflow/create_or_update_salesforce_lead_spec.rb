@@ -30,19 +30,19 @@ module Newflow
     before do
       stub_sentry
       # Stub the school lookup
-      allow(OpenStax::Salesforce::Remote::School).to receive(:find_by).with(name: 'Find Me A Home')
+      allow(Salesforce::Records::School).to receive(:find_by).with(name: 'Find Me A Home')
         .and_return(OpenStruct.new(id: 'SF_SCHOOL_HOME'))
     end
 
     describe 'creating a new lead' do
       it 'creates a new lead when none exists' do
         # Stub all the search methods to return nil (no existing lead)
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(nil)
+        allow(Salesforce::Records::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
+        allow(Salesforce::Records::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(nil)
 
         # Create a mock lead that will be "saved"
-        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        mock_lead = Salesforce::Records::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(Salesforce::Records::Lead).to receive(:new).and_return(mock_lead)
         allow(mock_lead).to receive(:save).and_return(true)
         allow(mock_lead).to receive(:id).and_return('SF_LEAD_123')
 
@@ -55,7 +55,7 @@ module Newflow
 
     describe 'finding existing leads' do
       let(:existing_lead) do
-        lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        lead = Salesforce::Records::Lead.new(email: user.best_email_address_for_salesforce)
         allow(lead).to receive(:id).and_return('SF_LEAD_EXISTING')
         allow(lead).to receive(:save).and_return(true)
         lead
@@ -63,7 +63,7 @@ module Newflow
 
       it 'finds and updates existing lead by UUID' do
         # Stub to return existing lead when searched by UUID
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(existing_lead)
+        allow(Salesforce::Records::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(existing_lead)
 
         described_class.call(user: user)
 
@@ -74,8 +74,8 @@ module Newflow
 
       it 'finds and updates existing lead by email when UUID search fails' do
         # Stub UUID search to return nil, email search to return existing lead
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(existing_lead)
+        allow(Salesforce::Records::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
+        allow(Salesforce::Records::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(existing_lead)
 
         described_class.call(user: user)
 
@@ -89,7 +89,7 @@ module Newflow
         user.save!
 
         # Stub to return existing lead when searched by ID
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_STORED').and_return(existing_lead)
+        allow(Salesforce::Records::Lead).to receive(:find).with('SF_LEAD_STORED').and_return(existing_lead)
         allow(existing_lead).to receive(:id).and_return('SF_LEAD_STORED')
 
         described_class.call(user: user)
@@ -103,11 +103,11 @@ module Newflow
 
     describe 'when lead save fails' do
       it 'logs to SecurityLog and Sentry' do
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(nil)
+        allow(Salesforce::Records::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
+        allow(Salesforce::Records::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(nil)
 
-        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        mock_lead = Salesforce::Records::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(Salesforce::Records::Lead).to receive(:new).and_return(mock_lead)
         allow(mock_lead).to receive(:save).and_return(false)
         allow(mock_lead).to receive(:errors).and_return(double(full_messages: ['Some SF error']))
 
@@ -129,11 +129,11 @@ module Newflow
         user.save!
 
         # Stub all lead searches to return nil
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(nil)
+        allow(Salesforce::Records::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
+        allow(Salesforce::Records::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(nil)
 
         # Stub contact lookup to return existing contact
-        allow(OpenStax::Salesforce::Remote::Contact).to receive(:find).with('SF_CONTACT_123').and_return(existing_contact)
+        allow(Salesforce::Records::Contact).to receive(:find).with('SF_CONTACT_123').and_return(existing_contact)
 
         result = described_class.call(user: user)
 
@@ -145,15 +145,15 @@ module Newflow
 
     describe 'expected_start_semester assignment' do
       let(:mock_lead) do
-        lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        lead = Salesforce::Records::Lead.new(email: user.best_email_address_for_salesforce)
         allow(lead).to receive(:save).and_return(true)
         allow(lead).to receive(:id).and_return('SF_LEAD_999')
         lead
       end
 
       before do
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(Salesforce::Records::Lead).to receive(:find_by).and_return(nil)
+        allow(Salesforce::Records::Lead).to receive(:new).and_return(mock_lead)
       end
 
       [

@@ -16,7 +16,7 @@ namespace :accounts do
     end
 
     users.each do |user|
-      lead = OpenStax::Salesforce::Remote::Lead.select(:id, :verification_status).find_by(accounts_uuid: user.uuid)
+      lead = Salesforce::Records::Lead.select(:id, :verification_status).find_by(accounts_uuid: user.uuid)
 
       if lead.nil?
         Newflow::CreateOrUpdateSalesforceLead.call(user: user)

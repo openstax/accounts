@@ -1,7 +1,7 @@
 module SalesforceSpecHelpers
   # Helper method to create a Salesforce contact mock
   def create_sf_contact(uuid:, faculty_verified:, contact_id: 'SF_CONTACT_001', school_id: 'SF_SCHOOL_001')
-    contact = OpenStax::Salesforce::Remote::Contact.new(
+    contact = Salesforce::Records::Contact.new(
       id: contact_id,
       accounts_uuid: uuid,
       faculty_verified: faculty_verified,
@@ -10,7 +10,7 @@ module SalesforceSpecHelpers
     )
 
     # Mock the school association
-    sf_school = OpenStax::Salesforce::Remote::School.new(
+    sf_school = Salesforce::Records::School.new(
       id: school_id,
       school_location: 'Domestic',
       is_kip: false,

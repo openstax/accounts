@@ -30,7 +30,7 @@ module Newflow
       sf_school_id = user.school&.salesforce_id
       # no school attached to user? Set to Find Me A Home
       unless sf_school_id
-        fallback_school = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home')
+        fallback_school = Salesforce::Records::School.find_by(name: 'Find Me A Home')
         raise "Salesforce 'Find Me A Home' school not found — cannot assign fallback school for user #{user.id}" unless fallback_school
 
         sf_school_id = fallback_school.id
@@ -65,7 +65,7 @@ module Newflow
       lead = nil
       if user.salesforce_lead_id
         begin
-          lead = OpenStax::Salesforce::Remote::Lead.find(user.salesforce_lead_id)
+          lead = Salesforce::Records::Lead.find(user.salesforce_lead_id)
         rescue StandardError => e
           # Log when the stored lead ID doesn't correspond to an existing lead or find fails
           SecurityLog.create!(
@@ -85,7 +85,7 @@ module Newflow
 
       # If no lead found by stored ID, search for existing lead by UUID
       if lead.nil?
-        lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
+        lead = Salesforce::Records::Lead.find_by(accounts_uuid: user.uuid)
         if lead
           SecurityLog.create!(
             user: user,
@@ -97,7 +97,7 @@ module Newflow
 
       # If still no lead found, search by email
       if lead.nil?
-        lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
+        lead = Salesforce::Records::Lead.find_by(email: user.best_email_address_for_salesforce)
         if lead
           SecurityLog.create!(
             user: user,
@@ -110,7 +110,7 @@ module Newflow
       # If user has a contact (already converted from lead), don't create a new lead
       if lead.nil? && user.salesforce_contact_id.present?
         begin
-          contact = OpenStax::Salesforce::Remote::Contact.find(user.salesforce_contact_id)
+          contact = Salesforce::Records::Contact.find(user.salesforce_contact_id)
           if contact
             SecurityLog.create!(
               user: user,
@@ -132,7 +132,7 @@ module Newflow
 
       # Only create a new lead if none exists
       if lead.nil?
-        lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        lead = Salesforce::Records::Lead.new(email: user.best_email_address_for_salesforce)
         SecurityLog.create!(
           user: user,
           event_type: :creating_new_salesforce_lead,
