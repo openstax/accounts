@@ -6,7 +6,9 @@ module SalesforceSpecHelpers
       accounts_uuid: uuid,
       faculty_verified: faculty_verified,
       school_type: 'College/University (4)',
-      adoption_status: 'Not Adopter'
+      adoption_status: 'Not Adopter',
+      master_record_id: nil,
+      is_deleted: false
     )
 
     # Mock the school association
@@ -22,9 +24,10 @@ module SalesforceSpecHelpers
     contact
   end
 
-  # Helper method to stub the salesforce_contacts method
+  # Helper method to stub the contact fetch in SyncContacts (used by
+  # UpdateUserContactInfo, which is now a one-line shim).
   def stub_salesforce_contacts(contacts)
-    allow_any_instance_of(UpdateUserContactInfo).to receive(:salesforce_contacts).and_return(contacts)
+    allow_any_instance_of(Salesforce::SyncContacts).to receive(:fetch_contacts).and_return(contacts)
   end
 
   # Helper method to stub Sentry methods
