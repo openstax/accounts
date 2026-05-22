@@ -8,13 +8,6 @@ module Newflow
       turn_on_student_feature_flag
     end
 
-    before(:all) do
-      VCR.use_cassette('Newflow/Students/student_signup_flow/sf_setup', VCR_OPTS) do
-        @proxy = SalesforceProxy.new
-        @proxy.setup_cassette
-      end
-    end
-
     let(:email) do
       Faker::Internet::email
     end
