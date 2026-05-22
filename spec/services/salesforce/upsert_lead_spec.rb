@@ -110,4 +110,33 @@ RSpec.describe Salesforce::UpsertLead do
       expect(user.reload.salesforce_contact_id).to be_nil
     end
   end
+
+  context 'when the fallback SF School is not yet cached locally' do
+    it 'creates a stub local School so the saved Lead still has account_id / school_id' do
+      # Use a fresh SF id that has no local School row, so we exercise the
+      # cache-miss branch without fighting the foreign key on the let!(:home)
+      # School the outer fixture created.
+      uncached_sf_id = 'SF_UNCACHED_HOME'
+      expect(School.where(salesforce_id: uncached_sf_id)).to be_empty
+      user.update!(school: nil)
+
+      # SF says the fallback exists at the uncached id.
+      allow(Salesforce::Records::School).to receive(:find_by)
+        .with({ name: 'Find Me A Home' })
+        .and_return(OpenStruct.new(id: uncached_sf_id, name: 'Find Me A Home'))
+      allow(Salesforce::Lookup).to receive(:lead_for).with(user)
+        .and_return(Salesforce::Lookup::Result.new(lead: nil, matched_by: nil))
+      allow(Salesforce::Records::Lead).to receive(:new).and_return(lead)
+      allow(lead).to receive(:save).and_return(true)
+      allow(lead).to receive(:id).and_return('NEW_LEAD')
+
+      expect {
+        described_class.call(user: user)
+      }.to change { School.where(salesforce_id: uncached_sf_id).count }.from(0).to(1)
+
+      expect(user.reload.school&.salesforce_id).to eq(uncached_sf_id)
+      expect(lead.account_id).to eq(uncached_sf_id)
+      expect(lead.school_id).to eq(uncached_sf_id)
+    end
+  end
 end

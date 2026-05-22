@@ -58,8 +58,16 @@ module Salesforce
       unless fallback
         raise "Salesforce '#{FIND_ME_A_HOME}' school not found — cannot assign fallback school for user #{@user.id}"
       end
-      cached = School.find_by(salesforce_id: fallback.id)
-      @user.school = cached if cached
+      # If the local schools cache doesn't have the fallback yet, create a
+      # stub row with the minimum NOT NULL columns. The next SyncSchools run
+      # will populate the rest. Without this, BuildLead reads
+      # user.school&.salesforce_id as nil and the saved Lead has no
+      # account_id / school_id link to the SF School.
+      @user.school = School.find_or_create_by!(salesforce_id: fallback.id) do |school|
+        school.name = fallback.name
+        school.is_kip = fallback.respond_to?(:is_kip) ? !!fallback.is_kip : false
+        school.is_child_of_kip = fallback.respond_to?(:is_child_of_kip) ? !!fallback.is_child_of_kip : false
+      end
     end
 
     def existing_contact_owns_user?
