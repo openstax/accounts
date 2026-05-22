@@ -10,9 +10,7 @@ Rails.application.reloader.to_prepare do
     config.security_token  = secrets[:security_token]
     config.consumer_key    = secrets[:consumer_key]
     config.consumer_secret = secrets[:consumer_secret]
-    # Matches the version VCR cassettes were recorded against. Bumping requires
-    # re-recording cassettes under spec/cassettes/.
-    config.api_version     = secrets.fetch(:api_version, '51.0')
+    config.api_version     = secrets.fetch(:api_version, '66.0')
     config.login_domain    = secrets.fetch(:login_domain, 'test.salesforce.com')
   end
 end

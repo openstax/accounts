@@ -16,7 +16,7 @@ RSpec.describe Salesforce do
 
   describe Salesforce::Configuration do
     it 'defaults api_version' do
-      expect(described_class.new.api_version).to eq('61.0')
+      expect(described_class.new.api_version).to eq('66.0')
     end
 
     it 'defaults login_domain' do

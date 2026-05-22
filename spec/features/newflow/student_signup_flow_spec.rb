@@ -1,8 +1,7 @@
 require 'rails_helper'
-require 'vcr_helper'
 require 'byebug'
 module Newflow
-  feature 'Student signup flow', js: true, vcr: VCR_OPTS do
+  feature 'Student signup flow', js: true do
      before do
       load 'db/seeds.rb'
       turn_on_student_feature_flag

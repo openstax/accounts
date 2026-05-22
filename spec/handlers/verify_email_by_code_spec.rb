@@ -1,7 +1,6 @@
 require 'rails_helper'
-require 'vcr_helper'
 
-describe VerifyEmailByCode, type: :handler, vcr: VCR_OPTS do
+describe VerifyEmailByCode, type: :handler do
   subject(:handler_call) { described_class.call(params: params) }
 
   let(:params) { { code: email.confirmation_code } }

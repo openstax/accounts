@@ -8,7 +8,7 @@ RSpec.describe Salesforce::Client do
       c.security_token = 't'
       c.consumer_key = 'ck'
       c.consumer_secret = 'cs'
-      c.api_version = '61.0'
+      c.api_version = '66.0'
       c.login_domain = 'test.salesforce.com'
     end
   end
@@ -27,7 +27,7 @@ RSpec.describe Salesforce::Client do
         security_token: 't',
         client_id: 'ck',
         client_secret: 'cs',
-        api_version: '61.0',
+        api_version: '66.0',
         host: 'test.salesforce.com'
       )
     ).and_call_original
