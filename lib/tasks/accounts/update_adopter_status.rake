@@ -5,7 +5,7 @@ namespace :accounts do
     loop do
       users = User.where(adopter_status: nil).where.not(salesforce_contact_id: nil).limit(250)
 
-      contacts = OpenStax::Salesforce::Remote::Contact.select(
+      contacts = Salesforce::Records::Contact.select(
         :id,
         :adoption_status,
         :accounts_uuid

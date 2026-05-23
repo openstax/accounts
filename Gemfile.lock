@@ -518,10 +518,6 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.3.0)
       rails (>= 3.1, < 7.0)
-    openstax_salesforce (8.3.0)
-      openstax_active_force
-      rails (>= 5.0, < 7.0)
-      restforce
     openstax_transaction_isolation (2.0.0)
       activerecord (>= 6)
     openstax_transaction_retry (2.0.0)
@@ -876,11 +872,11 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
+  openstax_active_force
   openstax_api
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce
   openstax_transaction_isolation
   openstax_transaction_retry
   openstax_utilities
@@ -903,6 +899,7 @@ DEPENDENCIES
   recaptcha
   redis-rails
   representable
+  restforce
   rexml
   rspec-instafail
   rspec-rails
