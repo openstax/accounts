@@ -39,7 +39,11 @@ class School < ApplicationRecord
       ).order(Arel.sql state_expression)
     end
 
-    match_rel.first
+    # `select(:id)` keeps the fuzzy-distance ordering query lean, but returns a
+    # partial record. Reload the winning row by primary key so callers can read
+    # any attribute (e.g. name/city/state) without a MissingAttributeError.
+    match = match_rel.first
+    match && find(match.id)
   end
 
   def user_school_type

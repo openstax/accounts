@@ -17,6 +17,16 @@ describe School, type: :model do
     expect(described_class.fuzzy_search('OpenStax')).to be_nil
   end
 
+  it 'returns a fully-loaded record whose attributes are accessible' do
+    match = described_class.fuzzy_search(school.name)
+
+    # Regression: fuzzy_search used to `select(:id)` only, so reading any other
+    # attribute (e.g. in PostHog school identification) raised MissingAttributeError.
+    expect(match.name).to eq school.name
+    expect(match.city).to eq school.city
+    expect(match.state).to eq school.state
+  end
+
   it 'translates the school type to values used in the user record' do
     school.type = 'College/University (4)'
     expect(school.user_school_type).to eq :college
