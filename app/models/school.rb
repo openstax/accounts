@@ -42,8 +42,8 @@ class School < ApplicationRecord
     # `select(:id)` keeps the fuzzy-distance ordering query lean, but returns a
     # partial record. Reload the winning row by primary key so callers can read
     # any attribute (e.g. name/city/state) without a MissingAttributeError.
-    match = match_rel.first
-    match && find(match.id)
+match = match_rel.first
+match && find_by(id: match.id)
   end
 
   def user_school_type
