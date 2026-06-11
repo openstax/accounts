@@ -23,10 +23,10 @@ class NewflowMailer < ApplicationMailer
     @confirmation_code = email_address.confirmation_code
     @confirmation_url = verify_email_by_code_url(@confirmation_code)
 
-    attachments.inline['openstax-logo.png'] = File.read(
+    attachments.inline['openstax-logo.png'] = File.binread(
       Rails.root.join('app', 'assets', 'images', 'accounts_horiz_v2.png')
     )
-    attachments.inline['rice-logo.png'] = File.read(
+    attachments.inline['rice-logo.png'] = File.binread(
       Rails.root.join('app', 'assets', 'images', 'rice_logo_4.png')
     )
 
