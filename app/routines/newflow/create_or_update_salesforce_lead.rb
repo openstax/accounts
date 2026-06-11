@@ -190,7 +190,26 @@ module Newflow
         event_data: { lead_data: lead }
       )
 
-      if lead.save
+      saved = lead.save
+
+      # A stale school salesforce_id (e.g. an Account merged away in Salesforce)
+      # is rejected as a cross-reference error. Retry once with the fallback
+      # school so the lead isn't lost; UpdateSchoolSalesforceInfo repoints or
+      # detaches the stale school separately.
+      if !saved && lead.errors&.full_messages.to_s.include?('INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY')
+        Sentry.capture_message(
+          "Invalid school (#{user.school&.salesforce_id}) for user (#{user.id}); retrying lead save with fallback school",
+          level: :warning
+        )
+        fallback_school = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home')
+        unless fallback_school.nil?
+          lead.account_id = fallback_school.id
+          lead.school_id = fallback_school.id
+          saved = lead.save
+        end
+      end
+
+      if saved
         user.salesforce_lead_id = lead.id
         if user.save
           SecurityLog.create!(
@@ -207,9 +226,6 @@ module Newflow
           Sentry.capture_message("User #{user.id} was not successfully saved with lead #{lead.id}: #{user.errors.full_messages.join(', ')}")
         end
       else
-        if lead.errors&.full_messages.to_s.include?('INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY')
-          Sentry.capture_message("Invalid school (#{user.school&.salesforce_id}) for user (#{user.id})")
-        end
         SecurityLog.create!(
           user: user,
           event_type: :salesforce_lead_save_failed,
