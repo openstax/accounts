@@ -29,7 +29,7 @@ module Newflow
           return
         end
 
-        # there are no details included with this step that are helpful a future
+        # there are no details included with this step that are helpful in the future
         # TODO: might be to use this to update the user faculty state to PENDING_SHEERID or AWAITING_DOC_UPLOAD?
         return if verification_details_from_sheerid.current_step == 'collectTeacherPersonalInfo'
 

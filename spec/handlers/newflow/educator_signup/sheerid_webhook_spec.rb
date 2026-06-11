@@ -37,7 +37,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
   #   end
   # end
 
-  context "user with verified verfication" do
+  context "user with verified verification" do
     before do
       num_calls = verification.verified? ? :twice : :once
       expect(SheeridAPI).to receive(:get_verification_details).with(
