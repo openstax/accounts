@@ -148,6 +148,46 @@ module Newflow
           end
         end
 
+        context 'as_recommending with a zero total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor',
+                total_num_students: '0'
+              }
+            }
+          end
+
+          it 'returns a validation error instead of raising' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :total_num_students }).to be true
+          end
+        end
+
+        context 'as_recommending with a non-numeric total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor',
+                total_num_students: 'about thirty'
+              }
+            }
+          end
+
+          it 'returns a validation error instead of raising' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :total_num_students }).to be true
+          end
+        end
+
         context 'as_recommending without total_num_students' do
           let(:params) do
             {
@@ -225,6 +265,30 @@ module Newflow
       end
 
       context 'with invalid params' do
+        context 'a zero num_students_using_book on the as_primary path' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: ['Algebra and Trigonometry'],
+                books_used_details: {
+                  'Algebra and Trigonometry' => {
+                    'num_students_using_book' => '0',
+                    'how_using_book' => 'As the core textbook for my course'
+                  }
+                },
+                using_openstax_how: Newflow::EducatorSignup::CompleteProfile::AS_PRIMARY,
+                educator_specific_role: Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR,
+              }
+            }
+          end
+
+          it 'returns a validation error instead of raising' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :books_used_details_0_num_students_using_book }).to be true
+          end
+        end
+
         context 'other must be filled out' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::OTHER }
 
