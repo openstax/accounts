@@ -128,6 +128,15 @@ class UpdateSchoolSalesforceInfo
 
   def reconcile_stale_school(school)
     winner_salesforce_id = merge_winner_salesforce_id(school.salesforce_id)
+
+    # The existence sweep and the queryAll lookup can disagree (transient API
+    # inconsistency, or the Account was undeleted in between); a school whose
+    # Account turns out to still exist is not stale, so leave it alone.
+    if winner_salesforce_id == school.salesforce_id
+      log("Salesforce account #{school.salesforce_id} appears to exist; skipping reconciliation for school #{school.id}", :warn)
+      return
+    end
+
     winner = School.find_by(salesforce_id: winner_salesforce_id) unless winner_salesforce_id.nil?
 
     if winner

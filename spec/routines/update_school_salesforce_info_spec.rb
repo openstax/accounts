@@ -95,6 +95,21 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
       expect { deleted_school_with_users.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    it 'skips reconciliation when the school turns out to still exist in Salesforce' do
+      stub_schools school
+      allow_any_instance_of(described_class).to(
+        receive(:merge_winner_salesforce_id).with(
+          deleted_school_with_users.salesforce_id
+        ).and_return(deleted_school_with_users.salesforce_id)
+      )
+      expect(Sentry).not_to receive(:capture_exception)
+
+      described_class.call
+
+      expect(stale_user.reload.school_id).to eq deleted_school_with_users.id
+      expect { deleted_school_with_users.reload }.not_to raise_error
+    end
+
     it 'leaves the school alone when the winner is not cached locally yet' do
       stub_schools school
       allow_any_instance_of(described_class).to(
