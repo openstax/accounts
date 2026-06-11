@@ -21,7 +21,7 @@ class School < ApplicationRecord
 
   def self.fuzzy_search(name, city = nil, state = nil)
     name_expression = sanitize_sql(["? <-> name", name])
-    match_rel = select(:id).where(
+    match_rel = where(
       Arel.sql "#{name_expression} <= #{MAX_NAME_MATCH_DISTANCE}"
     ).order(Arel.sql name_expression)
 

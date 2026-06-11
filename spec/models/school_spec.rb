@@ -17,6 +17,14 @@ describe School, type: :model do
     expect(described_class.fuzzy_search('OpenStax')).to be_nil
   end
 
+  it 'fuzzy search returns a fully-loaded record whose attributes are readable' do
+    match = described_class.fuzzy_search(school.name)
+
+    expect(match.name).to eq school.name
+    expect(match.city).to eq school.city
+    expect(match.state).to eq school.state
+  end
+
   it 'translates the school type to values used in the user record' do
     school.type = 'College/University (4)'
     expect(school.user_school_type).to eq :college

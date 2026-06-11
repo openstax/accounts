@@ -15,9 +15,22 @@ module Newflow
         end
         verification_details_from_sheerid = SheeridAPI.get_verification_details(verification_id)
 
-        # there are no details included with this step that are helpful a future
+        # Report error steps (e.g. verificationLimitExceeded) so we can see how
+        # often users get stuck on the SheerID form and why, then return as before.
+        if verification_details_from_sheerid.current_step == 'error'
+          Sentry.capture_message(
+            '[SheerID Webhook] error step received',
+            extra: {
+              verification_id: verification_id,
+              error_ids: verification_details_from_sheerid.error_ids,
+              email: verification_details_from_sheerid.email
+            }
+          )
+          return
+        end
+
+        # there are no details included with this step that are helpful in the future
         # TODO: might be to use this to update the user faculty state to PENDING_SHEERID or AWAITING_DOC_UPLOAD?
-        return if verification_details_from_sheerid.current_step == 'error'
         return if verification_details_from_sheerid.current_step == 'collectTeacherPersonalInfo'
 
         if !verification_details_from_sheerid.success?
