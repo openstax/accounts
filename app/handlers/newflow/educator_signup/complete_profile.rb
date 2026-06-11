@@ -149,19 +149,19 @@ module Newflow
 
       def validate_student_count!(value, field, message)
         if value.blank?
-          errors.add(field, message)
+          nonfatal_error(code: field, message: message, offending_inputs: field)
           return nil
         end
 
         count = Integer(value, 10)
         if count <= 0
-          errors.add(field, message)
+          nonfatal_error(code: field, message: message, offending_inputs: field)
           return nil
         end
 
         count
       rescue ArgumentError, TypeError
-        errors.add(field, message)
+        nonfatal_error(code: field, message: message, offending_inputs: field)
         nil
       end
 
