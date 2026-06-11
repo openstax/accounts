@@ -23,6 +23,13 @@ class NewflowMailer < ApplicationMailer
     @confirmation_code = email_address.confirmation_code
     @confirmation_url = verify_email_by_code_url(@confirmation_code)
 
+    attachments.inline['openstax-logo.png'] = File.read(
+      Rails.root.join('app', 'assets', 'images', 'accounts_horiz_v2.png')
+    )
+    attachments.inline['rice-logo.png'] = File.read(
+      Rails.root.join('app', 'assets', 'images', 'rice_logo_4.png')
+    )
+
     mail to: @email_value,
          subject: if @should_show_pin
                     "Your OpenStax account PIN has arrived: #{@confirmation_pin}"
