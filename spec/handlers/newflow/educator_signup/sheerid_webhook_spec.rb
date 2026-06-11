@@ -37,18 +37,18 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
   #   end
   # end
 
-  before do
-    num_calls = verification.verified? ? :twice : :once
-    expect(SheeridAPI).to receive(:get_verification_details).with(
-      verification.verification_id
-    ).exactly(num_calls).and_return(verification_details)
-
-    expect(School).to receive(:find_by).with(
-      sheerid_school_name: school.sheerid_school_name
-    ).and_call_original
-  end
-
   context "user with verified verfication" do
+    before do
+      num_calls = verification.verified? ? :twice : :once
+      expect(SheeridAPI).to receive(:get_verification_details).with(
+        verification.verification_id
+      ).exactly(num_calls).and_return(verification_details)
+
+      expect(School).to receive(:find_by).with(
+        sheerid_school_name: school.sheerid_school_name
+      ).and_call_original
+    end
+
     xit 'finds schools based on the sheerid_reported_school field' do
       expect(School).not_to receive(:fuzzy_search)
 
@@ -70,6 +70,46 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
       #described_class.call verification_id: verification.verification_id
 
       expect(user.reload.school).to eq school
+    end
+  end
+
+  context 'when SheerID reports an error step' do
+    let(:verification_id) { 'error-verification-id' }
+    let(:verification_details) do
+      SheeridAPI::Response.new(
+        'lastResponse' => {
+          'currentStep' => 'error',
+          'errorIds' => ['verificationLimitExceeded']
+        },
+        'personInfo' => { 'email' => email_address.value }
+      )
+    end
+
+    before do
+      allow(SheeridAPI).to receive(:get_verification_details).with(
+        verification_id
+      ).and_return(verification_details)
+    end
+
+    it 'reports the error details to Sentry' do
+      expect(Sentry).to receive(:capture_message).with(
+        '[SheerID Webhook] error step received',
+        extra: {
+          verification_id: verification_id,
+          error_ids: ['verificationLimitExceeded'],
+          email: email_address.value
+        }
+      )
+
+      described_class.call(params: { 'verificationId' => verification_id })
+    end
+
+    it 'still returns early without creating a verification record' do
+      allow(Sentry).to receive(:capture_message)
+
+      expect {
+        described_class.call(params: { 'verificationId' => verification_id })
+      }.not_to change(SheeridVerification, :count)
     end
   end
 end
