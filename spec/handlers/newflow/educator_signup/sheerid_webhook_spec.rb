@@ -91,14 +91,27 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
       ).and_return(verification_details)
     end
 
-    it 'reports the error details to Sentry' do
+    it 'reports the error details to Sentry as a warning with the matching user id' do
+      user.update!(sheerid_verification_id: verification_id)
+
       expect(Sentry).to receive(:capture_message).with(
         '[SheerID Webhook] error step received',
+        level: :warning,
         extra: {
           verification_id: verification_id,
           error_ids: ['verificationLimitExceeded'],
-          email: email_address.value
+          user_id: user.id
         }
+      )
+
+      described_class.call(params: { 'verificationId' => verification_id })
+    end
+
+    it 'reports a nil user id when no user matches the verification id' do
+      expect(Sentry).to receive(:capture_message).with(
+        '[SheerID Webhook] error step received',
+        level: :warning,
+        extra: hash_including(user_id: nil)
       )
 
       described_class.call(params: { 'verificationId' => verification_id })
