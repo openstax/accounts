@@ -17,6 +17,7 @@ module Settings
   module Db
     class Store < RailsSettings::Base
       field :push_salesforce_lead_enabled, type: :boolean, default: false
+      field :push_salesforce_students_enabled, type: :boolean, default: false
       field :user_info_error_emails_enabled, type: :boolean, default: false
       field :show_support_chat, type: :boolean, default: false
       field :disable_recaptcha, type: :boolean, default: false
