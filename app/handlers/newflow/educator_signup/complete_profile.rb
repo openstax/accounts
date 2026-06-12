@@ -22,7 +22,6 @@ module Newflow
         attribute :school_id, type: Integer
         attribute :is_school_not_supported_by_sheerid, type: String
         attribute :is_country_not_supported_by_sheerid, type: String
-        attribute :school_name, type: String
         attribute :school_issued_email, type: String
         attribute :educator_specific_role, type: String
         attribute :other_role_name, type: String

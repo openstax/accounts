@@ -58,7 +58,7 @@
         setActive(Math.min(state.activeIndex + 1, optionCount() - 1));
       } else if (event.key === 'ArrowUp') {
         event.preventDefault();
-        setActive(Math.max(state.activeIndex - 1, 0));
+        setActive(state.activeIndex <= 0 ? -1 : state.activeIndex - 1);
       } else if (event.key === 'Enter') {
         if (state.activeIndex >= 0) {
           event.preventDefault();
