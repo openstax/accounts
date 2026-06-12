@@ -42,6 +42,8 @@ Rails.application.routes.draw do
     post 'i/signup/student/verify_email_by_pin', action: :student_verify_email_by_pin, as: :student_verify_pin
   end
 
+  get 'i/schools', to: 'newflow/schools#index', as: :newflow_schools
+
   scope controller: 'newflow/educator_signup' do
     # Step 1
     get 'i/signup/educator', action: :educator_signup_form, as: :educator_signup
