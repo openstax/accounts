@@ -1334,3 +1334,59 @@ $very-narrow: 37rem * $scale-factor;
         }
     }
 }
+
+.school-autocomplete {
+  position: relative;
+
+  .school-autocomplete-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin: 2px 0 0;
+    padding: 0;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #d5d5d5;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    max-height: 19em;
+    overflow-y: auto;
+    text-align: left;
+
+    &[hidden] {
+      display: none;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1em;
+      padding: 0.6em 1em;
+      cursor: pointer;
+
+      &.active {
+        background-color: #f1f1f1;
+      }
+
+      .school-autocomplete-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .school-autocomplete-location {
+        color: #6f6f6f;
+        font-size: 0.85em;
+        white-space: nowrap;
+      }
+
+      &.school-autocomplete-use-as-entered {
+        border-top: 1px solid #e5e5e5;
+        font-style: italic;
+        color: #424242;
+      }
+    }
+  }
+}
