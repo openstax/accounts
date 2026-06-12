@@ -71,9 +71,11 @@ module Newflow
         total_students = calculate_total_students
         return if errors?
 
-        selected_school = School.find_by(id: signup_params.school_id) if signup_params.school_id.present?
-        @user.school = selected_school if selected_school
-
+selected_school = School.find_by(id: signup_params.school_id) if signup_params.school_id.present?
+# If the school field was used but no valid id was provided, clear any existing link.
+if signup_params.school_name.present? || signup_params.school_id.present?
+  @user.school = selected_school
+end
         @user.update!(
           role: signup_params.educator_specific_role,
           other_role_name: other_role_name,
