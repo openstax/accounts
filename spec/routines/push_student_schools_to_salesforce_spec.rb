@@ -98,10 +98,8 @@ describe PushStudentSchoolsToSalesforce, type: :routine do
     let!(:second_student) { FactoryBot.create :user, role: :student, school: school }
 
     it 'still processes the others and reports the error' do
-      call_count = 0
-      allow(remote).to receive(:where) do
-        call_count += 1
-        raise 'sf exploded' if call_count == 1
+      allow(remote).to receive(:where) do |args|
+        raise 'sf exploded' if args[:name] == student.uuid
         double(first: nil)
       end
       allow(remote).to receive(:new) do
@@ -111,8 +109,8 @@ describe PushStudentSchoolsToSalesforce, type: :routine do
 
       described_class.call
 
-      stamped = [student, second_student].map { |u| u.reload.salesforce_student_pushed_at }
-      expect(stamped.compact.length).to eq 1
+      expect(student.reload.salesforce_student_pushed_at).to be_nil
+      expect(second_student.reload.salesforce_student_pushed_at).not_to be_nil
     end
   end
 
