@@ -118,6 +118,52 @@ module Newflow
       end
     end
 
+    describe 'when the school salesforce_id is stale (cross-reference error)' do
+      let!(:stale_school) { FactoryBot.create :school, salesforce_id: '0010v0StaleAcct' }
+      let(:mock_lead) { OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce) }
+      let(:cross_reference_error) do
+        double(full_messages: [
+          'INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY: ' \
+          'insufficient access rights on cross-reference id: 0010v0StaleAcct'
+        ])
+      end
+
+      before do
+        user.update!(school: stale_school)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_RETRY')
+        allow(mock_lead).to receive(:errors).and_return(cross_reference_error)
+      end
+
+      it 'retries the save with the fallback school so the lead is not lost' do
+        save_results = [false, true]
+        allow(mock_lead).to receive(:save) { save_results.shift }
+
+        described_class.call(user: user)
+
+        expect(mock_lead.account_id).to eq('SF_SCHOOL_HOME')
+        expect(mock_lead.school_id).to eq('SF_SCHOOL_HOME')
+        expect(user.reload.salesforce_lead_id).to eq('SF_LEAD_RETRY')
+        expect(SecurityLog.where(event_type: :salesforce_lead_save_failed).count).to eq(0)
+        expect(Sentry).to have_received(:capture_message).with(
+          /Invalid school \(0010v0StaleAcct\) for user \(#{user.id}\); retrying/,
+          level: :warning
+        )
+      end
+
+      it 'still logs the failure when the retry also fails' do
+        allow(mock_lead).to receive(:save).and_return(false)
+
+        described_class.call(user: user)
+
+        expect(SecurityLog.where(event_type: :salesforce_lead_save_failed).count).to eq(1)
+        expect(Sentry).to have_received(:capture_message).with(
+          /Salesforce lead save failed for user #{user.id}/
+        )
+      end
+    end
+
     describe 'when user already has a contact' do
       let(:existing_contact) do
         contact = OpenStruct.new(id: 'SF_CONTACT_123')
