@@ -49,8 +49,7 @@ class PushStudentSchoolsToSalesforce
         changed = true
       end
 
-      book_id = initial_book_id_for(user)
-      if book_id.present? && student.initial_book_id.blank?
+      if student.initial_book_id.blank? && (book_id = initial_book_id_for(user)).present?
         student.initial_book_id = book_id
         changed = true
       end
