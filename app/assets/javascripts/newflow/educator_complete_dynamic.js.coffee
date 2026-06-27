@@ -20,7 +20,7 @@ class NewflowUi.EducatorComplete
     @total_num_students = @findOrLogNotFound(@form, '.total-num-students')
 
     # input fields locators
-    @school_name_input = @findOrLogNotFound(@school_name, 'input')
+    @school_name_input = @findOrLogNotFound(@school_name, 'input[type="text"]')
 
     @completed_role_radio = @findOrLogNotFound(@completed_role, "input")
     @other_input = @findOrLogNotFound(@other_specify, "input")

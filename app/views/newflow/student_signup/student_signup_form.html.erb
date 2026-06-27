@@ -113,16 +113,16 @@
 
                 <div class="content control-group">
                     <%= label_tag :signup_school, I18n.t(:"educator_profile_form.school_name"), class: 'field-label' %>
-                    <%=
-                        form_helper.text_field(
-                            name: :school,
-                            placeholder: I18n.t(:"educator_profile_form.school_name"),
-                            required: false,
-                            list: 'school-list'
-                        )
-                    %>
-                    <datalist id='school-list'>
-                    </datalist>
+                    <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>">
+                        <%=
+                            form_helper.text_field(
+                                name: :school,
+                                placeholder: I18n.t(:"educator_profile_form.school_name"),
+                                required: false
+                            )
+                        %>
+                        <%= form.hidden_field :school_id %>
+                    </div>
                 </div>
 
                 <div class="content control-group">
@@ -199,5 +199,5 @@
 <script type="text/javascript">
     NewflowUi.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
     NewflowUi.focusOnFirstErrorItem();
-    NewflowUi.attachSchoolList(`[name="signup[school]"]`)
+    OxSchoolAutocomplete.attach('.school-autocomplete');
 </script>
