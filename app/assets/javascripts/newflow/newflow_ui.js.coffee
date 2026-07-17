@@ -38,7 +38,7 @@ NewflowUi = do () ->
 
       setTimeout(enable_disable_continue, 500)
 
-      $(sourceSelector).on 'click', =>
+      $(sourceSelector).on 'click change', =>
         this.checkCheckedButton(targetSelector, sourceSelector)
 
   focusOnFirstErrorItem: () ->
