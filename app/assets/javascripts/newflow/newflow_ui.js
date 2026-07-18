@@ -62,7 +62,8 @@ const NewflowUi = (function() {
 
     focusOnFirstErrorItem() {
       return $(document).ready(() => {
-        return document.querySelector('.has-error')?.focus();
+        const firstErrorItem = document.querySelector('.has-error');
+        return firstErrorItem && firstErrorItem.focus();
       });
     },
 

@@ -1,5 +1,5 @@
 (function() {
-const IS_EDU = new RegExp('\.edu\s*$', 'i');
+const IS_EDU = /\.edu\s*$/i;
 
 OX.Signup.EmailValue = class EmailValue {
 
@@ -10,7 +10,7 @@ OX.Signup.EmailValue = class EmailValue {
     this.email.change(this.onChange);
     this.group.closest('form').submit(this.onSubmit);
     this.userType = '';
-    Mailcheck.defaultTopLevelDomains.concat(['pl']); // extend TLDs for our Polish users
+    if (!Mailcheck.defaultTopLevelDomains.includes('pl')) { Mailcheck.defaultTopLevelDomains.push('pl'); } // extend TLDs for our Polish users
   }
 
   onChange() {

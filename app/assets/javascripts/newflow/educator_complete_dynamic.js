@@ -96,13 +96,11 @@ NewflowUi.EducatorComplete = class EducatorComplete {
   }
 
   findOrLogNotFound(parent, selector) {
-    let found;
-    if (found = parent.find(selector)) {
-      return found;
-    } else {
+    const found = parent.find(selector);
+    if (!found.length) {
       console.log('Couldn\'t find ', selector);
-      return null;
     }
+    return found;
   }
 
   onSubmit(ev) {
