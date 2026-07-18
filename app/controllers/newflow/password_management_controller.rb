@@ -61,10 +61,15 @@ module Newflow
         success: lambda {
           security_log(:student_created_password, user: @handler_result.outputs.user)
           log_posthog(current_user, 'user_password_created')
-          # redirect_back (not a hardcoded redirect_to) so that
-          # ContactInfosController#confirm_unclaimed's stored oauth_authorization_url
-          # (the account-claiming flow) is honored when present; otherwise this falls
-          # back to the profile page exactly as before.
+          # redirect_back here is action_interceptor's override (see
+          # lib/require_recent_signin.rb / config/initializers/action_interceptor.rb),
+          # not Rails' core ActionController::Redirecting#redirect_back -- it ignores
+          # fallback_location entirely and redirects to the session's stored_url
+          # (ContactInfosController#confirm_unclaimed's stored oauth_authorization_url,
+          # for the account-claiming flow) or, if nothing is stored, to root_url.
+          # StaticPagesController#home then forwards a signed-in user straight to
+          # profile_newflow_path, so the net effect for every other caller of this
+          # action matches the previous hardcoded redirect_to profile_newflow_url.
           redirect_back(fallback_location: profile_newflow_url, notice: t(:"legacy.identities.add_success.message"))
         },
         failure: lambda {

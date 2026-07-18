@@ -71,7 +71,7 @@ class FindOrCreateUser
       identity.password_expires_at = DateTime.now
       identity.save!
       user.authentications.create!(
-        # TODO review this creation of authentication (otherwise only in SessionsCreate)
+        # TODO review this creation of authentication (otherwise only in SetPassword)
         provider: 'identity', uid: identity.id.to_s
       )
     end

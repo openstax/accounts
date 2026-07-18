@@ -27,7 +27,7 @@ class SignupPassword
     run(UserFromPreAuthState, options[:pre_auth_state])
     transfer_errors_from(outputs.user, {type: :verbatim}, true)
 
-    # Create an Identity, but not an Authentication -- that is done in SessionsCreate
+    # Create an Identity, but not an Authentication -- that is done in OauthCallback
     run(CreateIdentity,
         password:              signup_params.password,
         password_confirmation: signup_params.password_confirmation,
