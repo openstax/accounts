@@ -113,6 +113,13 @@ input.has-error {
     // specificity math holding across Sass engines (also protects a future
     // Dart Sass migration, since Dart Sass's extend algorithm isn't
     // guaranteed to match Ruby Sass's here either).
+    //
+    // This override intentionally does NOT repeat pattern-library's
+    // `:not(.delay-validation)` guard (which lets a form opt an input out of
+    // showing validation state) -- `delay-validation` has zero call sites
+    // anywhere in this app (grep confirms). If it's ever adopted here, this
+    // rule must be updated to respect it too, e.g.
+    // `&:not(.delay-validation) ~ .invalid-message`.
     ~ .invalid-message {
         display: block !important;
     }

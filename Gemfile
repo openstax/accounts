@@ -51,6 +51,16 @@ gem 'openstax_transaction_isolation'
 # but stable) still unblocks removal of the sass 3.4.19/compass/ffi pins.
 # Migrating to Dart Sass is filed as a Phase 2 follow-up once
 # intl-tel-input-rails's stylesheet is fixed upstream or vendored/patched.
+#
+# NOTE: `sass '3.4.19'` and `sass-rails (5.0.8)` still show up in
+# Gemfile.lock's resolved graph after this change -- that's not a failed
+# removal. intl-tel-input-rails's gemspec declares an unversioned runtime
+# dependency on `sass-rails`, so Bundler keeps resolving both into the
+# graph as transitive dependencies of that gem. Neither is a direct
+# Gemfile entry anymore, so Bundler.require never loads them, and nothing
+# else in this app requires 'sass-rails' explicitly (confirmed via grep) --
+# they're inert, unused gems sitting in the bundle, not gems actually
+# compiling our stylesheets.
 gem 'sassc-rails'
 
 # Bootstrap front-end framework
