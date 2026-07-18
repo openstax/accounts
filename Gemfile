@@ -295,7 +295,7 @@ group :test do
   gem 'cgi'
 
   # RSpec matchers for convenience
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', '~> 6.0'
 
   # Test database cleanup gem with multiple strategies
   gem 'database_cleaner'
