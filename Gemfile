@@ -182,9 +182,6 @@ gem 'http_accept_language'
 # Fast JSON parsing
 gem 'oj'
 
-# Replace JSON with Oj
-gem 'oj_mimic_json'
-
 # CORS for local testing/dev
 gem 'rack-cors'
 

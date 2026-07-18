@@ -473,7 +473,6 @@ GEM
     oj (3.16.6)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
-    oj_mimic_json (1.0.1)
     omniauth (1.9.2)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
@@ -868,7 +867,6 @@ DEPENDENCIES
   meta_request
   mini_racer
   oj
-  oj_mimic_json
   omniauth (~> 1.9)
   omniauth-facebook
   omniauth-google-oauth2
