@@ -139,9 +139,6 @@ gem 'pg'
 # Support systemd Type=notify services for puma and delayed_job
 gem 'sd_notify', require: false
 
-# Add P3P headers for IE
-gem 'p3p'
-
 # Font-Awesome for the asset pipeline
 gem 'font-awesome-rails'
 

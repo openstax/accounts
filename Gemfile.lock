@@ -536,8 +536,6 @@ GEM
       rails (>= 5.0, < 8.0)
       request_store
     ostruct (0.6.0)
-    p3p (2.0.0)
-      rack (>= 1.6.2)
     parallel (1.26.3)
     parallel_tests (4.7.2)
       parallel
@@ -884,7 +882,6 @@ DEPENDENCIES
   openstax_transaction_isolation
   openstax_transaction_retry
   openstax_utilities
-  p3p
   parallel_tests
   pattern-library!
   pg
