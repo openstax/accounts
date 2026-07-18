@@ -33,10 +33,16 @@ NewflowUi = do () ->
   enableOnChecked: (targetSelector, sourceSelector) ->
     $(document).ready =>
 
-      enable_disable_continue = () =>
+      check = () =>
         this.checkCheckedButton(targetSelector, sourceSelector)
 
-      setTimeout(enable_disable_continue, 500)
+      check()
+
+      # Re-check on bfcache restore (e.g. browser back button), where the
+      # browser may refill form fields after this ready handler already ran,
+      # racing with jQuery-UJS's own disabling of the submit button.
+      window.addEventListener 'pageshow', (event) ->
+        check() if event.persisted
 
       $(sourceSelector).on 'click', =>
         this.checkCheckedButton(targetSelector, sourceSelector)
