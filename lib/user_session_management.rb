@@ -1,5 +1,3 @@
-require 'oauth'
-
 # References:
 #   http://railscasts.com/episodes/356-dangers-of-session-hijacking
 

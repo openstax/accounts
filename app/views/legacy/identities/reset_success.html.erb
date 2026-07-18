@@ -1,9 +1,0 @@
-<%= ox_card(classes: "reset-password", heading: (t :".page_heading")) do %>
-
-  <p><%= t :".message" %></p>
-
-  <section class="footer">
-    <%= button_to (t :".continue"), password_continue_path, {class: 'primary', method: :get, autofocus: true} %>
-  </section>
-
-<% end %>

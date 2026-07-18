@@ -6,10 +6,6 @@ module ApplicationHelper
     Settings::FeatureFlags.educator_feature_flag
   end
 
-  def get_param_to_permit_legacy_flow
-    params[:bpff]
-  end
-
   def set_param_to_permit_legacy_flow
     # bpff in short stands for "bypass feature flag" — intentionally made a little obscure.
     { bpff: 'true' }

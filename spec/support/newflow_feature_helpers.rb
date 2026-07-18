@@ -95,6 +95,17 @@ def newflow_complete_add_password_screen(password=nil)
   expect(page).to have_content(t :"login_signup_form.profile_newflow_page_header")
 end
 
+# change_password_form.html.erb has the same single-password-field shape as
+# create_password_form.html.erb, so this mirrors newflow_complete_add_password_screen.
+def newflow_complete_reset_password_screen(password=nil)
+  password ||= 'Passw0rd!'
+  fill_in(t(:"login_signup_form.password_label"), with: password)
+  find('#login-signup-form').click
+  wait_for_animations
+  find('[type=submit]').click
+  expect(page).to have_content(t :"login_signup_form.profile_newflow_page_header")
+end
+
 def expect_newflow_profile_page
   valid_paths = /\A(?:#{Regexp.escape(profile_newflow_path)}|#{Regexp.escape(pose_terms_path)}(?:\?.*)?)\z/
 

@@ -437,12 +437,6 @@ GEM
     notiffany (0.1.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
-    oauth (1.1.0)
-      oauth-tty (~> 1.0, >= 1.0.1)
-      snaky_hash (~> 2.0)
-      version_gem (~> 1.1)
-    oauth-tty (1.0.5)
-      version_gem (~> 1.1, >= 1.1.1)
     oauth2 (1.4.11)
       faraday (>= 0.17.3, < 3.0)
       jwt (>= 1.0, < 3.0)
@@ -466,16 +460,9 @@ GEM
     omniauth-identity (3.0.9)
       bcrypt
       omniauth
-    omniauth-oauth (1.2.1)
-      oauth
-      omniauth (>= 1.0, < 3)
-      rack (>= 1.6.2, < 4)
     omniauth-oauth2 (1.7.3)
       oauth2 (>= 1.4, < 3)
       omniauth (>= 1.9, < 3)
-    omniauth-twitter (1.4.0)
-      omniauth-oauth (~> 1.1)
-      rack
     openstax_active_force (1.1.1)
       active_attr
       rails (>= 5.0, < 7.0)
@@ -717,9 +704,6 @@ GEM
     simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
     smarter_csv (1.12.1)
-    snaky_hash (2.0.1)
-      hashie
-      version_gem (~> 1.1, >= 1.1.1)
     sprockets (3.7.5)
       base64
       concurrent-ruby (~> 1.0)
@@ -746,7 +730,6 @@ GEM
     unicode-display_width (2.6.0)
     vcr (6.3.1)
       base64
-    version_gem (1.1.4)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -836,8 +819,7 @@ DEPENDENCIES
   omniauth (~> 1.9)
   omniauth-facebook
   omniauth-google-oauth2
-  omniauth-identity
-  omniauth-twitter
+  omniauth-identity (= 3.0.9)
   openstax_api
   openstax_healthcheck
   openstax_path_prefixer!

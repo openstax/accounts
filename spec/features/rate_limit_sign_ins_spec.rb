@@ -173,9 +173,8 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
   def reset_password(password:)
     login_token = generate_login_token_for 'user'
-    visit password_reset_path(token: login_token)
-    complete_reset_password_screen(password)
-    complete_reset_password_success_screen
+    visit change_password_form_path(token: login_token)
+    newflow_complete_reset_password_screen(password)
   end
 
 end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User claims an unclaimed account' do
+feature 'User claims an unclaimed account', js: true do
   before do
     turn_on_student_feature_flag
   end
@@ -37,10 +37,15 @@ feature 'User claims an unclaimed account' do
 
       expect(page).to have_no_missing_translations
       click_on t 'contact_infos.confirm_unclaimed.you_can_now_sign_in.add_password'
-      expect(page).to have_content(t :"legacy.identities.add.page_heading")
-      complete_add_password_screen
+      expect(page).to have_content(t :"login_signup_form.setup_your_new_password")
+      # Not newflow_complete_add_password_screen: that helper assumes terms are already
+      # signed and lands on profile. This user hasn't signed terms yet, so submitting
+      # goes straight to the terms screen instead (same order the retired legacy flow used).
+      fill_in(t(:"login_signup_form.password_label"), with: 'Passw0rd!')
+      find('#login-signup-form').click
+      wait_for_animations
+      find('[type=submit]').click
 
-      complete_add_password_success_screen
       complete_terms_screens
       expect_back_at_app
     end
@@ -56,9 +61,13 @@ feature 'User claims an unclaimed account' do
 
       visit_invite_url
       click_on t 'contact_infos.confirm_unclaimed.you_can_now_sign_in.reset_password'
-      expect(page).to have_content(t :"legacy.identities.reset.page_heading")
-      complete_reset_password_screen
-      complete_reset_password_success_screen
+      expect(page).to have_content(t :"login_signup_form.enter_new_password")
+      # Not newflow_complete_reset_password_screen: see comment in the sibling scenario above.
+      fill_in(t(:"login_signup_form.password_label"), with: 'Passw0rd!')
+      find('#login-signup-form').click
+      wait_for_animations
+      find('[type=submit]').click
+
       complete_terms_screens
       expect_back_at_app
     end
