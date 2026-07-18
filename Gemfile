@@ -323,3 +323,13 @@ group :production do
 end
 
 gem "terser", "~> 1.2"
+
+# Pin css_parser (transitive via premailer-rails -> premailer) explicitly so the
+# flagged 1.19.0 doesn't drift back down and the version ceiling is documented in
+# one place. 1.22.0 fixes CVE-2026-44312 (improper HTTPS certificate validation /
+# MITM; the 1.x line was patched in 1.22.0). The remaining SSRF + local-file-
+# disclosure advisory, CVE-2026-53727, is only fixed in css_parser 3.0.0 -- and
+# 2.x/3.x require Ruby >= 3.3 while this app runs 3.1.6, so we cannot reach it
+# without first bumping the app's Ruby. Ceiling here is our Ruby version, not
+# css_parser: bump to '~> 3.0' once this app is on Ruby >= 3.3.
+gem 'css_parser', '~> 1.22'
