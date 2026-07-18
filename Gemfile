@@ -75,7 +75,9 @@ gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
 # Redis client (cache store + jobba)
-gem 'redis'
+# Pinned to 4.8 because fakeredis/mock_redis pull in redis (~> 4.8); lift this
+# pin when moving to a redis 5-compatible fake gem.
+gem 'redis', '~> 4.8'
 
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
@@ -286,8 +288,11 @@ group :test do
   # Testing emails
   gem 'capybara-email'
 
-  # Fake in-memory Redis for testing
-  gem 'fakeredis', require: 'fakeredis/rspec'
+  # Fake in-memory Redis for testing (Jobba).
+  # Pinned below 0.47: mock_redis 0.47+ dropped redis-rb 4.x support and
+  # hard-requires the separate `redis-client` gem (redis-rb 5.x's driver),
+  # which isn't in our bundle since we're intentionally staying on redis ~> 4.8.
+  gem 'mock_redis', '~> 0.46.0'
 
   gem 'launchy'
 
