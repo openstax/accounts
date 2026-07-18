@@ -587,6 +587,11 @@ en:
         I have read and agree to the terms listed above.
 
   legacy:
+    authentications:
+      add:
+        continue_prompt: Continue to finish adding this login option to your account.
+        continue: Continue
+
     users:
       edit:
         add_email_address: Add an email

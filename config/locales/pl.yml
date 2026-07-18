@@ -457,6 +457,11 @@ pl:
         się na zawarte w nich warunki.
 
   legacy:
+    authentications:
+      add:
+        continue_prompt: Kontynuuj, aby dokończyć dodawanie tej metody logowania do konta.
+        continue: Kontynuuj
+
     users:
       edit:
         add_email_address: Dodaj nowy adres

@@ -68,11 +68,17 @@ gem 'bcrypt'
 gem 'doorkeeper'
 
 # OAuth clients
-gem 'omniauth', '~> 1.9'
+gem 'omniauth', '~> 2.0'
 gem 'omniauth-identity'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
-gem 'omniauth-google-oauth2'
+# 0.8.2 was the last release compatible with omniauth 1.x; >= 1.0 requires omniauth ~> 2.0
+gem 'omniauth-google-oauth2', '~> 1.2'
+# Wires Rails' authenticity-token verification into omniauth 2.0's request_validation_phase.
+# omniauth's built-in AuthenticityTokenProtection looks for the session key `:csrf`, but Rails
+# stores it under `:_csrf_token`; this gem bridges that so our POST-only /auth request phase
+# (see config/initializers/omniauth.rb) is actually CSRF-protected. Required by CVE-2015-9284.
+gem 'omniauth-rails_csrf_protection'
 
 # Key-value store for caching
 gem 'redis-rails'
