@@ -38,7 +38,20 @@ gem 'openstax_transaction_retry'
 gem 'openstax_transaction_isolation'
 
 # SCSS stylesheets
-gem 'sass-rails'
+#
+# FALLBACK NOTICE: dartsass-sprockets (Dart Sass) was tried first per the
+# decision gate in task-10-brief.md, but a hard error surfaced from a
+# third-party dependency: intl-tel-input-rails's vendored
+# intlTelInput.scss.erb declares CSS custom properties directly inside an
+# `@media` block with no wrapping selector (invalid per the CSS/SCSS grammar,
+# but silently tolerated by libsass). Dart Sass's stricter parser rejects it
+# with `Error: expected "{"`, aborting assets:precompile. That file lives in
+# a git-sourced gem (openstax/intl-tel-input-rails, pinned to master) outside
+# this app's control, so falling back to sassc-rails (libsass — deprecated
+# but stable) still unblocks removal of the sass 3.4.19/compass/ffi pins.
+# Migrating to Dart Sass is filed as a Phase 2 follow-up once
+# intl-tel-input-rails's stylesheet is fixed upstream or vendored/patched.
+gem 'sassc-rails'
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass'
@@ -51,13 +64,6 @@ gem 'bootstrap-sass'
 # .js.coffee files. Keep this as a leaf dependency until Sprockets 4 (which
 # drops the built-in CoffeeScript engine) lands.
 gem 'coffee-script'
-
-# Compass stylesheets
-gem 'compass-rails'
-
-# Prevent deprecation warning coming from Compass in Sass 3.4.20
-gem 'sass', '3.4.19'
-gem 'ffi', '< 1.17'
 
 # JavaScript asset compiler
 gem 'mini_racer'
