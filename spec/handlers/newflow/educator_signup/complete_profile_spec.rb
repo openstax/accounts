@@ -69,6 +69,41 @@ module Newflow
           end
         end
 
+        context 'school selection via school_id' do
+          let(:school) { FactoryBot.create :school, name: 'Rice University', city: 'Houston', state: 'TX' }
+
+          it 'links the School, stores its canonical name, and skips the fuzzy match' do
+            expect(School).not_to receive(:fuzzy_search)
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'rice univ', school_id: school.id) },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq school
+            expect(user.self_reported_school).to eq 'Rice University'
+          end
+
+          it 'keeps free-text behavior when school_id is blank' do
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Hogwarts Academy') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.self_reported_school).to eq 'Hogwarts Academy'
+          end
+
+          it 'falls back to free text when school_id does not exist' do
+            user.update!(school: nil)
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Hogwarts Academy', school_id: 999999) },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to be_nil
+            expect(user.self_reported_school).to eq 'Hogwarts Academy'
+          end
+        end
+
         context 'books used details' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR }
 

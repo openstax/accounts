@@ -30,6 +30,9 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  school_autocomplete:
+    use_as_entered_label: Use "{school}"
+
   educator_profile_form:
     complete_page_header: Complete your profile
     school_name: School name
