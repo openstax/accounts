@@ -18,6 +18,10 @@ class OtherController < Newflow::BaseController
 
     respond_to do |format|
       format.json do
+        if params[:value].is_a?(String) && !ALLOWED_STRING_UPDATE_FIELDS.include?(params[:name])
+          render json: { error: 'invalid field' }, status: :bad_request and return
+        end
+
         if current_user.update(user_params)
           security_log :user_updated, user_params: user_params
 
@@ -44,6 +48,15 @@ class OtherController < Newflow::BaseController
   end
 
   private
+
+  # Single-field x-editable inline update on the profile page (see
+  # app/views/newflow/base/profile_newflow.html.erb) only ever submits
+  # {name: "username", value: <string>} -- name/title/suffix use the
+  # object branch below via OX.Profile.Name.editable. Whitelisted here so a
+  # crafted {name: <any column>, value: <string>} PUT can't mass-assign
+  # arbitrary User attributes (e.g. role, faculty_status) through the same
+  # self-update AccessPolicy check.
+  ALLOWED_STRING_UPDATE_FIELDS = %w[username].freeze
 
   def user_params
     params[:value].is_a?(String) ? \
