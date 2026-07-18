@@ -236,7 +236,7 @@ group :development, :test do
   # gem 'debase', require: false
 
   # Use RSpec for tests
-  gem 'rspec-rails'
+  gem 'rspec-rails', '~> 6.1'
 
   # Because `assigns` has been extracted from RSpec to a gem
   gem 'rails-controller-testing'
