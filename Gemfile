@@ -74,8 +74,8 @@ gem 'omniauth-facebook'
 gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
-# Key-value store for caching
-gem 'redis-rails'
+# Redis client (cache store + jobba)
+gem 'redis'
 
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
