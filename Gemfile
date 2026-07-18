@@ -43,15 +43,21 @@ gem 'sass-rails'
 # Bootstrap front-end framework
 gem 'bootstrap-sass'
 
+# Sprockets 3.x (bundled with sprockets-rails on Rails 6.1) registers a
+# `.coffee` engine unconditionally at require-time, independent of the
+# coffee-rails gem we removed. There's no public API in this Sprockets
+# version to unregister it, and its processor cache-key computation needs
+# `coffee_script` loadable at precompile time even though the app has zero
+# .js.coffee files. Keep this as a leaf dependency until Sprockets 4 (which
+# drops the built-in CoffeeScript engine) lands.
+gem 'coffee-script'
+
 # Compass stylesheets
 gem 'compass-rails'
 
 # Prevent deprecation warning coming from Compass in Sass 3.4.20
 gem 'sass', '3.4.19'
 gem 'ffi', '< 1.17'
-
-# CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails'
 
 # JavaScript asset compiler
 gem 'mini_racer'
