@@ -354,6 +354,46 @@ describe User, type: :model do
     end
   end
 
+  describe '.verified_instructors_matching' do
+    let(:school) { FactoryBot.create(:school, name: 'Rice University') }
+
+    let!(:verified_delgado) do
+      FactoryBot.create(:user, role: :instructor, faculty_status: :confirmed_faculty, school: school,
+                                first_name: 'Sarah', last_name: 'Delgado')
+    end
+
+    let!(:pending_delgado) do
+      FactoryBot.create(:user, role: :instructor, faculty_status: :pending_faculty,
+                                first_name: 'Marcus', last_name: 'Delgado')
+    end
+
+    let!(:unrelated_instructor) do
+      FactoryBot.create(:user, role: :instructor, faculty_status: :confirmed_faculty,
+                                first_name: 'Jamie', last_name: 'Nguyen')
+    end
+
+    it 'matches verified instructors by (partial) name, case-insensitively' do
+      expect(User.verified_instructors_matching('delg')).to contain_exactly(verified_delgado)
+      expect(User.verified_instructors_matching('DELGADO')).to contain_exactly(verified_delgado)
+    end
+
+    it 'excludes instructors who are not yet confirmed_faculty' do
+      results = User.verified_instructors_matching('Delgado')
+      expect(results).not_to include(pending_delgado)
+    end
+
+    it 'excludes students entirely, even with a matching name' do
+      FactoryBot.create(:user, role: :student, first_name: 'Delgado', last_name: 'Student')
+      results = User.verified_instructors_matching('Delgado')
+      expect(results).to contain_exactly(verified_delgado)
+    end
+
+    it 'returns none for queries shorter than 2 characters' do
+      expect(User.verified_instructors_matching('d')).to be_empty
+      expect(User.verified_instructors_matching('')).to be_empty
+    end
+  end
+
   describe 'activated_at gets updated when user changes state to activated' do
     let(:user) do
       FactoryBot.create(:user, state: User::UNVERIFIED)

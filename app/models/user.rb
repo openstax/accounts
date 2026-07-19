@@ -159,6 +159,12 @@ class User < ApplicationRecord
   has_many :adoptions, dependent: :nullify
   # user-owned reports (not a Salesforce mirror), so destroy is correct here
   has_many :adoption_reports, dependent: :destroy
+  # Unverified "who teaches your class?" claims the user made as a student
+  has_many :instructor_connections, class_name: 'InstructorConnection', foreign_key: :student_id,
+                                     inverse_of: :student, dependent: :destroy
+  # Claims where this user was matched as the (verified) instructor
+  has_many :instructor_connections_as_instructor, class_name: 'InstructorConnection', foreign_key: :instructor_id,
+                                                   inverse_of: :instructor, dependent: :nullify
 
   delegate_to_routine :destroy
 
@@ -429,6 +435,25 @@ class User < ApplicationRecord
 
   def self.non_student_known_roles
     known_roles - ['student']
+  end
+
+  # Name search over verified instructors only, for the student account
+  # page's "who teaches your class?" autocomplete. Mirrors School.search's
+  # substring + trigram-distance approach. Callers must only expose the
+  # display name + school from the result — never email or other PII.
+  def self.verified_instructors_matching(query, limit: 8)
+    q = query.to_s.strip
+    return none if q.length < 2
+
+    full_name = "(coalesce(first_name, '') || ' ' || coalesce(last_name, ''))"
+    distance = sanitize_sql(["? <-> #{full_name}", q])
+    substring = sanitize_sql(["#{full_name} ILIKE ?", "%#{sanitize_sql_like(q)}%"])
+    prefix = sanitize_sql(["#{full_name} ILIKE ?", "#{sanitize_sql_like(q)}%"])
+
+    instructor.confirmed_faculty
+              .where(Arel.sql("(#{substring}) OR (#{distance}) <= 0.5"))
+              .order(Arel.sql("(#{prefix}) DESC, (#{distance}) ASC, first_name ASC"))
+              .limit(limit)
   end
 
   def guessed_preferred_confirmed_email

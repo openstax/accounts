@@ -1,0 +1,318 @@
+<div class="account-layout">
+  <%= render 'account/navigation' %>
+  <div class="account-layout__content">
+    <%= render(
+          'shared/account_layout_shell',
+          locals: {
+            title: 'Your OpenStax Account',
+            description: 'Your saved books and instructor connections, all in one place.'
+          }
+        ) do %>
+      <div class="account-shell__body account-student-overview">
+        <header class="account-overview__header">
+          <h1 class="account-overview__title">
+            Welcome back<% if current_user.first_name.present? %>, <%= current_user.first_name %><% end %>
+          </h1>
+          <div class="account-overview__badges">
+            <span class="account-badge account-badge--student">Student</span>
+            <% if current_user.school&.name.present? %>
+              <span class="account-badge account-badge--verified">&#10003; School verified</span>
+            <% end %>
+          </div>
+        </header>
+
+        <section class="account-profile__section account-student-overview__card" aria-label="Saved books">
+          <div class="account-shell__section-header account-shell__section-header--split">
+            <div>
+              <h2>Saved books</h2>
+              <p>Save a book to jump back in from any device — your notes and highlights come with it.</p>
+            </div>
+            <%= link_to 'Browse the library', account_books_path, class: 'account-overview__inline-link' %>
+          </div>
+
+          <% if @saved_books.any? %>
+            <ul class="account-student-overview__book-grid">
+              <% @saved_books.each do |saved_book| %>
+                <% book = saved_book.book %>
+                <% next unless book %>
+                <% book_link = book.html_url.presence || book.webview_rex_link %>
+                <li class="account-student-overview__book-card">
+                  <div class="account-books__cover account-student-overview__book-cover <%= 'account-books__cover--placeholder' unless book.cover_url.present? %>">
+                    <% if book.cover_url.present? %>
+                      <%= image_tag book.cover_url, alt: "#{book.title} cover" %>
+                    <% else %>
+                      OS
+                    <% end %>
+                  </div>
+                  <div class="account-student-overview__book-body">
+                    <p class="account-student-overview__book-title"><%= book.title %></p>
+                    <div class="account-student-overview__book-actions">
+                      <% if book_link.present? %>
+                        <%= link_to 'Read online', book_link, target: '_blank', rel: 'noopener' %>
+                      <% end %>
+                      <%= link_to 'Manage', account_books_path %>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="account-books__empty">
+              You haven't saved any books yet. <%= link_to 'Browse the library', account_books_path %> to add one.
+            </p>
+          <% end %>
+        </section>
+
+        <section class="account-student-overview__connect-card" aria-label="Connect with your instructor">
+          <h2>Who teaches your class?</h2>
+          <p>Connect to your instructor and we'll keep your saved books in sync with what they assign. Start typing — most instructors are already here.</p>
+
+          <div class="account-student-overview__autocomplete" data-instructor-autocomplete data-not-listed-target="instructor-not-listed-panel">
+            <label for="instructor-search-input" class="sr-only">Instructor name</label>
+            <input type="text"
+                   id="instructor-search-input"
+                   placeholder="Instructor name"
+                   data-instructor-search-input
+                   autocomplete="off"
+                   role="combobox"
+                   aria-expanded="false"
+                   aria-autocomplete="list">
+            <ul class="account-student-overview__autocomplete-results"
+                data-instructor-search-results
+                role="listbox"
+                hidden></ul>
+            <p class="account-student-overview__connect-status" data-instructor-connect-status aria-live="polite"></p>
+          </div>
+
+          <% if @instructor_connections.any? %>
+            <div class="account-student-overview__connections">
+              <p class="account-student-overview__connections-label">You've added:</p>
+              <ul>
+                <% @instructor_connections.each do |connection| %>
+                  <li>
+                    <%= connection.instructor_name %>
+                    <% if connection.school_name.present? %>(<%= connection.school_name %>)<% end %>
+                    <span class="account-badge account-student-overview__unverified-chip">Unverified</span>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+        </section>
+
+        <div class="account-student-overview__not-listed-panel" id="instructor-not-listed-panel">
+          <h3>Add your instructor</h3>
+          <p>If they're not in the list, tell us who they are — we'll take it from here.</p>
+
+          <%= form_with url: account_instructor_connections_path, method: :post, local: true,
+                        class: 'account-student-overview__not-listed-form' do %>
+            <div class="account-student-overview__not-listed-grid">
+              <div class="account-student-overview__field">
+                <label for="instructor-name">Instructor name</label>
+                <input type="text" id="instructor-name" name="instructor_connection_form[instructor_name]"
+                       placeholder="First and last name" required>
+              </div>
+              <div class="account-student-overview__field">
+                <label for="instructor-school">School</label>
+                <input type="text" id="instructor-school" name="instructor_connection_form[school_name]"
+                       value="<%= current_user.school&.name %>" required>
+              </div>
+              <div class="account-student-overview__field">
+                <label for="instructor-course">Course <span>(optional)</span></label>
+                <input type="text" id="instructor-course" name="instructor_connection_form[course]" placeholder="e.g. BIOL 101">
+              </div>
+              <div class="account-student-overview__field">
+                <label for="instructor-term">Term</label>
+                <select id="instructor-term" name="instructor_connection_form[term]">
+                  <% @term_options.each do |term| %>
+                    <option value="<%= term %>"><%= term %></option>
+                  <% end %>
+                </select>
+              </div>
+              <div class="account-student-overview__field">
+                <label for="instructor-email">Instructor email <span>(optional)</span></label>
+                <input type="email" id="instructor-email" name="instructor_connection_form[instructor_email]" placeholder="If you know it">
+              </div>
+            </div>
+            <button type="submit" class="account-student-overview__submit">Add instructor</button>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<% content_for :javascript do %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var container = document.querySelector('[data-instructor-autocomplete]');
+      if (!container) { return; }
+
+      var SEARCH_URL = "<%= account_instructors_search_path %>";
+      var CONNECT_URL = "<%= account_instructor_connections_path %>";
+      var DEBOUNCE_MS = 300;
+      var MIN_QUERY_LENGTH = 2;
+      var authenticityToken = "<%= j form_authenticity_token %>";
+
+      var input = container.querySelector('[data-instructor-search-input]');
+      var listbox = container.querySelector('[data-instructor-search-results]');
+      var status = container.querySelector('[data-instructor-connect-status]');
+      var notListedPanel = document.getElementById(container.getAttribute('data-not-listed-target'));
+
+      var state = { instructors: [], activeIndex: -1, debounceTimer: null, abortController: null };
+
+      var escapeHTML = function(text) {
+        return String(text).replace(/[&<>"']/g, function(char) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char];
+        });
+      };
+
+      input.addEventListener('input', function() {
+        var query = input.value.trim();
+        if (state.debounceTimer) { clearTimeout(state.debounceTimer); }
+
+        if (query.length < MIN_QUERY_LENGTH) {
+          close();
+          return;
+        }
+
+        state.debounceTimer = setTimeout(function() { fetchInstructors(query); }, DEBOUNCE_MS);
+      });
+
+      input.addEventListener('keydown', function(event) {
+        if (listbox.hidden) { return; }
+
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          setActive(Math.min(state.activeIndex + 1, optionCount() - 1));
+        } else if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          setActive(state.activeIndex <= 0 ? -1 : state.activeIndex - 1);
+        } else if (event.key === 'Enter') {
+          if (state.activeIndex >= 0) {
+            event.preventDefault();
+            selectIndex(state.activeIndex);
+          }
+        } else if (event.key === 'Escape') {
+          close();
+        }
+      });
+
+      input.addEventListener('blur', function() {
+        setTimeout(close, 150);
+      });
+
+      function fetchInstructors(query) {
+        if (state.abortController) { state.abortController.abort(); }
+        state.abortController = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+
+        fetch(SEARCH_URL + '?q=' + encodeURIComponent(query), {
+          headers: { Accept: 'application/json' },
+          signal: state.abortController ? state.abortController.signal : undefined
+        })
+          .then(function(response) { return response.ok ? response.json() : []; })
+          .then(function(instructors) { render(instructors, query); })
+          .catch(function(error) {
+            if (!error || error.name !== 'AbortError') { render([], query); }
+          });
+      }
+
+      function render(instructors, query) {
+        if (input.value.trim() !== query || document.activeElement !== input) { return; }
+
+        state.instructors = instructors;
+        state.activeIndex = -1;
+        listbox.innerHTML = '';
+
+        instructors.forEach(function(instructor, index) {
+          var li = buildOption(index);
+          li.innerHTML = escapeHTML(instructor.name) +
+            (instructor.school ? ' <span class="account-student-overview__autocomplete-school">(' + escapeHTML(instructor.school) + ')</span>' : '');
+          listbox.appendChild(li);
+        });
+
+        var notListedRow = buildOption(instructors.length);
+        notListedRow.className += ' account-student-overview__autocomplete-not-listed';
+        notListedRow.textContent = "+ My instructor isn't listed";
+        listbox.appendChild(notListedRow);
+
+        listbox.hidden = false;
+        input.setAttribute('aria-expanded', 'true');
+      }
+
+      function buildOption(index) {
+        var li = document.createElement('li');
+        li.id = 'instructor-search-option-' + index;
+        li.setAttribute('role', 'option');
+        li.setAttribute('aria-selected', 'false');
+        li.addEventListener('mousedown', function(event) {
+          event.preventDefault();
+          selectIndex(index);
+        });
+        li.addEventListener('mousemove', function() { setActive(index); });
+        return li;
+      }
+
+      function optionCount() {
+        return state.instructors.length + 1;
+      }
+
+      function setActive(index) {
+        state.activeIndex = index;
+        var options = listbox.children;
+        for (var i = 0; i < options.length; i++) {
+          options[i].classList.toggle('active', i === index);
+          options[i].setAttribute('aria-selected', i === index ? 'true' : 'false');
+        }
+        if (index >= 0 && options[index]) {
+          input.setAttribute('aria-activedescendant', options[index].id);
+        } else {
+          input.removeAttribute('aria-activedescendant');
+        }
+      }
+
+      function selectIndex(index) {
+        var instructor = state.instructors[index];
+        close();
+
+        if (instructor) {
+          connectToInstructor(instructor);
+        } else if (notListedPanel) {
+          notListedPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          var firstField = notListedPanel.querySelector('input, select');
+          if (firstField) { firstField.focus(); }
+        }
+      }
+
+      function connectToInstructor(instructor) {
+        input.value = instructor.name;
+        setStatus('Connecting...');
+
+        fetch(CONNECT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'X-CSRF-Token': authenticityToken
+          },
+          body: JSON.stringify({ instructor_connection_form: { instructor_id: instructor.id } })
+        })
+          .then(function(response) { return response.ok ? setStatus('Connected to ' + instructor.name + '.') : setStatus('Something went wrong — please try again.'); })
+          .catch(function() { setStatus('Something went wrong — please try again.'); });
+      }
+
+      function setStatus(message) {
+        if (status) { status.textContent = message; }
+      }
+
+      function close() {
+        listbox.hidden = true;
+        listbox.innerHTML = '';
+        state.instructors = [];
+        state.activeIndex = -1;
+        input.setAttribute('aria-expanded', 'false');
+        input.removeAttribute('aria-activedescendant');
+      }
+    });
+  </script>
+<% end %>

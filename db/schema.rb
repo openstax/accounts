@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_07_19_000003) do
+ActiveRecord::Schema.define(version: 2026_07_19_000004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -322,6 +322,25 @@ ActiveRecord::Schema.define(version: 2026_07_19_000003) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
+  create_table "instructor_connections", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.bigint "instructor_id"
+    t.bigint "school_id"
+    t.string "instructor_name", null: false
+    t.string "school_name", null: false
+    t.string "course"
+    t.string "term"
+    t.string "instructor_email"
+    t.string "status", default: "unverified", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["instructor_id"], name: "index_instructor_connections_on_instructor_id"
+    t.index ["school_id"], name: "index_instructor_connections_on_school_id"
+    t.index ["status"], name: "index_instructor_connections_on_status"
+    t.index ["student_id", "instructor_id"], name: "index_instructor_connections_on_student_id_and_instructor_id"
+    t.index ["student_id"], name: "index_instructor_connections_on_student_id"
+  end
+
   create_table "message_bodies", id: :serial, force: :cascade do |t|
     t.integer "message_id", null: false
     t.text "html", default: "", null: false
@@ -584,6 +603,9 @@ ActiveRecord::Schema.define(version: 2026_07_19_000003) do
   add_foreign_key "adoptions", "schools"
   add_foreign_key "adoptions", "users"
   add_foreign_key "external_ids", "users"
+  add_foreign_key "instructor_connections", "schools"
+  add_foreign_key "instructor_connections", "users", column: "instructor_id"
+  add_foreign_key "instructor_connections", "users", column: "student_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "user_books", "books"

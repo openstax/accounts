@@ -3073,3 +3073,244 @@ body:not(.os-app) #application-footer {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: none; }
 }
+
+/* Student account overview: saved books preview + instructor-connect */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.account-student-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  max-width: 76rem;
+}
+
+.account-badge--student {
+  background: #D6ECFB;
+  color: #002E6D;
+}
+
+.account-shell__section-header--split {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.account-student-overview__book-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.account-student-overview__book-card {
+  border: 1px solid #E0E0E0;
+  border-radius: 0.4rem;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.account-student-overview__book-cover {
+  width: 52px;
+  height: 70px;
+  flex-shrink: 0;
+}
+
+.account-student-overview__book-title {
+  font-weight: 700;
+  color: #002E6D;
+  margin: 0 0 0.4rem 0;
+}
+
+.account-student-overview__book-actions {
+  display: flex;
+  gap: 0.9rem;
+  font-size: 0.95rem;
+}
+
+.account-student-overview__connect-card {
+  background: #ffffff;
+  border: 1px solid #D4450C;
+  border-radius: 0.6rem;
+  padding: 1.5rem;
+}
+
+.account-student-overview__connect-card h2 {
+  color: #002E6D;
+  margin: 0 0 0.2rem 0;
+}
+
+.account-student-overview__connect-card > p {
+  color: #6A6A6A;
+  margin: 0 0 1rem 0;
+}
+
+.account-student-overview__autocomplete {
+  position: relative;
+  max-width: 30rem;
+}
+
+.account-student-overview__autocomplete input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #cfd5df;
+  border-radius: 0.3rem;
+  font-size: 1rem;
+}
+
+.account-student-overview__autocomplete-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  border: 1px solid #E0E0E0;
+  border-radius: 0.4rem;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+}
+
+.account-student-overview__autocomplete-results li {
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid #E0E0E0;
+  cursor: pointer;
+}
+
+.account-student-overview__autocomplete-results li:last-child {
+  border-bottom: none;
+}
+
+.account-student-overview__autocomplete-results li.active,
+.account-student-overview__autocomplete-results li:hover {
+  background: #F7FCFF;
+}
+
+.account-student-overview__autocomplete-school {
+  color: #6A6A6A;
+}
+
+.account-student-overview__autocomplete-not-listed {
+  font-weight: 700;
+  color: #026AA1;
+}
+
+.account-student-overview__connect-status {
+  min-height: 1.2rem;
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+  color: #204B00;
+}
+
+.account-student-overview__connections {
+  margin-top: 1.25rem;
+}
+
+.account-student-overview__connections-label {
+  font-weight: 700;
+  color: #424242;
+  margin: 0 0 0.4rem 0;
+}
+
+.account-student-overview__connections ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.account-student-overview__unverified-chip {
+  background: #F1F1F1;
+  color: #6A6A6A;
+  font-size: 0.95rem;
+  padding: 0.2rem 0.8rem;
+  margin-left: 0.5rem;
+}
+
+.account-student-overview__not-listed-panel {
+  background: #EAF6FD;
+  border: 1px solid #CBE3F2;
+  border-radius: 0.6rem;
+  padding: 1.5rem;
+}
+
+.account-student-overview__not-listed-panel h3 {
+  color: #002E6D;
+  margin: 0 0 0.2rem 0;
+}
+
+.account-student-overview__not-listed-panel > p {
+  color: #6A6A6A;
+  margin: 0 0 1rem 0;
+}
+
+.account-student-overview__not-listed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+  max-width: 40rem;
+}
+
+.account-student-overview__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.account-student-overview__field label {
+  font-weight: 700;
+  color: #002E6D;
+  font-size: 0.95rem;
+}
+
+.account-student-overview__field label span {
+  font-weight: 400;
+  color: #6A6A6A;
+}
+
+.account-student-overview__field input,
+.account-student-overview__field select {
+  padding: 0.6rem 0.7rem;
+  border: 1px solid #cfd5df;
+  border-radius: 0.3rem;
+  font-size: 1rem;
+  background: #ffffff;
+}
+
+.account-student-overview__submit {
+  margin-top: 1rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.65rem 1.4rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.account-student-overview__submit:hover {
+  background: #015a87;
+}
