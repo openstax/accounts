@@ -5,6 +5,8 @@ module Salesforce
   class SyncSchools
     SLUG = 'update-school-salesforce'.freeze
     BATCH_SIZE = 250
+    SALESFORCE_ID_REGEX = /\A[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?\z/.freeze
+    MAX_MERGE_CHAIN_DEPTH = 10
 
     SF_TO_DB_CACHE_COLUMNS_MAP = {
       id: :salesforce_id,
@@ -31,6 +33,7 @@ module Salesforce
 
       remove_deleted_schools
       schools_updated = upsert_schools_from_sf
+      reconcile_schools_with_users
 
       metrics.increment(:schools_updated, by: schools_updated)
       metrics.emit(status: :ok)
@@ -93,8 +96,101 @@ module Salesforce
       schools_updated
     end
 
-    def log(msg)
-      Rails.logger.tagged(self.class.name) { Rails.logger.info(msg) }
+    # The sweeps above only see Accounts that still exist in Salesforce, so a
+    # school whose Account was merged away or deleted keeps its stale
+    # salesforce_id forever once users reference it, and lead saves for those
+    # users fail with INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY. Repoint
+    # users to the merge winner while Salesforce still remembers it, otherwise
+    # detach them so the 'Find Me A Home' fallback applies at lead time.
+    def reconcile_schools_with_users
+      School.where(
+        'EXISTS (SELECT * FROM "users" WHERE "users"."school_id" = "schools"."id")'
+      ).find_in_batches(batch_size: BATCH_SIZE) do |schools|
+        salesforce_ids = schools.map(&:salesforce_id)
+
+        existing_salesforce_ids = Salesforce::Records::School.select(:id).where(
+          id: salesforce_ids
+        ).map(&:id)
+
+        stale_schools = schools.reject do |school|
+          existing_salesforce_ids.include?(school.salesforce_id)
+        end
+
+        # A whole batch vanishing from Salesforce means an API anomaly, not mass merges
+        if stale_schools.length == schools.length && schools.length >= 10
+          Sentry.capture_message(
+            '[SyncSchools] every school in a batch is missing from Salesforce; skipping reconciliation',
+            level: :warning
+          )
+          next
+        end
+
+        stale_schools.each { |school| reconcile_stale_school(school) }
+      end
+    rescue StandardError => se
+      Sentry.capture_exception(se)
+    end
+
+    def reconcile_stale_school(school)
+      winner_salesforce_id = merge_winner_salesforce_id(school.salesforce_id)
+
+      # The existence sweep and the queryAll lookup can disagree (transient API
+      # inconsistency, or the Account was undeleted in between); a school whose
+      # Account turns out to still exist is not stale, so leave it alone.
+      if winner_salesforce_id == school.salesforce_id
+        log("Salesforce account #{school.salesforce_id} appears to exist; skipping reconciliation for school #{school.id}", :warn)
+        return
+      end
+
+      winner = School.find_by(salesforce_id: winner_salesforce_id) unless winner_salesforce_id.nil?
+
+      if winner
+        users_moved = User.where(school_id: school.id).update_all(school_id: winner.id)
+        school.delete
+        log("Moved #{users_moved} users from merged school #{school.salesforce_id} to #{winner.salesforce_id}")
+      elsif winner_salesforce_id
+        # The winner exists in Salesforce but the sweep hasn't cached it locally
+        # yet; leave the stale school for the next run to reconcile.
+        log("Merge winner #{winner_salesforce_id} for school #{school.salesforce_id} is not cached locally yet", :warn)
+      else
+        users_detached = User.where(school_id: school.id).update_all(school_id: nil)
+        school.delete
+        Sentry.capture_message(
+          '[SyncSchools] school missing from Salesforce with no merge winner; detached its users',
+          level: :warning,
+          extra: {
+            school_id: school.id,
+            salesforce_id: school.salesforce_id,
+            school_name: school.name,
+            users_detached: users_detached
+          }
+        )
+      end
+    end
+
+    # A merged Account is soft-deleted with MasterRecordId pointing at the
+    # winner, which can itself have been merged later, so follow the chain to a
+    # live Account using queryAll (includes recycle-bin rows). Returns nil when
+    # the trail is gone (recycle bin purged, or deleted without a merge).
+    def merge_winner_salesforce_id(salesforce_id)
+      current_id = salesforce_id
+      MAX_MERGE_CHAIN_DEPTH.times do
+        return nil unless SALESFORCE_ID_REGEX.match?(current_id.to_s)
+
+        account = ActiveForce.sfdc_client.query_all(
+          "SELECT Id, IsDeleted, MasterRecordId FROM Account WHERE Id = '#{current_id}'"
+        ).first
+
+        return nil if account.nil?
+        return current_id unless account['IsDeleted']
+
+        current_id = account['MasterRecordId']
+      end
+      nil
+    end
+
+    def log(msg, level = :info)
+      Rails.logger.tagged(self.class.name) { Rails.logger.public_send(level, msg) }
     end
   end
 end

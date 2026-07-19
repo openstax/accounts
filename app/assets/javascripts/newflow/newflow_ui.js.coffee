@@ -38,15 +38,11 @@ NewflowUi = do () ->
     # fired (the click handler is attached, but the deferred check then
     # disabled the button right after the spec saw it as enabled).
     $(document).ready =>
-<<<<<<< HEAD
-      this.checkCheckedButton(targetSelector, sourceSelector)
-=======
 
       check = () =>
         this.checkCheckedButton(targetSelector, sourceSelector)
 
       check()
->>>>>>> origin/main
 
       # Re-check on bfcache restore (e.g. browser back button), where the
       # browser may refill form fields after this ready handler already ran,
