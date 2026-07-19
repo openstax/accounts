@@ -110,6 +110,32 @@ en:
       students_per_semester: Students per school year
       num_students_using_book_placeholder: Number of students using this book per school year
 
+  staff_details_form:
+    header: Tell us about your work
+    subheader: >-
+      Staff and administrators make most adoption decisions possible —
+      these questions are written for your role, not a classroom.
+    describe_role: What's your role?
+    role_department_chair: Department chair
+    role_librarian: Librarian
+    role_curriculum_coordinator: Curriculum coordinator
+    role_lms_it_administrator: LMS / IT administrator
+    role_homeschool_educator: Homeschool educator
+    role_other: Other
+    other_please_specify: Other (please specify)
+    school_name: School or institution
+    school_matched_prefix: Matched
+    books_involved: Which OpenStax books does your work involve?
+    num_learners_supported: >-
+      On average, how many learners per year do you support with OpenStax materials?
+    num_learners_supported_helper: >-
+      A ballpark is fine — this helps us measure mission impact.
+    num_learners_supported_placeholder: "e.g. 400"
+    select_option: Please select one of these options
+    other_must_be_entered: Please enter your role
+    school_name_must_be_entered: Please enter school name
+    num_learners_supported_must_be_entered: Please enter a ballpark number, or 0 if not applicable
+
   login_signup_form:
     cant_be_blank: can't be blank
     cannot_find_user: We could not find your account. Please try again.
@@ -119,6 +145,7 @@ en:
     sign_up: Sign up
     student: Student
     educator: Educator / Researcher
+    staff: Staff & administrators
     step_counter: Step %{current_step} of %{total_steps}
     login_page_header: Log in to your OpenStax account
     login_with: 'LOG IN WITH:'
@@ -142,6 +169,7 @@ en:
     choose_role_divider: SELECT YOUR ROLE TO CONTINUE
     join_as_educator_title: I'm an instructor
     join_as_student_title: I'm a student
+    join_as_staff_title: I support instruction
     already_have_account: Already have an account? %{log_in}
     log_in: Log in
     email_placeholder: me@myemail.com
@@ -184,6 +212,9 @@ en:
     join_as_educator_description: >-
       Teaching with OpenStax, or thinking about it. Unlocks answer keys,
       slides, and instructor resources.
+    join_as_staff_description: >-
+      Librarians, administrators, and instructional staff who support
+      adoption but don't teach a course themselves.
     send_me_instructions: Send me instructions
     return: Return
     login_unsuccessful: Login unsuccessful
@@ -254,6 +285,11 @@ en:
       the remaining steps to verify your instructor status.
     educator_email_verification_help_msg: See a typo in your email address? %{edit_it_here}. Didn't receive a message? %{contact_us_link}.
     edit_it_here: Edit it here
+
+    staff_email_verification_form_description: >-
+      An email has been sent to <b>%{email}</b>.
+      Please enter the PIN you received below.
+      Once your email has been confirmed, you'll tell us a bit about your work.
 
   student_profile:
     enable_other_sign_in_options: Enable other login options

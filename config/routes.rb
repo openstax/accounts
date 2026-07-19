@@ -91,6 +91,31 @@ Rails.application.routes.draw do
     post 'i/signup/educator/cs_verification_request', action: :educator_complete_profile, as: :educator_cs_verification_request
   end
 
+  # "I support instruction" — staff signup path (department chairs, librarians,
+  # curriculum coordinators, LMS/IT admins, homeschool educators). Reuses
+  # EducatorSignup::SignupForm and EducatorSignup::VerifyEmailByPin for steps
+  # 1-2 (see StaffSignupController, which inherits from EducatorSignupController);
+  # staff skip SheerID entirely and go straight from email verification to
+  # their own "Tell us about your work" step.
+  scope controller: 'newflow/staff_signup' do
+    # Step 1
+    get 'i/signup/staff', action: :staff_signup_form, as: :staff_signup
+    post 'i/signup/staff', action: :staff_signup, as: :staff_signup_post
+    get 'i/signup/staff/change_signup_email_form', action: :staff_change_signup_email_form, as: :staff_change_signup_email_form
+    post 'i/signup/staff/change_signup_email', action: :staff_change_signup_email, as: :staff_change_signup_email
+
+    # Step 2
+    get 'i/signup/staff/email_verification_form', action: :staff_email_verification_form, as: :staff_email_verification_form
+    get 'i/signup/staff/email_verification_form_updated_email',
+      action: :staff_email_verification_form_updated_email,
+      as: :staff_email_verification_form_updated_email
+    post 'i/signup/staff/verify_email_by_pin', action: :staff_verify_email_by_pin, as: :staff_verify_pin
+
+    # Step 3 - "Tell us about your work" (no SheerID step for staff)
+    get 'i/signup/staff/details', action: :staff_details_form, as: :staff_details_form
+    post 'i/signup/staff/complete_profile', action: :staff_complete_profile, as: :staff_complete_profile
+  end
+
   scope controller: 'newflow/password_management' do
     # Password management process (forgot,  change, or create password)
     get 'i/forgot_password_form', action: :forgot_password_form, as: :forgot_password_form

@@ -24,6 +24,10 @@ module Newflow
             security_log(:student_verified_email, {user: user, message: "Student verified email."})
             log_posthog(user, 'student_verified_email')
             redirect_to signup_done_path
+          elsif staff_signup_in_progress?
+            security_log(:staff_verified_email, {user: user, message: "Staff verified email."})
+            log_posthog(user, 'staff_verified_email')
+            redirect_to(staff_details_form_path)
           else
             security_log(:educator_verified_email, {user: user, message: "Educator verified email."})
             log_posthog(user, 'educator_verified_email')
@@ -56,6 +60,15 @@ module Newflow
         log_posthog(current_user, 'user_redirected_because_signed_in')
         redirect_back(fallback_location: profile_newflow_path(request.query_parameters))
       end
+    end
+
+    # Set by StaffSignupController#staff_signup so the shared "click the link
+    # in the confirmation email" path (as opposed to entering the PIN) can
+    # route staff users to the staff details step instead of SheerID. Both
+    # roles share this action since role isn't distinguishable from the User
+    # record alone at this point in signup (role is still :instructor).
+    def staff_signup_in_progress?
+      session.delete(:staff_signup_in_progress).present?
     end
   end
 end

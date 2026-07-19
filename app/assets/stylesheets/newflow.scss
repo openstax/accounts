@@ -1558,3 +1558,23 @@ $very-narrow: 37rem * $scale-factor;
   opacity: 0.01;
   pointer-events: none;
 }
+
+// Staff signup: "Tell us about your work" step (department chairs,
+// librarians, curriculum coordinators, IT/LMS admins, homeschool educators).
+.staff-details-page {
+  .staff-details__subheader {
+    font-size: 1.4rem;
+    color: #6A6A6A;
+    margin: 0 0 2rem;
+  }
+
+  .other-specify {
+    margin-left: 2em;
+  }
+
+  .school-matched {
+    color: #026AA1;
+    font-size: 1.3rem;
+    margin: 0.5rem 0 0;
+  }
+}

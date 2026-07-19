@@ -42,6 +42,7 @@
 
     input.addEventListener('input', function() {
       hiddenId.value = '';
+      hiddenId.dispatchEvent(new CustomEvent('school:cleared'));
       var query = input.value.trim();
       if (query.length < MIN_QUERY_LENGTH) {
         close();
@@ -167,9 +168,14 @@
       if (school) {
         input.value = school.name;
         hiddenId.value = school.id;
+        // Consumed by callers (e.g. the staff signup "Tell us about your
+        // work" step) that show a "Matched — School, City, ST" confirmation.
+        // Purely additive: existing callers that don't listen are unaffected.
+        hiddenId.dispatchEvent(new CustomEvent('school:selected', { detail: school }));
       } else {
         // The use-as-entered row: keep the typed text, no school link.
         hiddenId.value = '';
+        hiddenId.dispatchEvent(new CustomEvent('school:cleared'));
       }
       close();
     }

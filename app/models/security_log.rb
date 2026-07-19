@@ -70,6 +70,10 @@ class SecurityLog < ApplicationRecord
     educator_sign_up_failed
     educator_verified_email
     educator_verify_email_failed
+    staff_began_signup
+    staff_sign_up_failed
+    staff_verified_email
+    staff_verify_email_failed
     user_viewed_signup_form
     user_viewed_sheerid_form
     user_completed_cs_form

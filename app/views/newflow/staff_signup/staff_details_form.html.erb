@@ -1,0 +1,143 @@
+<%
+  staff_roles = [
+    ['department_chair', I18n.t(:"staff_details_form.role_department_chair")],
+    ['librarian', I18n.t(:"staff_details_form.role_librarian")],
+    ['curriculum_coordinator', I18n.t(:"staff_details_form.role_curriculum_coordinator")],
+    ['lms_it_administrator', I18n.t(:"staff_details_form.role_lms_it_administrator")],
+    ['homeschool_educator', I18n.t(:"staff_details_form.role_homeschool_educator")],
+    ['other', I18n.t(:"staff_details_form.role_other")]
+  ]
+  @page_title = 'Sign up (staff details)'
+%>
+
+<div id="login-signup-form">
+  <div class="content">
+    <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
+
+    <%= newflow_login_signup_card(
+          id: 'signup-page',
+          header: I18n.t(:"staff_details_form.header"),
+          current_step: I18n.t(:"login_signup_form.step_counter", current_step: 3, total_steps: 3),
+          classes: 'signup-page staff-details-page') do %>
+      <p class="staff-details__subheader"><%= I18n.t(:"staff_details_form.subheader") %></p>
+
+      <%= lev_form_for :signup, url: staff_complete_profile_path do |f| %>
+        <% fh = NewflowFormHelper::Newflow.new(
+             f: f,
+             context: self,
+             errors: @handler_result&.errors
+           )
+        %>
+        <div class="content required-fields-notice">
+          <%= I18n.t(:"login_signup_form.all_fields_required") %>
+        </div>
+
+        <div class="content">
+          <div class="questions">
+
+            <fieldset class="question staff-role-fieldset">
+              <legend class="field-label"><%= I18n.t(:"staff_details_form.describe_role") %></legend>
+              <div class="radio-control-group">
+                <div class="role newflow-mustdo-alert">
+                  <%= I18n.t(:"staff_details_form.select_option") %>
+                </div>
+
+                <% submitted_role = params.dig(:signup, :staff_role) %>
+                <% staff_roles.each do |(value, label)| %>
+                  <label>
+                    <%=
+                      f.radio_button(
+                        :staff_role,
+                        value,
+                        checked: (submitted_role == value),
+                        class: 'completed-role custom-control-input'
+                      )
+                    %>
+                    <%= label("signup_staff_role_#{value}".to_sym, label, class: 'custom-control-label') %>
+                  </label>
+                <% end %>
+              </div>
+
+              <div class="other-specify">
+                <%= label_tag :other_role_name, I18n.t(:"staff_details_form.other_please_specify"), class: 'field-label' %>
+                <div class="other newflow-mustdo-alert">
+                  <%= I18n.t(:"staff_details_form.other_must_be_entered") %>
+                </div>
+                <%=
+                  fh.text_field(
+                    name: :other_role_name,
+                    placeholder: I18n.t(:"staff_details_form.other_please_specify"),
+                    autofocus: false
+                  )
+                %>
+              </div>
+            </fieldset>
+
+            <div class="form-group question school-name school-name-visible">
+              <div class="school-name">
+                <%= label_tag :school_name, I18n.t(:"staff_details_form.school_name"), class: 'field-label' %>
+                <div class="school-name newflow-mustdo-alert">
+                  <%= I18n.t(:"staff_details_form.school_name_must_be_entered") %>
+                </div>
+                <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>">
+                  <%=
+                    fh.text_field(
+                      name: :school_name,
+                      placeholder: I18n.t(:"staff_details_form.school_name"),
+                      autofocus: true
+                    )
+                  %>
+                  <%= f.hidden_field :school_id %>
+                  <div class="school-matched" hidden data-matched-prefix="<%= I18n.t(:'staff_details_form.school_matched_prefix') %>"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group question books-involved">
+              <%= label_tag :books_involved, I18n.t(:"staff_details_form.books_involved"), class: 'field-label' %>
+
+              <%= render partial: 'newflow/educator_signup/book_picker',
+                         locals: { field_name: 'books_involved', books_by_subject: @books_by_subject } %>
+            </div>
+
+            <div class="form-group question num-learners-supported">
+              <%= label_tag :num_learners_supported, I18n.t(:"staff_details_form.num_learners_supported"), class: 'field-label' %>
+              <div class="num-learners-supported newflow-mustdo-alert">
+                <%= I18n.t(:"staff_details_form.num_learners_supported_must_be_entered") %>
+              </div>
+              <%=
+                fh.text_field(
+                  name: :num_learners_supported,
+                  placeholder: I18n.t(:"staff_details_form.num_learners_supported_placeholder"),
+                  autofocus: false,
+                  numberonly: true
+                )
+              %>
+              <p class="form-helper-text"><%= I18n.t(:"staff_details_form.num_learners_supported_helper") %></p>
+            </div>
+
+          </div>
+
+          <%=
+            f.submit(
+              I18n.t(:"login_signup_form.finish"),
+              id: 'signup_form_submit_button',
+              class: 'primary',
+              data: {
+                disable_with: I18n.t(:"login_signup_form.finish"),
+                ga_category: 'Account Creation',
+                ga_action: 'Click',
+                ga_label: '3E-Staff-Details'
+              }
+            )
+          %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<script type="text/javascript">
+  new NewflowUi.StaffDetails();
+  OxSchoolAutocomplete.attach('.school-autocomplete');
+</script>
