@@ -4,7 +4,7 @@
 module SheeridAPI
   class Base
 
-    attr_reader :current_step, :first_name, :last_name, :email, :organization_name
+    attr_reader :current_step, :first_name, :last_name, :email, :organization_name, :error_ids
 
     def success?
       raise('Must implement')
@@ -21,7 +21,9 @@ module SheeridAPI
   class Response < SheeridAPI::Base
 
     def initialize(body_as_hash)
-      @current_step = body_as_hash.fetch('lastResponse', {}).fetch('currentStep', {})
+      last_response = body_as_hash.fetch('lastResponse', {})
+      @current_step = last_response.fetch('currentStep', {})
+      @error_ids = last_response.fetch('errorIds', [])
       person_info = body_as_hash.fetch('personInfo', {})
       @first_name = person_info&.fetch('firstName', '')
       @last_name = person_info&.fetch('lastName', '')

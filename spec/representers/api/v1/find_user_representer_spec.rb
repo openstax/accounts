@@ -46,12 +46,18 @@ describe Api::V1::FindUserRepresenter, type: :representer do
 
   context 'external_ids' do
     it 'can be read' do
-      payload.external_ids = [ Hashie::Mash.new(external_id: SecureRandom.uuid) ]
-      expect(representer.to_hash['external_ids']).to eq payload.external_ids.map(&:external_id)
+      external_id_obj = Hashie::Mash.new(user_id: 1, external_id: SecureRandom.uuid, role: 'student')
+      payload.external_ids = [ external_id_obj ]
+      result = representer.to_hash['external_ids']
+      expect(result).to be_a(Array)
+      expect(result.length).to eq 1
+      expect(result.first['external_id']).to eq external_id_obj.external_id
+      expect(result.first).not_to have_key('user_id')
+      expect(result.first['role']).to eq external_id_obj.role
     end
 
     it 'cannot be written (attempts are silently ignored)' do
-      hash = { 'external_ids' => [ SecureRandom.uuid ] }
+      hash = { 'external_ids' => [ { 'external_id' => SecureRandom.uuid } ] }
 
       expect(payload).not_to receive(:external_ids=)
       expect { representer.from_hash(hash) }.not_to change { payload.external_ids }

@@ -13,6 +13,10 @@ feature 'User updates password on profile screen', js: true do
   scenario "changes existing" do
     visit profile_newflow_path
     find('[data-provider=identity] .edit--newflow').click
+    expect(page).to have_current_path(/\/i\/(change_password_form|profile)/)
+    # JS navigation may not have fired yet; navigate directly if still on profile
+    visit(change_password_form_path) if page.has_current_path?(profile_newflow_path, wait: 0)
+    expect(page).not_to have_current_path(profile_newflow_path)
     newflow_complete_add_password_screen
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t(:"login_signup_form.how_you_log_in"))

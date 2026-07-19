@@ -36,7 +36,7 @@ module Newflow
             log_data[:redirect] = stored_url
           end
           sign_in!(user, log_data)
-          log_posthog(user, 'user_logged_in')
+          log_posthog(user, 'user_logged_in', { client_app: get_client_app&.name })
 
           if current_user.student? || !current_user.is_newflow? || (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login'))
             did_user_sign_recent_privacy_notice? ? redirect_back : redirect_to_sign_privacy_notice
@@ -53,6 +53,7 @@ module Newflow
           when :cannot_find_user, :multiple_users, :incorrect_password, :too_many_login_attempts
             user = @handler_result.outputs.user
             security_log(:sign_in_failed, { reason: code, email: email, user: user })
+            log_posthog(user, 'user_login_failed', { reason: code.to_s })
           end
 
           render :login_form

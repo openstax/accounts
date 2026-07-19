@@ -73,6 +73,25 @@ describe SheeridAPI, type: :lib, vcr: VCR_OPTS do
     example 'success? is true' do
       expect(instance.success?).to be_truthy
     end
+
+    example 'exposes error_ids from the last response' do
+      expect(instance.error_ids).to eq []
+    end
+
+    context 'when the verification errored' do
+      let(:http_response_as_hash) do
+        {
+          'lastResponse' => {
+            'currentStep' => 'error',
+            'errorIds' => ['verificationLimitExceeded']
+          }
+        }
+      end
+
+      example 'exposes error_ids from the last response' do
+        expect(instance.error_ids).to eq ['verificationLimitExceeded']
+      end
+    end
   end
 
   describe SheeridAPI::NullResponse do

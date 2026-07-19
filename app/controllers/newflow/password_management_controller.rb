@@ -10,10 +10,6 @@ module Newflow
 
     def forgot_password_form
       @email = login_failed_email
-      user = ContactInfo.find_by(value: @email)&.user
-      unless user.nil?
-        log_posthog(user, 'user_forgot_password')
-      end
     end
 
     def send_reset_password_email
@@ -23,6 +19,7 @@ module Newflow
           user = @handler_result.outputs.user
           @email = @handler_result.outputs.email
           security_log(:password_reset, {user: user, email: @email, message: "Sent password reset email"})
+          log_posthog(user, 'user_reset_password_requested')
           clear_signup_state
           sign_out!
           render :reset_password_email_sent
@@ -46,6 +43,7 @@ module Newflow
         CreatePassword,
         success: lambda {
           security_log(:student_created_password, user: @handler_result.outputs.user)
+          log_posthog(current_user, 'user_password_created')
           redirect_to profile_newflow_url, notice: t(:"legacy.identities.add_success.message")
         },
         failure: lambda {
@@ -70,6 +68,7 @@ module Newflow
           ChangePassword,
           success: lambda {
             security_log :password_reset
+            log_posthog(current_user, 'user_reset_password_completed')
             redirect_to profile_newflow_url, notice: t(:"legacy.identities.reset_success.message")
           },
           failure: lambda {

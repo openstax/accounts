@@ -2,6 +2,7 @@
 # also be copied to the application's initializers by running the install
 # task. Because this code can get run multiple times, make sure to only put
 # code here that is amenable to that.
+
 OpenStax::Salesforce.configure do |config|
   salesforce_secrets = Rails.application.secrets.salesforce
 

@@ -184,11 +184,10 @@ module Api::V1
                getter: ->(*) { FinePrint::Contract.published.latest.signed_by(self).pluck(:name) }
 
     collection :external_ids,
-               type: String,
                readable: true,
                writeable: false,
                if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
-               getter: ->(represented:, **) { represented.external_ids.map(&:external_id) }
+               decorator: ExternalIdRepresenter
 
     property :assignable_school_integrated,
              type: :boolean,

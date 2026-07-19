@@ -96,9 +96,14 @@ def newflow_complete_add_password_screen(password=nil)
 end
 
 def expect_newflow_profile_page
+  valid_paths = /\A(?:#{Regexp.escape(profile_newflow_path)}|#{Regexp.escape(pose_terms_path)}(?:\?.*)?)\z/
+
   expect(page).to have_no_missing_translations
   # expect(page).to have_content(t :"legacy.users.edit.page_heading")
-  expect(page).to have_current_path profile_newflow_path
+  expect(page).to have_current_path(valid_paths, wait: 10)
+  wait_for_animations
+  wait_for_ajax
+  expect(page).to have_current_path(profile_newflow_path, wait: 10)
 end
 
 def newflow_expect_signup_verify_screen

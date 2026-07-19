@@ -6,6 +6,12 @@ module Newflow
 
     # Log in (or sign up and then log in) a user using a social (OAuth) provider
     def oauth_callback
+      # omniauth.auth is nil when this route is hit directly without going through
+      # OmniAuth middleware (e.g. bots, expired sessions, unknown provider).
+      unless request.env['omniauth.auth']
+        redirect_to(newflow_login_path, alert: I18n.t(:"controllers.sessions.trouble_with_provider")) and return
+      end
+
       # If state is not assigned, then doorkeeper uses a random string
       # So if state is not decodable we assume they are in the normal signup flow
       @token = verify_token(params[:state])
@@ -39,13 +45,13 @@ module Newflow
             @last_name = user.last_name
             @email = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
-            log_posthog(user, "student_signup_#{authentication.provider}")
+            log_posthog(user, 'student_signup_social', { provider: authentication.provider, client_app: get_client_app&.name })
             # must confirm their social info on signup
             render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
           end
 
           sign_in!(user)
-          log_posthog(user, "user_logged_in_with_#{authentication.provider}")
+          log_posthog(user, 'user_logged_in_social', { provider: authentication.provider, client_app: get_client_app&.name })
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
           redirect_back(fallback_location: profile_newflow_path)
 
@@ -88,6 +94,7 @@ module Newflow
 
             # Send the error to Sentry
             Sentry.capture_message(error_message)
+            redirect_to(newflow_login_path, alert: I18n.t(:"controllers.sessions.trouble_with_provider", default: "We had trouble signing you in with your social account. Please try again."))
           end
         }
       )
@@ -113,6 +120,7 @@ module Newflow
           clear_signup_state
           sign_in!(@handler_result.outputs.user)
           security_log(:student_social_auth_confirmation_success)
+          log_posthog(@handler_result.outputs.user, 'student_signup_done')
           redirect_to return_to
         },
         failure: -> {

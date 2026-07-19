@@ -4,7 +4,7 @@ module Api::V1
 
     property :user_id,
              type: Integer,
-             readable: true,
+             readable: false,
              writeable: true
 
     property :external_id,

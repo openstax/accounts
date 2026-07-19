@@ -21,7 +21,7 @@ OpenStax::RescueFrom.configure do |config|
   end
 
   config.html_error_template_path = 'errors/any'
-  config.html_error_template_layout_name = 'error'
+  config.html_error_template_layout_name = 'newflow_error'
 end
 
 OpenStax::RescueFrom.register_exception('Lev::SecurityTransgression', notify: false, status: :forbidden)

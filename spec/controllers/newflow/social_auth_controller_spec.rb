@@ -8,6 +8,9 @@ module Newflow
       end
 
       before do
+        # Set omniauth.auth in the request env so the controller guard clause passes,
+        # and stub the handler's oauth_response to use the same mock data.
+        request.env['omniauth.auth'] = { provider: 'facebooknewflow', uid: '123', info: info }
         allow_any_instance_of(OauthCallback).to receive(:oauth_response) do
           MockOmniauthRequest.new(params[:provider], params[:uid], info).env['omniauth.auth']
         end
@@ -100,6 +103,30 @@ module Newflow
             expect_any_instance_of(described_class).to receive(:save_login_failed_email).and_call_original
             get(:oauth_callback, params: params)
             expect(session[:login_failed_email]).to eq(info[:email])
+          end
+        end
+
+        context 'when omniauth.auth is missing (no OmniAuth middleware)' do
+          let(:params) do
+            { provider: 'facebook' }
+          end
+
+          before do
+            # Don't set omniauth.auth in the request env — simulates a direct hit
+            # bypassing OmniAuth middleware (bots, expired sessions, etc.)
+            allow_any_instance_of(OauthCallback).to receive(:oauth_response).and_return(nil)
+            request.env['omniauth.auth'] = nil
+          end
+
+          it 'redirects to login without invoking the handler' do
+            expect_any_instance_of(OauthCallback).not_to receive(:call)
+            get(:oauth_callback, params: params)
+            expect(response).to redirect_to(newflow_login_path)
+          end
+
+          it 'sets an alert flash message' do
+            get(:oauth_callback, params: params)
+            expect(flash[:alert]).to be_present
           end
         end
 

@@ -69,6 +69,7 @@ module UserSessionManagement
   end
 
   def signed_in?
+    return false if current_user.nil?
     !current_user.is_anonymous?
   end
 

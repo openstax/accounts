@@ -30,9 +30,11 @@ module Newflow
       sf_school_id = user.school&.salesforce_id
       # no school attached to user? Set to Find Me A Home
       unless sf_school_id
-        sf_school_id = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home').id
+        fallback_school = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home')
+        raise "Salesforce 'Find Me A Home' school not found — cannot assign fallback school for user #{user.id}" unless fallback_school
+
+        sf_school_id = fallback_school.id
         user.school = School.find_by(salesforce_id: sf_school_id)
-        user.save
       end
 
       if user.role == 'student'
@@ -58,48 +60,116 @@ module Newflow
         # User has not completed their profile
         user.faculty_status = :incomplete_signup
       end
+      user.save!
 
-
+      lead = nil
       if user.salesforce_lead_id
-        lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
-      else
-        lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        begin
+          lead = OpenStax::Salesforce::Remote::Lead.find(user.salesforce_lead_id)
+        rescue StandardError => e
+          # Log when the stored lead ID doesn't correspond to an existing lead or find fails
+          SecurityLog.create!(
+            user: user,
+            event_type: :salesforce_lead_not_found_by_id,
+            event_data: {
+              salesforce_lead_id: user.salesforce_lead_id,
+              error: e.class.name,
+              error_message: e.message
+            }
+          )
+          Sentry.capture_message(
+            "Salesforce lead ID #{user.salesforce_lead_id} not found for user #{user.id}, will search by UUID and email. Error: #{e.class.name}: #{e.message}"
+          )
+        end
       end
 
+      # If no lead found by stored ID, search for existing lead by UUID
       if lead.nil?
-        Sentry.capture_message("Lead for user not found #{user.uuid} not found", level: :error)
-        return
+        lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
+        if lead
+          SecurityLog.create!(
+            user: user,
+            event_type: :salesforce_lead_found_by_uuid,
+            event_data: { lead_id: lead.id }
+          )
+        end
       end
 
-        lead.first_name = user.first_name
-        lead.last_name = user.last_name
-        lead.phone = user.phone_number
-        lead.source = LEAD_SOURCE
-        lead.application_source = DEFAULT_REFERRING_APP_NAME
-        lead.role = sf_role
-        lead.position = sf_position
-        lead.title = user.other_role_name
-        lead.who_chooses_books = user.who_chooses_books
-        lead.subject_interest = user.which_books
-        lead.num_students = user.how_many_students
-        lead.adoption_status = ADOPTION_STATUS_FROM_USER[user.using_openstax_how]
-        lead.adoption_json = adoption_json
-        lead.os_accounts_id = user.id
-        lead.accounts_uuid = user.uuid
-        lead.school = user.most_accurate_school_name
-        lead.city = user.most_accurate_school_city
-        lead.country = user.most_accurate_school_country
-        lead.verification_status = user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status
-        lead.b_r_i_marketing = user.is_b_r_i_user?
-        lead.title_1_school = user.title_1_school?
-        lead.newsletter = user.receive_newsletter?
-        lead.newsletter_opt_in = user.receive_newsletter?
-        lead.self_reported_school = user.self_reported_school
-        lead.sheerid_school_name = user.sheerid_reported_school
-        lead.account_id = sf_school_id
-        lead.school_id = sf_school_id
-        lead.signup_date = user.created_at.strftime("%Y-%m-%dT%T.%L%z")
-        lead.tracking_parameters = "#{Rails.application.secrets.openstax_url}/accounts/i/signup/"
+      # If still no lead found, search by email
+      if lead.nil?
+        lead = OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
+        if lead
+          SecurityLog.create!(
+            user: user,
+            event_type: :salesforce_lead_found_by_email,
+            event_data: { lead_id: lead.id, email: user.best_email_address_for_salesforce }
+          )
+        end
+      end
+
+      # If user has a contact (already converted from lead), don't create a new lead
+      if lead.nil? && user.salesforce_contact_id.present?
+        begin
+          contact = OpenStax::Salesforce::Remote::Contact.find(user.salesforce_contact_id)
+          if contact
+            SecurityLog.create!(
+              user: user,
+              event_type: :user_already_has_contact_not_creating_lead,
+              event_data: { contact_id: user.salesforce_contact_id }
+            )
+            # User already has a contact, return without creating a lead
+            outputs.lead = nil
+            outputs.user = user
+            return
+          end
+        rescue StandardError => e
+          # Contact not found, proceed with lead creation
+          Sentry.capture_message(
+            "Salesforce contact ID #{user.salesforce_contact_id} not found for user #{user.id}, will create lead. Error: #{e.class.name}: #{e.message}"
+          )
+        end
+      end
+
+      # Only create a new lead if none exists
+      if lead.nil?
+        lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        SecurityLog.create!(
+          user: user,
+          event_type: :creating_new_salesforce_lead,
+          event_data: { email: user.best_email_address_for_salesforce, uuid: user.uuid }
+        )
+      end
+
+      lead.first_name = user.first_name
+      lead.last_name = user.last_name
+      lead.phone = user.phone_number
+      lead.source = LEAD_SOURCE
+      lead.application_source = DEFAULT_REFERRING_APP_NAME
+      lead.role = sf_role
+      lead.position = sf_position
+      lead.title = user.other_role_name
+      lead.who_chooses_books = user.who_chooses_books
+      lead.subject_interest = user.which_books
+      lead.num_students = user.how_many_students
+      lead.adoption_status = ADOPTION_STATUS_FROM_USER[user.using_openstax_how]
+      lead.expected_start_semester = expected_start_semester_label_for(user.expected_start_semester)
+      lead.adoption_json = adoption_json
+      lead.os_accounts_id = user.id
+      lead.accounts_uuid = user.uuid
+      lead.school = user.most_accurate_school_name
+      lead.city = user.most_accurate_school_city
+      lead.country = user.most_accurate_school_country
+      lead.verification_status = user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status
+      lead.b_r_i_marketing = user.is_b_r_i_user?
+      lead.title_1_school = user.title_1_school?
+      lead.newsletter = user.receive_newsletter?
+      lead.newsletter_opt_in = user.receive_newsletter?
+      lead.self_reported_school = user.self_reported_school
+      lead.sheerid_school_name = user.sheerid_reported_school
+      lead.account_id = sf_school_id
+      lead.school_id = sf_school_id
+      lead.signup_date = user.created_at.strftime("%Y-%m-%dT%T.%L%z")
+      lead.tracking_parameters = "#{Rails.application.secrets.openstax_url}/accounts/i/signup/"
 
       state = user.most_accurate_school_state
       unless state.blank?
@@ -120,7 +190,26 @@ module Newflow
         event_data: { lead_data: lead }
       )
 
-      if lead.save
+      saved = lead.save
+
+      # A stale school salesforce_id (e.g. an Account merged away in Salesforce)
+      # is rejected as a cross-reference error. Retry once with the fallback
+      # school so the lead isn't lost; UpdateSchoolSalesforceInfo repoints or
+      # detaches the stale school separately.
+      if !saved && lead.errors&.full_messages.to_s.include?('INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY')
+        Sentry.capture_message(
+          "Invalid school (#{user.school&.salesforce_id}) for user (#{user.id}); retrying lead save with fallback school",
+          level: :warning
+        )
+        fallback_school = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home')
+        unless fallback_school.nil?
+          lead.account_id = fallback_school.id
+          lead.school_id = fallback_school.id
+          saved = lead.save
+        end
+      end
+
+      if saved
         user.salesforce_lead_id = lead.id
         if user.save
           SecurityLog.create!(
@@ -129,20 +218,29 @@ module Newflow
             event_data: { lead_id: lead.id.to_s }
           )
         else
-          if lead.errors.messages.inspect.include? == 'INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY'
-            Sentry.capture_message("Invalid school (#{user.school.salesforce_id}) for user (#{user.id})")
-          end
           SecurityLog.create!(
             user: user,
             event_type: :educator_sign_up_failed,
-            event_data: { lead_id: lead.id }
+            event_data: { lead_id: lead.id, user_errors: user.errors.full_messages }
           )
-          Sentry.capture_message("User #{user.id} was not successfully saved with lead #{lead.id}")
+          Sentry.capture_message("User #{user.id} was not successfully saved with lead #{lead.id}: #{user.errors.full_messages.join(', ')}")
         end
+      else
+        SecurityLog.create!(
+          user: user,
+          event_type: :salesforce_lead_save_failed,
+          event_data: { lead_errors: lead.errors&.full_messages, email: user.best_email_address_for_salesforce }
+        )
+        Sentry.capture_message("Salesforce lead save failed for user #{user.id}: #{lead.errors&.full_messages&.join(', ')}")
       end
 
       outputs.lead = lead
       outputs.user = user
+    end
+
+    def expected_start_semester_label_for(key)
+      return nil if key.blank?
+      I18n.t(:'educator_profile_form.expected_start_semester_options')[key.to_sym]
     end
 
     def build_book_adoption_json_for_salesforce(user)

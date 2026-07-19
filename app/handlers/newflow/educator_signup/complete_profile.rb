@@ -6,6 +6,7 @@ module Newflow
       AS_PRIMARY = 'as_primary'
       INSTRUCTOR = 'instructor'
       AS_FUTURE = 'as_future'
+      AS_RECOMMENDING = 'as_recommending'
 
       lev_handler
 
@@ -18,9 +19,9 @@ module Newflow
 
       paramify :signup do
         attribute :school_name, type: String
+        attribute :school_id, type: Integer
         attribute :is_school_not_supported_by_sheerid, type: String
         attribute :is_country_not_supported_by_sheerid, type: String
-        attribute :school_name, type: String
         attribute :school_issued_email, type: String
         attribute :educator_specific_role, type: String
         attribute :other_role_name, type: String
@@ -29,7 +30,9 @@ module Newflow
         attribute :books_used, type: Object
         attribute :books_used_details, type: Object
         attribute :books_of_interest, type: Object
+        attribute :total_num_students, type: String
         attribute :is_cs_form, type: Object
+        attribute :expected_start_semester, type: String
 
         validates(
           :educator_specific_role,
@@ -65,10 +68,16 @@ module Newflow
                              signup_params.is_country_not_supported_by_sheerid == 'true' ||
                              user.is_sheerid_unviable? || @is_on_cs_form)
 
-        total_students = books_used_details.values.inject(0) do |total, book|
-          total + book["num_students_using_book"].to_i rescue 0
-        end
+        total_students = calculate_total_students
+        return if errors?
 
+        selected_school = School.find_by(id: signup_params.school_id) if signup_params.school_id.present?
+        # The school field was touched (typed text and/or picked a suggestion): update the link.
+        # A valid pick sets it to that school; a pick that was then edited (school_id cleared but
+        # school_name still present) clears the link, since selected_school is nil in that case.
+        if signup_params.school_name.present? || signup_params.school_id.present?
+          @user.school = selected_school
+        end
         @user.update!(
           role: signup_params.educator_specific_role,
           other_role_name: other_role_name,
@@ -77,9 +86,10 @@ module Newflow
           how_many_students: total_students,
           which_books: which_books,
           books_used_details: books_used_details,
-          self_reported_school: signup_params.school_name,
+          self_reported_school: selected_school&.name || signup_params.school_name,
           is_profile_complete: true,
-          is_educator_pending_cs_verification: !@did_use_sheerid
+          is_educator_pending_cs_verification: !@did_use_sheerid,
+          expected_start_semester: expected_start_semester
         )
         # If anything happens during lead creation, it's helpful for us to have this on the log.
         SecurityLog.create!(user: user, event_type: :user_profile_complete, event_data: { books_used_details: books_used_details })
@@ -115,7 +125,62 @@ module Newflow
 
       end
 
+      protected
+
+      def calculate_total_students
+        if signup_params.using_openstax_how == AS_PRIMARY
+          sum_book_student_counts
+        elsif Settings::FeatureFlags.collect_student_count_all_paths
+          validate_student_count!(
+            signup_params.total_num_students,
+            :total_num_students,
+            'Total number of students must be a whole number greater than 0'
+          )
+        else
+          sum_book_student_counts
+        end
+      end
+
+      def sum_book_student_counts
+        books_used_details.values.each_with_index.inject(0) do |total, (book, index)|
+          count = validate_student_count!(
+            book["num_students_using_book"],
+            :"books_used_details_#{index}_num_students_using_book",
+            'Number of students using each book must be a whole number greater than 0'
+          )
+          return nil if count.nil?
+
+          total + count
+        end
+      end
+
+      def validate_student_count!(value, field, message)
+        if value.blank?
+          nonfatal_error(code: field, message: message, offending_inputs: field)
+          return nil
+        end
+
+        count = Integer(value, 10)
+        if count <= 0
+          nonfatal_error(code: field, message: message, offending_inputs: field)
+          return nil
+        end
+
+        count
+      rescue ArgumentError, TypeError
+        nonfatal_error(code: field, message: message, offending_inputs: field)
+        nil
+      end
+
       private #################
+
+      def expected_start_semester
+        key = signup_params.expected_start_semester
+        return nil if key.blank?
+        return nil unless I18n.t(:'educator_profile_form.expected_start_semester_options').key?(key.to_sym)
+        return nil unless [AS_PRIMARY, AS_RECOMMENDING].include?(signup_params.using_openstax_how)
+        key
+      end
 
       def other_role_name
         signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil
@@ -134,7 +199,7 @@ module Newflow
       end
 
       def books_used
-        signup_params.books_used.reject{ |b| b.blank? }
+        Array(signup_params.books_used).reject{ |b| b.blank? }
       end
 
       def books_used_details
@@ -144,7 +209,7 @@ module Newflow
       end
 
       def books_of_interest
-        signup_params.books_of_interest.reject{ |b| b.blank? }
+        Array(signup_params.books_of_interest).reject{ |b| b.blank? }
       end
 
       def check_params
@@ -170,6 +235,12 @@ module Newflow
 
         if role == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
           param_error(:books_of_interest, :books_of_interest_must_be_entered)
+        end
+
+        if Settings::FeatureFlags.collect_student_count_all_paths &&
+           signup_params.using_openstax_how != AS_PRIMARY &&
+           signup_params.total_num_students.blank?
+          param_error(:total_num_students, :fill_out)
         end
 
         if @is_on_cs_form
