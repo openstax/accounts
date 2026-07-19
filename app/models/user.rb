@@ -155,6 +155,8 @@ class User < ApplicationRecord
   has_many :oauth_applications, through: :member_groups
   has_many :security_logs
   has_many :user_books, dependent: :destroy
+  # nullify, not destroy: Salesforce is the system of record for adoptions
+  has_many :adoptions, dependent: :nullify
 
   delegate_to_routine :destroy
 

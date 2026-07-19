@@ -3,9 +3,11 @@ module Account
     before_action :newflow_authenticate_user!
 
     def create
-      book_attributes = catalog_attributes || fallback_book_params
+      # Only catalog-sourced attributes may touch the shared Book row —
+      # client-supplied fallbacks allowed stored XSS via html_url/title.
+      book_attributes = catalog_attributes
 
-      if book_attributes[:book_uuid].blank? || book_attributes[:title].blank?
+      if book_attributes.nil? || book_attributes[:book_uuid].blank? || book_attributes[:title].blank?
         redirect_to account_books_path, alert: 'That book is no longer available.'
         return
       end
@@ -36,11 +38,6 @@ module Account
 
     def catalog_attributes
       BookCatalog.new.find(params[:book_uuid])
-    end
-
-    def fallback_book_params
-      params.permit(:book_uuid, :title, :cover_url, :salesforce_name, :assignable_book, :webview_rex_link, :html_url)
-            .to_h.symbolize_keys
     end
   end
 end

@@ -15,7 +15,11 @@ class BookCatalogSync
       attrs = attrs.dup
       sf_name = attrs[:salesforce_name].to_s.strip
       attrs[:salesforce_book_id] = ids_by_name[sf_name] if sf_name.present?
-      Book.find_or_create_from_catalog!(attrs)
+      begin
+        Book.find_or_create_from_catalog!(attrs)
+      rescue StandardError => e
+        @logger.error("[BookCatalogSync] Failed to sync book #{attrs[:book_uuid]}: #{e.message}")
+      end
     end
   end
 

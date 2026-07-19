@@ -310,7 +310,9 @@ module Salesforce
 
     def sf_value(record, field)
       if record.respond_to?(:[])
-        record[field] || record[field.to_sym]
+        # nil-check (not ||) so a legitimate false value isn't dropped
+        value = record[field]
+        value.nil? ? record[field.to_sym] : value
       elsif record.respond_to?(field)
         record.public_send(field)
       end

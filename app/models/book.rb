@@ -16,13 +16,6 @@ class Book < ApplicationRecord
     book.title            = attrs[:title].presence || book.title || 'OpenStax Book'
     book.cover_url        = attrs[:cover_url].to_s if attrs[:cover_url].present?
     book.salesforce_name  = attrs[:salesforce_name].to_s if attrs[:salesforce_name].present?
-    if attrs[:salesforce_book_id].present?
-      sf_id = attrs[:salesforce_book_id].to_s
-      if book.salesforce_book_id != sf_id
-        where.not(id: book.id).where(salesforce_book_id: sf_id).update_all(salesforce_book_id: nil)
-      end
-      book.salesforce_book_id = sf_id
-    end
 
     if attrs.key?(:assignable_book)
       book.assignable_book = ActiveModel::Type::Boolean.new.cast(attrs[:assignable_book])
@@ -31,7 +24,18 @@ class Book < ApplicationRecord
     book.webview_rex_link = attrs[:webview_rex_link].to_s if attrs[:webview_rex_link].present?
     book.html_url         = attrs[:html_url].to_s if attrs[:html_url].present?
 
-    book.save! if book.new_record? || book.changed?
+    # transaction so a failed save! can't leave another book stripped of its salesforce_book_id
+    transaction do
+      if attrs[:salesforce_book_id].present?
+        sf_id = attrs[:salesforce_book_id].to_s
+        if book.salesforce_book_id != sf_id
+          where.not(id: book.id).where(salesforce_book_id: sf_id).update_all(salesforce_book_id: nil)
+        end
+        book.salesforce_book_id = sf_id
+      end
+
+      book.save! if book.new_record? || book.changed?
+    end
     book
   end
 end

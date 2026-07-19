@@ -1,5 +1,5 @@
 class UserBookCatalogRepair
-  Result = Struct.new(:scanned, :matched, :repaired, :missing, keyword_init: true)
+  Result = Struct.new(:scanned, :matched, :repaired, :missing, :failed, keyword_init: true)
 
   def self.call
     new.call
@@ -12,7 +12,7 @@ class UserBookCatalogRepair
       memo[entry[:title].to_s.downcase] << entry
     end
 
-    stats = Result.new(scanned: 0, matched: 0, repaired: 0, missing: 0)
+    stats = Result.new(scanned: 0, matched: 0, repaired: 0, missing: 0, failed: 0)
 
     UserBook.includes(:book).find_each do |user_book|
       stats.scanned += 1
@@ -43,11 +43,20 @@ class UserBookCatalogRepair
 
       next unless book.changed?
 
-      book.save!
-      stats.repaired += 1
+      begin
+        book.save!
+        stats.repaired += 1
+      rescue StandardError => e
+        # e.g. the guessed book_uuid already belongs to another Book row — skip, don't abort the run
+        stats.failed += 1
+        Rails.logger.error("[UserBookCatalogRepair] Failed to repair book #{book.id}: #{e.message}")
+      end
     end
 
-    puts "Scanned: #{stats.scanned}, Matched: #{stats.matched}, Repaired: #{stats.repaired}, Missing: #{stats.missing}"
+    Rails.logger.info(
+      "[UserBookCatalogRepair] Scanned: #{stats.scanned}, Matched: #{stats.matched}, " \
+      "Repaired: #{stats.repaired}, Missing: #{stats.missing}, Failed: #{stats.failed}"
+    )
     stats
   end
 end

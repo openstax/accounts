@@ -8,6 +8,12 @@ namespace :cron do
     Rails.logger.info 'UpdateSalesforceAssignableFields.call'
     OpenStax::RescueFrom.this { UpdateSalesforceAssignableFields.call }
 
+    Rails.logger.info 'BookCatalogSync.call'
+    OpenStax::RescueFrom.this { BookCatalogSync.call }
+
+    Rails.logger.info 'Salesforce::AdoptionSync.call'
+    OpenStax::RescueFrom.this { Salesforce::AdoptionSync.call }
+
     Rails.logger.debug 'Finished daily cron'
   end
 end

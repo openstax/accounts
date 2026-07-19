@@ -33,5 +33,23 @@ RSpec.describe Account::SavedBooksController, type: :controller do
       expect(saved_book.book.book_uuid).to eq('abc-123')
       expect(saved_book.book.title).to eq('Test Book')
     end
+
+    it 'rejects books not found in the catalog instead of trusting client params' do
+      catalog = instance_double(BookCatalog)
+      allow(BookCatalog).to receive(:new).and_return(catalog)
+      allow(catalog).to receive(:find).with('evil-uuid').and_return(nil)
+
+      expect {
+        post :create, params: {
+          book_uuid: 'evil-uuid',
+          title: 'x',
+          html_url: 'javascript:alert(1)',
+          assignable_book: true
+        }
+      }.not_to change { [UserBook.count, Book.count] }
+
+      expect(response).to redirect_to(account_books_path)
+      expect(flash[:alert]).to eq('That book is no longer available.')
+    end
   end
 end

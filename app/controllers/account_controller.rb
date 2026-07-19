@@ -36,8 +36,9 @@ class AccountController < Newflow::BaseController
     @book_catalog = BookCatalog.new
     @saved_books = current_user.user_books.includes(:book).order(created_at: :desc)
 
+    # Book rows are kept in sync by the daily cron (BookCatalogSync) —
+    # don't call Salesforce from the request path.
     @available_books = @book_catalog.available_books.presence || books_from_db
-    BookCatalogSync.new(@available_books).call if @available_books.present?
 
     saved_ids = @saved_books.map { |saved| saved.book&.book_uuid }.compact
     @available_books_for_select = @available_books.reject { |book| saved_ids.include?(book[:book_uuid].to_s) }
