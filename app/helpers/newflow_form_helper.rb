@@ -37,7 +37,8 @@ module NewflowFormHelper
                    disabled: false,
                    described: nil,
                    required: false,
-                   list: nil)
+                   list: nil,
+                   html_attrs: {})
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -64,7 +65,8 @@ module NewflowFormHelper
                       disabled: disabled,
                       'aria-required': required,
                       'aria-errormessage': errors_div.present? ? "errors-for-#{name}" : nil,
-                      'aria-invalid': errors_div.present? ? true : nil
+                      'aria-invalid': errors_div.present? ? true : nil,
+                      **html_attrs
         )
       else
         input = (
@@ -83,7 +85,8 @@ module NewflowFormHelper
                       'aria-described-by': described,
                       'aria-required': required,
                       'aria-errormessage': errors_div.present? ? "errors-for-#{name}" : nil,
-                      'aria-invalid': errors_div.present? ? true : nil
+                      'aria-invalid': errors_div.present? ? true : nil,
+                      **html_attrs
         )
       end
       "#{input}\n#{errors_div}".html_safe

@@ -24,14 +24,21 @@
                     <%= form_description %>
                 </div>
 
-                <div class="content control-group">
+                <div class="content control-group pin-field">
                     <%= label_tag :pin, I18n.t(:"login_signup_form.pin_label"),
                                 class: 'field-label required'
                     %>
                     <%= form_helper.text_field name: :pin,
                                 placeholder: I18n.t(:"login_signup_form.pin_placeholder"),
                                 autofocus: true,
-                                required: true
+                                required: true,
+                                supplemental_class: 'pin-field__input',
+                                html_attrs: {
+                                    autocomplete: 'one-time-code',
+                                    inputmode: 'numeric',
+                                    pattern: '[0-9]*',
+                                    maxlength: 6
+                                }
                     %>
                 </div>
 
