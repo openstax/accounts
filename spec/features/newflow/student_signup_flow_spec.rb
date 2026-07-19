@@ -166,7 +166,7 @@ module Newflow
         old_confirmation_code_url = get_path_from_absolute_link(current_email, '#confirm-link')
 
         # edit email
-        click_on('edit your email')
+        click_on(t(:"login_signup_form.verify_email_edit_link"))
         screenshot!
         # page contains tooltip
         expect(page).to have_text(t(:"login_signup_form.change_signup_email_form_tooltip"))

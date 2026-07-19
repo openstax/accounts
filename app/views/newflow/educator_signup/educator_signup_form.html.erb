@@ -18,19 +18,24 @@
 
     <%= newflow_login_signup_card(
           id: 'signup-page',
-          header: (I18n.t(:"login_signup_form.signup_page_header")),
-          current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 4),
+          header: nil,
+          current_step: nil,
           classes: 'signup-page') do %>
       <% lev_form_for :signup, url: educator_signup_post_path do |form| %>
         <% fh = NewflowFormHelper::Newflow.new(f: form,
                                                context: self,
                                                errors: @handler_result&.errors) %>
-        <div class="content role-section">
-          <div>
-            <%= render partial: 'newflow/back_arrow', locals: { path: newflow_signup_path, name: 'welcome' } %>
-            <div class="role-button"><%= I18n.t(:"login_signup_form.educator") %></div>
-          </div>
-        </div>
+        <%=
+          render partial: 'newflow/signup_progress_header', locals: {
+            back_path: newflow_signup_path,
+            back_label: I18n.t(:"login_signup_form.instructor_back_label"),
+            step_text: I18n.t(:"login_signup_form.step_counter_with_label",
+                               current_step: 1, total_steps: 4, label: I18n.t(:"login_signup_form.step_label_account")),
+            progress_percent: 25,
+            header_text: I18n.t(:"login_signup_form.educator_signup_page_header")
+          }
+        %>
+        <p class="content form-helper-text"><%= I18n.t(:"login_signup_form.educator_signup_social_proof") %></p>
 
         <div class="content required-fields-notice">
           <%= I18n.t(:"login_signup_form.all_fields_required") %>
@@ -72,7 +77,7 @@
         </div>
 
         <div class="content control-group email-input-group newflow">
-          <%= label_tag :signup_email, I18n.t(:"login_signup_form.school_issued_email_label"), class: 'field-label' %>
+          <%= label_tag :signup_email, I18n.t(:"login_signup_form.school_email_label"), class: 'field-label' %>
           <%=
             fh.text_field(
               name: :email,
@@ -81,6 +86,7 @@
               described: 'school-email-warning'
             )
           %>
+          <div class="form-helper-text"><%= I18n.t(:"login_signup_form.school_email_soft_helper").html_safe %></div>
           <%# shows up only when faculty tries wants to use a non-edu email %>
           <br/>
           <div class="warning edu" role="alert" id="school-email-warning">

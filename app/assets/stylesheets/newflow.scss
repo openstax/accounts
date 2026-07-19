@@ -1545,6 +1545,101 @@ $very-narrow: 37rem * $scale-factor;
   position: relative;
 }
 
+/* ---------------------------------------------------------------------------
+   Signup step-1 / verify-email progress header: back link + step counter +
+   thin progress bar + h1. Scoped to its own classes (not the older boxy
+   .step-counter) so it only affects the screens that opt into it.
+--------------------------------------------------------------------------- */
+
+.signup-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.4rem;
+  margin-bottom: 0.6rem;
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: unset;
+  }
+
+  &__step {
+    color: #6A6A6A;
+  }
+}
+
+.signup-progress-bar {
+  height: 0.4rem;
+  background: #d5d5d5;
+  border-radius: 999px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+
+  &__fill {
+    height: 100%;
+    background: #76AE43;
+    border-radius: 999px;
+  }
+}
+
+.signup-progress-header__h1 {
+  @include title-font(2.4rem);
+  text-align: left;
+  line-height: 1.3;
+  margin: 0 0 2rem;
+}
+
+.field-label-optional {
+  font-weight: 400;
+  color: #6A6A6A;
+}
+
+.name-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+
+  @include width-up-to($phone-max) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.signup-footer-note {
+  font-size: 1.3rem;
+  color: #6A6A6A;
+  text-align: center;
+  margin: 0;
+}
+
+.school-autocomplete-match {
+  font-size: 1.3rem;
+  color: #538E1D;
+  margin-top: 0.5rem;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+// Student signup: Google on top, full-width stacked social buttons (restyled,
+// same providers as before — see .social-buttons for the shared base rules).
+.social-buttons--stacked {
+  flex-direction: column;
+  align-items: stretch;
+
+  > div {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
 .pin-field--enhanced .pin-field__input {
   // Deliberately NOT display:none/visibility:hidden/opacity:0 and NOT moved
   // off-screen: any of those make Selenium/Capybara treat the field as "not

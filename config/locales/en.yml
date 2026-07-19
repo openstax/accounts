@@ -124,6 +124,24 @@ en:
     login_with: 'LOG IN WITH:'
     signup_with: 'Sign up with:'
     signup_page_header: Set up your account
+    student_signup_page_header: Sign up — it's free, forever
+    educator_signup_page_header: Create your instructor account
+    educator_signup_social_proof: Join 50,000+ instructors who've saved students over $2 billion.
+    student_signup_footer_note: "Next: verify your email. That's it."
+    step_counter_with_label: Step %{current_step} of %{total_steps} · %{label}
+    step_label_account: Account
+    step_label_verify_email: Verify email
+    instructor_back_label: Instructor
+    or_sign_up_with_email: or sign up with email
+    school_email_label: School email
+    school_optional_suffix: (optional)
+    school_email_soft_helper: Use your <strong>school</strong> email (usually .edu or .org) — it's required to verify you as an educator in step 3.
+    check_your_email_header: Check your email
+    verify_email_sub_description: We sent a 6-digit code to <strong>%{email}</strong> — %{edit_link}
+    verify_email_edit_link: edit
+    verify_email_resend_footer: Didn't get it? %{resend_link} · Check your spam folder
+    verify_email_resend_footer_with_contact: Didn't get it? %{resend_link} · Check your spam folder · %{contact_us_link}
+    verify_email_resend_link: Resend code
     confirmation_page_header: Hi, %{first_name}! Confirm your email.
     change_signup_email_form_page_header: Change your email
     change_signup_email_form_page_description: >-
