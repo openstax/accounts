@@ -227,7 +227,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    css_parser (1.19.0)
+    css_parser (1.22.0)
       addressable
     database_cleaner (2.0.2)
       database_cleaner-active_record (>= 2, < 3)
@@ -562,8 +562,13 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     psych (3.3.4)
+<<<<<<< HEAD
     public_suffix (6.0.1)
     puma (7.2.1)
+=======
+    public_suffix (6.0.2)
+    puma (6.4.3)
+>>>>>>> origin/main
       nio4r (~> 2.0)
     puma_worker_killer (1.0.0)
       bigdecimal (>= 2.0)
@@ -837,6 +842,7 @@ DEPENDENCIES
   codecov
   coffee-rails
   compass-rails
+  css_parser (~> 1.22)
   database_cleaner
   db-query-matchers
   delayed_job_active_record
