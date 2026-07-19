@@ -149,7 +149,7 @@ $font-path: '/accounts/fonts';
     .email-entry__toggle {
       border: none;
       background: transparent;
-      color: #027eb5;
+      color: #026AA1;
       padding: 0;
       display: inline-flex;
       align-items: center;
@@ -159,7 +159,7 @@ $font-path: '/accounts/fonts';
 
     .editable-input input {
       width: 100%;
-      border: 1px solid #d7dde6;
+      border: 1px solid #E0E0E0;
       border-radius: 0.3rem;
       padding: 0.75rem 0.9rem;
       background: #fff;
@@ -170,7 +170,7 @@ $font-path: '/accounts/fonts';
 
     .editable-input input:focus {
       outline: none;
-      border-color: #027eb5;
+      border-color: #026AA1;
       box-shadow: 0 0 0 2px rgba(2, 126, 181, 0.2);
     }
 
@@ -205,7 +205,7 @@ $font-path: '/accounts/fonts';
 
         button:hover,
         button:focus {
-          color: #b91c1c;
+          color: #C22032;
           outline: none;
         }
       }

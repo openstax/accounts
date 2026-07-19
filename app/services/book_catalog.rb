@@ -1,7 +1,8 @@
-# Reads the committed catalog snapshot at config/data/book_catalog_cache.json.
-# To refresh it, pull from the CMS API:
-# https://openstax.org/apps/cms/api/v2/pages/?type=books.Book&fields=title,salesforce_name,book_uuid,publish_date,assignable_book,cover_url,book_state,webview_rex_link&limit=200
+# Server-side reads come from the committed snapshot at
+# config/data/book_catalog_cache.json; BOOKS_URL is the live CMS endpoint the
+# books page falls back to client-side (and the source for refreshing the snapshot).
 class BookCatalog
+  BOOKS_URL = URI('https://openstax.org/apps/cms/api/v2/pages/?type=books.Book&fields=title,salesforce_name,book_uuid,publish_date,assignable_book,cover_url,book_state,webview_rex_link&limit=200')
   ALLOWED_STATES = %w[live deprecated].freeze
   REQUIRED_FIELDS = %w[book_uuid].freeze
 

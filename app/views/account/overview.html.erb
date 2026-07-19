@@ -108,7 +108,7 @@
               You’re signed in as an instructor at <strong><%= school_name %></strong>. Access your teaching tools, resources, and account settings from here.
             <% else %>
               Access your teaching tools, resources, and account settings from here. Add your school to personalize your experience.
-              <a class="account-overview__inline-link" href="/i/account/profile">Update profile</a>
+              <a class="account-overview__inline-link" href="<%= account_profile_path %>">Update profile</a>
             <% end %>
           </p>
 
@@ -132,7 +132,7 @@
           </div>
           <p class="account-overview__note account-overview__note--inline">
             Need changes? Manage details in
-            <a href="/i/account/profile">Profile</a> and <a href="/i/account/security">Security</a>.
+            <a href="<%= account_profile_path %>">Profile</a> and <a href="<%= account_security_path %>">Security</a>.
           </p>
         </header>
 
@@ -144,11 +144,10 @@
         
           
           <% quick_actions = [
-               { icon: 'fa fa-file', title: 'Teaching resources', body: 'Download instructor materials, adoption tools, and LMS integrations.', href: '#', cta: 'View resources →' },
                { icon: 'fa fa-pencil', title: 'Report usage', body: "Share how you're using OpenStax this term.", button: true, cta: 'Report usage →' },
                { icon: 'fa fa-plug', title: 'LMS / Assignable setup', body: 'Connect Assignable tools to Canvas, Blackboard, and more.', href: 'https://openstax.org/assignable/setup', cta: 'View setup guide →', external: true },
                { icon: 'fa fa-book', title: 'Find a book', body: 'Browse OpenStax textbooks and matching instructor resources.', href: 'https://openstax.org/subjects', cta: 'Browse subjects →', external: true },
-               { icon: 'fa fa-life-ring', title: 'Get help', body: 'Search FAQs, file a ticket, or email our support team.', href: '/i/account/support', cta: 'Go to support →' },
+               { icon: 'fa fa-life-ring', title: 'Get help', body: 'Search FAQs, file a ticket, or email our support team.', href: account_support_path, cta: 'Go to support →' },
                { icon: 'fa fa-envelope', title: 'Keep in touch', body: 'Get OpenStax updates about new books, webinars, and instructor opportunities.', href: 'https://openstax.org/newsletters', cta: 'Subscribe →', external: true }
              ] %>
 

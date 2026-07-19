@@ -91,7 +91,7 @@
           </div>
 
           <div class="account-profile__section-card account-books__search-card"
-               data-books-search="<%= j((@available_books_for_select || []).to_json) %>">
+               data-books-search="<%= (@available_books_for_select || []).to_json %>">
             <div class="account-books__search-input">
               <label for="account-books-search">Search by title</label>
               <input type="text"
@@ -270,7 +270,7 @@
             renderResults(input.value || '');
           })
           .catch(function() {
-            booksData = filterSaved(<%= raw((@available_books_for_select || []).to_json) %>);
+            booksData = filterSaved(<%= raw ERB::Util.json_escape((@available_books_for_select || []).to_json) %>);
             renderResults(input.value || '');
           });
       };

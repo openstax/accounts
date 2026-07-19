@@ -10,12 +10,12 @@
 
 .report-adoption-modal .modal-content {
   border-radius: 18px;
-  border: 1px solid #dde3ef;
+  border: 1px solid #E0E0E0;
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
 }
 
 .report-adoption-modal .modal-header {
-  border-bottom: 1px solid #f0f2f6;
+  border-bottom: 1px solid #E0E0E0;
   padding: 1.75rem 1.75rem 1.25rem;
   display: flex;
   justify-content: space-between;
@@ -33,12 +33,12 @@
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.25rem;
-  color: #111827;
+  color: #424242;
 }
 
 .report-adoption__header-helper {
   font-size: 0.95rem;
-  color: #4b5563;
+  color: #6A6A6A;
   margin: 0;
 }
 
@@ -47,12 +47,12 @@
 }
 
 .report-adoption__callout {
-  background: #eef6ff;
-  border: 1px solid #d6e7ff;
+  background: #F7FCFF;
+  border: 1px solid #E0E0E0;
   border-radius: 12px;
   padding: 0.85rem 1.1rem 0.85rem 2.7rem;
   font-size: 0.95rem;
-  color: #0f3554;
+  color: #424242;
   margin-bottom: 1.5rem;
   position: relative;
 }
@@ -66,7 +66,7 @@
   width: 1.35rem;
   height: 1.35rem;
   border-radius: 50%;
-  background: #0b6aa2;
+  background: #026AA1;
   color: #fff;
   display: flex;
   align-items: center;
@@ -83,7 +83,7 @@
 }
 
 .report-adoption__row {
-  border: 1px solid #eaecf0;
+  border: 1px solid #E0E0E0;
   border-radius: 12px;
   padding: 1rem 1.25rem 1.25rem;
   background: #fff;
@@ -99,7 +99,7 @@
 .report-adoption__row-title {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #424242;
 }
 
 .report-adoption__row-grid {
@@ -114,16 +114,20 @@
   display: block;
   font-weight: 600;
   margin-bottom: 0.25rem;
-  color: #667085;
+  color: #6A6A6A;
   font-size: 0.85rem;
 }
 
 .report-adoption__field select,
 .report-adoption__field input {
+  /* controls are nested inside their labels for a11y; undo inherited label styling */
+  font-weight: 400;
+  color: #424242;
+  margin-top: 0.25rem;
   width: 100%;
   min-height: 44px;
   border-radius: 8px;
-  border: 1px solid #d7dde6;
+  border: 1px solid #E0E0E0;
   font-size: 0.95rem;
   padding: 0 0.75rem;
   text-overflow: ellipsis;
@@ -136,8 +140,8 @@
   appearance: none;
   -webkit-appearance: none;
   background-image:
-    linear-gradient(45deg, transparent 50%, #98a2b3 50%),
-    linear-gradient(135deg, #98a2b3 50%, transparent 50%);
+    linear-gradient(45deg, transparent 50%, #9A9A9B 50%),
+    linear-gradient(135deg, #9A9A9B 50%, transparent 50%);
   background-position:
     calc(100% - 20px) calc(50% - 2px),
     calc(100% - 14px) calc(50% - 2px);
@@ -147,13 +151,13 @@
 
 .report-adoption__field select:focus,
 .report-adoption__field input:focus {
-  border-color: #0b6aa2;
+  border-color: #026AA1;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(11, 106, 162, 0.2);
+  box-shadow: 0 0 0 2px rgba(2, 106, 161, 0.2);
 }
 
 .report-adoption__field select option {
-  color: #0f172a;
+  color: #424242;
   font-weight: 500;
   padding: 0.4rem 0.6rem;
   background: #fff;
@@ -161,21 +165,21 @@
 
 .report-adoption__field select option:hover,
 .report-adoption__field select option:focus {
-  background: rgba(11, 106, 162, 0.12);
+  background: rgba(2, 106, 161, 0.12);
 }
 
 .report-adoption__row-header .account-books__remove-btn {
   background: none;
   border: none;
   padding: 0;
-  color: #98a2b3;
+  color: #9A9A9B;
   font-size: 0.85rem;
   text-decoration: underline;
 }
 
 .report-adoption__row-header .account-books__remove-btn:hover,
 .report-adoption__row-header .account-books__remove-btn:focus {
-  color: #d92c20;
+  color: #C22032;
 }
 
 .report-adoption__remove-row.is-hidden {
@@ -192,7 +196,7 @@
   border: 1px solid rgba(15, 53, 84, 0.35);
   font-size: 0.8rem;
   margin-left: 0.35rem;
-  color: #0f3554;
+  color: #424242;
   cursor: help;
   position: relative;
   background: #fff;
@@ -204,7 +208,7 @@
   bottom: calc(100% + 6px);
   left: 50%;
   transform: translateX(-50%);
-  background: #0f3554;
+  background: #424242;
   color: #fff;
   padding: 0.35rem 0.6rem;
   border-radius: 6px;
@@ -226,7 +230,7 @@
   left: 50%;
   transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: #0f3554;
+  border-top-color: #424242;
   opacity: 0;
   transition: opacity 120ms ease;
   pointer-events: none;
@@ -241,7 +245,7 @@
 }
 
 .report-adoption__summary {
-  border: 1px solid #eaecf0;
+  border: 1px solid #E0E0E0;
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -253,7 +257,7 @@
 
 .report-adoption__summary-label {
   font-size: 0.85rem;
-  color: #667085;
+  color: #6A6A6A;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -261,22 +265,22 @@
 .report-adoption__summary-value {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #424242;
 }
 
 .report-adoption__summary-subtext {
   font-size: 0.95rem;
-  color: #475467;
+  color: #6A6A6A;
 }
 
 .report-adoption__helper-text {
-  color: #6b7280;
+  color: #6A6A6A;
   font-size: 0.88rem;
   margin: 0;
 }
 
 .report-adoption__footer {
-  border-top: 1px solid #eaecf0;
+  border-top: 1px solid #E0E0E0;
   background: #f9fafb;
   padding: 1rem 1.25rem;
   margin: 0 -1.25rem -1.25rem;

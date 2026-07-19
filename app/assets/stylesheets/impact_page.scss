@@ -2,7 +2,7 @@
   .impact-toggle {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    border: 1px solid #d7dde6;
+    border: 1px solid #E0E0E0;
     border-radius: 999px;
     overflow: hidden;
     margin-bottom: 1.25rem;
@@ -16,7 +16,7 @@
     font-size: 0.95rem;
     border: none;
     background: transparent;
-    color: #475467;
+    color: #6A6A6A;
     background: transparent;
     text-decoration: none;
     text-align: center;
@@ -24,12 +24,12 @@
   }
 
   .impact-toggle__item.is-active {
-    background: #0b6aa2;
+    background: #026AA1;
     color: #fff;
   }
 
   .impact-toggle__item:focus-visible {
-    outline: 2px solid #0b6aa2;
+    outline: 2px solid #026AA1;
     outline-offset: 2px;
   }
 
@@ -50,9 +50,9 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
-    border: 1px solid #d7dde6;
+    border: 1px solid #E0E0E0;
     border-radius: 18px;
-    background: #f8fafc;
+    background: #F5F5F5;
     padding: 1.75rem;
     margin-bottom: 2rem;
   }
@@ -73,7 +73,7 @@
     flex: 1 1 100%;
     margin-top: 0.5rem;
     padding-top: 1rem;
-    border-top: 1px solid #dfe6ef;
+    border-top: 1px solid #E0E0E0;
   }
 
   .account-impact__panel-kicker {
@@ -81,13 +81,13 @@
     letter-spacing: 0.08em;
     font-size: 0.8rem;
     font-weight: 600;
-    color: #0b6aa2;
+    color: #026AA1;
     margin-bottom: 0.5rem;
   }
 
   .impact-lead {
     margin-top: 0.75rem;
-    color: #334155;
+    color: #6A6A6A;
     font-size: 1rem;
   }
 
@@ -103,7 +103,7 @@
     align-items: center;
     gap: 0.9rem;
     padding: 0.9rem 1rem;
-    border: 1px solid #e0e7ef;
+    border: 1px solid #E0E0E0;
     border-radius: 1rem;
     background: #fff;
     min-height: 96px;
@@ -130,19 +130,19 @@
     align-items: center;
     justify-content: center;
     font-size: 1.3rem;
-    color: #f97316;
+    color: #D4450C;
   }
 
   .impact-strip__celebration-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #0f172a;
+    color: #424242;
     margin: 0;
   }
 
   .impact-strip__celebration-text {
     margin: 0.1rem 0 0 3.2rem;
-    color: #475569;
+    color: #6A6A6A;
     font-size: 0.95rem;
   }
 
@@ -150,8 +150,8 @@
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 999px;
-    background: rgba(11, 106, 162, 0.12);
-    color: #0b6aa2;
+    background: rgba(2, 106, 161, 0.12);
+    color: #026AA1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -160,22 +160,22 @@
 
   .impact-strip__icon--students {
     background: rgba(52, 211, 153, 0.18);
-    color: #047857;
+    color: #538E1D;
   }
 
   .impact-strip__icon--books {
     background: rgba(249, 115, 22, 0.16);
-    color: #c2410c;
+    color: #D4450C;
   }
 
   .impact-strip__icon--savings {
     background: rgba(99, 102, 241, 0.18);
-    color: #3730a3;
+    color: #026AA1;
   }
 
   .impact-strip__label {
     font-size: 0.85rem;
-    color: #64748b;
+    color: #6A6A6A;
     margin: 0;
   }
 
@@ -187,7 +187,7 @@
   .impact-strip__value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #0f172a;
+    color: #424242;
     margin: 0.1rem 0 0;
   }
 
@@ -206,13 +206,13 @@
     top: 0.6rem;
     right: 0.8rem;
     font-size: 0.85rem;
-    color: #94a3b8;
+    color: #9A9A9B;
   }
 
   .impact-milestone {
     margin-top: 1rem;
     font-weight: 600;
-    color: #0f3554;
+    color: #424242;
     text-align: center;
   }
 
@@ -230,7 +230,7 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: rgba(11, 106, 162, 0.06);
+    background: rgba(2, 106, 161, 0.06);
     pointer-events: none;
     z-index: 0;
   }
@@ -257,8 +257,8 @@
     gap: 0.75rem;
     padding: 0.55rem 1rem;
     border-radius: 999px;
-    background: rgba(11, 106, 162, 0.08);
-    border: 1px solid rgba(11, 106, 162, 0.14);
+    background: rgba(2, 106, 161, 0.08);
+    border: 1px solid rgba(2, 106, 161, 0.14);
   }
 
   .impact-badge__icon,
@@ -269,24 +269,24 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #f97316;
+    color: #D4450C;
     font-size: 1.2rem;
   }
    .impact-badge__icon_locked {
-    color: #0b6aa2;
+    color: #026AA1;
    }
 
   .impact-badge__title {
     margin: 0;
     font-weight: 600;
-    color: #0f172a;
+    color: #424242;
     font-size: 1.2rem;
   }
 
   .impact-badge__meta {
     margin: 0;
     font-size: 0.85rem;
-    color: #475569;
+    color: #6A6A6A;
   }
 
   .impact-badge--muted {
@@ -301,12 +301,12 @@
   .impact-locked__caption {
     margin: 0 0 0.6rem;
     font-size: 0.92rem;
-    color: #475569;
+    color: #6A6A6A;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .impact-hero::before {
-      background: rgba(11, 106, 162, 0.06);
+      background: rgba(2, 106, 161, 0.06);
     }
   }
 

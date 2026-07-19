@@ -36,27 +36,32 @@
     </div>
 
     <div class="report-adoption__row-grid">
+<%# controls live inside their labels: rows are cloned from a <template>, so for/id pairs would duplicate ids %>
       <div class="report-adoption__field report-adoption__field--book">
-        <label>Book</label>
-        <select name="books[][name]"
-                class="form-control">
-          <option value="">Select a book</option>
-          <% book_options.each do |label, value| %>
-            <option value="<%= value %>"><%= label %></option>
-          <% end %>
-        </select>
+        <label>
+          Book
+          <select name="books[][name]"
+                  class="form-control">
+            <option value="">Select a book</option>
+            <% book_options.each do |label, value| %>
+              <option value="<%= value %>"><%= label %></option>
+            <% end %>
+          </select>
+        </label>
       </div>
 
       <div class="report-adoption__field report-adoption__field--year">
-        <label>School year</label>
-        <select name="books[][school_year]"
-                class="form-control"
-                data-report-adoption-school-year>
-          <option value="">Select school year</option>
-          <% school_year_options.each do |label, value| %>
-            <option value="<%= value %>"><%= label %></option>
-          <% end %>
-        </select>
+        <label>
+          School year
+          <select name="books[][school_year]"
+                  class="form-control"
+                  data-report-adoption-school-year>
+            <option value="">Select school year</option>
+            <% school_year_options.each do |label, value| %>
+              <option value="<%= value %>"><%= label %></option>
+            <% end %>
+          </select>
+        </label>
       </div>
 
       <div class="report-adoption__field report-adoption__field--students">
@@ -67,13 +72,13 @@
                 data-tooltip="Total number of students using OpenStax for the full academic year."
                 tabindex="0"
                 aria-label="Total number of students using OpenStax for the full academic year.">i</span>
+          <input type="number"
+                 name="books[][students]"
+                 class="form-control"
+                 min="0"
+                 placeholder="e.g., 120"
+                 data-report-adoption-students />
         </label>
-        <input type="number"
-               name="books[][students]"
-               class="form-control"
-               min="0"
-               placeholder="e.g., 120"
-               data-report-adoption-students />
       </div>
     </div>
   </div>
