@@ -120,13 +120,24 @@ class AccountController < Newflow::BaseController
   end
 
   def render_account_page(current_key, title:, description:, view: current_key)
-    @account_nav_items = NAV_ITEMS
+    @account_nav_items = account_nav_items_for(current_user)
     @account_nav_current = current_key
     @account_shell_title = title
     @account_shell_description = description
     @framed = false
     @using_os = current_user.using_openstax
     render "account/#{view}"
+  end
+
+  # Students see their saved books on the overview and have no adoption
+  # impact to report — those tabs are instructor-only. The pages themselves
+  # stay reachable by URL; this only trims the nav.
+  STUDENT_HIDDEN_NAV_KEYS = %i[books impact].freeze
+
+  def account_nav_items_for(user)
+    return NAV_ITEMS unless user.student?
+
+    NAV_ITEMS.reject { |item| STUDENT_HIDDEN_NAV_KEYS.include?(item[:key]) }
   end
 
   def books_from_db(exclude_ids: [])

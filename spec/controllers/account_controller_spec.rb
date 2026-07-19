@@ -179,5 +179,13 @@ RSpec.describe AccountController, type: :controller do
         expect(response).to have_http_status(:ok)
       end
     end
+
+    it 'hides the instructor-only Books and Impact tabs from the student nav' do
+      get :overview
+
+      expect(response.body).not_to include('My OpenStax Impact')
+      expect(response.body).not_to include('My OpenStax Books')
+      expect(response.body).to include('Profile')
+    end
   end
 end
