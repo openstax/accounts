@@ -22,6 +22,9 @@ Rails.application.routes.draw do
 
     post '/adoption-reports', to: 'account/adoption_reports#create', as: :account_adoption_reports
 
+    get '/instructors', to: 'account/instructors#index', as: :account_instructors_search
+    post '/instructor-connections', to: 'account/instructor_connections#create', as: :account_instructor_connections
+
     get '/check_in', to: 'account/check_in#show', as: :account_check_in
     post '/check_in/confirm', to: 'account/check_in#confirm', as: :account_check_in_confirm
     post '/check_in/dismiss', to: 'account/check_in#dismiss', as: :account_check_in_dismiss

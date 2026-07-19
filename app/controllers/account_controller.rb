@@ -18,7 +18,11 @@ class AccountController < Newflow::BaseController
   ].freeze
 
   def overview
-    render_account_page :overview, title: 'Account overview', description: 'View a summary of your OpenStax account.'
+    if current_user.student?
+      render_student_overview
+    else
+      render_account_page :overview, title: 'Account overview', description: 'View a summary of your OpenStax account.'
+    end
   end
 
   def profile
@@ -98,14 +102,25 @@ class AccountController < Newflow::BaseController
 
   private
 
-  def render_account_page(current_key, title:, description:)
+  def render_student_overview
+    @saved_books = current_user.user_books.includes(:book).order(created_at: :desc)
+    @instructor_connections = current_user.instructor_connections.order(created_at: :desc)
+    @term_options = TermOptions.upcoming
+
+    render_account_page :overview,
+                        title: 'Your OpenStax Account',
+                        description: 'Your saved books and instructor connections, all in one place.',
+                        view: 'student_overview'
+  end
+
+  def render_account_page(current_key, title:, description:, view: current_key)
     @account_nav_items = NAV_ITEMS
     @account_nav_current = current_key
     @account_shell_title = title
     @account_shell_description = description
     @framed = false
     @using_os = current_user.using_openstax
-    render "account/#{current_key}"
+    render "account/#{view}"
   end
 
   def books_from_db(exclude_ids: [])
