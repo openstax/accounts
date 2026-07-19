@@ -113,4 +113,16 @@ RSpec.describe AdoptionReport, type: :model do
       end
     end
   end
+
+  describe '#school_year_start' do
+    it 'parses the leading 4-digit year out of a "YYYY - YY" label' do
+      report = build_report(school_year: '2026 - 27')
+      expect(report.school_year_start).to eq(2026)
+    end
+
+    it 'returns nil when the label has no leading year' do
+      report = build_report(school_year: 'not a year')
+      expect(report.school_year_start).to be_nil
+    end
+  end
 end

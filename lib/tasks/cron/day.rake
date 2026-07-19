@@ -14,6 +14,9 @@ namespace :cron do
     Rails.logger.info 'Salesforce::AdoptionSync.call'
     OpenStax::RescueFrom.this { Salesforce::AdoptionSync.call }
 
+    Rails.logger.info 'PushAdoptionReports.call_for_all_unpushed'
+    OpenStax::RescueFrom.this { PushAdoptionReports.call_for_all_unpushed }
+
     Rails.logger.debug 'Finished daily cron'
   end
 end

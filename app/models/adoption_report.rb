@@ -22,4 +22,13 @@ class AdoptionReport < ApplicationRecord
     start_year = today.month >= 8 ? today.year : today.year - 1
     "#{start_year} - #{(start_year + 1).to_s[-2, 2]}"
   end
+
+  # Parses the leading 4-digit start year out of labels like "2026 - 27",
+  # mirroring Adoption#school_year_start.
+  def school_year_start
+    year_prefix = school_year.to_s[/\A(\d{4})/, 1]
+    Integer(year_prefix) if year_prefix.present?
+  rescue ArgumentError
+    nil
+  end
 end
