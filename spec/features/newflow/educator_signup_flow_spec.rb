@@ -103,7 +103,7 @@ module Newflow
           expect_educator_step_4_page
           find('#signup_educator_specific_role_other').click
           fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
-          click_on('Continue')
+          click_on(I18n.t(:"educator_profile_form.finish_button"))
           visit(signup_done_path)
           expect(page).to have_current_path(signup_done_path)
         end
@@ -149,7 +149,6 @@ module Newflow
           visit(educator_profile_form_path)
           expect_educator_step_4_page
           select_educator_role('instructor')
-          find('#signup_who_chooses_books_instructor').click
         end
 
         context 'label for books list' do
@@ -199,7 +198,6 @@ module Newflow
           visit(educator_profile_form_path)
           expect_educator_step_4_page
           select_educator_role('instructor')
-          find('#signup_who_chooses_books_instructor').click
           find('#signup_using_openstax_how_as_primary').click
 
           expect(page).to have_selector('.expected-start-semester', visible: true)
@@ -213,7 +211,6 @@ module Newflow
           visit(educator_profile_form_path)
           expect_educator_step_4_page
           select_educator_role('instructor')
-          find('#signup_who_chooses_books_instructor').click
           find('#signup_using_openstax_how_as_primary').click
 
           select 'Next semester', from: 'signup_expected_start_semester'
@@ -229,7 +226,6 @@ module Newflow
           visit(educator_profile_form_path)
           expect_educator_step_4_page
           select_educator_role('instructor')
-          find('#signup_who_chooses_books_instructor').click
           find('#signup_using_openstax_how_as_recommending').click
 
           expect(page).to have_selector('.expected-start-semester', visible: true)
@@ -309,7 +305,7 @@ module Newflow
         find('#signup_educator_specific_role_other').click
         expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
         fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
-        click_on('Continue')
+        click_on(I18n.t(:"educator_profile_form.finish_button"))
         visit(educator_pending_cs_verification_path)
         expect(page).to have_current_path(educator_pending_cs_verification_path)
         click_on('Finish')

@@ -224,7 +224,8 @@ module ApplicationHelper
 
   def newflow_login_signup_card(
     classes: "", header: "", id: '',
-    banners: nil, current_step: nil, show_exit_icon: false, &block
+    banners: nil, current_step: nil, show_exit_icon: false,
+    progress_bar: nil, &block
   )
     @hide_layout_errors = true
 
@@ -247,13 +248,21 @@ module ApplicationHelper
         end
       end
 
+      # Opt-in only: existing steps don't pass progress_bar, so this is a no-op
+      # for every caller except the ones that explicitly ask for it.
+      progress = if progress_bar.present?
+        content_tag(:div, class: 'profile-progress-bar') {
+          content_tag(:div, '', class: 'profile-progress-bar__fill', style: "width: #{(progress_bar.to_f * 100).clamp(0, 100)}%")
+        }
+      end
+
       header = if header.present?
         content_tag(:h1, class: "page-header") { header }
       end
 
       body = capture(&block)
 
-      "#{exit_icon}\n#{step_counter}\n#{header}\n#{body}".html_safe
+      "#{exit_icon}\n#{step_counter}\n#{progress}\n#{header}\n#{body}".html_safe
     end
   end
 

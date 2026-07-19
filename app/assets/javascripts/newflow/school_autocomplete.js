@@ -42,6 +42,7 @@
 
     input.addEventListener('input', function() {
       hiddenId.value = '';
+      dispatchSelected(null);
       var query = input.value.trim();
       if (query.length < MIN_QUERY_LENGTH) {
         close();
@@ -167,11 +168,22 @@
       if (school) {
         input.value = school.name;
         hiddenId.value = school.id;
+        dispatchSelected(school);
       } else {
         // The use-as-entered row: keep the typed text, no school link.
         hiddenId.value = '';
+        dispatchSelected(null);
       }
       close();
+    }
+
+    // Notifies listeners (e.g. the K-12 grade-band question) with the picked
+    // school, or null when the field is cleared/edited/left as free text.
+    function dispatchSelected(school) {
+      container.dispatchEvent(new CustomEvent('school-autocomplete:selected', {
+        bubbles: true,
+        detail: { school: school }
+      }));
     }
 
     function close() {

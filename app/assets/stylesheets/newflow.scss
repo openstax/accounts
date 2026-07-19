@@ -119,7 +119,7 @@ input.has-error {
     }
 
     .question {
-        .how-using, .how-chosen, .total-num-students, .subjects-of-interest, .books-used  {
+        .how-using, .total-num-students, .subjects-of-interest, .books-used, .grade-band  {
             display: none;
         }
         margin-top: 25px;
@@ -127,6 +127,85 @@ input.has-error {
 
     .questions {
         margin-bottom: 25px;
+    }
+}
+
+// Compressed instructor profile step (step 4 of 4)
+.profile-progress-bar {
+    height: 0.4rem;
+    background: var(--very-light-pink);
+    border-radius: 999px;
+    margin: 0.5rem 0 2rem;
+
+    &__fill {
+        height: 100%;
+        width: 100%;
+        background: var(--success-message-color);
+        border-radius: 999px;
+    }
+}
+
+.profile-subtitle {
+    font-size: 1.4rem;
+    color: var(--placeholder-text);
+    margin: -0.5rem 0 1.5rem;
+}
+
+.profile-social-proof {
+    background: var(--success-background-color);
+    border: 0.1rem solid var(--success-border-color);
+    border-radius: 0.8rem;
+    padding: 1.2rem 1.6rem;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+
+    strong {
+        color: var(--success-message-color);
+    }
+}
+
+.school-match-confirmation {
+    font-size: 1.3rem;
+    color: var(--success-message-color);
+    margin-top: 0.4rem;
+
+    &:before {
+        content: "\2713";
+        margin-right: 0.4rem;
+    }
+}
+
+.usage-option {
+    display: block;
+    border: 0.1rem solid var(--very-light-pink);
+    border-radius: 0.6rem;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 0.8rem;
+    cursor: pointer;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    &:has(input:checked) {
+        border-color: var(--success-message-color);
+        background: var(--success-background-color);
+    }
+}
+
+.finish-later-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: none;
+    border: none;
+    color: #026AA1;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 1rem 0 0;
+
+    &:hover {
+        text-decoration: underline;
     }
 }
 

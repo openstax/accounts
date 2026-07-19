@@ -341,6 +341,19 @@ class User < ApplicationRecord
     pending_faculty? || pending_sheerid? || rejected_by_sheerid? || incomplete_signup?
   end
 
+  # True when signup finished (is_profile_complete) via "Save and finish
+  # later" (or any other path) but left step-4 profile questions blank.
+  # Distinct from incomplete_signup?/pending_faculty? -- this is a lighter,
+  # non-blocking nudge surfaced on the account Overview page rather than a
+  # gate on instructor access.
+  def profile_needs_enrichment?
+    return false unless is_profile_complete?
+
+    which_books.blank? ||
+      how_many_students.blank? ||
+      (school.nil? && self_reported_school.blank?)
+  end
+
   def name
     full_name.present? ? full_name : username
   end
