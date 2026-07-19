@@ -18,6 +18,11 @@ class AccountController < Newflow::BaseController
   ].freeze
 
   def overview
+    # Shown once until answered/dismissed; the completeness meter's "+ Answer
+    # LMS question" chip can force it back open with ?show_lms=1.
+    @show_lms_card = !current_user.lms_answered? &&
+                     (current_user.lms_question_pending? || params[:show_lms].present?)
+
     render_account_page :overview, title: 'Account overview', description: 'View a summary of your OpenStax account.'
   end
 
@@ -76,6 +81,7 @@ class AccountController < Newflow::BaseController
 
     @current_year_has_adoptions = @current_year_adoptions.any?
     @active_has_adoptions = @active_adoptions.any?
+    @milestones = ImpactMilestones.for(@lifetime_adoptions)
     @current_year_last_reported_at = last_reported_at_for(@current_year_adoptions)
     @lifetime_last_reported_at = last_reported_at_for(@lifetime_adoptions)
     @badge_last_reported_at = @current_year_last_reported_at || @lifetime_last_reported_at

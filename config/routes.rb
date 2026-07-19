@@ -25,6 +25,9 @@ Rails.application.routes.draw do
     get '/check_in', to: 'account/check_in#show', as: :account_check_in
     post '/check_in/confirm', to: 'account/check_in#confirm', as: :account_check_in_confirm
     post '/check_in/dismiss', to: 'account/check_in#dismiss', as: :account_check_in_dismiss
+
+    post '/lms_answer', to: 'account/lms_answers#create', as: :account_lms_answer
+    post '/lms_answer/dismiss', to: 'account/lms_answers#dismiss', as: :account_lms_answer_dismiss
   end
 
   scope controller: 'other' do
