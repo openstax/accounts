@@ -21,6 +21,10 @@ module Newflow
         expect(mail.header['to'].to_s).to eq('to@example.org')
         expect(mail.from).to eq(["noreply@openstax.org"])
         expect(mail.body.encoded).to include("Welcome to OpenStax!")
+        expect(mail.attachments['openstax-logo.png']).to be_present
+        expect(mail.attachments['rice-logo.png']).to be_present
+        expect(mail.body.encoded).to include("src=\"cid:#{mail.attachments['openstax-logo.png'].cid}\"")
+        expect(mail.body.encoded).to include("src=\"cid:#{mail.attachments['rice-logo.png'].cid}\"")
       end
 
       context 'when show_pin is not sent' do

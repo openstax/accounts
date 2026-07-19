@@ -19,9 +19,9 @@ module Newflow
 
       paramify :signup do
         attribute :school_name, type: String
+        attribute :school_id, type: Integer
         attribute :is_school_not_supported_by_sheerid, type: String
         attribute :is_country_not_supported_by_sheerid, type: String
-        attribute :school_name, type: String
         attribute :school_issued_email, type: String
         attribute :educator_specific_role, type: String
         attribute :other_role_name, type: String
@@ -71,6 +71,13 @@ module Newflow
         total_students = calculate_total_students
         return if errors?
 
+        selected_school = School.find_by(id: signup_params.school_id) if signup_params.school_id.present?
+        # The school field was touched (typed text and/or picked a suggestion): update the link.
+        # A valid pick sets it to that school; a pick that was then edited (school_id cleared but
+        # school_name still present) clears the link, since selected_school is nil in that case.
+        if signup_params.school_name.present? || signup_params.school_id.present?
+          @user.school = selected_school
+        end
         @user.update!(
           role: signup_params.educator_specific_role,
           other_role_name: other_role_name,
@@ -79,7 +86,7 @@ module Newflow
           how_many_students: total_students,
           which_books: which_books,
           books_used_details: books_used_details,
-          self_reported_school: signup_params.school_name,
+          self_reported_school: selected_school&.name || signup_params.school_name,
           is_profile_complete: true,
           is_educator_pending_cs_verification: !@did_use_sheerid,
           expected_start_semester: expected_start_semester
@@ -149,19 +156,19 @@ module Newflow
 
       def validate_student_count!(value, field, message)
         if value.blank?
-          errors.add(field, message)
+          nonfatal_error(code: field, message: message, offending_inputs: field)
           return nil
         end
 
         count = Integer(value, 10)
         if count <= 0
-          errors.add(field, message)
+          nonfatal_error(code: field, message: message, offending_inputs: field)
           return nil
         end
 
         count
       rescue ArgumentError, TypeError
-        errors.add(field, message)
+        nonfatal_error(code: field, message: message, offending_inputs: field)
         nil
       end
 

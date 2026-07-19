@@ -38,9 +38,23 @@ NewflowUi = do () ->
     # fired (the click handler is attached, but the deferred check then
     # disabled the button right after the spec saw it as enabled).
     $(document).ready =>
+<<<<<<< HEAD
       this.checkCheckedButton(targetSelector, sourceSelector)
+=======
 
-      $(sourceSelector).on 'click', =>
+      check = () =>
+        this.checkCheckedButton(targetSelector, sourceSelector)
+
+      check()
+>>>>>>> origin/main
+
+      # Re-check on bfcache restore (e.g. browser back button), where the
+      # browser may refill form fields after this ready handler already ran,
+      # racing with jQuery-UJS's own disabling of the submit button.
+      window.addEventListener 'pageshow', (event) ->
+        check() if event.persisted
+
+      $(sourceSelector).on 'click change', =>
         this.checkCheckedButton(targetSelector, sourceSelector)
 
   focusOnFirstErrorItem: () ->
@@ -68,26 +82,5 @@ NewflowUi = do () ->
 
         return '<span class="' + cls + '">' + match + '</span>'
     )
-
-  attachSchoolList: (selector) ->
-    el = document.querySelector(selector)
-    listEl = document.getElementById(el.getAttribute('list'))
-    el.addEventListener('input', ({target}) ->
-      value = target.value
-      if (value.length > 3)
-        fetchSchools(target.value, listEl)
-      else
-        listEl.innerHTML = ''
-    )
-
-schoolQueryUrl = 'https://openstax.org/apps/cms/api/salesforce/schools/?search='
-fetchSchools = _.debounce(
-  (query, listEl) ->
-    fetch "#{schoolQueryUrl}#{query}", {method: "GET"}
-    .then (r) -> r.json()
-    .then (arr) -> arr.map (entry) => "<option value=\"#{entry.name}\"></option>)"
-    .then (arr) -> listEl.innerHTML = arr.join '\n'
-  500
-)
 
 this.NewflowUi = NewflowUi

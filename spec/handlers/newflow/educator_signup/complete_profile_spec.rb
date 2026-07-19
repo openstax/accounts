@@ -69,6 +69,41 @@ module Newflow
           end
         end
 
+        context 'school selection via school_id' do
+          let(:school) { FactoryBot.create :school, name: 'Rice University', city: 'Houston', state: 'TX' }
+
+          it 'links the School, stores its canonical name, and skips the fuzzy match' do
+            expect(School).not_to receive(:fuzzy_search)
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'rice univ', school_id: school.id) },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq school
+            expect(user.self_reported_school).to eq 'Rice University'
+          end
+
+          it 'keeps free-text behavior when school_id is blank' do
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Hogwarts Academy') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.self_reported_school).to eq 'Hogwarts Academy'
+          end
+
+          it 'falls back to free text when school_id does not exist' do
+            user.update!(school: nil)
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Hogwarts Academy', school_id: 999999) },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to be_nil
+            expect(user.self_reported_school).to eq 'Hogwarts Academy'
+          end
+        end
+
         context 'books used details' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR }
 
@@ -145,6 +180,46 @@ module Newflow
             handle
             user.reload
             expect(user.how_many_students).to eq '200'
+          end
+        end
+
+        context 'as_recommending with a zero total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor',
+                total_num_students: '0'
+              }
+            }
+          end
+
+          it 'returns a validation error instead of raising' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :total_num_students }).to be true
+          end
+        end
+
+        context 'as_recommending with a non-numeric total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor',
+                total_num_students: 'about thirty'
+              }
+            }
+          end
+
+          it 'returns a validation error instead of raising' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :total_num_students }).to be true
           end
         end
 
@@ -225,6 +300,30 @@ module Newflow
       end
 
       context 'with invalid params' do
+        context 'a zero num_students_using_book on the as_primary path' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: ['Algebra and Trigonometry'],
+                books_used_details: {
+                  'Algebra and Trigonometry' => {
+                    'num_students_using_book' => '0',
+                    'how_using_book' => 'As the core textbook for my course'
+                  }
+                },
+                using_openstax_how: Newflow::EducatorSignup::CompleteProfile::AS_PRIMARY,
+                educator_specific_role: Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR,
+              }
+            }
+          end
+
+          it 'returns a validation error instead of raising' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :books_used_details_0_num_students_using_book }).to be true
+          end
+        end
+
         context 'other must be filled out' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::OTHER }
 
