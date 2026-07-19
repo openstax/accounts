@@ -60,8 +60,15 @@ module Newflow
           # Step 4
           expect_educator_step_4_page
           select_educator_role('other')
-          fill_in('Other (please specify)', with: 'President')
+          # "Other staff" now routes to the staff questionnaire (redesign):
+          # complete signup there instead of the old inline free-text field.
+          expect(page).to have_current_path(staff_details_form_path)
+          find('#signup_staff_role_other').click
+          fill_in(I18n.t(:"staff_details_form.other_please_specify"), with: 'President')
+          fill_in('signup[school_name]', with: 'Rice University')
+          fill_in('signup[num_learners_supported]', with: '10')
           find('#signup_form_submit_button').click
+          wait_for_ajax
           visit(signup_done_path)
           expect(page).to have_current_path(signup_done_path)
         end
@@ -102,8 +109,15 @@ module Newflow
           # Step 4
           expect_educator_step_4_page
           find('#signup_educator_specific_role_other').click
-          fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
-          click_on(I18n.t(:"educator_profile_form.finish_button"))
+          # "Other staff" now routes to the staff questionnaire (redesign):
+          # complete signup there instead of the old inline free-text field.
+          expect(page).to have_current_path(staff_details_form_path)
+          find('#signup_staff_role_other').click
+          fill_in(I18n.t(:"staff_details_form.other_please_specify"), with: 'President')
+          fill_in('signup[school_name]', with: 'Rice University')
+          fill_in('signup[num_learners_supported]', with: '10')
+          find('#signup_form_submit_button').click
+          wait_for_ajax
           visit(signup_done_path)
           expect(page).to have_current_path(signup_done_path)
         end
@@ -302,9 +316,11 @@ module Newflow
         # Step 4
         expect_educator_step_4_page
         fill_in('signup[school_name]', with: 'Rice University')
-        find('#signup_educator_specific_role_other').click
-        expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
-        fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
+        # Administrator stays inline on the educator form ("Other staff" now
+        # routes to the staff questionnaire); use it here so this spec keeps
+        # covering the educator pending-CS-verification path.
+        find('#signup_educator_specific_role_administrator').click
+        find('#signup_using_openstax_how_as_future').click
         click_on(I18n.t(:"educator_profile_form.finish_button"))
         visit(educator_pending_cs_verification_path)
         expect(page).to have_current_path(educator_pending_cs_verification_path)

@@ -39,6 +39,15 @@
                             </span>
                             <span class="join-as__option-arrow" aria-hidden="true">&rarr;</span>
                         <% end %>
+
+                        <%= link_to staff_signup_path, class: 'join-as__option join-as__option--staff staff', data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2C-Staff' } do %>
+                            <span class="join-as__option-icon" aria-hidden="true"><%= image_tag('staff-icon.svg', alt: '') %></span>
+                            <span class="join-as__option-text">
+                                <span class="join-as__option-title"><%= I18n.t(:"login_signup_form.join_as_staff_title") %></span>
+                                <span class="join-as__option-desc"><%= I18n.t(:"login_signup_form.join_as_staff_description") %></span>
+                            </span>
+                            <span class="join-as__option-arrow" aria-hidden="true">&rarr;</span>
+                        <% end %>
                     </div>
 
                     <p class="join-as__learner-hint">

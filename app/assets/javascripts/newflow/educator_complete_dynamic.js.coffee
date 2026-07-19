@@ -309,6 +309,16 @@ class NewflowUi.EducatorComplete
 
       @onHowUsingChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked') )
+      # "Other staff" gets its own question set (the staff "Tell us about
+      # your work" step) instead of the generic free-text field. The path
+      # comes from a data attribute so the Cloudfront /accounts prefix is
+      # respected; without it (no-JS or missing route) the inline
+      # please-specify fallback below still works.
+      staffDetailsPath = @other_specify.data('staffDetailsPath')
+      if staffDetailsPath
+        window.location.assign(staffDetailsPath)
+        return
+
       @other_specify.show()
       @showTotalNumStudents()
 

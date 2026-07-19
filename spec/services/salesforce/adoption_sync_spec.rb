@@ -41,6 +41,24 @@ RSpec.describe Salesforce::AdoptionSync do
     end
   end
 
+  describe '#fetch_batches' do
+    it 'yields each page and follows Restforce pagination' do
+      client = double('restforce client')
+      page2 = Restforce::Collection.new({ 'records' => [{ 'Id' => 'a02' }], 'totalSize' => 2 }, client)
+      page1 = Restforce::Collection.new(
+        { 'records' => [{ 'Id' => 'a01' }], 'totalSize' => 2, 'nextRecordsUrl' => '/next' }, client
+      )
+      allow(client).to receive(:query).and_return(page1)
+      allow(client).to receive(:get).with('/next').and_return(double(body: page2))
+
+      paginating_service = described_class.new(logger: Logger.new(nil), client: client)
+      batches = []
+      paginating_service.send(:fetch_batches) { |batch| batches << batch.map { |record| record['Id'] } }
+
+      expect(batches).to eq([['a01'], ['a02']])
+    end
+  end
+
   describe '#apply_relationships' do
     let(:school) { FactoryBot.create(:school, salesforce_id: '001SCHOOL') }
     let(:user)   { FactoryBot.create(:user, salesforce_contact_id: '003CONTACT') }

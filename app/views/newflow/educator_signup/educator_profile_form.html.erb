@@ -158,14 +158,12 @@
               </div>
 
               <%#
-                TODO(staff-path): design calls for "Other staff" to route to a
-                dedicated role-specific question set (see redesign spec, "OTHER
-                STAFF PATH" screen) instead of showing the free-text field
-                below. No staff_signup-style route exists in this codebase yet
-                (tracked separately) -- until one lands, keep the existing
-                inline "please specify" behavior so the radio isn't a dead end.
+                Choosing "Other staff" routes to the staff questionnaire
+                ("Tell us about your work") via the data attribute below --
+                see onRoleChange in educator_complete_dynamic.js.coffee. The
+                inline "please specify" field stays as a no-JS fallback.
               %>
-              <div class="other-specify">
+              <div class="other-specify" data-staff-details-path="<%= staff_details_form_path %>">
                 <%= label_tag :other_role_name, educator_copy(:other_please_specify),
                               class: 'field-label'
                 %>

@@ -118,13 +118,13 @@ module Salesforce
     end
 
     def fetch_batches
-      remaining = @limit
-      response = salesforce_client.query(build_query(remaining))
-      yield response.to_a
-      while response.next_page?
-        break if limit_reached?
-        response = salesforce_client.query_more(response.next_page)
-        yield response.to_a
+      # current_page (not to_a): Restforce::Collection#each auto-paginates the
+      # entire result set, so to_a would load every page as one giant batch
+      response = salesforce_client.query(build_query(@limit))
+      loop do
+        yield response.current_page
+        break if limit_reached? || !response.has_next_page?
+        response = response.next_page
       end
     end
 
