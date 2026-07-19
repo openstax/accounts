@@ -21,7 +21,7 @@
                     current_step: nil,
                     classes: 'signup-page',
                     show_exit_icon: true) do %>
-            <% lev_form_for :signup, url: newflow_signup_post_path do |form| %>
+            <%= lev_form_for :signup, url: newflow_signup_post_path do |form| %>
                 <%
                     form_helper = NewflowFormHelper::Newflow.new(
                         f: form,

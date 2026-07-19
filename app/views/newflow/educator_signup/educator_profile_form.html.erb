@@ -28,7 +28,7 @@
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 4, total_steps: 4),
           progress_bar: 1.0,
           classes: 'signup-page completed-step') do %>
-    <% lev_form_for :signup, url: educator_complete_profile_path do |f| %>
+    <%= lev_form_for :signup, url: educator_complete_profile_path do |f| %>
     <%
       fh = NewflowFormHelper::Newflow.new(
         f: f,
@@ -37,15 +37,12 @@
       )
     %>
     <%#
-      NOTE: this subtitle/banner content must stay INSIDE the lev_form_for
-      block (not between newflow_login_signup_card's `do` and lev_form_for's
-      `do |f|`) -- placing any sibling content at that outer level, even
-      static text with no logic, causes the whole nested form block's output
-      to be silently dropped from the final response (verified: reproducible
-      with a bare <p>, unrelated to any helper used here). Root cause not
-      fully chased down (looks like a capture/output_buffer interaction
-      between the two stacked non-output `do` block calls); this placement
-      sidesteps it entirely.
+      Historical note: content placement here used to be load-bearing -- with
+      the old bare `<% lev_form_for %>`, any sibling printed content in the
+      card's capture scope silently dropped the whole form (Rails `capture`
+      only falls back to the block's return value when the output buffer is
+      empty). Now that lev_form_for is invoked with `<%=` (see CLAUDE.md,
+      "View gotcha"), placement is free.
     %>
     <p class="profile-subtitle"><%= educator_copy(:profile_subtitle) %></p>
 

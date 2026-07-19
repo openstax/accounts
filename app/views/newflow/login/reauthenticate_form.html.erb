@@ -13,7 +13,7 @@
                     header: (I18n.t(:"login_signup_form.login_page_header")),
                     banners: @banners,
                     show_exit_icon: true) do %>
-            <% lev_form_for :login_form, url: newflow_login_path do |f| %>
+            <%= lev_form_for :login_form, url: newflow_login_path do |f| %>
                 <% fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors) %>
                     <div class="content social-section">
                         <div><%= I18n.t(:"login_signup_form.login_with") %></div>

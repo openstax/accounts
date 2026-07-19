@@ -18,7 +18,7 @@
                     header: progress_percent.present? ? nil : header,
                     current_step: progress_percent.present? ? nil : current_step,
                     show_exit_icon: true) do %>
-            <% lev_form_for :confirm, url: submit_to_path do |form| %>
+            <%= lev_form_for :confirm, url: submit_to_path do |form| %>
                 <%
                     form_helper = NewflowFormHelper::Newflow.new(
                         f: form,
