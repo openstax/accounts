@@ -10,13 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_07_18_000003) do
+ActiveRecord::Schema.define(version: 2026_07_19_000001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "adoption_reports", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "book_id"
+    t.string "book_title", null: false
+    t.string "school_year", null: false
+    t.string "status", default: "using", null: false
+    t.integer "students"
+    t.string "source", default: "books_modal", null: false
+    t.datetime "salesforce_pushed_at"
+    t.string "salesforce_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["book_id"], name: "index_adoption_reports_on_book_id"
+    t.index ["salesforce_pushed_at"], name: "index_adoption_reports_on_salesforce_pushed_at"
+    t.index ["user_id", "book_title", "school_year"], name: "index_adoption_reports_on_user_book_year", unique: true
+    t.index ["user_id"], name: "index_adoption_reports_on_user_id"
+  end
 
   create_table "adoptions", force: :cascade do |t|
     t.string "salesforce_id", null: false
@@ -556,6 +574,8 @@ ActiveRecord::Schema.define(version: 2026_07_18_000003) do
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
+  add_foreign_key "adoption_reports", "books"
+  add_foreign_key "adoption_reports", "users"
   add_foreign_key "adoptions", "schools"
   add_foreign_key "adoptions", "users"
   add_foreign_key "external_ids", "users"

@@ -157,6 +157,8 @@ class User < ApplicationRecord
   has_many :user_books, dependent: :destroy
   # nullify, not destroy: Salesforce is the system of record for adoptions
   has_many :adoptions, dependent: :nullify
+  # user-owned reports (not a Salesforce mirror), so destroy is correct here
+  has_many :adoption_reports, dependent: :destroy
 
   delegate_to_routine :destroy
 
