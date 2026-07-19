@@ -7,8 +7,64 @@
 
     <%= newflow_login_signup_card(
           id: 'signup-page',
-          current_step: I18n.t(:"login_signup_form.step_counter", current_step: 3, total_steps: 4),
+          header: I18n.t(:"login_signup_form.sheerid_verification_page_header"),
+          current_step: "#{I18n.t(:"login_signup_form.step_counter", current_step: 3, total_steps: 4)} · #{I18n.t(:"login_signup_form.sheerid_verification_step_phase")}",
           classes: 'signup-page') do %>
+
+        <p class="content control-group sheerid-verification-description">
+          <%= I18n.t(:"login_signup_form.sheerid_verification_page_description") %>
+        </p>
+
+        <% if @show_school_email_gate %>
+          <div class="content control-group banner orange school-email-gate">
+            <div class="school-email-gate__title">
+              <%= I18n.t(:"login_signup_form.school_email_gate_title") %>
+            </div>
+            <p class="school-email-gate__description">
+              <%=
+                I18n.t(
+                  :"login_signup_form.school_email_gate_description_html",
+                  current_email: @on_file_email
+                ).html_safe
+              %>
+            </p>
+
+            <%= lev_form_for :school_email, url: educator_add_school_email_path do |f| %>
+              <% fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors) %>
+
+              <%=
+                label_tag(
+                  :school_email_email,
+                  I18n.t(:"login_signup_form.school_issued_email_label"),
+                  class: 'field-label required'
+                )
+              %>
+              <%=
+                fh.text_field(
+                  name: :email,
+                  placeholder: I18n.t(:"login_signup_form.school_issued_email_placeholder"),
+                  required: true
+                )
+              %>
+              <div class="school-email-gate__note">
+                <%= I18n.t(:"login_signup_form.school_email_gate_note") %>
+              </div>
+
+              <div class="content">
+                <%= f.submit(I18n.t(:"login_signup_form.continue_button"), class: 'primary') %>
+              </div>
+            <% end %>
+
+            <%=
+              link_to(
+                I18n.t(:"login_signup_form.use_current_email_anyway"),
+                educator_sheerid_form_path(use_current_email: true),
+                class: 'school-email-gate__use-current-link'
+              )
+            %>
+          </div>
+        <% end %>
+
         <form>
           <div class="content control-group">
             <iframe
@@ -23,10 +79,15 @@
     <% end %>
     <br><br>
     <div>
-      <%= link_to "Stuck? Click here to skip instant verification.",
-                educator_profile_form_url(:school => 'unknown'),
-                class: 'btn small',
-                style: 'background-color: #002469; color: #fff; width: 100%' %>
+      <%=
+        I18n.t(
+          :"login_signup_form.sheerid_manual_review_link",
+          link: link_to(
+            I18n.t(:"login_signup_form.sheerid_manual_review_link_text"),
+            educator_profile_form_url(:school => 'unknown')
+          )
+        ).html_safe
+      %>
     </div>
   </div>
 </div>

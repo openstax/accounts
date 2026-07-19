@@ -79,5 +79,77 @@ module Newflow
         end
       end
     end
+
+    describe '#current_email_looks_personal?' do
+      before do
+        allow(helper).to receive(:current_user).and_return(current_user)
+      end
+
+      context 'when the on-file email is a personal address' do
+        let(:current_user) { instance_double(User, best_email_address_for_salesforce: 'j.delgado@gmail.com') }
+
+        it 'returns true' do
+          expect(helper.current_email_looks_personal?).to eq true
+        end
+      end
+
+      context 'when the on-file email ends in .edu' do
+        let(:current_user) { instance_double(User, best_email_address_for_salesforce: 'j.delgado@rice.edu') }
+
+        it 'returns false' do
+          expect(helper.current_email_looks_personal?).to eq false
+        end
+      end
+
+      context 'when the on-file email ends in .org' do
+        let(:current_user) { instance_double(User, best_email_address_for_salesforce: 'j.delgado@myschool.org') }
+
+        it 'returns false' do
+          expect(helper.current_email_looks_personal?).to eq false
+        end
+      end
+
+      context 'when there is no on-file email yet' do
+        let(:current_user) { instance_double(User, best_email_address_for_salesforce: nil) }
+
+        it 'returns false' do
+          expect(helper.current_email_looks_personal?).to eq false
+        end
+      end
+    end
+
+    describe '#show_school_email_gate?' do
+      before do
+        allow(helper).to receive(:current_user).and_return(current_user)
+        allow(helper).to receive(:session).and_return(session)
+      end
+
+      let(:session) { {} }
+
+      context 'when the on-file email looks personal and the gate has not been skipped' do
+        let(:current_user) { instance_double(User, best_email_address_for_salesforce: 'j.delgado@gmail.com') }
+
+        it 'returns true' do
+          expect(helper.show_school_email_gate?).to eq true
+        end
+      end
+
+      context 'when the on-file email already looks like a school email' do
+        let(:current_user) { instance_double(User, best_email_address_for_salesforce: 'j.delgado@rice.edu') }
+
+        it 'returns false' do
+          expect(helper.show_school_email_gate?).to eq false
+        end
+      end
+
+      context 'when the user has chosen to use their current (personal) email anyway' do
+        let(:current_user) { instance_double(User, best_email_address_for_salesforce: 'j.delgado@gmail.com') }
+        let(:session) { { Newflow::EducatorSignupHelper::SKIP_SCHOOL_EMAIL_GATE_SESSION_KEY => true } }
+
+        it 'returns false' do
+          expect(helper.show_school_email_gate?).to eq false
+        end
+      end
+    end
   end
 end

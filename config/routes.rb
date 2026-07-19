@@ -80,6 +80,7 @@ Rails.application.routes.draw do
 
     # Step 3
     get 'i/signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form
+    post 'i/signup/educator/apply/school_email', action: :educator_add_school_email, as: :educator_add_school_email
     post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
 
     # Step 4

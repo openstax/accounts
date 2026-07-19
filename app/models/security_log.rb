@@ -113,6 +113,7 @@ class SecurityLog < ApplicationRecord
     user_already_has_contact_not_creating_lead
     creating_new_salesforce_lead
     salesforce_lead_save_failed
+    educator_used_current_email_for_sheerid
   ]
 
   json_serialize :event_data, Hash

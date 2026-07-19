@@ -16,6 +16,7 @@ module Newflow
     )
     before_action(:newflow_authenticate_user!, only: %i[
         educator_sheerid_form
+        educator_add_school_email
         educator_profile_form
         educator_complete_profile
         educator_pending_cs_verification
@@ -27,6 +28,7 @@ module Newflow
     before_action(:store_sheerid_verification_for_user, only: :educator_profile_form)
     before_action(:exit_signup_if_steps_complete, only: %i[
         educator_sheerid_form
+        educator_add_school_email
         educator_profile_form
         educator_cs_verification_form
       ]
@@ -120,9 +122,42 @@ module Newflow
     end
 
     def educator_sheerid_form
+      # "Use my current email anyway" - quietly suppress the gate for the
+      # rest of this signup session and land back on this same page.
+      if params[:use_current_email].present?
+        session[SKIP_SCHOOL_EMAIL_GATE_SESSION_KEY] = true
+        security_log(:educator_used_current_email_for_sheerid, user: current_user)
+        redirect_to(educator_sheerid_form_path) and return
+      end
+
+      @show_school_email_gate = show_school_email_gate?
+      @on_file_email = on_file_email_for_sheerid
       @sheerid_url = generate_sheer_id_url(user: current_user)
       log_posthog(current_user, 'educator_view_sheer_id_form')
       security_log(:user_viewed_sheerid_form, user: current_user)
+    end
+
+    # Submits the inline "School email" field on the SheerID gate banner:
+    # adds it as a new (unverified) ContactInfo on the current user and
+    # sends the standard confirmation PIN, then returns to the SheerID
+    # step, which now pre-fills with the new school email.
+    def educator_add_school_email
+      handle_with(
+        EducatorSignup::AddSchoolEmail,
+        user: current_user,
+        success: lambda {
+          # CreateEmailForUser (invoked by the handler) already writes the
+          # :email_added_to_user SecurityLog entry - no need to duplicate it here.
+          log_posthog(current_user, 'educator_added_school_email')
+          redirect_to(educator_sheerid_form_path)
+        },
+        failure: lambda {
+          @show_school_email_gate = true
+          @on_file_email = on_file_email_for_sheerid
+          @sheerid_url = generate_sheer_id_url(user: current_user)
+          render(:educator_sheerid_form)
+        }
+      )
     end
 
     # SheerID makes a POST request to this endpoint when it verifies an educator
@@ -217,7 +252,8 @@ module Newflow
         redirect_to(educator_pending_cs_verification_path)
       when (current_user.confirmed_faculty? || current_user.rejected_faculty?) && current_user.is_profile_complete?
         redirect_back(fallback_location: profile_newflow_path)
-      when action_name == 'educator_sheerid_form' && (current_user.step_3_complete? || current_user.is_sheerid_unviable?)
+      when %w[educator_sheerid_form educator_add_school_email].include?(action_name) &&
+           (current_user.step_3_complete? || current_user.is_sheerid_unviable?)
         redirect_to(educator_profile_form_path)
       when action_name == 'educator_profile_form' && current_user.is_profile_complete?
         redirect_to(profile_newflow_path)
