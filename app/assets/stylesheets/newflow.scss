@@ -409,7 +409,7 @@ label.required::after {
         top: 3.4rem;
         right: 1rem;
 
-        color: #0070af;
+        color: #026AA1;
         font-weight: bold;
         cursor: pointer;
 
@@ -987,7 +987,7 @@ $very-narrow: 37rem * $scale-factor;
         justify-content: center;
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.9);
-        color: #4c5968;
+        color: #6A6A6A;
         text-decoration: none;
         transition: all 0.2s ease;
         z-index: 3;
@@ -1145,7 +1145,7 @@ $very-narrow: 37rem * $scale-factor;
         padding: 0.85rem 1.4rem;
 
         &:hover {
-            background-color: #e3631f;
+            background-color: #A43509;
             text-decoration: none;
         }
     }
@@ -1318,7 +1318,7 @@ $very-narrow: 37rem * $scale-factor;
     color: #c1c1c1;
 
     &.success {
-        color:  #63A524;
+        color:  #538E1D;
     }
 }
 
@@ -1497,9 +1497,64 @@ $very-narrow: 37rem * $scale-factor;
 @media (prefers-reduced-motion: reduce) {
   #login-signup-form {
     input, .invalid-message, .join-as__option, .join-as__option-arrow,
-    .signup-done__check, .signup-page .info-message img {
+    .signup-done__check, .signup-page .info-message img, .pin-field__box {
       animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+/* ---------------------------------------------------------------------------
+   6-digit PIN field (email verification step): progressive enhancement.
+   The real input (.pin-field__input) stays a normal, fully-visible field
+   until pin_code_boxes.js adds the `pin-field--enhanced` modifier — at which
+   point it's moved off-screen (never display:none/visibility:hidden, so it
+   stays interactable for Capybara/automated browsers and anything else that
+   targets it directly) and the boxes below become the real UI.
+--------------------------------------------------------------------------- */
+
+.pin-field__boxes {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+}
+
+.pin-field__box {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #424242;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  border-radius: 0.4rem;
+  transition: border-color 200ms cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow 200ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.pin-field__box:focus {
+  outline: none;
+  border-color: #026AA1;
+  box-shadow: 0 0 0 3px rgba(2, 106, 161, 0.15);
+}
+
+.pin-field {
+  position: relative;
+}
+
+.pin-field--enhanced .pin-field__input {
+  // Deliberately NOT display:none/visibility:hidden/opacity:0 and NOT moved
+  // off-screen: any of those make Selenium/Capybara treat the field as "not
+  // visible", which breaks `fill_in` in the feature specs (and would break
+  // SMS/password-manager autofill targeting it too). Instead it's stacked
+  // behind the boxes, in-viewport, effectively-but-not-literally transparent.
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0.01;
+  pointer-events: none;
 }

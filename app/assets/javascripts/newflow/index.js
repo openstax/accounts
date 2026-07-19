@@ -5,6 +5,7 @@
 //= require ../vendor/mailcheck
 //= require ./newflow_ui
 //= require ./school_autocomplete
+//= require ./pin_code_boxes
 //= require ./educator_signup_email_validations
 //= require ./educator_complete_dynamic
 //= require intlTelInput
