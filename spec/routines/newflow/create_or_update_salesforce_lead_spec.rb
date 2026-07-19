@@ -231,5 +231,31 @@ module Newflow
         expect(mock_lead.expected_start_semester).to be_nil
       end
     end
+
+    describe 'self-learners' do
+      let(:self_learner) do
+        User.create!(
+          state: User::UNVERIFIED,
+          role: User::SELF_LEARNER_ROLE,
+          is_newflow: true
+        )
+      end
+
+      it 'never creates or updates a Salesforce lead' do
+        expect(OpenStax::Salesforce::Remote::Lead).not_to receive(:new)
+        expect(OpenStax::Salesforce::Remote::Lead).not_to receive(:find)
+        expect(OpenStax::Salesforce::Remote::Lead).not_to receive(:find_by)
+
+        described_class.call(user: self_learner)
+
+        expect(self_learner.salesforce_lead_id).to be_nil
+      end
+
+      it 'does not even log the start of lead creation' do
+        described_class.call(user: self_learner)
+
+        expect(SecurityLog.where(user: self_learner, event_type: :starting_salesforce_lead_creation)).to be_empty
+      end
+    end
   end
 end

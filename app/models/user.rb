@@ -23,6 +23,10 @@ class User < ApplicationRecord
     ADJUNCT_ROLE = :adjunct,
     HOMESCHOOL_ROLE = :homeschool,
     RESEARCHER_ROLE = :researcher,
+    # Self-directed learners with no course/school affiliation (the "lifelong
+    # learner" signup path). Must stay appended at the end of this array: role
+    # is an integer-backed enum, so inserting earlier would remap existing rows.
+    SELF_LEARNER_ROLE = :self_learner,
   ].freeze
 
   VALID_FACULTY_STATUSES = [
@@ -434,7 +438,9 @@ class User < ApplicationRecord
   end
 
   def self.non_student_known_roles
-    known_roles - ['student']
+    # Self-learners have no course/school affiliation, so the instructor-style
+    # annual check-in (which assumes an adoption to reconfirm) never applies to them.
+    known_roles - ['student', 'self_learner']
   end
 
   # Name search over verified instructors only, for the student account

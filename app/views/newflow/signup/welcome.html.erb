@@ -41,6 +41,11 @@
                         <% end %>
                     </div>
 
+                    <p class="join-as__learner-hint">
+                        <%= I18n.t(:"login_signup_form.learner_escape_hatch",
+                                   skip_the_questions: link_to(I18n.t(:"login_signup_form.learner_skip_the_questions"), newflow_signup_learner_path)).html_safe %>
+                    </p>
+
                     <p class="join-as__login-hint">
                         <%= I18n.t(:"login_signup_form.already_have_account",
                                    log_in: link_to(I18n.t(:"login_signup_form.log_in"), newflow_login_path)).html_safe %>
