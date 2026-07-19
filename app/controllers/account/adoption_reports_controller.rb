@@ -13,6 +13,8 @@ module Account
 
       rows.each { |row| upsert_adoption_report(row) }
 
+      # PushAdoptionReports will be enqueued here (Salesforce push via adoption form handler)
+
       redirect_to account_books_path,
                   notice: "Thanks — your report helps us measure OpenStax's impact."
     end
