@@ -11,12 +11,21 @@ module Account
         return
       end
 
-      rows.each { |row| upsert_adoption_report(row) }
+      results = rows.map { |row| upsert_adoption_report(row) }
 
-      # PushAdoptionReports will be enqueued here (Salesforce push via adoption form handler)
+      # Push happens in the background so a slow or failing Salesforce call
+      # never delays or breaks the user's save/redirect.
+      PushAdoptionReports.perform_later(user: current_user) if results.any?
 
-      redirect_to account_books_path,
-                  notice: "Thanks — your report helps us measure OpenStax's impact."
+      if results.all?
+        redirect_to account_books_path,
+                    notice: "Thanks — your report helps us measure OpenStax's impact."
+      else
+        # Static text only — flash notices/alerts are rendered html_safe by
+        # the layout, so no user-typed row data belongs in here.
+        redirect_to account_books_path,
+                    alert: "Thanks for the report — some rows couldn't be saved. Please check your entries and try again."
+      end
     end
 
     private

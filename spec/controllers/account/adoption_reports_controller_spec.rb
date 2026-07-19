@@ -21,6 +21,8 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
       end
 
       it 'creates an adoption report for each valid row' do
+        expect(PushAdoptionReports).to receive(:perform_later).with(user: user)
+
         expect {
           post :create, params: {
             books: [
@@ -39,6 +41,36 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
 
         expect(response).to redirect_to(account_books_path)
         expect(flash[:notice]).to be_present
+      end
+
+      it "flashes a partial-failure notice and still enqueues the push when some rows can't be saved" do
+        expect(PushAdoptionReports).to receive(:perform_later).with(user: user)
+
+        expect {
+          post :create, params: {
+            books: [
+              { name: 'Intro to Sociology', school_year: '2025 - 26', students: '120' },
+              { name: 'Bad Row', school_year: '2025 - 26', students: '-5' }
+            ]
+          }
+        }.to change { AdoptionReport.count }.by(1)
+
+        expect(response).to redirect_to(account_books_path)
+        expect(flash[:alert]).to be_present
+        expect(flash[:notice]).to be_blank
+      end
+
+      it "does not enqueue the push when no rows can be saved" do
+        expect(PushAdoptionReports).not_to receive(:perform_later)
+
+        expect {
+          post :create, params: {
+            books: [{ name: 'Bad Row', school_year: '2025 - 26', students: '-5' }]
+          }
+        }.not_to change { AdoptionReport.count }
+
+        expect(response).to redirect_to(account_books_path)
+        expect(flash[:alert]).to be_present
       end
 
       it 'links the report to an existing Book by title when one matches' do
