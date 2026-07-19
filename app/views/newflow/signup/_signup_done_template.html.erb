@@ -1,3 +1,11 @@
+<%
+  # Optional, additive locals used by the educator (compressed step-4) flow --
+  # every other caller of this shared "done" screen omits them, so their
+  # output is unchanged.
+  badge ||= nil
+  primary_cta ||= nil
+  impact_copy ||= nil
+%>
 <div id="login-signup-form">
     <div class="content">
         <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active' } %>
@@ -10,11 +18,21 @@
             <form action="<%= exit_accounts_path %>">
                 <div class="content control-group info-message">
                     <div class="signup-done__check" aria-hidden="true">&#10003;</div>
+                    <% if badge.present? %>
+                      <span class="account-badge account-badge--verified"><%= badge %></span>
+                    <% end %>
                     <%= description %>
+                    <% if impact_copy.present? %>
+                      <p class="signup-done__impact"><%= impact_copy %></p>
+                    <% end %>
                     <br />
                     <br />
 
                     <%= image %>
+
+                    <% if primary_cta.present? %>
+                      <%= link_to primary_cta[:label], primary_cta[:url], class: 'primary', id: 'signup_done_primary_cta' %>
+                    <% end %>
 
                     <%=
                         button_tag(

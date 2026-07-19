@@ -48,6 +48,7 @@
     input.addEventListener('input', function() {
       hiddenId.value = '';
       updateMatch(null);
+      dispatchSelected(null);
       var query = input.value.trim();
       if (query.length < MIN_QUERY_LENGTH) {
         close();
@@ -174,10 +175,12 @@
         input.value = school.name;
         hiddenId.value = school.id;
         updateMatch(school);
+        dispatchSelected(school);
       } else {
         // The use-as-entered row: keep the typed text, no school link.
         hiddenId.value = '';
         updateMatch(null);
+        dispatchSelected(null);
       }
       close();
     }
@@ -191,6 +194,15 @@
       var location = [school.city, school.state].filter(Boolean).join(', ');
       matchLine.textContent = '✓ Matched — ' + school.name + (location ? ', ' + location : '');
       matchLine.hidden = false;
+    }
+
+    // Notifies listeners (e.g. the K-12 grade-band question) with the picked
+    // school, or null when the field is cleared/edited/left as free text.
+    function dispatchSelected(school) {
+      container.dispatchEvent(new CustomEvent('school-autocomplete:selected', {
+        bubbles: true,
+        detail: { school: school }
+      }));
     }
 
     function close() {

@@ -1,16 +1,17 @@
 class NewflowUi.EducatorComplete
 
   constructor: ->
-    _.bindAll(@, 'onSchoolNameChange', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onHowChosenChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onTotalNumStudentsChange', 'onSubmit', 'attachBookUsedEvents')
+    _.bindAll(@, 'onSchoolNameChange', 'onSchoolSelected', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onTotalNumStudentsChange', 'onSubmit', 'onFinishLater', 'attachBookUsedEvents')
     @form = $('.signup-page.completed-step')
 
     # fields locators
     @school_name = @findOrLogNotFound(@form, '.school-name-visible')
+    @school_match = @findOrLogNotFound(@form, '.school-match-confirmation')
+    @grade_band = @findOrLogNotFound(@form, '.grade-band')
 
     @completed_role = @findOrLogNotFound(@form, '.completed-role')
     @other_specify = @findOrLogNotFound(@form, '.other-specify')
 
-    @how_chosen = @findOrLogNotFound(@form, '.how-chosen')
     @how_using = @findOrLogNotFound(@form, '.how-using')
 
     @books_used = @findOrLogNotFound(@form, '.books-used')
@@ -25,7 +26,6 @@ class NewflowUi.EducatorComplete
     @completed_role_radio = @findOrLogNotFound(@completed_role, "input")
     @other_input = @findOrLogNotFound(@other_specify, "input")
 
-    @how_chosen_radio = @findOrLogNotFound(@how_chosen, "input")
     @how_using_radio = @findOrLogNotFound(@how_using, "input")
 
     # book selections (now using accordion checkboxes instead of selects)
@@ -35,13 +35,16 @@ class NewflowUi.EducatorComplete
     @total_num_students_label = @findOrLogNotFound(@form, '#total-num-students-label')
     @total_num_students_alert = @findOrLogNotFound(@form, '.total-num-students-alert.newflow-mustdo-alert')
 
+    # finish later
+    @finish_later_button = @findOrLogNotFound(@form, '#finish-later-button')
+    @finish_later_input = @findOrLogNotFound(@form, '#signup_finish_later')
+
     # error messages locators
     @please_fill_out_school = @findOrLogNotFound(@form, '.school-name.newflow-mustdo-alert')
 
     @please_select_role = @findOrLogNotFound(@form, '.completed-role .role.newflow-mustdo-alert')
     @please_fill_out_other = @findOrLogNotFound(@form, '.other.newflow-mustdo-alert')
 
-    @please_select_chosen = @findOrLogNotFound(@form, '.how-chosen .chosen.newflow-mustdo-alert')
     @please_select_using = @findOrLogNotFound(@form, '.how-using .using.newflow-mustdo-alert')
 
     @please_select_books_used = @findOrLogNotFound(@form, '.books-used .used.newflow-mustdo-alert')
@@ -51,16 +54,17 @@ class NewflowUi.EducatorComplete
 
     # event listeners
     @school_name_input.on('input', @onSchoolNameChange)
+    @form.on('school-autocomplete:selected', '.school-autocomplete', @onSchoolSelected)
 
     @completed_role_radio.change(@onRoleChange)
     @other_input.on('input', @onOtherChange)
 
-    @how_chosen_radio.change(@onHowChosenChange)
     @how_using_radio.change(@onHowUsingChange)
 
     @total_num_students_input?.on('keyup change blur', @onTotalNumStudentsChange)
 
     @findOrLogNotFound(@form, 'form').submit(@onSubmit)
+    @finish_later_button?.on('click', @onFinishLater)
 
     # Continue button
     @continue = @findOrLogNotFound(@form, '#signup_form_submit_button')
@@ -70,7 +74,7 @@ class NewflowUi.EducatorComplete
 
     # Hide these fields initially because they only show up depending on the form's state
     @other_specify.hide()
-    @how_chosen.hide()
+    @grade_band.hide()
     @how_using.hide()
     @books_used.hide()
     @books_of_interest.hide()
@@ -91,6 +95,14 @@ class NewflowUi.EducatorComplete
     # initializeBookPickersState -> onBooks*Change can safely reference them.
     @initBookPickers()
 
+    # The compressed design pre-selects "Instructor" on page load. Normally
+    # onRoleChange only runs on a role 'change' event (which won't fire for an
+    # already-checked radio) or via onSchoolNameChange -- but when the school
+    # name field is pre-filled/hidden (should_show_school_name_field? false),
+    # neither ever happens. Run it once explicitly so the default selection's
+    # dependent fields (how-using, book picker, etc.) aren't stuck hidden.
+    @onRoleChange()
+
   findOrLogNotFound: (parent, selector) ->
     if (found = parent.find(selector))
       return found
@@ -104,7 +116,6 @@ class NewflowUi.EducatorComplete
     role_valid = @checkRoleValid()
     other_valid = @checkOtherValid()
 
-    chosen_valid = @checkChosenValid()
     using_how_valid = @checkUsingHowValid()
 
     books_used_valid = @checkBooksUsedValid()
@@ -118,7 +129,6 @@ class NewflowUi.EducatorComplete
         school_name_valid and
         role_valid and
         other_valid and
-        chosen_valid and
         using_how_valid and
         books_used_valid and
         books_used_valid_max and
@@ -127,6 +137,17 @@ class NewflowUi.EducatorComplete
         books_of_interest_valid and
         total_num_students_valid)
       ev.preventDefault()
+
+  # "Save and finish later": skip all client-side validation (the handler
+  # relaxes server-side validation too, see CompleteProfile#finish_later?) and
+  # submit natively so the jQuery-bound submit/validation handler above never
+  # runs -- calling the DOM form's submit() directly does not fire the
+  # 'submit' event.
+  onFinishLater: (ev) ->
+    ev.preventDefault()
+    @finish_later_input?.val('true')
+    rawForm = @findOrLogNotFound(@form, 'form')[0]
+    rawForm?.submit()
 
   checkSchoolNameValid: () ->
     return true if document.getElementsByClassName('school-name-visible')[0] == undefined
@@ -144,16 +165,6 @@ class NewflowUi.EducatorComplete
       true
     else
       @please_select_role.show()
-      false
-
-  checkChosenValid: () ->
-    return true if @how_chosen_radio.is(":hidden")
-
-    if @how_chosen_radio.is(":checked")
-      @please_select_chosen.hide()
-      true
-    else
-      @please_select_chosen.show()
       false
 
   checkBooksUsedDetailsValid: () ->
@@ -245,29 +256,41 @@ class NewflowUi.EducatorComplete
     @please_fill_out_school.hide()
     @onRoleChange()
 
+  # Fired by school_autocomplete.js when a suggestion is picked (school
+  # present) or the field is cleared/edited/left as free text (school null).
+  # Only real, matched schools can be K-12, so grade band only shows then.
+  onSchoolSelected: (ev) ->
+    school = ev?.originalEvent?.detail?.school
+
+    if school
+      @school_match?.text("Matched — #{school.name}").show()
+    else
+      @school_match?.hide()
+
+    if school?.k12
+      @grade_band.show()
+    else
+      @grade_band.hide()
+
   onRoleChange: ->
     @please_select_role.hide()
 
     if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_instructor').is(':checked') && @checkSchoolNameValid() )
       @how_using.show()
-      @how_chosen.show()
 
       @showBookUsedFields()
 
       @other_specify.hide()
       @books_used.hide()
       @please_select_using.hide()
-      @please_select_chosen.hide()
       @form.find('.students-using-book .newflow-mustdo-alert').hide()
 
       @onHowUsingChange()
     else if (@findOrLogNotFound($(document), '#signup_educator_specific_role_researcher').is(':checked') && @checkSchoolNameValid())
-      @how_chosen.show()
       @how_using.show()
 
       @other_specify.hide()
       @books_used.hide()
-      @please_select_chosen.hide()
       @please_select_using.hide()
 
       @hideBookUsedFields()
@@ -275,12 +298,10 @@ class NewflowUi.EducatorComplete
 
       @onHowUsingChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_administrator').is(':checked') && @checkSchoolNameValid())
-      @how_chosen.show()
       @how_using.show()
 
       @other_specify.hide()
       @books_used.hide()
-      @please_select_chosen.hide()
       @please_select_using.hide()
 
       @hideBookUsedFields()
@@ -293,7 +314,6 @@ class NewflowUi.EducatorComplete
 
       @books_used.hide()
       @books_of_interest.hide()
-      @how_chosen.hide()
       @how_using.hide()
       @expected_start_semester.hide()
       @expected_start_semester_select.val('')
@@ -309,9 +329,6 @@ class NewflowUi.EducatorComplete
 
     if @checkSchoolNameValid() && @checkOtherValid()
       @continue.prop('disabled', false)
-
-  onHowChosenChange: ->
-    @please_select_chosen.hide()
 
   onHowUsingChange: ->
     @please_select_using.hide()

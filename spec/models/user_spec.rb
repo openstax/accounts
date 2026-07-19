@@ -550,4 +550,40 @@ describe User, type: :model do
       end
     end
   end
+
+  describe '#profile_needs_enrichment?' do
+    it 'is false when the profile is not yet complete' do
+      user.update!(is_profile_complete: false)
+      expect(user.profile_needs_enrichment?).to be false
+    end
+
+    context 'when is_profile_complete is true' do
+      before { user.update!(is_profile_complete: true, which_books: 'Biology 2e', how_many_students: '30', self_reported_school: 'Rice University') }
+
+      it 'is false when books, student count, and school are all present' do
+        expect(user.profile_needs_enrichment?).to be false
+      end
+
+      it 'is true when which_books is blank (deferred via "finish later")' do
+        user.update!(which_books: nil)
+        expect(user.profile_needs_enrichment?).to be true
+      end
+
+      it 'is true when how_many_students is blank' do
+        user.update!(how_many_students: nil)
+        expect(user.profile_needs_enrichment?).to be true
+      end
+
+      it 'is true when there is no linked school and no self-reported school' do
+        user.update!(school: nil, self_reported_school: nil)
+        expect(user.profile_needs_enrichment?).to be true
+      end
+
+      it 'is false when there is no self-reported school but a linked School is present' do
+        school = FactoryBot.create(:school)
+        user.update!(school: school, self_reported_school: nil)
+        expect(user.profile_needs_enrichment?).to be false
+      end
+    end
+  end
 end

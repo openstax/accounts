@@ -33,6 +33,11 @@ module Newflow
         attribute :total_num_students, type: String
         attribute :is_cs_form, type: Object
         attribute :expected_start_semester, type: String
+        attribute :grade_band, type: String
+        # "Save and finish later": submits whatever was filled in and completes
+        # signup, but skips the usual required-field validations below so an
+        # otherwise-blank form doesn't block the user. See finish_later?.
+        attribute :finish_later, type: String
 
         validates(
           :educator_specific_role,
@@ -87,6 +92,7 @@ module Newflow
           which_books: which_books,
           books_used_details: books_used_details,
           self_reported_school: selected_school&.name || signup_params.school_name,
+          grade_band: signup_params.grade_band.presence,
           is_profile_complete: true,
           is_educator_pending_cs_verification: !@did_use_sheerid,
           expected_start_semester: expected_start_semester
@@ -128,6 +134,8 @@ module Newflow
       protected
 
       def calculate_total_students
+        return lenient_total_students if finish_later?
+
         if signup_params.using_openstax_how == AS_PRIMARY
           sum_book_student_counts
         elsif Settings::FeatureFlags.collect_student_count_all_paths
@@ -138,6 +146,19 @@ module Newflow
           )
         else
           sum_book_student_counts
+        end
+      end
+
+      # "Finish later" best-effort equivalent of calculate_total_students: never
+      # raises/adds errors, just uses whatever's usable and defaults to nil.
+      def lenient_total_students
+        if signup_params.using_openstax_how == AS_PRIMARY
+          total = books_used_details.values.sum do |book|
+            Integer(book['num_students_using_book'], 10) rescue 0
+          end
+          total.zero? ? nil : total
+        else
+          Integer(signup_params.total_num_students, 10) rescue nil
         end
       end
 
@@ -183,7 +204,11 @@ module Newflow
       end
 
       def other_role_name
-        signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil
+        signup_params.educator_specific_role == OTHER ? signup_params.other_role_name&.strip : nil
+      end
+
+      def finish_later?
+        signup_params.finish_later == 'true'
       end
 
       def which_books
@@ -215,36 +240,43 @@ module Newflow
       def check_params
         role = signup_params.educator_specific_role.strip.downcase
 
-        if !@did_use_sheerid && signup_params.school_name.nil?
-          param_error(:school_name, :school_name_must_be_entered)
-        end
-
-        if role == OTHER && signup_params.other_role_name.nil?
-          param_error(:other_role_name, :other_must_be_entered)
-        end
-
-        if role == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY
-          if books_used.blank?
-            param_error(:books_used, :books_used_must_be_entered)
+        # "Finish later" deliberately skips all the required-field checks below
+        # so a mostly-blank form still completes signup; the missing fields
+        # surface later as a profile-enrichment nudge (see User#profile_needs_enrichment?).
+        unless finish_later?
+          if !@did_use_sheerid && signup_params.school_name.nil?
+            param_error(:school_name, :school_name_must_be_entered)
           end
 
-          if books_used_details.blank?
-            param_error(:books_used, :books_used_details_must_be_entered)
+          if role == OTHER && signup_params.other_role_name.nil?
+            param_error(:other_role_name, :other_must_be_entered)
           end
-        end
 
-        if role == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
-          param_error(:books_of_interest, :books_of_interest_must_be_entered)
-        end
+          if role == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY
+            if books_used.blank?
+              param_error(:books_used, :books_used_must_be_entered)
+            end
 
-        if Settings::FeatureFlags.collect_student_count_all_paths &&
-           signup_params.using_openstax_how != AS_PRIMARY &&
-           signup_params.total_num_students.blank?
-          param_error(:total_num_students, :fill_out)
+            if books_used_details.blank?
+              param_error(:books_used, :books_used_details_must_be_entered)
+            end
+          end
+
+          if role == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
+            param_error(:books_of_interest, :books_of_interest_must_be_entered)
+          end
+
+          if Settings::FeatureFlags.collect_student_count_all_paths &&
+             signup_params.using_openstax_how != AS_PRIMARY &&
+             signup_params.total_num_students.blank?
+            param_error(:total_num_students, :fill_out)
+          end
         end
 
         if @is_on_cs_form
-          # if they are on the CS form, we need school issued email address
+          # if they are on the CS form, we need school issued email address --
+          # required even under "finish later", since it's structurally needed
+          # for the CS verification path, not an optional enrichment field.
           if signup_params.school_issued_email.blank?
             param_error(:school_issued_email, :school_issued_email_must_be_entered)
           end

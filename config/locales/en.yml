@@ -34,13 +34,24 @@ en:
     use_as_entered_label: Use "{school}"
 
   educator_profile_form:
-    complete_page_header: Complete your profile
+    complete_page_header: Last step — about your teaching
+    profile_subtitle: Takes about a minute. This tells us which resources to unlock for you.
+    social_proof: >-
+      <strong>You're in good company.</strong> Thousands of instructors use free OpenStax
+      textbooks and resources every year.
     school_name: School name
-    describe_role: Which of the following best describes your role?
+    school_matched: "Matched — %{name}"
+    grade_levels: Which grade levels?
+    grade_band_elementary: Elementary (K–5)
+    grade_band_middle: Middle (6–8)
+    grade_band_high: High (9–12)
+    grade_band_multiple: Multiple / dual credit
+    describe_role: Which best describes you?
     instructor: Instructor
     researcher: Researcher
     administrator: Administrator
-    other: Other educational staff
+    other: Other staff
+    other_staff_routing_note: Choosing "Other staff" routes to questions written for your role.
     other_please_specify: Other (please specify)
     how_using: How are you using OpenStax?
     how_textbooks_chosen: How are textbooks chosen at your institution?
@@ -55,28 +66,30 @@ en:
     num_students_using_book_time_period: each semester?
     num_students_using_book_supplemental: Include sections taught by TAs that you oversee
     num_students_using_book_placeholder:  Number of students using this book per semester
-    num_students_future_recommending: "Approx. how many students would you teach each year with OpenStax?"
+    num_students_future_recommending: "About how many students could this reach in a year?"
     num_students_administrator: "What is your average annual class size?"
     num_students_other: "Approx. how many students does your institution serve annually?"
     num_students_total_placeholder: "Number of students"
     book_picker_search_placeholder: "Search for a book..."
-    book_picker_select_up_to: "Select up to 5"
+    book_picker_select_up_to: "Up to five."
     book_picker_select_up_to_titles: "Select titles you are using even if the edition number is different."
     include_ta_sections: "Include sections taught by TAs that you oversee"
     students_per_semester: "Students per semester"
     how_using_this_book: "How are you using this book?"
     subjects_of_interest: Subjects of interest
-    books_used: Which OpenStax book(s)?
-    books_of_interest: Which OpenStax book(s)?
-    using_primary_textbook: Using an OpenStax book as our primary textbook
-    using_recommending_openstax: Recommending the book -- my students buy a different one
-    using_future: Interested in using OpenStax in the future
+    books_used: Which book(s) are you using?
+    books_of_interest: Which book(s) are you interested in?
+    using_primary_textbook: Assigning it as the required text
+    using_recommending_openstax: "Recommending it — students choose their own materials"
+    using_future: Exploring it for future use
     chosen_by_instructor: Instructors choose textbooks for their courses
     chosen_by_committee: A committee chooses the textbook
     chosen_by_coordinator: Course/district coordinator choose the textbook
     select_option: Please select one of these options
     select_option_limit_5: A maximum of 5 books may be selected
     fill_out: Please enter a value for this field
+    finish_button: Finish — unlock instructor resources
+    finish_later_link: Save and finish later in your account
     school_name_must_be_entered: Please enter school name
     other_must_be_entered: Please enter other role name
     books_used_must_be_entered: Please enter books used
@@ -96,7 +109,7 @@ en:
       instructor: K-12 Teacher
       administrator: School or district administrator
       other: Other school staff
-      complete_page_header: Complete your teacher profile
+      complete_page_header: Last step — about your teaching
       school_name: School or district name
       describe_role: Which best describes your role at your school?
       how_textbooks_chosen: How are textbooks chosen at your school or district?

@@ -6,6 +6,30 @@
     email_address: @email_address
   ).html_safe
   @page_title = 'Sign up (done)'
+
+  # Additive, educator-only personalization -- every other signup flow
+  # (student, social auth, etc.) leaves these nil and gets the same screen
+  # it always has. is_profile_complete is only ever set true by the
+  # educator CompleteProfile handler, so it's a precise signal here.
+  is_educator_profile = current_user && !current_user.is_anonymous? && current_user.is_profile_complete?
+
+  badge = 'Verified educator' if is_educator_profile && current_user.confirmed_faculty?
+
+  first_book = current_user&.which_books.to_s.split(';').first.presence if is_educator_profile
+  primary_cta =
+    if first_book.present?
+      # Link to the user's own OpenStax Books page rather than guessing at a
+      # per-book resource URL we can't reliably resolve from the Salesforce
+      # book code stored on which_books.
+      { label: "Go to #{first_book} resources", url: account_books_path }
+    elsif is_educator_profile
+      { label: 'Explore your account', url: account_overview_path }
+    end
+
+  impact_copy =
+    if is_educator_profile && current_user.how_many_students.present?
+      "Your #{current_user.how_many_students} students will now have access to free OpenStax materials."
+    end
 %>
 
 <%=
@@ -13,6 +37,9 @@
     'newflow/signup/signup_done_template',
     header: header,
     description: description,
-    image: image
+    image: image,
+    badge: badge,
+    primary_cta: primary_cta,
+    impact_copy: impact_copy
   )
 %>

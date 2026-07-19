@@ -65,6 +65,24 @@
                       class: 'account-callout__button account-callout__button--primary' %>
         </div>
       </div>
+    <% elsif current_user.profile_needs_enrichment? %>
+      <%# Non-blocking nudge for educators who used "Save and finish later" on
+          step 4 and skipped optional teaching details (books, student count,
+          school). Distinct from the callouts above: this user already has
+          instructor access -- we're just inviting them to finish enriching
+          their profile so we can point them to the right resources. %>
+      <div class="account-callout account-callout--pending" id="enrich-profile-callout">
+        <div class="account-callout__text">
+          <p class="account-callout__eyebrow">A couple more details</p>
+          <h3>Finish telling us about your teaching</h3>
+          <p>You skipped a few questions when you signed up -- add them so we can point you to the right book resources.</p>
+        </div>
+        <div class="account-callout__actions">
+          <%= link_to 'Finish your profile',
+                      educator_profile_form_path,
+                      class: 'account-callout__button account-callout__button--primary' %>
+        </div>
+      </div>
     <% end %>
 
     <% school_name = current_user&.school&.name.presence || current_user&.self_reported_school.presence %>
