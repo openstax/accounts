@@ -10,6 +10,9 @@ module Account
       @school_name = current_user.school&.name
       @book_rows = check_in_book_rows
       @show_dismiss = !current_user.check_in_required?
+      @streak_years = current_user.check_in_streak_years
+      @streak_pending_year_label = SchoolYear.short_label_for(SchoolYear.base_year_for(Time.zone.today))
+      @streak_lead, @streak_rest = check_in_streak_copy(@streak_years)
 
       render_account_page :check_in, title: 'Annual check-in', description: nil
     end
@@ -66,6 +69,34 @@ module Account
     end
 
     private
+
+    NUMBER_WORDS = %w[zero one two three four five six seven eight nine ten].freeze
+
+    # Returns [lead, rest] strings for the streak banner, or [nil, nil] when
+    # there's no prior streak to show (the view omits the banner entirely).
+    # One prior year gets singular copy without the "in a row" framing;
+    # two or more spells out both the current count and what confirming
+    # today would make it, e.g. "Two years reported in a row." / "Confirm
+    # below to make it three."
+    def check_in_streak_copy(streak_years)
+      return [nil, nil] if streak_years <= 0
+
+      if streak_years == 1
+        [
+          t('annual_check_in.streak.singular_lead'),
+          t('annual_check_in.streak.singular_rest')
+        ]
+      else
+        [
+          t('annual_check_in.streak.plural_lead', count_word: number_word(streak_years).capitalize),
+          t('annual_check_in.streak.plural_rest', next_word: number_word(streak_years + 1))
+        ]
+      end
+    end
+
+    def number_word(count)
+      NUMBER_WORDS[count] || count.to_s
+    end
 
     def check_in_book_rows
       last_school_year = SchoolYear.label_for(SchoolYear.base_year_for(Time.zone.today) - 1)

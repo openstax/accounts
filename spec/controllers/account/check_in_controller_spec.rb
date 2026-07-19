@@ -50,6 +50,51 @@ RSpec.describe Account::CheckInController, type: :controller do
 
       expect(response.body).to include('75 last year')
     end
+
+    describe 'streak banner' do
+      def report_for!(school_year)
+        AdoptionReport.create!(user: user, book_title: book.title, school_year: school_year, source: 'books_modal')
+      end
+
+      it 'is omitted with no prior years reported' do
+        get :show
+
+        expect(response.body).not_to include('account-check-in__streak')
+      end
+
+      it 'uses singular copy for exactly one prior year' do
+        report_for!(SchoolYear.label_for(SchoolYear.base_year_for(Time.zone.today) - 1))
+
+        get :show
+
+        expect(response.body).to include('account-check-in__streak')
+        expect(response.body).to include('One year reported.')
+        expect(response.body).to include('Confirm below to make it two.')
+      end
+
+      it 'uses plural "in a row" copy for two or more prior years' do
+        report_for!(SchoolYear.label_for(SchoolYear.base_year_for(Time.zone.today) - 1))
+        report_for!(SchoolYear.label_for(SchoolYear.base_year_for(Time.zone.today) - 2))
+
+        get :show
+
+        expect(response.body).to include('Two years reported in a row.')
+        expect(response.body).to include('Confirm below to make it three.')
+      end
+
+      it 'renders one done circle per streak year plus a dashed pending-year circle' do
+        report_for!(SchoolYear.label_for(SchoolYear.base_year_for(Time.zone.today) - 1))
+        report_for!(SchoolYear.label_for(SchoolYear.base_year_for(Time.zone.today) - 2))
+
+        get :show
+
+        expect(response.body.scan('account-check-in__streak-circle--done').size).to eq 2
+        expect(response.body.scan('account-check-in__streak-circle--pending').size).to eq 1
+
+        pending_label = SchoolYear.short_label_for(SchoolYear.base_year_for(Time.zone.today))
+        expect(response.body).to include(ERB::Util.html_escape(pending_label))
+      end
+    end
   end
 
   describe '#confirm' do

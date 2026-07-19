@@ -38,4 +38,14 @@ RSpec.describe SchoolYear do
       expect(described_class.base_year_from_string('unknown')).to be_nil
     end
   end
+
+  describe '.short_label_for' do
+    it 'formats the ending year with a leading apostrophe' do
+      expect(described_class.short_label_for(2026)).to eq("'27")
+    end
+
+    it 'handles a year-end rollover' do
+      expect(described_class.short_label_for(2099)).to eq("'00")
+    end
+  end
 end
