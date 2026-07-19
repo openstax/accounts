@@ -1,0 +1,75 @@
+---
+1.0.0 aws-sdk-core:>= 3.53.0&~> 3,aws-sigv4:~> 1.1|checksum:ea460798580a65f4f7e9002feb0666fc6611ce330627951d1f8f4bf195c96ab7,created_at:2019-05-29T19:43:13Z
+1.1.0 aws-sdk-core:>= 3.56.0&~> 3,aws-sigv4:~> 1.1|checksum:18fbb14363c3aa22bdd13c745015e6cd8e768fbe441568d883a38ccea041c974,created_at:2019-06-17T19:50:20Z
+1.2.0 aws-sdk-core:>= 3.58.0&~> 3,aws-sigv4:~> 1.1|checksum:2356bcec1029f75ef06f9739c6cf2ffccc4a48d0f376ecd14d25be46ac7b4e21,created_at:2019-07-01T20:09:33Z
+1.3.0 aws-sdk-core:>= 3.61.1&~> 3,aws-sigv4:~> 1.1|checksum:05074a73f4e41c0ac76ed4310001910b1ccbc75fa2c875a1a8d796600a63d3aa,created_at:2019-07-25T20:26:45Z
+1.4.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:67294ef44be748c9d9d2dc8228245745a96da995d1e06215fc5ded5e2b9a6006,created_at:2019-10-23T20:27:46Z
+1.5.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:4ab50d4009c2b13682b78a04396b4b769dc29b14e1a86f5f7e2ca2ba6a10f12d,created_at:2020-03-09T23:35:10Z
+1.6.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:5b6765259d2596c6a2a6f3e8b2094499c27e256889a751f9f16f1542a1aa43cc,created_at:2020-05-07T19:34:42Z
+1.7.0 aws-sdk-core:>= 3.71.0&~> 3,aws-sigv4:~> 1.1|checksum:5271360d845cd5744be137c96251e1b97c122551e60aa6fec5442faf5eab9fbf,created_at:2020-05-28T19:17:46Z
+1.8.1 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:bf3ae494c63acb62905c5cd28fb76b9bf58bd6b53fdc1093ad0dc4199ebfc87e,created_at:2020-06-11T19:21:49Z
+1.9.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:75b48a765dee1e3627a66dc9103bf42a6df11bb1dd15e57e93ea0228d85a3a30,created_at:2020-06-23T20:23:30Z
+1.10.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:07d9ff61a68aa2f0b09f5aef2c757a896bbe4a05130c14564201a2cadc61dff7,created_at:2020-08-25T22:08:16Z
+1.11.0 aws-sdk-core:>= 3.99.0&~> 3,aws-sigv4:~> 1.1|checksum:8162ca9e9e0453ccb2f69ad92ba1b64e3b0e148d3784fd4b45b844321bddafc2,created_at:2020-09-15T20:30:07Z
+1.12.0 aws-sdk-core:>= 3.109.0&~> 3,aws-sigv4:~> 1.1|checksum:9d851022cef9f91e484bef7d5b3a6db190cb32335550d7add17fef4143ee863c,created_at:2020-09-30T20:46:40Z
+1.13.0 aws-sdk-core:>= 3.112.0&~> 3,aws-sigv4:~> 1.1|checksum:7efed15ed84765b93f3f7c43ac65f28c2d4e1bc39d0d312fc7a247ccef9805c6,created_at:2021-02-02T20:35:05Z
+1.14.0 aws-sdk-core:>= 3.112.0&~> 3,aws-sigv4:~> 1.1|checksum:f71464d497bbfd69feaf1cc7fac4ffbe4e72002959855ead798f489a96f1b7a4,created_at:2021-03-10T20:49:37Z
+1.15.0 aws-sdk-core:>= 3.118.0&~> 3,aws-sigv4:~> 1.1|checksum:db8b5d3525cb423af248fd3cc74d8956863ab25b6a15292d1386183efbd6d292,created_at:2021-07-28T21:02:47Z
+1.16.0 aws-sdk-core:>= 3.119.0&~> 3,aws-sigv4:~> 1.1|checksum:b0295d4cf557f3cf734da8b8bddd0bac3bced5f19cd51c9bb8b073722a4b90f5,created_at:2021-07-30T19:52:55Z
+1.17.0 aws-sdk-core:>= 3.120.0&~> 3,aws-sigv4:~> 1.1|checksum:1b5ddeea69eab67aa074aa26ee1538010a0d1271517bc2b57a1ebce11494e423,ruby:>= 2.3,created_at:2021-09-01T20:09:54Z
+1.18.0 aws-sdk-core:>= 3.121.2&~> 3,aws-sigv4:~> 1.1|checksum:b0837174d164ea6c38e0bb1e3588880216253d939b0f02af861f534049b85bc8,ruby:>= 2.3,created_at:2021-10-18T19:26:02Z
+1.19.0 aws-sdk-core:>= 3.122.0&~> 3,aws-sigv4:~> 1.1|checksum:420d517ef0d280462897f953a81377c1edbefb48f9a98ea82efa5fa8d79be312,ruby:>= 2.3,created_at:2021-11-04T19:44:11Z
+1.20.0 aws-sdk-core:>= 3.122.0&~> 3,aws-sigv4:~> 1.1|checksum:e12f808a0dc65b0fd45285949e721ed722a7388e3d70a3dbba06e46bd9f48856,ruby:>= 2.3,created_at:2021-12-01T00:44:39Z
+1.21.0 aws-sdk-core:>= 3.125.0&~> 3,aws-sigv4:~> 1.1|checksum:070ea19169ff693b0af4883156cc24d4a4d5aad22cada11fb24e27f5dfd49512,ruby:>= 2.3,created_at:2021-12-21T21:05:30Z
+1.22.0 aws-sdk-core:>= 3.126.0&~> 3,aws-sigv4:~> 1.1|checksum:6b57aa9b09e0a462796112f5bd1cc81acd1cc9016604dc341f0d7a5df975784b,ruby:>= 2.3,created_at:2022-02-03T22:27:16Z
+1.23.0 aws-sdk-core:>= 3.127.0&~> 3,aws-sigv4:~> 1.1|checksum:0708351fed316087e5838b93f8201cd70324ff1cac22ba6a113bd2ead68ed6d6,ruby:>= 2.3,created_at:2022-02-24T21:17:25Z
+1.24.0 aws-sdk-core:>= 3.127.0&~> 3,aws-sigv4:~> 1.1|checksum:e1c28cd7d031afb9528bb5cb6f4218e537258d4f87906fbdd451559e6d190868,ruby:>= 2.3,created_at:2022-08-31T19:29:52Z
+1.25.0 aws-sdk-core:>= 3.165.0&~> 3,aws-sigv4:~> 1.1|checksum:439da81d9b4d931f65fc247ef662462196d30ea12a89730324e5b9242f0d5851,ruby:>= 2.3,created_at:2022-10-25T23:14:21Z
+1.26.0 aws-sdk-core:>= 3.165.0&~> 3,aws-sigv4:~> 1.1|checksum:3cdcd7a9d19b76f611d6ab35d62e33a0f184c48fca90c61d3947e438619845ad,ruby:>= 2.3,created_at:2023-01-18T21:04:09Z
+1.27.0 aws-sdk-core:>= 3.174.0&~> 3,aws-sigv4:~> 1.1|checksum:cc3cf4d69a02b9f71cb63988deced40143e111bf2b85e3a42fe123d396c1b6df,ruby:>= 2.3,created_at:2023-05-31T21:25:56Z
+1.28.0 aws-sdk-core:>= 3.174.0&~> 3,aws-sigv4:~> 1.1|checksum:fd9e7391841b0bb0ec3ae5b04ac14170dd595814b9b3aaac474ad1bcfcb1dbae,ruby:>= 2.3,created_at:2023-06-15T19:40:58Z
+1.29.0 aws-sdk-core:>= 3.176.0&~> 3,aws-sigv4:~> 1.1|checksum:50f536973c885077d9b2c9ea7152f90102c4ec7d71e69b5548cedfa94e64769d,ruby:>= 2.3,created_at:2023-06-28T20:02:27Z
+1.30.0 aws-sdk-core:>= 3.177.0&~> 3,aws-sigv4:~> 1.1|checksum:60b2bd52e09d74803bdd9e226d4ff183dab37d22f83c976ce458d317fe533335,ruby:>= 2.3,created_at:2023-07-06T21:51:49Z
+1.31.0 aws-sdk-core:>= 3.177.0&~> 3,aws-sigv4:~> 1.1|checksum:db62c48f2501b6ffb593b1c5a5c4dcf24f0fd2220adc20cfbc00f29313850acf,ruby:>= 2.3,created_at:2023-07-11T15:34:36Z
+1.32.0 aws-sdk-core:>= 3.177.0&~> 3,aws-sigv4:~> 1.1|checksum:2853d49a1956023fdfdaa928fbe8565177500dda7d8210071aa5071dc99030fa,ruby:>= 2.3,created_at:2023-09-19T20:17:23Z
+1.33.0 aws-sdk-core:>= 3.184.0&~> 3,aws-sigv4:~> 1.1|checksum:465e9b326731b7ac848cdae8397398700ac21f7753052f548b63a2a721e6525e,ruby:>= 2.3,created_at:2023-09-27T19:52:01Z
+1.34.0 aws-sdk-core:>= 3.188.0&~> 3,aws-sigv4:~> 1.1|checksum:65de8d87b582a5fe6747ee9a39c74771e2fed4c4038c4a7d50672654e1d3b004,ruby:>= 2.5,created_at:2023-11-22T21:31:06Z
+1.35.0 aws-sdk-core:>= 3.188.0&~> 3,aws-sigv4:~> 1.1|checksum:76b21771e7620ea232512d5d91dae062c89ab7e509b9b910393cfca0bb9ce280,ruby:>= 2.5,created_at:2023-11-28T21:03:26Z
+1.36.0 aws-sdk-core:>= 3.191.0&~> 3,aws-sigv4:~> 1.1|checksum:cb8fd5d4256b79296a67a88d29b2a6b0984854e069f458b26c2fa43056769c46,ruby:>= 2.5,created_at:2024-01-26T22:01:03Z
+1.37.0 aws-sdk-core:>= 3.193.0&~> 3,aws-sigv4:~> 1.1|checksum:67efaf69f4404197679d1337ce5bfc7762740794ef7222138eded29c2dbfe937,ruby:>= 2.5,created_at:2024-04-25T19:48:14Z
+1.38.0 aws-sdk-core:>= 3.193.0&~> 3,aws-sigv4:~> 1.1|checksum:baa0325c5ac3ce304fd1d31118d3107f4283c386ff2b26e16cd9a8f71d8ef8b2,ruby:>= 2.5,created_at:2024-05-13T19:50:45Z
+1.39.0 aws-sdk-core:>= 3.197.0&~> 3,aws-sigv4:~> 1.1|checksum:20741e4e3a249a13448c17598ff8f73f4e3b1e7cc3996705b020dbd3f1e184dc,ruby:>= 2.5,created_at:2024-06-05T19:54:03Z
+1.40.0 aws-sdk-core:>= 3.198.0&~> 3,aws-sigv4:~> 1.1|checksum:85ec1975034ab7d1cd3bebecd0d81055a1976ae37e72ff0b78f7dcccd0e69982,ruby:>= 2.5,created_at:2024-06-24T22:01:11Z
+1.41.0 aws-sdk-core:>= 3.199.0&~> 3,aws-sigv4:~> 1.1|checksum:63006178e28ddb4e8e069cce1e7fa4c5636e0d380e87267ae10b8b067610e387,ruby:>= 2.5,created_at:2024-06-25T19:36:48Z
+1.42.0 aws-sdk-core:>= 3.199.0&~> 3,aws-sigv4:~> 1.1|checksum:862d8cb437647174cf9b9ca03f22d08a699190f74649556b51b4e25bb57eca1a,ruby:>= 2.5,created_at:2024-06-28T20:19:08Z
+1.43.0 aws-sdk-core:>= 3.201.0&~> 3,aws-sigv4:~> 1.5|checksum:11ebc29101d78cea306e1f54337172dda1d48e222141d0480ed5e1e0018a31cd,ruby:>= 2.5,created_at:2024-07-02T19:38:13Z
+1.44.0 aws-sdk-core:>= 3.203.0&~> 3,aws-sigv4:~> 1.5|checksum:6252faa43f87cbee40237f72e13adb9fd81aec15adabe9d10fc1acd970bf51bd,ruby:>= 2.5,created_at:2024-09-03T19:43:42Z
+1.45.0 aws-sdk-core:>= 3.203.0&~> 3,aws-sigv4:~> 1.5|checksum:4546a47bf4ae99c7cc9c11552bdf27f346c8e850b3b7042829c76e1f6d3d1f76,ruby:>= 2.5,created_at:2024-09-10T19:50:33Z
+1.46.0 aws-sdk-core:>= 3.205.0&~> 3,aws-sigv4:~> 1.5|checksum:d0e220e7f7db1a36c05fd8e9400ab5b5d4410b878f411d01025be699bfd07040,ruby:>= 2.5,created_at:2024-09-11T20:23:38Z
+1.47.0 aws-sdk-core:>= 3.207.0&~> 3,aws-sigv4:~> 1.5|checksum:3b49ceb7006675b96d209b3a614e7c86e9695f5806c41837e4aec2f740f9c215,ruby:>= 2.5,created_at:2024-09-20T19:42:32Z
+1.48.0 aws-sdk-core:>= 3.207.0&~> 3,aws-sigv4:~> 1.5|checksum:3c3263fab471439ff710da0c37762d697e87405fd6d11a08a650015b6a6e6c3b,ruby:>= 2.5,created_at:2024-09-23T19:37:15Z
+1.49.0 aws-sdk-core:>= 3.207.0&~> 3,aws-sigv4:~> 1.5|checksum:be89ad6d77204a3a4b072342657c18980c2bf4e6b89d4c08b1aa6ca577556ac3,ruby:>= 2.5,created_at:2024-09-24T19:37:42Z
+1.50.0 aws-sdk-core:>= 3.210.0&~> 3,aws-sigv4:~> 1.5|checksum:48fe6c7207b14b8592c8c979bda16e428c1f0ab23a359476e029f5941f320503,ruby:>= 2.5,created_at:2024-10-18T19:40:41Z
+1.51.0 aws-sdk-core:>= 3.216.0&~> 3,aws-sigv4:~> 1.5|checksum:584869542ec2f024cebb68e7ea8bbff197f64c0e873e76d6466144c9124fa959,ruby:>= 2.5,created_at:2025-01-15T21:38:55Z
+1.52.0 aws-sdk-core:>= 3.216.0&~> 3,aws-sigv4:~> 1.5|checksum:a21b8471ad6a175280d995f481240ff09355514406985be5fa50231f8efaf73c,ruby:>= 2.5,created_at:2025-02-06T20:35:59Z
+1.53.0 aws-sdk-core:>= 3.216.0&~> 3,aws-sigv4:~> 1.5|checksum:f8bb8094d809e1d7a9b7c36a713a21992a93e37adb1272ab29ac77c0bd2b1a4c,ruby:>= 2.5,created_at:2025-02-18T20:53:44Z
+1.54.0 aws-sdk-core:>= 3.216.0&~> 3,aws-sigv4:~> 1.5|checksum:8bc8ab3756f4e2d3acd94ed77f4f794db25d47e5a82c64be55aa0d2b4c0d0e27,ruby:>= 2.5,created_at:2025-05-01T20:27:27Z
+1.55.0 aws-sdk-core:>= 3.216.0&~> 3,aws-sigv4:~> 1.5|checksum:1475abf97ce815054ea9708f24a2adaef55d9bb84403a55630a6c1bd629dcb62,ruby:>= 2.5,created_at:2025-05-12T19:53:44Z
+1.56.0 aws-sdk-core:>= 3.225.0&~> 3,aws-sigv4:~> 1.5|checksum:d92499ef8047a953fe623cf16cbce84842960360e3fe743f4f7447fd81e0e006,ruby:>= 2.7,created_at:2025-06-02T19:45:18Z
+1.57.0 aws-sdk-core:>= 3.227.0&~> 3,aws-sigv4:~> 1.5|checksum:7a363dbbfe5a38001e2e8c8e80f67ecca16efcdecb384a7ae228497421d79188,ruby:>= 2.7,created_at:2025-07-21T19:50:30Z
+1.58.0 aws-sdk-core:>= 3.228.0&~> 3,aws-sigv4:~> 1.5|checksum:14fdc290128f5922dd465512109c8b3ae4af55d50e58cb5b8c43d63930247a3a,ruby:>= 2.7,created_at:2025-07-31T19:46:27Z
+1.59.0 aws-sdk-core:>= 3.228.0&~> 3,aws-sigv4:~> 1.5|checksum:868d583f6ce70c145d2c28fd279d2152bdb595c6daf406f082164f9f429935c3,ruby:>= 2.7,created_at:2025-08-04T20:01:16Z
+1.60.0 aws-sdk-core:>= 3.228.0&~> 3,aws-sigv4:~> 1.5|checksum:86ffc82bf7be8e1b1cd7893017206d0f650edd04e231219a02f34fd42def553a,ruby:>= 2.7,created_at:2025-08-21T19:24:51Z
+1.61.0 aws-sdk-core:>= 3.231.0&~> 3,aws-sigv4:~> 1.5|checksum:00249c354dbcb97c210e1b9835228a9005b1aa186f99cb580484077ba531978e,ruby:>= 2.7,created_at:2025-08-26T19:50:33Z
+1.62.0 aws-sdk-core:>= 3.231.0&~> 3,aws-sigv4:~> 1.5|checksum:cbc7263f10238c71be40f382b40957ba1651fb30eb8e221c7b9a8e6ace044315,ruby:>= 2.7,created_at:2025-10-17T19:32:07Z
+1.63.0 aws-sdk-core:>= 3.234.0&~> 3,aws-sigv4:~> 1.5|checksum:fe6231c990ec97e29c054c87017aa0d0dea418903bf568a32d32ba9a669add0d,ruby:>= 2.7,created_at:2025-10-21T21:32:31Z
+1.64.0 aws-sdk-core:>= 3.239.1&~> 3,aws-sigv4:~> 1.5|checksum:d8d6be048c2516ae4157d31a48a28a9e8f3bb2d57737076cb3cc2e602096bd36,ruby:>= 2.7,created_at:2025-11-21T21:01:10Z
+1.65.0 aws-sdk-core:>= 3.241.0&~> 3,aws-sigv4:~> 1.5|checksum:4c12e0bdcb89f6b869f1d174fc2919986bc77d540c1b256c1ec36e54bef0770c,ruby:>= 2.7,created_at:2026-01-05T21:00:03Z
+1.66.0 aws-sdk-core:>= 3.241.3&~> 3,aws-sigv4:~> 1.5|checksum:5ff2b70ed8a92a059c0a5ae18c372cddbb258a730fd865360c1065ff75398b4a,ruby:>= 2.7,created_at:2026-01-08T20:26:41Z
+1.67.0 aws-sdk-core:>= 3.241.4&~> 3,aws-sigv4:~> 1.5|checksum:b840e38cf26be42059c195f9200b5a12b5861854956e51e0b2cc5ba723a1485a,ruby:>= 2.7,created_at:2026-01-16T21:10:52Z
+1.68.0 aws-sdk-core:>= 3.244.0&~> 3,aws-sigv4:~> 1.5|checksum:50abda3522bf10f1d03175434843874ef88bb50d5d57f0e1897525b39de9e9fe,ruby:>= 2.7,created_at:2026-03-18T20:06:24Z
+1.69.0 aws-sdk-core:>= 3.247.0&~> 3,aws-sigv4:~> 1.5|checksum:5706d6c61bc78658e4f3efad5409a894644aedc0fbdbf6ea0aa07c501eea7094,ruby:>= 2.7,created_at:2026-05-13T20:13:14Z
+1.70.0 aws-sdk-core:>= 3.247.0&~> 3,aws-sigv4:~> 1.5|checksum:66a380ead10dc42c3a4c2f8afbc83b425f5317c1f6c9cad1ff7efb9f5c36db25,ruby:>= 2.7,created_at:2026-05-19T20:06:41Z
+1.71.0 aws-sdk-core:>= 3.248.0&~> 3,aws-sigv4:~> 1.5|checksum:4fe94f9de4171e57fda8ac2fe4fea317522c2a2d772b73de420b5b82c8639545,ruby:>= 2.7,created_at:2026-05-21T22:06:10Z
+1.72.0 aws-sdk-core:>= 3.248.0&~> 3,aws-sigv4:~> 1.5|checksum:bd48338bde33870d283b5edaa6eafe6ff513d2b31f8437dc00ae7dadf55c0f8b,ruby:>= 2.7,created_at:2026-05-27T19:36:45Z
+1.73.0 aws-sdk-core:>= 3.254.0&~> 3,aws-sigv4:~> 1.5|checksum:1ff6948096ecaa811ea2e5b5d91ea98aece7abef0873dce9854438e4f6ee7750,ruby:>= 2.7,created_at:2026-07-09T20:05:02Z

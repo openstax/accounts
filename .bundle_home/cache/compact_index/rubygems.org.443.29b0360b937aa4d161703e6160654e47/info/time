@@ -1,0 +1,10 @@
+---
+0.1.0 |checksum:7e7fda2af5e2e299d55f7ec9832b682f383a90afd7f14dc607d630b050e5ceab,ruby:>= 2.3.0,created_at:2020-09-18T10:28:39Z
+0.2.0 date:>= 0|checksum:b388760c7a0d6879be4586d04afa433ec8adaee7c94f95ba52cbd5ff16bd0add,ruby:>= 2.3.0,created_at:2021-10-14T11:42:23Z
+0.2.1 date:>= 0|checksum:67b65cab29dd2b9ff241a74a1ba9cdbd5a558b47005b26368b728cea2c25e872,ruby:>= 2.3.0,created_at:2022-12-14T06:14:37Z
+0.1.1 |checksum:aaf586ea116c82e6cc1b556eeb3ec02f30493ba65d35860704f2c5204733d98d,ruby:>= 2.3.0,created_at:2023-03-30T10:42:59Z
+0.2.2 date:>= 0|checksum:60bce491350cdafb6d39c72e8fc4e01e6a80ee5197ddf8abaf06ece19e6eff8e,ruby:>= 2.3.0,created_at:2023-03-30T10:43:17Z
+0.3.0 date:>= 0|checksum:662be3af862b913dab519f4679c1a239fb27d5839ce2b8d5774c760f53d82530,ruby:>= 2.4.0,created_at:2023-11-07T05:09:47Z
+0.4.0 date:>= 0|checksum:1949374e50f5c1b2f980f5180e32f1360808aa639f40867fa21b8fbe3d6f61de,ruby:>= 2.4.0,created_at:2024-09-06T00:31:42Z
+0.4.1 date:>= 0|checksum:035f360508a4a4dbabcbbcd3886566b9abd432de89136795d2ff7aec5bcdea61,ruby:>= 2.4.0,created_at:2024-11-08T05:00:54Z
+0.4.2 date:>= 0|checksum:f324e498c3bde9471d45a7d18f874c27980e9867aa5cfca61bebf52262bc3dab,ruby:>= 2.4.0,created_at:2025-12-17T04:33:18Z

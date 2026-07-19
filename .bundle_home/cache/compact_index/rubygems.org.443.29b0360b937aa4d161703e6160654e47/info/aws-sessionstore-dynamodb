@@ -1,0 +1,12 @@
+---
+0.5.0 aws-sdk:~> 1.0,rack:~> 1.0|checksum:cc7794892c44b9ae59159a61e477e7d3c05b69147cd0e54b78f93434876f2a8c,created_at:2013-08-27T17:44:26Z
+0.5.1 aws-sdk-v1:>= 0,rack:~> 1.0|checksum:8ac08fca313fa2bb37e884e42a8a0af7b91eb00ce1adcead7162a08b8b57352f,created_at:2015-08-26T16:54:36Z
+1.0.0 aws-sdk:~> 2.0,rack:>= 1.6.4|checksum:d09280d5659660b725266ee4b4a82023a6d7164c07d9a01e58e74c1c43da1cbe,created_at:2017-08-14T22:14:29Z
+2.0.0 aws-sdk-dynamodb:~> 1,rack:~> 2|checksum:16b155e06d06bb94d2c88f33889fa6946acd7602a9d34685855da5784b48d9c5,created_at:2020-11-11T20:07:37Z
+2.0.1 aws-sdk-dynamodb:~> 1,rack:~> 2|checksum:4422c5026436d7cb8aee68108247c757118aa34b994d5484ac8e8b1ea6c8f5b8,created_at:2020-11-16T20:57:10Z
+2.1.0 aws-sdk-dynamodb:>= 1.85.0&~> 1,rack:~> 2|checksum:ebd2f1bf42be7486ad8fa7f43b451604541789b99e8ebea1f32bbefed6c44dc8,created_at:2023-06-02T17:51:21Z
+2.2.0 aws-sdk-dynamodb:>= 1.85.0&~> 1,rack:< 4&>= 2,rack-session:< 3&>= 1|checksum:def51891ea61061596b8fcafb78dc1f8cd08610a3fb0d4df5256bcc7ff5bcd0c,ruby:>= 2.5,created_at:2024-01-25T18:39:46Z
+3.0.0 aws-sdk-dynamodb:>= 1.85.0&~> 1,rack:~> 3,rack-session:~> 2|checksum:9628910b589600a29a8995a142e123bf67e7134afa4b6888983bf241ce6ddadd,ruby:>= 2.7,created_at:2024-10-29T16:15:02Z
+3.0.1 aws-sdk-dynamodb:>= 1.85.0&~> 1,rack:~> 3,rack-session:~> 2|checksum:ad37d357f383d96766a50854655dc56b414b8ddc5721b830959490e33de31b8e,ruby:>= 2.7,created_at:2024-11-16T21:44:49Z
+3.1.0 aws-sdk-dynamodb:>= 1.85.0&~> 1,rack:~> 3,rack-session:~> 2|checksum:aa71c8251a303e38f806e6793ca666575e72c3f550e219ff00f572801de102e5,ruby:>= 2.7,created_at:2026-06-29T17:22:28Z
+4.0.0 aws-sdk-dynamodb:>= 1.85.0&~> 1,rack:~> 3,rack-session:~> 2|checksum:08d0eaa2104a7275a3b49da90260ebb52445130344305b35a1944008b35ef037,ruby:>= 2.7,created_at:2026-06-30T16:22:26Z

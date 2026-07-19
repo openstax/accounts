@@ -1,0 +1,4 @@
+---
+1.0.0 aws-sdk-core:>= 3.248.0&~> 3,aws-sigv4:~> 1.5|checksum:474c2de296c724ecd02a54d4854e3ac98fd1158ed649ab0d85f3156bc49750e5,ruby:>= 2.7,created_at:2026-05-28T19:47:24Z
+1.1.0 aws-sdk-core:>= 3.248.0&~> 3,aws-sigv4:~> 1.5|checksum:d4c5df90e9d2fb9b840f8ce230bb9055ef67130c0fea2c7733fff383d2ea7805,ruby:>= 2.7,created_at:2026-07-08T19:33:12Z
+1.2.0 aws-sdk-core:>= 3.254.0&~> 3,aws-sigv4:~> 1.5|checksum:6e5951123e9cf8358cd490e42390eee672f74d4f781e40327c8b9ecd14d73104,ruby:>= 2.7,created_at:2026-07-09T20:30:11Z

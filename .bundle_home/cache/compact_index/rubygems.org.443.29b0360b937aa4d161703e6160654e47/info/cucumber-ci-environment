@@ -1,0 +1,18 @@
+---
+7.0.1 |checksum:d49d8595a59ba2b8a25afc7544fd0a9ec14ed76380fe23510fec4eb20d2128e0,ruby:>= 2.3,created_at:2021-12-08T14:57:58Z
+8.0.0 |checksum:5129f94c501230c747e8e3891d588dcd1359cd65bd42e056fde9ccbb1cfa07a5,ruby:>= 2.3,created_at:2021-12-15T19:02:01Z
+8.0.1 |checksum:f05b2799b13595a80fe2375f2a75f1798472e8153cbdac408908ae3302e62b39,ruby:>= 2.3,created_at:2021-12-29T09:51:52Z
+8.1.0 |checksum:0b37b8fab297337dffcdba7a06ed21a17e63999228f0a4ca3ae1583cd3492a6d,ruby:>= 2.3,created_at:2022-01-02T19:33:21Z
+9.0.0 |checksum:458d4654d77aa0747aaee461abba9884af4fbe792e117133e30a51d11d0e551a,ruby:>= 2.3,created_at:2022-01-25T16:19:29Z
+9.0.1 |checksum:cbb504ffa2d369d5fa28c8870f9f937119bb1ee22ddb084cd4ffe168c55f1c5c,ruby:>= 2.3,created_at:2022-03-04T07:08:31Z
+9.0.2 |checksum:8fc98b36ede51e6a729b4a6c4219df55ed076e5740519b4a00bf49af781e80c2,ruby:>= 2.3,created_at:2022-03-04T10:08:56Z
+9.0.3 |checksum:ae0ad5a3d175a8aa297d22f2e55beb21e4e132f9a0e85e00f0a87f0300b6035b,ruby:>= 2.3,created_at:2022-03-04T22:48:54Z
+9.0.4 |checksum:ebf43f9cc554ba2ee1057911c4bb0eda4b38c2b6bff0a6e22864adfba1b10aa9,ruby:>= 2.3,created_at:2022-03-06T17:30:42Z
+9.1.0 |checksum:6702db7ba25d41b9f8c164752c97d38ceca2f4e670649fd9fb6a51991d14b6da,ruby:>= 2.3,created_at:2022-07-27T16:28:46Z
+9.2.0 |checksum:98121d128af99883f65b3ab78e987be9d57c17e1adeb79783e4bc269b8592128,ruby:>= 2.3,created_at:2023-04-28T08:55:57Z
+10.0.0 |checksum:83f6994efc20a29b92b51c0a50cac768d1aff26bd4db0bfdee4d24430d28389f,ruby:>= 2.6,rubygems:>= 3.0.3,created_at:2023-11-16T10:24:40Z
+10.0.1 |checksum:bb6e3fcec85c981dff4561997e8675a7123eead5fe9e587d2ad7568adbe18631,ruby:>= 2.6,rubygems:>= 3.0.3,created_at:2024-01-15T17:33:54Z
+11.0.0 |checksum:0df79a9e1d0b015b3d9def680f989200d96fef206f4d19ccf86a338c4f71d1e2,ruby:>= 3.2,rubygems:>= 3.2.8,created_at:2025-10-07T17:35:46Z
+12.0.0 |checksum:3a0aa514bb576667329a90315847a6edaf9c9950c65dd65ad727e1a3a44b7d3b,ruby:>= 3.2,rubygems:>= 3.2.8,created_at:2025-10-27T14:30:06Z
+13.0.0 |checksum:f1c110943e07f72124b43c50c98d96016a77141a4bd45ebee0b8c877d8c264fb,ruby:>= 3.2,rubygems:>= 3.2.8,created_at:2026-01-26T11:25:32Z
+14.0.0 |checksum:b8f70a70de93ad4b0393f864def8e1565cb3c6d1155e4bf6054f5ab8482b47b3,ruby:>= 3.2,rubygems:>= 3.2.8,created_at:2026-06-11T10:00:25Z

@@ -1,0 +1,27 @@
+---
+0.0.1 |checksum:399c952e94249b7d562726e244caf6219b57366595a75eb08540ea079f17b889,created_at:2015-09-17T20:11:40Z
+1.1.0 exception_notification:< 5.0&>= 4.1,rails:< 5.0&>= 3.1|checksum:cad7f7a0360fb46ce126e8f0b84aacd4e1e15db7d19ddfbc42949781f6cb40fc,created_at:2015-10-02T16:24:25Z
+1.1.1 exception_notification:< 5.0&>= 4.1,rails:< 5.0&>= 3.1|checksum:5ecd4630e3f933b98956e53a5fc09d865c660300ed1f411cc2b398c133a452d7,created_at:2015-10-05T19:21:10Z
+1.1.2 exception_notification:< 5.0&>= 4.1,rails:< 5.0&>= 3.1|checksum:507b4889289b2523967f4f741ef04cd04d004b025ea2c367c684b50577730bd0,created_at:2015-10-05T19:58:43Z
+1.2.0 exception_notification:< 5.0&>= 4.1,rails:< 5.0&>= 3.1|checksum:20d74be2c947106223ab82c7d87d37e8af6caf47429ebcc6dcd2efc962784da1,created_at:2015-10-06T19:49:01Z
+1.3.0 exception_notification:< 5.0&>= 4.1,rails:< 5.0&>= 3.1|checksum:54d67e574c598f1350aaa590838e5b49d27ce7a5aebe35d84bca233ed4c41623,created_at:2015-10-07T05:33:16Z
+1.4.0 exception_notification:< 5.0&>= 4.1,rails:< 5.0&>= 3.1|checksum:22d8fb544ec8d4e9f43f9dc4d60e97ec434f4aeacfaf1649ce4729e022e8952a,created_at:2015-10-09T14:31:10Z
+1.5.0 exception_notification:< 5.0&>= 4.1,rails:< 5.0&>= 3.1|checksum:e9e3faf14446e53b70f6f702b404f4985bd285a78abb807ea36aa9947d64fbe1,created_at:2015-10-13T16:16:15Z
+1.6.0 exception_notification:< 5.0&>= 4.1,rails:< 5.0&>= 3.1|checksum:9a3a022eb2641b1c6f5c514853a6de94fa269963c871ab61f701481de0c208fe,created_at:2015-11-04T18:06:21Z
+1.7.0 exception_notification:<= 4.1.1,mime-types:<= 2.6.2,rails:< 5.0&>= 3.1|checksum:fc5f1a7b3e2e329cf1cefbb59ba009de7c3563d973d3f0fe2b80bfb1f2da6750,created_at:2016-12-16T18:36:42Z
+1.7.1 exception_notification:< 5.0&>= 4.1,rails:< 5.0&>= 3.1|checksum:55cf848240afcbeb5eb203d4ec051fbce27709866bad4893612250761bb4ce36,ruby:~> 2.0,created_at:2016-12-16T19:18:09Z
+1.7.2 exception_notification:< 5.0&>= 4.1,rails:< 5.0&>= 3.1|checksum:6ee8101f0a75de67bd14cbb28b42797c5d1235ff743d848caea6ea9ba09f9fc0,ruby:~> 2.0,created_at:2017-01-04T20:30:34Z
+1.8.0 exception_notification:< 5.0&>= 4.1,rails:< 5.0&>= 3.1|checksum:2cbd351c098100e82b48d2cd0d89b1f9a31daa1f8c711c955aa836eb8e3b542f,ruby:~> 2.0,created_at:2017-01-26T21:29:08Z
+1.9.0 exception_notification:< 5.0&>= 4.1,rails:< 6.0&>= 3.1|checksum:d9cba5f031b37891174cc0179d0a50d2281489d8c4561ceab74347886722e798,ruby:~> 2.0,created_at:2017-10-02T19:43:56Z
+2.0.0 exception_notification:< 5.0&>= 4.1,rails:< 6.0&>= 3.1|checksum:9c11af743fb793bf245b740bc85e99caf32315ab22a0eb48e81bf007dd1a3437,ruby:>= 2.0,created_at:2017-10-05T23:19:37Z
+2.0.1 exception_notification:< 5.0&>= 4.1,rails:< 6.0&>= 3.1|checksum:81cf0051c6fecda90b836958f2f8e1ea818ef8792830d0750fef7c94f828045d,ruby:>= 2.0,created_at:2017-10-06T21:32:16Z
+2.1.0 exception_notification:< 5.0&>= 4.1,rails:< 6.0&>= 3.1|checksum:91d4c5677c18b0130fe461b58580dc205a0915a8acbbbf727f666e98e209b2c7,ruby:>= 2.0,created_at:2017-10-13T23:34:07Z
+3.0.0 rails:< 6.0&>= 3.1|checksum:96d059f954903a4af3a006298fcf2a99d7a3becc830e989a50fe57086f50bd9d,ruby:>= 2.0,created_at:2018-04-10T16:14:29Z
+4.0.0 rails:< 6.0&>= 3.1|checksum:56eda73028bf2dfac0ca5df013338741d3020e4cb087dd1a176231a993f64f3c,ruby:>= 2.0,created_at:2019-05-24T16:44:31Z
+4.0.1 rails:< 6.0&>= 3.1|checksum:7e91e31275b9740b27dc1df44f55710d330e3219cca871b09351e35d7154daa0,ruby:>= 2.0,created_at:2019-07-22T18:37:23Z
+4.0.2 rails:< 6.0&>= 3.1|checksum:6a94ab3782c7ed250bf4bcbe07a377ffa78e98fddfadf2ec680fe2f840f0cedb,ruby:>= 2.0,created_at:2019-08-02T20:46:49Z
+4.1.0 rails:< 7.0&>= 3.1|checksum:430b3384c20d849d599ee39a93d8ede16982978dc50ed09d8e055e93de39f2af,ruby:>= 2.0,created_at:2021-02-01T18:24:50Z
+4.2.0 rails:< 7.0&>= 3.1|checksum:70e9af3561c0cb0e6f607947c0df0a386415ded05c21c580c23618b92f7f4688,ruby:>= 2.0,created_at:2021-03-15T17:56:04Z
+4.2.1 rails:< 7.0&>= 3.1|checksum:39c3347c810465387fd34cfe20a5d99e66e214027ec2be9383ea9de42acbed90,ruby:>= 2.0,created_at:2024-10-09T14:32:36Z
+4.2.2 rails:< 7.0&>= 3.1|checksum:b97009ec75a11298f062ddcb1ec769e60f0b0c718e6dbc4bef34bf844af65e41,ruby:>= 2.0,created_at:2024-10-16T18:17:14Z
+4.3.0 rails:< 7.0&>= 3.1|checksum:5a4413535493841567da5810512a230f41089c623e968ff63f6ab574836cfe50,ruby:>= 2.0,created_at:2024-10-24T20:53:52Z

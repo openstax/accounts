@@ -1,0 +1,14 @@
+---
+1.0.0 aws-sdk-core:>= 3.165.0&~> 3,aws-sigv4:~> 1.1|checksum:aea83b6c79c82c383683e8fc2cc7168fa011185385677613838634c0f5a7af0c,ruby:>= 2.3,created_at:2022-11-18T21:01:18Z
+1.1.0 aws-sdk-core:>= 3.165.0&~> 3,aws-sigv4:~> 1.1|checksum:7603cfaeb1715552c72bcdba8461efe5624f3e117e05cfc70948f442dae50d64,ruby:>= 2.3,created_at:2023-01-18T21:46:43Z
+1.2.0 aws-sdk-core:>= 3.174.0&~> 3,aws-sigv4:~> 1.1|checksum:107fa48c4e9b25810c2044c68a84d7df89fb3be653e40281fb82abd9892c4699,ruby:>= 2.3,created_at:2023-05-31T21:41:26Z
+1.3.0 aws-sdk-core:>= 3.174.0&~> 3,aws-sigv4:~> 1.1|checksum:c1bf29c842089ad8b713f3eba63d6c7cbac12f1f5df3bf4e658fa8378c4df205,ruby:>= 2.3,created_at:2023-06-15T20:14:14Z
+1.4.0 aws-sdk-core:>= 3.176.0&~> 3,aws-sigv4:~> 1.1|checksum:111921407944c09ab8790cba9c2a639e96662f7aa659810ee68a6edae5b59959,ruby:>= 2.3,created_at:2023-06-28T19:43:44Z
+1.5.0 aws-sdk-core:>= 3.177.0&~> 3,aws-sigv4:~> 1.1|checksum:45302b59baf84953e595b271d2286dda2977c212f38e44c53a64b35f76938c84,ruby:>= 2.3,created_at:2023-07-06T22:11:44Z
+1.6.0 aws-sdk-core:>= 3.177.0&~> 3,aws-sigv4:~> 1.1|checksum:58cc3444e5f764ac7f2f9cf78776c9553e90f142f8aa055642a53e0c59d6f61e,ruby:>= 2.3,created_at:2023-07-11T15:38:56Z
+1.7.0 aws-sdk-core:>= 3.177.0&~> 3,aws-sigv4:~> 1.1|checksum:a15904db525cdcf75127c8c4704c391a3cb73f935145c98e51502f0e7f7ebe71,ruby:>= 2.3,created_at:2023-09-19T20:16:05Z
+1.8.0 aws-sdk-core:>= 3.184.0&~> 3,aws-sigv4:~> 1.1|checksum:516f12994cb5da0f310d5d1d30726630154563d67d1d77474113440f2489c4bb,ruby:>= 2.3,created_at:2023-09-27T20:11:44Z
+1.9.0 aws-sdk-core:>= 3.188.0&~> 3,aws-sigv4:~> 1.1|checksum:e87b6735960b5768bd4e44a20ba67be93f5d6fbe9ab3b58f8677bdcd6af62965,ruby:>= 2.5,created_at:2023-11-22T21:59:04Z
+1.10.0 aws-sdk-core:>= 3.188.0&~> 3,aws-sigv4:~> 1.1|checksum:846b3436c9bcb2f1fab01213bdd73627d6922e018ee9bc3eeab45d56f8b8f094,ruby:>= 2.5,created_at:2023-11-28T20:41:44Z
+1.11.0 aws-sdk-core:>= 3.191.0&~> 3,aws-sigv4:~> 1.1|checksum:68b9552f19304b9ef0ff0113d2c951b0c3abc49afd2c869839d203bd8e6b578d,ruby:>= 2.5,created_at:2024-01-26T22:00:28Z
+1.12.0 aws-sdk-core:>= 3.191.0&~> 3,aws-sigv4:~> 1.1|checksum:30e14268a754cee2ba59a3e136fe2f72d91afffba585c373b511e9a0dacc7606,ruby:>= 2.5,created_at:2024-03-13T18:59:33Z
