@@ -118,7 +118,8 @@ module Newflow
                 with_forgery_protection do
                   arrive_from_app(app: app)
                   click_on(I18n.t(:"login_signup_form.sign_up"))
-                  click_on(I18n.t(:"login_signup_form.log_in"))
+                  # scope to the tab group: the welcome page also has an inline "Log in" link
+                  within('.tab-group') { click_on(I18n.t(:"login_signup_form.log_in")) }
                   find('#exit-icon').click
                   wait_for_animations
                   wait_for_ajax

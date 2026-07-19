@@ -83,7 +83,7 @@ def newflow_click_sign_up(role:)
   click_on(t :"login_signup_form.sign_up") unless page.current_path == newflow_signup_path
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"login_signup_form.welcome_page_header")
-  find(".join-as__role.#{role}").click
+  find(".join-as__option.#{role}").click
 end
 
 def newflow_complete_add_password_screen(password=nil)

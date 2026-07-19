@@ -22,7 +22,7 @@ module Newflow
         it 'all works' do
           visit(login_path(return_param))
           click_on(I18n.t(:"login_signup_form.sign_up"))
-          click_on(I18n.t(:"login_signup_form.educator"))
+          find('.join-as__option--educator').click
 
           # Step 1
           fill_in 'signup_first_name',	with: first_name
@@ -72,7 +72,7 @@ module Newflow
           visit(login_path(return_param))
           click_on(I18n.t(:"login_signup_form.sign_up"))
           expect(page).to have_current_path(newflow_signup_path)
-          click_on(I18n.t(:"login_signup_form.educator"))
+          find('.join-as__option--educator').click
 
           # Step 1
           fill_in 'signup_first_name',	with: first_name
@@ -258,7 +258,7 @@ module Newflow
       it 'redirects them to continue signup flow (step 3) after logging in' do
         visit(login_path(return_param))
         click_on(I18n.t(:"login_signup_form.sign_up"))
-        click_on(I18n.t(:"login_signup_form.educator"))
+        find('.join-as__option--educator').click
 
         # Step 1
         fill_in 'signup_first_name',	with: first_name

@@ -35,6 +35,7 @@
                   end
 %>
 
+<div class="os-rainbow-bar" aria-hidden="true"></div>
 <footer class="os-footer" role="contentinfo">
   <div class="os-footer__inner">
     <div class="os-footer__brand">
@@ -46,6 +47,7 @@
     <nav class="os-footer__links" aria-label="Footer navigation">
       <%= link_to 'Terms of Use', terms_href, class: 'os-footer__link' %>
       <%= link_to 'Privacy', privacy_href, class: 'os-footer__link' %>
+      <%= link_to 'Accessibility', 'https://openstax.org/accessibility-statement', class: 'os-footer__link', target: '_blank', rel: 'noopener noreferrer' %>
       <%= link_to 'Contact Support', contact_href, class: 'os-footer__link', target: ('_blank' unless contact_href == '#'), rel: (contact_href == '#' ? nil : 'noopener noreferrer') %>
     </nav>
 

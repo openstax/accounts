@@ -14,6 +14,22 @@ RSpec.describe AccountController, type: :controller do
     end
   end
 
+  it 'shows status badges on the overview for a verified instructor with a school' do
+    school = FactoryBot.create(:school, name: 'Rice University')
+    user.update!(faculty_status: :confirmed_faculty, school: school)
+
+    get :overview
+
+    expect(response.body).to include('account-badge--verified')
+    expect(response.body).to include('Verified educator')
+    expect(response.body).to include('Rice University')
+  end
+
+  it 'omits the verified badge for unverified users' do
+    get :overview
+    expect(response.body).not_to include('account-badge--verified')
+  end
+
   it 'renders the impact page for both views' do
     get :impact
     expect(response).to have_http_status(:ok)

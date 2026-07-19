@@ -19,7 +19,7 @@ module Newflow
     context 'signup happy path' do
       before do
         visit newflow_signup_path(r: external_app_for_specs_path)
-        find('.join-as__role.student').click
+        find('.join-as__option--student').click
         fill_in 'signup_first_name',	with: 'Sally'
         fill_in 'signup_last_name',	with: 'Port'
         fill_in 'signup_email',	with: email
@@ -118,7 +118,7 @@ module Newflow
     context 'not happy path' do
       example 'All fields blank' do
         visit newflow_signup_path
-        find('.join-as__role.student').click
+        find('.join-as__option--student').click
         check('signup_terms_accepted')
         find('[type=submit]').click
         screenshot!
@@ -129,7 +129,7 @@ module Newflow
 
       example 'user gets PIN wrong' do
         visit newflow_signup_path(r: external_app_for_specs_path)
-        find('.join-as__role.student').click
+        find('.join-as__option--student').click
         fill_in 'signup_first_name',	with: 'Sally'
         fill_in 'signup_last_name',	with: 'Port'
         fill_in 'signup_email',	with: email
@@ -148,7 +148,7 @@ module Newflow
     context 'change signup email' do
       example 'user can change their initial email during the signup flow' do
         visit newflow_signup_path(r: external_app_for_specs_path)
-        find('.join-as__role.student').click
+        find('.join-as__option--student').click
         fill_in 'signup_first_name',	with: 'Sally'
         fill_in 'signup_last_name',	with: 'Port'
         fill_in 'signup_email',	with: email

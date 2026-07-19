@@ -135,8 +135,15 @@ en:
     check_your_updated_email: Check your updated email
     havent_received_message: Still haven't received an email? %{contact_us}
     contact_us: Contact us
-    welcome_page_header: Create Your OpenStax Account
+    welcome_page_header: Create your free account
+    welcome_page_subheader: >-
+      Everything on OpenStax is free. Tell us how you'll use it
+      so we can set things up right.
     choose_role_divider: SELECT YOUR ROLE TO CONTINUE
+    join_as_educator_title: I'm an instructor
+    join_as_student_title: I'm a student
+    already_have_account: Already have an account? %{log_in}
+    log_in: Log in
     email_placeholder: me@myemail.com
     phone_number_placeholder: '(555)555-5555'
     school_issued_email_placeholder: email@myschool.edu
@@ -172,11 +179,11 @@ en:
       In the meantime, you can access all books and resources
       except those that require instructor verification.
     join_as_student_description: >-
-      Sign up for a <b>Student</b> account to create and save
-      notes and highlights in OpenStax study materials.
+      Using an OpenStax book for a course. Save notes and highlights
+      in your study materials. Two quick steps.
     join_as_educator_description: >-
-      Sign up for an <b>Educator</b> account to adopt a book and access locked
-      instructor content and free resources integrated with your book.
+      Teaching with OpenStax, or thinking about it. Unlocks answer keys,
+      slides, and instructor resources.
     send_me_instructions: Send me instructions
     return: Return
     login_unsuccessful: Login unsuccessful

@@ -103,6 +103,15 @@
             Welcome back<% if current_user&.first_name.present? %>, <%= current_user.first_name %><% end %>
           </h1>
 
+          <div class="account-overview__badges">
+            <% if is_verified_instructor %>
+              <span class="account-badge account-badge--verified">Verified educator</span>
+            <% end %>
+            <% if current_user.school&.name.present? %>
+              <span class="account-badge account-badge--school"><%= current_user.school.name %></span>
+            <% end %>
+          </div>
+
           <p class="account-overview__subtitle">
             <% if school_name.present? %>
               You’re signed in as an instructor at <strong><%= school_name %></strong>. Access your teaching tools, resources, and account settings from here.
