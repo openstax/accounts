@@ -182,7 +182,7 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
     # select(:id).where(id: ...) runs once for the user-less school sweep and
     # once for the schools-with-users reconciliation
     select_query = instance_double(ActiveForce::ActiveQuery)
-    expect(Salesforce::Records::School).to(
+    allow(Salesforce::Records::School).to(
       receive(:select).with(:id).and_return(select_query)
     )
     allow(select_query).to receive(:where).with(id: kind_of(Array)).and_return(sf_schools)
