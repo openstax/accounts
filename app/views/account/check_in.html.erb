@@ -15,6 +15,20 @@
         </h1>
         <p class="account-check-in__body"><%= t('annual_check_in.body') %></p>
 
+        <% if @streak_years.positive? %>
+          <div class="account-check-in__streak">
+            <div class="account-check-in__streak-circles">
+              <% @streak_years.times do %>
+                <span class="account-check-in__streak-circle account-check-in__streak-circle--done" aria-hidden="true">&#10003;</span>
+              <% end %>
+              <span class="account-check-in__streak-circle account-check-in__streak-circle--pending" aria-hidden="true"><%= @streak_pending_year_label %></span>
+            </div>
+            <p class="account-check-in__streak-message">
+              <strong><%= @streak_lead %></strong> <%= @streak_rest %>
+            </p>
+          </div>
+        <% end %>
+
         <%= form_with url: account_check_in_confirm_path,
                       method: :post,
                       local: true,

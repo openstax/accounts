@@ -18,5 +18,11 @@ class SchoolYear
       match = label.to_s.match(/\A(\d{4})/)
       match ? match[1].to_i : nil
     end
+
+    # Short "'27"-style label for the school year starting in base_year,
+    # used by the check-in streak banner's pending-year circle.
+    def short_label_for(base_year)
+      "'#{(base_year + 1).to_s[-2, 2]}"
+    end
   end
 end

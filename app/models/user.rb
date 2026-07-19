@@ -506,6 +506,27 @@ class User < ApplicationRecord
     Time.zone.local(SchoolYear.base_year_for(Time.zone.today), 8, 1)
   end
 
+  # Consecutive prior school years with at least one reported adoption
+  # (AdoptionReport, from either the check-in or the books-page modal),
+  # counted backward starting the year immediately before the current/
+  # pending one. Powers the streak banner: 0 omits it, 1 uses singular
+  # copy, 2+ uses "N years reported in a row."
+  def check_in_streak_years
+    reported_base_years = adoption_reports.distinct.pluck(:school_year).filter_map do |label|
+      SchoolYear.base_year_from_string(label)
+    end.to_set
+
+    streak = 0
+    base_year = SchoolYear.base_year_for(Time.zone.today) - 1
+
+    while reported_base_years.include?(base_year)
+      streak += 1
+      base_year -= 1
+    end
+
+    streak
+  end
+
   protected
 
   def make_first_user_an_admin

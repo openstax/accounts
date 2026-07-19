@@ -167,4 +167,61 @@ describe User, '#annual_check_in_due? / #check_in_required?', type: :model do
       expect(user.check_in_required?).to be false
     end
   end
+
+  describe '#check_in_streak_years' do
+    # Frozen "now" is 2026-03-01, inside school year "2025 - 26", so the
+    # pending/current year is 2025 and the immediately-prior completed
+    # year is 2024 - 25.
+    def report_for!(user, school_year)
+      AdoptionReport.create!(
+        user: user, book_title: 'Intro to Sociology', school_year: school_year, source: 'books_modal'
+      )
+    end
+
+    it 'is 0 with no reports at all' do
+      user = instructor
+      expect(user.check_in_streak_years).to eq 0
+    end
+
+    it 'is 0 when only the current/pending year has a report (no completed prior years)' do
+      user = instructor
+      report_for!(user, '2025 - 26')
+
+      expect(user.check_in_streak_years).to eq 0
+    end
+
+    it 'is 1 with a single consecutive prior year reported' do
+      user = instructor
+      report_for!(user, '2024 - 25')
+
+      expect(user.check_in_streak_years).to eq 1
+    end
+
+    it 'is 2 with two consecutive prior years reported' do
+      user = instructor
+      report_for!(user, '2024 - 25')
+      report_for!(user, '2023 - 24')
+
+      expect(user.check_in_streak_years).to eq 2
+    end
+
+    it 'stops counting at the first gap' do
+      user = instructor
+      report_for!(user, '2024 - 25')
+      # gap at 2023 - 24
+      report_for!(user, '2022 - 23')
+
+      expect(user.check_in_streak_years).to eq 1
+    end
+
+    it 'ignores multiple reports (different books) within the same school year' do
+      user = instructor
+      report_for!(user, '2024 - 25')
+      AdoptionReport.create!(
+        user: user, book_title: 'Chemistry Basics', school_year: '2024 - 25', source: 'books_modal'
+      )
+
+      expect(user.check_in_streak_years).to eq 1
+    end
+  end
 end

@@ -2764,6 +2764,51 @@ body:not(.os-app) #application-footer {
   line-height: 1.5;
 }
 
+.account-check-in__streak {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: #F5FFEC;
+  border-radius: 8px;
+  padding: 0.9rem 1.15rem;
+  margin-bottom: 1.5rem;
+}
+
+.account-check-in__streak-circles {
+  display: flex;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.account-check-in__streak-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-sizing: border-box;
+}
+
+.account-check-in__streak-circle--done {
+  background: #3F7D20;
+  color: #fff;
+}
+
+.account-check-in__streak-circle--pending {
+  border: 1px dashed #204B00;
+  color: #204B00;
+  font-size: 0.65rem;
+}
+
+.account-check-in__streak-message {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #204B00;
+}
+
 .account-check-in__rows {
   margin-bottom: 1.5rem;
 }

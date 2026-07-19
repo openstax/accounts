@@ -927,3 +927,8 @@ en:
     dismiss_button: Remind me next week
     confirmed_flash: Thanks — you're all set for the year.
     dismiss_refused: You've already snoozed this twice — please confirm or update your details to continue.
+    streak:
+      singular_lead: One year reported.
+      singular_rest: Confirm below to make it two.
+      plural_lead: "%{count_word} years reported in a row."
+      plural_rest: "Confirm below to make it %{next_word}."
