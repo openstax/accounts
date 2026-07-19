@@ -169,6 +169,64 @@
         <% end %>
       </section>
 
+      <% if @milestones.present? %>
+        <% next_milestone = @milestones[:next] %>
+        <section class="impact-milestones">
+          <div class="impact-milestones__header">
+            <div class="impact-milestones__title">
+              <% if next_milestone %>
+                Next milestone — <%= next_milestone.label %> reached
+              <% else %>
+                You’ve reached every milestone — thank you!
+              <% end %>
+            </div>
+            <% if next_milestone %>
+              <div class="impact-milestones__count">
+                <%= number_with_delimiter(@milestones[:students]) %> of <%= number_with_delimiter(next_milestone.value) %>
+              </div>
+            <% end %>
+          </div>
+
+          <% if next_milestone %>
+            <div class="impact-milestones__bar">
+              <div class="impact-milestones__bar-fill"
+                   style="width: <%= milestone_progress_percent(@milestones[:students], next_milestone.value) %>%;"></div>
+            </div>
+          <% end %>
+
+          <div class="impact-milestones__grid">
+            <% @milestones[:earned].each do |milestone| %>
+              <div class="impact-milestone-tile impact-milestone-tile--earned">
+                <div class="impact-milestone-tile__icon" aria-hidden="true">&check;</div>
+                <div class="impact-milestone-tile__label"><%= milestone.label %></div>
+                <div class="impact-milestone-tile__meta"><%= milestone.year %></div>
+              </div>
+            <% end %>
+            <% if next_milestone %>
+              <div class="impact-milestone-tile impact-milestone-tile--locked">
+                <div class="impact-milestone-tile__icon" aria-hidden="true"><%= number_with_delimiter(next_milestone.value) %></div>
+                <div class="impact-milestone-tile__label"><%= next_milestone.label %></div>
+                <div class="impact-milestone-tile__meta">Report usage to get there</div>
+              </div>
+            <% end %>
+          </div>
+        </section>
+
+        <div class="account-callout account-callout--pending account-callout--report-usage">
+          <div class="account-callout__text">
+            <h3>Report your <%= @current_school_year %> usage</h3>
+            <p>30 seconds — it keeps your impact numbers current.</p>
+          </div>
+          <div class="account-callout__actions">
+            <button type="button"
+                    class="account-callout__button account-callout__button--primary"
+                    data-report-adoption-trigger="true">
+              Report usage
+            </button>
+          </div>
+        </div>
+      <% end %>
+
       <% show_details = current_view ? @current_year_has_adoptions : @lifetime_adoptions.any? %>
       <% if show_details %>
       <section class="account-impact__details">

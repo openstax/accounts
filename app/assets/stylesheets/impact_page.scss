@@ -305,6 +305,116 @@
     color: #6A6A6A;
   }
 
+  .impact-milestones {
+    background: #fff;
+    border: 1px solid #E0E0E0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .impact-milestones__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .impact-milestones__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #026AA1;
+  }
+
+  .impact-milestones__count {
+    font-size: 0.85rem;
+    color: #6A6A6A;
+    white-space: nowrap;
+  }
+
+  .impact-milestones__bar {
+    height: 8px;
+    background: #F0F2F5;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .impact-milestones__bar-fill {
+    height: 100%;
+    background: #538E1D;
+    border-radius: 999px;
+    transition: width 200ms ease;
+  }
+
+  .impact-milestones__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .impact-milestone-tile {
+    border: 1px solid #E0E0E0;
+    border-radius: 0.75rem;
+    padding: 0.9rem;
+    text-align: center;
+  }
+
+  .impact-milestone-tile__icon {
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto 0.5rem;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .impact-milestone-tile--earned .impact-milestone-tile__icon {
+    background: rgba(83, 142, 29, 0.15);
+    color: #2E6A17;
+  }
+
+  .impact-milestone-tile--earned .impact-milestone-tile__label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #026AA1;
+  }
+
+  .impact-milestone-tile--locked {
+    border-style: dashed;
+  }
+
+  .impact-milestone-tile--locked .impact-milestone-tile__icon {
+    background: #F0F2F5;
+    color: #9A9A9B;
+  }
+
+  .impact-milestone-tile--locked .impact-milestone-tile__label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #6A6A6A;
+  }
+
+  .impact-milestone-tile__meta {
+    font-size: 0.78rem;
+    color: #6A6A6A;
+    margin-top: 0.2rem;
+  }
+
+  .account-callout--report-usage {
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 600px) {
+    .impact-milestones__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .impact-hero::before {
       background: rgba(2, 106, 161, 0.06);

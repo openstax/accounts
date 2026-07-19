@@ -145,6 +145,62 @@
           </p>
         </header>
 
+        <% completeness = account_completeness_summary(current_user) %>
+        <section class="account-completeness" aria-label="Profile completeness">
+          <div class="account-completeness__header">
+            <div class="account-completeness__title">Your profile is <%= completeness[:percent] %>% complete</div>
+            <div class="account-completeness__hint">
+              <% remaining = completeness[:total_count] - completeness[:done_count] %>
+              <%= remaining.zero? ? 'All set' : pluralize(remaining, 'item') + ' left' %>
+            </div>
+          </div>
+          <div class="account-completeness__bar">
+            <div class="account-completeness__bar-fill" style="width: <%= completeness[:percent] %>%;"></div>
+          </div>
+          <div class="account-completeness__chips">
+            <% completeness[:items].each do |item| %>
+              <% if item[:done] %>
+                <span class="account-completeness__chip account-completeness__chip--done">
+                  <span aria-hidden="true">&check;</span> <%= item[:label] %>
+                </span>
+              <% else %>
+                <%= link_to account_completeness_chip_href(item[:key]), class: 'account-completeness__chip account-completeness__chip--todo' do %>
+                  + <%= item[:label] %>
+                <% end %>
+              <% end %>
+            <% end %>
+          </div>
+        </section>
+
+        <% if flash[:lms_answered_label] %>
+          <div id="lms-question-card" class="account-callout account-callout--lms-confirmed">
+            <p><strong>Thanks!</strong> We'll surface the <%= flash[:lms_answered_label] %> setup guide under LMS / Assignable setup below.</p>
+          </div>
+        <% elsif @show_lms_card %>
+          <div id="lms-question-card" class="account-callout account-callout--pending account-callout--lms">
+            <div class="account-callout__lms-header">
+              <div class="account-callout__text">
+                <p class="account-callout__eyebrow account-callout__eyebrow--alert">One quick question</p>
+                <h3>Do you use an LMS?</h3>
+                <p>We'll point you to the right Assignable setup guide.</p>
+              </div>
+              <%= button_to 'Not now', account_lms_answer_dismiss_path,
+                            method: :post,
+                            class: 'account-callout__lms-dismiss',
+                            form_class: 'account-callout__lms-dismiss-form' %>
+            </div>
+            <div class="account-callout__lms-pills">
+              <% User::LMS_OPTIONS.each do |value, label| %>
+                <%= button_to label, account_lms_answer_path,
+                              method: :post,
+                              params: { lms_used: value },
+                              class: 'account-callout__lms-pill',
+                              form_class: 'account-callout__lms-pill-form' %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
         <section class="account-profile__section account-overview__section" aria-label="Primary actions">
           <div class="account-shell__section-header">
             <h2>Quick actions</h2>

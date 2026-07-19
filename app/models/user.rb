@@ -506,6 +506,41 @@ class User < ApplicationRecord
     Time.zone.local(SchoolYear.base_year_for(Time.zone.today), 8, 1)
   end
 
+  ######################
+  # LMS question       #
+  ######################
+
+  # Self-reported answer to the Overview "do you use an LMS?" card.
+  # Values are stored as-is in `lms_used`; nil means unanswered.
+  LMS_OPTIONS = {
+    'canvas' => 'Canvas',
+    'blackboard' => 'Blackboard',
+    'moodle' => 'Moodle',
+    'd2l' => 'D2L',
+    'schoology' => 'Schoology',
+    'other' => 'Other',
+    'none' => 'No LMS'
+  }.freeze
+
+  validates :lms_used, inclusion: { in: LMS_OPTIONS.keys }, allow_nil: true
+
+  def lms_answered?
+    lms_used.present?
+  end
+
+  def lms_question_dismissed?
+    lms_prompt_dismissed_at.present?
+  end
+
+  # Card is shown once, until the instructor answers or dismisses it.
+  def lms_question_pending?
+    !lms_answered? && !lms_question_dismissed?
+  end
+
+  def lms_label
+    LMS_OPTIONS[lms_used]
+  end
+
   protected
 
   def make_first_user_an_admin
