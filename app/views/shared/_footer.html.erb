@@ -26,7 +26,7 @@
                   elsif main_app.respond_to?(:privacy_policy_path)
                     main_app.privacy_policy_path
                   else
-                    '#'
+                    'https://openstax.org/privacy'
                   end
    contact_href = if main_app.respond_to?(:salesforce_knowledge_base_url)
                     main_app.salesforce_knowledge_base_url

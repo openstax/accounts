@@ -2585,3 +2585,82 @@ body:not(.os-app) #application-footer {
     width: 120px;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Motion layer — state feedback only (product register: 150–250ms, ease-out).
+   Everything here has a prefers-reduced-motion fallback at the bottom.
+--------------------------------------------------------------------------- */
+
+:root {
+  --os-ease-out: cubic-bezier(0.25, 1, 0.5, 1);   /* quart */
+  --os-ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Keyboard focus: one consistent ring across the account shell */
+.account-layout a:focus-visible,
+.account-layout button:focus-visible,
+.account-layout input:focus-visible,
+.account-layout select:focus-visible,
+.account-layout [tabindex]:focus-visible {
+  outline: 2px solid #026AA1;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Press feedback on the shell's primary actions */
+.account-books__submit,
+.account-impact__cta,
+.account-callout__button,
+.report-adoption-modal .ox-button {
+  transition: background 150ms var(--os-ease-out),
+              box-shadow 150ms var(--os-ease-out),
+              transform 150ms var(--os-ease-out);
+}
+
+.account-books__submit:hover,
+.account-impact__cta:hover,
+.account-callout__button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(66, 66, 66, 0.18);
+}
+
+.account-books__submit:active,
+.account-impact__cta:active,
+.account-callout__button:active,
+.report-adoption-modal .ox-button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+}
+
+/* Email-entry controls: brief settle when a row expands (display flips none->grid,
+   so a keyframe fires on show; nothing is visibility-gated on the animation) */
+@keyframes account-controls-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.account-security__email-list .email-entry.is-open .email-entry__controls {
+  animation: account-controls-in 200ms var(--os-ease-out);
+}
+
+/* Flash messages: settle in instead of popping */
+@keyframes account-flash-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.errors .alert,
+.errors .notice {
+  animation: account-flash-in 250ms var(--os-ease-out-quint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-layout *,
+  .errors .alert,
+  .errors .notice,
+  .account-security__email-list .email-entry__controls {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
