@@ -26,7 +26,7 @@ def complete_newflow_log_in_screen(username_or_email, password = 'password')
   wait_for_animations
   wait_for_ajax
   screenshot!
-  click_button(I18n.t(:"login_signup_form.continue_button"))
+  click_button(I18n.t(:"login_signup_form.log_in"))
   wait_for_animations
   wait_for_ajax
   screenshot!
@@ -177,7 +177,7 @@ end
 
 def expect_login_form_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"login_signup_form.login_page_header")
+  expect(page).to have_content(t :"login_signup_form.login_page_welcome_header")
 end
 
 def expect_sign_up_welcome_tab
