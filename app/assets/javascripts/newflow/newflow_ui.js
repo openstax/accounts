@@ -39,25 +39,24 @@ const NewflowUi = (function() {
     },
 
     enableOnChecked(targetSelector, sourceSelector) {
-      return $(document).ready(() => {
+      const check = () => {
+        return this.checkCheckedButton(targetSelector, sourceSelector);
+      };
 
-        const check = () => {
-          return this.checkCheckedButton(targetSelector, sourceSelector);
-        };
+      // Bind a delegated handler immediately (not inside ready()): a click that
+      // lands between script evaluation and the ready callback would otherwise
+      // find no handler registered and leave the button state stale.
+      $(document).on('click change', sourceSelector, check);
 
-        check();
-
-        // Re-check on bfcache restore (e.g. browser back button), where the
-        // browser may refill form fields after this ready handler already ran,
-        // racing with jQuery-UJS's own disabling of the submit button.
-        window.addEventListener('pageshow', function(event) {
-          if (event.persisted) { return check(); }
-        });
-
-        return $(sourceSelector).on('click change', () => {
-          return this.checkCheckedButton(targetSelector, sourceSelector);
-        });
+      // Re-check on bfcache restore (e.g. browser back button), where the
+      // browser may refill form fields after ready has already run, racing
+      // with jQuery-UJS's own disabling of the submit button.
+      window.addEventListener('pageshow', function(event) {
+        if (event.persisted) { return check(); }
       });
+
+      // Evaluate the initial state once the checkbox exists.
+      return $(document).ready(check);
     },
 
     focusOnFirstErrorItem() {
