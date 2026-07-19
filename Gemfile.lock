@@ -562,13 +562,8 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     psych (3.3.4)
-<<<<<<< HEAD
-    public_suffix (6.0.1)
-    puma (7.2.1)
-=======
     public_suffix (6.0.2)
-    puma (6.4.3)
->>>>>>> origin/main
+    puma (7.2.1)
       nio4r (~> 2.0)
     puma_worker_killer (1.0.0)
       bigdecimal (>= 2.0)
