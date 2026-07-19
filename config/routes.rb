@@ -19,6 +19,8 @@ Rails.application.routes.draw do
 
     post '/books/saved', to: 'account/saved_books#create', as: :account_saved_books
     delete '/books/saved/:id', to: 'account/saved_books#destroy', as: :account_saved_book
+
+    post '/adoption-reports', to: 'account/adoption_reports#create', as: :account_adoption_reports
   end
 
   scope controller: 'other' do

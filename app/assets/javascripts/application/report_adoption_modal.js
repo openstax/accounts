@@ -165,9 +165,8 @@
   $(document).on('input', '[data-report-adoption-students]', updateSummaryMetrics);
   $(document).on('change', '[data-report-adoption-row] select[name="books[][name]"]', updateSummaryMetrics);
 
-  $(document).on('submit', '#report-adoption-form', function(event) {
-    event.preventDefault();
-  });
+  // Submission is a plain form POST handled by Account::AdoptionReportsController;
+  // the browser follows the redirect back to the books page on its own.
 
   $(document).on('show.bs.modal', '#reportAdoptionModal', function() {
     var form = document.getElementById('report-adoption-form');

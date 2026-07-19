@@ -45,6 +45,11 @@ class AccountController < Newflow::BaseController
 
     @available_books_for_select = books_from_db(exclude_ids: saved_ids) if @available_books_for_select.blank?
 
+    @adoption_reports_by_title = current_user.adoption_reports
+                                              .using
+                                              .where(school_year: SchoolYear.current)
+                                              .index_by(&:book_title)
+
     render_account_page :books,
                         title: 'My OpenStax Books',
                         description: 'Bookmark OpenStax titles so they are always in reach.'
@@ -71,6 +76,13 @@ class AccountController < Newflow::BaseController
     @current_year_last_reported_at = last_reported_at_for(@current_year_adoptions)
     @lifetime_last_reported_at = last_reported_at_for(@lifetime_adoptions)
     @badge_last_reported_at = @current_year_last_reported_at || @lifetime_last_reported_at
+
+    # User-reported signals, distinct from the Salesforce-confirmed adoptions above —
+    # shown separately since they're pending confirmation.
+    @self_reported_adoptions = current_user.adoption_reports
+                                            .using
+                                            .where(school_year: @current_school_year)
+                                            .order(:book_title)
 
     render_account_page :impact,
                         title: 'My OpenStax Impact',

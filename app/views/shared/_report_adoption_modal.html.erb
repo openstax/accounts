@@ -107,7 +107,7 @@
         <div class="report-adoption__callout">
           Reporting helps OpenStax measure student impact and continuing supporting high-quality learning resources.
         </div>
-        <%= form_tag '#',
+        <%= form_tag account_adoption_reports_path,
                       method: :post,
                       id: 'report-adoption-form',
                       class: 'report-adoption__form',
@@ -137,9 +137,8 @@
               <p class="report-adoption__helper-text">You can add multiple books before saving.</p>
             </div>
 
-            <%= submit_tag 'Save (coming soon)',
-                           class: 'ox-button ox-button--solid',
-                           disabled: true %>
+            <%= submit_tag 'Save',
+                           class: 'ox-button ox-button--solid' %>
           </div>
         <% end %>
       </div>

@@ -54,6 +54,11 @@
                     <% else %>
                       <p class="account-books__saved-title"><%= book.title %></p>
                     <% end %>
+                    <% if (report = @adoption_reports_by_title[book.title]) %>
+                      <span class="account-badge account-books__report-chip">
+                        Reported for <%= report.school_year %>
+                      </span>
+                    <% end %>
                   </div>
                   <div class="account-books__saved-actions">
                     <% if book_link.present? %>

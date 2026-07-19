@@ -185,6 +185,41 @@
                                 'Report an adoption to start building your OpenStax impact history.' %>
       </section>
       <% end %>
+
+      <% if current_view && @self_reported_adoptions.present? %>
+        <section class="account-impact__details account-impact__self-reported">
+          <div class="account-shell__section-header">
+            <h2>Reported by you</h2>
+            <p>
+              These are adoptions you told us about for <%= @current_school_year %>.
+              Once OpenStax confirms them, they'll move into your impact totals above.
+            </p>
+          </div>
+
+          <div class="account-impact__section-card">
+            <div class="account-impact__table-wrapper">
+              <table class="account-impact__table">
+                <thead>
+                  <tr>
+                    <th>Book</th>
+                    <th>Students</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @self_reported_adoptions.each do |report| %>
+                    <tr>
+                      <td><%= report.book_title %></td>
+                      <td><%= report.students.present? ? number_with_delimiter(report.students) : '—' %></td>
+                      <td><span class="account-badge account-books__report-chip">Pending confirmation</span></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      <% end %>
     <% end %>
   </div>
 </div>
