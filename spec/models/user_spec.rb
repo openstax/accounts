@@ -291,6 +291,7 @@ describe User, type: :model do
 
     it 'retries when generated token already exists' do
       FactoryBot.create(:user, login_token: 'a' * 32)
+      allow(SecureRandom).to receive(:hex).and_call_original
       allow(SecureRandom).to receive(:hex).with(16).and_return('a' * 32, 'a' * 32)
 
       user.refresh_login_token
