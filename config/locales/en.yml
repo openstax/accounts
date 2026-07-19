@@ -147,6 +147,22 @@ en:
     change_signup_email_form_page_description: >-
       Change your email below so we can send your PIN.
       You will need to use this updated email to log in.
+    sheerid_verification_page_header: Verify you're an educator
+    sheerid_verification_page_description: >-
+      Instructor resources include answer keys, so we confirm educator
+      status once. Usually instant.
+    sheerid_verification_step_phase: Verification
+    school_email_gate_title: SheerID needs your school email
+    school_email_gate_description_html: >-
+      You signed up with <strong>%{current_email}</strong>. Verification
+      checks your institution's records, so it needs an address at your
+      school (usually ending in <strong>.edu</strong> or <strong>.org</strong>).
+    school_email_gate_note: >-
+      We'll add it to your account and send a one-time code to confirm it's yours.
+    school_email_invalid: Please enter a valid email address.
+    use_current_email_anyway: Use my current email anyway
+    sheerid_manual_review_link: Can't verify right now? %{link}
+    sheerid_manual_review_link_text: Continue with manual review
     didnt_receive_email: Didn't receive an email? You can %{sign_up_with_different_email_link}.
     all_fields_required: '* All fields are required'
     sign_up_with_different_email: sign up with a different email

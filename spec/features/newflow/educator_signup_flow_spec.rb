@@ -301,7 +301,7 @@ module Newflow
 
         # Step 3
         expect_sheerid_iframe
-        click_on('Stuck? Click here to skip instant verification.')
+        click_on(I18n.t(:"login_signup_form.sheerid_manual_review_link_text"))
 
         # Step 4
         expect_educator_step_4_page
@@ -315,6 +315,73 @@ module Newflow
         click_on('Finish')
         wait_for_ajax
         expect(page).to have_current_path(external_app_for_specs_path)
+      end
+    end
+
+    context 'school-email gate at the SheerID step' do
+      # Simulates an instructor whose only email on file is personal - e.g. a
+      # Google-signup instructor, whose account has no manually-entered email.
+      let(:personal_email) { Faker::Internet.unique.email(domain: '@gmail.com') }
+      let(:school_email) { Faker::Internet.unique.email(domain: '@rice.edu') }
+
+      before do
+        user = create_newflow_user(personal_email, password, true, nil, 'instructor')
+        user.update!(is_profile_complete: false)
+      end
+
+      it 'shows the gate, and adding a school email proceeds to a pre-filled SheerID widget' do
+        visit(login_path(return_param))
+        complete_newflow_log_in_screen(personal_email, password)
+
+        # Step 3 - gate shown because the on-file email looks personal
+        expect(page).to have_text(I18n.t(:"login_signup_form.school_email_gate_title"))
+        expect(page).to have_text(personal_email)
+
+        fill_in(I18n.t(:"login_signup_form.school_issued_email_label"), with: school_email)
+        click_on(I18n.t(:"login_signup_form.continue_button"))
+        perform_enqueued_jobs
+
+        expect(page).to have_current_path(educator_sheerid_form_path)
+        expect(page).to_not have_text(I18n.t(:"login_signup_form.school_email_gate_title"))
+        expect(EmailAddress.find_by(value: school_email)).to be_present
+
+        within_frame do
+          expect(page.find('#sid-email')[:value]).to have_text(school_email)
+        end
+      end
+
+      it 'lets the user proceed with their current (personal) email anyway' do
+        visit(login_path(return_param))
+        complete_newflow_log_in_screen(personal_email, password)
+
+        expect(page).to have_text(I18n.t(:"login_signup_form.school_email_gate_title"))
+        click_on(I18n.t(:"login_signup_form.use_current_email_anyway"))
+
+        expect(page).to have_current_path(educator_sheerid_form_path)
+        expect(page).to_not have_text(I18n.t(:"login_signup_form.school_email_gate_title"))
+
+        within_frame do
+          expect(page.find('#sid-email')[:value]).to have_text(personal_email)
+        end
+      end
+    end
+
+    context 'when the signup email already looks like a school email' do
+      let(:school_email_on_file) { Faker::Internet.unique.email(domain: '@rice.edu') }
+
+      before do
+        user = create_newflow_user(school_email_on_file, password, true, nil, 'instructor')
+        user.update!(is_profile_complete: false)
+      end
+
+      it 'goes straight to the SheerID widget without the gate' do
+        visit(login_path(return_param))
+        complete_newflow_log_in_screen(school_email_on_file, password)
+
+        expect(page).to_not have_text(I18n.t(:"login_signup_form.school_email_gate_title"))
+        within_frame do
+          expect(page.find('#sid-email')[:value]).to have_text(school_email_on_file)
+        end
       end
     end
   end

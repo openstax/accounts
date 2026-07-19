@@ -41,6 +41,95 @@ module Newflow
       end
     end
 
+    describe 'GET #educator_sheerid_form' do
+      render_views
+      let(:user) { FactoryBot.create(:user, role: User::INSTRUCTOR_ROLE, is_profile_complete: false) }
+
+      before { controller.sign_in!(user) }
+
+      context "when the user's on-file email does not look like a school email" do
+        before { FactoryBot.create(:email_address, user: user, value: 'j.delgado@gmail.com', verified: true) }
+
+        it 'shows the school-email gate banner naming the current email' do
+          get(:educator_sheerid_form)
+          expect(response.body).to include(I18n.t(:"login_signup_form.school_email_gate_title"))
+          expect(response.body).to include('j.delgado@gmail.com')
+        end
+      end
+
+      context "when the user's on-file email already looks like a school email" do
+        before { FactoryBot.create(:email_address, user: user, value: 'j.delgado@rice.edu', verified: true) }
+
+        it 'does not show the school-email gate banner' do
+          get(:educator_sheerid_form)
+          expect(response.body).to_not include(I18n.t(:"login_signup_form.school_email_gate_title"))
+        end
+      end
+
+      context 'when the user previously chose to use their current email anyway' do
+        before do
+          FactoryBot.create(:email_address, user: user, value: 'j.delgado@gmail.com', verified: true)
+          session[Newflow::EducatorSignupHelper::SKIP_SCHOOL_EMAIL_GATE_SESSION_KEY] = true
+        end
+
+        it 'does not show the school-email gate banner' do
+          get(:educator_sheerid_form)
+          expect(response.body).to_not include(I18n.t(:"login_signup_form.school_email_gate_title"))
+        end
+      end
+
+      context 'when the user clicks "use my current email anyway"' do
+        before { FactoryBot.create(:email_address, user: user, value: 'j.delgado@gmail.com', verified: true) }
+
+        it 'sets the session flag and redirects back to the sheerid form' do
+          get(:educator_sheerid_form, params: { use_current_email: true })
+          expect(response).to redirect_to(educator_sheerid_form_path)
+          expect(session[Newflow::EducatorSignupHelper::SKIP_SCHOOL_EMAIL_GATE_SESSION_KEY]).to eq true
+        end
+      end
+    end
+
+    describe 'POST #educator_add_school_email' do
+      let(:user) { FactoryBot.create(:user, role: User::INSTRUCTOR_ROLE, is_profile_complete: false) }
+
+      before do
+        FactoryBot.create(:email_address, user: user, value: 'j.delgado@gmail.com', verified: true)
+        controller.sign_in!(user)
+      end
+
+      context 'with a valid school email' do
+        let(:params) { { school_email: { email: 'j.delgado@rice.edu' } } }
+
+        it 'adds it as a new ContactInfo on the user and redirects to the sheerid form' do
+          expect {
+            post(:educator_add_school_email, params: params)
+          }.to change(user.email_addresses, :count).from(1).to(2)
+
+          expect(user.email_addresses.find_by(value: 'j.delgado@rice.edu').is_school_issued).to eq true
+          expect(response).to redirect_to(educator_sheerid_form_path)
+        end
+
+        it 'sends the standard confirmation PIN email to the new address' do
+          expect_any_instance_of(NewflowMailer).to(
+            receive(:signup_email_confirmation).once.and_call_original
+          )
+          post(:educator_add_school_email, params: params)
+          perform_enqueued_jobs
+        end
+      end
+
+      context 'with a blank email' do
+        render_views
+        let(:params) { { school_email: { email: '' } } }
+
+        it 're-renders the sheerid form with the gate showing' do
+          post(:educator_add_school_email, params: params)
+          expect(response).to render_template(:educator_sheerid_form)
+          expect(response.body).to include(I18n.t(:"login_signup_form.school_email_gate_title"))
+        end
+      end
+    end
+
     describe 'POST #educator_signup' do
       before do
         load('db/seeds.rb') # create the FinePrint contracts

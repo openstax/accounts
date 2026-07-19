@@ -528,10 +528,38 @@ input.has-error {
         z-index: 100;
     }
 
+    // Note: the negative top margin that used to pull the iframe up under
+    // the (previously empty) header area was removed - the page now has a
+    // real header, description, and (conditionally) a school-email gate
+    // banner directly above the widget, so the iframe should flow normally.
     iframe {
         position: relative;
         z-index: 0;
-        margin-top: -6.7rem;
+    }
+
+    .banner.orange.school-email-gate {
+        background-color: #fff6ef;
+        border: 0.1rem solid #d4450c;
+        border-radius: 0.4rem;
+        color: #424242;
+        margin-bottom: 2rem;
+
+        .school-email-gate__title {
+            font-weight: bold;
+            color: #002469;
+            margin-bottom: 0.5rem;
+        }
+
+        .school-email-gate__note {
+            font-size: 1.3rem;
+            margin-top: 0.5rem;
+        }
+
+        .school-email-gate__use-current-link {
+            display: inline-block;
+            margin-top: 1rem;
+            font-size: 1.3rem;
+        }
     }
 
     form, iframe {
