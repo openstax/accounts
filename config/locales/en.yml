@@ -121,6 +121,7 @@ en:
     educator: Educator / Researcher
     step_counter: Step %{current_step} of %{total_steps}
     login_page_header: Log in to your OpenStax account
+    login_page_welcome_header: Welcome back
     login_with: 'LOG IN WITH:'
     signup_with: 'Sign up with:'
     signup_page_header: Set up your account
@@ -165,6 +166,7 @@ en:
       If not, please enter your school email address.
     or_login_below: OR LOG IN BELOW
     or_sign_up_below: OR SIGN UP BELOW
+    or_divider: or
     send_me_newsletter: Send me OpenStax marketing emails
     agree_to_terms_of_use: I agree to the %{terms_of_use} and %{privacy_policy}
     youre_done: You're done, %{first_name}!

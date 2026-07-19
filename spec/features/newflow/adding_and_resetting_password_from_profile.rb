@@ -105,7 +105,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     # try logging in with the new password
     fill_in('login_form_email', with: 'user')
     fill_in('login_form_password', with: 'newpassword')
-    find('[type=submit]').click 
+    find('#login-submit-button').click
     expect(page).to have_no_missing_translations
     expect(page).to have_content(@user.full_name)
   end

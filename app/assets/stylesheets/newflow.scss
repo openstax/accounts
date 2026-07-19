@@ -1151,6 +1151,101 @@ $very-narrow: 37rem * $scale-factor;
     }
 }
 
+// ============================================================
+// Login screen redesign (password-first variant) — scoped to
+// `.login-card` so it only affects the login screen and leaves
+// the shared tab-group/card/social-buttons styling untouched
+// for signup, role-selection, and reauthenticate screens.
+// ============================================================
+#login-signup-form {
+    .login-card {
+        max-width: 46rem;
+        margin: 0 auto;
+        border-radius: 0.8rem;
+        overflow: hidden;
+        box-shadow: 0 0.6rem 2rem rgba(15, 23, 42, 0.12);
+        background: #ffffff;
+
+        .tab-group {
+            .tab {
+                flex: 1 1 0;
+                width: auto;
+            }
+
+            .tab.tab--placeholder {
+                display: none;
+            }
+        }
+
+        .page-header,
+        form {
+            border: 0;
+            border-radius: 0;
+        }
+
+        .page-header {
+            text-align: left;
+        }
+
+        .field-label {
+            color: #002E6D;
+        }
+
+        .control-group__label-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 1rem;
+
+            #forgot-password-link {
+                font-size: 1.3rem;
+                white-space: nowrap;
+            }
+        }
+
+        .social-section {
+            margin-top: 0.5rem;
+        }
+
+        .social-buttons {
+            flex-direction: column;
+            align-items: stretch;
+            margin-top: 0;
+
+            > div {
+                display: block;
+                width: 100%;
+                max-width: none;
+                min-width: 0;
+            }
+
+            .social-buttons__form {
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                background: #ffffff;
+                color: #424242;
+                border: 0.1rem solid #C7C7C7;
+                box-shadow: none;
+
+                &:hover {
+                    background: #F5F5F5;
+                }
+            }
+
+            .fb-share-button .social-icon {
+                color: #3B5998;
+            }
+
+            .google-share-button .social-icon {
+                color: #4285F4;
+            }
+        }
+    }
+}
+
 .terms label > * {
     font-weight: normal;
     display: inline;
