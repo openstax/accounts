@@ -13,7 +13,18 @@ require 'lookup_users'
 require 'fetch_book_data'
 require 'sheerid_api'
 require 'rate_limiting'
-require 'omniauth/strategies/custom_identity'
+
+# Force ActionController::RequestForgeryProtection (and the InvalidAuthenticityToken
+# exception nested under ActionController) to load before Rails.application.initialize!
+# runs below. openstax_rescue_from's engine initializer references
+# ActionController::InvalidAuthenticityToken directly at initializer time, before any
+# app controller has triggered ActionController::Base's autoloading of this constant.
+# Previously this loaded as a side effect of requiring the (now-retired) legacy
+# lib/omniauth/strategies/custom_identity.rb, which referenced
+# ActionController::RequestForgeryProtection::ProtectionMethods::NullSession at
+# require-time.
+require 'action_controller/metal/request_forgery_protection'
+
 require "omniauth/strategies/facebooknewflow"
 require "omniauth/strategies/googlenewflow"
 require 'email_address_validations'

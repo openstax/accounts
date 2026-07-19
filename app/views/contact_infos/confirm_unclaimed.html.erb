@@ -3,9 +3,12 @@
                         :".thanks_for_validating")) do %>
 
 <%
+  # The user was just signed in above (see ContactInfosController#confirm_unclaimed),
+  # so these hit newflow's password forms with no token needed --
+  # FindUserByToken#already_logged_in? short-circuits to the current session's user.
   link = @handler_result.outputs.can_log_in ?
-   link_to(t(".you_can_now_sign_in.reset_password"), password_reset_url) :
-   link_to(t(".you_can_now_sign_in.add_password"), password_add_url)
+   link_to(t(".you_can_now_sign_in.reset_password"), change_password_form_url) :
+   link_to(t(".you_can_now_sign_in.add_password"), create_password_form_url)
 %>
 
 <%= t :".you_can_now_sign_in.content_html", link: link %>

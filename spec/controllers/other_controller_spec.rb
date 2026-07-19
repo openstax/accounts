@@ -53,6 +53,31 @@ describe OtherController, type: :controller do
     end
   end
 
+  describe 'PUT #update' do
+    let(:user) { create_newflow_user('user@openstax.org') }
+
+    before { mock_current_user(user) }
+
+    context 'updating the whitelisted single-field (username)' do
+      it 'updates the attribute and renders 200 OK' do
+        put(:update, params: { name: 'username', value: 'newusername' }, format: :json)
+
+        expect(response.status).to eq(200)
+        expect(user.reload.username).to eq('newusername')
+      end
+    end
+
+    context 'attempting to update a non-whitelisted attribute via the single-field path' do
+      it 'is a bad request and does not change the attribute' do
+        expect {
+          put(:update, params: { name: 'faculty_status', value: 'confirmed_faculty' }, format: :json)
+        }.not_to change { user.reload.faculty_status }
+
+        expect(response.status).to eq(400)
+      end
+    end
+  end
+
   describe "GET #exit_accounts" do
     let(:host) { Rails.application.secrets.trusted_hosts.first }
     let(:target_url) { Faker::Internet.url }

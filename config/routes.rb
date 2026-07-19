@@ -96,30 +96,54 @@ Rails.application.routes.draw do
     post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
   end
 
-  scope controller: 'legacy/sessions' do
-    get 'login', action: :start, as: :login
+  # Preserves the CloudFront /accounts prefix (script_name) and the query string
+  # (r, sp, go, signup_at params) when redirecting retired legacy URLs to newflow.
+  newflow_redirect = ->(target) {
+    redirect { |_params, req|
+      qs = req.query_string.presence
+      "#{req.script_name}#{target}#{"?#{qs}" if qs}"
+    }
+  }
 
-    post 'lookup_login'
+  get 'login', to: newflow_redirect.('/i/login'), as: :login
+  get 'signin', to: newflow_redirect.('/i/login')
 
-    get 'authenticate'
+  get 'logout', to: newflow_redirect.('/i/signout'), as: :logout
+  get 'signout', to: newflow_redirect.('/i/signout')
 
-    get 'reauthenticate'
+  get 'authenticate', to: newflow_redirect.('/i/login'), as: :authenticate
+  get 'reauthenticate', to: newflow_redirect.('/i/reauthenticate'), as: :reauthenticate
 
-    get 'auth/:provider/callback', action: :create, as: :get_auth_callback
-    post 'auth/:provider/callback', action: :create, as: :post_auth_callback
+  get 'signup', to: newflow_redirect.('/i/signup'), as: :signup
 
-    get 'logout', action: :destroy
-
-    get 'redirect_back'
-
-    get :failure, path: 'auth/failure', as: :auth_failure
-    post 'email_usernames'
-
-    # Maintain these deprecated routes for a while until client code learns to
-    # use /login and /logout
-    get 'signin', action: :start
-    get 'signout', action: :destroy
+  # /signup/profile stays live (not just a redirect): the global
+  # `complete_signup_profile` before_action (config/initializers/controllers.rb)
+  # sends ANY user in the default `needs_profile` state here, from legacy or
+  # newflow controllers alike (also exercised by Doorkeeper's OAuth authorize
+  # flow and spec/features/newflow/student_login_flow_spec.rb). Moved out of
+  # the Legacy:: namespace since it's genuinely shared, not legacy-only.
+  scope 'signup', controller: 'signup_profile', as: 'signup' do
+    get 'profile', action: :profile, as: :profile
+    post 'profile', action: :profile
   end
+
+  match 'signup/instructor_access_pending', via: [:get, :post], to: newflow_redirect.('/i/signup/educator')
+
+  get 'profile', to: newflow_redirect.('/i/profile'), as: :profile
+
+  # Stays live (not a redirect): the newflow profile page's inline-editable
+  # name/username fields PUT here directly (see OtherController#update).
+  put 'profile', to: 'other#update'
+
+  # /password/reset stays named: app/controllers/application_controller.rb's
+  # global `check_if_password_expired` before_action redirects here.
+  get 'password/reset', to: newflow_redirect.('/i/forgot_password_form'), as: :password_reset
+  get 'password/add', to: newflow_redirect.('/i/create_password_form')
+  get 'password/continue', to: newflow_redirect.('/i/login')
+  get 'password/sent_reset', to: newflow_redirect.('/i/login')
+  get 'password/sent_add', to: newflow_redirect.('/i/login')
+  get 'password/reset_success', to: newflow_redirect.('/i/login')
+  get 'password/add_success', to: newflow_redirect.('/i/login')
 
   mount OpenStax::Api::Engine, at: '/'
 
@@ -130,55 +154,10 @@ Rails.application.routes.draw do
   #     So, admittedly, this route is deceiving.
   get '/auth/:provider', to: ->(_env) { [404, {}, ['Not Found']] }, as: :oauth
 
-  scope controller: 'legacy/authentications' do
-    delete 'auth/:provider', action: :destroy, as: :destroy_authentication
-    get 'add/:provider', action: :add, as: :add_authentication
-  end
-
-  scope controller: 'legacy/signup' do
-    # Don't know if this is the right action; putting a route in here
-    # so we have a name for it and can use a url helper for it (which
-    # will prefix the route appropriately, e.g. for Cloudfront)
-    post 'auth/:provider/signup', action: :start, as: :post_auth_signup
-  end
-
   # routes for access via an iframe
   scope 'remote', controller: 'remote' do
     get 'iframe'
     get 'notify_logout', as: 'iframe_after_logout'
-  end
-
-  scope controller: 'legacy/users' do
-    get 'profile', action: :edit
-    put 'profile', action: :update
-  end
-
-  scope 'signup', controller: 'legacy/signup', as: 'signup' do
-    get '/', action: :start
-
-    get 'profile'
-    post 'profile'
-
-    match 'instructor_access_pending', via: [:get, :post]
-  end
-
-  scope controller: 'legacy/identities', path: 'password', as: 'password' do
-    get 'reset'
-    post 'reset'
-
-    post 'send_reset'
-    get 'sent_reset'
-
-    post 'send_add'
-    get 'sent_add'
-
-    get 'add'
-    post 'add'
-
-    get 'reset_success'
-    get 'add_success'
-
-    get 'continue'
   end
 
   resources :contact_infos, only: [:create, :destroy] do

@@ -2,8 +2,25 @@ module Newflow
   class PasswordManagementController < BaseController
     include LoginSignupHelper
 
+    # :create_password_form/:create_password/:change_password_form/:change_password are
+    # included here (in addition to the forgot-password actions) so that a user setting
+    # their very first password -- e.g. via the account-claiming flow in
+    # ContactInfosController#confirm_unclaimed, which signs a user in before sending them
+    # here with no prior terms agreement -- isn't blocked from the password form by the
+    # terms gate. They still hit the global fine_print_require on their very next
+    # authenticated page (e.g. the profile page), same as the retired legacy flow did.
     fine_print_skip :general_terms_of_use, :privacy_policy, only: [
-      :forgot_password_form, :send_reset_password_email, :reset_password_email_sent
+      :forgot_password_form, :send_reset_password_email, :reset_password_email_sent,
+      :create_password_form, :create_password, :change_password_form, :change_password
+    ]
+
+    # A user with an expired password is sent to password_reset_path (-> here, since
+    # that legacy route now redirects to :forgot_password_form). Without this skip,
+    # check_if_password_expired (app/controllers/application_controller.rb) would fire
+    # again on this very action and redirect right back to password_reset_path, looping.
+    skip_before_action :check_if_password_expired, only: [
+      :forgot_password_form, :send_reset_password_email, :reset_password_email_sent,
+      :create_password_form, :create_password, :change_password_form, :change_password
     ]
 
     before_action :newflow_authenticate_user!, only: [:create_password, :educator_sheerid_form]
@@ -44,7 +61,16 @@ module Newflow
         success: lambda {
           security_log(:student_created_password, user: @handler_result.outputs.user)
           log_posthog(current_user, 'user_password_created')
-          redirect_to profile_newflow_url, notice: t(:"legacy.identities.add_success.message")
+          # redirect_back here is action_interceptor's override (see
+          # lib/require_recent_signin.rb / config/initializers/action_interceptor.rb),
+          # not Rails' core ActionController::Redirecting#redirect_back -- it ignores
+          # fallback_location entirely and redirects to the session's stored_url
+          # (ContactInfosController#confirm_unclaimed's stored oauth_authorization_url,
+          # for the account-claiming flow) or, if nothing is stored, to root_url.
+          # StaticPagesController#home then forwards a signed-in user straight to
+          # profile_newflow_path, so the net effect for every other caller of this
+          # action matches the previous hardcoded redirect_to profile_newflow_url.
+          redirect_back(fallback_location: profile_newflow_url, notice: t(:"legacy.identities.add_success.message"))
         },
         failure: lambda {
           security_log(:student_create_password_failed, user: @handler_result.outputs.user)
@@ -69,7 +95,8 @@ module Newflow
           success: lambda {
             security_log :password_reset
             log_posthog(current_user, 'user_reset_password_completed')
-            redirect_to profile_newflow_url, notice: t(:"legacy.identities.reset_success.message")
+            # See comment in #create_password above.
+            redirect_back(fallback_location: profile_newflow_url, notice: t(:"legacy.identities.reset_success.message"))
           },
           failure: lambda {
             security_log :password_reset_failed

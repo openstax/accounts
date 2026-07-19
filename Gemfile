@@ -91,9 +91,12 @@ gem 'doorkeeper'
 
 # OAuth clients
 gem 'omniauth', '~> 1.9'
-gem 'omniauth-identity'
+# NOTE: still required -- app/models/identity.rb (the core password-identity model,
+# used by both legacy and newflow) subclasses OmniAuth::Identity::Models::ActiveRecord.
+# Only the *custom_identity* OmniAuth strategy (lib/omniauth/strategies/custom_identity.rb,
+# legacy-only) has been retired, not this gem.
+gem 'omniauth-identity', '3.0.9' # pinned: keep this an unrelated-upgrade-free removal of omniauth-twitter
 gem 'omniauth-facebook'
-gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
 # Redis client (cache store + jobba)

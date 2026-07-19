@@ -50,10 +50,14 @@ feature 'Password reset', js: true do
     end
   end
 
-  scenario 'with identity gets redirected to reset password' do
+  # The legacy /password/add route (and its "you already have a password, here's
+  # /password/reset instead" smart redirect) is retired. A stale pre-migration email
+  # link still authenticates via its token -- it just always lands on the newflow
+  # create_password_form now, regardless of whether the user already has a password.
+  scenario 'a stale legacy /password/add link with a token still logs the user in' do
     @user = create_user('user', 'password', terms_agreed: true)
     @login_token = generate_login_token_for 'user'
     visit password_add_path(token: @login_token)
-    expect(page).to have_current_path password_reset_path
+    expect(page).to have_current_path create_password_form_path(token: @login_token)
   end
 end
