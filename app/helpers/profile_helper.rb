@@ -94,7 +94,7 @@ module ProfileHelper
 
     toggle_content = if id.present?
       "
-      <button type=\"button\" class=\"email-entry__toggle\" aria-label=\"Manage #{value} settings\" aria-expanded=\"false\">
+      <button type="button" class="email-entry__toggle" aria-label="Manage #{ERB::Util.html_escape(value)} settings" aria-expanded="false">
       <span class=\"glyphicon glyphicon-pencil\"></span>
       </button></div>
       <div class=\"controls email-entry__controls\" aria-hidden=\"true\">

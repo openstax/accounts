@@ -200,35 +200,17 @@ module Salesforce
       contact_id = adoption.salesforce_contact_id
       book_id = adoption.salesforce_book_id
 
-      if account_id.present?
-        school = schools_by_sf_id[account_id]
-        if school
-          adoption.school = school
-          @stats[:school_mapped] += 1
-        end
-      else
-        adoption.school = nil
-      end
+      school = account_id.present? ? schools_by_sf_id[account_id] : nil
+      adoption.school = school
+      @stats[:school_mapped] += 1 if school
 
-      if contact_id.present?
-        user = users_by_sf_contact_id[contact_id]
-        if user
-          adoption.user = user
-          @stats[:user_mapped] += 1
-        end
-      else
-        adoption.user = nil
-      end
+      user = contact_id.present? ? users_by_sf_contact_id[contact_id] : nil
+      adoption.user = user
+      @stats[:user_mapped] += 1 if user
 
-      if book_id.present?
-        book = books_by_sf_id[book_id]
-        if book
-          adoption.book = book
-          @stats[:book_mapped] += 1
-        end
-      else
-        adoption.book = nil
-      end
+      book = book_id.present? ? books_by_sf_id[book_id] : nil
+      adoption.book = book
+      @stats[:book_mapped] += 1 if book
     end
 
     def build_attributes(sf_record)

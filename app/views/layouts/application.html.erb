@@ -48,7 +48,8 @@
 
   <%= yield :javascript %>
   <%= render partial: 'layouts/chat'  %>
-  <%= render partial: 'shared/report_adoption_modal' %>
-
+  <% if controller_name == 'account' && respond_to?(:current_user) && current_user.present? %>
+    <%= render partial: 'shared/report_adoption_modal' %>
+  <% end %>
   </body>
 </html>

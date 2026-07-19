@@ -3,7 +3,7 @@ module SalesforceTestHelper
   # Returns a double that raises on most calls so `rescue nil` in views works correctly,
   # but accepts method_missing silently for routine SF client operations.
   def disable_sfdc_client
-    client = double('sfdc_client')
+    client = double('sfdc_client').as_null_object
     allow(client).to receive(:instance_url).and_raise(RuntimeError, 'SF client disabled in test')
     allow(client).to receive(:authenticate!).and_return(nil)
     allow(client).to receive(:describe).and_return(nil)
@@ -15,12 +15,9 @@ module SalesforceTestHelper
 
   # Stubs SF Lead creation/lookup to return a mock lead
   def stub_salesforce_lead(id: 'MOCK_LEAD_ID')
-    lead = double('Lead', id: id, errors: double(messages: {}))
+    lead = double('Lead', id: id, errors: double(messages: {})).as_null_object
     allow(lead).to receive(:[]=)
     allow(lead).to receive(:save).and_return(true)
-    # Accept any attribute writer calls (e.g. lead.first_name = ...)
-    allow(lead).to receive(:method_missing).and_return(nil)
-    allow(lead).to receive(:respond_to_missing?).and_return(true)
     allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(lead)
     allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(lead)
     lead

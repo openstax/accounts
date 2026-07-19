@@ -39,7 +39,7 @@ RSpec.describe AccountController, type: :controller do
   end
 
   it 'renders impact stats from the user adoptions' do
-    book = FactoryBot.create(:book) rescue Book.create!(book_uuid: 'uuid-1', title: 'Biology 2e')
+    # Book record not required for this example
     Adoption.create!(
       salesforce_id: 'SF_ADOPTION_1',
       user: user,
