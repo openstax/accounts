@@ -21,6 +21,10 @@ Rails.application.routes.draw do
     delete '/books/saved/:id', to: 'account/saved_books#destroy', as: :account_saved_book
 
     post '/adoption-reports', to: 'account/adoption_reports#create', as: :account_adoption_reports
+
+    get '/check_in', to: 'account/check_in#show', as: :account_check_in
+    post '/check_in/confirm', to: 'account/check_in#confirm', as: :account_check_in_confirm
+    post '/check_in/dismiss', to: 'account/check_in#dismiss', as: :account_check_in_dismiss
   end
 
   scope controller: 'other' do

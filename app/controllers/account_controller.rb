@@ -1,7 +1,10 @@
 require 'bigdecimal'
 
 class AccountController < Newflow::BaseController
+  include AnnualCheckInGate
+
   before_action :newflow_authenticate_user!
+  before_action :redirect_to_check_in_if_due
 
   layout 'application'
 

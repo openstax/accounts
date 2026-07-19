@@ -2716,3 +2716,133 @@ body:not(.os-app) #application-footer {
   background: #F5FFEC;
   color: #204B00;
 }
+
+/* Annual instructor check-in interstitial */
+.account-check-in {
+  max-width: 640px;
+  animation: account-check-in-in 200ms var(--os-ease-out);
+}
+
+.account-check-in__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+}
+
+.account-check-in__body {
+  color: var(--muted);
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
+.account-check-in__rows {
+  margin-bottom: 1.5rem;
+}
+
+.account-check-in__row-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.account-check-in__change-link {
+  color: #026AA1;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.account-check-in__change-link:hover {
+  color: #015680;
+}
+
+.account-check-in__students-field {
+  align-items: flex-start;
+}
+
+.account-check-in__students-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.account-check-in__student-input label {
+  display: block;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.account-check-in__student-input input[type="number"] {
+  width: 140px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.account-check-in__hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.account-check-in__actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.account-check-in__button {
+  border-radius: 0.3rem;
+  font-weight: 600;
+  padding: 0.75rem 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 150ms var(--os-ease-out),
+              box-shadow 150ms var(--os-ease-out),
+              transform 150ms var(--os-ease-out);
+}
+
+.account-check-in__button--primary {
+  background: #D4450C;
+  color: #fff;
+  border-color: #D4450C;
+}
+
+.account-check-in__button--primary:hover {
+  background: #A43509;
+  border-color: #A43509;
+}
+
+.account-check-in__button--ghost {
+  background: transparent;
+  color: #026AA1;
+  border-color: rgba(2, 106, 161, 0.35);
+}
+
+.account-check-in__button--ghost:hover {
+  border-color: #026AA1;
+}
+
+.account-check-in__button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(66, 66, 66, 0.18);
+}
+
+.account-check-in__button:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+}
+
+@keyframes account-check-in-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}

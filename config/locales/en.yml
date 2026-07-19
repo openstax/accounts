@@ -908,3 +908,22 @@ en:
         trouble_logging_in: Trouble logging in?
         reset_password: Click here to reset it
         add_password: Click here to add a password
+
+  annual_check_in:
+    eyebrow: Annual check-in
+    headline: Welcome back, %{name} — still accurate?
+    default_name: friend
+    body: >-
+      It's been a year. A 20-second check keeps your instructor access current and our impact
+      numbers honest.
+    school_label: School
+    no_school: Not set
+    books_label: Books you're using
+    no_books: No books saved yet
+    students_label: Students this year
+    students_hint: "%{count} last year — update?"
+    change: Change
+    confirm_button: Confirm — everything's right
+    dismiss_button: Remind me next week
+    confirmed_flash: Thanks — you're all set for the year.
+    dismiss_refused: You've already snoozed this twice — please confirm or update your details to continue.
