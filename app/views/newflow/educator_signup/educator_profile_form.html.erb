@@ -38,11 +38,12 @@
     %>
     <%#
       Historical note: content placement here used to be load-bearing -- with
-      the old bare `<% lev_form_for %>`, any sibling printed content in the
+      the old non-output lev_form_for tag, any sibling printed content in the
       card's capture scope silently dropped the whole form (Rails `capture`
       only falls back to the block's return value when the output buffer is
-      empty). Now that lev_form_for is invoked with `<%=` (see CLAUDE.md,
-      "View gotcha"), placement is free.
+      empty). Now that lev_form_for is invoked as an output tag (see
+      CLAUDE.md, "View gotcha"), placement is free. NB: never put literal
+      ERB delimiters inside this comment -- a percent-gt sequence ends it.
     %>
     <p class="profile-subtitle"><%= educator_copy(:profile_subtitle) %></p>
 

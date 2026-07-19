@@ -1860,6 +1860,53 @@ $very-narrow: 37rem * $scale-factor;
   }
 }
 
+// Quiet variant: white bordered social buttons (the redesign treatment the
+// login card uses) as a composable class for other auth screens (learner
+// signup). Neutralizes both the legacy brand-colored button fills and the
+// page-level `form` sizing rules that otherwise hit button_to's wrapper form.
+.social-buttons--quiet {
+  form.button_to,
+  .social-buttons__form {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .fb-share-button,
+  .google-share-button {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 0;
+    padding: 0;
+  }
+
+  .btn,
+  .fb-share-button button,
+  .google-share-button button {
+    width: 100%;
+    justify-content: center;
+    background: #fff;
+    color: #424242;
+    border: 0.1rem solid #C7C7C7;
+    box-shadow: none;
+
+    &:hover {
+      background: #F5F5F5;
+    }
+  }
+
+  .fb-share-button .social-icon {
+    color: #3B5998;
+  }
+
+  .google-share-button .social-icon {
+    color: #4285F4;
+  }
+}
+
 .pin-field--enhanced .pin-field__input {
   // Deliberately NOT display:none/visibility:hidden/opacity:0 and NOT moved
   // off-screen: any of those make Selenium/Capybara treat the field as "not
@@ -2091,4 +2138,197 @@ $very-narrow: 37rem * $scale-factor;
     font-size: 1.3rem;
     margin: 0.5rem 0 0;
   }
+}
+
+// ---------------------------------------------------------------------------
+// Sticky footer: the newflow layout has no #application-container wrapper
+// (the account layout gets its sticky footer from that flex container in
+// global_layout.scss), so flex the body itself. .os-app already carries
+// min-height: 100vh.
+// ---------------------------------------------------------------------------
+body.newflow-layout {
+    display: flex;
+    flex-direction: column;
+
+    .os-main {
+        flex: 1 0 auto;
+        width: 100%;
+    }
+}
+
+// Lifelong-learner signup card: opt out of the educator/student signup form
+// sizing (the desktop `form { height: 80rem }` grid rule) — this screen is a
+// short single-column form.
+#login-signup-form .learner-signup-page form {
+    height: auto;
+}
+
+// The social button_to wrappers are <form>s too — strip the signup card's
+// form chrome (border/min-height/padding) so only the buttons render.
+#login-signup-form .learner-signup-page .social-buttons form.button_to,
+#login-signup-form .learner-signup-page .social-buttons .social-buttons__form {
+    height: auto;
+    min-height: 0;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: none;
+    box-shadow: none;
+    display: block;
+    width: 100%;
+}
+
+#login-signup-form .learner-signup-page .social-section {
+    margin-top: 0;
+    border: 0;
+}
+
+// PIN boxes: page-level `#login-signup-form [type=text] { width: 100% }`
+// outweighs the class selector and blows each box up to full width inside
+// the flex row. Pin the size with matching ID specificity.
+#login-signup-form .pin-field__box {
+    flex: 0 0 4.4rem;
+    width: 4.4rem;
+    max-width: 4.4rem;
+    height: 4.4rem;
+}
+
+// White social buttons, decisively: button_to renders <button type="submit">,
+// and `#login-signup-form [type=submit]` (ID specificity) outguns any
+// class-only restyle — the white treatment needs the ID in its selector too.
+// Covers both the login card and any screen opting into --quiet.
+// The login card is ONE card: its inner blocks (page header, form, social
+// section, divider) inherit standalone card chrome (background/shadow/margin)
+// from the base #login-signup-form rules — flatten it so the card doesn't
+// read as two stacked cards with a seam at the divider.
+#login-signup-form .login-card {
+    // The social section is a <fieldset> and inherits a 2px border — that's
+    // the "seam" under the divider. It's a pure container here.
+    fieldset.social-section {
+        border: 0;
+        padding: 0 3.2rem;
+    }
+
+    // Align the header with the form fields' inset instead of hugging the
+    // card edge.
+    .page-header {
+        padding-left: 3.2rem;
+        padding-right: 3.2rem;
+    }
+
+    .page-header,
+    form,
+    .social-section,
+    .form-divider {
+        box-shadow: none;
+        margin-top: 0;
+        margin-bottom: 0;
+        background: #ffffff;
+    }
+
+    // Social button_to wrappers: strip legacy fixed heights/borders so the
+    // two buttons stack tight instead of floating in tall ghost boxes.
+    .social-buttons > div,
+    .social-buttons .fb-share-button,
+    .social-buttons .google-share-button,
+    .social-buttons form.button_to,
+    .social-buttons .social-buttons__form {
+        display: block;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        border: 0;
+        padding: 0;
+        margin: 0;
+        background: none;
+        box-shadow: none;
+    }
+
+    .social-buttons {
+        gap: 1.2rem;
+        padding: 0.5rem 0 2rem;
+    }
+
+    // Full-width primary CTA per the design (the base [type=submit] rule
+    // only sets a min-width, which leaves it stranded half-width, left).
+    [type=submit] {
+        width: 100%;
+        display: block;
+    }
+}
+
+#login-signup-form .login-card .social-buttons .btn,
+#login-signup-form .social-buttons--quiet .btn {
+    min-width: 0;
+    width: 100%;
+    margin: 0; // legacy .btn rules add 1.2rem/2rem vertical margins
+    justify-content: center;
+    background: #fff;
+    color: #424242;
+    border: 0.1rem solid #C7C7C7;
+    box-shadow: none;
+
+    &:hover {
+        background: #F5F5F5;
+    }
+
+    &:focus-visible {
+        outline: 0.2rem solid #026AA1;
+        outline-offset: 0.2rem;
+    }
+}
+
+// Lifelong-learner card: one shared content width. The lev form gets its
+// inset from the signup grid, but the back arrow, subheader, social buttons,
+// and divider live OUTSIDE the form and were spanning the full card. Align
+// everything to the same centered column the form fields use.
+#login-signup-form .learner-signup-page {
+    .role-section,
+    .learner-signup__intro,
+    .social-section,
+    .form-divider {
+        width: 100%;
+        max-width: 45.2rem;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .learner-signup__subheader {
+        text-align: center;
+    }
+
+    .social-buttons {
+        padding: 0.5rem 0 0.5rem;
+        gap: 1.2rem;
+
+        // Kill the legacy bordered/sized social boxes (ID-scoped rules from
+        // the old signup screens) — here the wrappers are pure containers.
+        > div,
+        .fb-share-button,
+        .google-share-button {
+            display: block;
+            width: 100%;
+            height: auto;
+            min-height: 0;
+            border: 0;
+            outline: 0;
+            box-shadow: none;
+            background: none;
+            padding: 0;
+            margin: 0;
+        }
+    }
+
+    // Back arrow row: sits between the card header and the subheader; give
+    // it its own breathing room instead of overlapping the intro line.
+    .role-section {
+        margin-top: 0;
+        margin-bottom: 0.8rem;
+        min-height: 0;
+        height: auto;
+        border: 0;
+        padding: 0;
+    }
 }

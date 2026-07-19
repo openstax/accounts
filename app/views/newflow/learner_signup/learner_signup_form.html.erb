@@ -24,15 +24,16 @@
                 </div>
             </div>
 
-            <div class="content">
+            <div class="content learner-signup__intro">
                 <p class="learner-signup__subheader"><%= I18n.t(:"login_signup_form.learner_signup_page_subheader") %></p>
             </div>
 
             <div class="content social-section">
-                <div class="social-buttons">
+                <div class="social-buttons social-buttons--stacked social-buttons--quiet">
                     <div class="fb-share-button">
                         <%= button_to newflow_auth_path(:facebooknewflow, role: 'self_learner'),
                                     class: 'facebook btn',
+                                    form_class: 'social-buttons__form',
                                     :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: 'Learner-Facebook'} do %>
                             <i class="social-icon fa fa-facebook"></i>
                             <span><%= I18n.t(:"login_signup_form.learner_continue_with_facebook") %></span>
@@ -42,6 +43,7 @@
                     <div class="google-share-button">
                         <%= button_to newflow_auth_path(:googlenewflow, role: 'self_learner'),
                                     class: 'google btn',
+                                    form_class: 'social-buttons__form',
                                     data: {
                                         ga_category: 'Account Creation',
                                         ga_action: 'Click',
