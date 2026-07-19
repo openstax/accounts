@@ -1,0 +1,148 @@
+<%
+    contracts = [FinePrint.get_contract(:general_terms_of_use),
+                         FinePrint.get_contract(:privacy_policy)]
+
+    terms_of_use_link = link_to(contracts.first.title, term_path(contracts.first), target: '_blank')
+    privacy_policy_link = link_to(contracts.second.title, term_path(contracts.second), target: '_blank')
+
+    @page_title = 'Sign up (self-learner)'
+%>
+
+<div id="login-signup-form">
+    <div class="content">
+        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active' } %>
+
+        <%= newflow_login_signup_card(
+                    id: 'signup-page',
+                    header: (I18n.t(:"login_signup_form.learner_signup_page_header")),
+                    classes: 'signup-page learner-signup-page',
+                    show_exit_icon: true) do %>
+
+            <div class="content role-section">
+                <div>
+                    <%= render partial: 'newflow/back_arrow', locals: { path: newflow_signup_path, name: 'welcome' } %>
+                </div>
+            </div>
+
+            <div class="content">
+                <p class="learner-signup__subheader"><%= I18n.t(:"login_signup_form.learner_signup_page_subheader") %></p>
+            </div>
+
+            <div class="content social-section">
+                <div class="social-buttons">
+                    <div class="fb-share-button">
+                        <%= button_to newflow_auth_path(:facebooknewflow, role: 'self_learner'),
+                                    class: 'facebook btn',
+                                    :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: 'Learner-Facebook'} do %>
+                            <i class="social-icon fa fa-facebook"></i>
+                            <span><%= I18n.t(:"login_signup_form.learner_continue_with_facebook") %></span>
+                        <% end %>
+                    </div>
+
+                    <div class="google-share-button">
+                        <%= button_to newflow_auth_path(:googlenewflow, role: 'self_learner'),
+                                    class: 'google btn',
+                                    data: {
+                                        ga_category: 'Account Creation',
+                                        ga_action: 'Click',
+                                        ga_label: 'Learner-Google'
+                                    } do %>
+                            <i class="social-icon fa fa-google"></i>
+                            <span><%= I18n.t(:"login_signup_form.learner_continue_with_google") %></span>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+
+            <%=
+                render(
+                    partial: 'newflow/form_divider',
+                    locals: {
+                        dividing_text: I18n.t(:"login_signup_form.learner_or_use_email")
+                    }
+                )
+            %>
+
+            <%
+                # NOTE: must be an output (`<%=`) tag, not a bare `<%` tag. `capture`
+                # only falls back to a block's return value when the output buffer is
+                # still empty; the button_to/render calls above already appended their
+                # own markup to that buffer, so a bare `<%` here would silently drop
+                # the whole form (verified: this is what actually happens).
+            %>
+            <%= lev_form_for :signup, url: newflow_signup_learner_post_path do |form| %>
+                <%
+                    form_helper = NewflowFormHelper::Newflow.new(
+                        f: form,
+                        context: self,
+                        errors: @handler_result&.errors
+                    )
+                %>
+
+                <div class="content control-group">
+                    <%= label_tag :signup_email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
+                    <%=
+                        form_helper.text_field(
+                            name: :email,
+                            placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+                            autofocus: true,
+                            required: true
+                        )
+                    %>
+                </div>
+
+                <div class="content control-group">
+                    <div id="password-field-container">
+                        <div class="input-with-tooltip">
+                            <%= label_tag :signup_password, I18n.t(:"login_signup_form.password_label"),
+                                                    class: 'field-label required'
+                            %>
+                            <%=
+                                form_helper.text_field(
+                                    name: :password,
+                                    type: :password,
+                                    placeholder: I18n.t(:"login_signup_form.password_label"),
+                                    required: true,
+                                    described: 'password-tooltip'
+                                )
+                            %>
+                            <%= render partial: 'newflow/password_show_hide'  %>
+                            <%= render partial: 'newflow/password_tooltip' %>
+                        </div>
+                    </div>
+                </div>
+
+                <%= form.hidden_field :contract_1_id, value: contracts.first.id %>
+                <%= form.hidden_field :contract_2_id, value: contracts.second.id %>
+
+                <%= recaptcha_with_disclaimer_and_fallback action: 'self_learner_signup' %>
+
+                <div class="content">
+                    <%=
+                        form.submit(
+                            I18n.t(:"login_signup_form.learner_create_account_button"),
+                            id: 'signup_form_submit_button',
+                            class: 'primary',
+                            data: {
+                                disable_with: I18n.t(:"login_signup_form.learner_create_account_button"),
+                                ga_category: 'Account Creation',
+                                ga_action: 'Click',
+                                ga_label: 'Learner-Email'
+                            }
+                        )
+                    %>
+                </div>
+
+                <p class="content learner-signup__terms-notice">
+                    <%= I18n.t(:"login_signup_form.learner_agrees_to_terms_html",
+                               terms_of_use: terms_of_use_link,
+                               privacy_policy: privacy_policy_link).html_safe %>
+                </p>
+            <% end %>
+        <% end %>
+    </div>
+</div>
+
+<script type="text/javascript">
+    NewflowUi.focusOnFirstErrorItem();
+</script>

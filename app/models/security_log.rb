@@ -113,6 +113,11 @@ class SecurityLog < ApplicationRecord
     user_already_has_contact_not_creating_lead
     creating_new_salesforce_lead
     salesforce_lead_save_failed
+    self_learner_signed_up
+    self_learner_sign_up_failed
+    self_learner_verified_email
+    self_learner_verify_email_failed
+    self_learner_social_sign_up
   ]
 
   json_serialize :event_data, Hash

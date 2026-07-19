@@ -62,6 +62,24 @@ Rails.application.routes.draw do
     post 'i/signup/student/verify_email_by_pin', action: :student_verify_email_by_pin, as: :student_verify_pin
   end
 
+  # Lifelong-learner path: the "just here to learn for yourself" escape hatch off
+  # the role selection screen. No course/school questions — email or social
+  # login, then straight to the learner welcome/home screen.
+  scope controller: 'newflow/learner_signup' do
+    get 'i/signup/learner', action: :learner_signup_form, as: :newflow_signup_learner
+    post 'i/signup/learner', action: :learner_signup, as: :newflow_signup_learner_post
+
+    get 'i/signup/learner/email_verification_form', action: :learner_email_verification_form, as: :learner_email_verification_form
+    post 'i/signup/learner/change_signup_email', action: :learner_change_signup_email, as: :learner_change_signup_email
+    get 'i/signup/learner/email_verification_form_updated_email',
+      action: :learner_email_verification_form_updated_email,
+      as: :learner_email_verification_form_updated_email
+    get 'i/signup/learner/change_signup_email_form', action: :learner_change_signup_email_form, as: :learner_change_signup_email_form
+    post 'i/signup/learner/verify_email_by_pin', action: :learner_verify_email_by_pin, as: :learner_verify_pin
+
+    get 'i/learner/welcome', action: :learner_welcome, as: :learner_welcome
+  end
+
   get 'i/schools', to: 'newflow/schools#index', as: :newflow_schools
 
   scope controller: 'newflow/educator_signup' do

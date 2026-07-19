@@ -32,9 +32,9 @@ module Newflow
           authentication = @handler_result.outputs.authentication
           user = @handler_result.outputs.user
 
-          if user.student? && !user.activated?
+          if (user.student? || user.self_learner?) && !user.activated?
             # Not activated means signup.
-            # Only students can sign up with a social network.
+            # Only students and self-learners can sign up with a social network.
             unverified_user = ensure_unverified_user(user)
 
             # If a token is present, we just get the user from that in confirm_oauth_info
@@ -44,8 +44,13 @@ module Newflow
             @first_name = user.first_name
             @last_name = user.last_name
             @email = @handler_result.outputs.email
-            security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
-            log_posthog(user, 'student_signup_social', { provider: authentication.provider, client_app: get_client_app&.name })
+            if user.self_learner?
+              security_log(:self_learner_social_sign_up, user: user, authentication_id: authentication.id)
+              log_posthog(user, 'self_learner_signup_social', { provider: authentication.provider, client_app: get_client_app&.name })
+            else
+              security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
+              log_posthog(user, 'student_signup_social', { provider: authentication.provider, client_app: get_client_app&.name })
+            end
             # must confirm their social info on signup
             render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
           end
@@ -108,7 +113,7 @@ module Newflow
       else
         return redirect_to(newflow_signup_path) unless unverified_user.present?
         user = unverified_user
-        return_to = signup_done_path
+        return_to = user.self_learner? ? learner_welcome_path : signup_done_path
       end
 
       handle_with(

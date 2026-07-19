@@ -255,6 +255,42 @@ en:
     educator_email_verification_help_msg: See a typo in your email address? %{edit_it_here}. Didn't receive a message? %{contact_us_link}.
     edit_it_here: Edit it here
 
+    # Lifelong learner (self-learner) signup path
+    learner_escape_hatch: Just here to learn for yourself? %{skip_the_questions}
+    learner_skip_the_questions: Skip the questions →
+    learner_signup_page_header: Save your place — that's it
+    learner_signup_page_subheader: >-
+      An account keeps your books, notes, and highlights synced across devices.
+      No course, no forms.
+    learner_continue_with_google: Continue with Google
+    learner_continue_with_facebook: Continue with Facebook
+    learner_or_use_email: or use email
+    learner_create_account_button: Create account
+    learner_agrees_to_terms_html: >-
+      By continuing you agree to the %{terms_of_use} and %{privacy_policy}.
+    learner_email_verification_form_decription: >-
+      An email has been sent to <b>%{email}</b>.
+      Please enter the PIN you received below.
+      You can also %{edit_your_email}
+    learner_welcome_header: Welcome to OpenStax
+    learner_welcome_title: You're all set%{first_name}
+    learner_welcome_subheader: >-
+      Everything here is free to read, forever. Save what you're learning and
+      pick up wherever you left off — on any device.
+    learner_find_something_title: What do you want to learn?
+    learner_find_something_subheader: Browse 70+ free books, or search for a topic.
+    learner_search_placeholder: Try "astronomy", "statistics", "U.S. history"…
+    learner_popular_title: Popular with self-learners
+    learner_start_reading: Start reading →
+    learner_account_glance_title: Your account, at a glance
+    learner_save_books_title: Save books
+    learner_save_books_desc: Keep a shelf of what you're reading.
+    learner_notes_highlights_title: Notes & highlights
+    learner_notes_highlights_desc: Mark up any book — synced everywhere.
+    learner_pick_up_anywhere_title: Pick up anywhere
+    learner_pick_up_anywhere_desc: Your place follows you across devices.
+    learner_go_to_account: Go to my account →
+
   student_profile:
     enable_other_sign_in_options: Enable other login options
     other_sign_in_options_html: Other login<br class="wide"> options
