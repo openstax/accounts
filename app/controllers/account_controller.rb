@@ -5,6 +5,7 @@ class AccountController < Newflow::BaseController
 
   before_action :newflow_authenticate_user!
   before_action :redirect_to_check_in_if_due
+  before_action :prevent_caching
 
   layout 'application'
 

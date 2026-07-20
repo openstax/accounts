@@ -106,8 +106,12 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     fill_in('login_form_email', with: 'user')
     fill_in('login_form_password', with: 'newpassword')
     find('#login-submit-button').click
+    # Wait for the post-login redirect to the account overview to settle before
+    # querying the DOM — otherwise Capybara can hit an in-flight navigation and
+    # raise "Node with given id does not belong to the document".
+    expect(page).to have_current_path(account_overview_path, wait: 10)
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(@user.full_name)
+    expect(page).to have_content(@user.first_name)
   end
 
   def expect_reset_password_page(code = @login_token)

@@ -65,7 +65,7 @@ module Newflow
           with_forgery_protection do
             visit newflow_login_path
             complete_newflow_log_in_screen('user@openstax.org', 'password')
-            expect(page).to have_current_path(profile_newflow_path)
+            expect(page).to have_current_path(account_overview_path)
           end
         end
       end

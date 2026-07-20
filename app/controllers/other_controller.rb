@@ -7,7 +7,7 @@ class OtherController < Newflow::BaseController
   before_action :prevent_caching, only: :profile_newflow
 
   def profile_newflow
-    render layout: 'application'
+    redirect_to account_overview_path
   end
 
   def exit_accounts
