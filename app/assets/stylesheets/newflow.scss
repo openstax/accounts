@@ -1659,6 +1659,10 @@ $very-narrow: 37rem * $scale-factor;
   input[type="email"],
   input[type="password"],
   input[type="number"] {
+    // pattern-library's non-button-input() mixin never sets font-family, so
+    // inputs fall back to the browser's default form-control font (Arial)
+    // instead of the brand typeface every other element on the page uses.
+    font-family: inherit;
     transition: border-color 150ms cubic-bezier(0.25, 1, 0.5, 1),
                 box-shadow 150ms cubic-bezier(0.25, 1, 0.5, 1);
 

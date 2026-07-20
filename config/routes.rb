@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   root to: 'static_pages#home'
 
   direct :salesforce_knowledge_base do
-    'https://help.openstax.org/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
+    'https://help.openstax.org/s/article/Can-t-log-in-to-your-OpenStax-account'
   end
 
   get 'i/account-shell-preview', to: 'static_pages#account_shell_preview', as: :account_shell_preview
