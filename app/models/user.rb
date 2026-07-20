@@ -359,8 +359,8 @@ class User < ApplicationRecord
   def profile_needs_enrichment?
     return false unless is_profile_complete?
 
-    which_books.blank? ||
-      how_many_students.blank? ||
+    (which_books.blank? && !user_books.exists?) ||
+      (how_many_students.blank? && !adoptions.exists? && !adoption_reports.exists?) ||
       (school.nil? && self_reported_school.blank?)
   end
 

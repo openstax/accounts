@@ -584,6 +584,24 @@ describe User, type: :model do
         user.update!(school: school, self_reported_school: nil)
         expect(user.profile_needs_enrichment?).to be false
       end
+
+      it 'is false when which_books is blank but the user has added books via the Books tab' do
+        user.update!(which_books: nil)
+        book = Book.create!(book_uuid: SecureRandom.uuid, title: 'Biology 2e')
+        UserBook.create!(user: user, book: book)
+
+        expect(user.profile_needs_enrichment?).to be false
+      end
+
+      it 'is false when how_many_students is blank but the user has reported an adoption' do
+        user.update!(how_many_students: nil)
+        AdoptionReport.create!(
+          user: user, book_title: 'Biology 2e', school_year: '2025-2026',
+          status: 'using', source: 'books_modal'
+        )
+
+        expect(user.profile_needs_enrichment?).to be false
+      end
     end
   end
 end
