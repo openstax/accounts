@@ -211,7 +211,9 @@ class Api::V1::UsersController < Api::V1::ApiController
     state will be "unclaimed" meaning it is a place-holder account for
     an user who has not yet completed the sign up process.
 
-    An email address or external_id must be supplied.
+    An external_id or a verified (already_verified: true) email address must be supplied.
+    An unverified email address alone is not a valid identifier - it can never be matched
+    again later - so it must be accompanied by an external_id.
 
     If a verified email or external_id is already in use, that existing user's account
     will be returned.
@@ -231,7 +233,8 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     result = FindOrCreateUser.call(payload.except(:sso))
     if result.errors.any?
-      render json: { errors: result.errors }, status: :conflict
+      status = result.errors.any? { |error| error.code == :invalid_input } ? :unprocessable_entity : :conflict
+      render json: { errors: result.errors }, status: status
     else
       token = get_sso_token(payload.application, result.outputs.user) if payload.sso.present?
 

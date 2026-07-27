@@ -6,46 +6,29 @@ describe FindOrCreateUser do
     context "of existing user" do
 
       it "returns the existing user when the email is verified" do
-        user = FactoryBot.create :user_with_emails, emails_count: 1
+        user = FactoryBot.create :user
+        AddEmailToUser.call('verified@example.com', user, already_verified: true)
+
         found = described_class.call(
-          email: user.contact_infos.first.value, already_verified: true
+          email: 'verified@example.com', already_verified: true
         ).outputs.user
         expect(found).to eq(user)
       end
 
-      it "does not return the existing user when the email is not verified" do
-        user = FactoryBot.create :user_with_emails, emails_count: 1
-        result = described_class.call(email: user.contact_infos.first.value, already_verified: false)
-        expect(result.outputs.user).not_to eq(user)
-        expect(result.errors).not_to be_empty
-      end
-
     end
 
-    context "that doesn't exist" do
+  end
 
-      it "creates a new user with the email" do
-        expect {
-          newuser = described_class.call(
-            email:"anunusedemail@example.com",
-            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
-          ).outputs.user
-          expect(newuser.contact_infos.first.value).to eq("anunusedemail@example.com")
-        }.to change(User,:count).by(1)
-      end
+  context "given an unverified email with no external_id" do
 
-      it "sends an invitation email" do
-          expect do
-            described_class.call(
-              email:"anunusedemail@example.com",
-              first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
-            ).outputs.user
-            perform_enqueued_jobs
-            email = ActionMailer::Base.deliveries.last
-            expect(email.subject).to match('You have been invited to join OpenStax')
-          end.to change { ActionMailer::Base.deliveries.count }.by(1)
-      end
-
+    it "is rejected as invalid input and creates no user" do
+      expect {
+        result = described_class.call(
+          email: "anunusedemail@example.com",
+          first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
+        )
+        expect(result.errors.first.code).to eq(:invalid_input)
+      }.not_to change(User, :count)
     end
 
   end
@@ -58,7 +41,7 @@ describe FindOrCreateUser do
         expect {
           new_user = described_class.call(
             external_id: 'some-platform/12345', email: 'anunusedemail@example.com',
-            first_name: 'Bob', last_name: 'Smith'
+            first_name: 'Bob', last_name: 'Smith', role: 'student'
           ).outputs.user
           expect(new_user.first_name).to eq('Bob')
           expect(new_user.last_name).to eq('Smith')
@@ -70,31 +53,119 @@ describe FindOrCreateUser do
         new_user = described_class.call(
           external_id: 'some-platform/12345', email: 'anunusedemail@example.com',
           first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
-          is_test: is_test
+          role: 'student', is_test: is_test
         ).outputs.user
         expect(new_user.is_test).to eq is_test
         expect(new_user.reload.is_test).to eq is_test
       end
 
       it "finds the existing user by verified email instead of creating a duplicate" do
-        existing_user = FactoryBot.create :user_with_emails, emails_count: 1
+        existing_user = FactoryBot.create :user
+        AddEmailToUser.call('verified@example.com', existing_user, already_verified: true)
+
         found = described_class.call(
           external_id: 'some-platform/12345',
-          email: existing_user.contact_infos.first.value, already_verified: true
+          email: 'verified@example.com', already_verified: true
         ).outputs.user
         expect(found).to eq(existing_user)
       end
 
-      it "does not find the existing user by an unverified email" do
-        existing_user = FactoryBot.create :user_with_emails, emails_count: 1
-        result = described_class.call(
-          external_id: 'some-platform/12345',
-          email: existing_user.contact_infos.first.value, already_verified: false
-        )
-        expect(result.outputs.user).not_to eq(existing_user)
-        expect(result.errors).not_to be_empty
+      it "attaches a non-conflicting email as before" do
+        new_user = described_class.call(
+          external_id: 'some-platform/11111', email: 'brandnew@example.com',
+          first_name: 'Bob', last_name: 'Smith', already_verified: false, role: 'student'
+        ).outputs.user
+        expect(new_user.contact_infos.first.value).to eq('brandnew@example.com')
       end
 
+    end
+
+    context "given an email already claimed (unverified) by a different user" do
+      let!(:other_user) { FactoryBot.create :user }
+      let(:conflicting_email) { 'shared@example.com' }
+
+      before { AddEmailToUser.call(conflicting_email, other_user, already_verified: false) }
+
+      it "still creates the new user, without erroring, and attaches the email" do
+        result = nil
+        expect {
+          result = described_class.call(
+            external_id: 'some-platform/99999', email: conflicting_email,
+            first_name: 'Bob', last_name: 'Smith', already_verified: false, role: 'student'
+          )
+        }.to change(User, :count).by(1)
+
+        expect(result.errors).to be_empty
+        new_user = result.outputs.user
+        expect(new_user).not_to eq(other_user)
+        expect(new_user.contact_infos.first.value).to eq(conflicting_email)
+        expect(new_user.external_ids.first.external_id).to eq('some-platform/99999')
+      end
+
+      it "reclaims the email from the other (unverified) user" do
+        described_class.call(
+          external_id: 'some-platform/99998', email: conflicting_email,
+          first_name: 'Bob', last_name: 'Smith', already_verified: false, role: 'student'
+        )
+        expect(other_user.reload.contact_infos).to be_empty
+      end
+    end
+
+    context "given a verified email matching an unclaimed user with an unverified email" do
+      let!(:unclaimed_user) { FactoryBot.create :user, state: 'unclaimed' }
+      let(:shared_email) { 'placeholder@example.com' }
+
+      before do
+        AddEmailToUser.call(shared_email, unclaimed_user, already_verified: false)
+
+        group = FactoryBot.create(:group)
+        group.add_member unclaimed_user
+        group.add_owner unclaimed_user
+      end
+
+      it "claims it: creates a new user, transfers associations, and destroys the old one" do
+        result = nil
+        expect {
+          result = described_class.call(
+            external_id: 'some-platform/claim-1', email: shared_email,
+            first_name: 'Bob', last_name: 'Smith', already_verified: true, role: 'student'
+          )
+        }.to change(User, :count).by(0) # one created, one destroyed
+
+        new_user = result.outputs.user
+        expect(new_user).not_to eq(unclaimed_user)
+        expect(new_user.contact_infos.first.value).to eq(shared_email)
+        expect(new_user.contact_infos.first.verified).to be_truthy
+        expect(new_user.external_ids.first.external_id).to eq('some-platform/claim-1')
+
+        expect { unclaimed_user.reload }.to raise_error(ActiveRecord::RecordNotFound)
+
+        expect(new_user.reload.owned_groups.count).to eq(1)
+        expect(new_user.reload.member_groups.count).to eq(1)
+      end
+    end
+
+    context "given a verified email matching an activated user's unverified secondary contact" do
+      let!(:activated_user) { FactoryBot.create :user_with_emails, emails_count: 1 }
+      let(:stray_email) { activated_user.contact_infos.first.value }
+
+      it "leaves that account untouched, and creates a fresh account with the email instead" do
+        result = nil
+        expect {
+          result = described_class.call(
+            external_id: 'some-platform/claim-2', email: stray_email,
+            first_name: 'Bob', last_name: 'Smith', already_verified: true, role: 'student'
+          )
+        }.to change(User, :count).by(1)
+
+        new_user = result.outputs.user
+        expect(new_user).not_to eq(activated_user)
+        expect(new_user.contact_infos.first.value).to eq(stray_email)
+        expect(new_user.contact_infos.first.verified).to be_truthy
+
+        expect { activated_user.reload }.not_to raise_error
+        expect(activated_user.contact_infos).to be_empty
+      end
     end
 
   end

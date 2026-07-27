@@ -11,8 +11,16 @@ class AddEmailToUser
     return if email_address_text.blank?
 
     # If the email address already exists and is attached to the user, nothing to do
-    email_address = user.email_addresses.find_by(value: email_address_text)
+    # (case-insensitive, so it matches ContactInfo's own uniqueness validation)
+    email_address = user.email_addresses.where('LOWER(value) = LOWER(?)', email_address_text.to_s.strip).first
     return if email_address.try!(:verified)
+
+    # An unverified email on a different user is an unproven claim - reclaim it rather than
+    # block this attempt. A verified one is a real claim and still blocks via the validation below.
+    EmailAddress.where('LOWER(value) = LOWER(?)', email_address_text.to_s.strip)
+                .where.not(user_id: user.id)
+                .where(verified: false)
+                .destroy_all
 
     # If it is a brand new email address, make it
     if email_address.nil?
