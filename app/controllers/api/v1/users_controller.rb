@@ -211,17 +211,14 @@ class Api::V1::UsersController < Api::V1::ApiController
     state will be "unclaimed" meaning it is a place-holder account for
     an user who has not yet completed the sign up process.
 
-    An email address, username or external_id must be supplied.
+    An email address or external_id must be supplied.
 
-    If the username, email or external_id is already in use, that existing user's ID
+    If a verified email or external_id is already in use, that existing user's account
     will be returned.
 
-    If an account is created with no username, it cannot be logged
-    into directly. It will merged with the user's account when they complete the
+    If an account is created with no verified email, it cannot be logged
+    into directly. It will be merged with the user's account when they complete the
     standard sign up process using a matching email address.
-
-    If an account is created with a username and password, it may be signed into and used
-    immediately once the user agress to the Terms and Conditions.
 
     #{json_schema(Api::V1::FindOrCreateUserRepresenter, include: [:readable, :writable])}
   EOS

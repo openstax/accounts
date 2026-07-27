@@ -394,7 +394,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(new_user.uuid).not_to be_blank
     end
 
-    it 'creates an external user with an external_id and no username or email' do
+    it 'creates an external user with an external_id and no email' do
       external_id = "#{SecureRandom.uuid}/#{SecureRandom.uuid}"
 
       expect do
@@ -454,7 +454,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     context "should return only IDs for a user" do
       it "does so for unclaimed users" do
         api_post :find_or_create, foc_trusted_application_token,
-                 body: { username: unclaimed_user.username }
+                 body: { email: unclaimed_user.contact_infos.first.value, already_verified: true }
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
           id: unclaimed_user.id,
@@ -466,7 +466,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       it "does so for claimed users" do
         api_post :find_or_create,
                  foc_trusted_application_token,
-                 body: { email: user_2.contact_infos.first.value }
+                 body: { email: user_2.contact_infos.first.value, already_verified: true }
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
           id: user_2.id, uuid: user_2.uuid, external_ids: []

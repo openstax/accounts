@@ -1,16 +1,23 @@
 require 'rails_helper'
 
 describe FindOrCreateUser do
-  let(:user) { FactoryBot.create :user, state: 'unclaimed' }
-
   context "Given an email" do
 
     context "of existing user" do
 
-      it "returns the existing user" do
+      it "returns the existing user when the email is verified" do
         user = FactoryBot.create :user_with_emails, emails_count: 1
-        found = described_class.call(email:user.contact_infos.first.value).outputs.user
+        found = described_class.call(
+          email: user.contact_infos.first.value, already_verified: true
+        ).outputs.user
         expect(found).to eq(user)
+      end
+
+      it "does not return the existing user when the email is not verified" do
+        user = FactoryBot.create :user_with_emails, emails_count: 1
+        result = described_class.call(email: user.contact_infos.first.value, already_verified: false)
+        expect(result.outputs.user).not_to eq(user)
+        expect(result.errors).not_to be_empty
       end
 
     end
@@ -43,77 +50,49 @@ describe FindOrCreateUser do
 
   end
 
-  context "given a username" do
-
-    context "of existing unclaimed user" do
-
-      it "returns that user" do
-        found = described_class.call(username: user.username).outputs.user
-        expect(found).to eq(user)
-      end
-
-      context "and a password" do
-
-        it "does not set the password" do
-          found = described_class.call(
-            username: user.username, password:"apassword123",
-            password_confirmation: "apassword123"
-          ).outputs.user
-          expect(found.identity).to be_nil
-        end
-      end
-
-    end
+  context "given an external_id" do
 
     context "that doesn't exist" do
-
-      it "creates a new user with that username" do
-        expect {
-          new_user = described_class.call(
-            username: "bobsmith", email:"anunusedemail@example.com",
-            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
-          ).outputs.user
-          expect(new_user.username).to eq("bobsmith")
-          expect(new_user.contact_infos.first.value).to eq("anunusedemail@example.com")
-        }.to change(User,:count).by(1)
-      end
 
       it 'sets the first name and last name' do
         expect {
           new_user = described_class.call(
-            username: 'bobsmith', email: 'anunusedemail@example.com',
+            external_id: 'some-platform/12345', email: 'anunusedemail@example.com',
             first_name: 'Bob', last_name: 'Smith'
           ).outputs.user
-          expect(new_user.username).to eq('bobsmith')
           expect(new_user.first_name).to eq('Bob')
           expect(new_user.last_name).to eq('Smith')
         }.to change { User.count }.by(1)
       end
 
-      context "and a password" do
-
-        it "sets the password" do
-          new_user = described_class.call(
-            email:"anunusedemail@example.com",
-            password:'password123', password_confirmation: 'password123', username: "bobsmith",
-            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
-          ).outputs.user
-          expect(new_user.reload.identity.authenticate('password123')).to be_truthy
-        end
-
+      it 'sets is_test' do
+        is_test = [true, false].sample
+        new_user = described_class.call(
+          external_id: 'some-platform/12345', email: 'anunusedemail@example.com',
+          first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
+          is_test: is_test
+        ).outputs.user
+        expect(new_user.is_test).to eq is_test
+        expect(new_user.reload.is_test).to eq is_test
       end
 
-      context 'and is_test' do
-        it 'sets is_test' do
-          is_test = [true, false].sample
-          new_user = described_class.call(
-            username: 'bobsmith', email: 'anunusedemail@example.com',
-            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
-            is_test: is_test
-          ).outputs.user
-          expect(new_user.is_test).to eq is_test
-          expect(new_user.reload.is_test).to eq is_test
-        end
+      it "finds the existing user by verified email instead of creating a duplicate" do
+        existing_user = FactoryBot.create :user_with_emails, emails_count: 1
+        found = described_class.call(
+          external_id: 'some-platform/12345',
+          email: existing_user.contact_infos.first.value, already_verified: true
+        ).outputs.user
+        expect(found).to eq(existing_user)
+      end
+
+      it "does not find the existing user by an unverified email" do
+        existing_user = FactoryBot.create :user_with_emails, emails_count: 1
+        result = described_class.call(
+          external_id: 'some-platform/12345',
+          email: existing_user.contact_infos.first.value, already_verified: false
+        )
+        expect(result.outputs.user).not_to eq(existing_user)
+        expect(result.errors).not_to be_empty
       end
 
     end
