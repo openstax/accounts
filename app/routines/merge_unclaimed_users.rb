@@ -13,11 +13,11 @@ class MergeUnclaimedUsers
   def exec(dying_user:, living_user:)
     TRANSFER_ASSOCIATIONS.each do | association |
 
-      # We can get away with using send(:assocation).each
+      # We can get away with using send(:association).each
       # since they're all :has_many.  If we need to support belongs_to/has_one
       # we could check dying_user.reflections[association].collection?
       dying_user.send(association).each do | belonging_model |
-        # we can also get away with just re-assinging the user since
+        # we can also get away with just re-assigning the user since
         # all the associations have an inverse that's named "user".
         # If they did not we could use the association's inverse_of to figure it out
         belonging_model.user = living_user
