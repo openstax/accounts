@@ -218,9 +218,9 @@ class Api::V1::UsersController < Api::V1::ApiController
     If a verified email or external_id is already in use, that existing user's account
     will be returned.
 
-    If an account is created with no verified email, it cannot be logged
-    into directly. It will be merged with the user's account when they complete the
-    standard sign up process using a matching email address.
+    If an account is created without a verified email, it cannot be matched by email in future calls.
+    If it has an unverified email, it can be merged when the user completes the standard sign up process using that email.
+    If it has no email, it can only be accessed via external_id.
 
     #{json_schema(Api::V1::FindOrCreateUserRepresenter, include: [:readable, :writable])}
   EOS
