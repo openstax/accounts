@@ -42,7 +42,7 @@ class FacultyAccessApply
   def handle
     # Save and start confirmation process if the email is new
 
-    if caller.contact_infos.where(value: email).none?
+    if caller.contact_infos.with_value(email).none?
       # If email in use, it'd be too late to tell them when they confirm it
       fatal_error(code: :email_in_use, offending_inputs: [:apply, :email]) if email_in_use?
 
@@ -77,7 +77,7 @@ class FacultyAccessApply
   end
 
   def email_in_use?
-    ContactInfo.verified.where(value: email).any?
+    ContactInfo.verified.with_value(email).any?
   end
 
 end

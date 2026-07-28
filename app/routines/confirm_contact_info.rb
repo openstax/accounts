@@ -8,7 +8,7 @@ class ConfirmContactInfo
 
   def exec(contact_info)
     if contact_info.is_a?(ContactInfo)
-      ContactInfo.class.with_users
+      contact_info.class.with_users
         .with_value(contact_info.value)
         .where('users.state = ?', User::UNCLAIMED)
         .where.not(id: contact_info.id)
