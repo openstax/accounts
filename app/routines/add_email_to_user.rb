@@ -15,12 +15,14 @@ class AddEmailToUser
     email_address = user.email_addresses.where('LOWER(value) = LOWER(?)', email_address_text.to_s.strip).first
     return if email_address.try!(:verified)
 
-    # An unverified email on a different user is an unproven claim - reclaim it rather than
-    # block this attempt. A verified one is a real claim and still blocks via the validation below.
-    EmailAddress.where('LOWER(value) = LOWER(?)', email_address_text.to_s.strip)
-                .where.not(user_id: user.id)
-                .where(verified: false)
-                .destroy_all
+    # A verified claim here can reclaim an unverified duplicate on a different user - that
+    # other copy is unproven and shouldn't block a real one. An unverified claim never reclaims.
+    if options[:already_verified]
+      EmailAddress.where('LOWER(value) = LOWER(?)', email_address_text.to_s.strip)
+                  .where.not(user_id: user.id)
+                  .where(verified: false)
+                  .destroy_all
+    end
 
     # If it is a brand new email address, make it
     if email_address.nil?

@@ -86,7 +86,7 @@ describe FindOrCreateUser do
 
       before { AddEmailToUser.call(conflicting_email, other_user, already_verified: false) }
 
-      it "still creates the new user, without erroring, and attaches the email" do
+      it "still creates the new user, without erroring, but does not attach the email" do
         result = nil
         expect {
           result = described_class.call(
@@ -98,16 +98,16 @@ describe FindOrCreateUser do
         expect(result.errors).to be_empty
         new_user = result.outputs.user
         expect(new_user).not_to eq(other_user)
-        expect(new_user.contact_infos.first.value).to eq(conflicting_email)
+        expect(new_user.contact_infos).to be_empty
         expect(new_user.external_ids.first.external_id).to eq('some-platform/99999')
       end
 
-      it "reclaims the email from the other (unverified) user" do
+      it "leaves the other (unverified) user's email untouched" do
         described_class.call(
           external_id: 'some-platform/99998', email: conflicting_email,
           first_name: 'Bob', last_name: 'Smith', already_verified: false, role: 'student'
         )
-        expect(other_user.reload.contact_infos).to be_empty
+        expect(other_user.reload.contact_infos.first.value).to eq(conflicting_email)
       end
     end
 

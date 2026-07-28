@@ -69,12 +69,23 @@ class FindOrCreateUser
     # Claim the placeholder before attaching the email, so its value is free to reattach
     run(MergeUnclaimedUsers, dying_user: replacing, living_user: user) if replacing
 
-    # routine is smart and gracefully handles case of missing options[:email]
-    run(AddEmailToUser, options[:email], user, already_verified: options[:already_verified])
+    # An unverified email is only ever used to populate a brand-new account - if someone else
+    # already has it, just skip attaching it here rather than erroring the whole call.
+    unless !options[:already_verified] && email_owned_by_a_different_user?(options[:email], user)
+      run(AddEmailToUser, options[:email], user, already_verified: options[:already_verified])
+    end
 
     FindOrCreateApplicationUser[options[:application].id, user.id] if options[:application].present?
 
     user
+  end
+
+  def email_owned_by_a_different_user?(email, user)
+    return false if email.blank?
+
+    EmailAddress.where('LOWER(value) = LOWER(?)', email.to_s.strip)
+                .where.not(user_id: user.id)
+                .exists?
   end
 
 end

@@ -489,18 +489,23 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
         expect(response).to have_http_status :unprocessable_entity
       end
 
-      it "returns conflict when the email is already verified on a different account" do
+      it "creates a new account without the email when an unverified email collides with a different account, even a verified one" do
         AddEmailToUser.call('taken@test.com', user_2, already_verified: true)
 
-        api_post :find_or_create,
-                 foc_trusted_application_token,
-                 body: {
-                   external_id: "#{SecureRandom.uuid}/#{SecureRandom.uuid}",
-                   email: 'taken@test.com',
-                   already_verified: false,
-                   role: 'student'
-                 }
-        expect(response).to have_http_status :conflict
+        expect do
+          api_post :find_or_create,
+                   foc_trusted_application_token,
+                   body: {
+                     external_id: "#{SecureRandom.uuid}/#{SecureRandom.uuid}",
+                     email: 'taken@test.com',
+                     already_verified: false,
+                     role: 'student'
+                   }
+        end.to change { User.count }.by(1)
+
+        expect(response.code).to eq('201')
+        new_user_id = JSON.parse(response.body)['id']
+        expect(new_user_id).not_to eq(user_2.id)
       end
     end
   end

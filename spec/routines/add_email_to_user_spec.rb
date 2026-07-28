@@ -90,6 +90,15 @@ describe AddEmailToUser do
       expect(result.errors).not_to be_empty
       expect(other_user.reload.contact_infos.first.value).to eq('shared@example.com')
     end
+
+    it 'does not reclaim (and still blocks) when this attempt is itself unverified' do
+      AddEmailToUser.call('shared@example.com', other_user, already_verified: false)
+
+      result = AddEmailToUser.call('shared@example.com', user, already_verified: false)
+
+      expect(result.errors).not_to be_empty
+      expect(other_user.reload.contact_infos.first.value).to eq('shared@example.com')
+    end
   end
 
 end
