@@ -3,6 +3,7 @@ class AddEmailToUser
   lev_routine express_output: :email
 
   uses_routine SendContactInfoConfirmation
+  uses_routine MergeUnclaimedUsers
 
   protected
 
@@ -15,14 +16,10 @@ class AddEmailToUser
     email_address = user.email_addresses.where('LOWER(value) = LOWER(?)', email_address_text.to_s.strip).first
     return if email_address.try!(:verified)
 
-    # A verified claim here can reclaim an unverified duplicate on a different user - that
-    # other copy is unproven and shouldn't block a real one. An unverified claim never reclaims.
-    if options[:already_verified]
-      EmailAddress.where('LOWER(value) = LOWER(?)', email_address_text.to_s.strip)
-                  .where.not(user_id: user.id)
-                  .where(verified: false)
-                  .destroy_all
-    end
+    # A verified claim can take priority over an unverified (unproven) duplicate on a
+    # different user. An unverified claim never does - it's left to the uniqueness
+    # validation below to block normally, same as any other conflict.
+    reclaim_or_merge_other_owner(email_address_text, user) if options[:already_verified]
 
     # If it is a brand new email address, make it
     if email_address.nil?
@@ -45,5 +42,23 @@ class AddEmailToUser
     # Ensure we get updated contact_infos if we try to use them
     user.contact_infos.reset
     user.email_addresses.reset
+  end
+
+  # An activated user's unverified copy is just a stale, unconfirmed contact - drop it. An
+  # unclaimed placeholder's unverified copy is claimed via the same merge signup uses, so its
+  # group/app associations survive onto `user` before it's destroyed.
+  def reclaim_or_merge_other_owner(email_address_text, user)
+    other_email = EmailAddress.with_users
+                               .where('LOWER(value) = LOWER(?)', email_address_text.to_s.strip)
+                               .where.not(user_id: user.id)
+                               .where(verified: false)
+                               .first
+    return unless other_email
+
+    if other_email.user.activated?
+      other_email.destroy
+    else
+      run(MergeUnclaimedUsers, dying_user: other_email.user, living_user: user)
+    end
   end
 end

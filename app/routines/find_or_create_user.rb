@@ -13,7 +13,6 @@ class FindOrCreateUser
   uses_routine CreateUser, translations: { outputs: { type: :verbatim } }
   uses_routine FindOrCreateApplicationUser
   uses_routine AddEmailToUser
-  uses_routine MergeUnclaimedUsers
 
   protected
 
@@ -35,20 +34,15 @@ class FindOrCreateUser
     end
   end
 
-  # A verified email match against an activated user's unverified secondary contact isn't
-  # proof of anything - leave that real account alone (nil = no match, AddEmailToUser will
-  # reclaim the stale contact anyway). Against an unclaimed placeholder, claim it instead.
+  # Only match an existing user by a VERIFIED copy of the email - an unverified duplicate
+  # elsewhere isn't proof of anything. AddEmailToUser handles that duplicate (reclaiming or
+  # merging it) when we go on to create/attach the email below.
   def find_by_verified_email(options)
     return nil unless options[:already_verified]
-    contact_info = EmailAddress.with_users.find_by(value: options[:email])
-    return nil unless contact_info
-    return contact_info.user if contact_info.verified?
-    return nil if contact_info.user.activated?
-
-    create_user(options, replacing: contact_info.user)
+    EmailAddress.with_users.find_by(value: options[:email], verified: true)&.user
   end
 
-  def create_user(options, replacing: nil)
+  def create_user(options)
     # If a user has only the external_id set,
     # they can only login via this routine and can never add an email or be claimed
     state = options[:external_id].present? &&
@@ -66,11 +60,8 @@ class FindOrCreateUser
                is_test: options[:is_test],
                ensure_no_errors: true).outputs.user
 
-    # Claim the placeholder before attaching the email, so its value is free to reattach
-    run(MergeUnclaimedUsers, dying_user: replacing, living_user: user) if replacing
-
     # An unverified email is only ever used to populate a brand-new account - if someone else
-    # already has it, just skip attaching it here rather than erroring the whole call.
+    # already has it, skip attaching it here rather than erroring the whole call.
     unless !options[:already_verified] && email_owned_by_a_different_user?(options[:email], user)
       run(AddEmailToUser, options[:email], user, already_verified: options[:already_verified])
     end

@@ -99,6 +99,25 @@ describe AddEmailToUser do
       expect(result.errors).not_to be_empty
       expect(other_user.reload.contact_infos.first.value).to eq('shared@example.com')
     end
+
+    it 'merges the placeholder (transferring associations) when the unverified copy belongs to an unclaimed user' do
+      unclaimed_user = FactoryBot.create :user, state: 'unclaimed'
+      AddEmailToUser.call('shared@example.com', unclaimed_user, already_verified: false)
+
+      group = FactoryBot.create(:group)
+      group.add_member unclaimed_user
+      group.add_owner unclaimed_user
+
+      result = AddEmailToUser.call('shared@example.com', user, already_verified: true)
+
+      expect(result.errors).to be_empty
+      expect { unclaimed_user.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(user.reload.owned_groups).to include(group)
+      expect(user.reload.member_groups).to include(group)
+      email = EmailAddress.find_by_value('shared@example.com')
+      expect(email.user).to eq(user)
+      expect(email.verified).to be_truthy
+    end
   end
 
 end
