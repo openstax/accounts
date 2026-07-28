@@ -39,7 +39,7 @@ class FindOrCreateUser
   # merging it) when we go on to create/attach the email below.
   def find_by_verified_email(options)
     return nil unless options[:already_verified]
-    EmailAddress.with_users.find_by(value: options[:email], verified: true)&.user
+    EmailAddress.with_users.with_value(options[:email]).find_by(verified: true)&.user
   end
 
   def create_user(options)
@@ -74,9 +74,7 @@ class FindOrCreateUser
   def email_owned_by_a_different_user?(email, user)
     return false if email.blank?
 
-    EmailAddress.where('LOWER(value) = LOWER(?)', email.to_s.strip)
-                .where.not(user_id: user.id)
-                .exists?
+    EmailAddress.with_value(email).where.not(user_id: user.id).exists?
   end
 
 end

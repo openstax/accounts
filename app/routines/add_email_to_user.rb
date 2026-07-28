@@ -12,8 +12,7 @@ class AddEmailToUser
     return if email_address_text.blank?
 
     # If the email address already exists and is attached to the user, nothing to do
-    # (case-insensitive, so it matches ContactInfo's own uniqueness validation)
-    email_address = user.email_addresses.where('LOWER(value) = LOWER(?)', email_address_text.to_s.strip).first
+    email_address = user.email_addresses.with_value(email_address_text).first
     return if email_address.try!(:verified)
 
     # A verified claim can take priority over an unverified (unproven) duplicate on a
@@ -49,7 +48,7 @@ class AddEmailToUser
   # group/app associations survive onto `user` before it's destroyed.
   def reclaim_or_merge_other_owner(email_address_text, user)
     other_email = EmailAddress.with_users
-                               .where('LOWER(value) = LOWER(?)', email_address_text.to_s.strip)
+                               .with_value(email_address_text)
                                .where.not(user_id: user.id)
                                .where(verified: false)
                                .first

@@ -15,6 +15,16 @@ describe FindOrCreateUser do
         expect(found).to eq(user)
       end
 
+      it "matches the existing verified email case-insensitively" do
+        user = FactoryBot.create :user
+        AddEmailToUser.call('Verified@Example.com', user, already_verified: true)
+
+        found = described_class.call(
+          email: 'verified@example.com', already_verified: true
+        ).outputs.user
+        expect(found).to eq(user)
+      end
+
     end
 
   end
