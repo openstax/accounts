@@ -1,11 +1,13 @@
 class OtherController < Newflow::BaseController
+  include AnnualCheckInGate
 
   before_action :newflow_authenticate_user!, only: :profile_newflow
   before_action :ensure_complete_educator_signup, only: :profile_newflow
+  before_action :redirect_to_check_in_if_due, only: :profile_newflow
   before_action :prevent_caching, only: :profile_newflow
 
   def profile_newflow
-    render layout: 'application'
+    redirect_to account_overview_path
   end
 
   def exit_accounts

@@ -169,7 +169,9 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   end
 
   def non_admin_feature_url
-    "/i/profile"
+    # /i/profile now 302-redirects to the account overview; use the real landing
+    # page so `have_current_path` comparisons don't chase the redirect.
+    account_overview_path
   end
 
   def visitor_page_url

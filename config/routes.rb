@@ -4,7 +4,33 @@ Rails.application.routes.draw do
   root to: 'static_pages#home'
 
   direct :salesforce_knowledge_base do
-    'https://help.openstax.org/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
+    'https://help.openstax.org/s/article/Can-t-log-in-to-your-OpenStax-account'
+  end
+
+  get 'i/account-shell-preview', to: 'static_pages#account_shell_preview', as: :account_shell_preview
+
+  scope 'i/account', controller: 'account' do
+    get '/', action: :overview, as: :account_overview
+    get '/profile', action: :profile, as: :account_profile
+    get '/security', action: :security, as: :account_security
+    get '/books', action: :books, as: :account_books
+    get '/impact', action: :impact, as: :account_impact
+    get '/support', action: :support, as: :account_support
+
+    post '/books/saved', to: 'account/saved_books#create', as: :account_saved_books
+    delete '/books/saved/:id', to: 'account/saved_books#destroy', as: :account_saved_book
+
+    post '/adoption-reports', to: 'account/adoption_reports#create', as: :account_adoption_reports
+
+    get '/instructors', to: 'account/instructors#index', as: :account_instructors_search
+    post '/instructor-connections', to: 'account/instructor_connections#create', as: :account_instructor_connections
+
+    get '/check_in', to: 'account/check_in#show', as: :account_check_in
+    post '/check_in/confirm', to: 'account/check_in#confirm', as: :account_check_in_confirm
+    post '/check_in/dismiss', to: 'account/check_in#dismiss', as: :account_check_in_dismiss
+
+    post '/lms_answer', to: 'account/lms_answers#create', as: :account_lms_answer
+    post '/lms_answer/dismiss', to: 'account/lms_answers#dismiss', as: :account_lms_answer_dismiss
   end
 
   scope controller: 'other' do
@@ -42,6 +68,24 @@ Rails.application.routes.draw do
     post 'i/signup/student/verify_email_by_pin', action: :student_verify_email_by_pin, as: :student_verify_pin
   end
 
+  # Lifelong-learner path: the "just here to learn for yourself" escape hatch off
+  # the role selection screen. No course/school questions — email or social
+  # login, then straight to the learner welcome/home screen.
+  scope controller: 'newflow/learner_signup' do
+    get 'i/signup/learner', action: :learner_signup_form, as: :newflow_signup_learner
+    post 'i/signup/learner', action: :learner_signup, as: :newflow_signup_learner_post
+
+    get 'i/signup/learner/email_verification_form', action: :learner_email_verification_form, as: :learner_email_verification_form
+    post 'i/signup/learner/change_signup_email', action: :learner_change_signup_email, as: :learner_change_signup_email
+    get 'i/signup/learner/email_verification_form_updated_email',
+      action: :learner_email_verification_form_updated_email,
+      as: :learner_email_verification_form_updated_email
+    get 'i/signup/learner/change_signup_email_form', action: :learner_change_signup_email_form, as: :learner_change_signup_email_form
+    post 'i/signup/learner/verify_email_by_pin', action: :learner_verify_email_by_pin, as: :learner_verify_pin
+
+    get 'i/learner/welcome', action: :learner_welcome, as: :learner_welcome
+  end
+
   get 'i/schools', to: 'newflow/schools#index', as: :newflow_schools
 
   scope controller: 'newflow/educator_signup' do
@@ -60,6 +104,7 @@ Rails.application.routes.draw do
 
     # Step 3
     get 'i/signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form
+    post 'i/signup/educator/apply/school_email', action: :educator_add_school_email, as: :educator_add_school_email
     post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
 
     # Step 4
@@ -69,6 +114,31 @@ Rails.application.routes.draw do
 
     get 'i/signup/educator/cs_form', action: :educator_profile_form, as: :educator_cs_verification_form
     post 'i/signup/educator/cs_verification_request', action: :educator_complete_profile, as: :educator_cs_verification_request
+  end
+
+  # "I support instruction" — staff signup path (department chairs, librarians,
+  # curriculum coordinators, LMS/IT admins, homeschool educators). Reuses
+  # EducatorSignup::SignupForm and EducatorSignup::VerifyEmailByPin for steps
+  # 1-2 (see StaffSignupController, which inherits from EducatorSignupController);
+  # staff skip SheerID entirely and go straight from email verification to
+  # their own "Tell us about your work" step.
+  scope controller: 'newflow/staff_signup' do
+    # Step 1
+    get 'i/signup/staff', action: :staff_signup_form, as: :staff_signup
+    post 'i/signup/staff', action: :staff_signup, as: :staff_signup_post
+    get 'i/signup/staff/change_signup_email_form', action: :staff_change_signup_email_form, as: :staff_change_signup_email_form
+    post 'i/signup/staff/change_signup_email', action: :staff_change_signup_email, as: :staff_change_signup_email
+
+    # Step 2
+    get 'i/signup/staff/email_verification_form', action: :staff_email_verification_form, as: :staff_email_verification_form
+    get 'i/signup/staff/email_verification_form_updated_email',
+      action: :staff_email_verification_form_updated_email,
+      as: :staff_email_verification_form_updated_email
+    post 'i/signup/staff/verify_email_by_pin', action: :staff_verify_email_by_pin, as: :staff_verify_pin
+
+    # Step 3 - "Tell us about your work" (no SheerID step for staff)
+    get 'i/signup/staff/details', action: :staff_details_form, as: :staff_details_form
+    post 'i/signup/staff/complete_profile', action: :staff_complete_profile, as: :staff_complete_profile
   end
 
   scope controller: 'newflow/password_management' do

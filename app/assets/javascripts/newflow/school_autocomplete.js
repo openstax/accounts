@@ -30,6 +30,11 @@
     listbox.hidden = true;
     container.appendChild(listbox);
 
+    var matchLine = document.createElement('div');
+    matchLine.className = 'school-autocomplete-match';
+    matchLine.hidden = true;
+    container.appendChild(matchLine);
+
     input.setAttribute('role', 'combobox');
     input.setAttribute('aria-autocomplete', 'list');
     input.setAttribute('aria-expanded', 'false');
@@ -42,6 +47,8 @@
 
     input.addEventListener('input', function() {
       hiddenId.value = '';
+      updateMatch(null);
+      dispatchSelected(null);
       var query = input.value.trim();
       if (query.length < MIN_QUERY_LENGTH) {
         close();
@@ -167,11 +174,35 @@
       if (school) {
         input.value = school.name;
         hiddenId.value = school.id;
+        updateMatch(school);
+        dispatchSelected(school);
       } else {
         // The use-as-entered row: keep the typed text, no school link.
         hiddenId.value = '';
+        updateMatch(null);
+        dispatchSelected(null);
       }
       close();
+    }
+
+    function updateMatch(school) {
+      if (!school) {
+        matchLine.hidden = true;
+        matchLine.textContent = '';
+        return;
+      }
+      var location = [school.city, school.state].filter(Boolean).join(', ');
+      matchLine.textContent = '✓ Matched — ' + school.name + (location ? ', ' + location : '');
+      matchLine.hidden = false;
+    }
+
+    // Notifies listeners (e.g. the K-12 grade-band question) with the picked
+    // school, or null when the field is cleared/edited/left as free text.
+    function dispatchSelected(school) {
+      container.dispatchEvent(new CustomEvent('school-autocomplete:selected', {
+        bubbles: true,
+        detail: { school: school }
+      }));
     }
 
     function close() {

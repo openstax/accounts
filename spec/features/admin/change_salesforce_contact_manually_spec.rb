@@ -1,15 +1,9 @@
 require 'rails_helper'
-require 'vcr_helper'
 
-feature 'Change Salesforce contact manually', js: true, vcr: VCR_OPTS do
-  before(:all) do
-    VCR.use_cassette('Change_Salesforce_contact_manually/sf_setup', VCR_OPTS) do
-      @proxy = SalesforceProxy.new
-      @proxy.setup_cassette
-    end
-  end
-
+feature 'Change Salesforce contact manually', js: true do
   before(:each) do
+    disable_sfdc_client
+
     @admin_user = create_admin_user
     visit '/'
     complete_newflow_log_in_screen('admin')
@@ -29,7 +23,7 @@ feature 'Change Salesforce contact manually', js: true, vcr: VCR_OPTS do
   end
 
   it 'can be set if the Contact exists in SF' do
-    contact = @proxy.new_contact
+    contact = stub_salesforce_contact(id: '0030v000001a2b3AAA')
     fill_in 'user_salesforce_contact_id', with: contact.id
     click_button 'Save'
     expect(page).to have_content('successfully updated')
@@ -38,6 +32,7 @@ feature 'Change Salesforce contact manually', js: true, vcr: VCR_OPTS do
   end
 
   it 'cannot be set if the Contact does not exist in SF' do
+    allow(OpenStax::Salesforce::Remote::Contact).to receive(:find).and_return(nil)
     @target_user.update_attribute(:salesforce_contact_id, 'original')
     fill_in 'user_salesforce_contact_id', with: '0010v000002Wo0qAAC'
     click_button 'Save'
@@ -47,6 +42,7 @@ feature 'Change Salesforce contact manually', js: true, vcr: VCR_OPTS do
   end
 
   it 'cannot be set if the ID is malformed' do
+    allow(OpenStax::Salesforce::Remote::Contact).to receive(:find).and_raise(StandardError.new('malformed'))
     @target_user.update_attribute(:salesforce_contact_id, 'original')
     fill_in 'user_salesforce_contact_id', with: 'somethingwonky'
     click_button 'Save'

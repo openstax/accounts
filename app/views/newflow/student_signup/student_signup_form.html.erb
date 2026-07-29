@@ -13,14 +13,15 @@
 
 <div id="login-signup-form">
     <div class="content">
-        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
+        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active' } %>
 
         <%= newflow_login_signup_card(
                     id: 'signup-page',
-                    header: (I18n.t(:"login_signup_form.signup_page_header")),
-                    current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
-                    classes: 'signup-page') do %>
-            <% lev_form_for :signup, url: newflow_signup_post_path do |form| %>
+                    header: nil,
+                    current_step: nil,
+                    classes: 'signup-page',
+                    show_exit_icon: true) do %>
+            <%= lev_form_for :signup, url: newflow_signup_post_path do |form| %>
                 <%
                     form_helper = NewflowFormHelper::Newflow.new(
                         f: form,
@@ -28,26 +29,18 @@
                         errors: @handler_result&.errors
                     )
                 %>
-                <div class="content role-section">
-                    <div>
-                        <%= render partial: 'newflow/back_arrow', locals: { path: newflow_signup_path, name: 'welcome' } %>
-                        <div class="role-button"><%= I18n.t(:"login_signup_form.student") %></div>
-                    </div>
-                </div>
+                <%=
+                    render partial: 'newflow/signup_progress_header', locals: {
+                        back_path: newflow_signup_path,
+                        back_label: I18n.t(:"login_signup_form.student"),
+                        step_text: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
+                        progress_percent: 50,
+                        header_text: I18n.t(:"login_signup_form.student_signup_page_header")
+                    }
+                %>
 
                 <div class="content social-section">
-                    <div><%= I18n.t(:"login_signup_form.signup_with") %></div>
-
-                    <div class="social-buttons">
-
-                        <div class="fb-share-button">
-                            <%= link_to newflow_auth_path(:facebooknewflow),
-                                        class: 'facebook btn',
-                                        :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3B-Facebook'} do %>
-                                <i class="social-icon fa fa-facebook"></i>
-                                <span>Facebook</span>
-                            <% end %>
-                        </div>
+                    <div class="social-buttons social-buttons--stacked">
 
                         <div class="google-share-button">
                             <%=
@@ -65,6 +58,15 @@
                             <% end %>
                         </div>
 
+                        <div class="fb-share-button">
+                            <%= link_to newflow_auth_path(:facebooknewflow),
+                                        class: 'facebook btn',
+                                        :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3B-Facebook'} do %>
+                                <i class="social-icon fa fa-facebook"></i>
+                                <span>Facebook</span>
+                            <% end %>
+                        </div>
+
                     </div>
                 </div>
 
@@ -72,32 +74,34 @@
                     render(
                         partial: 'newflow/form_divider',
                         locals: {
-                            dividing_text: I18n.t(:"login_signup_form.or_sign_up_below")
+                            dividing_text: I18n.t(:"login_signup_form.or_sign_up_with_email")
                         }
                     )
                 %>
 
-                <div class="content control-group">
-                    <%= label_tag :signup_first_name, I18n.t(:"login_signup_form.first_name_label"),
-                                class: 'field-label required'
-                    %>
-                    <%= form_helper.text_field name: :first_name,
-                                placeholder: I18n.t(:"login_signup_form.first_name_label"),
-                                autofocus: true,
-                                required: true
-                    %>
-                </div>
+                <div class="content control-group name-fields-grid">
+                    <div>
+                        <%= label_tag :signup_first_name, I18n.t(:"login_signup_form.first_name_label"),
+                                    class: 'field-label required'
+                        %>
+                        <%= form_helper.text_field name: :first_name,
+                                    placeholder: I18n.t(:"login_signup_form.first_name_label"),
+                                    autofocus: true,
+                                    required: true
+                        %>
+                    </div>
 
-                <div class="content control-group">
-                    <%=
-                        label_tag :signup_last_name, I18n.t(:"login_signup_form.last_name_label"),
-                        class: 'field-label required'
-                    %>
-                    <%=
-                        form_helper.text_field name: :last_name,
-                        placeholder: I18n.t(:"login_signup_form.last_name_label"),
-                        required: true
-                    %>
+                    <div>
+                        <%=
+                            label_tag :signup_last_name, I18n.t(:"login_signup_form.last_name_label"),
+                            class: 'field-label required'
+                        %>
+                        <%=
+                            form_helper.text_field name: :last_name,
+                            placeholder: I18n.t(:"login_signup_form.last_name_label"),
+                            required: true
+                        %>
+                    </div>
                 </div>
 
                 <div class="content control-group">
@@ -112,7 +116,10 @@
                 </div>
 
                 <div class="content control-group">
-                    <%= label_tag :signup_school, I18n.t(:"educator_profile_form.school_name"), class: 'field-label' %>
+                    <%= label_tag(:signup_school, nil, class: 'field-label') do %>
+                        <%= I18n.t(:"educator_profile_form.school_name") %>
+                        <span class="field-label-optional"><%= I18n.t(:"login_signup_form.school_optional_suffix") %></span>
+                    <% end %>
                     <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>">
                         <%=
                             form_helper.text_field(
@@ -191,6 +198,7 @@
                         )
                     %>
                 </div>
+                <p class="content signup-footer-note"><%= I18n.t(:"login_signup_form.student_signup_footer_note") %></p>
             <% end %>
         <% end %>
     </div>

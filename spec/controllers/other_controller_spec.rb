@@ -15,14 +15,9 @@ describe OtherController, type: :controller do
           user.update!(is_profile_complete: true)
         end
 
-          it 'renders 200 OK status' do
+        it 'redirects to account overview' do
           get(:profile_newflow)
-          expect(response.status).to eq(200)
-        end
-
-        it 'renders profile_newflow' do
-          get(:profile_newflow)
-          expect(response).to render_template(:profile_newflow)
+          expect(response).to redirect_to(account_overview_path)
         end
       end
 

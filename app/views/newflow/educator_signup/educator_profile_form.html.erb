@@ -3,11 +3,19 @@
 <div id="login-signup-form">
   <div class="content">
     <%
+      # Order matches the compressed step-4 design: Instructor first (default
+      # selection), then Administrator/Researcher, with "Other staff" last
+      # since it routes away from the rest of this form. Defaults to
+      # "instructor" only when the user hasn't already picked a role (e.g. a
+      # first-time visit) -- a returning user finishing their profile later
+      # (see account Overview's "Finish your profile" nudge) sees their own
+      # previously-saved role selected instead.
+      current_educator_role = %w(instructor administrator researcher other).include?(user.role) ? user.role : 'instructor'
       educator_complete_roles = [
-        [ educator_copy(:instructor), 'instructor', false ],
-        [ educator_copy(:researcher), 'researcher', false ],
-        [ educator_copy(:administrator), 'administrator', false ],
-        [ educator_copy(:other), 'other', false ]
+        [ educator_copy(:instructor), 'instructor', current_educator_role == 'instructor' ],
+        [ educator_copy(:administrator), 'administrator', current_educator_role == 'administrator' ],
+        [ educator_copy(:researcher), 'researcher', current_educator_role == 'researcher' ],
+        [ educator_copy(:other), 'other', current_educator_role == 'other' ]
       ]
     %>
 
@@ -18,14 +26,37 @@
           id: 'signup-page',
           header: educator_copy(:complete_page_header),
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 4, total_steps: 4),
+          progress_bar: 1.0,
           classes: 'signup-page completed-step') do %>
-    <% lev_form_for :signup, url: educator_complete_profile_path do |f| %>
-    <% fh = NewflowFormHelper::Newflow.new(
-      f: f,
-      context: self,
-      errors: @handler_result&.errors
-    )
+    <%= lev_form_for :signup, url: educator_complete_profile_path do |f| %>
+    <%
+      fh = NewflowFormHelper::Newflow.new(
+        f: f,
+        context: self,
+        errors: @handler_result&.errors
+      )
     %>
+    <%#
+      Historical note: content placement here used to be load-bearing -- with
+      the old non-output lev_form_for tag, any sibling printed content in the
+      card's capture scope silently dropped the whole form (Rails `capture`
+      only falls back to the block's return value when the output buffer is
+      empty). Now that lev_form_for is invoked as an output tag (see
+      CLAUDE.md, "View gotcha"), placement is free. NB: never put literal
+      ERB delimiters inside this comment -- a percent-gt sequence ends it.
+    %>
+    <p class="profile-subtitle"><%= educator_copy(:profile_subtitle) %></p>
+
+    <%#
+      Static mission stat rather than a per-book adoption count: the design
+      mock showed a per-book figure ("3,200 instructors used Biology 2e"), but
+      that data isn't trivially available server-side here, and we never want
+      to show a fabricated number. Swap in a verified, sourced figure (e.g.
+      from openstax-data) if/when one is wired up.
+    %>
+    <div class="profile-social-proof">
+      <%= educator_copy(:social_proof).html_safe %>
+    </div>
         <div class="content required-fields-notice">
           <%= I18n.t(:"login_signup_form.all_fields_required") %>
         </div>
@@ -55,6 +86,7 @@
                   %>
                   <%= f.hidden_field :school_id %>
                 </div>
+                <div class="school-match-confirmation" style="display: none;"></div>
               </div>
             </div>
 
@@ -76,6 +108,28 @@
                 %>
               </div>
             </div>
+
+            <fieldset class="question grade-band">
+              <legend class='field-label'><%= educator_copy(:grade_levels) %></legend>
+              <div class="radio-control-group">
+                <label>
+                  <%= f.radio_button(:grade_band, 'elementary', checked: false, class: 'custom-control-input') %>
+                  <%= label :grade_band_elementary, educator_copy(:grade_band_elementary), class: 'custom-control-label' %>
+                </label>
+                <label>
+                  <%= f.radio_button(:grade_band, 'middle', checked: false, class: 'custom-control-input') %>
+                  <%= label :grade_band_middle, educator_copy(:grade_band_middle), class: 'custom-control-label' %>
+                </label>
+                <label>
+                  <%= f.radio_button(:grade_band, 'high', checked: false, class: 'custom-control-input') %>
+                  <%= label :grade_band_high, educator_copy(:grade_band_high), class: 'custom-control-label' %>
+                </label>
+                <label>
+                  <%= f.radio_button(:grade_band, 'multiple', checked: false, class: 'custom-control-input') %>
+                  <%= label :grade_band_multiple, educator_copy(:grade_band_multiple), class: 'custom-control-label' %>
+                </label>
+              </div>
+            </fieldset>
 
             <fieldset class="question completed-role">
               <legend class='field-label'><%= educator_copy(:describe_role) %></legend>
@@ -101,7 +155,13 @@
 
               </div>
 
-              <div class="other-specify">
+              <%#
+                Choosing "Other staff" routes to the staff questionnaire
+                ("Tell us about your work") via the data attribute below --
+                see onRoleChange in educator_complete_dynamic.js.coffee. The
+                inline "please specify" field stays as a no-JS fallback.
+              %>
+              <div class="other-specify" data-staff-details-path="<%= staff_details_form_path %>">
                 <%= label_tag :other_role_name, educator_copy(:other_please_specify),
                               class: 'field-label'
                 %>
@@ -116,48 +176,7 @@
                   )
                 %>
               </div>
-            </fieldset>
-
-            <fieldset class="form-group question how-chosen">
-              <legend class='field-label'><%= educator_copy(:how_textbooks_chosen) %></legend>
-              <div class="radio-control-group">
-                <div class="chosen newflow-mustdo-alert">
-                  <%= educator_copy(:select_option) %>
-                </div>
-                <label>
-                  <%=
-                    f.radio_button(
-                      :who_chooses_books,
-                      :instructor,
-                      checked: false,
-                      class: 'completed-role custom-control-input'
-                    )
-                  %>
-                  <%= label :using_primary_textbook, educator_copy(:chosen_by_instructor), class: 'custom-control-label' %>
-                </label>
-                <label>
-                  <%=
-                    f.radio_button(
-                      :who_chooses_books,
-                      :committee,
-                      checked: false,
-                      class: 'completed-role custom-control-input'
-                    )
-                  %>
-                  <%= label :using_recommending_openstax, educator_copy(:chosen_by_committee), class: 'custom-control-label' %>
-                </label>
-                <label>
-                  <%=
-                    f.radio_button(
-                      :who_chooses_books,
-                      :coordinator,
-                      checked: false,
-                      class: 'completed-role custom-control-input'
-                    )
-                  %>
-                  <%= label :using_future, educator_copy(:chosen_by_coordinator), class: 'custom-control-label' %>
-                </label>
-              </div>
+              <div class="form-helper-text"><%= educator_copy(:other_staff_routing_note) %></div>
             </fieldset>
 
             <fieldset class="question how-using">
@@ -166,7 +185,7 @@
                 <div class="using newflow-mustdo-alert">
                   <%= educator_copy(:select_option) %>
                 </div>
-                <label>
+                <label class="usage-option">
                   <%=
                     f.radio_button(
                       :using_openstax_how,
@@ -177,7 +196,7 @@
                   %>
                   <%= label :using_primary_textbook, educator_copy(:using_primary_textbook), class: 'custom-control-label' %>
                 </label>
-                <label>
+                <label class="usage-option">
                   <%=
                     f.radio_button(
                       :using_openstax_how,
@@ -188,7 +207,7 @@
                   %>
                   <%= label :using_recommending_openstax, educator_copy(:using_recommending_openstax), class: 'custom-control-label' %>
                 </label>
-                <label>
+                <label class="usage-option">
                   <%=
                     f.radio_button(
                       :using_openstax_how,
@@ -236,6 +255,7 @@
 
               <%= render partial: 'newflow/educator_signup/book_picker',
                          locals: { field_name: 'books_used', books_by_subject: @books_by_subject } %>
+              <div class="form-helper-text"><%= educator_copy(:book_picker_select_up_to) %></div>
             </div>
 
             <div data-template-id="used-book-info" class="book-detail-card">
@@ -293,6 +313,7 @@
 
               <%= render partial: 'newflow/educator_signup/book_picker',
                          locals: { field_name: 'books_of_interest', books_by_subject: @books_by_subject } %>
+              <div class="form-helper-text"><%= educator_copy(:book_picker_select_up_to) %></div>
             </div>
 
             <% if Settings::FeatureFlags.collect_student_count_all_paths %>
@@ -318,6 +339,7 @@
                     numberonly: true
                   )
                 %>
+                <div class="form-helper-text">A ballpark for this school year is fine.</div>
               </div>
             <% end %>
 
@@ -326,14 +348,15 @@
           <%= f.hidden_field :is_school_not_supported_by_sheerid, value: is_school_not_supported_by_sheerid? %>
           <%= f.hidden_field :is_country_not_supported_by_sheerid, value: is_country_not_supported_by_sheerid? %>
           <%= f.hidden_field :is_cs_form, value: is_cs_form? %>
+          <%= f.hidden_field :finish_later, value: 'false' %>
 
           <%=
             f.submit(
-              I18n.t(:"login_signup_form.continue_button"),
+              educator_copy(:finish_button),
               id: 'signup_form_submit_button',
               class: 'primary',
               data: {
-                disable_with: I18n.t(:"login_signup_form.continue_button"),
+                disable_with: educator_copy(:finish_button),
                 #  Google Analytics
                 ga_category: 'Account Creation',
                 ga_action: 'Click',
@@ -341,6 +364,9 @@
               }
             )
           %>
+          <button type="button" class="finish-later-link" id="finish-later-button">
+            <%= educator_copy(:finish_later_link) %>
+          </button>
         </div>
       <% end %>
     <% end %>

@@ -22,7 +22,7 @@ module Newflow
         it 'all works' do
           visit(login_path(return_param))
           click_on(I18n.t(:"login_signup_form.sign_up"))
-          click_on(I18n.t(:"login_signup_form.educator"))
+          find('.join-as__option--educator').click
 
           # Step 1
           fill_in 'signup_first_name',	with: first_name
@@ -60,8 +60,15 @@ module Newflow
           # Step 4
           expect_educator_step_4_page
           select_educator_role('other')
-          fill_in('Other (please specify)', with: 'President')
+          # "Other staff" now routes to the staff questionnaire (redesign):
+          # complete signup there instead of the old inline free-text field.
+          expect(page).to have_current_path(staff_details_form_path)
+          find('#signup_staff_role_other').click
+          fill_in(I18n.t(:"staff_details_form.other_please_specify"), with: 'President')
+          fill_in('signup[school_name]', with: 'Rice University')
+          fill_in('signup[num_learners_supported]', with: '10')
           find('#signup_form_submit_button').click
+          wait_for_ajax
           visit(signup_done_path)
           expect(page).to have_current_path(signup_done_path)
         end
@@ -72,7 +79,7 @@ module Newflow
           visit(login_path(return_param))
           click_on(I18n.t(:"login_signup_form.sign_up"))
           expect(page).to have_current_path(newflow_signup_path)
-          click_on(I18n.t(:"login_signup_form.educator"))
+          find('.join-as__option--educator').click
 
           # Step 1
           fill_in 'signup_first_name',	with: first_name
@@ -102,8 +109,15 @@ module Newflow
           # Step 4
           expect_educator_step_4_page
           find('#signup_educator_specific_role_other').click
-          fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
-          click_on('Continue')
+          # "Other staff" now routes to the staff questionnaire (redesign):
+          # complete signup there instead of the old inline free-text field.
+          expect(page).to have_current_path(staff_details_form_path)
+          find('#signup_staff_role_other').click
+          fill_in(I18n.t(:"staff_details_form.other_please_specify"), with: 'President')
+          fill_in('signup[school_name]', with: 'Rice University')
+          fill_in('signup[num_learners_supported]', with: '10')
+          find('#signup_form_submit_button').click
+          wait_for_ajax
           visit(signup_done_path)
           expect(page).to have_current_path(signup_done_path)
         end
@@ -149,7 +163,6 @@ module Newflow
           visit(educator_profile_form_path)
           expect_educator_step_4_page
           select_educator_role('instructor')
-          find('#signup_who_chooses_books_instructor').click
         end
 
         context 'label for books list' do
@@ -199,7 +212,6 @@ module Newflow
           visit(educator_profile_form_path)
           expect_educator_step_4_page
           select_educator_role('instructor')
-          find('#signup_who_chooses_books_instructor').click
           find('#signup_using_openstax_how_as_primary').click
 
           expect(page).to have_selector('.expected-start-semester', visible: true)
@@ -213,7 +225,6 @@ module Newflow
           visit(educator_profile_form_path)
           expect_educator_step_4_page
           select_educator_role('instructor')
-          find('#signup_who_chooses_books_instructor').click
           find('#signup_using_openstax_how_as_primary').click
 
           select 'Next semester', from: 'signup_expected_start_semester'
@@ -229,7 +240,6 @@ module Newflow
           visit(educator_profile_form_path)
           expect_educator_step_4_page
           select_educator_role('instructor')
-          find('#signup_who_chooses_books_instructor').click
           find('#signup_using_openstax_how_as_recommending').click
 
           expect(page).to have_selector('.expected-start-semester', visible: true)
@@ -258,7 +268,7 @@ module Newflow
       it 'redirects them to continue signup flow (step 3) after logging in' do
         visit(login_path(return_param))
         click_on(I18n.t(:"login_signup_form.sign_up"))
-        click_on(I18n.t(:"login_signup_form.educator"))
+        find('.join-as__option--educator').click
 
         # Step 1
         fill_in 'signup_first_name',	with: first_name
@@ -301,20 +311,89 @@ module Newflow
 
         # Step 3
         expect_sheerid_iframe
-        click_on('Stuck? Click here to skip instant verification.')
+        click_on(I18n.t(:"login_signup_form.sheerid_manual_review_link_text"))
 
         # Step 4
         expect_educator_step_4_page
         fill_in('signup[school_name]', with: 'Rice University')
-        find('#signup_educator_specific_role_other').click
-        expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
-        fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
-        click_on('Continue')
+        # Administrator stays inline on the educator form ("Other staff" now
+        # routes to the staff questionnaire); use it here so this spec keeps
+        # covering the educator pending-CS-verification path.
+        find('#signup_educator_specific_role_administrator').click
+        find('#signup_using_openstax_how_as_future').click
+        click_on(I18n.t(:"educator_profile_form.finish_button"))
         visit(educator_pending_cs_verification_path)
         expect(page).to have_current_path(educator_pending_cs_verification_path)
         click_on('Finish')
         wait_for_ajax
         expect(page).to have_current_path(external_app_for_specs_path)
+      end
+    end
+
+    context 'school-email gate at the SheerID step' do
+      # Simulates an instructor whose only email on file is personal - e.g. a
+      # Google-signup instructor, whose account has no manually-entered email.
+      let(:personal_email) { Faker::Internet.unique.email(domain: '@gmail.com') }
+      let(:school_email) { Faker::Internet.unique.email(domain: '@rice.edu') }
+
+      before do
+        user = create_newflow_user(personal_email, password, true, nil, 'instructor')
+        user.update!(is_profile_complete: false)
+      end
+
+      it 'shows the gate, and adding a school email proceeds to a pre-filled SheerID widget' do
+        visit(login_path(return_param))
+        complete_newflow_log_in_screen(personal_email, password)
+
+        # Step 3 - gate shown because the on-file email looks personal
+        expect(page).to have_text(I18n.t(:"login_signup_form.school_email_gate_title"))
+        expect(page).to have_text(personal_email)
+
+        fill_in(I18n.t(:"login_signup_form.school_issued_email_label"), with: school_email)
+        click_on(I18n.t(:"login_signup_form.continue_button"))
+        perform_enqueued_jobs
+
+        expect(page).to have_current_path(educator_sheerid_form_path)
+        expect(page).to_not have_text(I18n.t(:"login_signup_form.school_email_gate_title"))
+        expect(EmailAddress.find_by(value: school_email)).to be_present
+
+        within_frame do
+          expect(page.find('#sid-email')[:value]).to have_text(school_email)
+        end
+      end
+
+      it 'lets the user proceed with their current (personal) email anyway' do
+        visit(login_path(return_param))
+        complete_newflow_log_in_screen(personal_email, password)
+
+        expect(page).to have_text(I18n.t(:"login_signup_form.school_email_gate_title"))
+        click_on(I18n.t(:"login_signup_form.use_current_email_anyway"))
+
+        expect(page).to have_current_path(educator_sheerid_form_path)
+        expect(page).to_not have_text(I18n.t(:"login_signup_form.school_email_gate_title"))
+
+        within_frame do
+          expect(page.find('#sid-email')[:value]).to have_text(personal_email)
+        end
+      end
+    end
+
+    context 'when the signup email already looks like a school email' do
+      let(:school_email_on_file) { Faker::Internet.unique.email(domain: '@rice.edu') }
+
+      before do
+        user = create_newflow_user(school_email_on_file, password, true, nil, 'instructor')
+        user.update!(is_profile_complete: false)
+      end
+
+      it 'goes straight to the SheerID widget without the gate' do
+        visit(login_path(return_param))
+        complete_newflow_log_in_screen(school_email_on_file, password)
+
+        expect(page).to_not have_text(I18n.t(:"login_signup_form.school_email_gate_title"))
+        within_frame do
+          expect(page.find('#sid-email')[:value]).to have_text(school_email_on_file)
+        end
       end
     end
   end

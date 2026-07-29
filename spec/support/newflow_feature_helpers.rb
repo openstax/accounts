@@ -26,7 +26,7 @@ def complete_newflow_log_in_screen(username_or_email, password = 'password')
   wait_for_animations
   wait_for_ajax
   screenshot!
-  click_button(I18n.t(:"login_signup_form.continue_button"))
+  click_button(I18n.t(:"login_signup_form.log_in"))
   wait_for_animations
   wait_for_ajax
   screenshot!
@@ -83,7 +83,7 @@ def newflow_click_sign_up(role:)
   click_on(t :"login_signup_form.sign_up") unless page.current_path == newflow_signup_path
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"login_signup_form.welcome_page_header")
-  find(".join-as__role.#{role}").click
+  find(".join-as__option.#{role}").click
 end
 
 def newflow_complete_add_password_screen(password=nil)
@@ -92,18 +92,18 @@ def newflow_complete_add_password_screen(password=nil)
   find('#login-signup-form').click
   wait_for_animations
   find('[type=submit]').click
-  expect(page).to have_content(t :"login_signup_form.profile_newflow_page_header")
+  expect(page).to have_current_path(account_overview_path, wait: 10)
 end
 
 def expect_newflow_profile_page
-  valid_paths = /\A(?:#{Regexp.escape(profile_newflow_path)}|#{Regexp.escape(pose_terms_path)}(?:\?.*)?)\z/
+  valid_paths = /\A(?:#{Regexp.escape(account_overview_path)}|#{Regexp.escape(pose_terms_path)}(?:\?.*)?)\z/
 
   expect(page).to have_no_missing_translations
   # expect(page).to have_content(t :"legacy.users.edit.page_heading")
   expect(page).to have_current_path(valid_paths, wait: 10)
   wait_for_animations
   wait_for_ajax
-  expect(page).to have_current_path(profile_newflow_path, wait: 10)
+  expect(page).to have_current_path(account_overview_path, wait: 10)
 end
 
 def newflow_expect_signup_verify_screen
@@ -177,7 +177,7 @@ end
 
 def expect_login_form_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"login_signup_form.login_page_header")
+  expect(page).to have_content(t :"login_signup_form.login_page_welcome_header")
 end
 
 def expect_sign_up_welcome_tab

@@ -120,7 +120,7 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page).to have_current_path(profile_newflow_path)
+              expect(page).to have_current_path(account_overview_path)
             end
         end
       end
@@ -133,7 +133,7 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page).to have_current_path(profile_newflow_path)
+              expect(page).to have_current_path(account_overview_path)
             end
           end
         end
@@ -161,14 +161,16 @@ feature 'User logs in or signs up with a social network', js: true do
             have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email_value)))
           )
           click_on('Finish')
-          click_on('Log out')
+          first(:link_or_button, 'Log out').click
         end
       end
 
       scenario 'user can subsequently log in' do
         simulate_login_signup_with_social(name: 'Elon Musk', email: nil_email_value) do
           click_on('Facebook')
-          expect(page).to have_current_path(profile_newflow_path)
+          expect(page).to have_current_path(account_overview_path)
+          # Email is shown on the profile page, not the account overview.
+          visit(account_profile_path)
           expect(page).to have_content(email_value)
         end
       end
@@ -200,7 +202,7 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page).to have_current_path(profile_newflow_path)
+              expect(page).to have_current_path(account_overview_path)
 
               # A `facebooknewflow` auth was created since the user already had a `facebook` one
               expect(user.authentications.count).to eq(2)
@@ -217,7 +219,9 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page).to have_current_path(profile_newflow_path)
+              expect(page).to have_current_path(account_overview_path)
+              # Email is shown on the profile page, not the account overview.
+              visit(account_profile_path)
               expect(page).to have_content(email_value)
             end
           end

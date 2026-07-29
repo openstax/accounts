@@ -11,17 +11,18 @@ feature 'User updates password on profile screen', js: true do
   end
 
   scenario "changes existing" do
-    visit profile_newflow_path
+    visit account_security_path
     find('[data-provider=identity] .edit--newflow').click
     expect(page).to have_current_path(/\/i\/(change_password_form|profile)/)
     # JS navigation may not have fired yet; navigate directly if still on profile
-    visit(change_password_form_path) if page.has_current_path?(profile_newflow_path, wait: 0)
-    expect(page).not_to have_current_path(profile_newflow_path)
+    visit(change_password_form_path) if page.has_current_path?(account_security_path, wait: 0)
+    expect(page).not_to have_current_path(account_security_path)
     newflow_complete_add_password_screen
+    # Adding a password lands on the account overview; the sign-in methods now
+    # live on the Security tab, so revisit it to confirm the identity provider.
+    visit account_security_path
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(
-      ActionView::Base.full_sanitizer.sanitize t(:"legacy.users.edit.how_you_sign_in_html")
-    )
+    expect(page).to have_content('Sign-in methods')
     expect(page).to have_css('[data-provider=identity]')
   end
 end

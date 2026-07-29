@@ -3,7 +3,6 @@ ENV['RAILS_ENV'] ||= 'test'
 require 'simplecov_helper'
 require File.expand_path('../../config/environment', __FILE__)
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
-require 'openstax/salesforce/spec_helpers'
 require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/email/rspec'
@@ -11,8 +10,6 @@ require 'shoulda/matchers'
 require 'parallel_tests'
 require 'database_cleaner'
 require 'spec_helper'
-
-include OpenStax::Salesforce::SpecHelpers
 
 # https://github.com/colszowka/simplecov/issues/369#issuecomment-313493152
 # Load rake tasks so they can be tested.
@@ -30,9 +27,27 @@ end
 """
   Config for Capybara
 """
+# Chrome's built-in password manager will, after the first successful password
+# submission in a browser session, start offering to save/autofill credentials on
+# that origin. In our headless test runs this silently intercepts the next login
+# form's password field: Capybara's fill_in reports success, but Chrome's autofill
+# UI clears/overwrites the field a moment later, leaving it blank and the (JS-
+# disabled-until-filled) submit button stuck disabled. Since Capybara reuses one
+# browser process across many examples, this reliably breaks the *second and later*
+# login in a run -- not the first -- which is why it presented as sporadic flakiness
+# across unrelated specs (annual_check_in, pose_terms, student_signup_flow) rather
+# than a single reproducible failure. Disable the password manager/leak-detection
+# entirely for test runs.
+CHROME_TEST_PREFS = {
+  'credentials_enable_service' => false,
+  'profile.password_manager_enabled' => false,
+  'profile.password_manager_leak_detection' => false
+}.freeze
+
 # https://robots.thoughtbot.com/headless-feature-specs-with-chrome
 Capybara.register_driver :selenium_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new args: [ 'lang=en' ]
+  CHROME_TEST_PREFS.each { |name, value| options.add_preference(name, value) }
 
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
@@ -43,6 +58,7 @@ Capybara.register_driver :selenium_chrome_headless do |app|
     'no-sandbox', 'headless', 'disable-dev-shm-usage',
     'disable-gpu', 'disable-extensions', 'disable-infobars'
   ]
+  CHROME_TEST_PREFS.each { |name, value| options.add_preference(name, value) }
 
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
@@ -60,7 +76,10 @@ if in_docker?
 
   Capybara.register_driver :selenium_chrome_headless_in_docker do |app|
       chrome_capabilities = ::Selenium::WebDriver::Remote::Capabilities.chrome(
-        'goog:chromeOptions' => { 'args': %w[no-sandbox headless disable-gpu] }
+        'goog:chromeOptions' => {
+          'args': %w[no-sandbox headless disable-gpu],
+          'prefs': CHROME_TEST_PREFS
+        }
       )
 
       Capybara::Selenium::Driver.new(app,
@@ -88,13 +107,20 @@ else
     current_time = Time.current
 
     if update_time.nil? || current_time - update_time > 60
-      Webdrivers::Chromedriver.update
+      begin
+        Webdrivers::Chromedriver.update
+      rescue StandardError => e
+        warn "[webdrivers] Chromedriver update failed: #{e.message}"
+      end
 
       file.rewind
       file.write current_time.iso8601
       file.flush
       file.truncate file.pos
     end
+
+    # Pin the version so the gem won't try to re-check (and hit SSL) when Selenium starts
+    Webdrivers::Chromedriver.required_version = Webdrivers::Chromedriver.current_version
   ensure
     file.flock File::LOCK_UN
   end
@@ -175,8 +201,3 @@ class ActionDispatch::TestResponse
   end
 end
 
-def disable_sfdc_client
-  allow(ActiveForce)
-    .to receive(:sfdc_client)
-    .and_return(double('null object').as_null_object)
-end

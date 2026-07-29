@@ -17,8 +17,8 @@ feature 'Password reset', js: true do
   scenario 'while still logged in – user is not stuck in a loop' do
     login_token = generate_login_token_for_user(user)
     newflow_log_in_user('user@openstax.org', 'password')
-    visit profile_newflow_path
-    expect(page).to have_current_path(profile_newflow_path)
+    visit account_security_path
+    expect(page).to have_current_path(account_security_path)
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER + 1.second) do
       find('[data-provider=identity] .edit--newflow').click
@@ -26,7 +26,7 @@ feature 'Password reset', js: true do
 
       # Recent-signin checks can leave the user on profile in some runs; either way,
       # forgot-password should still be reachable without entering a redirect loop.
-      visit(reauthenticate_form_path) if page.has_current_path?(profile_newflow_path, wait: 0)
+      visit(reauthenticate_form_path) if page.has_current_path?(account_security_path, wait: 0)
       expect(page).to have_current_path(reauthenticate_form_path)
       expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
 

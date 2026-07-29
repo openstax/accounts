@@ -5,23 +5,6 @@ $font-path: '/accounts/fonts';
 @import "newflow_colors";
 @import "intlTelInput";
 
-html {
-    font-family: 'Neue Helvetica W01', sans-serif;
-}
-
-body {
-    @include width-up-to($phone-max) {
-        .content {
-            padding-left: 0;
-            padding-right: 0;
-        }
-    }
-
-    @include set-font(body-regular);
-    background-color: #fff;
-    color: var(--greyish-brown);
-}
-
 .banner {
     background-color: #d9edf7;
     padding: 1rem;
@@ -93,9 +76,11 @@ body {
 }
 
 .form-helper-text {
-  font-weight: normal;
-  font-style: italic;
-  margin: 1rem 0;
+  font-size: 0.95rem;
+  color: #6A6A6A;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  text-transform: none;
 }
 
 input.has-error {
@@ -134,7 +119,7 @@ input.has-error {
     }
 
     .question {
-        .how-using, .how-chosen, .total-num-students, .subjects-of-interest, .books-used  {
+        .how-using, .total-num-students, .subjects-of-interest, .books-used, .grade-band  {
             display: none;
         }
         margin-top: 25px;
@@ -142,6 +127,85 @@ input.has-error {
 
     .questions {
         margin-bottom: 25px;
+    }
+}
+
+// Compressed instructor profile step (step 4 of 4)
+.profile-progress-bar {
+    height: 0.4rem;
+    background: var(--very-light-pink);
+    border-radius: 999px;
+    margin: 0.5rem 0 2rem;
+
+    &__fill {
+        height: 100%;
+        width: 100%;
+        background: var(--success-message-color);
+        border-radius: 999px;
+    }
+}
+
+.profile-subtitle {
+    font-size: 1.4rem;
+    color: var(--placeholder-text);
+    margin: -0.5rem 0 1.5rem;
+}
+
+.profile-social-proof {
+    background: var(--success-background-color);
+    border: 0.1rem solid var(--success-border-color);
+    border-radius: 0.8rem;
+    padding: 1.2rem 1.6rem;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+
+    strong {
+        color: var(--success-message-color);
+    }
+}
+
+.school-match-confirmation {
+    font-size: 1.3rem;
+    color: var(--success-message-color);
+    margin-top: 0.4rem;
+
+    &:before {
+        content: "\2713";
+        margin-right: 0.4rem;
+    }
+}
+
+.usage-option {
+    display: block;
+    border: 0.1rem solid var(--very-light-pink);
+    border-radius: 0.6rem;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 0.8rem;
+    cursor: pointer;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    &:has(input:checked) {
+        border-color: var(--success-message-color);
+        background: var(--success-background-color);
+    }
+}
+
+.finish-later-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: none;
+    border: none;
+    color: #026AA1;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 1rem 0 0;
+
+    &:hover {
+        text-decoration: underline;
     }
 }
 
@@ -418,33 +482,19 @@ label.required::after {
         background-color: transparent;
         border: none;
         height: auto;
-        font-size: inherit;
+        font-size: 1rem;
         padding: 0;
         position: absolute;
-        top: 3.7rem;
-        right: 1.8rem;
+        top: 3.4rem;
+        right: 1rem;
 
-        color: #0070af;
+        color: #026AA1;
         font-weight: bold;
         cursor: pointer;
 
         @include wider-than($phone-max) {
             // more space to the right on desktop for users who use a password manager
-            right: 3.6rem;
-        }
-    }
-}
-
-.main-menu {
-    box-shadow: none;
-    box-sizing: border-box;
-    padding: 2rem 0 0 2rem;
-
-    .logo-wrapper {
-        padding: 0;
-
-        @include width-up-to($phone-max) {
-            margin: auto;
+            right: 3.2rem;
         }
     }
 }
@@ -475,25 +525,12 @@ label.required::after {
         height: 100%;
         padding: 0 1.5rem;
 
-        background-color: #f5f5f5;
+        background-color: #ffffff;
         border-radius: 1.5rem;
     }
 
     span {
         @include title-font(1.4rem);
-    }
-}
-
-#exit-icon {
-    border-left: 0.1rem solid #d5d5d5;
-    border-right: 0.1rem solid #d5d5d5;
-    padding: 1.5rem 0 0 1.5rem;
-
-    a {
-        float: right;
-        padding-right: 3rem;
-        padding-top: 1rem;
-        color: var(--greyish-brown);
     }
 }
 
@@ -570,10 +607,38 @@ input.has-error {
         z-index: 100;
     }
 
+    // Note: the negative top margin that used to pull the iframe up under
+    // the (previously empty) header area was removed - the page now has a
+    // real header, description, and (conditionally) a school-email gate
+    // banner directly above the widget, so the iframe should flow normally.
     iframe {
         position: relative;
         z-index: 0;
-        margin-top: -6.7rem;
+    }
+
+    .banner.orange.school-email-gate {
+        background-color: #fff6ef;
+        border: 0.1rem solid #d4450c;
+        border-radius: 0.4rem;
+        color: #424242;
+        margin-bottom: 2rem;
+
+        .school-email-gate__title {
+            font-weight: bold;
+            color: #002469;
+            margin-bottom: 0.5rem;
+        }
+
+        .school-email-gate__note {
+            font-size: 1.3rem;
+            margin-top: 0.5rem;
+        }
+
+        .school-email-gate__use-current-link {
+            display: inline-block;
+            margin-top: 1rem;
+            font-size: 1.3rem;
+        }
     }
 
     form, iframe {
@@ -611,102 +676,96 @@ $very-narrow: 37rem * $scale-factor;
         padding-right: 0.2rem;
     }
 
-    .join-as {
-        .blue-bar {
-            height: 1rem;
-            background-color: #007297;
-        }
+    .join-as__subheader {
+        font-size: 1.5rem;
+        color: #6A6A6A;
+        margin: 1rem 0 2rem;
+    }
 
-        .green-bar {
-            height: 1rem;
-            background-color: #0c9372;
-        }
+    .join-as--rows {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+    }
 
-        @include width-up-to($phone-max) {
-            display: flex;
-            flex-direction: column;
-            margin-top: 1rem;
+    .join-as__option {
+        display: flex;
+        align-items: center;
+        gap: 1.6rem;
+        text-align: left;
+        background: #fff;
+        border: 1px solid #D5D5D5;
+        border-radius: 0.8rem;
+        padding: 1.8rem 2rem;
+        color: #424242;
+        text-decoration: none;
+        transition: box-shadow 200ms cubic-bezier(0.25, 1, 0.5, 1),
+                    border-color 200ms cubic-bezier(0.25, 1, 0.5, 1),
+                    transform 200ms cubic-bezier(0.25, 1, 0.5, 1);
 
-            > div {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .join-as__role {
-                height: 15rem;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-            }
-
-            .join-as__description {
-                margin-top: 3rem;
-                margin-bottom: 3rem;
-                @include set-font(body-regular);
-            }
-        }
-
-        @include wider-than($phone-max) {
-            display: flex;
-
-            > div {
-                display: flex;
-                flex-direction: column;
-                width: 26.2rem;
-                margin-top: 3.5rem;
-
-                &:first-child {
-                    margin-right: 3rem;
-                }
-            }
-
-            .join-as__role {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-
-                height: 26rem;
-            }
-
-            .join-as__description {
-                margin-top: 3rem;
-                @include set-font(body-regular);
-            }
-        }
-
-        .join-as__role {
-            @include title-font(2.4rem);
-            text-align: center;
-            position: relative;
-            border: 0.1rem solid #d5d5d5;
-            border-bottom: 0;
-            box-sizing: border-box;
-
-            h2 {
-                font-size: inherit;
-                letter-spacing: inherit;
-                line-height: inherit;
-            }
-        }
-
-        a {
-            color: unset;
+        &:hover,
+        &:focus-visible {
             text-decoration: none;
-            // bcus `box-sizing: border-box` on hover isn't doing the job:
-            border: 0.1rem solid #fff;
+            color: #424242;
+            border-color: #026AA1;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+            transform: translateY(-1px);
 
-            &:hover {
-                border: 0.1rem solid #0dc0dc;
-                box-shadow: 0 0 .4rem rgba(13, 192, 220, 0.4);
+            .join-as__option-arrow {
+                transform: translateX(3px);
             }
         }
 
-        .join-as__role img {
-            position: absolute;
-            bottom: 0;
-            left: 2rem;
+        &:focus-visible {
+            outline: 2px solid #026AA1;
+            outline-offset: 2px;
         }
+    }
+
+    .join-as__option-icon img {
+        width: 44px;
+        height: 44px;
+        display: block;
+    }
+
+    .join-as__option-text {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .join-as__option-title {
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: #002E6D;
+        letter-spacing: normal;
+    }
+
+    .join-as__option-desc {
+        font-size: 1.4rem;
+        color: #6A6A6A;
+        line-height: 1.45;
+        letter-spacing: normal;
+    }
+
+    .join-as__option-arrow {
+        color: #D4450C;
+        font-size: 2rem;
+        transition: transform 200ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .join-as__login-hint {
+        font-size: 1.4rem;
+        color: #6A6A6A;
+        margin: 2rem 0 0;
+    }
+
+    .join-as__learner-hint {
+        font-size: 1.4rem;
+        color: #6A6A6A;
+        margin: 1.5rem 0 0;
+        text-align: center;
     }
 
     .tab-group {
@@ -744,6 +803,20 @@ $very-narrow: 37rem * $scale-factor;
             &[aria-selected="true"] {
                 background-color: #fff;
                 border-bottom-width: 0;
+                /* redesign: active tab reads as brand — blue-dark text, green underline */
+                box-shadow: inset 0 -3px 0 0 #76AE43;
+                color: #002E6D;
+                font-weight: 700;
+            }
+
+            &:not([aria-selected="true"]) {
+                color: #6A6A6A;
+                font-weight: 400;
+                transition: color 150ms cubic-bezier(0.25, 1, 0.5, 1);
+
+                &:hover {
+                    color: #002E6D;
+                }
             }
         }
 
@@ -755,7 +828,29 @@ $very-narrow: 37rem * $scale-factor;
             cursor: default;
             border: 0;
             border-bottom: 0.1rem solid #d5d5d5;
-            background-color: #fff; // TODO: use a shared variable
+            background-color: transparent;
+        }
+
+        .tab.tab--exit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.8rem 1rem;
+            border: 0;
+            border-bottom: 0.1rem solid #d5d5d5;
+            color: var(--greyish-brown);
+            text-decoration: none;
+            background: transparent;
+            font-size: 1.4rem;
+
+            i {
+                font-size: 1.4rem;
+            }
+
+            &:hover {
+                color: #424242;
+            }
         }
     }
 
@@ -763,6 +858,7 @@ $very-narrow: 37rem * $scale-factor;
         border-left: 0.1rem solid #d5d5d5;
         border-right: 0.1rem solid #d5d5d5;
         text-align: center;
+        background: #ffffff;
 
         @include width-up-to($phone-max) {
             @include set-font(h4);
@@ -835,6 +931,7 @@ $very-narrow: 37rem * $scale-factor;
             input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="radio"]):not([type="checkbox"]),
             textarea {
                 border-color: #949494;
+                border-radius: 0.3rem;
             }
         }
 
@@ -980,14 +1077,45 @@ $very-narrow: 37rem * $scale-factor;
             color: #666;
             opacity: 0.85;
         }
-
-        border-radius: 0;
     }
 }
 
 // Improve vertical spacing
 
 #login-signup-form  {
+    .login-page,
+    .signup-page,
+    .welcome-page {
+        position: relative;
+        background: #ffffff;
+    }
+
+    #exit-icon {
+        position: absolute;
+        top: 1.2rem;
+        right: 1.2rem;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #6A6A6A;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        z-index: 3;
+
+        .fa {
+            font-size: 1.1rem;
+        }
+
+        &:hover {
+            color: #424242;
+            background: #ffffff;
+        }
+    }
+
     .warning {
         &.edu, &.mistype {
             color: #c22032;
@@ -1025,7 +1153,7 @@ $very-narrow: 37rem * $scale-factor;
         .login-page {
             .page-header {
                 margin-top: 0;
-                padding-top: 4.5rem;
+                padding-top: 2.5rem;
             }
 
             form {
@@ -1038,6 +1166,13 @@ $very-narrow: 37rem * $scale-factor;
 
             [type="submit"] {
                 margin-top: 1rem;
+            }
+        }
+
+        .signup-page {
+            .page-header {
+                margin-top: 0;
+                padding-top: 2.5rem;
             }
         }
     }
@@ -1070,7 +1205,7 @@ $very-narrow: 37rem * $scale-factor;
 
         .login-page {
             .page-header {
-                padding-top: 8rem;
+                padding-top: 5rem;
             }
 
             form {
@@ -1082,9 +1217,16 @@ $very-narrow: 37rem * $scale-factor;
             }
         }
 
+        .signup-page {
+            .page-header {
+                padding-top: 5rem;
+            }
+        }
+
         .welcome-page {
             .page-header {
-                padding-top: 8rem;
+                padding-top: 5rem;
+                padding-bottom: 3rem;
             }
 
             form {
@@ -1106,6 +1248,114 @@ $very-narrow: 37rem * $scale-factor;
         @include wider-than($phone-max) {
             margin-bottom: 2rem;
             margin-top: 1.2rem;
+        }
+
+        border-radius: 0.3rem;
+        background-color: #D4450C;
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        padding: 0.85rem 1.4rem;
+
+        &:hover {
+            background-color: #A43509;
+            text-decoration: none;
+        }
+    }
+}
+
+// ============================================================
+// Login screen redesign (password-first variant) — scoped to
+// `.login-card` so it only affects the login screen and leaves
+// the shared tab-group/card/social-buttons styling untouched
+// for signup, role-selection, and reauthenticate screens.
+// ============================================================
+#login-signup-form {
+    .login-card {
+        max-width: 46rem;
+        margin: 0 auto;
+        border-radius: 0.8rem;
+        overflow: hidden;
+        box-shadow: 0 0.6rem 2rem rgba(15, 23, 42, 0.12);
+        background: #ffffff;
+
+        .tab-group {
+            .tab {
+                flex: 1 1 0;
+                width: auto;
+            }
+
+            .tab.tab--placeholder {
+                display: none;
+            }
+        }
+
+        .page-header,
+        form {
+            border: 0;
+            border-radius: 0;
+        }
+
+        .page-header {
+            text-align: left;
+        }
+
+        .field-label {
+            color: #002E6D;
+        }
+
+        .control-group__label-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 1rem;
+
+            #forgot-password-link {
+                font-size: 1.3rem;
+                white-space: nowrap;
+            }
+        }
+
+        .social-section {
+            margin-top: 0.5rem;
+        }
+
+        .social-buttons {
+            flex-direction: column;
+            align-items: stretch;
+            margin-top: 0;
+
+            > div {
+                display: block;
+                width: 100%;
+                max-width: none;
+                min-width: 0;
+            }
+
+            .social-buttons__form {
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                background: #ffffff;
+                color: #424242;
+                border: 0.1rem solid #C7C7C7;
+                box-shadow: none;
+
+                &:hover {
+                    background: #F5F5F5;
+                }
+            }
+
+            .fb-share-button .social-icon {
+                color: #3B5998;
+            }
+
+            .google-share-button .social-icon {
+                color: #4285F4;
+            }
         }
     }
 }
@@ -1134,15 +1384,25 @@ $very-narrow: 37rem * $scale-factor;
 // Social buttons
 
 .social-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0 1rem;
+
     > div {
-        display: inline-block;
+        display: inline-flex;
     }
 
     .fb-share-button {
-        margin-right: 0.6rem;
+        margin-right: 0;
     }
 
-    .fb-share-button a {
+    // `a` for legacy link-based social buttons, `button` for the CSRF-safe
+    // button_to buttons used by the lifelong-learner signup screen.
+    .fb-share-button a,
+    .fb-share-button button {
         background-color: #3b5998;
         color: white;
 
@@ -1151,7 +1411,8 @@ $very-narrow: 37rem * $scale-factor;
         }
     }
 
-    .google-share-button a {
+    .google-share-button a,
+    .google-share-button button {
         color: #fff;
         background-color: #d4450c;
 
@@ -1160,22 +1421,38 @@ $very-narrow: 37rem * $scale-factor;
         }
     }
 
-    .btn {
-        text-align: left;
+    form.button_to {
+        display: inline-flex;
+        margin: 0;
+    }
 
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
         border: 0;
-        display: inline-block;
+        border-radius: 0.3rem;
+        padding: 0.75rem 1.4rem;
+        min-width: 14rem;
+        box-shadow: 0 6px 16px rgba(15, 32, 64, 0.08);
+        font-weight: 600;
+        letter-spacing: normal;
+        font-family: inherit;
+        cursor: pointer;
         touch-action: manipulation;
-        font-weight: 500;
         transition: all 0.2s ease-in-out;
+    }
+
+    .btn span {
+        white-space: nowrap;
     }
 }
 
 @include width-up-to($phone-max) {
     .social-buttons {
         .btn {
-            height: 3.5rem;
-            padding: 0;
+            width: 100%;
         }
 
         a {
@@ -1205,7 +1482,6 @@ $very-narrow: 37rem * $scale-factor;
         }
 
         .social-icon {
-            padding-left: 2.5rem;
             padding-right: 1.6rem;
         }
     }
@@ -1262,25 +1538,7 @@ $very-narrow: 37rem * $scale-factor;
     color: #c1c1c1;
 
     &.success {
-        color:  #63A524;
-    }
-}
-
-#newflow-footer {
-    text-align: center;
-
-    #footer-rice-logo-image {
-        max-height: 3.7rem;
-        margin-bottom: 1.2rem;
-    }
-
-    #newflow-footer--copyright {
-        font-size: 1rem;
-
-        a {
-            color: #000;
-            text-decoration: none;
-        }
+        color:  #538E1D;
     }
 }
 
@@ -1389,4 +1647,692 @@ $very-narrow: 37rem * $scale-factor;
       }
     }
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Signup/login feedback layer — state feedback + two earned delight moments
+   (role choice, signup-done). Reduced-motion fallback at the bottom.
+--------------------------------------------------------------------------- */
+
+#login-signup-form {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"] {
+    // pattern-library's non-button-input() mixin never sets font-family, so
+    // inputs fall back to the browser's default form-control font (Arial)
+    // instead of the brand typeface every other element on the page uses.
+    font-family: inherit;
+    transition: border-color 150ms cubic-bezier(0.25, 1, 0.5, 1),
+                box-shadow 150ms cubic-bezier(0.25, 1, 0.5, 1);
+
+    &:focus {
+      border-color: #026AA1;
+      box-shadow: 0 0 0 3px rgba(2, 106, 161, 0.15);
+    }
+  }
+
+  /* Errors: message settles in; the field itself nudges once, gently */
+  .invalid-message {
+    animation: newflow-error-in 200ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  input.has-error {
+    animation: newflow-error-nudge 250ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* Signup done: green check circle + image land with a small, confident pop */
+  .signup-done__check {
+    width: 64px;
+    height: 64px;
+    border-radius: 999px;
+    background: #F5FFEC;
+    color: #538E1D;
+    font-size: 3.2rem;
+    line-height: 64px;
+    text-align: center;
+    margin: 0 auto 2rem;
+    animation: newflow-done-pop 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .signup-page .info-message img {
+    animation: newflow-done-pop 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@keyframes newflow-error-in {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes newflow-error-nudge {
+  0%   { transform: translateX(0); }
+  30%  { transform: translateX(-3px); }
+  60%  { transform: translateX(3px); }
+  80%  { transform: translateX(-1px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes newflow-done-pop {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #login-signup-form {
+    input, .invalid-message, .join-as__option, .join-as__option-arrow,
+    .signup-done__check, .signup-page .info-message img, .pin-field__box {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   6-digit PIN field (email verification step): progressive enhancement.
+   The real input (.pin-field__input) stays a normal, fully-visible field
+   until pin_code_boxes.js adds the `pin-field--enhanced` modifier — at which
+   point it's moved off-screen (never display:none/visibility:hidden, so it
+   stays interactable for Capybara/automated browsers and anything else that
+   targets it directly) and the boxes below become the real UI.
+--------------------------------------------------------------------------- */
+
+.pin-field__boxes {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+}
+
+.pin-field__box {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #424242;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  border-radius: 0.4rem;
+  transition: border-color 200ms cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow 200ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.pin-field__box:focus {
+  outline: none;
+  border-color: #026AA1;
+  box-shadow: 0 0 0 3px rgba(2, 106, 161, 0.15);
+}
+
+.pin-field {
+  position: relative;
+}
+
+/* ---------------------------------------------------------------------------
+   Signup step-1 / verify-email progress header: back link + step counter +
+   thin progress bar + h1. Scoped to its own classes (not the older boxy
+   .step-counter) so it only affects the screens that opt into it.
+--------------------------------------------------------------------------- */
+
+.signup-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.4rem;
+  margin-bottom: 0.6rem;
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: unset;
+  }
+
+  &__step {
+    color: #6A6A6A;
+  }
+}
+
+.signup-progress-bar {
+  height: 0.4rem;
+  background: #d5d5d5;
+  border-radius: 999px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+
+  &__fill {
+    height: 100%;
+    background: #76AE43;
+    border-radius: 999px;
+  }
+}
+
+.signup-progress-header__h1 {
+  @include title-font(2.4rem);
+  text-align: left;
+  line-height: 1.3;
+  margin: 0 0 2rem;
+}
+
+.field-label-optional {
+  font-weight: 400;
+  color: #6A6A6A;
+}
+
+.name-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+
+  @include width-up-to($phone-max) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.signup-footer-note {
+  font-size: 1.3rem;
+  color: #6A6A6A;
+  text-align: center;
+  margin: 0;
+}
+
+.school-autocomplete-match {
+  font-size: 1.3rem;
+  color: #538E1D;
+  margin-top: 0.5rem;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+// Student signup: Google on top, full-width stacked social buttons (restyled,
+// same providers as before — see .social-buttons for the shared base rules).
+.social-buttons--stacked {
+  flex-direction: column;
+  align-items: stretch;
+
+  > div {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+// Quiet variant: white bordered social buttons (the redesign treatment the
+// login card uses) as a composable class for other auth screens (learner
+// signup). Neutralizes both the legacy brand-colored button fills and the
+// page-level `form` sizing rules that otherwise hit button_to's wrapper form.
+.social-buttons--quiet {
+  form.button_to,
+  .social-buttons__form {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .fb-share-button,
+  .google-share-button {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 0;
+    padding: 0;
+  }
+
+  .btn,
+  .fb-share-button button,
+  .google-share-button button {
+    width: 100%;
+    justify-content: center;
+    background: #fff;
+    color: #424242;
+    border: 0.1rem solid #C7C7C7;
+    box-shadow: none;
+
+    &:hover {
+      background: #F5F5F5;
+    }
+  }
+
+  .fb-share-button .social-icon {
+    color: #3B5998;
+  }
+
+  .google-share-button .social-icon {
+    color: #4285F4;
+  }
+}
+
+.pin-field--enhanced .pin-field__input {
+  // Deliberately NOT display:none/visibility:hidden/opacity:0 and NOT moved
+  // off-screen: any of those make Selenium/Capybara treat the field as "not
+  // visible", which breaks `fill_in` in the feature specs (and would break
+  // SMS/password-manager autofill targeting it too). Instead it's stacked
+  // behind the boxes, in-viewport, effectively-but-not-literally transparent.
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0.01;
+  pointer-events: none;
+}
+
+// Lifelong-learner signup screen (see learner_signup_form.html.erb)
+.learner-signup__subheader {
+    font-size: 1.5rem;
+    color: #6A6A6A;
+    margin: 0 0 1rem;
+}
+
+.learner-signup__terms-notice {
+    font-size: 1.3rem;
+    color: #6A6A6A;
+    text-align: center;
+    margin: 1.6rem 0 0;
+}
+
+// Lifelong-learner welcome/home screen (see learner_welcome.html.erb)
+.learner-home {
+    max-width: 76rem;
+    margin: 0 auto;
+    padding: 4rem 3.2rem 9.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+
+    &__eyebrow {
+        font-size: 1.2rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #6A6A6A;
+        margin-bottom: 0.8rem;
+    }
+
+    &__title {
+        font-size: 3rem;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.8rem;
+        color: #212121;
+    }
+
+    &__subheader {
+        font-size: 1.6rem;
+        color: #6A6A6A;
+        margin: 0;
+        max-width: 60ch;
+    }
+
+    &__card,
+    &__glance {
+        background: #fff;
+        border-radius: 0.8rem;
+        box-shadow: 0 6px 16px rgba(15, 32, 64, 0.08);
+        padding: 2.4rem;
+    }
+
+    &__glance {
+        background: #EAF2F9;
+        border: 1px solid #CBE3F2;
+        box-shadow: none;
+    }
+
+    &__card-title,
+    &__section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #002E6D;
+        margin-bottom: 0.4rem;
+    }
+
+    &__section-title {
+        font-size: 1.6rem;
+        margin-bottom: 1.2rem;
+    }
+
+    &__card-desc {
+        font-size: 1.4rem;
+        color: #6A6A6A;
+        margin: 0 0 1.6rem;
+    }
+
+    &__search-form {
+        margin-bottom: 1.6rem;
+    }
+
+    &__search {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 1.2rem 1.4rem;
+        border: 1px solid #ccc;
+        border-radius: 0.4rem;
+        font-size: 1.6rem;
+
+        &:focus {
+            outline: none;
+            border-color: #026AA1;
+            box-shadow: 0 0 0 3px rgba(2, 106, 161, 0.15);
+        }
+    }
+
+    &__tags {
+        display: flex;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+    }
+
+    &__tag {
+        font-size: 1.4rem;
+        border: 1px solid #ccc;
+        border-radius: 999px;
+        padding: 0.6rem 1.4rem;
+        color: #212121;
+
+        &:hover {
+            border-color: #002E6D;
+            color: #002E6D;
+        }
+    }
+
+    &__books {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.6rem;
+
+        @include width-up-to($phone-max) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__book {
+        background: #fff;
+        border-radius: 0.8rem;
+        box-shadow: 0 6px 16px rgba(15, 32, 64, 0.08);
+        padding: 1.8rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        transition: box-shadow 200ms ease-in-out;
+
+        &:hover {
+            box-shadow: 0 10px 24px rgba(15, 32, 64, 0.14);
+        }
+    }
+
+    &__book-cover {
+        height: 9.6rem;
+        border-radius: 0.4rem;
+        background: linear-gradient(160deg, #002E6D, #00122E);
+    }
+
+    &__book--psychology &__book-cover {
+        background: linear-gradient(160deg, #0C9372, #0A5B50);
+    }
+
+    &__book--history &__book-cover {
+        background: linear-gradient(160deg, #D4450C, #8A2A05);
+    }
+
+    &__book-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #002E6D;
+    }
+
+    &__book-link {
+        font-size: 1.4rem;
+        color: #026AA1;
+    }
+
+    &__glance-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.6rem;
+
+        @include width-up-to($phone-max) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__glance-item-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #002E6D;
+        margin-bottom: 0.2rem;
+    }
+
+    &__glance-item-desc {
+        font-size: 1.3rem;
+        color: #6A6A6A;
+    }
+
+    &__account-link {
+        display: inline-block;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-top: 1.4rem;
+        color: #002E6D;
+    }
+}
+
+// Staff signup: "Tell us about your work" step (department chairs,
+// librarians, curriculum coordinators, IT/LMS admins, homeschool educators).
+.staff-details-page {
+  .staff-details__subheader {
+    font-size: 1.4rem;
+    color: #6A6A6A;
+    margin: 0 0 2rem;
+  }
+
+  .other-specify {
+    margin-left: 2em;
+  }
+
+  .school-matched {
+    color: #026AA1;
+    font-size: 1.3rem;
+    margin: 0.5rem 0 0;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Sticky footer: the newflow layout has no #application-container wrapper
+// (the account layout gets its sticky footer from that flex container in
+// global_layout.scss), so flex the body itself. .os-app already carries
+// min-height: 100vh.
+// ---------------------------------------------------------------------------
+body.newflow-layout {
+    display: flex;
+    flex-direction: column;
+
+    .os-main {
+        flex: 1 0 auto;
+        width: 100%;
+    }
+}
+
+// Lifelong-learner signup card: opt out of the educator/student signup form
+// sizing (the desktop `form { height: 80rem }` grid rule) — this screen is a
+// short single-column form.
+#login-signup-form .learner-signup-page form {
+    height: auto;
+}
+
+// The social button_to wrappers are <form>s too — strip the signup card's
+// form chrome (border/min-height/padding) so only the buttons render.
+#login-signup-form .learner-signup-page .social-buttons form.button_to,
+#login-signup-form .learner-signup-page .social-buttons .social-buttons__form {
+    height: auto;
+    min-height: 0;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: none;
+    box-shadow: none;
+    display: block;
+    width: 100%;
+}
+
+#login-signup-form .learner-signup-page .social-section {
+    margin-top: 0;
+    border: 0;
+}
+
+// PIN boxes: page-level `#login-signup-form [type=text] { width: 100% }`
+// outweighs the class selector and blows each box up to full width inside
+// the flex row. Pin the size with matching ID specificity.
+#login-signup-form .pin-field__box {
+    flex: 0 0 4.4rem;
+    width: 4.4rem;
+    max-width: 4.4rem;
+    height: 4.4rem;
+}
+
+// White social buttons, decisively: button_to renders <button type="submit">,
+// and `#login-signup-form [type=submit]` (ID specificity) outguns any
+// class-only restyle — the white treatment needs the ID in its selector too.
+// Covers both the login card and any screen opting into --quiet.
+// The login card is ONE card: its inner blocks (page header, form, social
+// section, divider) inherit standalone card chrome (background/shadow/margin)
+// from the base #login-signup-form rules — flatten it so the card doesn't
+// read as two stacked cards with a seam at the divider.
+#login-signup-form .login-card {
+    // The social section is a <fieldset> and inherits a 2px border — that's
+    // the "seam" under the divider. It's a pure container here.
+    fieldset.social-section {
+        border: 0;
+        padding: 0 3.2rem;
+    }
+
+    // Align the header with the form fields' inset instead of hugging the
+    // card edge.
+    .page-header {
+        padding-left: 3.2rem;
+        padding-right: 3.2rem;
+    }
+
+    .page-header,
+    form,
+    .social-section,
+    .form-divider {
+        box-shadow: none;
+        margin-top: 0;
+        margin-bottom: 0;
+        background: #ffffff;
+    }
+
+    // Social button_to wrappers: strip legacy fixed heights/borders so the
+    // two buttons stack tight instead of floating in tall ghost boxes.
+    .social-buttons > div,
+    .social-buttons .fb-share-button,
+    .social-buttons .google-share-button,
+    .social-buttons form.button_to,
+    .social-buttons .social-buttons__form {
+        display: block;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        border: 0;
+        padding: 0;
+        margin: 0;
+        background: none;
+        box-shadow: none;
+    }
+
+    .social-buttons {
+        gap: 1.2rem;
+        padding: 0.5rem 0 2rem;
+    }
+
+    // Full-width primary CTA per the design (the base [type=submit] rule
+    // only sets a min-width, which leaves it stranded half-width, left).
+    [type=submit] {
+        width: 100%;
+        display: block;
+    }
+}
+
+#login-signup-form .login-card .social-buttons .btn,
+#login-signup-form .social-buttons--quiet .btn {
+    min-width: 0;
+    width: 100%;
+    margin: 0; // legacy .btn rules add 1.2rem/2rem vertical margins
+    justify-content: center;
+    background: #fff;
+    color: #424242;
+    border: 0.1rem solid #C7C7C7;
+    box-shadow: none;
+
+    &:hover {
+        background: #F5F5F5;
+    }
+
+    &:focus-visible {
+        outline: 0.2rem solid #026AA1;
+        outline-offset: 0.2rem;
+    }
+}
+
+// Lifelong-learner card: one shared content width. The lev form gets its
+// inset from the signup grid, but the back arrow, subheader, social buttons,
+// and divider live OUTSIDE the form and were spanning the full card. Align
+// everything to the same centered column the form fields use.
+#login-signup-form .learner-signup-page {
+    .role-section,
+    .learner-signup__intro,
+    .social-section,
+    .form-divider {
+        width: 100%;
+        max-width: 45.2rem;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .learner-signup__subheader {
+        text-align: center;
+    }
+
+    .social-buttons {
+        padding: 0.5rem 0 0.5rem;
+        gap: 1.2rem;
+
+        // Kill the legacy bordered/sized social boxes (ID-scoped rules from
+        // the old signup screens) — here the wrappers are pure containers.
+        > div,
+        .fb-share-button,
+        .google-share-button {
+            display: block;
+            width: 100%;
+            height: auto;
+            min-height: 0;
+            border: 0;
+            outline: 0;
+            box-shadow: none;
+            background: none;
+            padding: 0;
+            margin: 0;
+        }
+    }
+
+    // Back arrow row: sits between the card header and the subheader; give
+    // it its own breathing room instead of overlapping the intro line.
+    .role-section {
+        margin-top: 0;
+        margin-bottom: 0.8rem;
+        min-height: 0;
+        height: auto;
+        border: 0;
+        padding: 0;
+    }
 }

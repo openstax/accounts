@@ -1,15 +1,24 @@
 <%= render 'newflow/educator_signup/refresh_upon_going_back' %>
 
+<%
+    # Screens that pass `progress_percent` get the new inline back/step/progress-bar/h1
+    # header (see _signup_progress_header); everything else keeps the original
+    # boxed step-counter + separate <h1> rendered by newflow_login_signup_card, so
+    # callers that haven't opted in (e.g. the "updated email" variants) are unaffected.
+    progress_percent = local_assigns[:progress_percent]
+%>
+
 <div id="login-signup-form">
     <div class="content">
-        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
+        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active' } %>
 
         <%= newflow_login_signup_card(
                     id: 'signup-page',
                     classes: "signup-page",
-                    header: header,
-                    current_step: current_step) do %>
-            <% lev_form_for :confirm, url: submit_to_path do |form| %>
+                    header: progress_percent.present? ? nil : header,
+                    current_step: progress_percent.present? ? nil : current_step,
+                    show_exit_icon: true) do %>
+            <%= lev_form_for :confirm, url: submit_to_path do |form| %>
                 <%
                     form_helper = NewflowFormHelper::Newflow.new(
                         f: form,
@@ -19,18 +28,35 @@
                     @page_title = 'Sign up (confirm email)'
                 %>
 
+                <% if progress_percent.present? %>
+                    <%=
+                        render partial: 'newflow/signup_progress_header', locals: {
+                            step_text: current_step,
+                            progress_percent: progress_percent,
+                            header_text: header
+                        }
+                    %>
+                <% end %>
+
                 <div class="content info-message">
                     <%= form_description %>
                 </div>
 
-                <div class="content control-group">
+                <div class="content control-group pin-field">
                     <%= label_tag :pin, I18n.t(:"login_signup_form.pin_label"),
                                 class: 'field-label required'
                     %>
                     <%= form_helper.text_field name: :pin,
                                 placeholder: I18n.t(:"login_signup_form.pin_placeholder"),
                                 autofocus: true,
-                                required: true
+                                required: true,
+                                supplemental_class: 'pin-field__input',
+                                html_attrs: {
+                                    autocomplete: 'one-time-code',
+                                    inputmode: 'numeric',
+                                    pattern: '[0-9]*',
+                                    maxlength: 6
+                                }
                     %>
                 </div>
 

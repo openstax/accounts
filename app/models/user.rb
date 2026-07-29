@@ -23,6 +23,10 @@ class User < ApplicationRecord
     ADJUNCT_ROLE = :adjunct,
     HOMESCHOOL_ROLE = :homeschool,
     RESEARCHER_ROLE = :researcher,
+    # Self-directed learners with no course/school affiliation (the "lifelong
+    # learner" signup path). Must stay appended at the end of this array: role
+    # is an integer-backed enum, so inserting earlier would remap existing rows.
+    SELF_LEARNER_ROLE = :self_learner,
   ].freeze
 
   VALID_FACULTY_STATUSES = [
@@ -154,6 +158,17 @@ class User < ApplicationRecord
   has_many :member_groups, through: :group_members, source: :group
   has_many :oauth_applications, through: :member_groups
   has_many :security_logs
+  has_many :user_books, dependent: :destroy
+  # nullify, not destroy: Salesforce is the system of record for adoptions
+  has_many :adoptions, dependent: :nullify
+  # user-owned reports (not a Salesforce mirror), so destroy is correct here
+  has_many :adoption_reports, dependent: :destroy
+  # Unverified "who teaches your class?" claims the user made as a student
+  has_many :instructor_connections, class_name: 'InstructorConnection', foreign_key: :student_id,
+                                     inverse_of: :student, dependent: :destroy
+  # Claims where this user was matched as the (verified) instructor
+  has_many :instructor_connections_as_instructor, class_name: 'InstructorConnection', foreign_key: :instructor_id,
+                                                   inverse_of: :instructor, dependent: :nullify
 
   delegate_to_routine :destroy
 
@@ -336,6 +351,19 @@ class User < ApplicationRecord
     pending_faculty? || pending_sheerid? || rejected_by_sheerid? || incomplete_signup?
   end
 
+  # True when signup finished (is_profile_complete) via "Save and finish
+  # later" (or any other path) but left step-4 profile questions blank.
+  # Distinct from incomplete_signup?/pending_faculty? -- this is a lighter,
+  # non-blocking nudge surfaced on the account Overview page rather than a
+  # gate on instructor access.
+  def profile_needs_enrichment?
+    return false unless is_profile_complete?
+
+    (which_books.blank? && !user_books.exists?) ||
+      (how_many_students.blank? && !adoptions.exists? && !adoption_reports.exists?) ||
+      (school.nil? && self_reported_school.blank?)
+  end
+
   def name
     full_name.present? ? full_name : username
   end
@@ -423,7 +451,28 @@ class User < ApplicationRecord
   end
 
   def self.non_student_known_roles
-    known_roles - ['student']
+    # Self-learners have no course/school affiliation, so the instructor-style
+    # annual check-in (which assumes an adoption to reconfirm) never applies to them.
+    known_roles - ['student', 'self_learner']
+  end
+
+  # Name search over verified instructors only, for the student account
+  # page's "who teaches your class?" autocomplete. Mirrors School.search's
+  # substring + trigram-distance approach. Callers must only expose the
+  # display name + school from the result — never email or other PII.
+  def self.verified_instructors_matching(query, limit: 8)
+    q = query.to_s.strip
+    return none if q.length < 2
+
+    full_name = "(coalesce(first_name, '') || ' ' || coalesce(last_name, ''))"
+    distance = sanitize_sql(["? <-> #{full_name}", q])
+    substring = sanitize_sql(["#{full_name} ILIKE ?", "%#{sanitize_sql_like(q)}%"])
+    prefix = sanitize_sql(["#{full_name} ILIKE ?", "#{sanitize_sql_like(q)}%"])
+
+    instructor.confirmed_faculty
+              .where(Arel.sql("(#{substring}) OR (#{distance}) <= 0.5"))
+              .order(Arel.sql("(#{prefix}) DESC, (#{distance}) ASC, first_name ASC"))
+              .limit(limit)
   end
 
   def guessed_preferred_confirmed_email
@@ -449,6 +498,112 @@ class User < ApplicationRecord
 
   def generate_uuid
     self.uuid ||= SecureRandom.uuid
+  end
+
+  ######################
+  # Annual check-in    #
+  ######################
+
+  CHECK_IN_SNOOZE_PERIOD = 7.days
+  CHECK_IN_DISMISSAL_LIMIT = 2
+
+  # Accounts-only interstitial: is this instructor-like user due for their
+  # annual "still accurate?" check-in. Never applies to students/unknown-role
+  # users, brand-new accounts, or users with no adoption signal to confirm.
+  def annual_check_in_due?
+    return false unless check_in_eligible_role?
+    return false unless created_at.present? && created_at < 1.year.ago
+    return false unless has_check_in_adoption_signal?
+    return false if check_in_completed_at.present? && check_in_completed_at >= annual_check_in_school_year_start
+    return false if check_in_snoozed?
+
+    true
+  end
+
+  # Design: dismissable twice, then the check-in becomes a hard gate.
+  def check_in_required?
+    annual_check_in_due? && effective_check_in_dismissal_count >= CHECK_IN_DISMISSAL_LIMIT
+  end
+
+  def check_in_eligible_role?
+    User.non_student_known_roles.include?(role)
+  end
+
+  def has_check_in_adoption_signal?
+    user_books.exists? || adoptions.exists? || adoption_reports.exists?
+  end
+
+  # Dismissal counts (and the ability to snooze again) reset when a new
+  # school year starts, so a dismissal from a prior year never counts
+  # toward the current year's 2-dismissal limit.
+  def effective_check_in_dismissal_count
+    return 0 if check_in_dismissed_at.blank? || check_in_dismissed_at < annual_check_in_school_year_start
+
+    check_in_dismissal_count
+  end
+
+  def check_in_snoozed?
+    check_in_dismissed_at.present? && check_in_dismissed_at >= CHECK_IN_SNOOZE_PERIOD.ago
+  end
+
+  def annual_check_in_school_year_start
+    Time.zone.local(SchoolYear.base_year_for(Time.zone.today), 8, 1)
+  end
+
+  # Consecutive prior school years with at least one reported adoption
+  # (AdoptionReport, from either the check-in or the books-page modal),
+  # counted backward starting the year immediately before the current/
+  # pending one. Powers the streak banner: 0 omits it, 1 uses singular
+  # copy, 2+ uses "N years reported in a row."
+  def check_in_streak_years
+    reported_base_years = adoption_reports.distinct.pluck(:school_year).filter_map do |label|
+      SchoolYear.base_year_from_string(label)
+    end.to_set
+
+    streak = 0
+    base_year = SchoolYear.base_year_for(Time.zone.today) - 1
+
+    while reported_base_years.include?(base_year)
+      streak += 1
+      base_year -= 1
+    end
+
+    streak
+  end
+
+  ######################
+  # LMS question       #
+  ######################
+
+  # Self-reported answer to the Overview "do you use an LMS?" card.
+  # Values are stored as-is in `lms_used`; nil means unanswered.
+  LMS_OPTIONS = {
+    'canvas' => 'Canvas',
+    'blackboard' => 'Blackboard',
+    'moodle' => 'Moodle',
+    'd2l' => 'D2L',
+    'schoology' => 'Schoology',
+    'other' => 'Other',
+    'none' => 'No LMS'
+  }.freeze
+
+  validates :lms_used, inclusion: { in: LMS_OPTIONS.keys }, allow_nil: true
+
+  def lms_answered?
+    lms_used.present?
+  end
+
+  def lms_question_dismissed?
+    lms_prompt_dismissed_at.present?
+  end
+
+  # Card is shown once, until the instructor answers or dismisses it.
+  def lms_question_pending?
+    !lms_answered? && !lms_question_dismissed?
+  end
+
+  def lms_label
+    LMS_OPTIONS[lms_used]
   end
 
   protected
