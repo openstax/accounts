@@ -1,0 +1,66 @@
+---
+1.0.0.beta1 |checksum:1272d2ae38f5a19b07346f28e12bd3393e09ffcbc9daf2452c98be96cb173c77,created_at:2011-01-19T16:19:40Z
+1.0.0.beta2 |checksum:86ccc62805c042c8d47105587aa9cb316b5cca22d89a225cbcac6c106ef0172b,created_at:2011-03-17T17:22:43Z
+1.0.0.beta3 |checksum:eaa7dbbabc3c16d54e722305f62062f7782e720d76608f5310d14423121f0fb3,created_at:2011-07-18T17:16:17Z
+1.0.0 |checksum:5b31d2c26fd8c1d623d1d48c507d88a068ab25f0e1c81253a22402cbc1649916,created_at:2011-11-02T00:30:28Z
+1.1.0 activesupport:>= 3.0.0|checksum:d0529bee9e6d1abfcbc00b8a9b440a3e94e8ad423eee76dd6a074519ee7fdc98,created_at:2012-04-13T15:01:48Z
+1.2.0 activesupport:>= 3.0.0|checksum:5814d479eb158f4b6d1d2754bda6eb28ac166cfebaf869288cd27ec43371a27c,created_at:2012-06-14T19:43:15Z
+1.3.0 activesupport:>= 3.0.0|checksum:a7eb33024db0c80652464bc9fec6fc14a8f08998814bee5983a10394393cbc58,created_at:2012-08-30T18:19:58Z
+1.4.0 activesupport:>= 3.0.0|checksum:227933ce2f8f394ba57bae56262d9a237cbed29fa7d1f4372081f9545f357dbb,created_at:2012-10-05T17:30:53Z
+1.4.1 activesupport:>= 3.0.0|checksum:c35693cbfa84213212dffbc2c87487427ef364927340151329a842f0a06086b9,created_at:2012-10-15T15:50:36Z
+1.4.2 activesupport:>= 3.0.0,bourne:~> 1.1.2|checksum:e7523ab7492975c843075497483d391f52d3adbd7056f5aef9a1a11d6bc24cf5,created_at:2012-11-30T15:34:11Z
+1.5.0 activesupport:>= 3.0.0,bourne:~> 1.2.0|checksum:49dd715442ec2cb0cbe9455e0407b4496fc7e665b9dc0591775f786ffe8e6f62,created_at:2013-03-15T21:19:05Z
+1.5.1 activesupport:>= 3.0.0,bourne:~> 1.3|checksum:95927e7655883e90989e521a20aa9e6e00e2ed8fdd2ceccf071a37e0e1994a3b,created_at:2013-03-19T13:51:56Z
+1.5.2 activesupport:>= 3.0.0,bourne:~> 1.3|checksum:f1242d2da185a53ce378df955d51c7310aa0f53293ad6b661ef8741110cef604,created_at:2013-03-19T23:36:19Z
+1.5.4 activesupport:>= 3.0.0,bourne:~> 1.3|checksum:9fc5f7baed8f3836a1e8a3e0021d1fa279d783711b7939357ccec96abd5e03f3,created_at:2013-03-21T19:50:30Z
+1.5.5 activesupport:>= 3.0.0,bourne:~> 1.3|checksum:60930164db6e26000664796aa48fab032ba228dd89e1ebcc96da9eae0eb7b48e,created_at:2013-03-28T21:09:31Z
+1.5.6 activesupport:>= 3.0.0,bourne:~> 1.3|checksum:aa72353c66a3ad8bf3c97f88a265f0583d1a1f88f41bfb37662c255abaef5f1b,created_at:2013-03-29T20:46:47Z
+2.0.0 activesupport:>= 3.0.0|checksum:d2d69794ecc0576d722326a27015d4cceae06b4fa934842765c0dcb6012f4f66,created_at:2013-04-05T15:48:32Z
+2.1.0 activesupport:>= 3.0.0|checksum:da4ce8e10970a5dfa88d30b7be06dbef87caf2aca4508343b31a59c434449fc6,ruby:>= 1.9.2,created_at:2013-05-05T16:07:22Z
+2.2.0 activesupport:>= 3.0.0|checksum:cfc99ac7a000d258b3c96820f83a39d4a16218ea6ec56a41f183872cdd58bf67,ruby:>= 1.9.2,created_at:2013-06-11T14:35:33Z
+2.3.0 activesupport:>= 3.0.0|checksum:90b4419b54b272148f388a90f7f9f29181e3b8b694190491a3a301cab7a67e25,ruby:>= 1.9.2,created_at:2013-08-16T17:05:19Z
+2.4.0.rc1 activesupport:>= 3.0.0|checksum:7815f4a4a3d5e18948ddd7e5ed4a2974b02bd3d425a2cc28f19c00e164ceba22,ruby:>= 1.9.2,rubygems:> 1.3.1,created_at:2013-08-16T23:14:42Z
+2.4.0 activesupport:>= 3.0.0|checksum:55ee124f8f3b5164b34479c05280bca9cb8327e2645b640c24948bbb8f7240ae,ruby:>= 1.9.2,created_at:2013-09-20T20:13:20Z
+2.5.0 activesupport:>= 3.0.0|checksum:0b7e611fa760b4ff63f9c824d12c06594d815145e31b50b3b1d2a3dbd880c183,ruby:>= 1.9.2,created_at:2014-01-10T22:42:55Z
+2.6.0 activesupport:>= 3.0.0|checksum:227b0549bf6717d1f5c9c60c94d8174633be57a9f5028d8c5a495d91528bdc63,ruby:>= 1.9.2,created_at:2014-04-12T21:43:04Z
+2.6.1.rc1 activesupport:>= 3.0.0|checksum:4151a700eb00dda555eed350ef17a10e1db3dfd6ea5f008d38406cf9a920bdc9,ruby:>= 1.9.2,rubygems:> 1.3.1,created_at:2014-04-22T16:29:49Z
+2.6.1.rc2 activesupport:>= 3.0.0|checksum:eb174274176998165af733fd6ab91f9edc9c129ce00c35db7a5cf0f76b10a299,ruby:>= 1.9.2,rubygems:> 1.3.1,created_at:2014-04-28T14:34:24Z
+2.6.1 activesupport:>= 3.0.0|checksum:81554002d29e612e55daf2c45b40b617ad7a2186d8eebaec6946ea46da8672dc,ruby:>= 1.9.2,created_at:2014-04-30T21:53:59Z
+2.6.2 activesupport:>= 3.0.0|checksum:5321c9d268c19c3f30a33be211ababd1057fee89db1ba361c8fd01b97339b1fc,ruby:>= 1.9.2,created_at:2014-07-19T00:09:11Z
+2.7.0 activesupport:>= 3.0.0|checksum:a759c5a0d247370622203f5a452c9eb37d658c35150c0a8788c0dae2628cee89,ruby:>= 1.9.2,created_at:2014-09-03T06:45:05Z
+2.8.0.rc1 activesupport:>= 3.0.0|checksum:c5653d7ba71174333f8469c30f961eb909bf0ade7b68506349956100ee4446a3,ruby:>= 1.9.2,rubygems:> 1.3.1,created_at:2014-12-25T06:04:46Z
+2.8.0.rc2 activesupport:>= 3.0.0|checksum:6875fc7ed9a3a382b2228c5fb7ede1ccda4d1179980e0e64a0fc5a2652934e4a,ruby:>= 1.9.2,rubygems:> 1.3.1,created_at:2015-01-23T16:44:41Z
+2.8.0 activesupport:>= 3.0.0|checksum:a089735b66e82d6b65fb4ac774d858a812fe16b69d97becaf0c986a919f67934,ruby:>= 1.9.2,created_at:2015-01-30T22:33:29Z
+3.0.0.rc1 activesupport:>= 4.0.0|checksum:3c7b9d6177cdeedf061e21f7c35c2c7df933985f559758e04febbb9588b44786,ruby:>= 2.0.0,rubygems:> 1.3.1,created_at:2015-06-01T07:51:43Z
+3.0.0 activesupport:>= 4.0.0|checksum:b70fc76ebf4da4eabe09f8180cb59b273355003fac5f25f2cb18a0f4e3ba418c,ruby:>= 2.0.0,created_at:2015-10-01T16:33:38Z
+3.0.1 activesupport:>= 4.0.0|checksum:4b06fb7d92165507246dbc4154440cb30742e1b6e8ac396e96358d88d65eeaa9,ruby:>= 2.0.0,created_at:2015-10-23T20:43:20Z
+3.1.0 activesupport:>= 4.0.0|checksum:b503c3c7112d9de1288d03b96d1c03ec4bfd7357d43379d82e9758cf222256ee,ruby:>= 2.0.0,created_at:2016-01-11T06:23:05Z
+3.1.1 activesupport:>= 4.0.0|checksum:f8f73357eb6c51b03cb0e76cf425092d3b96a61766dc94a9df02e5959a68c6b1,ruby:>= 2.0.0,created_at:2016-01-28T07:21:02Z
+3.1.2 activesupport:>= 4.0.0|checksum:4af09f24f05144be6e7398ccf260a3c27532e0f90deac087af6595892f497bff,ruby:>= 2.0.0,created_at:2017-07-12T21:54:57Z
+4.0.0.rc1 activesupport:>= 4.2.0|checksum:8c7f4dda266b925f91fb5c3fe36411dccdb341343c3d28ef0b0db4aa72ee3744,ruby:>= 2.2.0,rubygems:> 1.3.1,created_at:2018-10-02T17:57:22Z
+3.1.3 activesupport:>= 4.0.0|checksum:078c53b8f38b2bdfe88c6d09d758380d62bdd411058e173f9aaf032ed66f55a7,ruby:>= 2.0.0,created_at:2019-01-29T02:43:59Z
+4.0.1 activesupport:>= 4.2.0|checksum:b8e515e4541dcd2798bdafece13b8c7a81b0186eed8a397346186b9a4614cae8,ruby:>= 2.2.0,created_at:2019-02-26T05:13:04Z
+4.1.0 activesupport:>= 4.2.0|checksum:764e764fc4803658ea7a26478e89bafac5b373916b8a86c658b7df9d08ed5076,ruby:>= 2.4.0,created_at:2019-06-09T19:03:34Z
+4.1.1 activesupport:>= 4.2.0|checksum:72c4336dec810d49576de5f6ac6a36d60ab9aac798f8b248027a196ba9227074,ruby:>= 2.4.0,created_at:2019-07-16T02:34:12Z
+4.1.2 activesupport:>= 4.2.0|checksum:f55c9588062f0b3e9ea3b8cacae922a60e8505e0be528ec922f9b3628b81da2f,ruby:>= 2.4.0,created_at:2019-08-01T03:36:02Z
+4.2.0 activesupport:>= 4.2.0|checksum:c9fcdc8289427a9ba1db420ff75a2e23bf4eb2eb7ff7e79226374a3a8db78aaa,ruby:>= 2.4.0,created_at:2020-01-09T07:25:43Z
+4.3.0 activesupport:>= 4.2.0|checksum:e68b84187c8a3ef66a1d5febe50d499dcae610102ac57fb8e26e753df73a1226,ruby:>= 2.4.0,created_at:2020-02-18T07:29:28Z
+4.4.0 activesupport:>= 4.2.0|checksum:c7e174289fe3cd9c6d0ddae42f7bc1abc057d9619837dde8be8ec663d542b71a,ruby:>= 2.4.0,created_at:2020-08-26T05:52:05Z
+4.4.1 activesupport:>= 4.2.0|checksum:f4f0184d6c33bc0b963a03bb48a6b24719dddc9e03c9016daeae91dce95aa1f1,ruby:>= 2.4.0,created_at:2020-08-26T17:33:51Z
+4.5.0 activesupport:>= 4.2.0|checksum:0f49ebd3d963f8bd70e2f0cd66866c5cbb63a3d4f1ca8468a73d62a4307122eb,ruby:>= 2.4.0,created_at:2021-01-11T23:02:49Z
+4.5.1 activesupport:>= 4.2.0|checksum:8d06e2bbb5b22aa170333905fcf23b7388d1baa9485895b0a2b80210e97f27e2,ruby:>= 2.4.0,created_at:2021-01-22T23:20:08Z
+5.0.0.rc1 activesupport:>= 5.2.0|checksum:65e9bb7704254546cf3d3ae668f76321a461ff96519f19137b28bae8ae8e88a8,ruby:>= 2.6.0,rubygems:> 1.3.1,created_at:2021-06-04T21:07:53Z
+5.0.0 activesupport:>= 5.2.0|checksum:a8ef20ac7df4047dfe85e2af39802cfcde34704f0e9ce9b6cd78db469912db7c,ruby:>= 2.6.0,created_at:2021-07-10T11:40:10Z
+5.1.0 activesupport:>= 5.2.0|checksum:a01d20589989e9653ab4a28c67d9db2b82bcf0a2496cf01d5e1a95a4aaaf5b07,ruby:>= 2.6.0,created_at:2021-12-22T22:37:13Z
+5.2.0 activesupport:>= 5.2.0|checksum:a2d2dec0fed7516c316284d033b2bc50434d4c15eab8184dbc5a8f12660f1b86,ruby:>= 2.6.0,created_at:2022-09-17T14:04:39Z
+5.3.0 activesupport:>= 5.2.0|checksum:f6ba863b8752bb5956aaa73b046d5df5ecfbe9a7acb61f31bf853613e0932f86,ruby:>= 2.6.0,created_at:2022-12-16T18:39:14Z
+6.0.0 activesupport:>= 5.2.0|checksum:472e8ccc10b5e73612e80ea96843c9091ca0696f478780b2854b968a5b65bc38,ruby:>= 3.0.5,created_at:2023-12-22T19:47:05Z
+6.1.0 activesupport:>= 5.2.0|checksum:f11bc4bf14419196b8d1c89d4018615a26244a0758703d5f81222088886203dd,ruby:>= 3.0.5,created_at:2024-01-19T14:56:49Z
+6.2.0 activesupport:>= 5.2.0|checksum:a702c059c5f3bbda2295827231a28654e33063d7c4d409662980ec630207d8dd,ruby:>= 3.0.5,created_at:2024-03-15T22:13:26Z
+6.3.0 activesupport:>= 5.2.0|checksum:b57b890b9c79d47bd209f6746d325d12089d9460707eb70a6cf2226e6fc32951,ruby:>= 3.0.5,created_at:2024-08-09T21:01:53Z
+6.3.1 activesupport:>= 5.2.0|checksum:a939715a222a4b5714e484c7da20311729de69995f75719bb1b1ce351c1a45cf,ruby:>= 3.0.5,created_at:2024-08-13T13:11:29Z
+6.4.0 activesupport:>= 5.2.0|checksum:9055bb7f4bb342125fb860809798855c630e05ef5e75837b3168b8e6ee1608b0,ruby:>= 3.0.5,created_at:2024-08-16T20:42:35Z
+6.5.0 activesupport:>= 5.2.0|checksum:ef6b572b2bed1ac4aba6ab2c5ff345a24b6d055a93a3d1c3bfc86d9d499e3f44,ruby:>= 3.0.5,created_at:2025-04-25T19:10:19Z
+7.0.1 activesupport:>= 7.1|checksum:b4bfd8744c10e0a36c8ac1a687f921ee7e25ed529e50488d61b79a8688749c77,ruby:>= 3.2,created_at:2025-10-31T23:29:43Z
+8.0.0 activesupport:>= 7.2|checksum:0c0a59ebe6664d1c256603dbab08e85a5fd0a4668cbb67c0e1cb4e82c7eded66,ruby:>= 3.3,created_at:2026-06-12T14:46:50Z
+8.0.1 activesupport:>= 7.2|checksum:5dbb46e5765b9da225111b085e0819e8c8a121ff94bba430a153eb1ea2c60288,ruby:>= 3.3,created_at:2026-06-12T18:37:10Z

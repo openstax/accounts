@@ -162,11 +162,11 @@ class User < ApplicationRecord
   attribute :is_not_gdpr_location, :boolean, default: nil
 
   def lead
-    OpenStax::Salesforce::Remote::Lead.find_by(email: best_email_address_for_salesforce)
+    Salesforce::Records::Lead.find_by(email: best_email_address_for_salesforce)
   end
 
   def contact
-    OpenStax::Salesforce::Remote::Contact.find(salesforce_contact_id)
+    Salesforce::Records::Contact.find(salesforce_contact_id)
   end
 
   def most_accurate_school_name
@@ -408,7 +408,7 @@ class User < ApplicationRecord
 
   def refresh_login_token(expiration_period: nil)
     if login_token.blank? || login_token_expired? || expiration_period.try(:<,0)
-      self.login_token = SecureRandom.hex(16)
+      self.login_token = unique_login_token
     end
 
     self.login_token_expires_at = expiration_period.nil? ? nil : DateTime.now + expiration_period
@@ -417,6 +417,17 @@ class User < ApplicationRecord
   def login_token_expired?
     !login_token_expires_at.nil? && login_token_expires_at <= DateTime.now
   end
+
+  def unique_login_token
+    10.times do |attempt|
+      token = SecureRandom.hex(16)
+      token = "#{token.first(30)}#{attempt.to_s(16).rjust(2, '0')}" if attempt.positive?
+      return token unless self.class.exists?(login_token: token)
+    end
+
+    raise 'Unable to generate unique login token'
+  end
+  private :unique_login_token
 
   def self.known_roles
     roles.except(:unknown_role).keys

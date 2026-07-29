@@ -1,0 +1,26 @@
+---
+1.0.0.rc1 omniauth-oauth2:~> 1.0.0.rc2|checksum:856d85fb8f0ce0d54e0ef306cdcca864c6bffe717ce681826745f0d287d9dbcd,rubygems:> 1.3.1,created_at:2011-10-29T01:12:57Z
+1.0.0.rc2 omniauth-oauth2:~> 1.0.0|checksum:6f5699780ef8d4a9007885f6b62df793c25fc862d5c55e26930151a49dc3f12a,rubygems:> 1.3.1,created_at:2011-11-11T07:26:06Z
+1.0.0 omniauth-oauth2:~> 1.0.0|checksum:05135fd60d0b13262042eea9917ced335e4008abe40701c80f59e24dcbbcdd86,created_at:2011-11-19T22:33:48Z
+1.1.0 omniauth-oauth2:~> 1.0.0|checksum:b0316e400b29148be5d6e9b05a2cc6a3f1cced0d99020bb677b332d43c6adaee,created_at:2011-12-10T03:25:22Z
+1.2.0 omniauth-oauth2:~> 1.0.0|checksum:c849507dc0ac4cbcc966a40d474e82c9a0ff4e1dfc9099f613e43b87a37793f6,created_at:2012-01-06T06:04:51Z
+1.3.0 omniauth-oauth2:~> 1.0.2|checksum:9fca2c466cc244664bd293a4fd48be9b431670b6dd01b57b3669cc572bf59431,created_at:2012-05-05T08:22:51Z
+1.4.0 omniauth-oauth2:~> 1.0.2|checksum:5bfd8cfe0e6ca2df29f3c1021ee4fb5c2e4f2a53e3363c6c6a83795e93aba74e,created_at:2012-06-24T02:27:19Z
+1.4.1 omniauth-oauth2:~> 1.1.0|checksum:4d1a1d11d76e62ec2570bcc83b78e766bb938955a5451270675474842899da06,created_at:2012-07-07T06:53:24Z
+1.5.0 omniauth-oauth2:~> 1.1.0|checksum:a6147ef007e96a5aa8d00c8c2cc51dae345bc315bee6572da38861bbc7d69ec1,created_at:2013-11-13T22:37:23Z
+1.5.1 omniauth-oauth2:~> 1.1.0|checksum:c3e90cfeb902f66b46c5943123ae4ef6f9ace2058d8334bf5869d28948ddb286,created_at:2013-11-18T22:43:49Z
+1.6.0.rc1 omniauth-oauth2:~> 1.1|checksum:dccd88a6627528e6eeddab11e6a3262f77732bd3e5ef96f19133a525f02f0883,rubygems:> 1.3.1,created_at:2013-12-03T09:42:15Z
+1.6.0 omniauth-oauth2:~> 1.1|checksum:c5652fc6d83b30b80c1da24e348d6ecc3e41055787187ab1e4a47304e05e7ca9,created_at:2014-01-11T22:21:04Z
+2.0.0.pre1 omniauth-oauth2:~> 1.1|checksum:29d9b75c1de80c1104593a2814a4a7ea2cdc1e43e39f4bcd6d44de065a13faea,rubygems:> 1.3.1,created_at:2014-05-12T03:51:23Z
+2.0.0 omniauth-oauth2:~> 1.2|checksum:c241db1fb0fdd8f3a9629688aad0c60cad7679dc0c404d0f35907ce73f14047b,created_at:2014-08-07T23:57:29Z
+2.0.1 omniauth-oauth2:~> 1.2|checksum:26114d4a81595b02fd111c1cbea04e748d9950a2dfe95860c78c6dea5bf3ee0b,created_at:2015-02-21T22:46:50Z
+3.0.0 omniauth-oauth2:~> 1.2|checksum:2c19349f568a250655b346c02361f7250ffcccb35a0e30c361661165b529925e,created_at:2015-10-27T06:09:37Z
+4.0.0.rc1 omniauth-oauth2:~> 1.2|checksum:7ff57029ceebeb1b5787e0491a308da99eabe7abc2638448460377ccbf9319ad,rubygems:> 1.3.1,created_at:2016-06-27T01:23:02Z
+4.0.0 omniauth-oauth2:~> 1.2|checksum:05ae3565c8fdb38df8dab04eb8ca854ea6c18e81591d3e6598ce101293a2f20f,created_at:2016-07-27T04:24:00Z
+5.0.0 omniauth-oauth2:~> 1.2|checksum:d20317f8d9274e8b8f1ee2f26927b80d0fac85bf51eee62b28470c62f73694da,created_at:2018-04-10T14:43:00Z
+6.0.0 omniauth-oauth2:~> 1.2|checksum:9c11d922d54034369a557e22d33e924c4212025b548988b672142b371878756f,created_at:2020-01-27T19:27:37Z
+7.0.0 omniauth-oauth2:~> 1.2|checksum:49d27a2e94ba86f48484c059d5c5fc3dde698d2d38693290d54bd6195e9a79ac,created_at:2020-08-26T13:24:45Z
+8.0.0 omniauth-oauth2:~> 1.2|checksum:22814cc048c322244a2aff4897912864536b4422cd6509d476dbb626b22e0efc,created_at:2020-10-19T22:08:00Z
+9.0.0 omniauth-oauth2:~> 1.2|checksum:440ad8dd9edc9ebec1fd6607b787667c8ce70d2969c2030d7e9ca42a271af854,created_at:2021-10-25T16:50:22Z
+10.0.0 bigdecimal:>= 0,omniauth-oauth2:< 3&>= 1.2|checksum:dfdc6cbada5387572d554784861546cf6382f9fa16c4731cbe5813e570fcb9e1,created_at:2024-05-22T22:41:26Z
+11.0.0 bigdecimal:>= 0,omniauth-oauth2:< 3&>= 1.2|checksum:f7b026a926b1b2e329b1e433bd940dfa2ed34bef17f87a86ecd19c6b356c0fa7,created_at:2026-07-18T17:11:53Z

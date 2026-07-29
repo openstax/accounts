@@ -1,0 +1,17 @@
+---
+0.1.0 |checksum:7577eccc67347da3114fef3f1318497fe937b98bb406be0bcc2ef80b5b749cae,created_at:2009-10-11T15:49:36Z
+0.1.1 |checksum:e212346296c40662d50a077ac0544759f14d0aa5a38e9c52c0cafa813ae42757,created_at:2009-10-11T16:08:51Z
+0.1.2 |checksum:f37299c266651df61ec1d8dcc222d0d103854549b8cec02946436ab415fd0faf,created_at:2009-10-12T11:18:57Z
+0.1.3 eventmachine:>= 0.12.8|checksum:19094a59185f6bd8cf8ef7f2de528e553b63ae802ce7a9208d6ea6090c3198b0,created_at:2009-10-14T12:11:24Z
+0.1.4 eventmachine:>= 0.12.8|checksum:8598cca519ddc59a1d7d04822d585f87d4115da3724fc0f3f63543ad435eec5b,created_at:2009-12-01T17:16:00Z
+0.1.6 eventmachine:>= 0.12.8|checksum:673ae2bfca22eca44f48979c19cf80ed1c8109fffea9f9abe231488eeb1a310d,created_at:2010-05-19T05:56:10Z
+0.1.7 eventmachine:>= 0.12.8,roauth:>= 0.0.2|checksum:7783c5cdacf39781422d1c81c4771a8e71232cb8450f85bc8f75c4a2124e3797,created_at:2010-08-02T08:33:21Z
+0.1.8 eventmachine:>= 0.12.8,roauth:>= 0.0.2|checksum:2653c0ca2dacc8dd6d53f32860a20c4f1a9b77d6c7953cc839eb5963d29a7931,created_at:2010-08-13T10:10:12Z
+0.1.9 eventmachine:>= 0.12.8,eventmachine:>= 0.12.8,roauth:>= 0.0.2,roauth:>= 0.0.2|checksum:18971cfe56771e82f196c754ab280817aa671d8348dec462f16b465615d1be48,created_at:2010-09-30T16:47:04Z
+0.1.10 eventmachine:>= 0.12.8,roauth:>= 0.0.2|checksum:000af1daf0a1aae8579843c138c4e4ea53bf1d0f32754f6400b7ef197ce18c75,created_at:2010-10-04T20:02:34Z
+0.1.11 eventmachine:>= 0.12.8,roauth:>= 0.0.2|checksum:272c76388abc6e4b7ff62c607fc86ca5f2799d4f661a4aa5f5e93385563cb0e7,created_at:2011-03-15T00:37:48Z
+0.1.12 eventmachine:>= 0.12.8,roauth:>= 0.0.2|checksum:e1563ebb3b4a7e7550208814e91ae5a84d4130e30d4b8b0b03626d1841cb5d73,created_at:2011-03-15T00:52:56Z
+0.1.13 eventmachine:~> 0.12.8,simple_oauth:~> 0.1.4|checksum:16bf4b13bfac2795ef3be583dde7621b03852985791833cf500e462fd0e28803,rubygems:>= 1.3.6,created_at:2011-04-12T05:00:14Z
+0.1.14 eventmachine:>= 0.12.8,http_parser.rb:~> 0.5.1,simple_oauth:~> 0.1.4|checksum:aa3b6b6efd97160af865e323c69b714be2bc939feae05c639c83f85cd0755887,rubygems:>= 1.3.6,created_at:2011-06-22T23:48:03Z
+0.1.15 eventmachine:>= 0.12.8,http_parser.rb:~> 0.5.1,simple_oauth:~> 0.1.4|checksum:282b73b8c8bbaafccda7ef71600b030cb9931198db4985c25f43c8b4d75290c6,rubygems:>= 1.3.6,created_at:2012-04-10T18:39:43Z
+0.1.16 eventmachine:>= 0.12.8,http_parser.rb:~> 0.5.1,simple_oauth:~> 0.1.4|checksum:3866afdfbdf083e773b46afb3037ff3e3b1ebf8014ab88353153daddc70b4847,rubygems:>= 1.3.6,created_at:2012-07-02T19:51:07Z

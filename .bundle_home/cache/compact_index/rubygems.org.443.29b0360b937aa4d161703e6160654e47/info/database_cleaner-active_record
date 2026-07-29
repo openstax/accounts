@@ -1,0 +1,13 @@
+---
+1.8.0.beta activerecord:>= 0,database_cleaner:~> 1.8.0.beta|checksum:5879ce94dfa6659a6b645c6d7a100a7be1819104a5e310c0e86b55b66ed156fb,rubygems:> 1.3.1,created_at:2020-01-21T18:58:33Z
+1.8.0 activerecord:>= 0,database_cleaner:~> 1.8.0|checksum:341c4265ee15abfb58b101caa0f2c392a7d736cc209523ea92b2ee66fc913bfb,created_at:2020-01-30T00:35:06Z
+2.0.0.beta activerecord:>= 0,database_cleaner-core:= 2.0.0.beta|checksum:b94b19b617b0974f149ab03eb91fce2d5db4b0107b04f5a4b08a7332866d2613,rubygems:> 1.3.1,created_at:2020-04-05T19:27:05Z
+1.99.0.beta activerecord:>= 0,database_cleaner:~> 1.99.0.beta|checksum:9ac50ad7e166fe0fe6fdc53958be5bc6ced4f31a0d1eafa4904714536fd73ea9,rubygems:> 1.3.1,created_at:2020-05-30T17:25:44Z
+2.0.0.beta2 activerecord:>= 0,database_cleaner-core:~> 2.0.0.beta2|checksum:c3958a65ffe92f5a3ca6b46751388fd96526f53ac23bc485036e42b3811893f1,rubygems:> 1.3.1,created_at:2020-05-30T18:06:59Z
+1.99.0 activerecord:>= 0,database_cleaner:~> 1.99.0|checksum:871201d388b6bc7288bcce2f4828d250fa0487e4d5798b0eb5f9ea853efd9eea,created_at:2021-01-31T23:14:45Z
+2.0.0 activerecord:>= 5.a,database_cleaner-core:~> 2.0.0|checksum:158d7946779f4f8158a5702ba945b3fae1a1a828c2a1b87e560d16c34f93e7c9,created_at:2021-01-31T23:30:46Z
+2.0.1 activerecord:>= 5.a,database_cleaner-core:~> 2.0.0|checksum:d55bbd23504b9793e144cde67f1c28ab5ea21eeb5db276333e941950d150bdfb,created_at:2021-05-08T20:46:10Z
+2.1.0 activerecord:>= 5.a,database_cleaner-core:~> 2.0.0|checksum:7384b973d67bcc1b5a850b876a4638aa83cca3bc88f9d87562fe25cd2dd60d8a,created_at:2023-02-17T15:23:10Z
+2.2.0 activerecord:>= 5.a,database_cleaner-core:~> 2.0.0|checksum:3228d6d8ec1f2103fd6ab468dae923424318bcfabcf5dd5b02e5fcb0c486e1c7,created_at:2024-07-12T04:11:43Z
+2.2.1 activerecord:>= 5.a,database_cleaner-core:~> 2.0.0|checksum:be47005de91e48f97841f8220f7cbd57b13682073016caac7ce332e6c77bbfcb,created_at:2025-05-13T10:37:11Z
+2.2.2 activerecord:>= 5.a,database_cleaner-core:~> 2.0|checksum:88296b9f3088c31f7c0d4fcec10f68e4b71c96698043916de59b04debec10388,created_at:2025-07-30T18:01:54Z

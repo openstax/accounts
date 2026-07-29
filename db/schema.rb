@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_04_18_065011) do
+ActiveRecord::Schema.define(version: 2026_05_22_060438) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -349,6 +349,23 @@ ActiveRecord::Schema.define(version: 2026_04_18_065011) do
     t.index ["contact_info_kind"], name: "index_pre_auth_states_on_contact_info_kind"
   end
 
+  create_table "salesforce_drift_findings", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "category", null: false
+    t.string "salesforce_record_type"
+    t.string "salesforce_record_id"
+    t.jsonb "details", default: {}, null: false
+    t.datetime "first_seen_at", null: false
+    t.datetime "last_seen_at", null: false
+    t.datetime "resolved_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["category", "resolved_at"], name: "index_salesforce_drift_findings_on_category_and_resolved_at"
+    t.index ["last_seen_at"], name: "index_salesforce_drift_findings_on_last_seen_at"
+    t.index ["user_id", "category"], name: "index_salesforce_drift_findings_on_user_id_and_category"
+    t.index ["user_id"], name: "index_salesforce_drift_findings_on_user_id"
+  end
+
   create_table "schools", force: :cascade do |t|
     t.string "salesforce_id", null: false
     t.string "name", null: false
@@ -482,6 +499,7 @@ ActiveRecord::Schema.define(version: 2026_04_18_065011) do
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"
     t.index ["salesforce_contact_id"], name: "index_users_on_salesforce_contact_id"
+    t.index ["salesforce_lead_id"], name: "index_users_on_salesforce_lead_id"
     t.index ["school_id"], name: "index_users_on_school_id"
     t.index ["school_type"], name: "index_users_on_school_type"
     t.index ["source_application_id"], name: "index_users_on_source_application_id"
@@ -492,6 +510,7 @@ ActiveRecord::Schema.define(version: 2026_04_18_065011) do
   add_foreign_key "external_ids", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "salesforce_drift_findings", "users"
   add_foreign_key "users", "oauth_applications", column: "source_application_id"
   add_foreign_key "users", "schools"
 end

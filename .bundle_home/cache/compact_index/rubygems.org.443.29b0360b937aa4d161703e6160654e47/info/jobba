@@ -1,0 +1,13 @@
+---
+1.0.0 redis:~> 3.2,redis-namespace:>= 0|checksum:369af2539f6c86825b7562be85a1aa0434799ba444e7db151ed759f51827be67,created_at:2016-01-01T18:24:43Z
+1.0.1 redis:~> 3.2,redis-namespace:>= 0|checksum:cfe529274e14ea69fb8a58e1d3cc66cbb903cea278bd63e242204b5db05a3e5e,created_at:2016-01-01T19:02:36Z
+1.1.0 redis:~> 3.2,redis-namespace:>= 0|checksum:ad9836f25101d23497d311fcfc9dae93a3ab256825ed7847b5af620ea941a8e9,created_at:2016-01-02T05:22:40Z
+1.2.0 redis:~> 3.2,redis-namespace:>= 0|checksum:689928ce5bd2f82ad8dc2990cbc899238425f68fdf4faec3f7622cc541dd2cd2,created_at:2016-01-03T22:34:08Z
+1.3.0 redis:~> 3.2,redis-namespace:>= 0|checksum:830e368df3917a455e3102665b37597e3550b35b5ed0a52ddb66e763e7ae9c2e,created_at:2016-01-14T21:35:36Z
+1.4.0 redis:~> 3.2,redis-namespace:>= 0|checksum:f16437af1e05e7b3a4a8431bb602b6378f0018fb1c94b3009a681fb4c8eed3e0,created_at:2016-01-20T16:07:42Z
+1.5.0 redis:~> 3.2,redis-namespace:>= 0|checksum:f84e15ab40c07ad373c4c0f13c79b6b8c4003470ca9a2880a92e82eb6f1d8193,created_at:2017-04-17T16:52:26Z
+1.6.0 redis:~> 3.2,redis-namespace:>= 0|checksum:eddfff3b2ee74a4b420739c3260aef8721d311579b1614f1f706c215662bdf4d,created_at:2017-09-22T18:37:24Z
+1.7.0 redis:~> 3.2,redis-namespace:>= 0|checksum:5b31ee472c896e59a5587e89bec56d8a686b3b8b18af7fdd302fd6c7986ce7ac,created_at:2018-05-10T19:28:00Z
+1.8.0 oj:~> 3.7.6,redis:~> 3.2,redis-namespace:>= 0|checksum:ed4a005d4fed37f86273659ee9682af6b7d52d83b3087b8cb86824bdc5cd0a39,created_at:2019-02-26T20:33:57Z
+1.8.1 oj:>= 0,redis:>= 0,redis-namespace:>= 0|checksum:e3a0518356f69f52e60fc8b870ef5dc972bad750c2e19c6d6662afda399e397a,created_at:2021-10-21T12:50:52Z
+2.0.0 oj:>= 0,redis:>= 4.0,redis-namespace:>= 0|checksum:7f8be5d46d867257dc2e71405dbc628e0450e0f8f1e02f60d40fa43bba06b5f6,created_at:2023-09-14T14:09:22Z

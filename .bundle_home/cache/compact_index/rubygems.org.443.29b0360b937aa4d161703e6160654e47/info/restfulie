@@ -1,0 +1,22 @@
+---
+0.1 |checksum:09aa08e5b6a98d8cf026b9f3191801d1282fbcbe246469d9e3d4261d1056e6c5,created_at:2009-11-03T00:17:22Z
+0.2 |checksum:fa7e393d62ed73f05ce287274f7c72fd019c22db206443f0ac8231d12361d9a2,created_at:2009-11-11T15:49:13Z
+0.3 |checksum:25874cd838b66ed1753fb4beb7a61c394100356eded5eaa1c7084367475b66d9,created_at:2009-11-26T16:43:25Z
+0.4.0 |checksum:8e0d463ac7bc2d8f73da78ddd441981eada46801686cbe1401a49acc0dce085b,created_at:2009-12-10T16:38:00Z
+0.5.0 |checksum:a1b032a414f53a08d35c29a3325d3e94a44ba2f00545be355abd9dcf0885ab6d,created_at:2010-01-06T23:04:38Z
+0.6.0 ratom:>= 0.6.3|checksum:137f2e7c5c8f51466ff767721dfeedbb86a0154b8a74a8d92337a9e72984d5ee,created_at:2010-01-26T18:42:02Z
+0.7.0 actionpack:>= 2.3.2,activesupport:>= 2.3.2,responders_backport:~> 0.1.0|checksum:9e8741f8c9dcf686cc6d07a3bd09f61580eeb33e02f85b1558dd2a3b18e6f1f7,created_at:2010-04-12T17:42:11Z
+0.7.1 actionpack:>= 2.3.2,activesupport:>= 2.3.2,json_pure:>= 1.2.4,responders_backport:~> 0.1.0|checksum:3d7ad596bc4e21a03fb5def6c9f0327518f2f6677bfaec65f1e5ebdd76fd90fc,created_at:2010-04-28T18:52:44Z
+0.7.2 actionpack:>= 2.3.2,activesupport:>= 2.3.2,json_pure:>= 1.2.4,responders_backport:~> 0.1.0|checksum:8d9071ac117e91d6165a953322260054c104d5e2c36a3aa690e44f752899a2d3,created_at:2010-05-06T14:45:16Z
+0.8.0 actionpack:>= 2.3.2,activesupport:>= 2.3.2,json_pure:>= 1.2.4,nokogiri:>= 1.4.2,responders_backport:~> 0.1.0|checksum:4cba26fa3fab3151d7f31297d83f561e40c2e1954333eb59c0fa52b28cb6f7a7,created_at:2010-05-27T04:19:28Z
+0.8.1 actionpack:>= 2.3.2,activesupport:>= 2.3.2,json_pure:>= 1.2.4,nokogiri:>= 1.4.2,responders_backport:~> 0.1.0|checksum:b824285bb54c644e54171de4f7aeebc11a49db38d64456c4edb40e9ad4f50168,created_at:2010-06-03T14:56:20Z
+0.9.1 actionpack:>= 2.3.2,activesupport:>= 2.3.2,json_pure:>= 1.2.4,nokogiri:>= 1.4.2,responders_backport:~> 0.1.0|checksum:fc2a0973344b3f949905a3346ed8ef574683e28ddfa7cfdaa094a6b6d5db9615,created_at:2010-08-22T22:45:40Z
+0.9.3 actionpack:>= 2.3.2,activesupport:>= 2.3.2,json_pure:>= 1.2.4,nokogiri:>= 1.4.2|checksum:2d93661ae4e826cc9f49d732e33d933b120f589fc19e89ff6e935c89c9ee1da4,created_at:2010-08-31T13:55:44Z
+0.1.0.beta1 actionpack:>= 2.3.2,activesupport:>= 2.3.2,json_pure:>= 1.2.4,nokogiri:>= 1.4.2|checksum:c18ff64042da7848435d903eb8fcefad6bb4a3681b39c615a28936de0d19f193,rubygems:> 1.3.1,created_at:2010-10-29T14:33:57Z
+1.0.0.beta1 actionpack:>= 2.3.2,activesupport:>= 2.3.2,json_pure:>= 1.2.4,nokogiri:>= 1.4.2|checksum:875c86c700774470732b0d301f582dc61a1be45d869c099be6fcbeb2d6320f17,rubygems:> 1.3.1,created_at:2010-11-01T02:43:14Z
+1.0.0.beta4 json_pure:>= 1.2.4,nokogiri:>= 1.4.2|checksum:430382f8c0672707ca65cd52bc46e0d9cb985f10d42216f6b3fab63044439092,rubygems:> 1.3.1,created_at:2011-01-06T18:02:09Z
+1.0.0.beta5 json_pure:>= 1.2.4,medie:>= 1.0.0.beta4,nokogiri:>= 1.4.2,rack-conneg:>= 0,respondie:~> 0.9.0,tokamak:>= 1.0.0.beta4|checksum:e365a3d66f8520cf6bd251698513808ff098529bad417dd2e48bcbf49124d3b2,rubygems:> 1.3.1,created_at:2011-01-26T15:37:02Z
+1.0.0 json_pure:>= 1.2.4,medie:~> 1.0.0,nokogiri:>= 1.4.2,rack-conneg:>= 0,respondie:~> 0.9.0,tokamak:~> 1.1.2|checksum:32e386c40bc38ce2bbb0e4631c665b491c3f4fe18c8bea3eb135e07b12e8f875,rubygems:> 1.3.1,created_at:2011-01-31T13:18:15Z
+1.0.3 hypertemplate:~> 1.2.0,json_pure:>= 1.2.4,medie:~> 1.0.0,nokogiri:>= 1.4.2,rack-conneg:>= 0,respondie:~> 0.9.0,sqlite3-ruby:>= 0|checksum:c5fbc2982f94d2678273f0a153cde31f48749f27635bbeb6f90ea31f1e74ae4f,created_at:2011-05-24T02:12:02Z
+1.1.0 hypertemplate:~> 1.2.0,json_pure:>= 1.2.4,medie:~> 1.0.0,nokogiri:>= 1.4.2,rack-conneg:>= 0,respondie:~> 0.9.0|checksum:8a0f4397a09ef395bb70f1607558976c61aefa332e484f08cf02ec6407d06813,created_at:2011-11-09T02:34:32Z
+1.1.1 hypertemplate:~> 1.2.2,json_pure:>= 1.2.4,medie:~> 1.0.0,nokogiri:>= 1.4.2,rack-conneg:>= 0,respondie:~> 0.9.0|checksum:b1f3d0204edea4f3a649c0816ff1521ecd673106fb8602befb1639502a8cc644,created_at:2012-07-05T15:18:14Z

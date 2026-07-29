@@ -1,0 +1,8 @@
+---
+0.1.0 regexp_parser:~> 0.2|checksum:f0cbe0836f2047b3e9bbde7c7a9cfb15387835538c05f8d26063f605449c1b6a,created_at:2015-03-19T02:00:15Z
+0.1.1 regexp_parser:~> 0.2|checksum:6e6328d3e8e4b3e87c36f5b82e8404701fba15c6fffb9250cbcc73007e7ad7a1,created_at:2015-03-25T00:31:09Z
+0.1.2 regexp_parser:~> 0.2|checksum:c8018105138c96695b892b452e8f3249d82806e36a698c3d9b5bfc65984255a5,created_at:2015-04-14T18:32:47Z
+0.2.0 regexp_parser:~> 1.2|checksum:c05a01aa2b50b8a91680a46741a2022636f6537f391e910493b285f02c4835f8,created_at:2018-11-13T20:09:43Z
+0.2.1 regexp_parser:~> 1.2|checksum:cc153c1ef841c199fbfcf1a98274dac61ee7635c7f6268086a95c309af6956c2,created_at:2020-04-06T20:38:56Z
+0.3.0 regexp_parser:~> 2.0|checksum:66a95bd8c2b0641baf1fbf9bd355a0dcf13c82c6883f6f496a722420a8b6e0d7,created_at:2020-12-03T09:49:47Z
+0.4.0 regexp_parser:~> 2.2|checksum:0e7598616616b5eca168897392a6f867d849cbf79a16ac94b84e86dc638a0ccf,ruby:< 4.0&>= 2.6.0,created_at:2022-01-12T17:10:19Z

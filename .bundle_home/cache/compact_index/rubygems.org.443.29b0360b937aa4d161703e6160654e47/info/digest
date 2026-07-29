@@ -1,0 +1,18 @@
+---
+1.0.0 |checksum:6896e2a4a8beecb0e1485aa0903f955054960c23fd52ca73d40d5cd5d3cb1914,ruby:>= 2.3.0,created_at:2020-12-03T10:05:24Z
+3.0.0 |checksum:84bd84ce7c70738f594aba062d194ced8d5c96796619f7956f8028d085b79964,ruby:>= 2.3.0,created_at:2020-12-18T09:29:54Z
+3.1.0.pre0 |checksum:6b10798d54971e2111840d80e1e2b3669c7cd83b2fec21ccf65f11f9f22b4439,ruby:>= 2.5.0,rubygems:> 1.3.1,created_at:2021-09-30T14:55:08Z
+3.1.0.pre1 |checksum:2bbc2db4674bcbafbe58f2e46b5c7b0f2e06029b9d62af52c66caee960dd2cc4,ruby:>= 2.5.0,rubygems:> 1.3.1,created_at:2021-09-30T17:04:43Z
+3.1.0.pre2 |checksum:6cb0decd0a1d864ffdc8ba6f990ae216bdb5caf2cc483249b17f9343e159e9b7,ruby:>= 2.5.0,rubygems:> 1.3.1,created_at:2021-09-30T17:30:16Z
+3.1.0.pre2-java |checksum:25b1c88bad58b001dd5ee406799ddb0e96c2acc9f8e4684ea9fdd3dfd24b14b0,ruby:>= 2.5.0,rubygems:> 1.3.1,created_at:2021-09-30T17:30:46Z
+3.1.0.pre3 |checksum:5e84b2b09cf8d143fcb85bcd1c342089adff0412dee1e94f2ec10acc8aabb621,ruby:>= 2.5.0,rubygems:> 1.3.1,created_at:2021-10-24T01:39:03Z
+3.1.0 |checksum:69cc7c26adc807f7073e8fd02b9e1a772ead93c3b8290ee58142f8f5fafe7c03,ruby:>= 2.5.0,created_at:2021-12-24T11:03:29Z
+3.1.0-java |checksum:255746e87e01ed85fb5406b46fe9bf3bb8bd55a8ce1c7a0db86a6343c496b905,ruby:>= 2.5.0,created_at:2021-12-24T11:03:52Z
+3.1.1 |checksum:81a6fd1da320e03d60f730df90b0b002eaf4b29c023aede3b87120dce7ba1307,ruby:>= 2.5.0,created_at:2022-12-05T05:56:47Z
+3.1.1-java |checksum:d300de21f922e598a10ce59676ebdf72e76c8a469126347b8b0c80f63153f857,ruby:>= 2.5.0,created_at:2022-12-06T06:13:56Z
+3.2.0.pre0 |checksum:587ea9aadfac8e05b4e7a4f7e46f9466d9095f864416f3e24e3aad725ae11cf5,ruby:>= 2.5.0,created_at:2024-12-11T08:03:01Z
+3.2.0.pre0-java |checksum:8a19476d0cb3b770d2cab7bf4e2571776ea15360eaa01425b9a3a2fae14a9662,ruby:>= 2.5.0,created_at:2024-12-11T08:04:28Z
+3.2.0 |checksum:fa2e7092ec683f65d82fadde5ff4ca3b32e23ee0b19f1fc1a5e09993ad2d3991,ruby:>= 2.5.0,created_at:2025-01-21T22:56:30Z
+3.2.0-java |checksum:fe5c47eecd1d807e741dae525495faa6bfcd38e7c89c9c7d40444632144369e4,ruby:>= 2.5.0,created_at:2025-01-21T22:56:38Z
+3.2.1 |checksum:ab3312b4e272d7d5dc41c564c86a25861a1f34ac5153374199a0b74861395947,ruby:>= 2.5.0,created_at:2025-10-31T04:54:15Z
+3.2.1-java |checksum:3ca18c55ca0263650388706d657df08aeeb1d948cf78ee3c14cb40a8a1a7e2b0,ruby:>= 2.5.0,created_at:2025-10-31T04:55:41Z

@@ -21,7 +21,7 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
   end
 
   before do
-    allow_any_instance_of(described_class).to(
+    allow_any_instance_of(Salesforce::SyncSchools).to(
       receive(:merge_winner_salesforce_id).and_return(nil)
     )
   end
@@ -70,7 +70,7 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
 
     it 'repoints users to the merge winner and deletes the stale school' do
       stub_schools school
-      allow_any_instance_of(described_class).to(
+      allow_any_instance_of(Salesforce::SyncSchools).to(
         receive(:merge_winner_salesforce_id).with(
           deleted_school_with_users.salesforce_id
         ).and_return(school.salesforce_id)
@@ -97,7 +97,7 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
 
     it 'skips reconciliation when the school turns out to still exist in Salesforce' do
       stub_schools school
-      allow_any_instance_of(described_class).to(
+      allow_any_instance_of(Salesforce::SyncSchools).to(
         receive(:merge_winner_salesforce_id).with(
           deleted_school_with_users.salesforce_id
         ).and_return(deleted_school_with_users.salesforce_id)
@@ -112,7 +112,7 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
 
     it 'leaves the school alone when the winner is not cached locally yet' do
       stub_schools school
-      allow_any_instance_of(described_class).to(
+      allow_any_instance_of(Salesforce::SyncSchools).to(
         receive(:merge_winner_salesforce_id).with(
           deleted_school_with_users.salesforce_id
         ).and_return('0010v0NotCached')
@@ -126,13 +126,13 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
   end
 
   describe '#merge_winner_salesforce_id' do
-    let(:routine)     { described_class.new }
+    let(:routine)     { Salesforce::SyncSchools.new }
     let(:sfdc_client) { double('sfdc_client') }
     let(:loser_id)    { '0010v0LoserAcct' }
     let(:winner_id)   { '0010v0WinnerAcc' }
 
     before do
-      allow_any_instance_of(described_class).to(
+      allow_any_instance_of(Salesforce::SyncSchools).to(
         receive(:merge_winner_salesforce_id).and_call_original
       )
       allow(ActiveForce).to receive(:sfdc_client).and_return(sfdc_client)
@@ -176,19 +176,19 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
       attrs['id'] = attrs.delete('salesforce_id')
       attrs['school_location'] = attrs.delete('location')
 
-      OpenStax::Salesforce::Remote::School.new attrs
+      Salesforce::Records::School.new attrs
     end
 
     # select(:id).where(id: ...) runs once for the user-less school sweep and
     # once for the schools-with-users reconciliation
     select_query = instance_double(ActiveForce::ActiveQuery)
-    allow(OpenStax::Salesforce::Remote::School).to(
+    allow(Salesforce::Records::School).to(
       receive(:select).with(:id).and_return(select_query)
     )
     allow(select_query).to receive(:where).with(id: kind_of(Array)).and_return(sf_schools)
 
     order_query = instance_double(ActiveForce::ActiveQuery)
-    expect(OpenStax::Salesforce::Remote::School).to(
+    expect(Salesforce::Records::School).to(
       receive(:order).with(:Id).and_return(order_query)
     )
     expect(order_query).to receive(:limit).with(described_class::BATCH_SIZE).and_return(sf_schools)

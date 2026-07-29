@@ -16,7 +16,7 @@ class UpdateSalesforceAssignableFields
       contact_id = external_id.user.salesforce_contact_id
       next if contact_id.nil?
 
-      contact = OpenStax::Salesforce::Remote::Contact.find(contact_id)
+      contact = Salesforce::Records::Contact.find(contact_id)
       next if contact.nil?
 
       contact.assignable_interest = 'Fully Integrated'

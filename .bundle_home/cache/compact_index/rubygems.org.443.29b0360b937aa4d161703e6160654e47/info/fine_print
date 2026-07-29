@@ -1,0 +1,28 @@
+---
+0.0.1 jquery-rails:>= 0,rails:>= 3.1|checksum:33e1bd19d54e9212f91adffcb9c0e8e0ff43e483df91e29a8b4f9dd5c05212a8,created_at:2013-03-22T23:16:07Z
+0.1.0 jquery-rails:>= 0,rails:>= 3.1|checksum:d34e3eaf8619a590ec6743da952ca0f6a4132a01916dba04fe4a609bfaf06e1a,created_at:2013-03-22T23:33:17Z
+0.1.1 jquery-rails:>= 0,rails:>= 3.1|checksum:9ac0fd315861752fc8207d3d8f09b421b971b81b33bd1a2264367cc5a6af96e1,created_at:2013-03-22T23:37:50Z
+1.0.0 jquery-rails:>= 0,rails:>= 3.1|checksum:2ce00c7443b33bde11c25e5bf8f017ed991c64233ef8b64e342bf5118cc7c171,created_at:2013-11-13T01:51:05Z
+1.1.0 jquery-rails:>= 0,rails:>= 3.1|checksum:e0c20ace0d1937ecdce77b8715a81d44fc63e39454cc91ab99c6435210a57e4b,created_at:2013-11-13T02:47:40Z
+1.1.1 jquery-rails:>= 0,rails:>= 3.1|checksum:e736ac6adafa94ac780bdfff01cc308178eb0ab969365fcfeb439efc97638b37,created_at:2013-11-14T02:02:02Z
+1.2.0 jquery-rails:>= 0,rails:>= 3.1|checksum:d142109ff2ab75b77540de3682c6d11a50463b3fd2dc561cb87514e3bc318475,created_at:2013-11-16T03:58:37Z
+1.3.0 jquery-rails:>= 0,rails:>= 3.1|checksum:03c9dc9218de0e929b61aff78cfdbf5060ec5c5f9e044499b9fa03299d3386d6,created_at:2014-01-22T18:42:31Z
+1.4.1 jquery-rails:>= 0,rails:>= 3.1|checksum:5627b0cc8e6870a664a31ee181bebe84626529e862abe3d84b08793321df7a84,created_at:2014-03-08T00:07:26Z
+2.0.0 action_interceptor:>= 0.4.1,jquery-rails:>= 0,rails:>= 3.1,squeel:>= 0|checksum:bf914064b9014c5a4be22f45ddc401e70b5e16786b338f30b29d1a25826b2d76,created_at:2014-09-23T01:16:36Z
+2.0.1 action_interceptor:>= 0.4.1,jquery-rails:>= 0,rails:>= 3.1,squeel:>= 0|checksum:727fb7805b78a8a6479a9aaf8d50c713ac9fe2583ab48e8db52295862fdaba91,created_at:2014-09-26T19:21:26Z
+2.0.2 action_interceptor:>= 0.4.1,jquery-rails:>= 0,rails:>= 3.1,squeel:>= 0|checksum:165a0912045f6f48bd1369f48ec770c25297873e9848643c25be931a46bab93a,created_at:2014-09-26T19:49:38Z
+2.0.3 action_interceptor:>= 0.4.1,jquery-rails:>= 0,rails:>= 3.1,squeel:>= 0|checksum:9ea5cc4150ec7bfcccfde8ab5acdaa031c2fdac6fe53b177e9687d421e35bab9,created_at:2014-09-26T20:03:11Z
+2.1.1 action_interceptor:>= 0.4.1,jquery-rails:>= 0,rails:>= 3.1,squeel:>= 0|checksum:a4190d8849307f1ab2cb8a8d1e27bafb85e3866d7c0841fd7e6240d32ba8d4ad,created_at:2014-09-29T19:21:39Z
+2.2.0 action_interceptor:>= 0.4.1,jquery-rails:>= 0,rails:>= 3.1,squeel:>= 0|checksum:3aeafac8e4c02a0bbfee51653e05c8c2730c7add159ced05057b4976536dce49,created_at:2014-12-11T00:59:10Z
+2.2.1 action_interceptor:>= 0.5,jquery-rails:>= 0,rails:>= 3.1,squeel:>= 0|checksum:1c7a79416b065761c8451b7e3e2a0fa3e31c0db4a07ee03e54f503ddc5e4f145,created_at:2014-12-11T01:47:46Z
+2.3.0 action_interceptor:>= 1.0,jquery-rails:>= 0,rails:>= 3.1,responders:>= 0,squeel:>= 0|checksum:bd0aad76eb2a02d52c2e031df4454d7427fca90996bc1b21c12328ced52a61c9,created_at:2015-03-19T21:36:39Z
+2.3.1 action_interceptor:>= 1.0,jquery-rails:>= 0,rails:>= 3.1,responders:>= 0,squeel:>= 0|checksum:fcf8966b7f38b27076fcec02b88cb30fae86390fb93fdb075f957ae15e8aa48f,created_at:2015-03-23T18:54:56Z
+3.0.0 action_interceptor:>= 1.0,jquery-rails:>= 0,rails:>= 3.1,responders:>= 0,squeel:>= 0|checksum:04d0fe6960e6a0a97d4897cc05ab5f9cc23db178104061939193d337a5a71719,created_at:2015-03-25T21:01:31Z
+3.1.0 action_interceptor:>= 1.0,jquery-rails:>= 0,rails:>= 3.1,responders:>= 0,squeel:>= 0|checksum:a3ecdf5adac49b44641c176d3256be74b29affd143f46a41940566d783dc81b7,created_at:2015-08-07T16:22:07Z
+4.0.0 action_interceptor:>= 1.0,baby_squeel:>= 0,jquery-rails:>= 0,rails:>= 4.2,responders:>= 0|checksum:c2add0f7e9c43da6eb4494e99c05160a4f40960f0d3548a3ee3c94dde9c18b98,created_at:2018-06-20T16:47:49Z
+4.0.1 action_interceptor:>= 1.0,baby_squeel:>= 0,jquery-rails:>= 0,rails:>= 4.2,responders:>= 0|checksum:133b579dfcdf37ac58f2c17aa599740a9a2e304ab865e3c093dc3496a5659fa0,created_at:2018-06-20T19:00:51Z
+5.0.0 action_interceptor:>= 0,jquery-rails:>= 0,rails:>= 0,responders:>= 0|checksum:5b3e3f38dd62985fa857b002606cabb41c5ee39c62d930df69a3f317ef9435c4,created_at:2019-05-24T15:36:52Z
+6.0.0 action_interceptor:>= 0,jquery-rails:>= 0,rails:>= 0,responders:>= 0|checksum:93593ad52aa082994912b2bfee562f3976ef0380c8fe121e1279990870b3b7ea,created_at:2021-02-01T18:27:02Z
+6.0.1 action_interceptor:>= 0,jquery-rails:>= 0,rails:< 7,responders:>= 0|checksum:bfcfd224dd1184012bd401b3239c1ec16c87934dac0c7ed67a5e17aaacb5ec1b,created_at:2023-03-21T17:53:00Z
+6.0.2 action_interceptor:>= 0,jquery-rails:>= 0,rails:< 7,responders:>= 0|checksum:6a5e8d8c09a47a7b2ec5a59caeff6042851622bbe79ffe505296e2331b04ef78,created_at:2025-01-07T20:49:59Z
+6.0.3 action_interceptor:>= 0,jquery-rails:>= 0,rails:< 7,responders:>= 0|checksum:473f587be68c323b8f96ca0747a607259e2da88c684a6ba23734574dadca0b36,created_at:2025-01-07T21:00:09Z
