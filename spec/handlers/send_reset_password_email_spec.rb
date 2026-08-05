@@ -41,6 +41,37 @@ describe SendResetPasswordEmail, type: :handler do
     expect(user.login_token).to be_a(String)
   end
 
+  context 'when the account exists but its email is unverified' do
+    let!(:unverified_user) do
+      user = FactoryBot.create(:user, state: User::UNVERIFIED, is_newflow: true, role: 'student')
+      FactoryBot.create(:email_address, user: user, value: 'unverified@openstax.org', verified: false)
+      user
+    end
+
+    let(:params) do
+      { forgot_password_form: { email: 'unverified@openstax.org' } }
+    end
+
+    it 'finds the user instead of erroring cannot_find_user' do
+      result = described_class.handle(caller: AnonymousUser.instance, params: params)
+      expect(result).not_to have_routine_error(:cannot_find_user)
+      expect(result.outputs.user).to eq(unverified_user)
+    end
+
+    it 'resends the email verification and flags needs_email_verification' do
+      expect_any_instance_of(NewflowMailer).to receive(:signup_email_confirmation).and_call_original
+      result = described_class.handle(caller: AnonymousUser.instance, params: params)
+      expect(result.outputs.needs_email_verification).to be(true)
+      perform_enqueued_jobs
+    end
+
+    it 'does not send a password reset email' do
+      expect_any_instance_of(NewflowMailer).not_to receive(:reset_password_email)
+      described_class.handle(caller: AnonymousUser.instance, params: params)
+      perform_enqueued_jobs
+    end
+  end
+
   context 'when no user found' do
     let(:params) do
     {

@@ -58,6 +58,24 @@ class OXPosthog
     Sentry.capture_exception(e)
   end
 
+  # Capture a named event that has no resolved user -- e.g. a login or password
+  # reset attempt for an email that matches no account. Keyed on the anonymous
+  # posthog-js distinct_id so it lines up with the browser session, with the
+  # $set/$set_once person-properties dropped (there is no person to resolve).
+  def self.log_anonymous(distinct_id, event, extra_props = {})
+    return if distinct_id.blank? || Rails.env.test?
+    posthog.capture(
+      distinct_id: distinct_id,
+      event: event,
+      properties: {
+        '$process_person_profile': false,
+        **extra_props
+      }
+    )
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
+
   def self.identify_school(school)
     return if school.nil? || Rails.env.test?
     posthog.group_identify(

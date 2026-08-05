@@ -18,6 +18,17 @@ module Newflow
         success: lambda {
           user = @handler_result.outputs.user
           @email = @handler_result.outputs.email
+
+          # Unverified account: no reset email was sent -- verification was
+          # resent instead. Route them to enter their PIN rather than dead-end.
+          if @handler_result.outputs.needs_email_verification
+            save_unverified_user(user.id)
+            security_log(:reset_password_unverified_email, {user: user, email: @email, message: "Resent email verification"})
+            log_posthog(user, 'user_reset_password_email_unverified')
+            redirect_to(user.student? ? student_email_verification_form_path : educator_email_verification_form_path)
+            return
+          end
+
           security_log(:password_reset, {user: user, email: @email, message: "Sent password reset email"})
           log_posthog(user, 'user_reset_password_requested')
           clear_signup_state
@@ -29,6 +40,11 @@ module Newflow
           @email = @handler_result.outputs.email
           code = @handler_result.errors.first.code
           security_log(:reset_password_failed, {user: user, email: @email, reason: code})
+          if user.present?
+            log_posthog(user, 'user_reset_password_failed', { reason: code.to_s })
+          else
+            log_posthog_anonymous('user_reset_password_failed', { reason: code.to_s })
+          end
           render :forgot_password_form
         }
       )

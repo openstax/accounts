@@ -51,6 +51,36 @@ module Newflow
           end
       end
 
+      context 'when the account exists but its email is unverified' do
+          let!(:unverified_user) do
+            user = FactoryBot.create(:user, state: User::UNVERIFIED, is_newflow: true, role: 'student')
+            FactoryBot.create(:email_address, user: user, value: 'unverified@openstax.org', verified: false)
+            user
+          end
+
+          let(:params) do
+            { forgot_password_form: { email: 'unverified@openstax.org' } }
+          end
+
+          it 'redirects to the email verification form instead of dead-ending' do
+            post('send_reset_password_email', params: params)
+            expect(response).to redirect_to(student_email_verification_form_path)
+          end
+
+          it 'stashes the unverified user so the verification form can find them' do
+            post('send_reset_password_email', params: params)
+            expect(session[:unverified_user_id]).to eq(unverified_user.id)
+          end
+
+          it 'creates a reset_password_unverified_email security log' do
+            expect {
+              post('send_reset_password_email', params: params)
+            }.to change {
+              SecurityLog.where(event_type: :reset_password_unverified_email).count
+            }
+          end
+      end
+
       context 'failure' do
           let(:params) do
             { forgot_password_form: { email: '' } }

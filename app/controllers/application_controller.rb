@@ -45,6 +45,26 @@ class ApplicationController < ActionController::Base
     OXPosthog.log(user, event, extra_props)
   end
 
+  # Capture an event when there is no resolved user (e.g. a failed login or
+  # password reset for an unknown email), keyed on the browser's anonymous
+  # posthog-js distinct_id so these attempts are finally visible in PostHog.
+  def log_posthog_anonymous(event, extra_props = {})
+    OXPosthog.log_anonymous(posthog_anonymous_distinct_id, event, extra_props)
+  end
+
+  # posthog-js stores its distinct_id in a cookie named "ph_<api_key>_posthog"
+  # whose value is a JSON blob. Pull the id out so a server-side event lines up
+  # with the same anonymous person as the browser's client-side events.
+  def posthog_anonymous_distinct_id
+    cookie_name = "ph_#{Rails.application.secrets.posthog_project_api_key}_posthog"
+    raw = cookies[cookie_name]
+    return if raw.blank?
+
+    JSON.parse(raw)['distinct_id'].presence
+  rescue JSON::ParserError
+    nil
+  end
+
   respond_to :html
 
   protected #################
