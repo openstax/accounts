@@ -9,6 +9,10 @@
         }
     })
 
+    <% if session.delete(:posthog_reset) %>
+      posthog.reset();
+    <% end %>
+
     <% unless current_user.is_anonymous? %>
       posthog.identify(
           '<%= current_user&.uuid %>',

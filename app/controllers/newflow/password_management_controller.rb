@@ -22,7 +22,8 @@ module Newflow
           # Unverified account: no reset email was sent -- verification was
           # resent instead. Route them to enter their PIN rather than dead-end.
           if @handler_result.outputs.needs_email_verification
-            save_unverified_user(user.id)
+            clear_signup_state
+            save_unverified_user(user.id, @handler_result.outputs.email_address&.id)
             security_log(:reset_password_unverified_email, {user: user, email: @email, message: "Resent email verification"})
             log_posthog(user, 'user_reset_password_email_unverified')
             redirect_to(user.student? ? student_email_verification_form_path : educator_email_verification_form_path)

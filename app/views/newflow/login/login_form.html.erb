@@ -1,5 +1,6 @@
 <%
     email_prefill_value = current_users_resetting_password_email
+    email_prefill_value ||= @login_failed_email # so a failed attempt doesn't make them retype it
     email_prefill_value ||= nil # because otherwise it literally shows "false" in the form's input field
 %>
 
@@ -117,8 +118,9 @@
                 <%# a sign-up CTA that carries the email the user just typed so it prefills on signup. %>
                 <% if @handler_result&.errors&.any? { |error| error.code == :cannot_find_user } %>
                     <div class="content" id="signup-cta">
+                        <%# `t` (not `I18n.t`) so the _html suffix escapes interpolations for us %>
                         <%=
-                            I18n.t(
+                            t(
                                 :"login_signup_form.no_account_sign_up_html",
                                 sign_up_link: link_to(
                                     I18n.t(:"login_signup_form.sign_up"),
@@ -129,7 +131,7 @@
                                         ga_label: 'Sign up from login error'
                                     }
                                 )
-                            ).html_safe
+                            )
                         %>
                     </div>
                 <% end %>

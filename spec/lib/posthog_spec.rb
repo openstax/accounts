@@ -213,6 +213,57 @@ RSpec.describe OXPosthog, type: :lib do
     end
   end
 
+  describe '.log_anonymous' do
+    it 'captures the event against the given distinct_id without person processing' do
+      described_class.log_anonymous('anon-123', 'user_login_failed')
+
+      expect(posthog_client).to have_received(:capture).with(
+        distinct_id: 'anon-123',
+        event: 'user_login_failed',
+        properties: { '$process_person_profile': false }
+      )
+    end
+
+    it 'merges extra_props into the event properties' do
+      described_class.log_anonymous('anon-123', 'user_login_failed', reason: 'cannot_find_user')
+
+      expect(posthog_client).to have_received(:capture).with(
+        hash_including(
+          properties: hash_including(reason: 'cannot_find_user', '$process_person_profile': false)
+        )
+      )
+    end
+
+    it 'does not send $set or $set_once (there is no person to resolve)' do
+      described_class.log_anonymous('anon-123', 'user_login_failed')
+
+      expect(posthog_client).to have_received(:capture) do |attrs|
+        expect(attrs[:properties]).not_to have_key(:'$set')
+        expect(attrs[:properties]).not_to have_key(:'$set_once')
+      end
+    end
+
+    context 'guard clauses' do
+      it 'returns early for a blank distinct_id' do
+        described_class.log_anonymous(nil, 'user_login_failed')
+        described_class.log_anonymous('', 'user_login_failed')
+
+        expect(posthog_client).not_to have_received(:capture)
+      end
+    end
+
+    context 'error handling' do
+      it 'captures exceptions with Sentry when capture raises' do
+        error = RuntimeError.new('PostHog connection failed')
+        allow(posthog_client).to receive(:capture).and_raise(error)
+
+        expect(Sentry).to receive(:capture_exception).with(error)
+
+        described_class.log_anonymous('anon-123', 'user_login_failed')
+      end
+    end
+  end
+
   describe '.identify_school' do
     it 'sends all school properties via group_identify' do
       described_class.identify_school(school)

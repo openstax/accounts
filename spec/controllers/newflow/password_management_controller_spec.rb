@@ -67,9 +67,12 @@ module Newflow
             expect(response).to redirect_to(student_email_verification_form_path)
           end
 
-          it 'stashes the unverified user so the verification form can find them' do
+          it 'stashes the unverified user and the exact address being verified' do
             post('send_reset_password_email', params: params)
             expect(session[:unverified_user_id]).to eq(unverified_user.id)
+            expect(session[:unverified_email_address_id]).to(
+              eq(unverified_user.email_addresses.find_by(value: 'unverified@openstax.org').id)
+            )
           end
 
           it 'creates a reset_password_unverified_email security log' do
@@ -78,6 +81,56 @@ module Newflow
             }.to change {
               SecurityLog.where(event_type: :reset_password_unverified_email).count
             }
+          end
+
+          context 'and the account is an educator' do
+            let!(:unverified_user) do
+              user = FactoryBot.create(:user, state: User::UNVERIFIED, is_newflow: true, role: 'instructor')
+              FactoryBot.create(:email_address, user: user, value: 'unverified@openstax.org', verified: false)
+              user
+            end
+
+            it 'redirects to the educator email verification form' do
+              post('send_reset_password_email', params: params)
+              expect(response).to redirect_to(educator_email_verification_form_path)
+            end
+          end
+
+          context 'and a second, unrelated address is unverified' do
+            before do
+              FactoryBot.create(:email_address, user: unverified_user, value: 'other@openstax.org', verified: false)
+            end
+
+            let(:params) do
+              { forgot_password_form: { email: 'other@openstax.org' } }
+            end
+
+            it 'stashes the address the user actually typed' do
+              post('send_reset_password_email', params: params)
+              expect(session[:unverified_email_address_id]).to(
+                eq(unverified_user.email_addresses.find_by(value: 'other@openstax.org').id)
+              )
+            end
+          end
+      end
+
+      context 'when the account is unverified but has no unverified address left' do
+          # `ConfirmByPin` short-circuits on an already-confirmed address, so routing
+          # these to the PIN form would accept any PIN and sign the visitor in.
+          let!(:unverified_user) do
+            user = FactoryBot.create(:user, state: User::UNVERIFIED, is_newflow: true, role: 'student')
+            FactoryBot.create(:email_address, user: user, value: 'claimed@openstax.org', verified: true)
+            user
+          end
+
+          let(:params) do
+            { forgot_password_form: { email: 'claimed@openstax.org' } }
+          end
+
+          it 'does not route to the verification form' do
+            post('send_reset_password_email', params: params)
+            expect(response).not_to redirect_to(student_email_verification_form_path)
+            expect(session[:unverified_user_id]).to be_nil
           end
       end
 

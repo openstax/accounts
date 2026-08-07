@@ -60,7 +60,13 @@ class ApplicationController < ActionController::Base
     raw = cookies[cookie_name]
     return if raw.blank?
 
-    JSON.parse(raw)['distinct_id'].presence
+    # The cookie is client-controlled: anything that parses (`null`, `[]`, `"x"`)
+    # must not blow up the request it is decorating.
+    parsed = JSON.parse(raw)
+    return unless parsed.is_a?(Hash)
+
+    distinct_id = parsed['distinct_id']
+    distinct_id if distinct_id.is_a?(String) && distinct_id.present?
   rescue JSON::ParserError
     nil
   end

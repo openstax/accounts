@@ -38,8 +38,10 @@ class SendResetPasswordEmail
     # send a reset link to, and telling the user "we can't find your account"
     # is a dead end -- reset is the one flow meant to recover access. Resend
     # their email verification instead so they can finish claiming the account.
-    if !logged_in_user && user.unverified?
-      resend_email_verification(user)
+    unverified_email_address = unverified_email_address_for(user) unless logged_in_user
+    if unverified_email_address.present?
+      NewflowMailer.signup_email_confirmation(email_address: unverified_email_address).deliver_later
+      outputs.email_address = unverified_email_address
       outputs.needs_email_verification = true
       return
     end
@@ -70,13 +72,20 @@ class SendResetPasswordEmail
     return verified_user if verified_user.present?
 
     candidate = LookupUsers.by_email_or_username(email).first
-    candidate if candidate&.unverified?
+    candidate if unverified_email_address_for(candidate).present?
   end
 
-  def resend_email_verification(user)
-    user.email_addresses.unverified.each do |email_address|
-      NewflowMailer.signup_email_confirmation(email_address: email_address).deliver_later
-    end
+  # The verification flow confirms exactly one address, so only route there when
+  # we can name it. Prefer the address the user typed; fall back to the account's
+  # first unverified address (the lookup also matches usernames). Returns nil for
+  # an account with nothing left to verify -- `ConfirmByPin` short-circuits on an
+  # already-confirmed address, so sending those to the PIN form would accept any
+  # PIN and sign the visitor in.
+  def unverified_email_address_for(user)
+    return if user.nil? || !user.unverified?
+
+    addresses = user.email_addresses.unverified.to_a
+    addresses.detect { |address| address.value.casecmp?(outputs.email.to_s) } || addresses.first
   end
 
   def logged_in_user
