@@ -53,9 +53,17 @@ module Newflow
           when :cannot_find_user, :multiple_users, :incorrect_password, :too_many_login_attempts
             user = @handler_result.outputs.user
             security_log(:sign_in_failed, { reason: code, email: email, user: user })
-            log_posthog(user, 'user_login_failed', { reason: code.to_s })
+            # `cannot_find_user` has no user by definition, and OXPosthog.log
+            # drops user-less events -- so log those against the anonymous
+            # distinct_id instead, otherwise the failure never reaches PostHog.
+            if user.present?
+              log_posthog(user, 'user_login_failed', { reason: code.to_s })
+            else
+              log_posthog_anonymous('user_login_failed', { reason: code.to_s })
+            end
           end
 
+          @login_failed_email = email
           render :login_form
         }
       )
