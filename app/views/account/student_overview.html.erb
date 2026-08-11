@@ -63,8 +63,8 @@
           <% end %>
         </section>
 
-        <section class="account-student-overview__connect-card" aria-label="Connect with your instructor">
-          <h2>Tell us who teaches your class <span class="account-student-overview__optional">(optional)</span></h2>
+        <section class="account-student-overview__connect-card" aria-labelledby="instructor-connect-heading">
+          <h2 id="instructor-connect-heading">Tell us who teaches your class <span class="account-student-overview__optional">(optional)</span></h2>
           <p>This helps OpenStax understand which courses use our books. It does not message your instructor, connect your accounts, or change your saved books.</p>
 
           <div class="account-student-overview__autocomplete" data-instructor-autocomplete data-not-listed-target="instructor-not-listed-panel">
@@ -276,7 +276,7 @@
         close();
 
         if (instructor) {
-          connectToInstructor(instructor);
+          submitInstructor(instructor);
         } else if (notListedPanel) {
           notListedPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
           var firstField = notListedPanel.querySelector('input, select');
@@ -284,9 +284,9 @@
         }
       }
 
-      function connectToInstructor(instructor) {
+      function submitInstructor(instructor) {
         input.value = instructor.name;
-        setStatus('Connecting...');
+        setStatus('Submitting...');
 
         fetch(CONNECT_URL, {
           method: 'POST',
@@ -297,7 +297,7 @@
           },
           body: JSON.stringify({ instructor_connection_form: { instructor_id: instructor.id } })
         })
-          .then(function(response) { return response.ok ? setStatus('Connected to ' + instructor.name + '.') : setStatus('Something went wrong — please try again.'); })
+          .then(function(response) { return response.ok ? setStatus('Thanks — we recorded ' + instructor.name + ' as your instructor.') : setStatus('Something went wrong — please try again.'); })
           .catch(function() { setStatus('Something went wrong — please try again.'); });
       }
 

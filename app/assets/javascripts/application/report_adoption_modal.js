@@ -8,11 +8,12 @@
     }
   }
 
-  var nextRowIndex = 1;
-
   function getBookRowTemplateHtml() {
     var template = document.getElementById('report-adoption-book-template');
-    return template ? template.innerHTML.trim().replace(/__INDEX__/g, nextRowIndex++) : '';
+    // Rows keep the template's __INDEX__ placeholder until renumberRows()
+    // assigns an index from their position, so removing a row can never
+    // leave two rows sharing one index.
+    return template ? template.innerHTML.trim() : '';
   }
 
   function addBookRow() {
@@ -27,7 +28,7 @@
     $row.find('input[type="number"]').val('');
     $('[data-report-adoption-books]').append($row);
     applyDefaultSchoolYear($row);
-    setRowLabels();
+    renumberRows();
     updateRemoveButtons();
     updateSummaryMetrics();
   }
@@ -50,7 +51,7 @@
     }
 
     $row.remove();
-    setRowLabels();
+    renumberRows();
     updateRemoveButtons();
     updateSummaryMetrics();
   }
@@ -78,7 +79,7 @@
     $rows.find('select').val('');
     $rows.find('input[type="number"]').val('');
     applyDefaultSchoolYear($rows.first());
-    setRowLabels();
+    renumberRows();
     updateRemoveButtons();
     updateSummaryMetrics();
   }
@@ -150,13 +151,17 @@
     updateBookCount();
   }
 
-  function setRowLabels() {
+  function renumberRows() {
     var $rows = $('[data-report-adoption-row]');
     $rows.each(function(index, row) {
       var $label = $(row).find('[data-report-adoption-row-label]');
       if ($label.length) {
         $label.text('Adoption ' + (index + 1));
       }
+
+      $(row).find('[name]').each(function(_, field) {
+        field.name = field.name.replace(/^books\[[^\]]*\]/, 'books[' + index + ']');
+      });
     });
   }
 
@@ -177,13 +182,12 @@
       form.reset();
     }
 
-    nextRowIndex = 1;
     resetBookRows();
-    setRowLabels();
+    renumberRows();
     updateSummaryMetrics();
   });
 
   // initialize on load
-  setRowLabels();
+  renumberRows();
   updateSummaryMetrics();
 })();

@@ -53,7 +53,7 @@ feature 'student account overview', js: true do
 
     # The autocomplete selection POSTs via fetch (not jQuery), so wait on the
     # status text it renders rather than wait_for_ajax's jQuery.active check.
-    expect(page).to have_content('Connected to Sarah Delgado.', wait: 5)
+    expect(page).to have_content('Thanks — we recorded Sarah Delgado as your instructor.', wait: 5)
 
     connection = InstructorConnection.find_by(student: student)
     expect(connection).to be_present
