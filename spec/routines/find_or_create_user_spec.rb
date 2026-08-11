@@ -90,6 +90,28 @@ describe FindOrCreateUser do
 
     end
 
+    context "already linked under a different role" do
+
+      it "reuses the existing user instead of creating a duplicate, and leaves the existing ExternalId untouched" do
+        existing_user = described_class.call(
+          external_id: 'google-classroom/999', email: 'instructor@example.com',
+          first_name: 'Bob', last_name: 'Smith', already_verified: true, role: 'instructor'
+        ).outputs.user
+
+        found = nil
+        expect {
+          found = described_class.call(
+            external_id: 'google-classroom/999',
+            first_name: 'Bob', last_name: 'Smith', already_verified: false, role: 'student'
+          ).outputs.user
+        }.not_to change(User, :count)
+
+        expect(found).to eq(existing_user)
+        expect(existing_user.reload.external_ids.map(&:role)).to eq(['instructor'])
+      end
+
+    end
+
     context "given an email already claimed (unverified) by a different user" do
       let!(:other_user) { FactoryBot.create :user }
       let(:conflicting_email) { 'shared@example.com' }

@@ -22,10 +22,14 @@ class FindOrCreateUser
   end
 
   # Attempt to find a user by either the external_id or email address
+  #
+  # role: Set on new records, but not used to require a match on existing records -
+  # prefer a role match if one exists, otherwise reuse whatever linkage is already there.
   def find_user(options)
     if options[:external_id].present?
-      ExternalId.find_by_external_id_and_role(options[:external_id], options[:role])&.user ||
-        find_by_verified_email(options)
+      external_ids = ExternalId.where(external_id: options[:external_id]).to_a
+      matching_role = external_ids.find { |ext_id| ext_id.role == options[:role].to_s } if options[:role]
+      (matching_role || external_ids.first)&.user || find_by_verified_email(options)
     elsif options[:email].present?
       return find_by_verified_email(options) if options[:already_verified]
       fatal_error(code: :invalid_input, message: 'An unverified email requires an external_id')
