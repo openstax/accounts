@@ -8,9 +8,11 @@
     }
   }
 
+  var nextRowIndex = 1;
+
   function getBookRowTemplateHtml() {
     var template = document.getElementById('report-adoption-book-template');
-    return template ? template.innerHTML.trim() : '';
+    return template ? template.innerHTML.trim().replace(/__INDEX__/g, nextRowIndex++) : '';
   }
 
   function addBookRow() {
@@ -130,7 +132,7 @@
   }
 
   function updateBookCount() {
-    var selects = $('[data-report-adoption-row] select[name="books[][name]"]');
+    var selects = $('[data-report-adoption-row] select[name$="[name]"]');
     var count = 0;
 
     selects.each(function(_, select) {
@@ -163,10 +165,10 @@
   $(document).on('click', '[data-report-adoption-remove]', handleRemoveBookClick);
 
   $(document).on('input', '[data-report-adoption-students]', updateSummaryMetrics);
-  $(document).on('change', '[data-report-adoption-row] select[name="books[][name]"]', updateSummaryMetrics);
+  $(document).on('change', '[data-report-adoption-row] select[name$="[name]"]', updateSummaryMetrics);
 
   // Submission is a plain form POST handled by Account::AdoptionReportsController;
-  // the browser follows the redirect back to the books page on its own.
+  // the browser follows the redirect back to the page that opened the modal.
 
   $(document).on('show.bs.modal', '#reportAdoptionModal', function() {
     var form = document.getElementById('report-adoption-form');
@@ -175,6 +177,7 @@
       form.reset();
     }
 
+    nextRowIndex = 1;
     resetBookRows();
     setRowLabels();
     updateSummaryMetrics();
