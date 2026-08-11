@@ -47,11 +47,6 @@ Capybara.register_driver :selenium_chrome_headless do |app|
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
 
-# The webdrivers gem uses selenium-webdriver.  Our docker approach needs selenium-webdriver
-# but gets upset if webdriver is loaded.  So in the Gemfile, we `require: false` both of
-# these and explicitly require them based on where we're running.  We also only register
-# the docker flavor of the driver if we are indeed running in docker.
-
 CAPYBARA_PROTOCOL = DEV_PROTOCOL
 CAPYBARA_PORT = ENV.fetch('PORT', DEV_PORT)
 
@@ -59,14 +54,12 @@ if in_docker?
   require 'selenium-webdriver'
 
   Capybara.register_driver :selenium_chrome_headless_in_docker do |app|
-      chrome_capabilities = ::Selenium::WebDriver::Remote::Capabilities.chrome(
-        'goog:chromeOptions' => { 'args': %w[no-sandbox headless disable-gpu] }
-      )
+      chrome_options = Selenium::WebDriver::Chrome::Options.new(args: %w[no-sandbox headless disable-gpu])
 
       Capybara::Selenium::Driver.new(app,
                                      browser: :remote,
                                      url: ENV['HUB_URL'],
-                                     desired_capabilities: chrome_capabilities)
+                                     options: chrome_options)
   end
 
   Capybara.javascript_driver = :selenium_chrome_headless_in_docker
@@ -79,25 +72,7 @@ if in_docker?
   Capybara.server_host = CAPYBARA_HOST
   Capybara.server_port = CAPYBARA_PORT
 else
-  require 'webdrivers/chromedriver'
-
-  # Use a lockfile so we don't get errors due to downloading webdrivers multiple times concurrently
-  File.open('.webdrivers_update', File::RDWR|File::CREAT, 0640) do |file|
-    file.flock File::LOCK_EX
-    update_time = Time.parse(file.read) rescue nil
-    current_time = Time.current
-
-    if update_time.nil? || current_time - update_time > 60
-      Webdrivers::Chromedriver.update
-
-      file.rewind
-      file.write current_time.iso8601
-      file.flush
-      file.truncate file.pos
-    end
-  ensure
-    file.flock File::LOCK_UN
-  end
+  require 'selenium-webdriver'
 
   if EnvUtilities.load_boolean(name: 'HEADLESS', default: true)
     # Run the feature specs in a full browser (note, this takes over your computer's focus)

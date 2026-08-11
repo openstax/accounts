@@ -1,17 +1,15 @@
-# Organizes Accounts' use of global settings in the database and in Redis.
+# Organizes Accounts' use of global settings in the database.
 # Database settings are managed by the rails-settings-cached gem and are
-# accessed through the UI using the rails-settings-ui gem.  Redis settings
-# don't have a UI component currently.
+# accessed through the UI using the rails-settings-ui gem.
 #
 # Individual files in `lib/settings` give wrapped access to these values
 # (to separate us from thinking about where the values are stored, and
 # also to give us an easy place to mock these settings in tests)
 #
-# Those wrappers hide direct access to the underlying data stores, which
-# are...
+# Those wrappers hide direct access to the underlying data store, which
+# is...
 #
 #   Settings::Db.store
-#   Settings::Redis.store
 
 module Settings
   module Db
@@ -150,15 +148,6 @@ module Settings
 
     mattr_accessor :store
     self.store = Store
-  end
-
-  module Redis
-    mattr_accessor :store
-    redis_secrets = Rails.application.secrets[:redis]
-    self.store = ::Redis::Store.new(
-      url: redis_secrets[:url],
-      namespace: redis_secrets[:namespaces][:settings]
-    )
   end
 end
 

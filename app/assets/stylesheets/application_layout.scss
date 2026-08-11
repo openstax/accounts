@@ -2,7 +2,6 @@
 // License version 3 or later.  See the COPYRIGHT file for details.
 
 @import "common";
-@import "mixins/flexbox";
 
 
 body {
@@ -64,10 +63,10 @@ body, p, ol, ul, td, a {
     }
   }
 
-  @include flexbox;
-  @include flex-direction(row);
-  @include justify-content(space-between);
-  @include align-items(center);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   max-width: $container-desktop;
 
   margin: auto;
@@ -77,15 +76,15 @@ body, p, ol, ul, td, a {
   }
 
   #session-info {
-    @include flexbox;
-    @include flex-direction(column);
-    @include flex-wrap(wrap);
-    @include justify-content(flex-end);
-    @include align-items(flex-end);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: flex-end;
     text-align: right;
     @media(min-width: $container-sm) {
-      @include justify-content(space-between);
-      @include flex-direction(row);
+      justify-content: space-between;
+      flex-direction: row;
       span:last-child { margin-left: 30px; }
     }
   }

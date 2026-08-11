@@ -38,20 +38,42 @@ gem 'openstax_transaction_retry'
 gem 'openstax_transaction_isolation'
 
 # SCSS stylesheets
-gem 'sass-rails'
+#
+# FALLBACK NOTICE: dartsass-sprockets (Dart Sass) was tried first per the
+# decision gate in task-10-brief.md, but a hard error surfaced from a
+# third-party dependency: intl-tel-input-rails's vendored
+# intlTelInput.scss.erb declares CSS custom properties directly inside an
+# `@media` block with no wrapping selector (invalid per the CSS/SCSS grammar,
+# but silently tolerated by libsass). Dart Sass's stricter parser rejects it
+# with `Error: expected "{"`, aborting assets:precompile. That file lives in
+# a git-sourced gem (openstax/intl-tel-input-rails, pinned to master) outside
+# this app's control, so falling back to sassc-rails (libsass — deprecated
+# but stable) still unblocks removal of the sass 3.4.19/compass/ffi pins.
+# Migrating to Dart Sass is filed as a Phase 2 follow-up once
+# intl-tel-input-rails's stylesheet is fixed upstream or vendored/patched.
+#
+# NOTE: `sass '3.4.19'` and `sass-rails (5.0.8)` still show up in
+# Gemfile.lock's resolved graph after this change -- that's not a failed
+# removal. intl-tel-input-rails's gemspec declares an unversioned runtime
+# dependency on `sass-rails`, so Bundler keeps resolving both into the
+# graph as transitive dependencies of that gem. Neither is a direct
+# Gemfile entry anymore, so Bundler.require never loads them, and nothing
+# else in this app requires 'sass-rails' explicitly (confirmed via grep) --
+# they're inert, unused gems sitting in the bundle, not gems actually
+# compiling our stylesheets.
+gem 'sassc-rails'
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass'
 
-# Compass stylesheets
-gem 'compass-rails'
-
-# Prevent deprecation warning coming from Compass in Sass 3.4.20
-gem 'sass', '3.4.19'
-gem 'ffi', '< 1.17'
-
-# CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails'
+# Sprockets 3.x (bundled with sprockets-rails on Rails 6.1) registers a
+# `.coffee` engine unconditionally at require-time, independent of the
+# coffee-rails gem we removed. There's no public API in this Sprockets
+# version to unregister it, and its processor cache-key computation needs
+# `coffee_script` loadable at precompile time even though the app has zero
+# .js.coffee files. Keep this as a leaf dependency until Sprockets 4 (which
+# drops the built-in CoffeeScript engine) lands.
+gem 'coffee-script'
 
 # JavaScript asset compiler
 gem 'mini_racer'
@@ -74,8 +96,10 @@ gem 'omniauth-facebook'
 gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
-# Key-value store for caching
-gem 'redis-rails'
+# Redis client (cache store + jobba)
+# Pinned to 4.8 because fakeredis/mock_redis pull in redis (~> 4.8); lift this
+# pin when moving to a redis 5-compatible fake gem.
+gem 'redis', '~> 4.8'
 
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
@@ -139,9 +163,6 @@ gem 'pg'
 # Support systemd Type=notify services for puma and delayed_job
 gem 'sd_notify', require: false
 
-# Add P3P headers for IE
-gem 'p3p'
-
 # Font-Awesome for the asset pipeline
 gem 'font-awesome-rails'
 
@@ -185,9 +206,6 @@ gem 'http_accept_language'
 # Fast JSON parsing
 gem 'oj'
 
-# Replace JSON with Oj
-gem 'oj_mimic_json'
-
 # CORS for local testing/dev
 gem 'rack-cors'
 
@@ -218,7 +236,7 @@ group :development, :test do
   # gem 'debase', require: false
 
   # Use RSpec for tests
-  gem 'rspec-rails'
+  gem 'rspec-rails', '~> 6.1'
 
   # Because `assigns` has been extracted from RSpec to a gem
   gem 'rails-controller-testing'
@@ -277,7 +295,7 @@ group :test do
   gem 'cgi'
 
   # RSpec matchers for convenience
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', '~> 6.0'
 
   # Test database cleanup gem with multiple strategies
   gem 'database_cleaner'
@@ -287,14 +305,16 @@ group :test do
   # Run feature tests with Capybara + Selenium; choose which driver gems to use
   # based on test environment.
   gem 'capybara'
-  gem 'selenium-webdriver', require: false
-  gem 'webdrivers', require: false
+  gem 'selenium-webdriver', '~> 4.27', require: false
 
   # Testing emails
   gem 'capybara-email'
 
-  # Fake in-memory Redis for testing
-  gem 'fakeredis', require: 'fakeredis/rspec'
+  # Fake in-memory Redis for testing (Jobba).
+  # Pinned below 0.47: mock_redis 0.47+ dropped redis-rb 4.x support and
+  # hard-requires the separate `redis-client` gem (redis-rb 5.x's driver),
+  # which isn't in our bundle since we're intentionally staying on redis ~> 4.8.
+  gem 'mock_redis', '~> 0.46.0'
 
   gem 'launchy'
 
