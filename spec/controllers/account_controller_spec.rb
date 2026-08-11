@@ -135,7 +135,7 @@ RSpec.describe AccountController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('Welcome back, Jordan')
-      expect(response.body).to include('Who teaches your class?')
+      expect(response.body).to include('Tell us who teaches your class')
       expect(response.body).to include('account-badge--student')
       expect(response.body).not_to include('Verified educator')
     end
@@ -170,7 +170,7 @@ RSpec.describe AccountController, type: :controller do
       get :overview
 
       expect(response.body).to include('Sarah Delgado')
-      expect(response.body).to include('Unverified')
+      expect(response.body).to include('account-student-overview__unverified-chip">Submitted')
     end
 
     it 'still renders every other account page for a student' do

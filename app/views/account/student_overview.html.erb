@@ -63,15 +63,15 @@
           <% end %>
         </section>
 
-        <section class="account-student-overview__connect-card" aria-label="Connect with your instructor">
-          <h2>Who teaches your class?</h2>
-          <p>Connect to your instructor and we'll keep your saved books in sync with what they assign. Start typing — most instructors are already here.</p>
+        <section class="account-student-overview__connect-card" aria-labelledby="instructor-connect-heading">
+          <h2 id="instructor-connect-heading">Tell us who teaches your class <span class="account-student-overview__optional">(optional)</span></h2>
+          <p>This helps OpenStax understand which courses use our books. It does not message your instructor, connect your accounts, or change your saved books.</p>
 
           <div class="account-student-overview__autocomplete" data-instructor-autocomplete data-not-listed-target="instructor-not-listed-panel">
-            <label for="instructor-search-input" class="sr-only">Instructor name</label>
+            <label for="instructor-search-input">Search for your instructor</label>
             <input type="text"
                    id="instructor-search-input"
-                   placeholder="Instructor name"
+                   placeholder="Start typing a name"
                    data-instructor-search-input
                    autocomplete="off"
                    role="combobox"
@@ -86,13 +86,13 @@
 
           <% if @instructor_connections.any? %>
             <div class="account-student-overview__connections">
-              <p class="account-student-overview__connections-label">You've added:</p>
+              <p class="account-student-overview__connections-label">Instructor information you submitted:</p>
               <ul>
                 <% @instructor_connections.each do |connection| %>
                   <li>
                     <%= connection.instructor_name %>
                     <% if connection.school_name.present? %>(<%= connection.school_name %>)<% end %>
-                    <span class="account-badge account-student-overview__unverified-chip">Unverified</span>
+                    <span class="account-badge account-student-overview__unverified-chip">Submitted</span>
                   </li>
                 <% end %>
               </ul>
@@ -101,19 +101,19 @@
         </section>
 
         <div class="account-student-overview__not-listed-panel" id="instructor-not-listed-panel">
-          <h3>Add your instructor</h3>
-          <p>If they're not in the list, tell us who they are — we'll take it from here.</p>
+          <h3>Can't find your instructor?</h3>
+          <p>Enter the information you know below. Required fields are marked.</p>
 
           <%= form_with url: account_instructor_connections_path, method: :post, local: true,
                         class: 'account-student-overview__not-listed-form' do %>
             <div class="account-student-overview__not-listed-grid">
               <div class="account-student-overview__field">
-                <label for="instructor-name">Instructor name</label>
+                <label for="instructor-name">Instructor name (required)</label>
                 <input type="text" id="instructor-name" name="instructor_connection_form[instructor_name]"
                        placeholder="First and last name" required>
               </div>
               <div class="account-student-overview__field">
-                <label for="instructor-school">School</label>
+                <label for="instructor-school">School (required)</label>
                 <input type="text" id="instructor-school" name="instructor_connection_form[school_name]"
                        value="<%= current_user.school&.name %>" required>
               </div>
@@ -134,7 +134,7 @@
                 <input type="email" id="instructor-email" name="instructor_connection_form[instructor_email]" placeholder="If you know it">
               </div>
             </div>
-            <button type="submit" class="account-student-overview__submit">Add instructor</button>
+            <button type="submit" class="account-student-overview__submit">Submit instructor information</button>
           <% end %>
         </div>
       </div>
@@ -276,7 +276,7 @@
         close();
 
         if (instructor) {
-          connectToInstructor(instructor);
+          submitInstructor(instructor);
         } else if (notListedPanel) {
           notListedPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
           var firstField = notListedPanel.querySelector('input, select');
@@ -284,9 +284,9 @@
         }
       }
 
-      function connectToInstructor(instructor) {
+      function submitInstructor(instructor) {
         input.value = instructor.name;
-        setStatus('Connecting...');
+        setStatus('Submitting...');
 
         fetch(CONNECT_URL, {
           method: 'POST',
@@ -297,7 +297,7 @@
           },
           body: JSON.stringify({ instructor_connection_form: { instructor_id: instructor.id } })
         })
-          .then(function(response) { return response.ok ? setStatus('Connected to ' + instructor.name + '.') : setStatus('Something went wrong — please try again.'); })
+          .then(function(response) { return response.ok ? setStatus('Thanks — we recorded ' + instructor.name + ' as your instructor.') : setStatus('Something went wrong — please try again.'); })
           .catch(function() { setStatus('Something went wrong — please try again.'); });
       }
 

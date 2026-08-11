@@ -33,7 +33,8 @@ feature 'student account overview', js: true do
     expect(page).to have_content('Student')
     expect(page).to have_content('School verified')
     expect(page).to have_content('Biology 2e')
-    expect(page).to have_content('Who teaches your class?')
+    expect(page).to have_content('Tell us who teaches your class')
+    expect(page).to have_content('It does not message your instructor, connect your accounts, or change your saved books.')
 
     fill_in('instructor-search-input', with: 'Delg')
     expect(page).to have_css('li', text: 'Sarah Delgado', wait: 5)
@@ -52,7 +53,7 @@ feature 'student account overview', js: true do
 
     # The autocomplete selection POSTs via fetch (not jQuery), so wait on the
     # status text it renders rather than wait_for_ajax's jQuery.active check.
-    expect(page).to have_content('Connected to Sarah Delgado.', wait: 5)
+    expect(page).to have_content('Thanks — we recorded Sarah Delgado as your instructor.', wait: 5)
 
     connection = InstructorConnection.find_by(student: student)
     expect(connection).to be_present
@@ -71,7 +72,7 @@ feature 'student account overview', js: true do
     fill_in('instructor-school', with: 'University of Houston')
     fill_in('instructor-course', with: 'BIOL 101')
 
-    click_button('Add instructor')
+    click_button('Submit instructor information')
     wait_for_animations
     wait_for_ajax
 

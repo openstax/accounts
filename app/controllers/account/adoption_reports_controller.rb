@@ -6,7 +6,7 @@ module Account
       rows = valid_rows(params[:books])
 
       if rows.blank?
-        redirect_to account_books_path,
+        redirect_to return_path,
                     alert: 'Please select at least one book and school year to report an adoption.'
         return
       end
@@ -18,12 +18,12 @@ module Account
       PushAdoptionReports.perform_later(user: current_user) if results.any?
 
       if results.all?
-        redirect_to account_books_path,
+        redirect_to return_path,
                     notice: "Thanks — your report helps us measure OpenStax's impact."
       else
         # Static text only — flash notices/alerts are rendered html_safe by
         # the layout, so no user-typed row data belongs in here.
-        redirect_to account_books_path,
+        redirect_to return_path,
                     alert: "Thanks for the report — some rows couldn't be saved. Please check your entries and try again."
       end
     end
@@ -33,7 +33,9 @@ module Account
     # Skip fully blank rows (the modal always submits at least one row, plus
     # any the user added); a row only counts once it has a book and year.
     def valid_rows(raw_rows)
-      Array(raw_rows).filter_map do |row|
+      rows = raw_rows.respond_to?(:values) ? raw_rows.values : Array(raw_rows)
+
+      rows.filter_map do |row|
         next unless row.respond_to?(:[])
 
         book_title = row[:name].to_s.strip
@@ -42,6 +44,14 @@ module Account
 
         { book_title: book_title, school_year: school_year, students: row[:students] }
       end
+    end
+
+    # The report modal is shared across account pages. Return users to the
+    # page where they opened it, while accepting only known local paths.
+    def return_path
+      allowed_paths = [account_overview_path, account_books_path, account_impact_path]
+      requested_path = params[:return_to].to_s.split('?').first
+      allowed_paths.include?(requested_path) ? params[:return_to] : account_books_path
     end
 
     def upsert_adoption_report(row)
