@@ -109,6 +109,11 @@ gem 'apipie-rails'
 gem 'maruku'
 gem 'rexml'
 
+# Transitive dep of actiontext/capybara/etc. Pinned explicitly: nokogiri >= 1.19.0
+# dropped Ruby 3.1 support, so 1.18.10 is the newest version installable here.
+# Bump to >= 1.19 once this app moves to Ruby >= 3.2.
+gem 'nokogiri', '~> 1.18.10'
+
 gem 'jbuilder'
 
 # Background job queueing
