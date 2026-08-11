@@ -17,13 +17,16 @@ module Newflow
 
         # Report error steps (e.g. verificationLimitExceeded) so we can see how
         # often users get stuck on the SheerID form and why, then return as before.
+        # The user id (set during signup) lets us trace whether they eventually
+        # verified; the SheerID response carries no personInfo for these steps.
         if verification_details_from_sheerid.current_step == 'error'
           Sentry.capture_message(
             '[SheerID Webhook] error step received',
+            level: :warning,
             extra: {
               verification_id: verification_id,
               error_ids: verification_details_from_sheerid.error_ids,
-              email: verification_details_from_sheerid.email
+              user_id: User.find_by(sheerid_verification_id: verification_id)&.id
             }
           )
           return

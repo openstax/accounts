@@ -12,6 +12,7 @@ module Newflow
         attribute :last_name, type: String
         attribute :email, type: String
         attribute :school, type: String
+        attribute :school_id, type: Integer
         attribute :password, type: String
         attribute :is_title_1_school, type: boolean
         attribute :newsletter, type: boolean
@@ -80,12 +81,15 @@ module Newflow
       end
 
       def create_user
+        school = School.find_by(id: signup_params.school_id) if signup_params.school_id.present?
+
         user = User.create(
           state: User::UNVERIFIED,
           role: :student,
           first_name: signup_params.first_name,
           last_name: signup_params.last_name,
-          self_reported_school: signup_params.school,
+          school: school,
+          self_reported_school: school&.name || signup_params.school,
           phone_number: signup_params.phone_number,
           receive_newsletter: signup_params.newsletter,
           source_application: options[:client_app],
