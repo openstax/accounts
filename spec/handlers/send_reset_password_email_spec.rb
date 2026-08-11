@@ -41,6 +41,83 @@ describe SendResetPasswordEmail, type: :handler do
     expect(user.login_token).to be_a(String)
   end
 
+  context 'when the account exists but its email is unverified' do
+    let!(:unverified_user) do
+      user = FactoryBot.create(:user, state: User::UNVERIFIED, is_newflow: true, role: 'student')
+      FactoryBot.create(:email_address, user: user, value: 'unverified@openstax.org', verified: false)
+      user
+    end
+
+    let(:params) do
+      { forgot_password_form: { email: 'unverified@openstax.org' } }
+    end
+
+    it 'finds the user instead of erroring cannot_find_user' do
+      result = described_class.handle(caller: AnonymousUser.instance, params: params)
+      expect(result).not_to have_routine_error(:cannot_find_user)
+      expect(result.outputs.user).to eq(unverified_user)
+    end
+
+    it 'resends the email verification and flags needs_email_verification' do
+      expect_any_instance_of(NewflowMailer).to receive(:signup_email_confirmation).and_call_original
+      result = described_class.handle(caller: AnonymousUser.instance, params: params)
+      expect(result.outputs.needs_email_verification).to be(true)
+      perform_enqueued_jobs
+    end
+
+    it 'does not send a password reset email' do
+      expect_any_instance_of(NewflowMailer).not_to receive(:reset_password_email)
+      described_class.handle(caller: AnonymousUser.instance, params: params)
+      perform_enqueued_jobs
+    end
+
+    it 'outputs the exact address the verification was sent to' do
+      FactoryBot.create(:email_address, user: unverified_user, value: 'other@openstax.org', verified: false)
+      params[:forgot_password_form][:email] = 'other@openstax.org'
+
+      result = described_class.handle(caller: AnonymousUser.instance, params: params)
+      expect(result.outputs.email_address.value).to eq('other@openstax.org')
+    end
+
+    it 'sends verification to only the matched address, not every unverified one' do
+      FactoryBot.create(:email_address, user: unverified_user, value: 'other@openstax.org', verified: false)
+      ActionMailer::Base.deliveries.clear
+
+      described_class.handle(caller: AnonymousUser.instance, params: params)
+      perform_enqueued_jobs
+
+      expect(ActionMailer::Base.deliveries.flat_map(&:to)).to eq(['unverified@openstax.org'])
+    end
+  end
+
+  context 'when the account is unverified but has no unverified address left' do
+    # `ConfirmByPin` returns without error for an already-confirmed address, so a
+    # user routed to the PIN form in this state would be signed in by any PIN.
+    let!(:half_claimed_user) do
+      user = FactoryBot.create(:user, state: User::UNVERIFIED, is_newflow: true, role: 'student')
+      FactoryBot.create(:email_address, user: user, value: 'claimed@openstax.org', verified: true)
+      user
+    end
+
+    let(:params) do
+      { forgot_password_form: { email: 'claimed@openstax.org' } }
+    end
+
+    it 'does not flag needs_email_verification' do
+      result = described_class.handle(caller: AnonymousUser.instance, params: params)
+      expect(result.outputs.needs_email_verification).to be_nil
+    end
+
+    it 'is not reachable by username either' do
+      result = described_class.handle(
+        caller: AnonymousUser.instance,
+        params: { forgot_password_form: { email: half_claimed_user.username } }
+      )
+      expect(result.outputs.needs_email_verification).to be_nil
+      expect(result).to have_routine_error(:cannot_find_user)
+    end
+  end
+
   context 'when no user found' do
     let(:params) do
     {

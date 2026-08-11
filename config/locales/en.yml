@@ -112,7 +112,8 @@ en:
 
   login_signup_form:
     cant_be_blank: can't be blank
-    cannot_find_user: We could not find your account. Please try again.
+    cannot_find_user: We couldn't find an account with that email or username. Please check it and try again — or create a new account below.
+    no_account_sign_up_html: Don't have an account yet? %{sign_up_link}
     multiple_users: We found several accounts with this email
     incorrect_password: The password you provided is incorrect.
     log_in: Log in
