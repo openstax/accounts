@@ -22,13 +22,12 @@ class FindOrCreateUser
   end
 
   # Attempt to find a user by either the external_id or email address
-  #
-  # role: Set on new records, but not used to require a match on existing records -
-  # prefer a role match if one exists, otherwise reuse whatever linkage is already there.
+  # The role is set on new records, but not used to require a match on existing records
+  # We prefer a role match if one exists, but otherwise reuse whatever newest linkage is already there
   def find_user(options)
     if options[:external_id].present?
-      external_ids = ExternalId.where(external_id: options[:external_id]).to_a
-      matching_role = external_ids.find { |ext_id| ext_id.role == options[:role].to_s } if options[:role]
+      external_ids = ExternalId.where(external_id: options[:external_id]).order(id: :desc).to_a
+      matching_role = options[:role] && external_ids.find { |ext_id| ext_id.role == options[:role].to_s }
       (matching_role || external_ids.first)&.user || find_by_verified_email(options)
     elsif options[:email].present?
       return find_by_verified_email(options) if options[:already_verified]
