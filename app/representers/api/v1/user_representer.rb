@@ -205,7 +205,10 @@ module Api::V1
 
     def to_hash(options = {})
       # Avoid N+1 load on application_users.application
-      ActiveRecord::Associations::Preloader.new.preload represented.application_users.to_a, :application
+      ActiveRecord::Associations::Preloader.new(
+        records: represented.application_users.to_a,
+        associations: :application
+      ).call
 
       super(options)
     end

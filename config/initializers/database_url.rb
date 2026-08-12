@@ -22,7 +22,12 @@ module DatabaseUrl
   end
 
   def self.db_config
-    config = YAML::load(ERB.new(File.read(config_file)).result)
+    # Psych 4 (default since Ruby 3.1) disallows YAML aliases in the plain
+    # `load`/`safe_load` path, and database.yml relies on `<<: *default`
+    # merge aliases. Rails' own YAML loading was updated for this when we
+    # moved to Rails 7, but this file parses database.yml itself, so it
+    # needs the same unsafe_load treatment.
+    config = YAML.unsafe_load(ERB.new(File.read(config_file)).result)
     config[env]
   end
 

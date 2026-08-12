@@ -8,11 +8,16 @@ module Api::V1
 
     def to_hash(options = {})
       # Avoid N+1 load on application_groups.group
-      ActiveRecord::Associations::Preloader.new.preload represented, group: [
-        { group_members: :user },
-        { group_owners: :user },
-        :member_group_nestings
-      ]
+      ActiveRecord::Associations::Preloader.new(
+        records: represented,
+        associations: {
+          group: [
+            { group_members: :user },
+            { group_owners: :user },
+            :member_group_nestings
+          ]
+        }
+      ).call
 
       super(options)
     end

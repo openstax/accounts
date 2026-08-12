@@ -21,7 +21,10 @@ module Api::V1
 
     def to_hash(options = {})
       # Avoid N+1 load on items
-      ActiveRecord::Associations::Preloader.new.preload represented.items.to_a, application_users: :application
+      ActiveRecord::Associations::Preloader.new(
+        records: represented.items.to_a,
+        associations: { application_users: :application }
+      ).call
 
       super(options)
     end

@@ -8,6 +8,27 @@ GIT
       rails-settings-cached (>= 2.0.0)
 
 GIT
+  remote: https://github.com/openstax/active_force.git
+  revision: 8397651ffba145c51742f72b307782000d0c6016
+  branch: rails-7-compat
+  specs:
+    openstax_active_force (1.1.1)
+      active_attr
+      rails (>= 5.0, < 7.1)
+      restforce
+
+GIT
+  remote: https://github.com/openstax/fine_print.git
+  revision: 6a665b7a56444838dd446fc228253e41fcff12d3
+  branch: rails-7-compat
+  specs:
+    fine_print (6.0.3)
+      action_interceptor
+      jquery-rails
+      rails (< 7.1)
+      responders
+
+GIT
   remote: https://github.com/openstax/intl-tel-input-rails.git
   revision: d315c247f8e13172d83a77cdaa67aa5280ab3086
   branch: master
@@ -15,6 +36,34 @@ GIT
     intl-tel-input-rails (25.3.1)
       railties (>= 3.1)
       sass-rails
+
+GIT
+  remote: https://github.com/openstax/openstax_api.git
+  revision: 8afed46f62bf87307ce0ca7accdf62727697b0c0
+  branch: rails-7-compat
+  specs:
+    openstax_api (9.6.1)
+      addressable
+      doorkeeper
+      exception_notification
+      lev (>= 12.1.0)
+      openstax_utilities
+      rails (>= 6, <= 8)
+      representable
+      responders
+      roar
+      roar-rails (>= 1)
+      uber
+
+GIT
+  remote: https://github.com/openstax/openstax_salesforce.git
+  revision: dbd947a501a58fa3e0a7f6dcbf5916da72493bc2
+  branch: rails-7-compat
+  specs:
+    openstax_salesforce (8.3.0)
+      openstax_active_force
+      rails (>= 5.0, < 7.1)
+      restforce
 
 GIT
   remote: https://github.com/openstax/path_prefixer.git
@@ -32,81 +81,95 @@ GIT
   specs:
     pattern-library (1.1.18)
 
+GIT
+  remote: https://github.com/openstax/rescue_from.git
+  revision: 6431226d20a2e0dbb9943d1741a91cb43ec2177e
+  branch: rails-7-compat
+  specs:
+    openstax_rescue_from (4.3.0)
+      rails (>= 3.1, < 7.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
     action_interceptor (1.2.1)
       addressable
       rails (>= 3.1)
-    actioncable (6.1.7.8)
-      actionpack (= 6.1.7.8)
-      activesupport (= 6.1.7.8)
+    actioncable (7.0.8.7)
+      actionpack (= 7.0.8.7)
+      activesupport (= 7.0.8.7)
       nio4r (~> 2.0)
       websocket-driver (>= 0.6.1)
-    actionmailbox (6.1.7.8)
-      actionpack (= 6.1.7.8)
-      activejob (= 6.1.7.8)
-      activerecord (= 6.1.7.8)
-      activestorage (= 6.1.7.8)
-      activesupport (= 6.1.7.8)
+    actionmailbox (7.0.8.7)
+      actionpack (= 7.0.8.7)
+      activejob (= 7.0.8.7)
+      activerecord (= 7.0.8.7)
+      activestorage (= 7.0.8.7)
+      activesupport (= 7.0.8.7)
       mail (>= 2.7.1)
-    actionmailer (6.1.7.8)
-      actionpack (= 6.1.7.8)
-      actionview (= 6.1.7.8)
-      activejob (= 6.1.7.8)
-      activesupport (= 6.1.7.8)
+      net-imap
+      net-pop
+      net-smtp
+    actionmailer (7.0.8.7)
+      actionpack (= 7.0.8.7)
+      actionview (= 7.0.8.7)
+      activejob (= 7.0.8.7)
+      activesupport (= 7.0.8.7)
       mail (~> 2.5, >= 2.5.4)
+      net-imap
+      net-pop
+      net-smtp
       rails-dom-testing (~> 2.0)
-    actionpack (6.1.7.8)
-      actionview (= 6.1.7.8)
-      activesupport (= 6.1.7.8)
-      rack (~> 2.0, >= 2.0.9)
+    actionpack (7.0.8.7)
+      actionview (= 7.0.8.7)
+      activesupport (= 7.0.8.7)
+      rack (~> 2.0, >= 2.2.4)
       rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.2.0)
-    actiontext (6.1.7.8)
-      actionpack (= 6.1.7.8)
-      activerecord (= 6.1.7.8)
-      activestorage (= 6.1.7.8)
-      activesupport (= 6.1.7.8)
+    actiontext (7.0.8.7)
+      actionpack (= 7.0.8.7)
+      activerecord (= 7.0.8.7)
+      activestorage (= 7.0.8.7)
+      activesupport (= 7.0.8.7)
+      globalid (>= 0.6.0)
       nokogiri (>= 1.8.5)
-    actionview (6.1.7.8)
-      activesupport (= 6.1.7.8)
+    actionview (7.0.8.7)
+      activesupport (= 7.0.8.7)
       builder (~> 3.1)
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    active_attr (0.17.0)
-      actionpack (>= 3.0.2, < 8.0)
-      activemodel (>= 3.0.2, < 8.0)
-      activesupport (>= 3.0.2, < 8.0)
-    activejob (6.1.7.8)
-      activesupport (= 6.1.7.8)
+    active_attr (0.17.2)
+      actionpack (>= 3.0.2, < 8.2)
+      activemodel (>= 3.0.2, < 8.2)
+      activesupport (>= 3.0.2, < 8.2)
+    activejob (7.0.8.7)
+      activesupport (= 7.0.8.7)
       globalid (>= 0.3.6)
-    activemodel (6.1.7.8)
-      activesupport (= 6.1.7.8)
-    activerecord (6.1.7.8)
-      activemodel (= 6.1.7.8)
-      activesupport (= 6.1.7.8)
-    activerecord-import (1.8.1)
+    activemodel (7.0.8.7)
+      activesupport (= 7.0.8.7)
+    activerecord (7.0.8.7)
+      activemodel (= 7.0.8.7)
+      activesupport (= 7.0.8.7)
+    activerecord-import (2.2.0)
       activerecord (>= 4.2)
-    activestorage (6.1.7.8)
-      actionpack (= 6.1.7.8)
-      activejob (= 6.1.7.8)
-      activerecord (= 6.1.7.8)
-      activesupport (= 6.1.7.8)
+    activestorage (7.0.8.7)
+      actionpack (= 7.0.8.7)
+      activejob (= 7.0.8.7)
+      activerecord (= 7.0.8.7)
+      activesupport (= 7.0.8.7)
       marcel (~> 1.0)
       mini_mime (>= 1.1.0)
-    activesupport (6.1.7.8)
+    activesupport (7.0.8.7)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-      zeitwerk (~> 2.3)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
     aes_key_wrap (1.1.0)
-    apipie-rails (1.4.2)
+    apipie-rails (1.5.1)
       actionpack (>= 5.0)
       activesupport (>= 5.0)
     ast (2.4.2)
@@ -229,21 +292,21 @@ GEM
     crass (1.0.6)
     css_parser (1.22.0)
       addressable
-    database_cleaner (2.0.2)
+    database_cleaner (2.1.0)
       database_cleaner-active_record (>= 2, < 3)
-    database_cleaner-active_record (2.2.0)
+    database_cleaner-active_record (2.2.2)
       activerecord (>= 5.a)
-      database_cleaner-core (~> 2.0.0)
+      database_cleaner-core (~> 2.0)
     database_cleaner-core (2.0.1)
     date (3.4.1)
-    db-query-matchers (0.13.0)
-      activesupport (>= 4.0, < 7.3)
+    db-query-matchers (0.15.0)
+      activesupport (>= 4.0)
       rspec (>= 3.0)
     declarative (0.0.20)
-    delayed_job (4.1.12)
-      activesupport (>= 3.0, < 8.0)
-    delayed_job_active_record (4.1.10)
-      activerecord (>= 3.0, < 8.0)
+    delayed_job (4.1.13)
+      activesupport (>= 3.0, < 9.0)
+    delayed_job_active_record (4.1.11)
+      activerecord (>= 3.0, < 9.0)
       delayed_job (>= 3.0, < 5)
     delayed_job_heartbeat_plugin (0.5.0)
       delayed_job (>= 4.1.0)
@@ -251,7 +314,7 @@ GEM
     delayed_job_worker_pool (1.0.0)
       delayed_job (>= 3.0, < 4.2)
     diff-lcs (1.5.1)
-    diffy (3.4.2)
+    diffy (3.4.4)
     docile (1.4.1)
     doorkeeper (5.7.1)
       railties (>= 5)
@@ -265,9 +328,9 @@ GEM
     error_page_assets (0.4)
     erubi (1.13.1)
     eventmachine (1.2.7)
-    exception_notification (4.5.0)
-      actionmailer (>= 5.2, < 8)
-      activesupport (>= 5.2, < 8)
+    exception_notification (4.6.0)
+      actionmailer (>= 5.2, < 9)
+      activesupport (>= 5.2, < 9)
     execjs (2.10.0)
     factory_bot (6.5.0)
       activesupport (>= 5.0.0)
@@ -293,7 +356,7 @@ GEM
     faraday-em_http (1.0.0)
     faraday-em_synchrony (1.0.0)
     faraday-excon (1.1.0)
-    faraday-follow_redirects (0.3.0)
+    faraday-follow_redirects (0.5.0)
       faraday (>= 1, < 3)
     faraday-http-cache (2.5.1)
       faraday (>= 0.8)
@@ -308,11 +371,6 @@ GEM
     faraday_middleware (1.2.1)
       faraday (~> 1.0)
     ffi (1.16.3)
-    fine_print (6.0.3)
-      action_interceptor
-      jquery-rails
-      rails (< 7)
-      responders
     font-awesome-rails (4.7.0.8)
       railties (>= 3.2, < 8.0)
     formatador (1.1.0)
@@ -350,20 +408,22 @@ GEM
     httpclient (2.8.3)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
-    i18n-tasks (1.0.14)
+    i18n-tasks (1.1.2)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
       erubi
-      highline (>= 2.0.0)
+      highline (>= 3.0.0)
       i18n
       parser (>= 3.2.2.1)
+      prism
       rails-i18n
       rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.8, >= 1.8.1)
       terminal-table (>= 1.5.1)
     io-console (0.7.2)
-    jbuilder (2.13.0)
-      actionview (>= 5.0.0)
-      activesupport (>= 5.0.0)
+    jbuilder (2.15.1)
+      actionview (>= 7.0.0)
+      activesupport (>= 7.0.0)
     jmespath (1.6.2)
     jobba (2.0.0)
       oj
@@ -405,7 +465,7 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.5.3)
-    lograge (0.14.0)
+    lograge (0.15.0)
       actionpack (>= 4)
       activesupport (>= 4)
       railties (>= 4)
@@ -419,7 +479,7 @@ GEM
       net-imap
       net-pop
       net-smtp
-    marcel (1.0.4)
+    marcel (1.2.1)
     maruku (0.7.3)
     matrix (0.4.2)
     meta_request (0.8.3)
@@ -427,7 +487,7 @@ GEM
       railties (>= 3.0.0, < 8)
     method_source (1.1.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.8)
+    mini_portile2 (2.8.9)
     mini_racer (0.16.0)
       libv8-node (~> 18.19.0.0)
     minitest (5.25.4)
@@ -446,14 +506,14 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     nio4r (2.7.4)
-    nokogiri (1.18.9)
+    nokogiri (1.19.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.18.9-arm64-darwin)
+    nokogiri (1.19.4-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.9-x86_64-darwin)
+    nokogiri (1.19.4-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.9-x86_64-linux-gnu)
+    nokogiri (1.19.4-x86_64-linux-gnu)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
@@ -498,30 +558,8 @@ GEM
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
-    openstax_active_force (1.1.1)
-      active_attr
-      rails (>= 5.0, < 7.0)
-      restforce
-    openstax_api (9.6.1)
-      addressable
-      doorkeeper
-      exception_notification
-      lev (>= 12.1.0)
-      openstax_utilities
-      rails (>= 6, <= 8)
-      representable
-      responders
-      roar
-      roar-rails (>= 1)
-      uber
     openstax_healthcheck (1.0.1)
       rails (>= 3.0)
-    openstax_rescue_from (4.3.0)
-      rails (>= 3.1, < 7.0)
-    openstax_salesforce (8.3.0)
-      openstax_active_force
-      rails (>= 5.0, < 7.0)
-      restforce
     openstax_transaction_isolation (2.0.0)
       activerecord (>= 6)
     openstax_transaction_retry (2.0.0)
@@ -555,10 +593,10 @@ GEM
       actionmailer (>= 3)
       net-smtp
       premailer (~> 1.7, >= 1.7.9)
+    prism (1.9.0)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    psych (3.3.4)
     public_suffix (6.0.2)
     puma (6.4.3)
       nio4r (~> 2.0)
@@ -576,21 +614,20 @@ GEM
       rack (< 3)
     rack-test (2.2.0)
       rack (>= 1.3)
-    rails (6.1.7.8)
-      actioncable (= 6.1.7.8)
-      actionmailbox (= 6.1.7.8)
-      actionmailer (= 6.1.7.8)
-      actionpack (= 6.1.7.8)
-      actiontext (= 6.1.7.8)
-      actionview (= 6.1.7.8)
-      activejob (= 6.1.7.8)
-      activemodel (= 6.1.7.8)
-      activerecord (= 6.1.7.8)
-      activestorage (= 6.1.7.8)
-      activesupport (= 6.1.7.8)
+    rails (7.0.8.7)
+      actioncable (= 7.0.8.7)
+      actionmailbox (= 7.0.8.7)
+      actionmailer (= 7.0.8.7)
+      actionpack (= 7.0.8.7)
+      actiontext (= 7.0.8.7)
+      actionview (= 7.0.8.7)
+      activejob (= 7.0.8.7)
+      activemodel (= 7.0.8.7)
+      activerecord (= 7.0.8.7)
+      activestorage (= 7.0.8.7)
+      activesupport (= 7.0.8.7)
       bundler (>= 1.15.0)
-      railties (= 6.1.7.8)
-      sprockets-rails (>= 2.0.0)
+      railties (= 7.0.8.7)
     rails-controller-testing (1.0.5)
       actionpack (>= 5.0.1.rc1)
       actionview (>= 5.0.1.rc1)
@@ -599,26 +636,27 @@ GEM
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
-    rails-erd (1.7.2)
-      activerecord (>= 4.2)
-      activesupport (>= 4.2)
+    rails-erd (2.1.0)
+      activerecord (>= 7.0)
+      activesupport (>= 7.0)
       choice (~> 0.2.0)
-      ruby-graphviz (~> 1.2)
+      ostruct
     rails-html-sanitizer (1.6.2)
       loofah (~> 2.21)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
-    rails-i18n (7.0.9)
+    rails-i18n (7.0.10)
       i18n (>= 0.7, < 2)
       railties (>= 6.0.0, < 8)
     rails-settings-cached (2.9.5)
       activerecord (>= 5.0.0)
       railties (>= 5.0.0)
-    railties (6.1.7.8)
-      actionpack (= 6.1.7.8)
-      activesupport (= 6.1.7.8)
+    railties (7.0.8.7)
+      actionpack (= 7.0.8.7)
+      activesupport (= 7.0.8.7)
       method_source
       rake (>= 12.2)
       thor (~> 1.0)
+      zeitwerk (~> 2.5)
     rainbow (3.1.1)
     rake (13.2.1)
     rb-fsevent (0.11.2)
@@ -626,8 +664,8 @@ GEM
       ffi (~> 1.0)
     recaptcha (5.19.0)
     redis (4.8.1)
-    redis-actionpack (5.4.0)
-      actionpack (>= 5, < 8)
+    redis-actionpack (5.5.0)
+      actionpack (>= 5)
       redis-rack (>= 2.1.0, < 4)
       redis-store (>= 1.1.0, < 2)
     redis-activesupport (5.3.0)
@@ -653,12 +691,12 @@ GEM
       uber (< 0.2.0)
     request_store (1.7.0)
       rack (>= 1.4)
-    responders (3.1.1)
-      actionpack (>= 5.2)
-      railties (>= 5.2)
-    restforce (7.5.0)
-      faraday (>= 1.1.0, < 2.12.0)
-      faraday-follow_redirects (<= 0.3.0, < 1.0.0)
+    responders (3.2.0)
+      actionpack (>= 7.0)
+      railties (>= 7.0)
+    restforce (8.0.1)
+      faraday (>= 1.1.0, < 3.0.0)
+      faraday-follow_redirects (< 0.6.0)
       faraday-multipart (>= 1.0.0, < 2.0.0)
       faraday-net_http (< 4.0.0)
       hashie (>= 1.2.0, < 6.0)
@@ -687,14 +725,14 @@ GEM
     rspec-mocks (3.13.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-rails (5.1.2)
-      actionpack (>= 5.2)
-      activesupport (>= 5.2)
-      railties (>= 5.2)
-      rspec-core (~> 3.10)
-      rspec-expectations (~> 3.10)
-      rspec-mocks (~> 3.10)
-      rspec-support (~> 3.10)
+    rspec-rails (7.1.1)
+      actionpack (>= 7.0)
+      activesupport (>= 7.0)
+      railties (>= 7.0)
+      rspec-core (~> 3.13)
+      rspec-expectations (~> 3.13)
+      rspec-mocks (~> 3.13)
+      rspec-support (~> 3.13)
     rspec-support (3.13.1)
     rubocop (1.67.0)
       json (~> 2.3)
@@ -710,8 +748,6 @@ GEM
       parser (>= 3.3.1.0)
     rubocop-rspec (3.1.0)
       rubocop (~> 1.61)
-    ruby-graphviz (1.2.5)
-      rexml
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
@@ -740,8 +776,8 @@ GEM
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
     shellany (0.0.1)
-    shoulda-matchers (3.1.3)
-      activesupport (>= 4.0.0)
+    shoulda-matchers (6.5.0)
+      activesupport (>= 5.2.0)
     simplecov (0.21.2)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -793,7 +829,7 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     websocket (1.2.11)
-    websocket-driver (0.7.7)
+    websocket-driver (0.8.2)
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -849,7 +885,7 @@ DEPENDENCIES
   faraday
   faraday_middleware
   ffi (< 1.17)
-  fine_print
+  fine_print!
   font-awesome-rails
   guard-livereload
   guard-rspec
@@ -865,11 +901,11 @@ DEPENDENCIES
   launchy
   lev
   listen
-  logger (< 1.6)
   lograge
   maruku
   meta_request
   mini_racer
+  nokogiri (~> 1.19.4)
   oj
   oj_mimic_json
   omniauth (~> 1.9)
@@ -877,11 +913,12 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api
+  openstax_active_force!
+  openstax_api!
   openstax_healthcheck
   openstax_path_prefixer!
-  openstax_rescue_from
-  openstax_salesforce
+  openstax_rescue_from!
+  openstax_salesforce!
   openstax_transaction_isolation
   openstax_transaction_retry
   openstax_utilities
@@ -891,11 +928,10 @@ DEPENDENCIES
   pg
   posthog-ruby (~> 3.5)
   premailer-rails
-  psych (< 4)
   puma
   puma_worker_killer
   rack-cors
-  rails (= 6.1.7.8)
+  rails (= 7.0.8.7)
   rails-controller-testing
   rails-erd
   rails-i18n

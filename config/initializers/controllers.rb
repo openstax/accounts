@@ -1,3 +1,13 @@
+# Rails 7.0 boots some gem (Sentry, Doorkeeper, etc. -- exact trigger not
+# pinned down) that references ActionController::Base earlier in the init
+# sequence than Rails 6.1 did, so the :action_controller_base load hook now
+# fires here, before Zeitwerk's main autoloader is set up (that happens in
+# the Finisher, near the very end of boot). Wrapping in to_prepare defers
+# this block until after the main autoloader is ready, so ApplicationHelper
+# and friends resolve. to_prepare re-runs on every class reload in
+# development, which is harmless here (include/before_action are idempotent
+# enough for dev); test/production only eager-load once.
+Rails.application.config.to_prepare do
 ActiveSupport.on_load(:action_controller_base) do
   ActionController::Base.class_exec do
     # We need some of the methods added here in all controllers
@@ -97,4 +107,5 @@ ActiveSupport.on_load(:action_controller_base) do
       cookies[:oxdid] && !(cookies[:oxdid] =~ UUID_REGEX)
     end
   end
+end
 end

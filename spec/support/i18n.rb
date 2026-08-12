@@ -10,11 +10,19 @@ end
 RSpec::Matchers.define :have_no_missing_translations do ||
   include RSpec::Matchers::Composable
 
+  # Ruby 3.2 removed Object#=~, which `actual !~ regexp` used to fall back to
+  # for non-String actuals (always returning nil, i.e. always "matching" --
+  # this matcher was silently a no-op for Capybara sessions). Extract the
+  # HTML explicitly instead so this actually checks something.
+  def html_for(actual)
+    actual.respond_to?(:body) ? actual.body : actual.to_s
+  end
+
   match do |actual|
-    actual !~ /class="translation_missing"/
+    html_for(actual) !~ /class="translation_missing"/
   end
 
   failure_message do |actual|
-    "expected that response would have no missing translations but #{/title="translation missing: (.+?)"/.match(actual)[1]} was missing"
+    "expected that response would have no missing translations but #{/title="translation missing: (.+?)"/.match(html_for(actual))[1]} was missing"
   end
 end

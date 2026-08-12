@@ -6,16 +6,8 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '6.1.7.8'
+gem 'rails', '7.0.8.7'
 gem 'rails-i18n'
-
-# Psych 4 (included in Ruby 3.1) breaks Rails < 7
-# Remove this entry completely when updating to Rails 7
-gem 'psych', '< 4'
-
-# Logger 1.6+ removed the top-level ::Logger constant that Rails 6.1's
-# LoggerThreadSafeLevel expects. Pin to < 1.6 until upgrading to Rails 7.
-gem 'logger', '< 1.6'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
@@ -81,10 +73,19 @@ gem 'redis-rails'
 gem 'openstax_utilities'
 
 # API versioning and documentation
-gem 'openstax_api'
+#
+# Rails 7.0 removed the private ActiveRecord#clear_association_cache method
+# that standard_destroy relied on; this branch fixes it (see
+# openstax/openstax_api#rails-7-compat). Switch back to the published gem
+# once that's merged and released.
+gem 'openstax_api', github: 'openstax/openstax_api', branch: 'rails-7-compat'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from'
+#
+# Published gem (4.3.0) caps `rails < 7.0`; this branch just loosens that
+# ceiling (no code changes needed for Rails 7 compatibility). Switch back to
+# the published gem once that's merged and released.
+gem 'openstax_rescue_from', github: 'openstax/rescue_from', branch: 'rails-7-compat'
 
 # Sentry integration
 gem 'sentry-ruby'
@@ -128,7 +129,11 @@ gem 'representable'
 gem 'keyword_search'
 
 # ToS/PP management
-gem 'fine_print'
+#
+# Published gem (6.0.3) caps `rails < 7`; this branch just loosens that
+# ceiling (no code changes needed for Rails 7 compatibility). Switch back to
+# the published gem once that's merged and released.
+gem 'fine_print', github: 'openstax/fine_print', branch: 'rails-7-compat'
 
 # Send users back to the correct page after login
 gem 'action_interceptor'
@@ -155,7 +160,13 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce'
+#
+# Published gems (openstax_salesforce 8.3.0, openstax_active_force 1.1.1) cap
+# `rails < 7.0`; these branches just loosen that ceiling (no code changes
+# needed for Rails 7 compatibility -- verified against this app's full test
+# suite). Switch back to the published gems once merged and released.
+gem 'openstax_salesforce', github: 'openstax/openstax_salesforce', branch: 'rails-7-compat'
+gem 'openstax_active_force', github: 'openstax/active_force', branch: 'rails-7-compat'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
@@ -333,3 +344,9 @@ gem "terser", "~> 1.2"
 # without first bumping the app's Ruby. Ceiling here is our Ruby version, not
 # css_parser: bump to '~> 3.0' once this app is on Ruby >= 3.3.
 gem 'css_parser', '~> 1.22'
+
+# Pin nokogiri (transitive via actionmailer, capybara, aws-sdk-rails, etc.) to
+# the 1.19.x line, which closes 11 Dependabot alerts (incl. one high:
+# CSS-selector-tokenizer ReDoS). nokogiri 1.19 requires Ruby >= 3.2, which is
+# why this had to wait for the Ruby bump.
+gem 'nokogiri', '~> 1.19.4'

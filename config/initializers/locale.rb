@@ -81,3 +81,16 @@ end
 Dir.glob('config/locales/enumerators/*.rb').each do |file|
   load file
 end
+
+# Rails 7.0 made the default config/locales glob recursive (`**/*.{rb,yml}`,
+# previously `*.{rb,yml}`), so I18n's translation backend now also tries to
+# load the files above as translation data and blows up with
+# I18n::InvalidLocaleData (they return a Module, not a Hash). Keep them out
+# of the translation load path since they're loaded manually above instead.
+# I18n::Railtie only populates I18n.load_path from config.i18n.load_path in
+# an `after_initialize` hook (registered before this initializer runs), so
+# our filter has to run in a later `after_initialize` of our own or it's a
+# no-op.
+Rails.application.config.after_initialize do
+  I18n.load_path.reject! { |path| path.include?('config/locales/enumerators/') }
+end
