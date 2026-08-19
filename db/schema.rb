@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_04_18_065011) do
+ActiveRecord::Schema.define(version: 2026_06_12_055804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -475,10 +475,12 @@ ActiveRecord::Schema.define(version: 2026_04_18_065011) do
     t.jsonb "consent_preferences"
     t.boolean "is_deleted"
     t.string "expected_start_semester"
+    t.datetime "salesforce_student_pushed_at"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
+    t.index ["id"], name: "index_users_unpushed_students_with_school", where: "((role = 1) AND (school_id IS NOT NULL) AND (salesforce_student_pushed_at IS NULL))"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"
     t.index ["salesforce_contact_id"], name: "index_users_on_salesforce_contact_id"
