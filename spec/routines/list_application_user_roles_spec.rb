@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AuditApplicationUserRoles do
+describe ListApplicationUserRoles do
   let!(:application) { FactoryBot.create :doorkeeper_application }
   let!(:other_application) { FactoryBot.create :doorkeeper_application }
 

@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 2026_08_19_130000) do
     t.datetime "updated_at", null: false
     t.integer "unread_updates", default: 1, null: false
     t.string "roles", default: [], null: false, array: true
-    t.index ["application_id", "roles"], name: "index_application_users_on_application_id_and_roles"
+    t.index ["application_id", "roles", "user_id"], name: "index_application_users_on_application_id_and_roles_and_user_id", where: "(roles <> '{}'::character varying[])"
     t.index ["application_id", "unread_updates"], name: "index_application_users_on_application_id_and_unread_updates"
     t.index ["default_contact_info_id"], name: "index_application_users_on_default_contact_info_id"
     t.index ["user_id", "application_id"], name: "index_application_users_on_user_id_and_application_id", unique: true

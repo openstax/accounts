@@ -1,4 +1,4 @@
-class AuditApplicationUserRoles
+class ListApplicationUserRoles
   lev_routine transaction: :no_transaction
 
   protected
@@ -6,6 +6,7 @@ class AuditApplicationUserRoles
   def exec(application)
     outputs.roles = ApplicationUser
       .where(application_id: application.id)
+      .where("roles <> '{}'")
       .distinct
       .pluck(Arel.sql('unnest(roles)'))
       .sort

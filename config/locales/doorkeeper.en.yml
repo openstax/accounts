@@ -58,6 +58,9 @@ en:
         actions: 'Actions'
         roles_in_use: 'Roles in use'
         no_roles: "No roles have been assigned to this application's users."
+      roles:
+        title: 'Users with role "%{role}": %{name}'
+        no_users: 'No users currently have this role.'
 
     authorizations:
       buttons:
