@@ -413,8 +413,34 @@ module Oauth
         get(:show, params: { id: untrusted_application_user.id })
         expect(response).to have_http_status :success
         expect(response.body).to include(
-          role_oauth_application_path(untrusted_application_user, 'instructor')
+          role_oauth_application_path(untrusted_application_user, role: 'instructor')
         )
+      end
+
+      it "should correctly link and look up roles containing '.' or '/'" do
+        dotted_role_user = FactoryBot.create :application_user,
+                                               application: untrusted_application_user,
+                                               roles: ['co.instructor']
+        slashed_role_user = FactoryBot.create :application_user,
+                                                application: untrusted_application_user,
+                                                roles: ['financial/aid']
+
+        controller.sign_in! admin
+        get(:show, params: { id: untrusted_application_user.id })
+        expect(response.body).to include(
+          role_oauth_application_path(untrusted_application_user, role: 'co.instructor')
+        )
+        expect(response.body).to include(
+          role_oauth_application_path(untrusted_application_user, role: 'financial/aid')
+        )
+
+        get(:roles, params: { id: untrusted_application_user.id, role: 'co.instructor' })
+        expect(response).to have_http_status :success
+        expect(assigns(:users).to_a).to eq [dotted_role_user.user]
+
+        get(:roles, params: { id: untrusted_application_user.id, role: 'financial/aid' })
+        expect(response).to have_http_status :success
+        expect(assigns(:users).to_a).to eq [slashed_role_user.user]
       end
 
       it "should link user names to their admin edit page for an admin viewer" do

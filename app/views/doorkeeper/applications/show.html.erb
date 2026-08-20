@@ -76,7 +76,7 @@
     <% if @application_roles.present? %>
       <ul>
         <% @application_roles.each do |role| %>
-          <li><%= link_to role, role_oauth_application_path(@application, role) %></li>
+          <li><%= link_to role, role_oauth_application_path(@application, role: role) %></li>
         <% end %>
       </ul>
     <% else %>

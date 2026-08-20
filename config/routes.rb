@@ -273,7 +273,7 @@ Rails.application.routes.draw do
     resources :doorkeeper_applications, only: [], controller: 'oauth/applications',
                                         as: :applications, path: 'applications' do
       member do
-        get 'roles/:role', action: :roles, as: :role
+        get 'roles', action: :roles, as: :role
       end
     end
   end
