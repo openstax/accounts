@@ -49,12 +49,22 @@
     :can_find_or_create_accounts,
     :can_message_users,
     :can_skip_oauth_screen,
-  ].each do |priviledge| %>
+  ].each do |permission| %>
+    <h4><%= permission.to_s.humanize %>?</h4>
 
-    <h4><%= priviledge.to_s.humanize %>?</h4>
+    <p><%= @application.send(permission) ? 'Yes' : 'No' %></p>
+  <% end %>
 
-    <p><%= @application.send(priviledge) ? 'Yes' : 'No' %></p>
+  <h4><%= t('.roles_in_use') %></h4>
 
+  <% if @application_roles.present? %>
+    <ul>
+      <% @application_roles.each do |role| %>
+        <li><%= link_to role, role_oauth_application_path(@application, role: role) %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p><%= t('.no_roles') %></p>
   <% end %>
 
   </div>
@@ -69,18 +79,4 @@
       <p><%= render 'delete_form', application: @application, submit_btn_css: 'btn btn-danger' %></p>
     </div>
   <% end %>
-
-  <div class="col-md-4">
-    <h3><%= t('.roles_in_use') %></h3>
-
-    <% if @application_roles.present? %>
-      <ul>
-        <% @application_roles.each do |role| %>
-          <li><%= link_to role, role_oauth_application_path(@application, role: role) %></li>
-        <% end %>
-      </ul>
-    <% else %>
-      <p><%= t('.no_roles') %></p>
-    <% end %>
-  </div>
 </div>
