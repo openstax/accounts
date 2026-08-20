@@ -27,4 +27,11 @@ describe ListApplicationUserRoles do
     outcome = described_class.call(application).outputs.roles
     expect(outcome).to eq []
   end
+
+  it "excludes blank role values, e.g. from malformed historical data" do
+    FactoryBot.create :application_user, application: application, roles: ['instructor', '']
+
+    outcome = described_class.call(application).outputs.roles
+    expect(outcome).to eq ['instructor']
+  end
 end

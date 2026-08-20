@@ -9,6 +9,7 @@ class ListApplicationUserRoles
       .where("roles <> '{}'")
       .distinct
       .pluck(Arel.sql('unnest(roles)'))
+      .reject(&:blank?)
       .sort
   end
 end
