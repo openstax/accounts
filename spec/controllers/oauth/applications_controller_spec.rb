@@ -451,7 +451,7 @@ module Oauth
         controller.sign_in! admin
         get(:roles, params: { id: untrusted_application_user.id, role: 'instructor' })
         expect(response).to have_http_status :success
-        expect(response.body).to include(application_user.user.name)
+        expect(response.body).to include(CGI.escapeHTML(application_user.user.name))
         expect(response.body).to include(edit_admin_user_path(application_user.user))
       end
 
@@ -463,7 +463,7 @@ module Oauth
         controller.sign_in! user
         get(:roles, params: { id: untrusted_application_user.id, role: 'instructor' })
         expect(response).to have_http_status :success
-        expect(response.body).to include(application_user.user.name)
+        expect(response.body).to include(CGI.escapeHTML(application_user.user.name))
         expect(response.body).not_to include(edit_admin_user_path(application_user.user))
       end
     end
