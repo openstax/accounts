@@ -248,6 +248,15 @@ Rails.application.routes.draw do
 
   use_doorkeeper { controllers applications: 'oauth/applications' }
 
+  scope 'oauth', as: 'oauth' do
+    resources :doorkeeper_applications, only: [], controller: 'oauth/applications',
+                                        as: :applications, path: 'applications' do
+      member do
+        get 'roles', action: :roles, as: :role
+      end
+    end
+  end
+
   mount FinePrint::Engine => '/admin/fine_print'
   mount OpenStax::Utilities::Engine => :status
 
