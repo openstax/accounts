@@ -65,6 +65,16 @@ module Oauth
       expect(assigns(:application).can_access_private_user_data).to eq(untrusted_application_user.can_access_private_user_data)
     end
 
+    it "should let an admin see the roles in use for an application" do
+      FactoryBot.create :application_user, application: untrusted_application_user,
+                                            roles: ['instructor']
+
+      controller.sign_in! admin
+      get(:show, params: { id: untrusted_application_user.id })
+      expect(response).to have_http_status :success
+      expect(assigns(:application_roles)).to eq ['instructor']
+    end
+
     it "should let an admin get new" do
       controller.sign_in! admin
       get(:new)
@@ -172,6 +182,13 @@ module Oauth
       controller.sign_in! user
       get(:show, params: { id: untrusted_application_user.id })
       expect(response).to have_http_status :success
+    end
+
+    it "should not compute the roles in use for a non-admin owner" do
+      controller.sign_in! user
+      get(:show, params: { id: untrusted_application_user.id })
+      expect(response).to have_http_status :success
+      expect(assigns(:application_roles)).to be_nil
     end
 
     it "should not let a user get someone else's application" do

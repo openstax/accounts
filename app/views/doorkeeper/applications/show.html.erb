@@ -67,6 +67,18 @@
                     edit_oauth_application_path(@application), class: 'btn btn-primary' %></p>
 
       <p><%= render 'delete_form', application: @application, submit_btn_css: 'btn btn-danger' %></p>
+
+      <h3><%= t('.roles_in_use') %></h3>
+
+      <% if @application_roles.present? %>
+        <ul>
+          <% @application_roles.each do |role| %>
+            <li><%= role %></li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p><%= t('.no_roles') %></p>
+      <% end %>
     </div>
   <% end %>
 </div>

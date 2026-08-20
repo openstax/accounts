@@ -19,6 +19,8 @@ module Oauth
     def show
       OSU::AccessPolicy.require_action_allowed!(:read, @user, @application)
 
+      @application_roles = AuditApplicationUserRoles.call(@application).outputs.roles if @user.is_administrator?
+
       respond_to do |format|
         format.html
         format.json { render json: @application }
