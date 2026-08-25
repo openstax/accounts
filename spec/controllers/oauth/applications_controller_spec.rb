@@ -65,6 +65,44 @@ module Oauth
       expect(assigns(:application).can_access_private_user_data).to eq(untrusted_application_user.can_access_private_user_data)
     end
 
+    it "should let an admin see the roles in use for an application" do
+      FactoryBot.create :application_user, application: untrusted_application_user,
+                                            roles: ['instructor']
+
+      controller.sign_in! admin
+      get(:show, params: { id: untrusted_application_user.id })
+      expect(response).to have_http_status :success
+      expect(assigns(:application_roles)).to eq ['instructor']
+    end
+
+    it "should let an admin list users with a given role for an application" do
+      application_user = FactoryBot.create :application_user,
+                                             application: untrusted_application_user,
+                                             roles: ['instructor']
+
+      controller.sign_in! admin
+      get(:roles, params: { id: untrusted_application_user.id, role: 'instructor' })
+      expect(response).to have_http_status :success
+      expect(assigns(:users).to_a).to eq [application_user.user]
+    end
+
+    it "should let a non-admin owner list users with a given role for their own application" do
+      application_user = FactoryBot.create :application_user,
+                                             application: untrusted_application_user,
+                                             roles: ['instructor']
+
+      controller.sign_in! user
+      get(:roles, params: { id: untrusted_application_user.id, role: 'instructor' })
+      expect(response).to have_http_status :success
+      expect(assigns(:users).to_a).to eq [application_user.user]
+    end
+
+    it "should not let a non-admin list users with a given role for an application they don't own" do
+      controller.sign_in! user
+      get(:roles, params: { id: untrusted_application_admin.id, role: 'instructor' })
+      expect(response).to have_http_status :forbidden
+    end
+
     it "should let an admin get new" do
       controller.sign_in! admin
       get(:new)
@@ -172,6 +210,16 @@ module Oauth
       controller.sign_in! user
       get(:show, params: { id: untrusted_application_user.id })
       expect(response).to have_http_status :success
+    end
+
+    it "should also compute the roles in use for a non-admin owner" do
+      FactoryBot.create :application_user, application: untrusted_application_user,
+                                            roles: ['instructor']
+
+      controller.sign_in! user
+      get(:show, params: { id: untrusted_application_user.id })
+      expect(response).to have_http_status :success
+      expect(assigns(:application_roles)).to eq ['instructor']
     end
 
     it "should not let a user get someone else's application" do
@@ -355,6 +403,68 @@ module Oauth
         id = assigns(:application).id
         expect(id).not_to be_nil
         expect(response.body).to include "12345 is not a valid user id"
+      end
+
+      it "should show roles in use, linked to the per-role user list, on the show page" do
+        FactoryBot.create :application_user, application: untrusted_application_user,
+                                              roles: ['instructor']
+
+        controller.sign_in! admin
+        get(:show, params: { id: untrusted_application_user.id })
+        expect(response).to have_http_status :success
+        expect(response.body).to include(
+          role_oauth_application_path(untrusted_application_user, role: 'instructor')
+        )
+      end
+
+      it "should correctly link and look up roles containing '.' or '/'" do
+        dotted_role_user = FactoryBot.create :application_user,
+                                               application: untrusted_application_user,
+                                               roles: ['co.instructor']
+        slashed_role_user = FactoryBot.create :application_user,
+                                                application: untrusted_application_user,
+                                                roles: ['financial/aid']
+
+        controller.sign_in! admin
+        get(:show, params: { id: untrusted_application_user.id })
+        expect(response.body).to include(
+          role_oauth_application_path(untrusted_application_user, role: 'co.instructor')
+        )
+        expect(response.body).to include(
+          role_oauth_application_path(untrusted_application_user, role: 'financial/aid')
+        )
+
+        get(:roles, params: { id: untrusted_application_user.id, role: 'co.instructor' })
+        expect(response).to have_http_status :success
+        expect(assigns(:users).to_a).to eq [dotted_role_user.user]
+
+        get(:roles, params: { id: untrusted_application_user.id, role: 'financial/aid' })
+        expect(response).to have_http_status :success
+        expect(assigns(:users).to_a).to eq [slashed_role_user.user]
+      end
+
+      it "should link user names to their admin edit page for an admin viewer" do
+        application_user = FactoryBot.create :application_user,
+                                               application: untrusted_application_user,
+                                               roles: ['instructor']
+
+        controller.sign_in! admin
+        get(:roles, params: { id: untrusted_application_user.id, role: 'instructor' })
+        expect(response).to have_http_status :success
+        expect(response.body).to include(CGI.escapeHTML(application_user.user.name))
+        expect(response.body).to include(edit_admin_user_path(application_user.user))
+      end
+
+      it "should show user names without an admin link for a non-admin owner viewer" do
+        application_user = FactoryBot.create :application_user,
+                                               application: untrusted_application_user,
+                                               roles: ['instructor']
+
+        controller.sign_in! user
+        get(:roles, params: { id: untrusted_application_user.id, role: 'instructor' })
+        expect(response).to have_http_status :success
+        expect(response.body).to include(CGI.escapeHTML(application_user.user.name))
+        expect(response.body).not_to include(edit_admin_user_path(application_user.user))
       end
     end
   end
