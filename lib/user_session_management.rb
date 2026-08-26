@@ -47,6 +47,11 @@ module UserSessionManagement
       # Clear the SSO cookie
       sso_cookie_jar.delete
 
+      # posthog-js keeps the identified distinct_id until told otherwise, so ask
+      # the next page render to call posthog.reset(). Without it, anonymous
+      # events (a failed login, say) attach to whoever last used this browser.
+      session[:posthog_reset] = true
+
       security_log(:sign_out, security_log_data)
     else
       session[:last_admin_activity] = DateTime.now.to_s if @current_user.is_administrator?
@@ -174,8 +179,9 @@ module UserSessionManagement
 
   # New flow below
 
-    def save_unverified_user(user_id)
+    def save_unverified_user(user_id, email_address_id = nil)
       session[:unverified_user_id] = user_id
+      session[:unverified_email_address_id] = email_address_id
     end
 
     def unverified_user
@@ -185,8 +191,21 @@ module UserSessionManagement
       @unverified_user ||= User.find_by(id: id, state: 'unverified')
     end
 
+    # The PIN flow confirms exactly one address, so name it explicitly instead of
+    # assuming `email_addresses.first`: an account can hold several addresses, and
+    # a *verified* first address would make `ConfirmByPin` return without error
+    # (it short-circuits on `confirmed?`) -- i.e. accept any PIN.
+    def unverified_email_address
+      return if unverified_user.nil?
+
+      @unverified_email_address ||=
+        unverified_user.email_addresses.unverified.find_by(id: session[:unverified_email_address_id]) ||
+        unverified_user.email_addresses.unverified.first
+    end
+
     def clear_unverified_user
       session.delete(:unverified_user_id)
+      session.delete(:unverified_email_address_id)
     end
 
     def clear_login_failed_email

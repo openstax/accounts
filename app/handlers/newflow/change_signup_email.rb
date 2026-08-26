@@ -24,7 +24,9 @@ module Newflow
         )
       end
 
-      @email_address = EmailAddress.where(user_id: options[:user].id).first
+      # Edit the address the PIN form is actually confirming, not whichever
+      # address happens to sort first on the account.
+      @email_address = options[:email_address] || EmailAddress.where(user_id: options[:user].id).first
       @email_address.value = email_param
       @email_address.reset_confirmation_pin_code
       @email_address.save
