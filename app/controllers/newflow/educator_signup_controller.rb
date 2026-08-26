@@ -47,7 +47,7 @@ module Newflow
               log_data[:redirect] = stored_url
             end
             security_log(:educator_began_signup, log_data)
-            log_posthog(@user, 'educator_started_signup')
+            log_posthog(@user, 'started_signup', { role: @user.role })
             clear_cache_BRI_marketing
             redirect_to(educator_email_verification_form_path)
           },
@@ -106,7 +106,7 @@ module Newflow
           clear_unverified_user
           sign_in!(@handler_result.outputs.user)
           security_log(:educator_verified_email, email:@email)
-          log_posthog(@handler_result.outputs.user, 'educator_verified_email')
+          log_posthog(@handler_result.outputs.user, 'verified_email', { role: @handler_result.outputs.user.role })
           redirect_to(educator_sheerid_form_path)
         },
         failure: lambda {
@@ -114,7 +114,7 @@ module Newflow
           @first_name = unverified_user.first_name
           @email = unverified_email_address.value
           security_log(:educator_verify_email_failed, email: @email)
-          log_posthog(unverified_user, "educator_verified_email_failed")
+          log_posthog(unverified_user, 'verified_email_failed', { role: unverified_user.role })
           render(:educator_email_verification_form)
         }
       )

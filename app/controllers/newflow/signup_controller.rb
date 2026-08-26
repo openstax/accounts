@@ -20,13 +20,13 @@ module Newflow
           user = @handler_result.outputs.user
           sign_in!(user)
 
+          log_posthog(user, 'verified_email', { role: user.role })
+
           if user.student?
             security_log(:student_verified_email, {user: user, message: "Student verified email."})
-            log_posthog(user, 'student_verified_email')
             redirect_to signup_done_path
           else
             security_log(:educator_verified_email, {user: user, message: "Educator verified email."})
-            log_posthog(user, 'educator_verified_email')
             redirect_to(educator_sheerid_form_path)
           end
         },

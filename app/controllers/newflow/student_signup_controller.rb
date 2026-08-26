@@ -23,7 +23,7 @@ module Newflow
               log_data[:redirect] = stored_url
             end
             security_log(:student_signed_up, log_data)
-            log_posthog(user, "student_started_signup")
+            log_posthog(user, 'started_signup', { role: user.role })
             redirect_to student_email_verification_form_path
           },
           failure: lambda {
@@ -80,7 +80,7 @@ module Newflow
           user = @handler_result.outputs.user
           sign_in!(user)
           security_log(:student_verified_email)
-          log_posthog(user, "student_verified_email")
+          log_posthog(user, 'verified_email', { role: user.role })
           redirect_to(signup_done_path)
         },
         failure: lambda {
