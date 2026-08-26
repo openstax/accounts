@@ -21,6 +21,9 @@
             maskAllInputs: true
         }
     })
+    <% if session.delete(:posthog_reset) %>
+      posthog.reset();
+    <% end %>
 </script>
 <% end %>
 

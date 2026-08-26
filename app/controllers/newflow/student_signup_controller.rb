@@ -39,7 +39,7 @@ module Newflow
     end
 
     def student_change_signup_email_form
-      @email = unverified_user.email_addresses.first.value
+      @email = unverified_email_address.value
     end
 
     def student_change_signup_email
@@ -47,33 +47,34 @@ module Newflow
         handle_with(
           ChangeSignupEmail,
           user: unverified_user,
+          email_address: unverified_email_address,
           success: lambda {
             redirect_to student_email_verification_form_updated_email_path
           },
           failure: lambda {
-            @email = unverified_user.email_addresses.first.value
+            @email = unverified_email_address.value
             render :student_change_signup_email_form
           }
         )
       else
-        @email = unverified_user.email_addresses.first.value
+        @email = unverified_email_address.value
         render :student_change_signup_email_form
       end
     end
 
     def student_email_verification_form
       @first_name = unverified_user.first_name
-      @email = unverified_user.email_addresses.first.value
+      @email = unverified_email_address.value
     end
 
     def student_email_verification_form_updated_email
-      @email = unverified_user.email_addresses.first.value
+      @email = unverified_email_address.value
     end
 
     def student_verify_email_by_pin
       handle_with(
         StudentSignup::VerifyEmailByPin,
-        email_address: unverified_user.email_addresses.first,
+        email_address: unverified_email_address,
         success: lambda {
           clear_signup_state
           user = @handler_result.outputs.user
@@ -84,7 +85,7 @@ module Newflow
         },
         failure: lambda {
           @first_name = unverified_user.first_name
-          @email = unverified_user.email_addresses.first.value
+          @email = unverified_email_address.value
           security_log(:student_verify_email_failed, email: @email)
           render(:student_email_verification_form)
         }
