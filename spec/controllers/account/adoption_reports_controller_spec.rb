@@ -43,6 +43,29 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
         expect(flash[:notice]).to be_present
       end
 
+      it 'accepts the indexed hash submitted by the browser form and returns to its source page' do
+        expect {
+          post :create, params: {
+            return_to: account_impact_path(view: 'current'),
+            books: {
+              '0' => { name: 'Intro to Sociology', school_year: '2025 - 26', students: '120' },
+              '1' => { name: 'College Physics', school_year: '2025 - 26', students: '45' }
+            }
+          }
+        }.to change { AdoptionReport.count }.by(2)
+
+        expect(response).to redirect_to(account_impact_path(view: 'current'))
+      end
+
+      it 'does not redirect to an untrusted return path' do
+        post :create, params: {
+          return_to: '//example.com',
+          books: [{ name: 'Intro to Sociology', school_year: '2025 - 26', students: '10' }]
+        }
+
+        expect(response).to redirect_to(account_books_path)
+      end
+
       it "flashes a partial-failure notice and still enqueues the push when some rows can't be saved" do
         expect(PushAdoptionReports).to receive(:perform_later).with(user: user)
 

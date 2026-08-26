@@ -10,6 +10,9 @@
 
   function getBookRowTemplateHtml() {
     var template = document.getElementById('report-adoption-book-template');
+    // Rows keep the template's __INDEX__ placeholder until renumberRows()
+    // assigns an index from their position, so removing a row can never
+    // leave two rows sharing one index.
     return template ? template.innerHTML.trim() : '';
   }
 
@@ -25,7 +28,7 @@
     $row.find('input[type="number"]').val('');
     $('[data-report-adoption-books]').append($row);
     applyDefaultSchoolYear($row);
-    setRowLabels();
+    renumberRows();
     updateRemoveButtons();
     updateSummaryMetrics();
   }
@@ -48,7 +51,7 @@
     }
 
     $row.remove();
-    setRowLabels();
+    renumberRows();
     updateRemoveButtons();
     updateSummaryMetrics();
   }
@@ -76,7 +79,7 @@
     $rows.find('select').val('');
     $rows.find('input[type="number"]').val('');
     applyDefaultSchoolYear($rows.first());
-    setRowLabels();
+    renumberRows();
     updateRemoveButtons();
     updateSummaryMetrics();
   }
@@ -130,7 +133,7 @@
   }
 
   function updateBookCount() {
-    var selects = $('[data-report-adoption-row] select[name="books[][name]"]');
+    var selects = $('[data-report-adoption-row] select[name$="[name]"]');
     var count = 0;
 
     selects.each(function(_, select) {
@@ -148,13 +151,17 @@
     updateBookCount();
   }
 
-  function setRowLabels() {
+  function renumberRows() {
     var $rows = $('[data-report-adoption-row]');
     $rows.each(function(index, row) {
       var $label = $(row).find('[data-report-adoption-row-label]');
       if ($label.length) {
         $label.text('Adoption ' + (index + 1));
       }
+
+      $(row).find('[name]').each(function(_, field) {
+        field.name = field.name.replace(/^books\[[^\]]*\]/, 'books[' + index + ']');
+      });
     });
   }
 
@@ -163,10 +170,10 @@
   $(document).on('click', '[data-report-adoption-remove]', handleRemoveBookClick);
 
   $(document).on('input', '[data-report-adoption-students]', updateSummaryMetrics);
-  $(document).on('change', '[data-report-adoption-row] select[name="books[][name]"]', updateSummaryMetrics);
+  $(document).on('change', '[data-report-adoption-row] select[name$="[name]"]', updateSummaryMetrics);
 
   // Submission is a plain form POST handled by Account::AdoptionReportsController;
-  // the browser follows the redirect back to the books page on its own.
+  // the browser follows the redirect back to the page that opened the modal.
 
   $(document).on('show.bs.modal', '#reportAdoptionModal', function() {
     var form = document.getElementById('report-adoption-form');
@@ -176,11 +183,11 @@
     }
 
     resetBookRows();
-    setRowLabels();
+    renumberRows();
     updateSummaryMetrics();
   });
 
   // initialize on load
-  setRowLabels();
+  renumberRows();
   updateSummaryMetrics();
 })();
