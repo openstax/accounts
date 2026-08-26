@@ -38,7 +38,7 @@ module Newflow
 
     def signup_done
       security_log(:user_viewed_signup_form, form_name: action_name)
-      log_posthog(current_user, 'user_signup_done')
+      log_posthog(current_user, 'signup_done', { role: current_user.role })
       @first_name = current_user.first_name
       @email_address = current_user.email_addresses.first&.value
     end

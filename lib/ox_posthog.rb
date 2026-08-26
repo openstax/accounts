@@ -56,6 +56,10 @@ class OXPosthog
         **extra_props
       }
     }
+    # ExternalIds are only ever set by Assignable, whose LMS launches carry no
+    # client_id -- an external id is how we know this is an Assignable user
+    # (the same rule as the API's `assignable_user`).
+    attrs[:properties][:client_app] ||= 'Assignable' if user.has_external_id?
     attrs[:groups] = { school: user.school.id.to_s } if user.school
     posthog.capture(attrs)
     identify_school(user.school) if user.school

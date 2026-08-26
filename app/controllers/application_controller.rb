@@ -41,8 +41,11 @@ class ApplicationController < ActionController::Base
     Sentry.set_user(uuid: current_user.uuid)
   end
 
+  # client_app (the OAuth app that sent the user here, from the session) rides
+  # along on every event so funnels can be segmented by originating product.
+  # An explicit extra_props[:client_app] wins.
   def log_posthog(user, event, extra_props = {})
-    OXPosthog.log(user, event, extra_props)
+    OXPosthog.log(user, event, { client_app: get_client_app&.name }.compact.merge(extra_props))
   end
 
   # Capture an event when there is no resolved user (e.g. a failed login or

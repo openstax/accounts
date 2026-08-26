@@ -47,7 +47,7 @@ module Newflow
               log_data[:redirect] = stored_url
             end
             security_log(:educator_began_signup, log_data)
-            log_posthog(@user, 'educator_started_signup', { client_app: get_client_app&.name })
+            log_posthog(@user, 'educator_started_signup')
             clear_cache_BRI_marketing
             redirect_to(educator_email_verification_form_path)
           },
