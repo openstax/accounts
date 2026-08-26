@@ -36,6 +36,23 @@ describe Admin::UsersController, type: :controller do
     end
   end
 
+  describe 'application_users roles' do
+    it 'strips blank entries out of the comma-separated roles input' do
+      application = FactoryBot.create :doorkeeper_application
+      application_user = FactoryBot.create :application_user, application: application, user: user
+
+      put :update, params: {
+        id: user.id,
+        user: { username: user.username },
+        application_users: {
+          '0' => { application_id: application.id.to_s, roles: 'instructor, ,student' }
+        }
+      }
+
+      expect(application_user.reload.roles).to eq ['instructor', 'student']
+    end
+  end
+
   describe 'trusted lauch removal' do
     it 'removes all the external uuids' do
       user.external_uuids.create!({ uuid: SecureRandom.uuid })
