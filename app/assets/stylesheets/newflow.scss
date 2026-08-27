@@ -100,6 +100,29 @@ body {
 
 input.has-error {
     @extend %has-error;
+
+    // Defensive override: pattern-library's `%non-button-input` mixin extends
+    // `%has-error` (compounded with `:not(.delay-validation)` and several
+    // `:not([type=...])` clauses) to decide whether the sibling
+    // `.invalid-message` is shown. Under libsass (sassc-rails, used here per
+    // the Task 10 Dart-Sass-fallback decision) the `@extend` unification for
+    // `input.has-error` drops the `:not([type=...])` clauses that Ruby Sass
+    // used to preserve, so the resulting selector loses to pattern-library's
+    // higher-specificity "hidden by default" rule and the error text never
+    // becomes visible. Force it explicitly rather than depend on `@extend`
+    // specificity math holding across Sass engines (also protects a future
+    // Dart Sass migration, since Dart Sass's extend algorithm isn't
+    // guaranteed to match Ruby Sass's here either).
+    //
+    // This override intentionally does NOT repeat pattern-library's
+    // `:not(.delay-validation)` guard (which lets a form opt an input out of
+    // showing validation state) -- `delay-validation` has zero call sites
+    // anywhere in this app (grep confirms). If it's ever adopted here, this
+    // rule must be updated to respect it too, e.g.
+    // `&:not(.delay-validation) ~ .invalid-message`.
+    ~ .invalid-message {
+        display: block !important;
+    }
 }
 
 // Widen the profile form on desktop while keeping mobile responsive
