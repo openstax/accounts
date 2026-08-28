@@ -1,5 +1,52 @@
 <% if google_tag_manager_enabled? %>
 <script>
+  // Our GTM container fires a Facebook Pixel tag on the signup-done page, but on
+  // a sizeable minority of those loads `fbq` is not defined yet when the tag runs,
+  // so it throws `ReferenceError: fbq is not defined` from inside gtm.js. That is
+  // where the bulk of this app's error-tracking noise comes from.
+  //
+  // Defining Facebook's standard queueing stub silences the ReferenceError, but on
+  // its own it would break the loads that currently work: the base pixel snippet
+  // that normally defines `fbq` opens with `if (f.fbq) return;`, so once `fbq`
+  // exists it stops injecting fbevents.js and nothing ever drains the queue. So we
+  // take over loading fbevents.js too -- lazily, on the first `fbq(...)` call, so
+  // this only ever loads Facebook where a GTM tag has already called `fbq`, and
+  // never introduces the pixel to a page the container left alone.
+  (function (w, d) {
+    if (w.fbq) { return; }
+
+    var requested = false;
+
+    function loadPixel() {
+      if (requested) { return; }
+      requested = true;
+
+      var t = d.createElement('script');
+      t.async = true;
+      t.src = 'https://connect.facebook.net/en_US/fbevents.js';
+
+      var s = d.getElementsByTagName('script')[0];
+      if (s && s.parentNode) { s.parentNode.insertBefore(t, s); }
+    }
+
+    var n = w.fbq = function () {
+      if (n.callMethod) {
+        n.callMethod.apply(n, arguments);
+        return;
+      }
+
+      // Queue the call and let fbevents.js replay it once it arrives.
+      n.queue.push(arguments);
+      loadPixel();
+    };
+
+    if (!w._fbq) { w._fbq = n; }
+    n.push = n;
+    n.loaded = true;
+    n.version = '2.0';
+    n.queue = [];
+  })(window, document);
+
   //Code from Google
 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
