@@ -990,8 +990,16 @@ $very-narrow: 37rem * $scale-factor;
 #login-signup-form  {
     .warning {
         &.edu, &.mistype {
-            color: #c22032;
             display: none;
+        }
+
+        &.mistype {
+            color: #c22032;
+        }
+
+        // A non-institutional address is a nudge to use a school email, not a rejection.
+        &.edu {
+            color: #31708f;
         }
     }
 
