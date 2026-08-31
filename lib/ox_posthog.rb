@@ -18,12 +18,16 @@ class OXPosthog
       distinct_id: user.uuid,
       event: event,
       properties: {
+        # Server events would otherwise be geo-resolved from this server's IP,
+        # clobbering the person's real (client-side) geo properties.
+        '$geoip_disable': true,
         '$set': {
           email: user.best_email_address_for_salesforce,
           name: user.full_name,
           role: user.role,
           faculty_status: user.faculty_status,
           school: user.school&.id,
+          salesforce_school_id: user.school&.salesforce_id,
           recent_authentication_provider: user.authentications&.last&.provider,
           authentication_method_count: user.authentications&.count,
           salesforce_contact_id: user.salesforce_contact_id,
@@ -37,6 +41,7 @@ class OXPosthog
           is_sheerid_verified: user.is_sheerid_verified,
           which_books: user.which_books,
           how_many_students: user.how_many_students,
+          title_1_school: user.title_1_school,
           country_code: user.country_code,
           receive_newsletter: user.receive_newsletter,
           is_administrator: user.is_administrator,
@@ -51,6 +56,10 @@ class OXPosthog
         **extra_props
       }
     }
+    # ExternalIds are only ever set by Assignable, whose LMS launches carry no
+    # client_id -- an external id is how we know this is an Assignable user
+    # (the same rule as the API's `assignable_user`).
+    attrs[:properties][:client_app] ||= 'Assignable' if user.has_external_id?
     attrs[:groups] = { school: user.school.id.to_s } if user.school
     posthog.capture(attrs)
     identify_school(user.school) if user.school
@@ -69,6 +78,7 @@ class OXPosthog
       event: event,
       properties: {
         '$process_person_profile': false,
+        '$geoip_disable': true,
         **extra_props
       }
     )
