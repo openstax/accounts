@@ -408,10 +408,7 @@ class User < ApplicationRecord
 
   def refresh_login_token(expiration_period: nil)
     if login_token.blank? || login_token_expired? || expiration_period.try(:<,0)
-      loop do
-        self.login_token = SecureRandom.hex(16)
-        break unless User.where.not(id: id).exists?(login_token: login_token)
-      end
+      self.login_token = SecureRandom.hex(16)
     end
 
     self.login_token_expires_at = expiration_period.nil? ? nil : DateTime.now + expiration_period
