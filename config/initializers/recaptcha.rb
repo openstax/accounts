@@ -108,7 +108,7 @@ module RecaptchaController
       error_codes: reply['error-codes'],
       reason: error_message || recaptcha_failure_reason
     )
-    log_posthog(current_user, 'recaptcha_verified', {
+    log_posthog_anonymous('recaptcha_verified', {
       recaptcha_action: options[:action],
       score: score,
       blocked: blocked
