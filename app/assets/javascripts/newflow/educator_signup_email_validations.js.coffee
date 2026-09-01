@@ -23,7 +23,7 @@ class NewflowUi.SignupEmailValidations
       if @userType is 'instructor'
         @showing_warning = true
         window.posthog?.capture('educator_signup_email_suggestion_shown', { form: 'educator_signup' })
-        @group.addClass('has-error')
+        @group.removeClass('has-error')
         @group.find(".errors").empty()
         @group.find(".edu.warning").show()
         @email.focus()
