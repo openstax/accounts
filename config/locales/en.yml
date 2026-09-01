@@ -264,6 +264,10 @@ en:
       cancelText: Cancel
       confirmText: OK
 
+    editable:
+      save_failed: >-
+        Sorry, we couldn't save that change. Please try again.
+
     email:
       confirm_delete: >-
         Are you sure you want to remove this email address from your account?
