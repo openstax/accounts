@@ -28,8 +28,10 @@ module Legacy
       # format that a `format.json`-only block doesn't list raises UnknownFormat
       # -- which comes back as a full HTML error page that x-editable then
       # injects into the form as markup.
-      if current_user.update(user_params)
-        security_log :user_updated, user_params: user_params
+      attrs = user_params
+
+      if current_user.update(attrs)
+        security_log :user_updated, user_params: attrs
 
         render json: { full_name: current_user.full_name }, status: :ok
       else
