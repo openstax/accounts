@@ -103,8 +103,11 @@ OX.Profile.Email = {
       params: (params) ->
         'contact_info[type]': 'EmailAddress'
         'contact_info[value]': params.value
+      # This replaces the page-wide ajaxOptions wholesale, so dataType has to be
+      # repeated to keep the Accept header on JSON.
       ajaxOptions:
         type: 'POST'
+        dataType: 'json'
     ).on('hidden', (e, reason) =>
       @addEmail.show()
       email.remove() unless reason is 'save'
