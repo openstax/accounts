@@ -193,6 +193,10 @@ pl:
       cancelText: Anuluj
       confirmText: OK
 
+    editable:
+      save_failed: >-
+        Niestety nie udało się zapisać tej zmiany. Spróbuj ponownie.
+
     email:
       confirm_delete: >-
         Czy na pewno chcesz usunąć ten adres e-mail?
