@@ -24,7 +24,7 @@ describe RecaptchaView do
 
   describe '#recaptcha_with_disclaimer_and_fallback' do
     context 'when a real site key is configured (STUB_RECAPTCHA is false)' do
-      before { stub_const('STUB_RECAPTCHA', false) }
+      before do stub_const('STUB_RECAPTCHA', false) end
 
       it 'renders the reCAPTCHA widget' do
         output = view.recaptcha_with_disclaimer_and_fallback(action: 'student_signup')
@@ -75,7 +75,7 @@ describe RecaptchaView do
     end
 
     context 'when no site key is configured (STUB_RECAPTCHA is true)' do
-      before { stub_const('STUB_RECAPTCHA', true) }
+      before do stub_const('STUB_RECAPTCHA', true) end
 
       it 'renders only the disclaimer' do
         output = view.recaptcha_with_disclaimer_and_fallback(action: 'student_signup')

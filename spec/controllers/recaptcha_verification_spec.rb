@@ -29,7 +29,10 @@ describe 'RecaptchaController#verify_recaptcha_with_fallback', type: :controller
   end
 
   context 'when the score is below the configured minimum' do
-    before { stub_recaptcha_result(verified: false, score: 0.1, failure_reason: "Recaptcha score didn't exceed the minimum: 0.1 < 0.5.") }
+    before do
+      stub_recaptcha_result(verified: false, score: 0.1,
+                            failure_reason: "Recaptcha score didn't exceed the minimum: 0.1 < 0.5.")
+    end
 
     it 'blocks the request' do
       get(:index)
@@ -45,7 +48,7 @@ describe 'RecaptchaController#verify_recaptcha_with_fallback', type: :controller
   end
 
   context 'when the score is at or above the configured minimum' do
-    before { stub_recaptcha_result(verified: true, score: 0.9) }
+    before do stub_recaptcha_result(verified: true, score: 0.9) end
 
     it 'allows the request' do
       get(:index)
@@ -71,7 +74,10 @@ describe 'RecaptchaController#verify_recaptcha_with_fallback', type: :controller
   end
 
   context 'when Google never returns a score (e.g. missing token)' do
-    before { stub_recaptcha_result(verified: false, failure_reason: 'No recaptcha response/param(:action) found.') }
+    before do
+      stub_recaptcha_result(verified: false,
+                            failure_reason: 'No recaptcha response/param(:action) found.')
+    end
 
     it 'allows the request rather than blocking on a missing score' do
       get(:index)
@@ -87,7 +93,9 @@ describe 'RecaptchaController#verify_recaptcha_with_fallback', type: :controller
   end
 
   context 'when verification times out' do
-    before { stub_recaptcha_result(verified: false, failure_reason: 'Recaptcha server unreachable.') }
+    before do
+      stub_recaptcha_result(verified: false, failure_reason: 'Recaptcha server unreachable.')
+    end
 
     it 'allows the request rather than blocking on an unreachable Google' do
       get(:index)
@@ -96,7 +104,10 @@ describe 'RecaptchaController#verify_recaptcha_with_fallback', type: :controller
   end
 
   context 'when Google raises Recaptcha::RecaptchaError (network error, bad JSON, etc.)' do
-    before { allow(controller).to receive(:verify_recaptcha).and_raise(Recaptcha::RecaptchaError, 'connection reset') }
+    before do
+      allow(controller).to receive(:verify_recaptcha).and_raise(Recaptcha::RecaptchaError,
+                                                                'connection reset')
+    end
 
     it 'allows the request instead of letting the error 500 the signup' do
       get(:index)
@@ -110,7 +121,9 @@ describe 'RecaptchaController#verify_recaptcha_with_fallback', type: :controller
   end
 
   context 'when Timeout::Error escapes the gem directly' do
-    before { allow(controller).to receive(:verify_recaptcha).and_raise(Timeout::Error, 'timed out') }
+    before do
+      allow(controller).to receive(:verify_recaptcha).and_raise(Timeout::Error, 'timed out')
+    end
 
     it 'allows the request' do
       get(:index)
@@ -119,7 +132,7 @@ describe 'RecaptchaController#verify_recaptcha_with_fallback', type: :controller
   end
 
   context 'when recaptcha is disabled via the admin kill-switch' do
-    before { allow(Settings::Recaptcha).to receive(:disabled?).and_return(true) }
+    before do allow(Settings::Recaptcha).to receive(:disabled?).and_return(true) end
 
     it 'allows the request without calling the gem at all' do
       expect(controller).not_to receive(:verify_recaptcha)
