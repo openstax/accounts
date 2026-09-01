@@ -19,14 +19,23 @@
 
     function loadPixel() {
       if (requested) { return; }
-      requested = true;
 
       var t = d.createElement('script');
       t.async = true;
       t.src = 'https://connect.facebook.net/en_US/fbevents.js';
 
       var s = d.getElementsByTagName('script')[0];
-      if (s && s.parentNode) { s.parentNode.insertBefore(t, s); }
+      if (s && s.parentNode) {
+        s.parentNode.insertBefore(t, s);
+        requested = true;
+        return;
+      }
+
+      var parent = d.head || d.body || d.documentElement;
+      if (parent) {
+        parent.appendChild(t);
+        requested = true;
+      }
     }
 
     var n = w.fbq = function () {
