@@ -72,7 +72,7 @@ module RecaptchaController
   # error, an unreachable API -- allows the request through and logs why, so
   # a Google outage or an adblocked script can never lock a real user out.
   def verify_recaptcha_with_fallback(**options)
-    force_recaptcha_failure = params[:force_recaptcha_failure] == 'true'
+    force_recaptcha_failure = !Rails.env.production? && params[:force_recaptcha_failure] == 'true'
 
     # Return true if recaptcha is disabled via admin setting
     return true if Settings::Recaptcha.disabled?
