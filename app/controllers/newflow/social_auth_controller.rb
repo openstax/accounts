@@ -45,7 +45,7 @@ module Newflow
             @last_name = user.last_name
             @email = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
-            log_posthog(user, 'signup_social', { provider: authentication.provider, role: user.role })
+            log_posthog(user, 'student_signup_social', { provider: authentication.provider, role: user.role })
             # must confirm their social info on signup
             render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
           end
@@ -120,7 +120,7 @@ module Newflow
           clear_signup_state
           sign_in!(@handler_result.outputs.user)
           security_log(:student_social_auth_confirmation_success)
-          log_posthog(@handler_result.outputs.user, 'signup_done', { role: @handler_result.outputs.user.role })
+          log_posthog(@handler_result.outputs.user, 'student_signup_done', { role: @handler_result.outputs.user.role })
           redirect_to return_to
         },
         failure: -> {
