@@ -570,25 +570,6 @@ input.has-error {
         z-index: 100;
     }
 
-    // The card is drawn in slices: .step-counter and the form each paint their
-    // own left/right rails and nothing paints a shared container. Anything
-    // sitting between them has to continue those rails, or the card visibly
-    // comes apart into stacked boxes.
-    .signup-alternatives {
-        max-width: none;
-        margin: 0;
-        padding: 1.6rem 1.5rem 2rem;
-        border: 0;
-        border-left: 0.1rem solid #d5d5d5;
-        border-right: 0.1rem solid #d5d5d5;
-        border-radius: 0;
-        background-color: #fff;
-
-        @include wider-than($phone-max) {
-            padding: 1.6rem 2.9rem 2rem;
-        }
-    }
-
     // newflow/sheerid_iframe.js sets the real height from SheerID's own
     // `updateHeight` message and clears this floor. The floor is what shows
     // before the first message, and all we get if `sheer_id_base_url` still
@@ -617,7 +598,24 @@ input.has-error {
 // opt-outs that need to match that specificity; the visual styling stays with
 // the modifier.
 #login-signup-form {
+    // The card is drawn in slices -- .step-counter, .page-header and the form
+    // each paint their own left/right rails, and nothing paints a shared
+    // container. A block sitting between them has to continue those rails or
+    // the card visibly comes apart into stacked boxes.
     .signup-alternatives--collapsible {
+        max-width: none;
+        margin: 0;
+        padding: 1.6rem 1.5rem 2rem;
+        border: 0;
+        border-left: 0.1rem solid #d5d5d5;
+        border-right: 0.1rem solid #d5d5d5;
+        border-radius: 0;
+        background-color: #fff;
+
+        @include wider-than($phone-max) {
+            padding: 1.6rem 2.9rem 2rem;
+        }
+
         .signup-alternatives__form {
             display: inline;
             height: auto;
