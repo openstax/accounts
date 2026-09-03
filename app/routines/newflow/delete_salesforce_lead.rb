@@ -5,9 +5,10 @@ module Newflow
 
     protected #################
 
-    # Called when a user abandons the educator flow. Their lead only ever carried an
-    # `incomplete_signup` verification status, so there is nothing worth keeping and
-    # leaving it behind puts a phantom educator in the CS verification queue.
+    # Called when a user abandons the educator flow. The SheerID webhook pushes a lead
+    # at step 3, before the profile exists, so it carries an `incomplete_signup`
+    # verification status -- nothing worth keeping, and leaving it behind puts a
+    # phantom educator in the CS verification queue.
     def exec(user:)
       return unless user
 
@@ -49,8 +50,8 @@ module Newflow
 
     private ###################
 
-    # Mirrors the lookup order in CreateOrUpdateSalesforceLead: the nightly
-    # abandoned-signup task can create a lead without ever writing the id back.
+    # Mirrors the lookup order in CreateOrUpdateSalesforceLead, which can find and
+    # adopt a lead created by something other than this user's own signup.
     def find_lead(user)
       lead_by_id(user) ||
         OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid) ||
