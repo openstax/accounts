@@ -12,8 +12,6 @@ module Newflow
     let(:phone_number) { Faker::PhoneNumber.phone_number }
     let(:email_value) { Faker::Internet.unique.email(domain: '@rice.edu') }
     let(:password) { Faker::Internet.password(min_length: 8) }
-    let(:sheerid_iframe_page_title) { 'Verify your instructor status' }
-    let(:iframe_submit_button_text) { 'Verify my instructor status' }
     let(:return_param) { { r: external_app_for_specs_path } }
 
     context 'happy path' do

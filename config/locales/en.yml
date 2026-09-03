@@ -484,12 +484,6 @@ en:
       collect_student_count_all_paths:
         name: Collect student count on all signup paths
         help_block: Show student count field on as_future and as_recommending paths?
-      sheer_id_base_url:
-        name: SheerID base URL
-        help_block: >-
-          ie. https://offers.sheerid.com/openstax/staging/teacher/?env=dev
-          With the parameters that pre-populate the SheerID form, the full URL will look like
-          ie. https://offers.sheerid.com/openstax/staging/teacher/?env=dev&first_name=Elon&last_name=Musk&email=ceo@spacex.com
       number_of_days_contacts_modified:
         name: Contacts modified in last x days
         help_block: Retrieve contacts modified in the last X days in update_user_salesforce_info
