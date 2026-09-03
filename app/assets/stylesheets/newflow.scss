@@ -1398,3 +1398,27 @@ $very-narrow: 37rem * $scale-factor;
     }
   }
 }
+
+.switch-role {
+    max-width: 55.5rem;
+    margin: 2rem auto 4rem;
+    padding: 0 2rem;
+    text-align: center;
+
+    .switch-role__description {
+        color: var(--greyish-brown);
+        font-size: 1.4rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+
+    .switch-role__button {
+        background: none;
+        border: none;
+        padding: 0;
+        color: #0064c8;
+        font-size: 1.4rem;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+}

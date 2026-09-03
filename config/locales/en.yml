@@ -171,6 +171,14 @@ en:
       Updates on your verification status will be sent to <b>%{email_address}</b>.
       In the meantime, you can access all books and resources
       except those that require instructor verification.
+    switch_role_student: Switch to a student account
+    switch_role_student_description: >-
+      Signed up as an educator by mistake? Students don't need instructor
+      verification to read books, take notes, or join a class.
+    switch_role_educator: Switch to an educator account
+    switch_role_educator_description: >-
+      Signed up as a student by mistake? Educator accounts unlock instructor
+      resources once we verify you teach.
     join_as_student_description: >-
       Sign up for a <b>Student</b> account to create and save
       notes and highlights in OpenStax study materials.

@@ -55,6 +55,13 @@ Business logic is not written directly in controllers — it uses [Lev](https://
 ### Account creation paths
 A `User` is created via one of: direct signup (`newflow_signup_path`), signed params (`sp`/`authenticate_user!`, used for LMS-driven logins from Tutor), OAuth authorization (`/oauth/authorize`, Doorkeeper), the API (`POST /user/find-or-create`), or an admin rake import (`lib/tasks/accounts/import_users.rake`). Signup produces a `User`, an `Authentication` (login method), optionally an `Identity` (password), an optional `ApplicationUser` (association to the OAuth app that created the user), and a `ContactInfo` (email).
 
+### Switching account type mid-signup
+`POST /i/signup/switch_role` (`Newflow::SignupController#switch_role` → `Newflow::SwitchSignupRole`) flips an in-progress signup between student and educator. Direction is derived from the user's current role, never from a param. The account is resolved once, in `signup_in_progress_user`: `unverified_user` (session-held, pre-PIN) or the signed-in `current_user` — anonymous requests resolve to `nil`, since `current_user` is an `AnonymousUser`, not `nil`.
+
+Switching *away* from educator clears every column the educator flow wrote (`faculty_status`, the `sheerid_*` fields, `is_educator_pending_cs_verification`, `requested_cs_verification_at`, `is_profile_complete`) — a leftover flag would bounce the user straight back into `exit_signup_if_steps_complete` — and enqueues `Newflow::DeleteSalesforceLead`, because `create_leads_for_abandoned_user_signups` can already have put an `incomplete_signup` lead in the CS verification queue. `confirmed_faculty` users are refused; a stray click must not undo a passed verification.
+
+The "switch to…" link renders from `newflow/_switch_role_link` and takes a `target` local ('student' or 'educator'). It uses `button_to`, so it must sit **outside** any `lev_form_for` block.
+
 ### OAuth / Doorkeeper
 `config/initializers/doorkeeper.rb` and `config/initializers/doorkeeper_models.rb` wire Doorkeeper into the User/ApplicationUser models. Trusted `oauth_applications` skip the authorization screen. `FindOrCreateApplicationUser` associates users with the app that created them; non-trusted apps may only manage their own users.
 
