@@ -115,9 +115,9 @@ class SecurityLog < ApplicationRecord
     salesforce_lead_save_failed
     reset_password_unverified_email
     user_switched_signup_role
-    deleted_salesforce_lead
-    salesforce_lead_delete_failed
-    salesforce_lead_not_found_for_deletion
+    updated_salesforce_lead_after_role_switch
+    no_salesforce_lead_to_update
+    salesforce_lead_lookup_failed
   ]
 
   json_serialize :event_data, Hash

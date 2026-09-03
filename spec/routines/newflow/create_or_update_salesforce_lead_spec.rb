@@ -53,6 +53,28 @@ module Newflow
       end
     end
 
+    describe 'a student' do
+      let(:student) do
+        FactoryBot.create(
+          :user, role: User::STUDENT_ROLE, faculty_status: User::NO_FACULTY_INFO,
+          is_profile_complete: false
+        )
+      end
+
+      it 'is never stamped with a faculty status' do
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: student.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_STUDENT')
+
+        described_class.call(user: student)
+
+        expect(student.reload.faculty_status).to eq(User::NO_FACULTY_INFO)
+        expect(mock_lead.role).to eq('Student')
+        expect(mock_lead.verification_status).to be_nil
+      end
+    end
+
     describe 'finding existing leads' do
       let(:existing_lead) do
         lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)

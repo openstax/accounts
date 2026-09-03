@@ -48,7 +48,7 @@ module Newflow
         event_data: { role_was: role_was, role_now: user.role }
       )
 
-      DeleteSalesforceLead.perform_later(user: user) if outputs.switched_to == :student
+      UpdateExistingSalesforceLead.perform_later(user: user) if outputs.switched_to == :student
 
       outputs.user = user
     end

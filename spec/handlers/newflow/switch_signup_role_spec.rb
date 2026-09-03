@@ -35,8 +35,8 @@ module Newflow
         expect(user.is_profile_complete).to eq(false)
       end
 
-      it 'deletes the salesforce lead so they leave the CS verification queue' do
-        expect(DeleteSalesforceLead).to receive(:perform_later).with(user: user)
+      it 'updates the salesforce lead so it reflects the new role' do
+        expect(UpdateExistingSalesforceLead).to receive(:perform_later).with(user: user)
 
         described_class.call(user: user)
       end
@@ -55,7 +55,7 @@ module Newflow
       let(:user) { FactoryBot.create(:user, role: User::STUDENT_ROLE) }
 
       it 'makes them an instructor with an incomplete signup' do
-        allow(DeleteSalesforceLead).to receive(:perform_later)
+        allow(UpdateExistingSalesforceLead).to receive(:perform_later)
 
         result = described_class.call(user: user)
 
@@ -63,7 +63,7 @@ module Newflow
         expect(result.outputs.switched_to).to eq(:educator)
         expect(user.reload.role).to eq('instructor')
         expect(user.faculty_status).to eq(User::INCOMPLETE_SIGNUP)
-        expect(DeleteSalesforceLead).not_to have_received(:perform_later)
+        expect(UpdateExistingSalesforceLead).not_to have_received(:perform_later)
       end
     end
 
