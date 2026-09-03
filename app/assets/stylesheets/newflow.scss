@@ -1624,8 +1624,15 @@ $very-narrow: 37rem * $scale-factor;
             text-decoration: underline;
             cursor: pointer;
 
-            &:hover {
+            // The base rule's hover/focus/active invert a filled button: dark
+            // background, white text. This variant keeps the background
+            // transparent, so inheriting `color: white` left the label
+            // invisible until the pointer moved away.
+            &:hover,
+            &:focus,
+            &:active {
                 background: none;
+                color: #024f78;
                 text-decoration: underline;
             }
         }

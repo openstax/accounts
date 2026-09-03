@@ -68,6 +68,18 @@
     }
   });
 
+  // Where to send the user once SheerID says they are verified. Their program
+  // can be configured to redirect instead, but that is a single URL for a
+  // program shared by every environment, so it cannot send dev, staging and
+  // production to their own step 4. Driving it from the hook keeps it right
+  // everywhere and needs no dashboard change.
+  function goToNextStep() {
+    var path = frame.getAttribute('data-sheerid-success-path');
+    if (!path) { return; }
+
+    window.location.assign(path);
+  }
+
   // ON_VERIFICATION_READY is the form telling us it will accept input; prefill
   // before that lands is dropped. `load` alone is too early.
   window.addEventListener('message', function (event) {
@@ -78,8 +90,12 @@
     if (uid && data.verificationIframeUid !== uid) { return; }
 
     var action = data.action;
-    if (action && action.type === 'hook' && action.hook && action.hook.name === 'ON_VERIFICATION_READY') {
+    if (!action || action.type !== 'hook' || !action.hook) { return; }
+
+    if (action.hook.name === 'ON_VERIFICATION_READY') {
       sendViewModel();
+    } else if (action.hook.name === 'ON_VERIFICATION_SUCCESS') {
+      goToNextStep();
     }
   });
 })();
