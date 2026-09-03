@@ -38,16 +38,3 @@
     }
   )
 %>
-
-<%= render partial: 'newflow/signup_alternatives', locals: {
-      heading: I18n.t(:"login_signup_form.alternatives_heading"),
-      actions: [
-        {
-          label: I18n.t(:"login_signup_form.switch_role_educator"),
-          description: I18n.t(:"login_signup_form.switch_role_educator_description"),
-          path: switch_signup_role_path,
-          method: :post,
-          ga_label: 'switch-to-educator'
-        }
-      ]
-    } %>
