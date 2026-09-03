@@ -36,14 +36,37 @@ module Newflow
       request.original_fullpath.include? 'cs_form'
     end
 
-    def generate_sheer_id_url(user:)
+    # `installType` + `verificationIframeUid` are what make SheerID's form post
+    # `updateHeight` messages back to us, which is the only way to size the
+    # iframe to its content -- see newflow/sheerid_iframe.js. They are only
+    # honoured by a program verification URL (services.sheerid.com/verify/<id>/);
+    # a hosted offers.sheerid.com page ignores them and never reports a height,
+    # so the CSS floor stays in place until `sheer_id_base_url` points at one.
+    # Prefill goes out under both spellings because the two hosts disagree.
+    def generate_sheer_id_url(user:, iframe_uid: nil)
       url = standard_parse_url(Settings::Db.store.sheer_id_base_url)
+      email = user.email_addresses.first&.value
       url.query_values = url.query_values.merge(
         first_name: user.first_name,
         last_name: user.last_name,
-        email: user.email_addresses.first&.value
+        email: email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        installType: 'cdn_inline_iframe',
+        # Path only: this page's query string can carry `r`, `sp` and
+        # `client_id`, and none of that is SheerID's business.
+        installPageUrl: "#{request.base_url}#{request.path}"
+      ).merge(
+        iframe_uid.present? ? { verificationIframeUid: iframe_uid } : {}
       )
       url.to_s
+    end
+
+    # The origin the iframe will post from, so the listener can reject everything
+    # else rather than trusting any window that messages us.
+    def sheer_id_origin
+      uri = standard_parse_url(Settings::Db.store.sheer_id_base_url)
+      "#{uri.scheme}://#{uri.authority}"
     end
 
     # Standardize how we parse URLs

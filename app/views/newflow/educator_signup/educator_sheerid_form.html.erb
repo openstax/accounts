@@ -34,8 +34,14 @@
         <form>
           <div class="content control-group">
             <iframe
+              id="sheerid-iframe"
               title='instructor verification'
-              src=<%= @sheerid_url %>
+              src="<%= @sheerid_url %>"
+              data-sheerid-uid="<%= @sheerid_iframe_uid %>"
+              data-sheerid-origin="<%= @sheerid_origin %>"
+              data-sheerid-first-name="<%= current_user.first_name %>"
+              data-sheerid-last-name="<%= current_user.last_name %>"
+              data-sheerid-email="<%= current_user.email_addresses.first&.value %>"
               frameborder=0
               width="100%">
             </iframe>
@@ -44,3 +50,5 @@
     <% end %>
   </div>
 </div>
+
+<%= javascript_include_tag 'newflow/sheerid_iframe' %>

@@ -122,7 +122,12 @@ end
 # NameError under docker.
 CAPYBARA_HOST_REGEX = /\A(.*\.)?#{Regexp.escape CAPYBARA_HOST.sub('*.', '').chomp('.*')}\z/
 
-Capybara.server = :puma, { Silent: true } # To clean up your test output
+# Single-threaded on purpose. Capybara's puma server defaults to Threads: '0:4', and
+# use_transactional_fixtures shares one connection across threads (lock_thread), so a
+# request served by a second puma thread leaves that connection owned by it -- teardown
+# then raises "Cannot expire connection, it is owned by a different thread" and poisons
+# the following examples. Rails pins its own system-test server the same way.
+Capybara.server = :puma, { Silent: true, Threads: '0:1' } # Silent cleans up test output
 
 # Normalize whitespaces
 Capybara.default_normalize_ws = true
