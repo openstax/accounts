@@ -5,7 +5,6 @@ module Newflow
 
   feature 'Educator signup flow', js: true do
 
-    background { load 'db/seeds.rb' }
     before(:each) { turn_on_educator_feature_flag }
 
     let(:first_name) { Faker::Name.first_name  }

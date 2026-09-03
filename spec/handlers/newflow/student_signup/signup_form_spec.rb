@@ -4,13 +4,6 @@ module Newflow
   module StudentSignup
     describe SignupForm, type: :handler do
       context 'when success' do
-        before(:all) do
-          DatabaseCleaner.start
-          load('db/seeds.rb')
-        end
-
-        after(:all) { DatabaseCleaner.clean }
-
         let(:handler_call) do
           described_class.call(params: params)
         end

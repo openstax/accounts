@@ -3,10 +3,7 @@ require 'vcr_helper'
 require 'byebug'
 module Newflow
   feature 'Student signup flow', js: true, vcr: VCR_OPTS do
-     before do
-      load 'db/seeds.rb'
-      turn_on_student_feature_flag
-    end
+     before { turn_on_student_feature_flag }
 
     before(:all) do
       VCR.use_cassette('Newflow/Students/student_signup_flow/sf_setup', VCR_OPTS) do
