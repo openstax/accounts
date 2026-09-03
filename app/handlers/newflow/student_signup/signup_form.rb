@@ -39,7 +39,7 @@ module Newflow
 
         outputs.email = signup_params.email.squish!
 
-        if EmailAddress.claimed?(signup_params.email.squish!)
+        if EmailAddress.claimed?(outputs.email)
           fatal_error(
             code: :email_taken,
             message: I18n.t(:"login_signup_form.email_address_taken"),
