@@ -15,4 +15,15 @@
   )
 %>
 
-<%= render partial: 'newflow/switch_role_link', locals: { target: 'student' } %>
+<%= render partial: 'newflow/signup_alternatives', locals: {
+      heading: I18n.t(:"login_signup_form.alternatives_heading"),
+      actions: [
+        {
+          label: I18n.t(:"login_signup_form.switch_role_student"),
+          description: I18n.t(:"login_signup_form.switch_role_student_description"),
+          path: switch_signup_role_path,
+          method: :post,
+          ga_label: 'switch-to-student'
+        }
+      ]
+    } %>

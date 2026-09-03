@@ -45,16 +45,26 @@ module Newflow
       expect(SecurityLog.where(event_type: :no_salesforce_lead_to_update).count).to eq(1)
     end
 
-    it 'raises on a salesforce outage rather than discarding a known lead id' do
+    it 'keeps a known lead id when salesforce cannot be reached' do
       allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_raise(StandardError)
       allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_raise(StandardError, 'timeout')
       expect_any_instance_of(CreateOrUpdateSalesforceLead).not_to receive(:exec)
-
       expect(Sentry).to receive(:capture_message).with(/lead lookup failed/)
 
-      expect { described_class.call(user: user) }.to raise_error(StandardError, 'timeout')
+      expect { described_class.call(user: user) }.not_to raise_error
 
       expect(user.reload.salesforce_lead_id).to eq('SF_LEAD_123')
+      expect(SecurityLog.where(event_type: :no_salesforce_lead_to_update).count).to eq(0)
+    end
+
+    it 'swallows a failure while pushing the lead' do
+      allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_return(lead)
+      allow_any_instance_of(CreateOrUpdateSalesforceLead).to receive(:exec).and_raise(StandardError, 'boom')
+      expect(Sentry).to receive(:capture_message).with(/lead update failed/)
+
+      expect { described_class.call(user: user) }.not_to raise_error
+
+      expect(SecurityLog.where(event_type: :updated_salesforce_lead_after_role_switch).count).to eq(0)
     end
 
     it 'does not claim success when salesforce rejects the write' do

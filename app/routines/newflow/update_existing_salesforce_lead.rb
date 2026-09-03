@@ -11,6 +11,13 @@ module Newflow
     # it is the only record of how often people pick the wrong role and who they are --
     # but one is never created here: a user who never reached SheerID has nothing in
     # Salesforce to correct, and students aren't leads in their own right.
+    #
+    # Nothing Salesforce does may escape this routine. `Delayed::Worker.delay_jobs` is
+    # only true in production, so everywhere else `perform_later` runs inline inside
+    # the request and inside SwitchSignupRole's transaction -- an escaping error would
+    # 500 the switch and roll back the role change, breaking the very fix the user
+    # clicked. A missed update self-heals: UpdateUserLeadInfo reconciles lead ids and
+    # statuses nightly.
     def exec(user:)
       return unless user
 
@@ -18,6 +25,10 @@ module Newflow
       status.set_job_args(user: user.to_global_id.to_s)
 
       lead = find_lead(user)
+
+      # nil means Salesforce answered and has no lead; :unknown means it didn't answer,
+      # and discarding a known association on that basis would lose data.
+      return if lead == :unknown
 
       if lead.nil?
         user.update(salesforce_lead_id: nil) if user.salesforce_lead_id.present?
@@ -29,9 +40,9 @@ module Newflow
       # rather than searching again and risking a different match.
       user.update(salesforce_lead_id: lead.id) unless user.salesforce_lead_id == lead.id
 
-      # CreateOrUpdateSalesforceLead returns normally on a rejected write (it only
-      # logs salesforce_lead_save_failed), so check before claiming success.
-      return unless run(CreateOrUpdateSalesforceLead, user: user).outputs.lead_saved
+      # It returns normally on a rejected write (it only logs salesforce_lead_save_failed),
+      # so check before claiming success.
+      return unless push_lead(user)
 
       SecurityLog.create!(
         user: user,
@@ -44,22 +55,22 @@ module Newflow
 
     private ###################
 
+    def push_lead(user)
+      run(CreateOrUpdateSalesforceLead, user: user).outputs.lead_saved
+    rescue StandardError => e
+      report(user, 'lead update failed', e)
+      false
+    end
+
     # Mirrors the lookup order in CreateOrUpdateSalesforceLead, which can find and
     # adopt a lead this user's own signup didn't create.
-    #
-    # Re-raises rather than returning nil: an outage must not be read as "no lead",
-    # which would clear a known salesforce_lead_id. Raising lets the job retry.
     def find_lead(user)
       lead_by_id(user) ||
         OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid) ||
         lead_by_email(user)
     rescue StandardError => e
-      # Sentry rather than SecurityLog: raising rolls back the routine's transaction,
-      # so a log row written here would vanish. An outage isn't an account event anyway.
-      Sentry.capture_message(
-        "Salesforce lead lookup failed for user #{user.id}: #{e.class.name}: #{e.message}"
-      )
-      raise
+      report(user, 'lead lookup failed', e)
+      :unknown
     end
 
     def lead_by_id(user)
@@ -75,6 +86,14 @@ module Newflow
       return if email.blank?
 
       OpenStax::Salesforce::Remote::Lead.find_by(email: email)
+    end
+
+    # Sentry rather than SecurityLog: this runs inside the caller's transaction, which
+    # may roll back, and an unreachable Salesforce isn't an account-audit event.
+    def report(user, what, error)
+      Sentry.capture_message(
+        "Salesforce #{what} for user #{user.id}: #{error.class.name}: #{error.message}"
+      )
     end
   end
 end

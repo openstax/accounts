@@ -9,6 +9,27 @@
           id: 'signup-page',
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 3, total_steps: 4),
           classes: 'signup-page') do %>
+
+        <%= render partial: 'newflow/signup_alternatives', locals: {
+              heading: I18n.t(:"login_signup_form.alternatives_heading"),
+              actions: [
+                {
+                  label: I18n.t(:"login_signup_form.alternative_manual_verification"),
+                  description: I18n.t(:"login_signup_form.alternative_manual_verification_description"),
+                  path: educator_profile_form_path(school: 'unknown'),
+                  method: :get,
+                  ga_label: 'skip-instant-verification'
+                },
+                {
+                  label: I18n.t(:"login_signup_form.switch_role_student"),
+                  description: I18n.t(:"login_signup_form.switch_role_student_description"),
+                  path: switch_signup_role_path,
+                  method: :post,
+                  ga_label: 'switch-to-student'
+                }
+              ]
+            } %>
+
         <form>
           <div class="content control-group">
             <iframe
@@ -19,16 +40,6 @@
             </iframe>
           </div>
         </form>
-
     <% end %>
-    <br><br>
-    <div>
-      <%= link_to "Stuck? Click here to skip instant verification.",
-                educator_profile_form_url(:school => 'unknown'),
-                class: 'btn small',
-                style: 'background-color: #002469; color: #fff; width: 100%' %>
-    </div>
-
-    <%= render partial: 'newflow/switch_role_link', locals: { target: 'student' } %>
   </div>
 </div>

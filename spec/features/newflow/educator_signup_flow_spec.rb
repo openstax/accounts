@@ -301,7 +301,7 @@ module Newflow
 
         # Step 3
         expect_sheerid_iframe
-        click_on('Stuck? Click here to skip instant verification.')
+        click_on(t(:"login_signup_form.alternative_manual_verification"))
 
         # Step 4
         expect_educator_step_4_page

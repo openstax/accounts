@@ -573,23 +573,19 @@ input.has-error {
     iframe {
         position: relative;
         z-index: 0;
-        margin-top: -6.7rem;
-    }
-
-    form, iframe {
-        min-height: 100rem !important;
+        min-height: 100rem;
     }
 
     @include width-up-to($phone-max) {
-        form, iframe {
-            height: 117rem !important;
+        iframe {
+            height: 117rem;
             overflow-y: visible;
         }
     }
 
     @include wider-than($phone-max) {
-        form, iframe {
-            height: 80rem !important;
+        iframe {
+            height: 80rem;
         }
     }
 }
@@ -1399,26 +1395,142 @@ $very-narrow: 37rem * $scale-factor;
   }
 }
 
-.switch-role {
-    max-width: 55.5rem;
-    margin: 2rem auto 4rem;
-    padding: 0 2rem;
-    text-align: center;
+// Escape hatches shared across the signup funnel: one visual vocabulary for
+// "this step isn't working for me" wherever it appears.
+.signup-alternatives {
+    // This stylesheet has no global border-box reset, so every padded/bordered
+    // box here sets its own or overflows its column.
+    box-sizing: border-box;
+    // Matches the signup card, since this block also renders outside
+    // #login-signup-form (signup_done), where nothing else constrains it.
+    max-width: 75rem;
+    margin: 1.5rem auto 2.5rem;
+    padding: 2rem;
+    border: 1px solid var(--very-light-pink);
+    border-radius: 5px;
+    background-color: var(--white-two);
+    text-align: left;
 
-    .switch-role__description {
+    .signup-alternatives__heading {
+        margin: 0 0 1.6rem;
+        color: #002E6D;
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 2rem;
+    }
+
+    .signup-alternatives__options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    // Flex column, not the default list-item flow: an inline-flex action inside a
+    // list-item picks up line-box leading, which offset the two actions from each
+    // other and pushed their descriptions off a shared baseline.
+    .signup-alternatives__option {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 24rem;
+        min-width: 0;
+        margin: 0;
+
+        // A lone action shouldn't stretch the full card width.
+        &:only-child {
+            max-width: 34rem;
+        }
+    }
+
+    // The global `form, .form` rule paints a white 80rem card with 4rem of padding.
+    // button_to's wrapper has to opt out of it wherever this block renders.
+    .signup-alternatives__form {
+        display: block;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        row-gap: 0;
+        background: none;
+        height: auto;
+        min-height: 0;
+    }
+
+    .signup-alternatives__action {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        // Fits two wrapped lines at the narrowest column, so both actions are the
+        // same height and their descriptions start on the same baseline.
+        min-height: 5.6rem;
+        padding: 0.8rem 1.6rem;
+        border: 1px solid #002E6D;
+        border-radius: 5px;
+        background-color: var(--white);
+        color: #002E6D;
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 2rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.15s ease-out, color 0.15s ease-out;
+
+        &:hover,
+        &:focus {
+            background-color: #002E6D;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        &:focus-visible {
+            outline: 2px solid #026AA1;
+            outline-offset: 2px;
+        }
+
+        &:active {
+            background-color: #001E48;
+            color: var(--white);
+        }
+    }
+
+    .signup-alternatives__description {
+        // A global p rule adds padding-left; the description has to line up with
+        // the action above it.
+        margin: 0.8rem 0 0;
+        padding: 0;
         color: var(--greyish-brown);
         font-size: 1.4rem;
-        line-height: 1.5;
-        margin-bottom: 1rem;
+        line-height: 1.9rem;
     }
 
-    .switch-role__button {
-        background: none;
-        border: none;
-        padding: 0;
-        color: #0064c8;
-        font-size: 1.4rem;
-        text-decoration: underline;
-        cursor: pointer;
+    @media (prefers-reduced-motion: reduce) {
+        .signup-alternatives__action {
+            transition: none;
+        }
     }
+}
+
+// #login-signup-form [type="submit"] sets a min-width and vertical margins for the
+// card's primary submit, some of it inside media queries and all of it at ID
+// specificity. The link and button_to variants of this action have to stay
+// interchangeable, so opt out at matching specificity.
+#login-signup-form .signup-alternatives__action {
+    min-width: 0;
+    margin: 0;
+}
+
+#login-signup-form .signup-alternatives__form {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    row-gap: 0;
+    height: auto;
+    min-height: 0;
 }

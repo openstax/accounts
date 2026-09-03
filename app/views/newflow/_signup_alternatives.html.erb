@@ -1,0 +1,34 @@
+<div class="signup-alternatives">
+  <h2 class="signup-alternatives__heading"><%= heading %></h2>
+
+  <ul class="signup-alternatives__options">
+    <% actions.each do |action| %>
+      <li class="signup-alternatives__option">
+        <% if action[:method] == :post %>
+          <%= button_to(
+                action[:path],
+                class: 'signup-alternatives__action',
+                form_class: 'signup-alternatives__form',
+                data: {
+                  'ga-category': 'Account Creation',
+                  'ga-action': 'Click',
+                  'ga-label': action[:ga_label]
+                }
+              ) do %><%= action[:label] %><% end %>
+        <% else %>
+          <%= link_to(
+                action[:label],
+                action[:path],
+                class: 'signup-alternatives__action',
+                data: {
+                  'ga-category': 'Account Creation',
+                  'ga-action': 'Click',
+                  'ga-label': action[:ga_label]
+                }
+              ) %>
+        <% end %>
+        <p class="signup-alternatives__description"><%= action[:description] %></p>
+      </li>
+    <% end %>
+  </ul>
+</div>
