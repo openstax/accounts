@@ -288,8 +288,10 @@ group :test do
   # Run feature tests with Capybara + Selenium; choose which driver gems to use
   # based on test environment.
   gem 'capybara'
-  gem 'selenium-webdriver', require: false
-  gem 'webdrivers', require: false
+  # >= 4.11 for Selenium Manager, which resolves chromedriver itself. This replaced
+  # the webdrivers gem, which pinned selenium-webdriver < 4.11 and downloaded drivers
+  # from an endpoint Google retired for Chrome >= 115.
+  gem 'selenium-webdriver', '>= 4.11', require: false
 
   # Testing emails
   gem 'capybara-email'

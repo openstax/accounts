@@ -30,6 +30,12 @@ end
 """
   Config for Capybara
 """
+# selenium-webdriver is `require: false` in the Gemfile so non-feature runs don't pay
+# for it; feature specs need it in every environment. Selenium Manager (>= 4.11)
+# resolves a matching chromedriver on demand, which is what replaced the webdrivers
+# gem and its networked `Chromedriver.update` behind a shared lockfile.
+require 'selenium-webdriver'
+
 # Chrome's built-in password manager will, after the first successful password
 # submission in a browser session, start offering to save/autofill credentials on
 # that origin. In our headless test runs this silently intercepts the next login
@@ -66,29 +72,21 @@ Capybara.register_driver :selenium_chrome_headless do |app|
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
 
-# The webdrivers gem uses selenium-webdriver.  Our docker approach needs selenium-webdriver
-# but gets upset if webdriver is loaded.  So in the Gemfile, we `require: false` both of
-# these and explicitly require them based on where we're running.  We also only register
-# the docker flavor of the driver if we are indeed running in docker.
-
 CAPYBARA_PROTOCOL = DEV_PROTOCOL
 CAPYBARA_PORT = ENV.fetch('PORT', DEV_PORT)
 
 if in_docker?
-  require 'selenium-webdriver'
-
   Capybara.register_driver :selenium_chrome_headless_in_docker do |app|
-      chrome_capabilities = ::Selenium::WebDriver::Remote::Capabilities.chrome(
-        'goog:chromeOptions' => {
-          'args': %w[no-sandbox headless disable-gpu],
-          'prefs': CHROME_TEST_PREFS
-        }
+      # `options:`, not the `desired_capabilities:` selenium 4 dropped.
+      options = Selenium::WebDriver::Chrome::Options.new(
+        args: %w[no-sandbox headless disable-gpu]
       )
+      CHROME_TEST_PREFS.each { |name, value| options.add_preference(name, value) }
 
       Capybara::Selenium::Driver.new(app,
                                      browser: :remote,
                                      url: ENV['HUB_URL'],
-                                     desired_capabilities: chrome_capabilities)
+                                     options: options)
   end
 
   Capybara.javascript_driver = :selenium_chrome_headless_in_docker
@@ -101,26 +99,6 @@ if in_docker?
   Capybara.server_host = CAPYBARA_HOST
   Capybara.server_port = CAPYBARA_PORT
 else
-  require 'webdrivers/chromedriver'
-
-  # Use a lockfile so we don't get errors due to downloading webdrivers multiple times concurrently
-  File.open('.webdrivers_update', File::RDWR|File::CREAT, 0640) do |file|
-    file.flock File::LOCK_EX
-    update_time = Time.parse(file.read) rescue nil
-    current_time = Time.current
-
-    if update_time.nil? || current_time - update_time > 60
-      Webdrivers::Chromedriver.update
-
-      file.rewind
-      file.write current_time.iso8601
-      file.flush
-      file.truncate file.pos
-    end
-  ensure
-    file.flock File::LOCK_UN
-  end
-
   if EnvUtilities.load_boolean(name: 'HEADLESS', default: true)
     # Run the feature specs in a full browser (note, this takes over your computer's focus)
     Capybara.javascript_driver = :selenium_chrome_headless
