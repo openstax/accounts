@@ -36,23 +36,12 @@ module Newflow
       request.original_fullpath.include? 'cs_form'
     end
 
-    # `installType` + `verificationIframeUid` are what make SheerID's form post
-    # `updateHeight` messages back to us, which is the only way to size the
-    # iframe to its content -- see newflow/sheerid_iframe.js.
-    #
-    # No name or email here on purpose. A program verification URL ignores
-    # prefill query params (the form comes up empty), so sending them only put
-    # the user's email into a third-party URL for nothing. Prefill goes over
-    # postMessage instead, which is the mechanism this form actually honours.
-    def generate_sheer_id_url(iframe_uid: nil)
-      url = standard_parse_url(Settings::SheerId.verification_url)
-      url.query_values = (url.query_values || {}).merge(
-        installType: 'cdn_inline_iframe',
-        # Path only: this page's query string can carry `r`, `sp` and
-        # `client_id`, and none of that is SheerID's business.
-        installPageUrl: "#{request.base_url}#{request.path}"
-      ).merge(
-        iframe_uid.present? ? { verificationIframeUid: iframe_uid } : {}
+    def generate_sheer_id_url(user:)
+      url = standard_parse_url(Settings::Db.store.sheer_id_base_url)
+      url.query_values = url.query_values.merge(
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email_addresses.first&.value
       )
       url.to_s
     end

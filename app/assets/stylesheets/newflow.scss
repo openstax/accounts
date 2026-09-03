@@ -570,20 +570,14 @@ input.has-error {
         z-index: 100;
     }
 
-    // newflow/sheerid_iframe.js sets the real height from SheerID's own
-    // `updateHeight` message and clears this floor. The floor only has to cover
-    // the moment before the first message arrives -- and the case where the
-    // script never runs at all, which is why it stays generous enough for the
-    // tallest form rather than tuned to one. Do not turn it back into a fixed
-    // `height`: that is what left ~20rem of dead space under a form measuring
-    // 96rem at this width.
+    // The frame is a fixed box: SheerID's hosted offers page never reports its
+    // content height. 100rem is what has always shipped; do not tune it down
+    // without measuring at the card's real inner width (~55rem), where the form
+    // is considerably taller than it looks at full width.
     iframe {
         position: relative;
         z-index: 0;
-        // Above the tallest step measured on the current program (105.7rem), so
-        // a visitor without JS still gets the whole form rather than a clipped
-        // submit button.
-        min-height: 110rem;
+        min-height: 100rem;
     }
 
     @include width-up-to($phone-max) {

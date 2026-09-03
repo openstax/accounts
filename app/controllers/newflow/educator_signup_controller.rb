@@ -121,9 +121,7 @@ module Newflow
     end
 
     def educator_sheerid_form
-      @sheerid_iframe_uid = SecureRandom.hex(8)
-      @sheerid_url = generate_sheer_id_url(iframe_uid: @sheerid_iframe_uid)
-      @sheerid_origin = Settings::SheerId.origin
+      @sheerid_url = generate_sheer_id_url(user: current_user)
       log_posthog(current_user, 'educator_view_sheer_id_form')
       security_log(:user_viewed_sheerid_form, user: current_user)
     end
