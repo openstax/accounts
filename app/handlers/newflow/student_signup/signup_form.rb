@@ -39,7 +39,7 @@ module Newflow
 
         outputs.email = signup_params.email.squish!
 
-        if LookupUsers.by_verified_email(signup_params.email.squish!).first
+        if EmailAddress.claimed?(signup_params.email.squish!)
           fatal_error(
             code: :email_taken,
             message: I18n.t(:"login_signup_form.email_address_taken"),

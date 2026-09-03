@@ -55,6 +55,8 @@ Business logic is not written directly in controllers — it uses [Lev](https://
 ### Account creation paths
 A `User` is created via one of: direct signup (`newflow_signup_path`), signed params (`sp`/`authenticate_user!`, used for LMS-driven logins from Tutor), OAuth authorization (`/oauth/authorize`, Doorkeeper), the API (`POST /user/find-or-create`), or an admin rake import (`lib/tasks/accounts/import_users.rake`). Signup produces a `User`, an `Authentication` (login method), optionally an `Identity` (password), an optional `ApplicationUser` (association to the OAuth app that created the user), and a `ContactInfo` (email).
 
+**Gate email availability with `EmailAddress.claimed?`, never `LookupUsers.by_verified_email`.** `ContactInfo`'s uniqueness validation is case-insensitive and ignores `verified`, so an abandoned unverified signup holds an address as firmly as a finished account. Any check that gates on verified-only lets the request through to `CreateEmailForUser`, where the validation rejects it with Rails' raw "has already been taken" — and since password reset couldn't see the account either, the address became permanently unusable (support case 00128408). `claimed?` mirrors the validation exactly; pass `excluding_user_id:` wherever the user may legitimately retype their own address (changing a signup email, confirming OAuth info, external credentials).
+
 ### OAuth / Doorkeeper
 `config/initializers/doorkeeper.rb` and `config/initializers/doorkeeper_models.rb` wire Doorkeeper into the User/ApplicationUser models. Trusted `oauth_applications` skip the authorization screen. `FindOrCreateApplicationUser` associates users with the app that created them; non-trusted apps may only manage their own users.
 
