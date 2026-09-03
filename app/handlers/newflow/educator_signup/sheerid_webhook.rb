@@ -64,6 +64,20 @@ module Newflow
         # update the security log and the user to say we got the webhook - we use this in lead processing
         SecurityLog.create!(event_type: :sheerid_webhook_received, user: user)
 
+        # The user switched to a student account while this verification was in flight.
+        # Applying it would re-attach the educator fields SwitchSignupRole just cleared,
+        # and a 'success' step would strand them as confirmed_faculty -- which
+        # SwitchSignupRole then refuses to undo. Record it and return 200 so SheerID
+        # doesn't retry.
+        if user.student?
+          SecurityLog.create!(
+            event_type: :sheerid_webhook_ignored_after_role_switch,
+            user: user,
+            event_data: { verification_id: verification_id, current_step: verification.current_step }
+          )
+          return
+        end
+
         # Set the user's sheerid_verification_id only if they didn't already have one  we don't want to overwrite the approved one
         if verification_id.present? && user.sheerid_verification_id.blank? && user.sheerid_verification_id != verification_id
           user.update!(sheerid_verification_id: verification_id)

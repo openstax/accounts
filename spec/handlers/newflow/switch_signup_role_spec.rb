@@ -78,6 +78,27 @@ module Newflow
       expect(user.reload.role).to eq('instructor')
     end
 
+    it 'refuses accounts created outside the signup funnel' do
+      user = FactoryBot.create(:user, role: User::UNKNOWN_ROLE)
+
+      result = described_class.call(user: user)
+
+      expect(result.errors.map(&:code)).to eq([:role_not_switchable])
+      expect(user.reload.role).to eq('unknown_role')
+    end
+
+    it 'switches an educator who picked a step 4 role other than instructor' do
+      user = FactoryBot.create(
+        :user, role: User::LIBRARIAN_ROLE, faculty_status: User::PENDING_FACULTY
+      )
+      allow(UpdateExistingSalesforceLead).to receive(:perform_later)
+
+      result = described_class.call(user: user)
+
+      expect(result.errors).to be_empty
+      expect(user.reload.role).to eq('student')
+    end
+
     it 'errors when there is no signup in progress' do
       result = described_class.call(user: nil)
 

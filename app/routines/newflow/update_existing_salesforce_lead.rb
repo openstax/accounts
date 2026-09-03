@@ -29,7 +29,9 @@ module Newflow
       # rather than searching again and risking a different match.
       user.update(salesforce_lead_id: lead.id) unless user.salesforce_lead_id == lead.id
 
-      run(CreateOrUpdateSalesforceLead, user: user)
+      # CreateOrUpdateSalesforceLead returns normally on a rejected write (it only
+      # logs salesforce_lead_save_failed), so check before claiming success.
+      return unless run(CreateOrUpdateSalesforceLead, user: user).outputs.lead_saved
 
       SecurityLog.create!(
         user: user,
@@ -44,20 +46,20 @@ module Newflow
 
     # Mirrors the lookup order in CreateOrUpdateSalesforceLead, which can find and
     # adopt a lead this user's own signup didn't create.
+    #
+    # Re-raises rather than returning nil: an outage must not be read as "no lead",
+    # which would clear a known salesforce_lead_id. Raising lets the job retry.
     def find_lead(user)
       lead_by_id(user) ||
         OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid) ||
         lead_by_email(user)
     rescue StandardError => e
-      SecurityLog.create!(
-        user: user,
-        event_type: :salesforce_lead_lookup_failed,
-        event_data: { error: e.class.name, error_message: e.message }
-      )
+      # Sentry rather than SecurityLog: raising rolls back the routine's transaction,
+      # so a log row written here would vanish. An outage isn't an account event anyway.
       Sentry.capture_message(
         "Salesforce lead lookup failed for user #{user.id}: #{e.class.name}: #{e.message}"
       )
-      nil
+      raise
     end
 
     def lead_by_id(user)

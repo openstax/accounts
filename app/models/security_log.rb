@@ -117,7 +117,7 @@ class SecurityLog < ApplicationRecord
     user_switched_signup_role
     updated_salesforce_lead_after_role_switch
     no_salesforce_lead_to_update
-    salesforce_lead_lookup_failed
+    sheerid_webhook_ignored_after_role_switch
   ]
 
   json_serialize :event_data, Hash

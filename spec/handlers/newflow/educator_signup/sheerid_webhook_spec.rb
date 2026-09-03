@@ -37,6 +37,34 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
   #   end
   # end
 
+  context "user who has since switched to a student account" do
+    before do
+      allow(SheeridAPI).to receive(:get_verification_details).with(
+        verification.verification_id
+      ).and_return(verification_details)
+
+      user.update!(role: User::STUDENT_ROLE, faculty_status: User::REJECTED_FACULTY)
+    end
+
+    it "ignores the verification instead of re-attaching educator fields" do
+      described_class.call(params: { 'verificationId' => verification.verification_id })
+
+      user.reload
+      expect(user.role).to eq('student')
+      expect(user.faculty_status).to eq(User::REJECTED_FACULTY)
+      expect(user.sheerid_verification_id).to be_nil
+      expect(
+        SecurityLog.where(event_type: :sheerid_webhook_ignored_after_role_switch).count
+      ).to eq(1)
+    end
+
+    it "does not push a lead off the educator path" do
+      expect(Newflow::CreateOrUpdateSalesforceLead).not_to receive(:perform_later)
+
+      described_class.call(params: { 'verificationId' => verification.verification_id })
+    end
+  end
+
   context "user with verified verification" do
     before do
       num_calls = verification.verified? ? :twice : :once

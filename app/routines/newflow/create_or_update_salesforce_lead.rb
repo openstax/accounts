@@ -239,6 +239,7 @@ module Newflow
       end
 
       outputs.lead = lead
+      outputs.lead_saved = saved
       outputs.user = user
     end
 

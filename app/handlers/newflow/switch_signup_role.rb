@@ -37,6 +37,12 @@ module Newflow
       # They already passed verification; a stray click shouldn't undo that.
       fatal_error(code: :already_verified_faculty) if user.confirmed_faculty?
 
+      # Every other role in VALID_ROLES is an educator role that step 4 can assign,
+      # so those are legitimately switchable. unknown_role is not: it belongs to
+      # accounts created outside signup (API, LMS, OAuth), which have no funnel to
+      # switch within.
+      fatal_error(code: :role_not_switchable) if user.unknown_role?
+
       role_was = user.role
       outputs.switched_to = user.student? ? :educator : :student
 

@@ -12,7 +12,10 @@ module Newflow
 
     it 'hands the existing lead to CreateOrUpdateSalesforceLead so the role is corrected' do
       allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_return(lead)
-      expect_any_instance_of(CreateOrUpdateSalesforceLead).to receive(:exec).with(hash_including(user: user))
+      expect_any_instance_of(CreateOrUpdateSalesforceLead).to receive(:exec) do |routine, **kwargs|
+        expect(kwargs[:user]).to eq(user)
+        routine.send(:outputs).lead_saved = true
+      end
 
       described_class.call(user: user)
 
@@ -24,7 +27,7 @@ module Newflow
       allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_raise(StandardError)
       allow(lead).to receive(:id).and_return('SF_LEAD_FROM_UUID')
       allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(lead)
-      allow_any_instance_of(CreateOrUpdateSalesforceLead).to receive(:exec)
+      allow_any_instance_of(CreateOrUpdateSalesforceLead).to receive(:exec) { |r, **_| r.send(:outputs).lead_saved = true }
 
       described_class.call(user: user)
 
@@ -42,14 +45,25 @@ module Newflow
       expect(SecurityLog.where(event_type: :no_salesforce_lead_to_update).count).to eq(1)
     end
 
-    it 'gives up quietly when salesforce is unreachable' do
+    it 'raises on a salesforce outage rather than discarding a known lead id' do
       allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_raise(StandardError)
       allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_raise(StandardError, 'timeout')
       expect_any_instance_of(CreateOrUpdateSalesforceLead).not_to receive(:exec)
 
+      expect(Sentry).to receive(:capture_message).with(/lead lookup failed/)
+
+      expect { described_class.call(user: user) }.to raise_error(StandardError, 'timeout')
+
+      expect(user.reload.salesforce_lead_id).to eq('SF_LEAD_123')
+    end
+
+    it 'does not claim success when salesforce rejects the write' do
+      allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_return(lead)
+      allow_any_instance_of(CreateOrUpdateSalesforceLead).to receive(:exec) { |r, **_| r.send(:outputs).lead_saved = false }
+
       described_class.call(user: user)
 
-      expect(SecurityLog.where(event_type: :salesforce_lead_lookup_failed).count).to eq(1)
+      expect(SecurityLog.where(event_type: :updated_salesforce_lead_after_role_switch).count).to eq(0)
     end
   end
 end
