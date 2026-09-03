@@ -66,6 +66,61 @@ Switching *away* from educator resets every column the educator flow wrote (the 
 
 Both signup escape hatches — "Verify another way" (the manual CS path) and "Switch to a student/educator account" — render from one component, `newflow/_signup_alternatives`, which takes a `heading` and an `actions` array (`label`, `description`, `path`, `method`, `ga_label`). On the SheerID step it sits **above** the iframe: that frame is pinned at 80rem (117rem on phones) and we don't control SheerID's content height, so anything below it is effectively invisible.
 
+### SheerID instructor verification (step 3)
+The step-3 iframe loads a **program verification URL** built by
+`Settings::SheerId` (`https://services.sheerid.com/verify/<programId>/`). The
+program id is not a secret -- it ships in the iframe URL -- so it is a
+checked-in constant with a `SHEERID_PROGRAM_ID` env override, not a row in the
+admin settings store. The old admin-editable `sheer_id_base_url` field is gone.
+
+**The frame sizes itself.** SheerID posts `updateHeight` messages and
+`newflow/sheerid_iframe.js` applies them, clearing the CSS `min-height` floor as
+it does. Two things this depends on, both easy to break:
+- The URL must carry `installType=cdn_inline_iframe` and a
+  `verificationIframeUid` matching the iframe's `data-sheerid-uid`. Without
+  them no height is reported.
+- Only a program verification URL speaks this protocol. A hosted
+  `offers.sheerid.com` page renders the same form and never reports a height
+  (`updateHeight` appears nowhere in its bundle), which is what left the frame
+  pinned at a hardcoded size and ~20rem of dead space under it. Never restore a
+  fixed `height`; the floor exists only for the pre-message moment and the
+  no-JS case.
+
+We deliberately do **not** load SheerID's `sheerid-install.js`: it is ES-module
+only (older institutional browsers would get no iframe at all), it is a
+third-party script in the origin that handles passwords, and it copies every
+query param on the page into the third-party URL, which here would include `r`,
+`sp` and `client_id`. Its entire contribution to auto-height is the three lines
+we reimplemented.
+
+**Prefill goes over postMessage, not the URL.** A program verification URL
+ignores prefill query params, so name and email are passed as `data-sheerid-*`
+attributes and sent via `setViewModel` on `ON_VERIFICATION_READY`. Do not put
+them back in the URL: it leaked the user's email to a third party for nothing.
+
+**Don't assert on copy inside the frame.** Headings, button labels, the
+"can't find your school" hints and whether Country comes preselected are all
+Program Builder settings that differ per program, so `expect_sheerid_iframe`
+checks only that the form rendered and that our prefill reached it.
+
+### Escape hatches out of a signup step
+`newflow/_signup_alternatives` has two shapes. The default renders boxed
+actions, for pages where choosing an alternative *is* the job (`signup_done`).
+Passing `collapsible: true` renders a quiet `<details>`/`<summary>` disclosure
+for pages where it sits alongside a real task -- steps 3 and 4 and the
+pending-CS screen.
+
+The card is drawn in **slices**: `.step-counter`, `.page-header` and the body
+form each paint their own left/right rails, and nothing paints a shared
+container. A block placed between them must continue those rails or the card
+visibly comes apart into stacked boxes, and whichever slice ends the card must
+close it -- hence `.signup-alternatives--collapsible:last-child`. The card's
+form and submit chrome is painted at ID specificity, so the variant's layout
+opt-outs live under `#login-signup-form`; a class-only rule silently loses.
+
+Collapsed, the actions are invisible to Capybara: open the disclosure first,
+and note `click_on` will not match a `<summary>`.
+
 ### Signup view gotchas
 Three traps, all of which cost real debugging time:
 
