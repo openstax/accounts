@@ -106,8 +106,10 @@ module Newflow
 
       context 'when failure because a user with the given email address already exists' do
         before do
-          create_newflow_user(email)
+          create_newflow_user(email, 'password', nil, confirmation_code)
         end
+
+        let(:confirmation_code) { nil }
 
         let(:email) do
           Faker::Internet.email
@@ -137,6 +139,18 @@ module Newflow
         example do
           expect(handler_call.errors.first.message).to eq(I18n.t(:"login_signup_form.email_address_taken"))
           expect(handler_call.errors).to have_offending_input(:email)
+        end
+
+        # An abandoned signup holds the address as firmly as a finished account,
+        # and used to slip past this check into a raw uniqueness error the user
+        # could not act on.
+        context 'and that email is still unverified' do
+          let(:confirmation_code) { 'not-yet-confirmed' }
+
+          example do
+            expect(handler_call.errors.first.message).to eq(I18n.t(:"login_signup_form.email_address_taken"))
+            expect(handler_call.errors).to have_offending_input(:email)
+          end
         end
       end
 

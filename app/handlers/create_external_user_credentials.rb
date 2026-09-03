@@ -37,7 +37,7 @@ class CreateExternalUserCredentials
       code: :email_taken,
       message: I18n.t(:"login_signup_form.email_address_taken"),
       offending_inputs: :email
-    ) if LookupUsers.by_verified_email(signup_params.email.squish!).first
+    ) if EmailAddress.claimed?(outputs.email, excluding_user_id: caller.id)
 
     outputs.user.first_name = signup_params.first_name
     outputs.user.last_name = signup_params.last_name

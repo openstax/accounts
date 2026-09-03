@@ -63,10 +63,10 @@ class SendResetPasswordEmail
   # Login looks users up with the unfiltered `by_email_or_username`, but reset
   # historically used the verified-only `by_verified_email`, so an account with
   # an unverified email was findable at login yet invisible to reset. Try the
-  # verified lookup first (an activated user always gets a real reset email),
-  # then fall back to login's lookup -- but only surface the fallback when it's
-  # genuinely an unverified account, so accounts in other states keep the
-  # previous behaviour instead of silently resolving to an unsendable reset.
+  # verified lookup first (an account with a verified address always gets a real
+  # reset email), then fall back to login's lookup -- but only surface the
+  # fallback when we can actually send that account somewhere, rather than
+  # silently resolving to an unsendable reset.
   def find_user(email)
     verified_user = LookupUsers.by_verified_email(email).first
     return verified_user if verified_user.present?
@@ -81,8 +81,15 @@ class SendResetPasswordEmail
   # an account with nothing left to verify -- `ConfirmByPin` short-circuits on an
   # already-confirmed address, so sending those to the PIN form would accept any
   # PIN and sign the visitor in.
+  #
+  # The gate is "no verified address anywhere on the account", not `state ==
+  # unverified`: an address abandoned at the PIN screen years ago squats the
+  # address just as hard, whatever state its account happens to be in, and it is
+  # the accounts nobody has ever proven control of that need this door. Keying on
+  # verified addresses is also the stricter test -- it can never route someone
+  # into an account whose owner already confirmed an address.
   def unverified_email_address_for(user)
-    return if user.nil? || !user.unverified?
+    return if user.nil? || user.email_addresses.verified.any?
 
     addresses = user.email_addresses.unverified.to_a
     addresses.detect { |address| address.value.casecmp?(outputs.email.to_s) } || addresses.first
