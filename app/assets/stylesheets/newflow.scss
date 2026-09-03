@@ -616,6 +616,12 @@ input.has-error {
             padding: 1.6rem 2.9rem 2rem;
         }
 
+        // Slices only paint their own sides; whichever one ends the card has to
+        // close it.
+        &:last-child {
+            border-bottom: 0.1rem solid #d5d5d5;
+        }
+
         .signup-alternatives__form {
             display: inline;
             height: auto;

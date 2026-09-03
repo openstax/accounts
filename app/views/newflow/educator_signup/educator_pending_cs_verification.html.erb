@@ -11,11 +11,8 @@
     'newflow/signup/signup_done_template',
     header: header,
     description: description,
-    image: nil
-  )
-%>
-
-<%= render partial: 'newflow/signup_alternatives', locals: {
+    image: nil,
+    alternatives: {
       heading: I18n.t(:"login_signup_form.alternatives_heading"),
       actions: [
         {
@@ -26,4 +23,6 @@
           ga_label: 'switch-to-student'
         }
       ]
-    } %>
+    }
+  )
+%>
