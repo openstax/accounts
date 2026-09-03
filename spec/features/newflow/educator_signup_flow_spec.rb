@@ -306,6 +306,10 @@ module Newflow
 
         # Step 3
         expect_sheerid_iframe
+        # The escape hatches are collapsed so they don't outrank the verification
+        # form; open the disclosure the way a stuck user would. `click_on` only
+        # matches links and buttons, and <summary> is neither.
+        find('.signup-alternatives__summary').click
         click_on(t(:"login_signup_form.alternative_manual_verification"))
 
         # Step 4

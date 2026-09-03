@@ -36,6 +36,8 @@ end
 # gem and its networked `Chromedriver.update` behind a shared lockfile.
 require 'selenium-webdriver'
 
+CAPYBARA_WINDOW_SIZE = [1400, 1400].freeze
+
 # Chrome's built-in password manager will, after the first successful password
 # submission in a browser session, start offering to save/autofill credentials on
 # that origin. In our headless test runs this silently intercepts the next login
@@ -65,7 +67,11 @@ end
 Capybara.register_driver :selenium_chrome_headless do |app|
   options = Selenium::WebDriver::Chrome::Options.new args: [
     'no-sandbox', 'headless', 'disable-dev-shm-usage',
-    'disable-gpu', 'disable-extensions', 'disable-infobars'
+    'disable-gpu', 'disable-extensions', 'disable-infobars',
+    # Headless Chrome defaults to 800x600. The signup card alone is 75rem wide and
+    # these pages are long, so at the default size controls sit outside the viewport
+    # and Selenium reports them as not clickable.
+    "window-size=#{CAPYBARA_WINDOW_SIZE.join(',')}"
   ]
   CHROME_TEST_PREFS.each { |name, value| options.add_preference(name, value) }
 
@@ -123,6 +129,10 @@ Capybara.default_normalize_ws = true
 
 Capybara.configure do |config|
   config.default_max_wait_time = 15
+
+  # Injects CSS that zeroes transition/animation durations, so a click can't land
+  # while an element is still moving.
+  config.disable_animation = true
 end
 
 RSpec.configure do |config|

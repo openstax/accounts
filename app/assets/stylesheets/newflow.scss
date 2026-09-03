@@ -616,6 +616,34 @@ input.has-error {
         }
     }
 }
+
+// The card paints its form and submit chrome at ID specificity, so the
+// collapsible variant's class-only rules silently lose: one option is an <a>
+// and the other a button_to <button>, and the button kept a 5rem box that put
+// the two labels and their descriptions on different baselines. These are the
+// opt-outs that need to match that specificity; the visual styling stays with
+// the modifier.
+#login-signup-form {
+    .signup-alternatives--collapsible {
+        .signup-alternatives__form {
+            display: inline;
+            height: auto;
+            min-height: 0;
+        }
+
+        .signup-alternatives__action {
+            display: inline;
+            width: auto;
+            height: auto;
+            min-width: 0;
+            min-height: 0;
+            margin: 0;
+            padding: 0;
+            vertical-align: baseline;
+        }
+    }
+}
+
 // END per-page styles
 
 $very-narrow: 37rem * $scale-factor;
@@ -1582,24 +1610,10 @@ $very-narrow: 37rem * $scale-factor;
             flex-basis: 26rem;
         }
 
-        .signup-alternatives__form {
-            display: inline;
-        }
-
         // A text link, not a button: the action is a way out, not the next step.
-        // One option is an <a> and the other a button_to <button>, so the reset
-        // has to cover the margins and line box the UA and the global
-        // [type="submit"] rule give the button, or the two labels sit on
-        // different baselines.
         .signup-alternatives__action {
-            display: inline;
             color: #026AA1;
-            width: auto;
-            min-height: 0;
-            margin: 0;
-            padding: 0;
             border: 0;
-            vertical-align: baseline;
             border-radius: 0;
             background: none;
             font-family: inherit;
