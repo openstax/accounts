@@ -5,8 +5,14 @@ module Newflow
 
     # Everything the educator flow wrote onto the user, so a switched account
     # can't be bounced back into the verification queue by a stale flag.
+    #
+    # rejected_faculty rather than no_faculty_info: student role + a Salesforce lead
+    # + rejected_faculty is the established marker for "came through the educator
+    # funnel, isn't faculty" -- `UpdateUserLeadInfo` already skips that exact triple,
+    # and `UpdateUserContactInfo` won't downgrade it, so the marker survives both
+    # nightly syncs and stays countable in Salesforce.
     EDUCATOR_ARTIFACTS = {
-      faculty_status: User::NO_FACULTY_INFO,
+      faculty_status: User::REJECTED_FACULTY,
       sheerid_verification_id: nil,
       sheerid_reported_school: nil,
       is_sheerid_unviable: false,

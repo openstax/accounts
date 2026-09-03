@@ -26,7 +26,7 @@ module Newflow
 
         user.reload
         expect(user.role).to eq('student')
-        expect(user.faculty_status).to eq(User::NO_FACULTY_INFO)
+        expect(user.faculty_status).to eq(User::REJECTED_FACULTY)
         expect(user.sheerid_verification_id).to be_nil
         expect(user.sheerid_reported_school).to be_nil
         expect(user.is_sheerid_unviable).to eq(false)

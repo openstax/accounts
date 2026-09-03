@@ -54,24 +54,41 @@ module Newflow
     end
 
     describe 'a student' do
-      let(:student) do
-        FactoryBot.create(
-          :user, role: User::STUDENT_ROLE, faculty_status: User::NO_FACULTY_INFO,
-          is_profile_complete: false
-        )
-      end
-
-      it 'is never stamped with a faculty status' do
-        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: student.best_email_address_for_salesforce)
+      def push_lead_for(user)
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
         allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(mock_lead)
         allow(mock_lead).to receive(:save).and_return(true)
         allow(mock_lead).to receive(:id).and_return('SF_LEAD_STUDENT')
 
-        described_class.call(user: student)
+        described_class.call(user: user)
+        mock_lead
+      end
+
+      # An incomplete profile means "educator who hasn't finished signup", which a
+      # student never is. Recomputing would erase the marker set by SwitchSignupRole.
+      it 'keeps the rejected_faculty marker left by a role switch' do
+        switched = FactoryBot.create(
+          :user, role: User::STUDENT_ROLE, faculty_status: User::REJECTED_FACULTY,
+          is_profile_complete: false
+        )
+
+        lead = push_lead_for(switched)
+
+        expect(switched.reload.faculty_status).to eq(User::REJECTED_FACULTY)
+        expect(lead.role).to eq('Student')
+        expect(lead.verification_status).to eq(User::REJECTED_FACULTY)
+      end
+
+      it 'is never stamped with a faculty status it did not have' do
+        student = FactoryBot.create(
+          :user, role: User::STUDENT_ROLE, faculty_status: User::NO_FACULTY_INFO,
+          is_profile_complete: false
+        )
+
+        lead = push_lead_for(student)
 
         expect(student.reload.faculty_status).to eq(User::NO_FACULTY_INFO)
-        expect(mock_lead.role).to eq('Student')
-        expect(mock_lead.verification_status).to be_nil
+        expect(lead.verification_status).to be_nil
       end
     end
 
