@@ -26,7 +26,7 @@ rake spec:fast                          # excludes specs tagged speed:slow
 rake spec:slow                          # only specs tagged speed:slow
 RAISE=true rspec                        # don't rescue exceptions in feature specs (easier debugging)
 ```
-Feature specs use Selenium Manager (built into selenium-webdriver ≥ 4.11) to auto-manage chromedriver — no webdrivers gem or manual driver install; Chrome must be present. Use `bundle exec rspec` (bare `rspec` can hit a date-gem activation clash). Note: no specs currently carry the `speed:slow` tag, so `spec:slow` is a no-op and `spec:fast` runs everything.
+Feature specs still use the **`webdrivers` gem** (`spec/rails_helper.rb` requires `webdrivers/chromedriver` and calls `Webdrivers::Chromedriver.update` behind a `.webdrivers_update` lockfile). That gem pins `selenium-webdriver < 4.11`, so Selenium Manager is *not* in play; Chrome must be present. `webdrivers` 5.x resolves chromedriver through an endpoint Google retired for Chrome ≥ 115, so this is a live upgrade risk — moving to `selenium-webdriver ≥ 4.11` and deleting the gem is the fix. Use `bundle exec rspec` (bare `rspec` can hit a date-gem activation clash). Note: no specs currently carry the `speed:slow` tag, so `spec:slow` is a no-op and `spec:fast` runs everything.
 
 ### Background jobs
 Jobs run inline in development by default. To run them out-of-process, set `USE_REAL_BACKGROUND_JOBS=true` in `.env` and start the worker: `bin/rake jobs:work`.
@@ -102,6 +102,13 @@ The 2026 redesign (Claude Design project "Accounts Redesign") reshaped signup + 
 
 ### View gotcha: lev_form_for needs `<%=`
 `capture` falls back to a block's return value only when the output buffer is empty, so a bare `<% lev_form_for ... do %>` renders only while the form is the sole printed content in its capture scope — adding any sibling `<%= %>` silently drops the whole form (no error, empty <form>). Always use `<%= lev_form_for ... do %>`. Related: never write literal ERB delimiters inside an ERB comment — a `%​>` sequence in the comment text terminates the comment early and the rest renders/compiles as template code (this has caused a whole-page 500).
+
+### Test-suite gotchas worth knowing
+- **`config.order = :random` (`spec/spec_helper.rb`) is the detector, not the cause, of intermittent failures.** Pinning it would hide real order dependencies. Reproduce with the printed `--seed`.
+- **`perform_later` does not run inline in specs.** `ActiveJob::TestHelper` swaps in `TestAdapter`, so a job is only enqueued. Any spec asserting on a routine fired via `perform_later` must wrap the call in `perform_enqueued_jobs { ... }` or it passes vacuously.
+- **`Delayed::Worker.delay_jobs` is only true in production**, so in dev a `perform_later` routine runs inline in the request and inside the caller's transaction.
+- **DatabaseCleaner uses `:truncation` for `:js`/`:truncation` groups and `:transaction` otherwise** (`database_cleaner_strategy`). In a truncation group, `after(:each)` truncates every table and reloads `db/seeds.rb`, which destroys anything a `before(:all)` in that same group wrote to the DB. Create per-example (`let!`/`before(:each)`) in js specs. This whole setup predates Rails 5.1; `use_transactional_fixtures = true` now works with Selenium and would remove the hazard.
+- CI runs `WORKERS=4 bin/rake parallel:spec`, so specs must tolerate parallel workers with separate databases.
 
 ### Parallel test runs
 `config/database.yml` honors `OXA_DEV_DB`/`OXA_TEST_DB`. Concurrent rspec runs (multiple worktrees/agents) MUST each use a unique `OXA_TEST_DB=ox_accounts_test_<name>` (`rake db:create db:schema:load` first) — sharing the default test DB causes deadlocks and can corrupt `db/schema.rb` via out-of-sync `db:migrate` dumps. Feature specs disable Chrome's password manager in `spec/rails_helper.rb` (`CHROME_TEST_PREFS`); without it, the second login in a shared browser session silently loses its password field.

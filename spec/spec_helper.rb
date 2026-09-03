@@ -4,6 +4,11 @@
 # this file to always be loaded, without a need to explicitly require it in any
 # files.
 #
+# NOTE: unlike the generated comment above, `.rspec` here does NOT contain
+# `--require spec_helper`. This file is loaded by `spec/rails_helper.rb`, and it has
+# to stay that way: `config.include I18nMacros` below needs spec/support to have been
+# required first, which rails_helper does immediately before requiring this file.
+#
 # Given that it is always loaded, you are encouraged to keep this file as
 # light-weight as possible. Requiring heavyweight dependencies from this file
 # will add to the boot time of your test suite on EVERY test run, even for an
@@ -89,12 +94,10 @@ RSpec.configure do |config|
     load('db/seeds.rb') if database_cleaner_strategy == :truncation
   end
 
-  # These two settings work together to allow you to limit a spec run
-  # to individual examples or groups you care about by tagging them with
-  # `:focus` metadata. When nothing is tagged with `:focus`, all examples
-  # get run.
-  #config.filter_run :focus
-  config.run_all_when_everything_filtered = true
+  # Tag an example or group with `:focus` to run only that; when nothing is
+  # tagged, everything runs. Replaces the older filter_run/
+  # run_all_when_everything_filtered pair.
+  config.filter_run_when_matching :focus
 
   # Allows RSpec to persist some state between runs in order to support
   # the `--only-failures` and `--next-failure` CLI options. We recommend

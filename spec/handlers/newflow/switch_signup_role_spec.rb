@@ -41,15 +41,20 @@ module Newflow
         described_class.call(user: user)
       end
 
-      # Delayed::Worker.delay_jobs is only true in production, so everywhere else this
-      # runs inline inside this handler's transaction. Salesforce being down must not
-      # undo the switch.
+      # Delayed::Worker.delay_jobs is only true in production, so everywhere else the
+      # lead sync runs inline inside this handler's transaction. Salesforce being down
+      # must not undo the switch.
+      #
+      # perform_enqueued_jobs is required: ActiveJob::TestHelper swaps in the test
+      # adapter, so perform_later only enqueues and the routine would never run.
       it 'still switches the role when salesforce is unreachable' do
         allow(Sentry).to receive(:capture_message)
         allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).and_raise(StandardError, 'timeout')
         allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_raise(StandardError, 'timeout')
 
-        expect { described_class.call(user: user) }.not_to raise_error
+        expect {
+          perform_enqueued_jobs { described_class.call(user: user) }
+        }.not_to raise_error
 
         expect(user.reload.role).to eq('student')
         expect(user.faculty_status).to eq(User::REJECTED_FACULTY)

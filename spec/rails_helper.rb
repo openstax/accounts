@@ -30,9 +30,27 @@ end
 """
   Config for Capybara
 """
+# Chrome's built-in password manager will, after the first successful password
+# submission in a browser session, start offering to save/autofill credentials on
+# that origin. In our headless test runs this silently intercepts the next login
+# form's password field: Capybara's fill_in reports success, but Chrome's autofill
+# UI clears/overwrites the field a moment later, leaving it blank and the (JS-
+# disabled-until-filled) submit button stuck disabled. Since Capybara reuses one
+# browser process across many examples, this reliably breaks the *second and later*
+# login in a run -- not the first -- which is why it presented as sporadic flakiness
+# across unrelated specs (annual_check_in, pose_terms, student_signup_flow) rather
+# than a single reproducible failure. Disable the password manager/leak-detection
+# entirely for test runs.
+CHROME_TEST_PREFS = {
+  'credentials_enable_service' => false,
+  'profile.password_manager_enabled' => false,
+  'profile.password_manager_leak_detection' => false
+}.freeze
+
 # https://robots.thoughtbot.com/headless-feature-specs-with-chrome
 Capybara.register_driver :selenium_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new args: [ 'lang=en' ]
+  CHROME_TEST_PREFS.each { |name, value| options.add_preference(name, value) }
 
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
@@ -43,6 +61,7 @@ Capybara.register_driver :selenium_chrome_headless do |app|
     'no-sandbox', 'headless', 'disable-dev-shm-usage',
     'disable-gpu', 'disable-extensions', 'disable-infobars'
   ]
+  CHROME_TEST_PREFS.each { |name, value| options.add_preference(name, value) }
 
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
@@ -60,7 +79,10 @@ if in_docker?
 
   Capybara.register_driver :selenium_chrome_headless_in_docker do |app|
       chrome_capabilities = ::Selenium::WebDriver::Remote::Capabilities.chrome(
-        'goog:chromeOptions' => { 'args': %w[no-sandbox headless disable-gpu] }
+        'goog:chromeOptions' => {
+          'args': %w[no-sandbox headless disable-gpu],
+          'prefs': CHROME_TEST_PREFS
+        }
       )
 
       Capybara::Selenium::Driver.new(app,
@@ -107,10 +129,14 @@ else
   end
 
   CAPYBARA_HOST = DEV_HOST
-  CAPYBARA_HOST_REGEX = /\A(.*\.)?#{Regexp.escape CAPYBARA_HOST.sub('*.', '').chomp('.*')}\z/
 
   Capybara.asset_host = "#{CAPYBARA_PROTOCOL}://#{CAPYBARA_HOST}:#{CAPYBARA_PORT}"
 end
+
+# Defined outside the branches above: the before(:each) hook below references it for
+# every example, so leaving it in the non-docker branch made every example raise
+# NameError under docker.
+CAPYBARA_HOST_REGEX = /\A(.*\.)?#{Regexp.escape CAPYBARA_HOST.sub('*.', '').chomp('.*')}\z/
 
 Capybara.server = :puma, { Silent: true } # To clean up your test output
 
