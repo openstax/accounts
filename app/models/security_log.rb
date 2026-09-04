@@ -114,6 +114,8 @@ class SecurityLog < ApplicationRecord
     creating_new_salesforce_lead
     salesforce_lead_save_failed
     reset_password_unverified_email
+    recaptcha_verified
+    recaptcha_blocked
   ]
 
   json_serialize :event_data, Hash
