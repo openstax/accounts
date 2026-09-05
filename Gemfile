@@ -156,7 +156,7 @@ gem 'chronic'
 
 # Salesforce
 # 9.0 drops the username-password OAuth flow that Salesforce retires in Spring '27
-gem 'openstax_salesforce', '~> 9.0'
+gem 'openstax_salesforce', '~> 10.0'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
