@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   scope controller: 'newflow/signup' do
     get 'i/signup', action: :welcome, as: :newflow_signup
     get 'i/done', action: :signup_done, as: :signup_done
+    post 'i/signup/switch_role', action: :switch_role, as: :switch_signup_role
     get 'i/verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
     get 'i/check_your_email', action: :check_your_email, as: :check_your_email
   end

@@ -155,8 +155,9 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-# 9.0 drops the username-password OAuth flow that Salesforce retires in Spring '27
-gem 'openstax_salesforce', '~> 9.0'
+# >= 9.0 uses the client-credentials OAuth flow (Salesforce retires username-password in Spring '27);
+# 10.0 follows converted Leads to their Contact and drops dead Lead fields
+gem 'openstax_salesforce', '~> 10.0'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
@@ -288,8 +289,10 @@ group :test do
   # Run feature tests with Capybara + Selenium; choose which driver gems to use
   # based on test environment.
   gem 'capybara'
-  gem 'selenium-webdriver', require: false
-  gem 'webdrivers', require: false
+  # >= 4.11 for Selenium Manager, which resolves chromedriver itself. This replaced
+  # the webdrivers gem, which pinned selenium-webdriver < 4.11 and downloaded drivers
+  # from an endpoint Google retired for Chrome >= 115.
+  gem 'selenium-webdriver', '>= 4.11', require: false
 
   # Testing emails
   gem 'capybara-email'

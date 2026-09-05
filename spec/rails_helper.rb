@@ -30,9 +30,35 @@ end
 """
   Config for Capybara
 """
+# selenium-webdriver is `require: false` in the Gemfile so non-feature runs don't pay
+# for it; feature specs need it in every environment. Selenium Manager (>= 4.11)
+# resolves a matching chromedriver on demand, which is what replaced the webdrivers
+# gem and its networked `Chromedriver.update` behind a shared lockfile.
+require 'selenium-webdriver'
+
+CAPYBARA_WINDOW_SIZE = [1400, 1400].freeze
+
+# Chrome's built-in password manager will, after the first successful password
+# submission in a browser session, start offering to save/autofill credentials on
+# that origin. In our headless test runs this silently intercepts the next login
+# form's password field: Capybara's fill_in reports success, but Chrome's autofill
+# UI clears/overwrites the field a moment later, leaving it blank and the (JS-
+# disabled-until-filled) submit button stuck disabled. Since Capybara reuses one
+# browser process across many examples, this reliably breaks the *second and later*
+# login in a run -- not the first -- which is why it presented as sporadic flakiness
+# across unrelated specs (annual_check_in, pose_terms, student_signup_flow) rather
+# than a single reproducible failure. Disable the password manager/leak-detection
+# entirely for test runs.
+CHROME_TEST_PREFS = {
+  'credentials_enable_service' => false,
+  'profile.password_manager_enabled' => false,
+  'profile.password_manager_leak_detection' => false
+}.freeze
+
 # https://robots.thoughtbot.com/headless-feature-specs-with-chrome
 Capybara.register_driver :selenium_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new args: [ 'lang=en' ]
+  CHROME_TEST_PREFS.each { |name, value| options.add_preference(name, value) }
 
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
@@ -41,32 +67,32 @@ end
 Capybara.register_driver :selenium_chrome_headless do |app|
   options = Selenium::WebDriver::Chrome::Options.new args: [
     'no-sandbox', 'headless', 'disable-dev-shm-usage',
-    'disable-gpu', 'disable-extensions', 'disable-infobars'
+    'disable-gpu', 'disable-extensions', 'disable-infobars',
+    # Headless Chrome defaults to 800x600. The signup card alone is 75rem wide and
+    # these pages are long, so at the default size controls sit outside the viewport
+    # and Selenium reports them as not clickable.
+    "window-size=#{CAPYBARA_WINDOW_SIZE.join(',')}"
   ]
+  CHROME_TEST_PREFS.each { |name, value| options.add_preference(name, value) }
 
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
-
-# The webdrivers gem uses selenium-webdriver.  Our docker approach needs selenium-webdriver
-# but gets upset if webdriver is loaded.  So in the Gemfile, we `require: false` both of
-# these and explicitly require them based on where we're running.  We also only register
-# the docker flavor of the driver if we are indeed running in docker.
 
 CAPYBARA_PROTOCOL = DEV_PROTOCOL
 CAPYBARA_PORT = ENV.fetch('PORT', DEV_PORT)
 
 if in_docker?
-  require 'selenium-webdriver'
-
   Capybara.register_driver :selenium_chrome_headless_in_docker do |app|
-      chrome_capabilities = ::Selenium::WebDriver::Remote::Capabilities.chrome(
-        'goog:chromeOptions' => { 'args': %w[no-sandbox headless disable-gpu] }
+      # `options:`, not the `desired_capabilities:` selenium 4 dropped.
+      options = Selenium::WebDriver::Chrome::Options.new(
+        args: %w[no-sandbox headless disable-gpu]
       )
+      CHROME_TEST_PREFS.each { |name, value| options.add_preference(name, value) }
 
       Capybara::Selenium::Driver.new(app,
                                      browser: :remote,
                                      url: ENV['HUB_URL'],
-                                     desired_capabilities: chrome_capabilities)
+                                     options: options)
   end
 
   Capybara.javascript_driver = :selenium_chrome_headless_in_docker
@@ -79,26 +105,6 @@ if in_docker?
   Capybara.server_host = CAPYBARA_HOST
   Capybara.server_port = CAPYBARA_PORT
 else
-  require 'webdrivers/chromedriver'
-
-  # Use a lockfile so we don't get errors due to downloading webdrivers multiple times concurrently
-  File.open('.webdrivers_update', File::RDWR|File::CREAT, 0640) do |file|
-    file.flock File::LOCK_EX
-    update_time = Time.parse(file.read) rescue nil
-    current_time = Time.current
-
-    if update_time.nil? || current_time - update_time > 60
-      Webdrivers::Chromedriver.update
-
-      file.rewind
-      file.write current_time.iso8601
-      file.flush
-      file.truncate file.pos
-    end
-  ensure
-    file.flock File::LOCK_UN
-  end
-
   if EnvUtilities.load_boolean(name: 'HEADLESS', default: true)
     # Run the feature specs in a full browser (note, this takes over your computer's focus)
     Capybara.javascript_driver = :selenium_chrome_headless
@@ -107,18 +113,31 @@ else
   end
 
   CAPYBARA_HOST = DEV_HOST
-  CAPYBARA_HOST_REGEX = /\A(.*\.)?#{Regexp.escape CAPYBARA_HOST.sub('*.', '').chomp('.*')}\z/
 
   Capybara.asset_host = "#{CAPYBARA_PROTOCOL}://#{CAPYBARA_HOST}:#{CAPYBARA_PORT}"
 end
 
-Capybara.server = :puma, { Silent: true } # To clean up your test output
+# Defined outside the branches above: the before(:each) hook below references it for
+# every example, so leaving it in the non-docker branch made every example raise
+# NameError under docker.
+CAPYBARA_HOST_REGEX = /\A(.*\.)?#{Regexp.escape CAPYBARA_HOST.sub('*.', '').chomp('.*')}\z/
+
+# Single-threaded on purpose. Capybara's puma server defaults to Threads: '0:4', and
+# use_transactional_fixtures shares one connection across threads (lock_thread), so a
+# request served by a second puma thread leaves that connection owned by it -- teardown
+# then raises "Cannot expire connection, it is owned by a different thread" and poisons
+# the following examples. Rails pins its own system-test server the same way.
+Capybara.server = :puma, { Silent: true, Threads: '0:1' } # Silent cleans up test output
 
 # Normalize whitespaces
 Capybara.default_normalize_ws = true
 
 Capybara.configure do |config|
   config.default_max_wait_time = 15
+
+  # Injects CSS that zeroes transition/animation durations, so a click can't land
+  # while an element is still moving.
+  config.disable_animation = true
 end
 
 RSpec.configure do |config|

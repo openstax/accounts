@@ -3,10 +3,7 @@ require 'vcr_helper'
 require 'byebug'
 module Newflow
   feature 'Student signup flow', js: true, vcr: VCR_OPTS do
-     before do
-      load 'db/seeds.rb'
-      turn_on_student_feature_flag
-    end
+     before { turn_on_student_feature_flag }
 
     before(:all) do
       VCR.use_cassette('Newflow/Students/student_signup_flow/sf_setup', VCR_OPTS) do
@@ -103,9 +100,13 @@ module Newflow
       submit_signup_form
       screenshot!
 
-      # sends an email address confirmation email
+      # Wait for the POST to land before draining the queue: perform_enqueued_jobs
+      # only runs what is already enqueued.
       expect(page).to have_current_path student_email_verification_form_path
+
       perform_enqueued_jobs
+
+      # sends an email address confirmation email
       open_email email
       capture_email!(address: email)
       expect(current_email).to be_truthy
@@ -162,6 +163,8 @@ module Newflow
         submit_signup_form
         screenshot!
 
+        # Wait for the POST to land before draining the queue: perform_enqueued_jobs
+        # only runs what is already enqueued.
         expect(page).to have_current_path student_email_verification_form_path
 
         perform_enqueued_jobs

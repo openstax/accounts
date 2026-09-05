@@ -171,6 +171,19 @@ en:
       Updates on your verification status will be sent to <b>%{email_address}</b>.
       In the meantime, you can access all books and resources
       except those that require instructor verification.
+    alternatives_heading: Having trouble?
+    alternative_manual_verification: Verify another way
+    alternative_manual_verification_description: >-
+      If your school isn't listed or the form won't accept your details,
+      our team can verify you by hand. It takes 3-4 business days.
+    switch_role_student: Switch to a student account
+    switch_role_student_description: >-
+      Students don't need instructor verification to read books, take notes,
+      or join a class. You can switch back later.
+    switch_role_educator: Switch to an educator account
+    switch_role_educator_description: >-
+      Educator accounts unlock answer keys and instructor resources once we
+      verify that you teach.
     join_as_student_description: >-
       Sign up for a <b>Student</b> account to create and save
       notes and highlights in OpenStax study materials.
@@ -468,6 +481,9 @@ en:
       educator_feature_flag:
         name: New educator flow feature flag
         help_block: New educator flow activated?
+      expected_start_semester_enabled:
+        name: Expected start semester question
+        help_block: Ask educators which semester they plan to start on the profile step?
       collect_student_count_all_paths:
         name: Collect student count on all signup paths
         help_block: Show student count field on as_future and as_recommending paths?
