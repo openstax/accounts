@@ -192,7 +192,7 @@ class SearchUsers
       users = users.order("users.#{order_by}")
     end
 
-    users = users.includes(:contact_infos)
+    users = users.includes(:contact_infos).preload(:external_ids)
 
     # Select only distinct records
     users = users.distinct
