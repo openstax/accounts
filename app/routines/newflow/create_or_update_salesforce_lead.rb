@@ -114,28 +114,30 @@ module Newflow
       # Salesforce converts a lead into an existing Contact when one matches by email
       # or UUID, and this org allows updates to converted leads -- so writing the lead
       # again would land on a dead record. Follow the conversion to the Contact.
+      contact_id = user.salesforce_contact_id
       if lead&.is_converted
         SecurityLog.create!(
           user: user,
           event_type: :salesforce_lead_already_converted,
           event_data: { lead_id: lead.id, contact_id: lead.converted_contact_id }
         )
-        if lead.converted_contact_id.present? && user.salesforce_contact_id != lead.converted_contact_id
-          user.update(salesforce_contact_id: lead.converted_contact_id)
+        contact_id = lead.converted_contact_id.presence || contact_id
+        if contact_id.present? && user.salesforce_contact_id != contact_id && !user.update(salesforce_contact_id: contact_id)
+          Sentry.capture_message("User #{user.id} could not store contact #{contact_id}: #{user.errors.full_messages.join(', ')}")
         end
         lead = nil
       end
 
       # A user with a Contact gets their profile written there; a lead is never created
       # beside a Contact.
-      if lead.nil? && user.salesforce_contact_id.present?
+      if lead.nil? && contact_id.present?
         begin
-          contact = OpenStax::Salesforce::Remote::Contact.find(user.salesforce_contact_id)
+          contact = OpenStax::Salesforce::Remote::Contact.find(contact_id)
           if contact
             SecurityLog.create!(
               user: user,
               event_type: :user_already_has_contact_not_creating_lead,
-              event_data: { contact_id: user.salesforce_contact_id }
+              event_data: { contact_id: contact_id }
             )
             update_contact(contact, user, sf_role, sf_position, adoption_json)
             return
@@ -143,7 +145,7 @@ module Newflow
         rescue StandardError => e
           # Contact not found, proceed with lead creation
           Sentry.capture_message(
-            "Salesforce contact ID #{user.salesforce_contact_id} not found for user #{user.id}, will create lead. Error: #{e.class.name}: #{e.message}"
+            "Salesforce contact ID #{contact_id} not found for user #{user.id}, will create lead. Error: #{e.class.name}: #{e.message}"
           )
         end
       end
