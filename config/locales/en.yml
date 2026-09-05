@@ -481,6 +481,9 @@ en:
       educator_feature_flag:
         name: New educator flow feature flag
         help_block: New educator flow activated?
+      expected_start_semester_enabled:
+        name: Expected start semester question
+        help_block: Ask educators which semester they plan to start on the profile step?
       collect_student_count_all_paths:
         name: Collect student count on all signup paths
         help_block: Show student count field on as_future and as_recommending paths?
