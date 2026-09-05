@@ -3,6 +3,9 @@ module Newflow
     class SheeridWebhook
       lev_handler
 
+      EXPIRED_VERIFICATION = 'expiredVerification'.freeze
+      private_constant(:EXPIRED_VERIFICATION)
+
       protected ###############
 
       def authorized?
@@ -19,16 +22,26 @@ module Newflow
         # often users get stuck on the SheerID form and why, then return as before.
         # The user id (set during signup) lets us trace whether they eventually
         # verified; the SheerID response carries no personInfo for these steps.
+        #
+        # expiredVerification is the exception: it is the ordinary end of a
+        # verification nobody finished, not someone stuck. SheerID ages the record
+        # out and calls the webhook, and user_id is always nil for it because
+        # sheerid_verification_id is only written once the user lands back on step 4.
+        # It is the bulk of ACCOUNTS-67Z -- 11k warnings and climbing with signup
+        # volume -- which buries the ids this capture exists to surface. Step-3
+        # drop-off is already measurable from the educator_view_sheer_id_form funnel.
         if verification_details_from_sheerid.current_step == 'error'
-          Sentry.capture_message(
-            '[SheerID Webhook] error step received',
-            level: :warning,
-            extra: {
-              verification_id: verification_id,
-              error_ids: verification_details_from_sheerid.error_ids,
-              user_id: User.find_by(sheerid_verification_id: verification_id)&.id
-            }
-          )
+          unless verification_details_from_sheerid.error_ids == [EXPIRED_VERIFICATION]
+            Sentry.capture_message(
+              '[SheerID Webhook] error step received',
+              level: :warning,
+              extra: {
+                verification_id: verification_id,
+                error_ids: verification_details_from_sheerid.error_ids,
+                user_id: User.find_by(sheerid_verification_id: verification_id)&.id
+              }
+            )
+          end
           return
         end
 
