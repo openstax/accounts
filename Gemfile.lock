@@ -518,7 +518,7 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.3.0)
       rails (>= 3.1, < 7.0)
-    openstax_salesforce (9.0.0)
+    openstax_salesforce (10.0.0)
       openstax_active_force
       rails (>= 6.1)
       restforce (>= 7.1)
@@ -879,7 +879,7 @@ DEPENDENCIES
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce (~> 9.0)
+  openstax_salesforce (~> 10.0)
   openstax_transaction_isolation
   openstax_transaction_retry
   openstax_utilities
