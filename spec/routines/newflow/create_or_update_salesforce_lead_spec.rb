@@ -223,6 +223,7 @@ module Newflow
         result = described_class.call(user: user)
 
         expect(result.outputs.lead).to be_nil
+        expect(result.outputs.lead_saved).to eq(false)
         expect(SecurityLog.where(event_type: :user_already_has_contact_not_creating_lead).count).to eq(1)
         expect(SecurityLog.where(event_type: :creating_new_salesforce_lead).count).to eq(0)
       end

@@ -121,8 +121,11 @@ module Newflow
               event_type: :user_already_has_contact_not_creating_lead,
               event_data: { contact_id: user.salesforce_contact_id }
             )
-            # User already has a contact, return without creating a lead
+            # User already has a contact, return without creating a lead.
+            # Explicitly false, not nil: callers read lead_saved to decide whether a
+            # lead was written, and an unset output reads as a failed write.
             outputs.lead = nil
+            outputs.lead_saved = false
             outputs.user = user
             return
           end
