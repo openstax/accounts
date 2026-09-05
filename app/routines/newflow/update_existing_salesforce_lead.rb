@@ -67,17 +67,26 @@ module Newflow
     def find_lead(user)
       lead_by_id(user) ||
         OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid) ||
-        lead_by_email(user)
+        lead_by_email(user) ||
+        (:unknown if @id_lookup_failed)
     rescue StandardError => e
       report(user, 'lead lookup failed', e)
       :unknown
     end
 
+    # ActiveForce's `find` is a SOQL query, so a lead that no longer exists comes
+    # back nil rather than raising -- reaching the rescue means the lookup failed,
+    # not that the lead is gone. Keep searching by uuid and email, since a stored id
+    # can also be stale garbage that those will get past, but remember the failure:
+    # if nothing turns up, the caller must not read that as "Salesforce has no lead"
+    # and clear a real association.
     def lead_by_id(user)
       return if user.salesforce_lead_id.blank?
 
       OpenStax::Salesforce::Remote::Lead.find(user.salesforce_lead_id)
-    rescue StandardError
+    rescue StandardError => e
+      @id_lookup_failed = true
+      report(user, 'lead lookup by stored id failed', e)
       nil
     end
 

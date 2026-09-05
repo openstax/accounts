@@ -34,8 +34,10 @@ module Newflow
       expect(user.reload.salesforce_lead_id).to eq('SF_LEAD_FROM_UUID')
     end
 
+    # ActiveForce's `find` is a SOQL query, so genuine absence is a nil return, not
+    # a raise. Simulating it with `and_raise` would be testing the outage path.
     it 'never creates a lead when the user has none' do
-      allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_raise(StandardError)
+      allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_return(nil)
       allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
       expect_any_instance_of(CreateOrUpdateSalesforceLead).not_to receive(:exec)
 
@@ -43,6 +45,18 @@ module Newflow
 
       expect(user.reload.salesforce_lead_id).to be_nil
       expect(SecurityLog.where(event_type: :no_salesforce_lead_to_update).count).to eq(1)
+    end
+
+    it 'keeps a known lead id when the stored-id lookup fails and nothing else matches' do
+      allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_raise(StandardError)
+      allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+      expect_any_instance_of(CreateOrUpdateSalesforceLead).not_to receive(:exec)
+      expect(Sentry).to receive(:capture_message).with(/lead lookup by stored id failed/)
+
+      described_class.call(user: user)
+
+      expect(user.reload.salesforce_lead_id).to eq('SF_LEAD_123')
+      expect(SecurityLog.where(event_type: :no_salesforce_lead_to_update).count).to eq(0)
     end
 
     it 'keeps a known lead id when salesforce cannot be reached' do
