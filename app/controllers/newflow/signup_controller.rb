@@ -20,6 +20,7 @@ module Newflow
           user = @handler_result.outputs.user
           switched_to = @handler_result.outputs.switched_to
           log_posthog(user, 'user_switched_signup_role', { switched_to: switched_to, role: user.role })
+          flash[:notice] = I18n.t(:"login_signup_form.switched_role_notice.#{switched_to}")
           redirect_to(next_step_after_role_switch(user))
         },
         failure: lambda {

@@ -30,7 +30,38 @@ module Newflow
         click_on(I18n.t(:"login_signup_form.switch_role_educator"))
 
         expect(page).to have_current_path(educator_sheerid_form_path)
+        expect(page).to have_text(I18n.t(:"login_signup_form.switched_role_notice.educator"))
         expect(student.reload.role).to eq('instructor')
+      end
+    end
+
+    context 'an educator on the profile step' do
+      let!(:educator) do
+        user = create_newflow_user(email, password, nil, nil, 'instructor')
+        user.update!(
+          faculty_status: User::PENDING_FACULTY,
+          sheerid_verification_id: 'sheerid-verification-123',
+          is_profile_complete: false
+        )
+        user
+      end
+
+      before do
+        visit newflow_login_path
+        complete_newflow_log_in_screen(email, password)
+        wait_for_successful_log_in
+        visit educator_profile_form_path
+      end
+
+      # The profile form's JS validation used to bind to every form in the card,
+      # so the switch was refused until the profile questions were answered.
+      it 'switches to student without answering the profile questions' do
+        find('.signup-alternatives__summary').click
+        click_on(I18n.t(:"login_signup_form.switch_role_student"))
+
+        expect(page).to have_current_path(signup_done_path)
+        expect(page).to have_text(I18n.t(:"login_signup_form.switched_role_notice.student"))
+        expect(educator.reload.role).to eq('student')
       end
     end
 
@@ -60,6 +91,7 @@ module Newflow
         click_on(I18n.t(:"login_signup_form.switch_role_student"))
 
         expect(page).to have_current_path(signup_done_path)
+        expect(page).to have_text(I18n.t(:"login_signup_form.switched_role_notice.student"))
 
         educator.reload
         expect(educator.role).to eq('student')

@@ -93,6 +93,7 @@ Three traps, all of which cost real debugging time:
 
 - **`button_to` inside a `<form>` is invalid HTML** and browsers silently drop the inner form, so the button does nothing. `_signup_alternatives` must stay outside every `lev_form_for` and outside the card's own `<form>`.
 - **`newflow.scss` has no global `border-box` reset**, and it styles forms and submits at ID specificity: `#login-signup-form form` paints the card body (grid, border, 3rem top padding), `#login-signup-form [type="submit"]` adds `min-width: 17.2rem` plus vertical margins, and the global `form, .form` paints an 80rem white box with 4rem padding. A `button_to` wrapper inherits all of it. Opting out needs a matching-specificity selector, not a class — see `.signup-alternatives__form`.
+- **`educator_complete_dynamic.js.coffee` must bind its validation to the profile form only.** The card also contains the switch-role `button_to`, and `@form.find('form')` matched it too, so the exit refused to submit until every profile question was answered. It binds via `@continue.closest('form')` now.
 - **Per-page height rules used a comma**: `.educator-sheerid-form-page { form, iframe { height: 80rem !important } }` matched *every* form on the page, so a nested `button_to` became an 800px phantom box. It's scoped to `iframe` now; keep it that way.
 
 ### OAuth / Doorkeeper
