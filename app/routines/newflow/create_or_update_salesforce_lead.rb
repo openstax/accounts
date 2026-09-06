@@ -299,6 +299,44 @@ module Newflow
       outputs.user = user
     end
 
+    # Only the signup-profile fields. FV_Status__c, Adoption_Status__c (a different
+    # picklist on Contact: adopter status, not adoption stage), name and school are
+    # owned by Customer Experience once a Contact exists.
+    def update_contact(contact, user, sf_role, sf_position, adoption_json)
+      contact.phone = user.phone_number
+      contact.role = sf_role
+      contact.position = sf_position
+      contact.title = user.other_role_name
+      contact.who_chooses_books = user.who_chooses_books
+      contact.subject_interest = user.which_books
+      contact.num_students = user.how_many_students
+      contact.expected_start_semester = expected_start_semester_label_for(user.expected_start_semester)
+      contact.adoption_json = adoption_json
+      contact.os_accounts_id = user.id
+      contact.accounts_uuid = user.uuid
+      contact.tracking_parameters = "#{Rails.application.secrets.openstax_url}/accounts/i/signup/"
+      contact.newsletter_opt_in = user.receive_newsletter?
+
+      if contact.save
+        SecurityLog.create!(
+          user: user,
+          event_type: :updated_salesforce_contact,
+          event_data: { contact_id: contact.id.to_s }
+        )
+      else
+        SecurityLog.create!(
+          user: user,
+          event_type: :salesforce_contact_save_failed,
+          event_data: { contact_errors: contact.errors&.full_messages, contact_id: contact.id.to_s }
+        )
+        Sentry.capture_message("Salesforce contact save failed for user #{user.id}: #{contact.errors&.full_messages&.join(', ')}")
+      end
+
+      outputs.contact = contact
+      outputs.lead = nil
+      outputs.user = user
+    end
+
     def expected_start_semester_label_for(key)
       return nil if key.blank?
       I18n.t(:'educator_profile_form.expected_start_semester_options')[key.to_sym]
