@@ -1,5 +1,18 @@
 BASE_URL = "#{OX.url_prefix}"
 
+# omniauth 2.0 only accepts the OAuth request phase over POST (CVE-2015-9284). This mirrors what
+# jquery_ujs does for `link_to method: :post`: build a detached, CSRF-tokened form and submit it
+# as a top-level POST navigation to the request phase. The token comes from the page's
+# csrf_meta_tags and is validated by omniauth-rails_csrf_protection.
+postToRequestPhase = (url) ->
+  param = $('meta[name="csrf-param"]').attr('content') or 'authenticity_token'
+  token = $('meta[name="csrf-token"]').attr('content')
+  $('<form>', method: 'post', action: url)
+    .append($('<input>', type: 'hidden', name: param, value: token))
+    .hide()
+    .appendTo('body')
+    .submit()
+
 class AuthenticationOption
 
   constructor: (@el) ->
@@ -61,7 +74,7 @@ class AuthenticationOption
     window.location.href = "#{BASE_URL}/add/#{@getType()}"
 
   addNewflow: ->
-    window.location.href = "#{BASE_URL}/i/auth/#{@getType()}"
+    postToRequestPhase("#{BASE_URL}/i/auth/#{@getType()}")
 
   handleDelete: (response) ->
     if response.location?

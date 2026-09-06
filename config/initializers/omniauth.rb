@@ -31,6 +31,17 @@ end
 
 OmniAuth.config.logger = Rails.logger
 
+# omniauth 2.0 (see https://github.com/omniauth/omniauth/wiki/Upgrading-to-2.0) defaults
+# `allowed_request_methods` to `[:post]` only, closing CVE-2015-9284 (a GET-triggered request
+# phase is forgeable via CSRF). We set it explicitly so the guarantee is visible and can't be
+# silently widened. Every social-login trigger POSTs with a Rails authenticity token: the login/
+# signup/reauth/external-credential views use `link_to ..., method: :post` (jquery_ujs), and the
+# reauth-then-add flow renders an auto-submitting POST form (Legacy::AuthenticationsController#add
+# -> app/views/legacy/authentications/add.html.erb). The omniauth-rails_csrf_protection gem
+# validates those tokens in the request_validation_phase. Do NOT add :get back without reverting
+# all of those call sites to plain GET links, which would reopen the CVE.
+OmniAuth.config.allowed_request_methods = [:post]
+
 # http://stackoverflow.com/a/11461558/1664216
 # https://github.com/intridea/omniauth/wiki/FAQ
 OmniAuth.config.on_failure = ->(env) {

@@ -29,6 +29,7 @@
                         <div class="fb-share-button">
                             <%= link_to(
                                 newflow_auth_path(:facebooknewflow, state: @signed_state),
+                                method: :post,
                                 class: 'facebook btn',
                                 data: {
                                     ga_category: 'External Account Credentials',
@@ -45,6 +46,7 @@
                             <%=
                                 link_to(
                                     newflow_auth_path(:googlenewflow, state: @signed_state),
+                                    method: :post,
                                     class: 'google btn',
                                     data: {
                                         ga_category: 'External Account Credentials',
