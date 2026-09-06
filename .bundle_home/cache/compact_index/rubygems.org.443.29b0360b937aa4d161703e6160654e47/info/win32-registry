@@ -1,0 +1,5 @@
+---
+0.0.1 fiddle:~> 1.0|checksum:f69e291397a0c3985bf84f8fbf1e733b254e6b47510ee1d7525694a37f1e4bba,ruby:>= 2.6.0,created_at:2024-10-03T11:46:10Z
+0.1.0 fiddle:~> 1.0|checksum:2d9c7ff8160564de43d342a834b252cacafb6a9cdd0094bc2f9b5920456128f0,ruby:>= 2.6.0,created_at:2024-11-08T05:19:24Z
+0.1.1 fiddle:~> 1.0|checksum:e06039bcfd423359bb6b3f61f005b5c7dc56638c19f4d8e98f6c7cd155f3b084,ruby:>= 2.6.0,created_at:2025-10-31T04:45:33Z
+0.1.2 fiddle:~> 1.0|checksum:5bf2110aaa26c0a2ba5be5ea3c493b31c913a2ff596a12bea44753a0a51b0337,ruby:>= 2.6.0,created_at:2025-12-10T06:39:40Z

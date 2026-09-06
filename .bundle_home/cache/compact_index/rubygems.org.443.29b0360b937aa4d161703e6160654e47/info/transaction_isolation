@@ -1,0 +1,5 @@
+---
+1.0.1 activerecord:>= 0|checksum:04bfd46f3a69020c6e26e3178f7e92d09abd77086d1c7e3a8cf2bc1bbed480b2,created_at:2012-02-06T13:33:48Z
+1.0.2 activerecord:>= 3.0.11|checksum:0212c51f6375df1869affc68bad4f91bbd48f2d114f6e7d39027cf3a49205b1d,ruby:>= 1.9.2,created_at:2012-02-06T14:44:05Z
+1.0.3 activerecord:>= 3.0.11|checksum:0f9b57e11bead8bc03e2d15698fa397403b400010552490345302ad5f28b7d7f,ruby:>= 1.9.2,created_at:2012-02-08T14:17:20Z
+1.0.5 activerecord:>= 3.0.11|checksum:c654a3c2f2afb636cef06fa110ee256d8a213c3552f0c49806a62513aee8f3fc,ruby:>= 1.9.2,created_at:2018-06-18T06:23:39Z

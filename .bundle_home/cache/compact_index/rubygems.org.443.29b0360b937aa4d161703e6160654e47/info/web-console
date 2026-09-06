@@ -1,0 +1,44 @@
+---
+0.1.0 jquery-rails:~> 3.0.4,rails:~> 4.0.0|checksum:84786d78fa5abd7f183b7fae7a976933fba795ecfdb1b4d7403d278f3a19dc2f,created_at:2013-07-30T15:19:19Z
+0.2.0 jquery-rails:~> 3.0.4,rails:~> 4.0.0|checksum:4b25786dc3cc8cbced3f8d1508f44be655959cf2a6078b0d3b56bf2661993a53,created_at:2013-08-01T16:07:08Z
+0.3.0 rails:~> 4.0.0|checksum:76f73798388a2d5dbfc79f288c0d6148ee270ceac923cd93ff8f90a9ecf8a87a,created_at:2013-08-23T14:31:36Z
+0.4.0 rails:~> 4.0.0|checksum:7c0bbfbcd0cac00ebea86c93385100ea91b138fd256a5fc2c0469048f027a273,created_at:2013-09-06T12:52:19Z
+1.0.0 rails:~> 4.0.0|checksum:73581a0a0b0355c09dd402c0997ece1b990a45d813ea98f5081049844f4712e3,created_at:2013-09-16T14:34:13Z
+1.0.1 activemodel:~> 4.0.0,railties:~> 4.0.0,sprockets-rails:~> 2.0.0|checksum:309d7e021e0284e253ad3ce899453090bafba8286a49ca72f7d0b12e72a1b394,created_at:2013-09-20T17:15:53Z
+1.0.2 activemodel:~> 4.0,railties:~> 4.0,sprockets-rails:~> 2.0|checksum:243d82c73cea3dd48c4cedb1e9c630387a5870dfad4e1ea9f0fac7abf6547029,created_at:2013-09-24T15:56:26Z
+1.0.3 activemodel:~> 4.0,railties:~> 4.0,sprockets-rails:~> 2.0|checksum:c7ed917414b419923d4746106e879cd05910c330cf77003804276bdb25991bb5,created_at:2013-09-27T11:06:02Z
+1.0.4 activemodel:~> 4.0,railties:~> 4.0,sprockets-rails:~> 2.0|checksum:42382f1e26bb24c79ecf5956da4779442ed2f216b274760fe41c2237877d7f45,created_at:2013-12-13T18:04:05Z
+2.0.0.beta1 activemodel:~> 4.0,binding_of_caller:>= 0,railties:~> 4.0,sprockets-rails:~> 2.0|checksum:492a5b7a6da3dd0b8b74a9ea831a857c618e562fef96a7c72e58dc9e58b43f67,rubygems:> 1.3.1,created_at:2014-08-17T22:57:46Z
+2.0.0.beta2 activemodel:~> 4.0,binding_of_caller:>= 0,railties:~> 4.0,sprockets-rails:< 4.0&>= 2.0|checksum:92dca8dd41215afd538455bcbdc387e2d63a7ccfd76d386bc4a3a2c153898fed,rubygems:> 1.3.1,created_at:2014-08-20T00:32:09Z
+2.0.0.beta3 activemodel:~> 4.0,binding_of_caller:= 0.7.3.pre1,railties:~> 4.0,sprockets-rails:< 4.0&>= 2.0|checksum:dfd614eceb390006313bb9cda2531890571bc5e2f58ceeea8995e67ed6919324,rubygems:> 1.3.1,created_at:2014-08-21T20:31:00Z
+2.0.0.beta4 activemodel:~> 4.0,binding_of_caller:= 0.7.3.pre1,railties:~> 4.0,sprockets-rails:< 4.0&>= 2.0|checksum:952fd04b3c395b962979721bdb29a163472421cdfb2e2ac1cc7ecce0697472a4,rubygems:> 1.3.1,created_at:2014-09-25T15:34:17Z
+2.0.0 activemodel:~> 4.0,binding_of_caller:>= 0.7.2,railties:~> 4.0,sprockets-rails:< 4.0&>= 2.0|checksum:e30b1ef682eec3c0bb6c63c4f746bc86d15cbd4372917baa6fd4695e155d1ced,created_at:2014-11-26T00:23:15Z
+2.1.0 activemodel:>= 4.0,binding_of_caller:>= 0.7.2,railties:>= 4.0,sprockets-rails:< 4.0&>= 2.0|checksum:d6c57f6fe91727d423d7a1e46f184799485471f9cd17d1a5fd1e647c2717cbd8,created_at:2015-02-28T12:44:38Z
+2.1.1 activemodel:>= 4.0,binding_of_caller:>= 0.7.2,railties:>= 4.0,sprockets-rails:< 4.0&>= 2.0|checksum:383c733d69a95ad820895c83b9a47ad9d43eb3d2e5a080c840dd5588ab6a635e,created_at:2015-03-05T15:56:00Z
+2.1.2 activemodel:>= 4.0,binding_of_caller:>= 0.7.2,railties:>= 4.0,sprockets-rails:< 4.0&>= 2.0|checksum:248b5e31c79e55e2c7717f69b064ddb5d04c4506ac870312960f7d559a88cce6,created_at:2015-03-12T08:34:47Z
+2.1.3 activemodel:>= 4.0,binding_of_caller:>= 0.7.2,railties:>= 4.0,sprockets-rails:< 4.0&>= 2.0|checksum:725c79853281f76cc71439ebfcf26f22089725c84125c74b06e5478fc15a4fc8,created_at:2015-06-16T18:09:50Z
+2.2.0 activemodel:>= 4.0,binding_of_caller:>= 0.7.2,railties:>= 4.0,sprockets-rails:< 4.0&>= 2.0|checksum:5458e9e70c3ca6f15b72b26abaedce87b23cbddd0d8d96d7fe2b1dd03f073ada,created_at:2015-07-10T16:23:44Z
+2.2.1 activemodel:>= 4.0,binding_of_caller:>= 0.7.2,railties:>= 4.0,sprockets-rails:< 4.0&>= 2.0|checksum:8eae52bf9891de5ed59928be8f2d790b45742408a8be07712c449a5391be3c8f,created_at:2015-07-10T20:13:30Z
+3.0.0 activemodel:>= 4.2,debug_inspector:>= 0,railties:>= 4.2|checksum:6a1ed5a93828335ae23628102a69475671b4b30ecc3c08e4befe4c4b7124823a,ruby:>= 2.2.2,created_at:2015-12-13T16:58:58Z
+2.3.0 activemodel:>= 4.0,binding_of_caller:>= 0.7.2,railties:>= 4.0,sprockets-rails:< 4.0&>= 2.0|checksum:5302518dbcd43f4c9f86541d00fedd9f327151a7168ed36c7d62f169657b1539,created_at:2016-01-27T20:29:49Z
+3.1.1 activemodel:>= 4.2,debug_inspector:>= 0,railties:>= 4.2|checksum:efdfeb68d76a15322890246e715f34b94ccff22c94e1447df8c011edc1c63583,ruby:>= 2.2.2,created_at:2016-01-28T09:20:52Z
+3.2.0 activemodel:>= 4.2,debug_inspector:>= 0,railties:>= 4.2|checksum:3d3d0bcfbee64851404eeb0b2380d66a5b87f25f8cf5fd7c24b7f4d37d023101,ruby:>= 2.2.2,created_at:2016-06-06T20:16:33Z
+3.2.1 activemodel:>= 4.2,debug_inspector:>= 0,railties:>= 4.2|checksum:e85e841dc5d72fb34073e67109f7a897e7c92322d1d7f467cfd67f0bb8ab8f04,ruby:>= 2.2.2,created_at:2016-06-14T15:17:40Z
+3.3.0 activemodel:>= 4.2,debug_inspector:>= 0,railties:>= 4.2|checksum:a49dd65abeaf76965791ea550ee7c1f187b99e548c32e6c84bf4ca5c86d54c4c,ruby:>= 2.2.2,created_at:2016-06-15T17:27:44Z
+3.3.1 actionview:>= 5.0,activemodel:>= 5.0,debug_inspector:>= 0,railties:>= 5.0|checksum:0772becac5e89bef05c26cf53e5b2e07f5f5da30163039ab45d9c6d8bcd78abd,ruby:>= 2.2.2,created_at:2016-07-05T08:05:19Z
+3.4.0 actionview:>= 5.0,activemodel:>= 5.0,debug_inspector:>= 0,railties:>= 5.0|checksum:16527bd9116aecf2c3ac7fcf40e220b06c8ae6122ab45edb4397e2a60437dbf1,ruby:>= 2.2.2,created_at:2016-10-29T10:02:05Z
+3.5.0 actionview:>= 5.0,activemodel:>= 5.0,bindex:>= 0.4.0,railties:>= 5.0|checksum:99b10137a9da73bdd1da1c66471021ebd67e7772c1b13f2ac7eacdea7ab18e0c,ruby:>= 2.2.2,created_at:2017-03-29T10:01:23Z
+3.5.1 actionview:>= 5.0,activemodel:>= 5.0,bindex:>= 0.4.0,railties:>= 5.0|checksum:3b38c31ce558acd988a917d12d8bf651f8ed385d3f34388529dfe772e611f0ab,ruby:>= 2.2.2,created_at:2017-05-12T10:27:48Z
+3.6.0 actionview:>= 5.0,activemodel:>= 5.0,bindex:>= 0.4.0,railties:>= 5.0|checksum:743726465a93233eb438e5c9f03210b3a9a8eb155d86ab0f713964590532ee96,ruby:>= 2.2.2,created_at:2018-04-10T17:23:38Z
+3.6.1 actionview:>= 5.0,activemodel:>= 5.0,bindex:>= 0.4.0,railties:>= 5.0|checksum:a1d7d9f296879f53fd9372417a4bc75f42b85ea66a011254a032a3a91ce5b9ed,ruby:>= 2.2.2,created_at:2018-04-19T06:36:15Z
+3.6.2 actionview:>= 5.0,activemodel:>= 5.0,bindex:>= 0.4.0,railties:>= 5.0|checksum:311b3599ab36ea0de65b1d75949cdeacec0e6cd40a31c6444fd10ffb61093f2f,ruby:>= 2.2.2,created_at:2018-04-29T18:40:32Z
+3.7.0 actionview:>= 5.0,activemodel:>= 5.0,bindex:>= 0.4.0,railties:>= 5.0|checksum:cde97ef283953aa2710dd5a203077aeba513ef257b477af31d32578e9a283672,ruby:>= 2.2.2,created_at:2018-09-02T19:45:05Z
+4.0.0 actionview:>= 6.0.0.a,activemodel:>= 6.0.0.a,bindex:>= 0.4.0,railties:>= 6.0.0.a|checksum:27580079c04a1a21515e964e714a838c1c13a626e42d3591763dd6689c7ff3c2,ruby:>= 2.5,created_at:2019-04-29T23:57:16Z
+4.0.1 actionview:>= 6.0.0,activemodel:>= 6.0.0,bindex:>= 0.4.0,railties:>= 6.0.0|checksum:9c73eb7067c0c3e6dba48cfb4952615f07030f14e29dc6df8688f4a55d3ac756,ruby:>= 2.5,created_at:2019-08-17T07:11:10Z
+4.0.2 actionview:>= 6.0.0,activemodel:>= 6.0.0,bindex:>= 0.4.0,railties:>= 6.0.0|checksum:a1bbf685cafbe3df80f33ba6bbba93b17c8eba413bbcb012b732424deab7619d,ruby:>= 2.5,created_at:2020-05-05T13:29:48Z
+4.0.3 actionview:>= 6.0.0,activemodel:>= 6.0.0,bindex:>= 0.4.0,railties:>= 6.0.0|checksum:7376f1dcff289db76d9f45368b8f21e606fe92fc3524ee44a4037aa07de732c4,ruby:>= 2.5,created_at:2020-06-17T10:29:52Z
+4.0.4 actionview:>= 6.0.0,activemodel:>= 6.0.0,bindex:>= 0.4.0,railties:>= 6.0.0|checksum:d94580a255dd03150021f91aea2419f4c9372946b17e9374de3a293d24f80f27,ruby:>= 2.5,created_at:2020-07-12T16:52:26Z
+4.1.0 actionview:>= 6.0.0,activemodel:>= 6.0.0,bindex:>= 0.4.0,railties:>= 6.0.0|checksum:a9896d990e84f7ae44d99c40bb7d82f19455009c33f140458f3a5696449a3035,ruby:>= 2.5,created_at:2020-11-05T11:59:41Z
+4.2.0 actionview:>= 6.0.0,activemodel:>= 6.0.0,bindex:>= 0.4.0,railties:>= 6.0.0|checksum:e8f05057a83d6d305d5941fb828d13a25e9aa9b0f3a550f01c308711885433c3,ruby:>= 2.5,created_at:2021-11-17T12:51:41Z
+4.2.1 actionview:>= 6.0.0,activemodel:>= 6.0.0,bindex:>= 0.4.0,railties:>= 6.0.0|checksum:e7bcf37a10ea2b4ec4281649d1cee461b32232d0a447e82c786e6841fd22fe20,ruby:>= 2.5,created_at:2023-09-05T20:14:55Z
+4.3.0 actionview:>= 8.0.0,bindex:>= 0.4.0,railties:>= 8.0.0|checksum:e13b71301cdfc2093f155b5aa3a622db80b4672d1f2f713119cc7ec7ac6a6da4,ruby:>= 3.2,created_at:2026-02-23T19:32:23Z

@@ -12,6 +12,18 @@ module Admin
 
     def index; end
 
+    def edit
+      # SecurityLog#event_type is an integer-backed Rails enum, so we can't LIKE on it.
+      # Resolve the salesforce_* event_type *values* once and filter by IN.
+      salesforce_event_values = SecurityLog.event_types
+                                  .select { |name, _| name.to_s.start_with?('salesforce_') }
+                                  .values
+      @salesforce_timeline = SecurityLog
+                               .where(user_id: @user.id, event_type: salesforce_event_values)
+                               .order(created_at: :asc)
+                               .limit(500)
+    end
+
     # Used by full console page
     def search
       security_log :users_searched_by_admin, search: params[:search]
@@ -108,7 +120,7 @@ module Admin
       end
 
       begin
-        contact = OpenStax::Salesforce::Remote::Contact.find(new_id)
+        contact = Salesforce::Records::Contact.find(new_id)
 
         if contact.present?
           # The contact really exists, so save its ID to the User

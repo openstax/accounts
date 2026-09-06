@@ -1,0 +1,25 @@
+---
+1.0.0 aws-sdk-core:>= 3.225.0&~> 3,aws-sigv4:~> 1.5|checksum:0b23ccbbbf9df2d4f71434e523df7fba4385e3360c93930418403e4ed6da07d8,ruby:>= 2.7,created_at:2025-06-04T19:15:21Z
+1.1.0 aws-sdk-core:>= 3.227.0&~> 3,aws-sigv4:~> 1.5|checksum:aeac0092aaa37aa2b4be397127367d33bd9a691a355fae4cb784bc2197286a90,ruby:>= 2.7,created_at:2025-07-21T19:44:40Z
+1.2.0 aws-sdk-core:>= 3.228.0&~> 3,aws-sigv4:~> 1.5|checksum:97394ddb4ac6121ff8b9ff0c16a7829086ea757efbdd199d3e9e14fa56924c1a,ruby:>= 2.7,created_at:2025-07-31T19:39:17Z
+1.3.0 aws-sdk-core:>= 3.228.0&~> 3,aws-sigv4:~> 1.5|checksum:347e0f4a99a1d4136586ce42747f4f760fc7e495b502d170fa3a0e74c240953e,ruby:>= 2.7,created_at:2025-08-04T19:53:16Z
+1.4.0 aws-sdk-core:>= 3.228.0&~> 3,aws-sigv4:~> 1.5|checksum:f0cee77d27f0a0ee88023c3287d8cefc5196a3bfe8610fc973651c476895fc7f,ruby:>= 2.7,created_at:2025-08-11T19:17:18Z
+1.5.0 aws-sdk-core:>= 3.231.0&~> 3,aws-sigv4:~> 1.5|checksum:bf15bd7d095c3a06c1989ed5e12fa2f5ff6a79ee72548ebda53b04b929801134,ruby:>= 2.7,created_at:2025-08-26T19:42:03Z
+1.6.0 aws-sdk-core:>= 3.231.0&~> 3,aws-sigv4:~> 1.5|checksum:75374f68d1239f218a82509adc7d3828e8c5b31f6639cb86e50c755a87cdc42a,ruby:>= 2.7,created_at:2025-09-11T19:18:26Z
+1.7.0 aws-sdk-core:>= 3.234.0&~> 3,aws-sigv4:~> 1.5|checksum:6279098839eb756957a57629da72d0acb7102b42bb35963d0363c37a13382040,ruby:>= 2.7,created_at:2025-10-21T21:24:11Z
+1.8.0 aws-sdk-core:>= 3.234.0&~> 3,aws-sigv4:~> 1.5|checksum:8bc2b5651e6078da283bd051a00b768f997d3f193d024bbe9316718529b645b0,ruby:>= 2.7,created_at:2025-10-24T19:24:36Z
+1.9.0 aws-sdk-core:>= 3.239.1&~> 3,aws-sigv4:~> 1.5|checksum:078f63000e957f055c82458504644a7da51fd83d1370cda71ec0aa1b640bb123,ruby:>= 2.7,created_at:2025-11-21T20:53:40Z
+1.10.0 aws-sdk-core:>= 3.241.0&~> 3,aws-sigv4:~> 1.5|checksum:819f38c3e21307ae4ea545a49e78b9c7cc531ce6e602d3c865e70daeabf2e4c8,ruby:>= 2.7,created_at:2026-01-05T20:49:13Z
+1.11.0 aws-sdk-core:>= 3.241.3&~> 3,aws-sigv4:~> 1.5|checksum:95993a3ca991f4e51f0602520fd34c3a7569199ad151a2b24c0fc81aa3b2f702,ruby:>= 2.7,created_at:2026-01-08T20:14:21Z
+1.12.0 aws-sdk-core:>= 3.241.3&~> 3,aws-sigv4:~> 1.5|checksum:efd6d067ab986c24e7327b806beb9d2eb6afbcf36bf9f36063fc5fa893cf9588,ruby:>= 2.7,created_at:2026-01-15T20:26:56Z
+1.13.0 aws-sdk-core:>= 3.241.4&~> 3,aws-sigv4:~> 1.5|checksum:19c9a1c197da55cdf8cceaaa7c9a1003bcaad939a6ca87db85b04692337e7229,ruby:>= 2.7,created_at:2026-01-16T21:04:02Z
+1.14.0 aws-sdk-core:>= 3.244.0&~> 3,aws-sigv4:~> 1.5|checksum:500e2f72ff82b065229551e6d1c1345bb6a8b8008c00342ac8e5642e27c33fbf,ruby:>= 2.7,created_at:2026-03-18T20:00:24Z
+1.15.0 aws-sdk-core:>= 3.244.0&~> 3,aws-sigv4:~> 1.5|checksum:eae61035a5bd12080ede3189f15a3a400bc4862348437cdf3e001286aa89928b,ruby:>= 2.7,created_at:2026-04-20T19:37:06Z
+1.16.0 aws-sdk-core:>= 3.244.0&~> 3,aws-sigv4:~> 1.5|checksum:e0eb1f8253425c91d3da509252ec7d3ecef1b97427b8501f0c2a6c49b7be50a5,ruby:>= 2.7,created_at:2026-04-24T19:36:27Z
+1.17.0 aws-sdk-core:>= 3.247.0&~> 3,aws-sigv4:~> 1.5|checksum:979d1eb3a2bc14ef347b05df3d836d4736f92c47b3943d182a5e0758f4131a82,ruby:>= 2.7,created_at:2026-05-13T20:04:34Z
+1.18.0 aws-sdk-core:>= 3.247.0&~> 3,aws-sigv4:~> 1.5|checksum:173f642e87ad768c813572a0a2c70082e8345b837bef7bebc77c69c2b8a9b72c,ruby:>= 2.7,created_at:2026-05-18T19:47:44Z
+1.19.0 aws-sdk-core:>= 3.247.0&~> 3,aws-sigv4:~> 1.5|checksum:cc27964cdd1710ba6a537cc321ebcd69ed3af6dea19e36d6b204fb158d09dae4,ruby:>= 2.7,created_at:2026-05-19T19:57:51Z
+1.20.0 aws-sdk-core:>= 3.248.0&~> 3,aws-sigv4:~> 1.5|checksum:af568fb632842c4d6fc5bec081d31636706e539a188f92f9d212f8eb44f019d9,ruby:>= 2.7,created_at:2026-05-21T22:00:20Z
+1.21.0 aws-sdk-core:>= 3.248.0&~> 3,aws-sigv4:~> 1.5|checksum:7a8bbbae22f05919bc205152210ea0d875765e6ed15fb56ac2c01bba58ecde72,ruby:>= 2.7,created_at:2026-05-26T19:47:43Z
+1.22.0 aws-sdk-core:>= 3.248.0&~> 3,aws-sigv4:~> 1.5|checksum:66db4dcf9005d04425a5b1455a9808994c3b6cc81b4b382e6912cdc38da0b2f9,ruby:>= 2.7,created_at:2026-06-29T19:28:14Z
+1.23.0 aws-sdk-core:>= 3.254.0&~> 3,aws-sigv4:~> 1.5|checksum:62e71a79b044ce76c9eea0428fd2a7baf96b9d2306684e34d9c87efe028fb28f,ruby:>= 2.7,created_at:2026-07-09T19:58:32Z

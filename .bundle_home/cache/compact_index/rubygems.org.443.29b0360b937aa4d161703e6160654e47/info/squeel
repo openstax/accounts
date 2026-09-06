@@ -1,0 +1,52 @@
+---
+0.5.0 activerecord:~> 3.1.0.alpha,activesupport:~> 3.1.0.alpha|checksum:bb97edc3fb4bb6d4ae06092d3cab213ef89a2655c770672efcd66ce8c5da6e4b,created_at:2011-04-09T15:43:54Z
+0.5.5 activerecord:~> 3.0,activesupport:~> 3.0|checksum:370d51ea4188c8eaae9b460c9c1edb656afe97cb2bf0c891402f19b63e2f7be8,created_at:2011-04-20T13:30:21Z
+0.6.0 activerecord:~> 3.0,activesupport:~> 3.0|checksum:7522fa8e4ce2b2f7d1e1727cd04b5032722319f65d83b755d0a9b5a58dbdcb6b,created_at:2011-05-04T13:58:57Z
+0.6.1 activerecord:~> 3.0,activesupport:~> 3.0|checksum:4fa39cf9d2599fe174f2eea84958717fb4c52deee1d31211587a733d1957d515,created_at:2011-05-11T15:06:43Z
+0.7.0 activerecord:~> 3.0,activesupport:~> 3.0|checksum:0f169233484e719cf236a2508a1f272fc666c0407a6ac0756f9cb7210a2e0e07,created_at:2011-05-13T17:23:56Z
+0.7.1 activerecord:~> 3.0,activesupport:~> 3.0|checksum:58a440aed593608c2e261d4fc698bf55d8cb50b3f0eb7fba635ef53e8a82decc,created_at:2011-05-16T22:38:14Z
+0.7.2 activerecord:~> 3.0,activesupport:~> 3.0|checksum:77df0d7e7a00eaf56f4fc3be41c5e457d061d354759cc657c2fdad50db64922e,created_at:2011-05-19T19:39:55Z
+0.7.3 activerecord:~> 3.0,activesupport:~> 3.0|checksum:1d02cc28e991429f52223080ec9d66247583d3f76d42504b1d51895f95eef045,created_at:2011-05-24T20:55:36Z
+0.7.4 activerecord:~> 3.0,activesupport:~> 3.0|checksum:55b9ff0b30cb9e9332f46f2837f906bc438472d08f99a450e99504c99a6b06d6,created_at:2011-05-24T23:56:00Z
+0.7.5 activerecord:~> 3.0,activesupport:~> 3.0|checksum:10c99218533181921a3ccdb8e792be3f7ade0b734bec7b4ed642af34b014c243,created_at:2011-06-07T13:24:31Z
+0.7.6 activerecord:~> 3.0,activesupport:~> 3.0|checksum:8e4ba22ee3fab8a470816a186bb05c60d2c45736cebea496afa08098085711c0,created_at:2011-06-13T15:43:20Z
+0.8.0 activerecord:~> 3.0,activesupport:~> 3.0|checksum:168d124c6a8d474bfee739bed8aae0731ed1ce1a7f2bc1bdb386c11c9706737a,created_at:2011-06-13T23:41:54Z
+0.8.1 activerecord:~> 3.0,activesupport:~> 3.0|checksum:c6383936e7bc376831ddf131503f7e37649e66d8813992dbe7a552b4997bc5c2,created_at:2011-06-16T00:15:49Z
+0.8.2 activerecord:~> 3.0,activesupport:~> 3.0|checksum:c869fbd6a3f4bcf44ce9010499dd5be30debbe517ee91fee713dfce8ef970794,created_at:2011-06-16T13:16:05Z
+0.8.3 activerecord:~> 3.0,activesupport:~> 3.0|checksum:d6452477a0bbde2fe75afb14c7e210273bbdbfab76be577276d4c1a9f196cb4b,created_at:2011-06-20T13:14:42Z
+0.8.4 activerecord:~> 3.0,activesupport:~> 3.0|checksum:d809711334c55568b437264987338d024d562fa174cbb4e4828371bb1cdbfdb4,created_at:2011-06-20T20:29:10Z
+0.8.5 activerecord:~> 3.0,activesupport:~> 3.0|checksum:fc018af5fcea73a05e625155cb5660d7878bc96ca7dd7f4889439b5884466033,created_at:2011-07-02T18:11:26Z
+0.8.6 activerecord:~> 3.0,activesupport:~> 3.0|checksum:f92627cc091db5a4c9c6bf93ef66c8bfd197843d77992b59b69d3bae6d9d78ea,created_at:2011-08-01T14:37:22Z
+0.8.7 activerecord:~> 3.0,activesupport:~> 3.0|checksum:aba95ffc1ce5a7416039863337964027cee0b067ebb456dcd505b84ea6aa7697,created_at:2011-08-08T14:55:46Z
+0.8.8 activerecord:~> 3.0,activesupport:~> 3.0|checksum:3cd93525c6d8b91912646cc37b2fe5b8208a412eb51ff21d628433c92581a91a,created_at:2011-08-23T17:08:50Z
+0.8.9 activerecord:~> 3.0,activesupport:~> 3.0|checksum:c90d6919d14ec49dd1d15d782f1ddf476aa994ed9d91d538ac447324e8ae6784,created_at:2011-08-29T13:45:04Z
+0.8.10 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:1b0b8bbe3824fce703e58d2d716a8d3d9675d7f8361f2ff5c45bde11cf2a174e,created_at:2011-09-03T19:42:09Z
+0.9.0 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:7814b2222cc8b3f51b340137d18dc9455ee8b6ac46078fb193b80f360e50268d,created_at:2011-09-07T03:26:33Z
+0.9.1 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:76b117e91a927b73c0fdb40141504e85d5cea228a2ca35d9f204d1a4233f1e63,created_at:2011-09-27T12:28:46Z
+0.9.2 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:69d58d932989b54ce044e591feb04de812aae8df015170db0b5bf4f6e60c08c5,created_at:2011-09-29T05:20:33Z
+0.9.3 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:8bda3881c42b8a31578acb67e2a1e0769637e6baf3607f04a78570f9e0017ca2,created_at:2011-09-30T14:17:14Z
+0.9.4 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:b4ad31a3be16109f6583d849dcd3fd401024fa0eda9c398dcb35c06aaa3cbe26,created_at:2012-01-23T14:00:41Z
+0.9.5 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:d138be38a9b3969d3790a44e1631a3f54b58be4b3a5d0386cba12b5680124b70,created_at:2012-01-23T14:47:56Z
+1.0.0 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:49e6d8241e3155c238e3d14756b9ec9afad3ffbeeedd617c6073827f38ed5006,created_at:2012-04-22T21:45:13Z
+1.0.1 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:f2e15459492ade17c1561d9b2c60224b8bb2710826157469063cc58ddbf14173,created_at:2012-05-02T13:33:41Z
+1.0.2 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:f234a68641768c2917884721d7962270e32ac4de5f29b501dfc1a84888a067a3,created_at:2012-05-30T21:18:11Z
+1.0.3 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:39ea5d4d8070c3982fb58cdc2b83f2fc8bcfadbf4a85f7d725dd433fb5631de9,created_at:2012-06-07T14:30:52Z
+1.0.4 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:613f7400af2859c68a482c08fa03ba4d2a00b3c71fc0e0c8bca6e863c14bd730,created_at:2012-06-08T02:23:33Z
+1.0.5 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:1f694da8421ab6fab55b35e86ddb2620b44e2d7c5969070c3e59410d9f6fb5eb,created_at:2012-06-08T14:20:22Z
+1.0.6 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:7812076916b3d29e092baaa58c248b62a5be3f17e359956bd180d3e3d03ae9ed,created_at:2012-06-16T20:40:17Z
+1.0.7 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:3449d01075051e4e02a2c67b90fb36614543358bbecadc5ed3d62163e5c8a4ed,created_at:2012-07-14T19:15:48Z
+1.0.8 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:146c21a1ac98be9d0dde2655588491db3224b9114cbc7c7d9c861e7e92379b4e,created_at:2012-07-29T02:00:48Z
+1.0.9 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:bc044d051250fe87dc75f786edf46fba041045f69539737cd47455781d4f43a0,created_at:2012-08-06T14:38:03Z
+1.0.11 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:88722f9fe43e8f39e0d8a50fd27694bf4c73ae21252cc2c0314aef58b801f032,created_at:2012-09-03T19:41:28Z
+1.0.12 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:b9637e0c55618074f790bb2ee36d58ef3641d7ca11215f5ef0443b772a1a21e7,created_at:2012-10-07T20:41:59Z
+1.0.13 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:018efd313606030af4e0828b3a0f550e091bc51df7f6a0cfc634515f8b29df18,created_at:2012-10-11T12:33:40Z
+1.0.14 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:e21fdcaa7e7aaffa993711ba686400d0cd9b03b0e6cd6ec2034e6c557bc349c1,created_at:2012-12-05T03:29:06Z
+1.0.15 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:6e0f70dd82aff419565554d5c8b16322c0d7b2c8dc6fb4bc2934abfcda1eb617,created_at:2013-01-23T19:22:59Z
+1.0.16 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:7f63e9b76c897d05e1a3e916718c3b6ffbb71e633863913b561fadd22af4e5e5,created_at:2013-02-12T14:12:57Z
+1.0.17 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:107029c18b5e5dd520e71edf9bab4e2de91b99ebc8075173549c280117c3298f,created_at:2013-02-28T16:53:54Z
+1.0.18 activerecord:~> 3.0,activesupport:~> 3.0,polyamorous:~> 0.5.0|checksum:c6f043959aa6309fbee251048bd961a6880989c9d625ac1cab94b97beeb8cdf1,created_at:2013-03-07T13:52:29Z
+1.1.0 activerecord:>= 3.0,activesupport:>= 3.0,polyamorous:~> 0.6.0|checksum:1e0befe568fa993182f2d50333018fa17b4ce190224dce88f4e118aa67a0fe79,created_at:2013-07-14T18:21:19Z
+1.1.1 activerecord:>= 3.0,activesupport:>= 3.0,polyamorous:~> 0.6.0|checksum:a945ea2efc450fc62e35fb545d40844edaf3d964242effda51354d29a0843433,created_at:2013-09-03T15:51:44Z
+1.2.1 activerecord:>= 3.0,activesupport:>= 3.0,polyamorous:~> 1.1.0|checksum:40ce1d8d9e9ecbad406a24c1b64ab16ce3c408b1713e8cdfa2c9299a4d19d2aa,created_at:2014-07-18T06:46:47Z
+1.2.2 activerecord:>= 3.0,activesupport:>= 3.0,polyamorous:~> 1.1.0|checksum:d337972f752ba900666151e903beb45e4db14a9ffe45f7d1249f9eed601f9465,created_at:2014-11-25T07:26:37Z
+1.2.3 activerecord:>= 3.0,activesupport:>= 3.0,polyamorous:~> 1.1.0|checksum:62e73ce7ca6de561f46252d02c1bf734fec2e5d526a3ad06e235d8c1d55edbb3,created_at:2015-02-05T14:50:07Z

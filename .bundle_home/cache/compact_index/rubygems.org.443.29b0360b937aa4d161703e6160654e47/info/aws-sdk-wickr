@@ -1,0 +1,13 @@
+---
+1.0.0 aws-sdk-core:>= 3.239.1&~> 3,aws-sigv4:~> 1.5|checksum:ec3efba7e309b62e13622b40cdb04ff9fca139d550149bbfb7248e0ce1fb3ce5,ruby:>= 2.7,created_at:2025-12-19T20:22:37Z
+1.1.0 aws-sdk-core:>= 3.241.0&~> 3,aws-sigv4:~> 1.5|checksum:20acac2bc9b8b270f9521b2c27772a227273e6ed4fdebf9548f83d5c7e18ecfe,ruby:>= 2.7,created_at:2026-01-05T21:31:23Z
+1.2.0 aws-sdk-core:>= 3.241.3&~> 3,aws-sigv4:~> 1.5|checksum:713386438816d6125ca4e9be7b46c3aa765b93e270ceefc1db8b8ed09f3f0314,ruby:>= 2.7,created_at:2026-01-08T20:54:01Z
+1.3.0 aws-sdk-core:>= 3.241.4&~> 3,aws-sigv4:~> 1.5|checksum:7651549a94e86209f181bf24a85a8f7709c469e210e551f52c1becef11b6d83b,ruby:>= 2.7,created_at:2026-01-16T21:45:22Z
+1.4.0 aws-sdk-core:>= 3.241.4&~> 3,aws-sigv4:~> 1.5|checksum:87e2c29a6f05e53196f521fc554a315cb7281dab7125e66f908579dc30a482ce,ruby:>= 2.7,created_at:2026-02-23T20:17:59Z
+1.5.0 aws-sdk-core:>= 3.244.0&~> 3,aws-sigv4:~> 1.5|checksum:649cbc784002e848bfc9b5ce6464364ee2fdcc8d226a12292318798c7cbab5ed,ruby:>= 2.7,created_at:2026-03-18T20:41:14Z
+1.6.0 aws-sdk-core:>= 3.247.0&~> 3,aws-sigv4:~> 1.5|checksum:05f95fc01ee8e081e1973e5a9327ae9036c9cec268d9bf57f6f67be478eb0542,ruby:>= 2.7,created_at:2026-05-13T20:49:54Z
+1.7.0 aws-sdk-core:>= 3.247.0&~> 3,aws-sigv4:~> 1.5|checksum:719dfc7087b5381a1f2fe2645e6080262ba1dbcfb048d7783bce0242affe8197,ruby:>= 2.7,created_at:2026-05-19T20:36:01Z
+1.8.0 aws-sdk-core:>= 3.248.0&~> 3,aws-sigv4:~> 1.5|checksum:27cc1f6043946162b043a02e55257478ee554931f5b11cff2fb9e8bcf5ee5f41,ruby:>= 2.7,created_at:2026-05-21T22:42:50Z
+1.9.0 aws-sdk-core:>= 3.248.0&~> 3,aws-sigv4:~> 1.5|checksum:f91fa0afc89c8fe70fd0bf2d6c87f81bf65f7f97d707a93eec39814da43fd8c6,ruby:>= 2.7,created_at:2026-05-28T19:46:54Z
+1.10.0 aws-sdk-core:>= 3.248.0&~> 3,aws-sigv4:~> 1.5|checksum:24dd9b2b5f4626663ef0d0ac4158d0ad620bbeaf81eae82226576679ddeb5268,ruby:>= 2.7,created_at:2026-06-04T19:39:40Z
+1.11.0 aws-sdk-core:>= 3.254.0&~> 3,aws-sigv4:~> 1.5|checksum:c29f1d46b36e11706d8fee4666704f425933c2a80e121423f04213b15c73c490,ruby:>= 2.7,created_at:2026-07-09T20:44:21Z

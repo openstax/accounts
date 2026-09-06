@@ -1,0 +1,85 @@
+---
+0.0.1 rails:>= 0|checksum:bf33da39735684cdc65bd8ba6a42d97a4c2ead73bfc5ec50ef46faae06037415,created_at:2014-10-01T04:55:30Z
+0.0.2 chartkick:>= 0,rails:>= 0|checksum:a13946ab132f7eb69c2f34a9abc348351e5f09ae8c1c3615d798132354506298,created_at:2014-10-01T08:53:30Z
+0.0.3 chartkick:>= 0,rails:>= 0|checksum:40d598c02aafcaa52853d30bb0fd8f516a6713123c378cad6383dfc80f1d1a73,created_at:2014-10-08T08:33:30Z
+0.0.4 chartkick:>= 0,rails:>= 0|checksum:ff4a52ffc5cabcb1838d6386987fba9c47b3cc88f2812396fb0bce8a12dc4626,created_at:2014-11-20T04:46:28Z
+0.0.5 chartkick:>= 0,rails:>= 0|checksum:a39d4f847c9ba0b4b48971eaad3036fc1c3b780e99d7ae6979489296b4d1d6cf,created_at:2015-01-31T22:02:04Z
+0.0.6 chartkick:>= 0,rails:>= 0|checksum:14ff2b0996357a0ca66d14fa4b02de4a0e3faea52f53222a2e2f55d494e92c79,created_at:2015-06-18T10:57:42Z
+0.0.7 chartkick:>= 0,rails:>= 0|checksum:3552ad41e9460eecc3717b39045ee06bc91a72353c22530e874b2f9510ffa4b1,created_at:2015-07-24T03:27:05Z
+0.0.8 chartkick:>= 0,rails:>= 0|checksum:7c69df60cd0f282a166f8c89d4b60da80174e60cecd309767fd48525eabdb5d1,created_at:2015-09-05T18:28:20Z
+1.0.0 chartkick:>= 0,rails:>= 0|checksum:5e85600bdca8617b830d17c6bd0f2e2a0b6a416c2a15703f2d29b8b2fa67de12,created_at:2015-10-04T23:19:03Z
+1.0.1 chartkick:>= 0,rails:>= 0|checksum:afdc34bad826cbb0ada0ddda79837d92e86ff7c9ed1f0ae94ae0fd51b656161b,created_at:2015-10-08T08:59:10Z
+1.0.2 chartkick:>= 0,rails:>= 0|checksum:f8bddfa9d0986b41d7d03ee214f202edc02f920874f6122a802c2af32d24a16d,created_at:2015-10-12T06:15:06Z
+1.0.3 chartkick:>= 0,rails:>= 0|checksum:2e0f1e212be8a4658a9760e0be4d230a63aaf9f476f9180764c688ee4f71c22a,created_at:2015-10-18T23:10:21Z
+1.0.4 chartkick:>= 0,rails:>= 0|checksum:9e632b0fdb6620a73e8eb8513efa51ffc0c3fe6cf9dfb11719d4a00a00229ebc,created_at:2015-11-05T06:31:20Z
+1.1.0 chartkick:>= 0,rails:>= 0|checksum:a9b725f913c16b69d7b617531a960b1d01a9a5a4d94aaea2b59ffa639707535a,created_at:2015-12-28T07:45:02Z
+1.1.1 chartkick:>= 0,rails:>= 0|checksum:ea93194a6a1d31d6b0b6883f64c11f2864b2b4cb55d196797ee05e95c57de773,created_at:2016-03-07T02:55:14Z
+1.2.0 chartkick:>= 0,rails:>= 0|checksum:f8986968c388d89ea7487227e2f897e99ebc6a631d6e54b4772a6f1a20adbcb9,created_at:2016-03-23T03:19:38Z
+1.2.1 chartkick:>= 0,rails:>= 0|checksum:71a88c054fe10b7039385e94d98ff9f68bd5893cdf35e3f638d17761a6535c11,created_at:2016-04-26T07:21:32Z
+1.3.0 chartkick:>= 0,rails:>= 0|checksum:615e5b40cf19497038dfe2070819ddb23960dde34e4ee2f1ee4465d3fd0c4e5f,created_at:2016-05-06T07:24:13Z
+1.3.1 chartkick:>= 0,rails:>= 0|checksum:3ce31f313de6ab4ac003b5d9f82433882b21e8fdb0f37a7b7b713ee6f4e60b53,created_at:2016-05-06T15:53:02Z
+1.3.2 chartkick:>= 0,rails:>= 0|checksum:caa77cba32862cf41ec375b91084ee58e09749bcbfa599203dfc5d022f1e87e2,created_at:2016-05-07T22:34:37Z
+1.3.3 chartkick:>= 0,rails:>= 0|checksum:e5714cb6782e9c575168fff312767fa99a10ff588ab848ade0226768bd99b22f,created_at:2016-05-08T23:03:28Z
+1.3.4 chartkick:>= 0,rails:>= 0|checksum:611e568783415a8ef3a992200f0346ef54b40e8e065d31ec080b661c3f4de9a0,created_at:2016-05-11T10:32:57Z
+1.3.5 chartkick:>= 0,rails:>= 0|checksum:d6dd17c23ea369673099213b7017a58444b9d5b7ec87eb558da36283c8498698,created_at:2016-05-12T06:28:34Z
+1.4.0 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:b1053217f8015e70533e3e48e15e756b4c71473f4b5949aa3410c641af28af7b,created_at:2016-06-10T03:04:25Z
+1.5.0 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:6665a96c433b444fe7d2302e1180f9d6c18a57fd3adf09df529d53ccd29a358d,created_at:2016-06-29T07:53:53Z
+1.5.1 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:a99c0d908c72cb6bff076f4672544db6db1ae8ff87eee94615745713c41905ae,created_at:2016-07-25T05:33:56Z
+1.6.0 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:7fd32e24e55dc1bf785053ccff4eee58442b42c62514f951c108b2853daefcd8,created_at:2016-07-29T04:23:13Z
+1.6.1 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:79afd8b6ad0a7abbbaf222aff77aa9d6d8e7032935da174e79ca705267aba2fe,created_at:2016-07-30T21:00:12Z
+1.6.2 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:c3db04e37e6b7daa06b595cc10f26d5c670c88973bd22cd1a1da32a9af502faa,created_at:2016-08-11T16:59:31Z
+1.7.0 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:12a1d7f9da92b0ecbaddb98b8169bb8f45b43c674a881e28a5b973b46d1594d9,created_at:2016-09-08T05:03:59Z
+1.7.1 chartkick:>= 0,gon:>= 0,js-routes:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:b3b89e3a019190e92895f2f0360a362781239ec163bfa2c2d92e1025f9f06ec0,created_at:2016-10-30T02:11:28Z
+1.7.2 chartkick:>= 0,gon:>= 0,js-routes:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:0d69446b20a453232fcbc9f389cf3d8e06e203166390f0c58e540f4498fbbcd2,created_at:2016-10-31T02:37:22Z
+1.7.3 chartkick:>= 0,gon:>= 0,js-routes:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:5cf4a72e67999559c19c799dd6a2bbb8322cd4e3e68d6291e9f5411897582180,created_at:2016-11-01T11:58:00Z
+1.7.4 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:5909065c51e9b23237d855471e2c78138579608f787028b2fb6387b89753bc54,created_at:2016-11-06T18:50:54Z
+1.7.5 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:cbad80d10917fbc8eb8557b9e609b6b0783ea7117af7d39af90e141112c066c3,created_at:2016-11-22T08:32:57Z
+1.7.6 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:020cc2746a9fe5ceaa2d84775f1b677fe8afc86755c1632b39573e8966e1bcf9,created_at:2016-12-14T04:32:25Z
+1.7.7 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:81b87c65e610485e67636c709e2bac67e21034ac9ae1abd6b279735da5e424d1,created_at:2016-12-17T21:01:12Z
+1.7.8 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:4d96c35e269f4aa6d18261e7ed85aa1dd95400c8c1d4caa0b1d4e538d1db54f7,created_at:2017-02-07T04:52:05Z
+1.7.9 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:3c98f68262eca72382ae7fd1fae866eeef1c7d861b28e117edefe696aebdb780,created_at:2017-03-21T06:21:24Z
+1.7.10 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:f221491687cd420de4252589c6f9ec8a7506ef5fd694de2b9e00d735b7ea7758,created_at:2017-04-04T05:51:27Z
+1.8.0 chartkick:>= 0,rails:>= 0,safely_block:>= 0.1.1|checksum:d2df73e38bfdbf9d155f108dc05fede717a65e60c9ad9b260fe1bd53244ade8a,created_at:2017-05-01T07:24:56Z
+1.8.2 activerecord:>= 4,chartkick:>= 0,railties:>= 4,safely_block:>= 0.1.1|checksum:d005c8fb08ffb9ccf95539c410340b651b87669fc92849db40872c4d7a2fb01f,created_at:2018-02-22T10:14:04Z
+1.9.0 activerecord:>= 4,chartkick:>= 0,railties:>= 4,safely_block:>= 0.1.1|checksum:faef7fff2e3bece7e8e8f573ee6cd801cc510f2917d38222313abe8d5684ec61,created_at:2018-06-17T20:19:33Z
+2.0.0 activerecord:>= 4.2,chartkick:>= 0,railties:>= 4.2,safely_block:>= 0.1.1|checksum:21e0f0fb53a58a61e00163e9dcf8d6307e0493dee6d21c5bb4b4c34f25635b80,ruby:>= 2.3,created_at:2019-01-03T19:27:35Z
+2.0.1 activerecord:>= 4.2,chartkick:>= 0,railties:>= 4.2,safely_block:>= 0.1.1|checksum:215e2878d601dd1f09947e92f8ca33f387e2a34e1ff76e7dcfe28c5820f757b0,ruby:>= 2.3,created_at:2019-01-08T00:30:44Z
+2.0.2 activerecord:>= 4.2,chartkick:>= 0,railties:>= 4.2,safely_block:>= 0.1.1|checksum:a50d3c8605b29ef96f78491548c9a746273e37912f04e66193261f3726359b16,ruby:>= 2.3,created_at:2019-05-27T00:39:53Z
+2.1.0 activerecord:>= 4.2,chartkick:>= 3.2,railties:>= 4.2,safely_block:>= 0.1.1|checksum:e60d13e283fe276e2b60eccf7103c471513744b09d315e389586cfb0a87c7a30,ruby:>= 2.3,created_at:2019-06-04T21:30:31Z
+2.2.0 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:8b263b5e1f8f66cce954958e6560729443d26f6a86f4ad62cd175818dd8b0ab0,ruby:>= 2.4,created_at:2019-07-12T17:25:36Z
+2.2.1 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:afe15baa7e6e327489ac2aa0e9ab3444a667feba76a118cb27c6f5235ded824d,ruby:>= 2.4,created_at:2019-10-09T00:22:25Z
+2.2.2 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:d6ce4f4be2fc1185ef4394136e4a53522bf80ff4fa5c36c5b276d88c4c820d88,ruby:>= 2.4,created_at:2020-04-14T01:11:10Z
+2.2.3 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:7837b4b075b5f5b161cb2f105a54ab0e30e7d2b6a65f8d97b8c2a2017f767a9b,ruby:>= 2.4,created_at:2020-05-30T23:41:41Z
+2.2.4 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:3b63f7959c1124ba73a2c26035b6e46348ccecc39afb47e23f5dd11ed461e06b,ruby:>= 2.4,created_at:2020-05-30T23:50:14Z
+2.2.5 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:aed41199dc1d2d63ece47b5714459991dc66b4cfeef0640eeeba2cf20a8a6a77,ruby:>= 2.4,created_at:2020-06-03T09:31:58Z
+2.2.6 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:7cc3a021fbffda92a44b2e0821a4081372de0b6ef5491af228d9c6c4cea47d34,ruby:>= 2.4,created_at:2020-07-22T00:04:40Z
+2.2.7 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:4712f1ae8ee5b02860cd96cfebf08cee0ec45cc0418c3b0cf41aaf6c70e01109,ruby:>= 2.4,created_at:2020-09-08T01:33:51Z
+2.2.8 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:3ecb976e689335517a67e3cdce16d042faec934a7abbec0930d22c95d6d2cf0b,ruby:>= 2.4,created_at:2020-11-01T23:10:21Z
+2.3.0 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:a393dca28c0ae8d2d32fe954c49ff93ffc267ea9ff3dc38b7eaeff1bbebe3a52,ruby:>= 2.4,created_at:2020-11-16T22:42:38Z
+2.3.1 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:b5061c116eb06858cd2a7cfbbac199e8a3e6d501efc4a7dbc3834eb690145d46,ruby:>= 2.4,created_at:2020-11-24T02:13:26Z
+2.4.0 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:4cd48b4832b683bab3bedfbdcd0c9ab96b770f700e748bad536df35c0fe5008d,ruby:>= 2.4,created_at:2020-12-15T22:37:08Z
+2.4.1 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:2a83ce3670487754a09936bfac4e15eedd16d3bef5f68265a62547175a1ccb62,ruby:>= 2.4,created_at:2021-01-25T23:33:24Z
+2.4.2 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:7bdac96452d772a05a67273babdfb6bf4fe2be3d08447b20cb3f83e29fa44289,ruby:>= 2.4,created_at:2021-02-09T01:40:26Z
+2.4.3 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:2a2ea0f08de619b0c73bf9cca458644afcdd553959adad2fc481afe1fd92717c,ruby:>= 2.4,created_at:2021-07-28T06:18:50Z
+2.4.4 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:b0181fb1874d92c8a1c349ee0abfebabac64bea87ff7379f62eac99601d6c016,ruby:>= 2.4,created_at:2021-09-16T03:11:28Z
+2.4.5 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:f691315706be754f0291bb46ea67beafc0f84076a845d66e89a586e88cd8f32f,ruby:>= 2.4,created_at:2021-09-16T03:36:55Z
+2.4.6 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:d43159225100c9acb34c6d0ace9b58dc4a20f01ded9d29e18833859e311cc0b4,ruby:>= 2.4,created_at:2021-09-21T02:42:19Z
+2.4.7 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:bc2c9b49f5c72afde19820c6cd4137a49b709d1702eedc924ef17e8bd9a62d01,ruby:>= 2.4,created_at:2021-09-25T18:48:55Z
+2.4.8 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:092ab501d1cdfb5994cce24e22202a69b7647248e5ecc791f1dfe31f6053d6c8,ruby:>= 2.4,created_at:2021-12-07T22:11:29Z
+2.5.0 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:610221179d07fba320c9146a10776758d31ddbfb1ae6f11853954b2f9ebaff46,ruby:>= 2.4,created_at:2022-01-05T00:09:44Z
+2.6.0 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:496fdbf4eab47d47375186fc0ba9ac9ce5a3fc485089a65fb9a5ebdfa5e79829,ruby:>= 2.4,created_at:2022-04-20T21:22:43Z
+2.6.1 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:bb2a16b7a206a38083b90a657fea1778bafa433f666d3b0ee0cc738551037131,ruby:>= 2.4,created_at:2022-04-21T07:45:09Z
+2.6.2 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:facd24e5c9c13e0480c37626f3786f70f653f672bfaf2f340078a5cca3c79809,ruby:>= 2.4,created_at:2022-05-06T18:31:07Z
+2.6.3 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:c57f179d07ff9086eff3eaf6cc63a3cdfd88c96d3703c8782f71540c069091e2,ruby:>= 2.4,created_at:2022-05-12T02:39:08Z
+2.6.4 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:36fbf246e8b323d8d119f4690f493e0fb74c1b720c8febf97aaebc625d2b6829,ruby:>= 2.4,created_at:2022-05-25T03:06:03Z
+2.6.5 activerecord:>= 5,chartkick:>= 3.2,railties:>= 5,safely_block:>= 0.1.1|checksum:371458da06c6115e189be86c8426dd82d98814e30e739c9b6944efc28b73ee5e,ruby:>= 2.4,created_at:2022-08-31T17:37:15Z
+3.0.0 activerecord:>= 6.1,chartkick:>= 5,railties:>= 6.1,safely_block:>= 0.4|checksum:0683b6eb21370848c7b6b8cd83c0c770ebb63f1a63065c33c4334fa715445ed5,ruby:>= 3,created_at:2023-09-20T20:09:35Z
+3.0.1 activerecord:>= 6.1,chartkick:>= 5,railties:>= 6.1,safely_block:>= 0.4|checksum:2e7e0590b4c02072dd7ab68a6f2e17f142ab9c19d4af6d6b888bf74aad7c2dc6,ruby:>= 3,created_at:2023-10-08T18:12:31Z
+3.0.2 activerecord:>= 6.1,chartkick:>= 5,railties:>= 6.1,safely_block:>= 0.4|checksum:489d0916d1b2f63cd86cdf60ff7ce078fdac36b7799cb520075038a0906c46de,ruby:>= 3,created_at:2023-11-28T21:09:05Z
+3.0.3 activerecord:>= 6.1,chartkick:>= 5,csv:>= 0,railties:>= 6.1,safely_block:>= 0.4|checksum:0ab9df9fb2eb2743b42ecd4b677f89ea35d53b37244727aa95f0f4a231007ead,ruby:>= 3,created_at:2024-01-10T19:05:25Z
+3.0.4 activerecord:>= 6.1,chartkick:>= 5,csv:>= 0,railties:>= 6.1,safely_block:>= 0.4|checksum:283d38c80934a487b9410366b50fe988d1528e63c2ab9feb806edbc95f9b9e4e,ruby:>= 3,created_at:2024-09-04T19:52:39Z
+3.1.0 activerecord:>= 6.1,chartkick:>= 5,csv:>= 0,railties:>= 7,safely_block:>= 0.4|checksum:8b89df580dd64d1a242d9006004909ea0ca50c19b827b4ace37d40c1912686cc,ruby:>= 3.1,created_at:2024-10-15T02:31:59Z
+3.2.0 activerecord:>= 6.1,chartkick:>= 5,csv:>= 0,railties:>= 7,safely_block:>= 0.4|checksum:a6a7e50ae12fe9bb175be6768d9f60bc5c8f5673534bf0b2f9870ce5783b9713,ruby:>= 3.1,created_at:2025-02-23T19:27:56Z
+3.2.1 activerecord:>= 7,chartkick:>= 5,csv:>= 0,railties:>= 7,safely_block:>= 0.4|checksum:9ff5993e4a6268bedb1314bfa53c96919221a3232976665a65e9e8603a1e7103,ruby:>= 3.1,created_at:2025-03-22T06:03:36Z
+3.3.0 activerecord:>= 7.1,chartkick:>= 5,csv:>= 0,railties:>= 7.1,safely_block:>= 0.4|checksum:01e151091ce1e7d27c156243916b2f13109ef2ef1a16cfa62bef67f4c5fd169f,ruby:>= 3.2,created_at:2025-04-13T01:54:36Z
+3.4.0 activerecord:>= 7.2,chartkick:>= 5,csv:>= 0,railties:>= 7.2,safely_block:>= 1|checksum:ff8d4e32013857f3614772ccd74018955ae126005460065dbc9036cc5ed9cc7d,ruby:>= 3.3,created_at:2026-04-20T22:09:29Z

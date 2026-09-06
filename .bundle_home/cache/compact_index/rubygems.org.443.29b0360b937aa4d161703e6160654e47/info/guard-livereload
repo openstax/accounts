@@ -1,0 +1,44 @@
+---
+0.1.0 em-websocket:~> 0.1.3,guard:~> 0.1.1,json:~> 1.4.6|checksum:4e780e9cc351017ee6d44dd2d5fb9361b2038dd20929359a81dcf3bd5ebbc95c,created_at:2010-10-10T10:39:49Z
+0.1.1 em-websocket:~> 0.1.3,guard:~> 0.1.1,json:~> 1.4.6|checksum:8d258948d664f70cf860027c35c887ae3898b11590d11457c959e2f9aa44c1f2,created_at:2010-10-10T19:46:18Z
+0.1.2 em-websocket:~> 0.1.3,guard:>= 0,json:~> 1.4.6|checksum:25a456e34cd96e0f10f719707be1cbe02d3a6737129671af4bbb21a4488d2d90,created_at:2010-10-15T22:22:31Z
+0.1.3 em-websocket:~> 0.1.3,guard:>= 0,json:~> 1.4.6|checksum:57c65c759a17dbb9a2769aede0529572156230ebc27951d9c7d74aadb55ab0a9,created_at:2010-12-06T07:54:06Z
+0.1.5 em-websocket:~> 0.1.3,guard:>= 0.2.2,json:~> 1.4.6|checksum:4074c45d892d713ebde4ae2fd4f593310cefdbddb0b093abf7a79081497d6972,created_at:2010-12-14T07:12:36Z
+0.1.6 em-websocket:~> 0.2.0,guard:>= 0.2.2,json:~> 1.4.6|checksum:f77bda0da52d05fd6aaaf79578f2bcd4560c02de93d91fd5649f6d75b071fbba,created_at:2010-12-16T13:27:05Z
+0.1.7 em-websocket:~> 0.2.0,guard:>= 0.2.2,json:~> 1.4.6|checksum:f6e2443c2c957356809ec5303dc03e8fe79407cdf2284b756b92dc721dd2dc65,created_at:2011-02-10T20:35:44Z
+0.1.8 em-websocket:~> 0.2.0,guard:>= 0.2.2,json:~> 1.4.6|checksum:e004eceb59d664d84faa910f74746d074eddc0aef845001fe593d1c53118ab4d,created_at:2011-03-14T07:26:14Z
+0.1.9 em-websocket:~> 0.2.0,guard:>= 0.2.2,json:~> 1.4.6|checksum:4138727a85cf8a137c0b1aa3cb7057ab529abe45905a73beda54d12c9b01314e,created_at:2011-03-14T13:04:57Z
+0.1.10 em-websocket:~> 0.2.0,guard:>= 0.2.2,json:~> 1.5.1|checksum:cb1d9328c65b1cdd8bb3cf98374f2e2da404f9598798b9256f030870426b8165,rubygems:>= 1.3.6,created_at:2011-04-17T19:47:22Z
+0.1.11 em-websocket:~> 0.2.0,guard:>= 0.2.2,json:~> 1.5.1|checksum:76afda4182d20f32de24b4e41fab70dc9603dbbe39e5ef69c68e8e604e1d1f75,rubygems:>= 1.3.6,created_at:2011-05-07T19:16:54Z
+0.2.0 em-websocket:>= 0.2.0,guard:>= 0.4.0,json:>= 1.5.1|checksum:968f40a30eb51c19a22ab6194d4e0cda6222581379aecf52bf8f16f219622b03,rubygems:>= 1.3.6,created_at:2011-06-15T06:50:14Z
+0.2.1 em-websocket:>= 0.2.0,guard:>= 0.4.0,json:>= 1.5.1|checksum:50e3c6302cc202c9c27e144e77ecb859d2845bcc83235c26838fb2db06284348,rubygems:>= 1.3.6,created_at:2011-08-01T12:03:23Z
+0.3.0 em-websocket:>= 0.2.0,guard:>= 0.4.0,multi_json:~> 1.0.3|checksum:c0f8ca21731edb9e2cad031f9abd9d0cbba45fd10101a83ae383293dfd596876,rubygems:>= 1.3.6,created_at:2011-08-09T08:10:19Z
+0.3.1 em-websocket:>= 0.2.0,guard:>= 0.4.0,multi_json:~> 1.0.3|checksum:d49176827526f52621cc64ad2556c52aa456376a48a1199d6a91181bbbf001e4,rubygems:>= 1.3.6,created_at:2011-09-01T14:29:15Z
+0.4.0 em-websocket:>= 0.2.0,guard:>= 0.10.0,multi_json:~> 1.0.3|checksum:56d13f585463f76e0fa32fb3193ce0730497e8e10c2fea14f1940383d1246df8,rubygems:>= 1.3.6,created_at:2012-01-02T09:38:11Z
+0.4.1 em-websocket:>= 0.2.0,guard:>= 0.10.0,multi_json:~> 1.0.3|checksum:da36add0fc918438b0c705f60d1dbac174f61ece8bb5f5cb08fc6ce32aa66c5b,rubygems:>= 1.3.6,created_at:2012-02-23T08:40:11Z
+0.4.2 em-websocket:>= 0.2.0,guard:>= 0.10.0,multi_json:~> 1.0|checksum:6aab98e6a3075b0c348b558023963cbb08bfa216b3f01ddbb06d60d76b506e09,rubygems:>= 1.3.6,created_at:2012-02-23T12:57:18Z
+1.0.0 em-websocket:>= 0.2.0,guard:>= 1.1.0,multi_json:~> 1.0|checksum:bef963ed3864ec56b579d842a3a17f9cae98be847dfb559cced49da996cabec5,rubygems:>= 1.3.6,created_at:2012-06-04T19:15:26Z
+1.0.1 em-websocket:>= 0.2.0,guard:>= 1.1.0,multi_json:~> 1.0|checksum:d0cd3d3e1ede831f4bd8dfc112302f180cce03f9d41673b8110698b5e3b9332f,rubygems:>= 1.3.6,created_at:2012-09-16T19:06:15Z
+1.0.2 em-websocket:>= 0.2.0,guard:>= 1.1.0,multi_json:~> 1.0|checksum:2cbace82648a98506c656af76accb90fcb6569f372b16f2447f5f3e3b35c27cd,rubygems:>= 1.3.6,created_at:2012-10-22T06:39:12Z
+1.0.3 em-websocket:>= 0.2.0,guard:>= 1.1.0,multi_json:~> 1.0|checksum:1f2c86e7e85e57c648050f83ef7b3130d6c06a67633658b335ca5115a8137b3d,rubygems:>= 1.3.6,created_at:2012-10-25T14:13:42Z
+1.1.0 em-websocket:>= 0.2.0,guard:>= 1.5.0,multi_json:~> 1.0|checksum:3ade364fba7962f58ea5a808c29291c04e49298b74d8775b1a3860ee1c4dd157,rubygems:>= 1.3.6,created_at:2012-10-27T18:50:12Z
+1.1.1 em-websocket:>= 0.2.0,guard:>= 1.5.0,multi_json:~> 1.0|checksum:6a85ee72845e1e293e2efb4165d2b6f906291c973814f981f08bec6ec9786f0e,rubygems:>= 1.3.6,created_at:2012-11-23T08:37:23Z
+1.1.2 em-websocket:>= 0.2.0,guard:>= 1.5.0,multi_json:~> 1.0|checksum:fd0cad4f0cffc17980dc5c7a538ec66495fa2c284bb29fdcc55b4a51694e3351,rubygems:>= 1.3.6,created_at:2012-11-27T07:52:04Z
+1.1.3 em-websocket:>= 0.2.0,guard:>= 1.5.0,multi_json:~> 1.0|checksum:b7c18e9687e0954b497a039ec6df216868f60e1637d6dd0eb4a986e853506408,rubygems:>= 1.3.6,created_at:2012-12-19T08:01:37Z
+1.2.0 em-websocket:>= 0.2.0,guard:>= 1.5.0,multi_json:~> 1.0|checksum:ced3cc42eaa096642a7fee45fe98796a6cfa7b5c5dad8329af5fc1ce340e6074,rubygems:>= 1.3.6,created_at:2013-04-14T19:30:14Z
+1.2.1 em-websocket:>= 0.2.0,guard:>= 1.5.0,multi_json:~> 1.0|checksum:575e27a8b95a9a95a66ddf7bcc17b0984cac4be252457d2f413c96ca370e2284,rubygems:>= 1.3.6,created_at:2013-04-18T08:11:02Z
+1.3.0 em-websocket:>= 0.2.0,guard:>= 1.5.0,multi_json:~> 1.0|checksum:e5e86ce0ba903238123c520a770b83b68e0d42bff43ff429b9d23d831be54e58,rubygems:>= 1.3.6,created_at:2013-04-21T18:51:25Z
+1.4.0 em-websocket:>= 0.5.0,guard:>= 1.8.0,multi_json:~> 1.7|checksum:3d4fdde56b5ccb371dcc0b50f3ae5da0c22b86e52cca61f067fa60e689cfa7cd,rubygems:>= 1.3.6,created_at:2013-04-25T06:19:39Z
+2.0.0 em-websocket:~> 0.5,guard:~> 2.0,multi_json:~> 1.8|checksum:c8663712a68ba544130fded90f637d70e4da49061c61237e4930ce8e6e4c6f40,created_at:2013-10-06T13:54:01Z
+2.0.1 em-websocket:~> 0.5,guard:~> 2.0,multi_json:~> 1.8|checksum:08d661dfc0e68179640b358764f0ab4bae5f5dcb17ab476c9090018ba84cdc97,created_at:2013-11-26T14:14:12Z
+2.1.0 em-websocket:~> 0.5,guard:~> 2.0,multi_json:~> 1.8|checksum:8e861d6c416b7ed5513dc61e28e2faae88e2236a6abcf5a1d44bb89d877d26af,created_at:2013-12-02T06:55:52Z
+2.1.1 em-websocket:~> 0.5,guard:~> 2.0,multi_json:~> 1.8|checksum:b569a827200031383fd37e76713357f5e0403c8e1da97b6963ab0fa2f82163de,created_at:2014-01-16T08:00:13Z
+2.1.2 em-websocket:~> 0.5,guard:~> 2.0,multi_json:~> 1.8|checksum:feada7a16ae3bbcf7a12f37a2c4567fa9e092b5b77192535c40f4c1117abacc6,created_at:2014-03-20T14:38:03Z
+2.1.3 em-websocket:~> 0.5,guard:~> 2.0,multi_json:~> 1.8|checksum:17d527fe4c973e6d22267eeb6c78e6c77d5a54d7dee31b713874ba4b88f3331d,created_at:2014-05-21T08:48:25Z
+2.2.0 em-websocket:~> 0.5,guard:~> 2.0,multi_json:~> 1.8|checksum:262fb4d2f27bce5911581df9fc523dfad02f753b6196e2119c72d8530d1dc99c,created_at:2014-05-22T06:42:57Z
+2.3.0 em-websocket:~> 0.5,guard:~> 2.0,multi_json:~> 1.8|checksum:e6d8852db91f0f0d9024158fe3d7a8a452e43323a30c8c3cca10705163b23c42,created_at:2014-06-25T14:27:51Z
+2.3.1 em-websocket:~> 0.5,guard:~> 2.0,multi_json:~> 1.8|checksum:a69507242408f08269790c692629d2843214c1a729ef6bd0ff8302378266dffe,created_at:2014-09-23T07:11:09Z
+2.4.0 em-websocket:~> 0.5,guard:~> 2.8,multi_json:~> 1.8|checksum:d60c7acb17ce261d8e984542e49c51febb08755f28bf888d1fa56e2eb49c3884,created_at:2014-11-12T07:37:10Z
+2.5.0 em-websocket:~> 0.5,guard:~> 2.8,guard-compat:~> 1.0,multi_json:~> 1.8|checksum:70d47cd848fe56f1fba3c7da4b78ab5ebeb2aff034f85f2d61d8c4996ae29fb4,created_at:2015-10-20T00:40:53Z
+2.5.1 em-websocket:~> 0.5,guard:~> 2.8,guard-compat:~> 1.0,multi_json:~> 1.8|checksum:db69a2c9a833705f36e3f518a41899ebc9ce5394b3e0ee36d297197c7c3d00a0,created_at:2015-10-26T19:05:38Z
+2.5.2 em-websocket:~> 0.5,guard:~> 2.8,guard-compat:~> 1.0,multi_json:~> 1.8|checksum:124dd33cb08a232e5b46971b427c69ae34c4ff56fa72ac98f85eecb5da23a779,created_at:2016-02-04T02:12:34Z

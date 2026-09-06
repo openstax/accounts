@@ -288,6 +288,17 @@ describe User, type: :model do
         user2.update_attribute(:login_token, user.login_token)
       }.to raise_error(ActiveRecord::RecordNotUnique)
     end
+
+    it 'retries when generated token already exists' do
+      FactoryBot.create(:user, login_token: 'a' * 32)
+      allow(SecureRandom).to receive(:hex).and_call_original
+      allow(SecureRandom).to receive(:hex).with(16).and_return('a' * 32, 'a' * 32)
+
+      user.refresh_login_token
+
+      expect(user.login_token).to eq('a' * 30 + '01')
+      expect(user.save).to be_truthy
+    end
   end
 
   context '#guessed_preferred_confirmed_email' do

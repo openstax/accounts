@@ -1,0 +1,38 @@
+---
+0.0.1 |checksum:293c1465ede1f518cf1f0055b1548b393d27eccd696d0c99581452775667bb82,created_at:2013-04-04T02:36:30Z
+0.0.2 |checksum:e5f48e4bb36785b0dd71030d35cb335e6e52f827c8a6960a662a43ea5c60146f,created_at:2013-04-04T17:55:25Z
+0.0.3 |checksum:488c9062d3a2fd2167f4cc3836e5bbe965c585db0be009a1bf3407b91c2a8c4e,created_at:2013-05-13T22:51:24Z
+0.0.4 |checksum:ee633dcbce9b16038475747d44a1d1ee95da213c1911300dd1468a2d0b76dce0,created_at:2013-05-27T19:22:34Z
+0.0.5 rails:>= 3.1|checksum:6fb049288df5bf91956acbdc4ecefdbe927ad0703b8269b15408e604dc12b5cc,created_at:2013-06-18T22:41:50Z
+0.0.6 attribeautiful:~> 0.0.7,rails:>= 3.1|checksum:f8491bfbe86b13641584f78eac3fe89409bd43ca5509fc3e100b79f7db35c9be,created_at:2013-06-30T20:52:21Z
+0.0.7 attribeautiful:~> 0.0.7,rails:>= 3.1|checksum:09daac71bd8cb637e84f5c59efb3364b9e97b3d2138cff49b29adb1680077c9e,created_at:2013-09-18T15:47:51Z
+1.0.0 attribeautiful:~> 0.0.7,rails:>= 3.1|checksum:67e45613e09c278e4a05763605394773e1e8d355efd17a3ceae19bc77a6b7bb0,created_at:2013-10-02T23:25:05Z
+1.0.1 attribeautiful:~> 0.0.7,rails:>= 3.1|checksum:c3ea1fd950aaa42e307b3dbc1a39d53f174cb79bf4f08bd833e145c35a0c6640,created_at:2013-10-02T23:28:42Z
+1.0.2 attribeautiful:~> 0.0.7,rails:>= 3.1|checksum:9d64c426035e96aa32e3570b5c36c83a16f4ca41ec8e74910452200c92770150,created_at:2013-10-11T22:56:34Z
+1.1.0 attribeautiful:~> 0.0.7,rails:>= 3.1|checksum:4b218b9a2cead11bbfc53bac669097c6c14ce2dd4df6fa1b8e7a2bcf67eaea08,created_at:2013-11-07T01:43:11Z
+1.2.0 attribeautiful:~> 0.0.7,rails:>= 3.1|checksum:7f900d9d0da0ce19a18b3ccc009685d8b1a0aa231d305de769aebe3e4350876f,created_at:2014-02-21T18:11:05Z
+1.3.0 attribeautiful:~> 0.0.7,rails:>= 3.1|checksum:34b7e5920759e3ce9243478d75943561b14d7fd7010fd8132568dec3b192ef3d,created_at:2014-03-01T02:07:00Z
+2.0.0 attribeautiful:~> 0.0.7,rails:>= 3.1|checksum:f53412432fc1c7a7762c802957bff425c793246e637e312ed6824811c5049693,created_at:2014-03-05T21:43:57Z
+2.1.0 attribeautiful:>= 0.0.7,rails:>= 3.1|checksum:333af9757e75132f62d8f3b27f9fc1107548eeaedcc40dae23ca4430b9d35e02,created_at:2014-03-31T23:31:31Z
+2.2.0 attribeautiful:>= 0.0.7,rails:>= 3.1|checksum:ece9d0a406a98a8fdefc235aa24243e8502a3a66c5aec8797b7ed53e919b585c,created_at:2014-04-10T15:16:24Z
+2.2.1 attribeautiful:>= 0.0.7,rails:>= 3.1|checksum:736c5ab4a0d15d897b137bbfc492de4d5e24fdc9406f25ee51f60206126069f7,created_at:2014-04-17T00:19:22Z
+2.2.2 attribeautiful:>= 0.0.7,rails:>= 3.1|checksum:1d3e1f3fd65be983dbb7c921d6d890e668bd5e74bc6c29dbfd15eef327d6683a,created_at:2014-06-02T20:05:17Z
+2.2.3 attribeautiful:>= 0.0.7,rails:>= 3.1|checksum:be886f72a8fca992e1a41b29dae60242ecffdc2b4bf282bcefe0e2f686631deb,created_at:2014-06-17T16:48:49Z
+3.0.0 rails:>= 3.1|checksum:5d4ef5b1d1275f0d8560dff391af2198e37868a950dae6e8338c53a69c1c19ee,created_at:2014-07-08T15:03:51Z
+4.0.0 keyword_search:>= 0,lev:>= 0,rails:>= 3.1|checksum:bddaf8ee65041d480c077a3e2aedff27e629f3c4b3e411a939887add4c43a48b,created_at:2014-10-07T17:47:21Z
+4.1.0 keyword_search:>= 0,lev:>= 0,rails:>= 3.1|checksum:90ea6a5a0f6b59b96d87195b9c258732a259f0978d9cf39f0678dfb18344fe45,created_at:2014-10-13T19:29:15Z
+4.2.0 keyword_search:>= 0,lev:>= 0,rails:>= 3.1|checksum:143521a3416bd3ce5759e61ddfb21968a0c86b5e3fd127bccf799c23573507b7,created_at:2014-12-16T16:02:33Z
+4.2.1 keyword_search:>= 0,lev:>= 0,rails:>= 3.1|checksum:59c00ea6fe0014352f6be24dc0b22f64ca0c6d792a1b4c2fa09257eea6b43941,created_at:2015-05-26T04:07:41Z
+4.2.2 keyword_search:>= 0,lev:>= 0,rails:>= 3.1|checksum:452ae4b08ae0afb4cf5f8e0f725ef1addd0e50c1b5127309adaf972929f55efc,created_at:2015-07-28T21:51:30Z
+4.2.3 keyword_search:>= 0,lev:>= 0,rails:>= 3.1|checksum:330657b411e6473266ec6db53405a4bf942cfa68567c7ec8c850274bf7d9792c,created_at:2015-11-05T19:47:35Z
+4.3.0 faraday:>= 0,faraday-http-cache:>= 0,keyword_search:>= 0,lev:>= 0,rails:~> 5.2,request_store:>= 0|checksum:c29e3e113eff28ebb2094e6811231c7526698ef1b79632b6f01fc05155ca0936,created_at:2020-09-28T21:19:21Z
+4.4.0 aws-sdk-autoscaling:>= 0,faraday:>= 0,faraday-http-cache:>= 0,keyword_search:>= 0,lev:>= 0,rails:~> 5.2,request_store:>= 0|checksum:a901ecf9f11ae64fcbd7de6a18927e6cb81bf9bf63fa481777f83d8889099e9b,created_at:2021-01-05T23:28:11Z
+4.4.1 aws-sdk-autoscaling:>= 0,faraday:>= 0,faraday-http-cache:>= 0,keyword_search:>= 0,lev:>= 0,rails:~> 5.2,request_store:>= 0|checksum:5b124334883b3fcc9bc161f38e1c09b13edb87493e25e36bb71ad6955619f024,created_at:2021-01-07T20:03:40Z
+4.4.2 aws-sdk-autoscaling:>= 0,faraday:>= 0,faraday-http-cache:>= 0,keyword_search:>= 0,lev:>= 0,rails:~> 5.2,request_store:>= 0|checksum:a3f8ecb853d9eb9a80ff6e5b090d70717f75afdbddc31697eec0545c2f0c8891,created_at:2021-01-12T15:43:07Z
+4.5.0 aws-sdk-autoscaling:>= 0,faraday:>= 0,faraday-http-cache:>= 0,keyword_search:>= 0,lev:>= 0,rails:< 7.0&>= 5.0,request_store:>= 0|checksum:f68cf71f98c589d4cc1a8eb4e102713fdbce26ff0a48fcb16fae8a9f9c172418,created_at:2021-01-14T21:47:10Z
+4.5.1 aws-sdk-autoscaling:>= 0,faraday:>= 0,faraday-http-cache:>= 0,keyword_search:>= 0,lev:>= 0,rails:< 7.0&>= 5.0,request_store:>= 0|checksum:5a9c14489595703f93242e5104d95e099ddfce8a81c2c6ca45d854b6e0bb594e,created_at:2021-01-20T19:23:08Z
+4.5.2 aws-sdk-autoscaling:>= 0,faraday:>= 0,faraday-http-cache:>= 0,keyword_search:>= 0,lev:>= 0,rails:< 7.0&>= 5.0,request_store:>= 0|checksum:bd4a46089ed37592f91e978041eae4eee5f313c89ea3b485c650fb5c0957c05c,created_at:2021-02-02T23:36:03Z
+5.0.0 aws-sdk-autoscaling:>= 0,faraday:>= 0,faraday-http-cache:>= 0,keyword_search:>= 0,lev:>= 0,rails:< 7.0&>= 5.0,request_store:>= 0|checksum:33cedc9fcf2f0c23e3aa308a4277bd065db2c053748303a47fdfc38cf1fb5895,created_at:2021-11-19T15:14:05Z
+5.1.0 aws-sdk-autoscaling:>= 0,faraday:>= 0,faraday-http-cache:>= 0,keyword_search:>= 0,lev:>= 0,rails:< 7.0&>= 5.0,request_store:>= 0|checksum:aeb9df1cbaabf6ac745ad9fe8fb786ffdb5a3e352cb203d26757d323158a5ce3,created_at:2023-01-30T16:22:03Z
+5.1.1 aws-sdk-autoscaling:>= 0,faraday:>= 0,faraday-http-cache:>= 0,keyword_search:>= 0,lev:>= 0,rails:< 8.0&>= 5.0,request_store:>= 0|checksum:2917654e99052bd8b8ab4d1485eddc90d6ff12042ec4729ddfab7ded5cbfbcda,created_at:2024-01-22T15:36:59Z
+5.1.2 aws-sdk-autoscaling:>= 0,faraday:>= 0,faraday-http-cache:>= 0,keyword_search:>= 0,lev:>= 0,rails:< 8.0&>= 5.0,request_store:>= 0|checksum:b916b2d30e59fb64f293a655786b9fbdc6d3f71137acb38713dbd0e9e3b7cc63,created_at:2024-10-09T14:18:59Z

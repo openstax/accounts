@@ -1,0 +1,4 @@
+---
+1.0.0 active_attr:>= 0,rails:< 6.0,restforce:>= 0|checksum:60ebab91eacc99c473e98b0979cd42caf4df50db29c951c5b843a153c48d8145,ruby:>= 1.9.3,created_at:2019-11-06T19:47:14Z
+1.1.0 active_attr:>= 0,rails:< 7.0&>= 5.0,restforce:>= 0|checksum:8f50ae98f39968a16c10d6da7b42ca4decac2e623690a1a2c3a3997029e34e63,ruby:>= 1.9.3,created_at:2020-07-01T22:06:23Z
+1.1.1 active_attr:>= 0,rails:< 7.0&>= 5.0,restforce:>= 0|checksum:f13747582d210da6a1b7170da0f764c23678805086aa66eddde39b6bdd749892,ruby:>= 1.9.3,created_at:2024-10-22T22:11:02Z

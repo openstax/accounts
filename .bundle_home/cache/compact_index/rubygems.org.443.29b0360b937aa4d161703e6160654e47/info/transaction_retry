@@ -1,0 +1,4 @@
+---
+1.0.1 activerecord:>= 3.0.11,transaction_isolation:>= 1.0.2|checksum:5d1dc4e3e8b4c2f20afed47edf67d529c4ff514a3179b25e4ebbbc7f39bff097,ruby:>= 1.9.2,created_at:2012-02-07T10:05:31Z
+1.0.2 activerecord:>= 3.0.11,transaction_isolation:>= 1.0.2|checksum:68763d73d3dd55adde39afec45ef721a968c768cb9cf6a3b55318d4687d65351,ruby:>= 1.9.2,created_at:2012-02-08T14:09:57Z
+1.0.3 activerecord:>= 3.0.11,transaction_isolation:>= 1.0.2|checksum:131af2dd88223811b3ea2cccf3c3c59cd9a8dd7eb4794a01a686b487e917f467,ruby:>= 1.9.2,created_at:2018-06-18T06:28:57Z

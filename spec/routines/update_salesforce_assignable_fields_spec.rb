@@ -23,15 +23,15 @@ describe UpdateSalesforceAssignableFields, type: :routine do
     it "updates Salesforce Contact with Assignable user's info" do
       stub_contacts [ non_assignable_instructor, assignable_instructor ]
 
-      expect_any_instance_of(OpenStax::Salesforce::Remote::Contact).to(
+      expect_any_instance_of(Salesforce::Records::Contact).to(
         receive(:assignable_interest=).with('Fully Integrated').and_call_original
       )
-      expect_any_instance_of(OpenStax::Salesforce::Remote::Contact).to(
+      expect_any_instance_of(Salesforce::Records::Contact).to(
         receive(:assignable_adoption_date=).with(
           assignable_instructor.external_ids.map(&:created_at).min.strftime('%Y-%m-%d')
         ).and_call_original
       )
-      expect_any_instance_of(OpenStax::Salesforce::Remote::Contact).to receive(:save!)
+      expect_any_instance_of(Salesforce::Records::Contact).to receive(:save!)
 
       described_class.call
     end
@@ -40,9 +40,9 @@ describe UpdateSalesforceAssignableFields, type: :routine do
   def stub_contacts(users)
     sf_contacts = [users].flatten.map do |user|
       id = user.salesforce_contact_id
-      [ id, OpenStax::Salesforce::Remote::Contact.new(id: id) ]
+      [ id, Salesforce::Records::Contact.new(id: id) ]
     end.to_h
 
-    expect(OpenStax::Salesforce::Remote::Contact).to receive(:find) { |id| sf_contacts[id] }
+    expect(Salesforce::Records::Contact).to receive(:find) { |id| sf_contacts[id] }
   end
 end

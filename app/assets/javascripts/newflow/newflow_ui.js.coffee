@@ -31,6 +31,12 @@ NewflowUi = do () ->
       @disableButton(targetSelector)
 
   enableOnChecked: (targetSelector, sourceSelector) ->
+    # Run synchronously inside $(document).ready: set the initial disabled
+    # state from the checkbox, then attach the click handler. The previous
+    # version deferred the initial check by 500ms via setTimeout, which
+    # raced with feature specs that `check`-ed the box before the timer
+    # fired (the click handler is attached, but the deferred check then
+    # disabled the button right after the spec saw it as enabled).
     $(document).ready =>
 
       check = () =>

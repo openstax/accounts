@@ -1,0 +1,65 @@
+---
+2.1.0 archive-zip:~> 0.7.0,nokogiri:~> 1.6|checksum:dbaecbd55799c4393b81e699e127c597319f6481fc1ef04e49a595c902850568,created_at:2016-11-26T04:05:18Z
+2.1.1 archive-zip:~> 0.7.0,nokogiri:~> 1.6|checksum:4748be728482f574e25f127a7c114a8a9a07fd12f1a9502a29e52423e0a771d5,created_at:2016-11-26T16:17:53Z
+2.2.0 archive-zip:~> 0.7.0,nokogiri:~> 1.6|checksum:1b3748d94258f2582fc65b43276947da9da9998ac3c3b9da51c8476bd150eee9,created_at:2016-11-26T17:03:33Z
+2.2.1 nokogiri:~> 1.6,zip:>= 0|checksum:cb81e110c96e0227d78e4c2f15bded05e2c50ae7dd4588819e35fa27b6e7f781,created_at:2016-11-26T18:29:54Z
+2.3.0 nokogiri:~> 1.6,zip:>= 0|checksum:8898a5861e399b9564fcf85b81170e9c01b57367349c5429da9dee30fb997445,created_at:2016-11-26T21:16:59Z
+2.3.1 nokogiri:~> 1.6,zip:>= 0|checksum:1859c69628dcd8585028d8dfee31050ed6f68eb463a4d40d8aeb7e3f8c40c231,created_at:2016-11-26T21:42:10Z
+2.3.2 nokogiri:~> 1.6,zip:>= 0|checksum:a3bad90a12f2cd8c65fda6eebbb65aeab9fa49a5296eb5a4c302244a96a63f00,created_at:2016-11-26T21:51:13Z
+2.4.0 nokogiri:~> 1.6,rubyzip:~> 1.0|checksum:5b42f1a58a8ccc7429e453bc56e7080e714f15bd4de0173ed6c90205990acdf7,created_at:2016-12-19T02:55:16Z
+3.0.0.beta1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:70a65006ee41b90635b39ab4b1b7b6c455dc5c5016f165b12b3b99633109c627,rubygems:> 1.3.1,created_at:2017-08-15T22:43:32Z
+3.0.0.beta2 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:794b6d2ca34d71aa30893a7591e482f2ce17208d444cd78d1e9ea080c2d696b4,rubygems:> 1.3.1,created_at:2017-08-16T21:03:56Z
+3.0.0.beta3 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:e2622d51f926ace68dbb4f4af71efb1168692cbbc7815615efda637fac0f482e,rubygems:> 1.3.1,created_at:2017-08-17T19:05:23Z
+3.0.0 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:aadd70e32a09b80ae58204a22eaae7213b5284ed831dc8eef6f4c0bd31287d73,created_at:2017-08-17T19:21:22Z
+3.0.1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:e2f182a7ba4884a145ae734ae64138f9161e180a3ca4780df1e2950bfbc46e45,created_at:2017-08-19T00:01:21Z
+3.1.0 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:b2e3c4770abcfe8378f39a297b25ea7d841bfb3ce6db8736a1eec306664b89dc,created_at:2017-08-21T05:58:09Z
+3.2.0 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:64cba6969fb6a06739ea4347f0f4030d1399ab6f3291bf12a8165814ae4a8ac9,created_at:2017-08-21T22:10:18Z
+3.2.1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:762c8c25ddc7becf4451932e65798d49ba7acbed31866cc8a662ac4d5abddc4a,created_at:2017-09-06T19:35:21Z
+3.2.2 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:ddbde2867b91e8d7323a1587136c394dbc07480b260357947000ed610d9852a9,created_at:2017-11-20T19:45:10Z
+3.2.3 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:e86a320cf583919ca5f3a0ea3ec95556b577bb70717710233398fbe7b1d246f9,created_at:2017-12-12T12:58:07Z
+3.2.4 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:7cb83db7c89592db79ff81e8e41b174d488c4b9988ce5698b61afc73087bbe9b,created_at:2018-01-04T19:32:11Z
+3.3.0 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:6c5dbc19bced8e050bcbc8d4d4d5e1389b47a58737dc6b26c2f0e1506dc8a5fc,created_at:2018-04-30T04:43:46Z
+3.3.1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:ee83b1f358b54580dc58ad12bc87526ebb4e6a503d6d9291918151ad1b6e4a2c,created_at:2018-05-04T16:44:55Z
+3.3.2 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:6b95d9daec4cb921c8675240b10343b9ed1aab39605647d48a5aebcda759e243,created_at:2018-07-23T05:27:38Z
+3.3.3 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:a99333b6076324caf42722d22502d66e06a7e858e7dcb1354ed5fd417d9e54fe,created_at:2018-08-14T22:55:24Z
+3.4.0 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:c2da5de92085bf52b0cf6a912f1670b2e2914fbe0b3e26672b7dbb50d6b6606f,created_at:2018-09-07T23:33:45Z
+3.4.1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:47e9cf84be23f9dcb08f3e67af6de624990b5e58951d6da1c5dc2c588d5262bd,created_at:2018-09-17T22:36:17Z
+3.4.2 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:6b94973157be43ae040205cdb7ef51aa972958d010cc585a4b23b27a47f333f1,created_at:2018-10-16T01:24:33Z
+3.4.3 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:457191cf18777ce33860bef787684e9fce7d1f4e2eb8115bf6627629ebbec741,created_at:2018-10-22T18:06:47Z
+3.5.0.beta1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:e5598e71633b862116dba9144f48d5568a9cc5b639023c525e90a035b9483e18,rubygems:> 1.3.1,created_at:2018-12-15T23:57:12Z
+3.5.0 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:0e1efa695c330966f9e6d7e5c774a3ad99029d4f14d63dec2e85e21475bfcca5,created_at:2018-12-16T04:24:15Z
+3.5.1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:0316d5259155d8c81e002db267335550b5c671f3127f3a0a5f1901cf6f64b060,created_at:2018-12-16T04:53:29Z
+3.5.2 net_http_ssl_fix:>= 0,nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:7aebd0573d440516f8859f297584ba4a9c9d6a8fc1a7310d734c86074fe1b140,created_at:2018-12-16T05:01:36Z
+3.6.0 net_http_ssl_fix:>= 0,nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:40c93bc87689fc1f707735766fe29781ea344f7904a1f0671e885d7661a82aaf,created_at:2018-12-30T22:21:12Z
+3.7.0 net_http_ssl_fix:>= 0,nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:7c26d09233afe2369ec5e9889d2dc69d7fa8b2da7697e72aa95bc776198a3782,created_at:2019-03-19T22:04:47Z
+3.7.1 net_http_ssl_fix:>= 0,nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:a82661f2edf3d9904a8ce24a4472672f5d504870ebfdab4efa1fbaa088a2c2c6,created_at:2019-03-26T02:33:56Z
+3.7.2 net_http_ssl_fix:>= 0,nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:4238d71a82cf2376dae1168aff592ac38983dd0feaafc34715d91d565080599c,created_at:2019-04-01T16:58:29Z
+3.8.0 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:1c963ed7d0422d6659ceaf96a6058ee170a7d876593a1e105dad6c5fa4eb0ea1,created_at:2019-04-17T21:36:22Z
+3.8.1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:4da40519a871bbd1a76f909b2b94a05a4148719513d13b273d6f274e80e70282,created_at:2019-05-07T22:19:40Z
+3.9.0 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:b35e3095e6a12ee27f1f021832626af79b295b03146fd7840192c825ab4da147,created_at:2019-05-08T01:10:22Z
+3.9.1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:9ca6bfc7ef186ee4e75bb7c347d44e94b251f89e48c8897e0db8382059746b93,created_at:2019-05-09T21:58:21Z
+3.9.2 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:9bb407ebab20934eabd34cba6d651f64d274a863fc7019bce0b4f46a36df0957,created_at:2019-05-14T05:14:05Z
+3.9.3 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:ceb42cdae7948a95351a6cf05b33c6d5c8bd151817af55ecb49954937ba526c3,created_at:2019-05-17T18:11:12Z
+3.9.4 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:772be315e3a57f646477c3b590b822799f2b9ff1cf3f24067eaf021a4b3c7a36,created_at:2019-05-20T18:52:23Z
+4.0.0.rc1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:b0ca9c62e1b1fedb2d7ea5f2fca5c2679096a544d5beb028220ea60a6dadfc5c,rubygems:> 1.3.1,created_at:2019-05-21T04:26:51Z
+4.0.0.rc2 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:c5e49c0e843964bf266ee665c34943c07fbeb071686723be14da38f0ba86d2c8,rubygems:> 1.3.1,created_at:2019-05-21T21:15:15Z
+4.0.0 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:~> 3.0|checksum:e72b24a2fe3b91afc73c679109193eda68f282a117179795636c184343e6a6bc,created_at:2019-05-28T23:50:07Z
+4.0.1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:< 4.0&>= 3.0|checksum:179002ad7df007a8232329e26a8beb998b4ca953a06365460af74951f97548ea,created_at:2019-06-12T15:37:08Z
+4.1.0 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:< 4.0&>= 3.0|checksum:0fc62209e193b82b9208a5c4789e47e325af49b0e09af77c39343814de2bf0c5,created_at:2019-07-03T03:17:29Z
+4.1.1 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:< 4.0&>= 3.0|checksum:bf1c7020f089aab72e57603a9c288396d286cfe223257614f0625da91dde9698,created_at:2019-07-18T20:38:42Z
+4.1.2 nokogiri:~> 1.6,rubyzip:~> 1.0,selenium-webdriver:< 4.0&>= 3.0|checksum:b7dc9f948ca5ab184ddcc129e61b89a2b91a35f434b9e7756f2caa408364ec26,created_at:2019-07-29T19:40:16Z
+4.1.3 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 4.0&>= 3.0|checksum:9a032b9a1b8aeae23f69ca4f1ecfab5d109139d027d5b51b30535e6651fb897b,created_at:2019-10-07T23:27:50Z
+4.2.0 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 4.0&>= 3.0|checksum:be5d443451b486572ef41f20472cbe8b5531738410711bbfd8194452364f07ba,created_at:2019-12-27T20:09:39Z
+4.3.0 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 4.0&>= 3.0|checksum:51a566dcb4e7e52c6e40da932874c867d28675ecfc779d81103f404c2b5d716b,ruby:>= 2.4.0,created_at:2020-04-15T00:07:36Z
+4.4.0 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 4.0&>= 3.0|checksum:6277daff77badcb5314265f7c2e42fa1bf85474a0706bda94197bd94b52dbe68,ruby:>= 2.4.0,created_at:2020-06-01T06:45:46Z
+4.4.1 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 4.0&>= 3.0|checksum:a28172064ec9e7482e9f0a7efe53c2ec08df861ffa6cc2593fd9542fe2ddbb41,ruby:>= 2.4.0,created_at:2020-06-02T04:34:19Z
+4.4.2 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 4.0&>= 3.0|checksum:a3cdc0482bef2875bfa74d025ddc7727e90b13ef76dc2cd695dccc206453ebab,ruby:>= 2.4.0,created_at:2020-12-30T04:16:55Z
+4.5.0 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 4.0&>= 3.0|checksum:991b2929de04b11d14741b2d38d8566f8d3615bad8cddbefa0bcc73c29973138,ruby:>= 2.4.0,created_at:2021-01-20T07:23:01Z
+4.6.0 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 4.0&>= 3.0|checksum:3e3760dfc4796ff8caa2d6dacc9670c227df1321397bcadc5fe13feee6bb2642,ruby:>= 2.4.0,created_at:2021-02-26T23:37:04Z
+4.6.1 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 4.0&>= 3.0|checksum:b779677d8e2ef647000b6cfbf7ce21fb36e3524ba9f5631c70f3a65a1dab5ed9,ruby:>= 2.4.0,created_at:2021-08-20T01:05:08Z
+4.7.0 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 5.0&> 3.141|checksum:f7cf0c52341b62b3a2051e8c42c833d2b3127ca24b5ad54548379082be59cd15,ruby:>= 2.6.0,created_at:2021-10-14T23:24:06Z
+5.0.0 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:~> 4.0|checksum:b292577fd9575f80d344a02255ae3f7dca1b05f9777b6a2d2c2d07c11987aa2f,ruby:>= 2.6.0,created_at:2021-10-20T03:46:44Z
+5.1.0 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:~> 4.0|checksum:913a46351ffc72566381732d907bb2d76555c6ed06b7ec6d0da166918a5d1349,ruby:>= 2.6.0,created_at:2022-09-19T07:02:41Z
+5.2.0 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:~> 4.0|checksum:8387bdeed5df329b85bd5303a2198c91418e5887e2d71298de677a9bc249b35b,ruby:>= 2.6.0,created_at:2022-09-29T23:24:55Z
+5.3.0 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 4.11&~> 4.0|checksum:ea767a601a1e5904f83b0d6ae4531357922805d999d4dad22dc93731026f1033,ruby:>= 2.6.0,created_at:2023-07-31T19:37:06Z
+5.3.1 nokogiri:~> 1.6,rubyzip:>= 1.3.0,selenium-webdriver:< 4.11&~> 4.0|checksum:d7d5531fbc3c44b6a2a7710e3e6c5edc54f35c68af20017309e3eccf15ec4aa5,ruby:>= 2.6.0,created_at:2023-07-31T19:47:50Z
