@@ -116,7 +116,7 @@ class OauthCallback
     #   true for Google (omniauth strategy checks that the emails are verified)
     #   true for FB (their API only returns verified emails)
 
-    @users_matching_oauth_data ||= EmailAddress.where(value: oauth_data.email)
+    @users_matching_oauth_data ||= EmailAddress.with_value(oauth_data.email)
                                                                   .verified
                                                                   .with_users
                                                                   .map(&:user)
@@ -193,7 +193,7 @@ class OauthCallback
   end
 
   def is_email_taken?(email, logged_in_user_id)
-    ContactInfo.verified.where(value: email).where.not(user_id: logged_in_user_id).exists?
+    ContactInfo.verified.with_value(email).where.not(user_id: logged_in_user_id).exists?
   end
 
   def oauth_response

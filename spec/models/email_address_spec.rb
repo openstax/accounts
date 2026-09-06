@@ -80,4 +80,25 @@ describe EmailAddress, type: :model do
       }
     end
   end
+
+  describe '.claimed?' do
+    let(:value) { 'dominic@gmail.com' }
+
+    it 'is false when nobody holds the address' do
+      expect(EmailAddress.claimed?(value)).to be false
+    end
+
+    it 'is true for an unverified address, case-insensitively' do
+      FactoryBot.create(:email_address, value: value)
+
+      expect(EmailAddress.claimed?(value.upcase)).to be true
+    end
+
+    it 'skips the excluded user, so retyping your own address is allowed' do
+      email = FactoryBot.create(:email_address, value: value)
+
+      expect(EmailAddress.claimed?(value, excluding_user_id: email.user_id)).to be false
+      expect(EmailAddress.claimed?(value, excluding_user_id: email.user_id + 1)).to be true
+    end
+  end
 end

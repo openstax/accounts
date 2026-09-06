@@ -67,7 +67,7 @@ class SignupStart
   end
 
   def email_in_use?
-    ContactInfo.verified.where('lower(value) = ?', email.downcase).any?
+    ContactInfo.verified.with_value(email).any?
   end
 
   def invalid_email?

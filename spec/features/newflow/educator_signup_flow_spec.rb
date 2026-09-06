@@ -33,11 +33,10 @@ module Newflow
           submit_signup_form
           screenshot!
 
-          perform_enqueued_jobs
-
           # Step 2
           # sends an email address confirmation email
           expect(page).to have_current_path(educator_email_verification_form_path)
+          perform_enqueued_jobs
           open_email(email_value)
           capture_email!(address: email_value)
           expect(current_email).to be_truthy
@@ -83,11 +82,10 @@ module Newflow
           submit_signup_form
           screenshot!
 
-          perform_enqueued_jobs
-
           # Step 2
           # sends an email address confirmation email
           expect(page).to have_current_path(educator_email_verification_form_path)
+          perform_enqueued_jobs
           open_email(email_value)
           capture_email!(address: email_value)
           expect(current_email).to be_truthy

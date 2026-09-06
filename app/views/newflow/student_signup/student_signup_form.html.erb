@@ -105,6 +105,7 @@
                     <%=
                         form_helper.text_field(
                             name: :email,
+                            value: params[:email].presence,
                             placeholder: I18n.t(:"login_signup_form.email_placeholder"),
                             required: true
                         )

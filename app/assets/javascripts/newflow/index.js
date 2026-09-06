@@ -7,6 +7,7 @@
 //= require ./school_autocomplete
 //= require ./educator_signup_email_validations
 //= require ./educator_complete_dynamic
+//= require ./recaptcha_submit
 //= require intlTelInput
 //= require multiselect
 //= require libphonenumber/utils

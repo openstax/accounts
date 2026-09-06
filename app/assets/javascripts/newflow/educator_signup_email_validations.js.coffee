@@ -1,4 +1,7 @@
-IS_EDU = new RegExp('\.edu\s*$', 'i')
+# Institutional email domains: US .edu plus common international academic patterns
+# (.edu.au, .ac.uk, .k12.tx.us, .sch.uk, ...). A regex literal keeps the escapes
+# that a single-quoted string silently dropped.
+IS_EDU = /\.(edu|edu\.[a-z]{2}|ac\.[a-z]{2}|k12\.[a-z]{2}\.us|sch\.[a-z]{2})\s*$/i
 
 class NewflowUi.SignupEmailValidations
 
@@ -19,7 +22,8 @@ class NewflowUi.SignupEmailValidations
     if not ((@email.val() == '') or @showing_warning or IS_EDU.test(@email.val()))
       if @userType is 'instructor'
         @showing_warning = true
-        @group.addClass('has-error')
+        window.posthog?.capture('educator_signup_email_suggestion_shown', { form: 'educator_signup' })
+        @group.removeClass('has-error')
         @group.find(".errors").empty()
         @group.find(".edu.warning").show()
         @email.focus()

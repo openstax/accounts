@@ -128,6 +128,21 @@ class NewflowUi.EducatorComplete
         total_num_students_valid)
       ev.preventDefault()
 
+      invalid_fields = (name for [name, valid] in [
+        ['school_name', school_name_valid]
+        ['role', role_valid]
+        ['other', other_valid]
+        ['chosen', chosen_valid]
+        ['using_how', using_how_valid]
+        ['books_used', books_used_valid]
+        ['books_used_max', books_used_valid_max]
+        ['books_used_details', books_used_details_valid]
+        ['books_of_interest', books_of_interest_valid]
+        ['books_of_interest_max', books_of_interest_valid_max]
+        ['total_num_students', total_num_students_valid]
+      ] when not valid)
+      window.posthog?.capture('educator_signup_validation_failed', { form: 'educator_profile', invalid_fields: invalid_fields })
+
   checkSchoolNameValid: () ->
     return true if document.getElementsByClassName('school-name-visible')[0] == undefined
 
@@ -166,10 +181,10 @@ class NewflowUi.EducatorComplete
 
     values = selects.map ->
       if $(this).val()
-        $(this).siblings('.how-using-book.newflow-mustdo-alert').hide()
+        $(this).siblings('.using-book.newflow-mustdo-alert').hide()
         true
       else
-        $(this).siblings('.how-using-book.newflow-mustdo-alert').show()
+        $(this).siblings('.using-book.newflow-mustdo-alert').show()
         false
     return values.get().every (value) -> value
 
@@ -349,6 +364,9 @@ class NewflowUi.EducatorComplete
     @updateBooksUsedFields(@getSelectedBooks('books_used'))
     @enforceMaxBooks('books_used')
     @checkBooksUsedValidMax()
+    # Adding a book disables Continue until its details are filled; removing one
+    # must re-open it, otherwise deselecting the blocking book leaves it dead.
+    @checkBooksUsedDetailsValid()
     @please_select_books_used.hide()
 
   onBooksOfInterestChange: ->
@@ -399,11 +417,14 @@ class NewflowUi.EducatorComplete
             coverImg.setAttribute('src', coverUrl || '')
             coverImg.setAttribute('alt', bookTitle)
 
+          # `name` keeps the literal %placeholder-book-name%, but Rails derives id/for
+          # from the name and turns each % into _, so match both forms to keep every
+          # clone's id/for unique instead of colliding on one shared id.
           clonedNode.querySelectorAll('label, select, input').forEach (element) ->
             element.removeAttribute('disabled')
             Array.from(element.attributes)
-            .filter((attr) -> attr.value.includes('%placeholder-book-name%'))
-            .forEach((attr) -> attr.value = attr.value.replace('%placeholder-book-name%', book))
+            .filter((attr) -> attr.value.includes('placeholder-book-name'))
+            .forEach((attr) -> attr.value = attr.value.replace(/%?placeholder-book-name%?/g, book))
 
           templateNode.insertAdjacentElement('afterend', clonedNode)
           @attachBookUsedEvents(clonedNode)
