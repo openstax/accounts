@@ -264,4 +264,13 @@ module ApplicationHelper
     !current_user.is_anonymous? && EmailAddress.verified.where(user: current_user).first.try(:value)
   end
 
+  # Whether the Google Tag Manager container is actually rendered on this page.
+  # The PostHog partial uses this to work out whether GTM owns `posthog.init`,
+  # or whether it has to initialize PostHog itself.
+  def google_tag_manager_enabled?
+    Rails.env.production? &&
+      Settings::GoogleAnalytics.send_google_analytics == true &&
+      Settings::GoogleAnalytics.google_tag_manager_code.present?
+  end
+
 end

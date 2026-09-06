@@ -45,13 +45,16 @@
                 <div class="school-name newflow-mustdo-alert">
                   <%= educator_copy(:school_name_must_be_entered) %>
                 </div>
-                <%=
-                  fh.text_field(
-                    name: :school_name,
-                    placeholder: educator_copy(:school_name),
-                    autofocus: true
-                  )
-                %>
+                <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>">
+                  <%=
+                    fh.text_field(
+                      name: :school_name,
+                      placeholder: educator_copy(:school_name),
+                      autofocus: true
+                    )
+                  %>
+                  <%= f.hidden_field :school_id %>
+                </div>
               </div>
             </div>
 
@@ -348,4 +351,5 @@
 
   //this needs to be done at bottom of the file so that the dom above is already constructed
   new NewflowUi.EducatorComplete();
+  OxSchoolAutocomplete.attach('.school-autocomplete');
 </script>

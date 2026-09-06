@@ -86,6 +86,40 @@ module Newflow
         it 'outputs a user' do
           expect(handler_call.outputs.user).to be_present
         end
+
+        context 'school selection' do
+          let(:school) { FactoryBot.create :school, name: 'Rice University', city: 'Houston', state: 'TX' }
+
+          it 'links the School and stores its canonical name when school_id is valid' do
+            result = described_class.call(
+              params: { signup: params[:signup].merge(school: 'rice univ', school_id: school.id) }
+            )
+            expect(result.errors).to be_empty
+            user = result.outputs.user
+            expect(user.school).to eq school
+            expect(user.self_reported_school).to eq 'Rice University'
+          end
+
+          it 'stores free text and no school link when school_id is blank' do
+            result = described_class.call(
+              params: { signup: params[:signup].merge(school: 'Hogwarts Academy') }
+            )
+            expect(result.errors).to be_empty
+            user = result.outputs.user
+            expect(user.school).to be_nil
+            expect(user.self_reported_school).to eq 'Hogwarts Academy'
+          end
+
+          it 'falls back to free text when school_id does not exist' do
+            result = described_class.call(
+              params: { signup: params[:signup].merge(school: 'Hogwarts Academy', school_id: 999999) }
+            )
+            expect(result.errors).to be_empty
+            user = result.outputs.user
+            expect(user.school).to be_nil
+            expect(user.self_reported_school).to eq 'Hogwarts Academy'
+          end
+        end
       end
 
       context 'when failure because a user with the given email address already exists' do

@@ -113,6 +113,12 @@ class SecurityLog < ApplicationRecord
     user_already_has_contact_not_creating_lead
     creating_new_salesforce_lead
     salesforce_lead_save_failed
+    reset_password_unverified_email
+    recaptcha_verified
+    recaptcha_blocked
+    salesforce_lead_already_converted
+    updated_salesforce_contact
+    salesforce_contact_save_failed
   ]
 
   json_serialize :event_data, Hash

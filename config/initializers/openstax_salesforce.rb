@@ -6,10 +6,8 @@
 OpenStax::Salesforce.configure do |config|
   salesforce_secrets = Rails.application.secrets.salesforce
 
-  # Username, client id, instance url and private key for connecting to the Salesforce app
-  config.username        = salesforce_secrets[:username]
-  config.password        = salesforce_secrets[:password]
-  config.security_token  = salesforce_secrets[:security_token]
+  # Connected App credentials for the OAuth client credentials flow. The login domain
+  # must be the org's My Domain: Salesforce rejects this flow at login/test.salesforce.com.
   config.consumer_key    = salesforce_secrets[:consumer_key]
   config.consumer_secret = salesforce_secrets[:consumer_secret]
 

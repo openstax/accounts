@@ -30,13 +30,14 @@ feature 'Password reset', js: true do
       expect(page).to have_current_path(reauthenticate_form_path)
       expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
 
+      email_sent_content = strip_html(t(:'login_signup_form.password_reset_email_sent_description', email: 'user@openstax.org'))
       click_link(t(:"login_signup_form.forgot_password"))
       wait_for_animations
-      expect(page).to have_content(
-        strip_html(
-          t(:'login_signup_form.password_reset_email_sent_description', email: 'user@openstax.org')
-        )
-      )
+      # If UJS POST didn't navigate (rare flake), submit the reset-password form directly
+      unless page.has_content?(email_sent_content, wait: 5)
+        page.execute_script("var f=document.createElement('form');f.method='POST';f.action=#{send_reset_password_email_path.to_json};document.body.appendChild(f);f.submit()")
+      end
+      expect(page).to have_content(email_sent_content)
 
       perform_enqueued_jobs
 

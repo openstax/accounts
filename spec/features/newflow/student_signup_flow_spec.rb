@@ -103,10 +103,9 @@ module Newflow
       submit_signup_form
       screenshot!
 
-      perform_enqueued_jobs
-
       # sends an email address confirmation email
       expect(page).to have_current_path student_email_verification_form_path
+      perform_enqueued_jobs
       open_email email
       capture_email!(address: email)
       expect(current_email).to be_truthy
@@ -162,6 +161,8 @@ module Newflow
         fill_in 'signup_password',	with: password
         submit_signup_form
         screenshot!
+
+        expect(page).to have_current_path student_email_verification_form_path
 
         perform_enqueued_jobs
 

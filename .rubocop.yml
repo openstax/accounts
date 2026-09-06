@@ -14,7 +14,7 @@ AllCops:
     - config/**/*.rb
 
 # modern dev screens are large
-Metrics/LineLength:
+Layout/LineLength:
   Max: 100
 
 # Too short methods lead to extraction of single-use methods, which can make
@@ -27,7 +27,7 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 # don't need to require documenting everything
-Documentation:
+Style/Documentation:
   Enabled: false
 
 # while %i and friends are nice, [] is universally known
@@ -44,7 +44,7 @@ Style/BlockDelimiters:
 
 # Specs tend to be rather large blocks, but that's okay.
 Metrics/BlockLength:
-  ExcludedMethods: ['describe', 'context', 'feature']
+  AllowedMethods: ['describe', 'context', 'feature']
 
 #################################
 # Linting rules specificallly for RSpec #
@@ -54,10 +54,6 @@ require: rubocop-rspec
 # It's common for params hashes to make test examples a bit long but still legible
 RSpec/ExampleLength:
   Max: 13
-
-# Allow us to use `feature` instead of `describe` in feature specs
-Capybara/FeatureMethods:
-  Enabled: false
 
 # `expect_any_instance_of` is super useful for testing, although, easy to misuse
 RSpec/AnyInstance:

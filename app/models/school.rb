@@ -10,6 +10,10 @@ class School < ApplicationRecord
   # 0.0 == perfect match; 1.0 == perfect non-match
   MAX_NAME_MATCH_DISTANCE = 0.25
 
+  # Looser threshold for autocomplete: short partial queries share fewer trigrams
+  # with full school names, pushing distances higher than fuzzy_search sees.
+  MAX_SEARCH_DISTANCE = 0.3
+
   # Mispelling 'Houston' as 'Huston' gives a match distance of 0.5
   MAX_CITY_MATCH_DISTANCE = 0.5
 
@@ -40,6 +44,21 @@ class School < ApplicationRecord
     end
 
     match_rel.first
+  end
+
+  # Autocomplete search. Case-insensitive substring matches plus close trigram
+  # matches (typo tolerance), prefix matches first, then by trigram distance.
+  def self.search(query, limit: 10)
+    q = query.to_s.strip
+    return none if q.length < 2
+
+    distance = sanitize_sql(["? <-> name", q])
+    prefix = sanitize_sql(["name ILIKE ?", "#{sanitize_sql_like(q)}%"])
+    substring = sanitize_sql(["name ILIKE ?", "%#{sanitize_sql_like(q)}%"])
+
+    where(Arel.sql("(#{substring}) OR (#{distance}) <= #{MAX_SEARCH_DISTANCE}"))
+      .order(Arel.sql("(#{prefix}) DESC, (#{distance}) ASC, name ASC"))
+      .limit(limit)
   end
 
   def user_school_type

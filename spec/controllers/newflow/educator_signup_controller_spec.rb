@@ -176,6 +176,7 @@ module Newflow
       before do
         user = create_newflow_user('original@openstax.org')
         user.update_attribute('state', 'unverified')
+        user.email_addresses.first.update!(verified: false)
         allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user)
       end
 
@@ -248,6 +249,7 @@ module Newflow
       it 'renders OK' do
         user = create_newflow_user('user@openstax.org')
         user.update(state: User::UNVERIFIED)
+        user.email_addresses.first.update!(verified: false)
         allow_any_instance_of(described_class).to receive(:unverified_user) { user }
         get('educator_email_verification_form_updated_email')
         expect(response.status).to eq(200)
