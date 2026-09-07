@@ -10,6 +10,50 @@ module Newflow
     let(:password) { 'password' }
     let(:email) { Faker::Internet.email }
 
+    context 'an unverified student on the email confirmation step' do
+      let!(:student) do
+        create_newflow_user(email, password, nil, '123456', 'student').tap do |user|
+          user.update!(state: User::UNVERIFIED)
+        end
+      end
+
+      before do
+        visit newflow_login_path
+        complete_newflow_log_in_screen(email, password)
+        expect(page).to have_current_path(student_email_verification_form_path)
+      end
+
+      it 'switches to educator from the email verification screen' do
+        click_on(I18n.t(:"login_signup_form.switch_role_educator"))
+
+        expect(page).to have_current_path(educator_email_verification_form_path)
+        expect(page).to have_text(I18n.t(:"login_signup_form.switched_role_notice.educator"))
+        expect(student.reload.role).to eq('instructor')
+      end
+    end
+
+    context 'an unverified educator on the email confirmation step' do
+      let!(:educator) do
+        create_newflow_user(email, password, nil, '123456', 'instructor').tap do |user|
+          user.update!(state: User::UNVERIFIED)
+        end
+      end
+
+      before do
+        visit newflow_login_path
+        complete_newflow_log_in_screen(email, password)
+        expect(page).to have_current_path(educator_email_verification_form_path)
+      end
+
+      it 'switches to student from the email verification screen' do
+        click_on(I18n.t(:"login_signup_form.switch_role_student"))
+
+        expect(page).to have_current_path(student_email_verification_form_path)
+        expect(page).to have_text(I18n.t(:"login_signup_form.switched_role_notice.student"))
+        expect(educator.reload.role).to eq('student')
+      end
+    end
+
     context 'a student on the done page' do
       # The user factory defaults is_profile_complete to true, which only
       # EducatorSignup::CompleteProfile ever sets in production. Left true it makes

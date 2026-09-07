@@ -12,12 +12,10 @@ module Newflow
     # but one is never created here: a user who never reached SheerID has nothing in
     # Salesforce to correct, and students aren't leads in their own right.
     #
-    # Nothing Salesforce does may escape this routine. `Delayed::Worker.delay_jobs` is
-    # only true in production, so everywhere else `perform_later` runs inline inside
-    # the request and inside SwitchSignupRole's transaction -- an escaping error would
-    # 500 the switch and roll back the role change, breaking the very fix the user
-    # clicked. A missed update self-heals: UpdateUserLeadInfo reconciles lead ids and
-    # statuses nightly.
+    # In development and test, `perform_later` runs inline inside SwitchSignupRole's
+    # transaction, so Salesforce failures must be swallowed there or the role change
+    # would roll back. In a real delayed job, the same failures must raise so the
+    # worker retries and we don't silently leave the lead on the educator path.
     def exec(user:)
       return unless user
 
@@ -28,6 +26,7 @@ module Newflow
 
       # nil means Salesforce answered and has no lead; :unknown means it didn't answer,
       # and discarding a known association on that basis would lose data.
+      raise_retryable_failure!("lead lookup failed", user) if lead == :unknown && retry_on_failure?
       return if lead == :unknown
 
       if lead.nil?
@@ -42,7 +41,9 @@ module Newflow
 
       # It returns normally on a rejected write (it only logs salesforce_lead_save_failed),
       # so check before claiming success.
-      return unless push_lead(user)
+      lead_pushed = push_lead(user)
+      raise_retryable_failure!("lead update failed", user) if !lead_pushed && retry_on_failure?
+      return unless lead_pushed
 
       SecurityLog.create!(
         user: user,
@@ -95,6 +96,14 @@ module Newflow
       return if email.blank?
 
       OpenStax::Salesforce::Remote::Lead.find_by(email: email)
+    end
+
+    def retry_on_failure?
+      Delayed::Worker.delay_jobs
+    end
+
+    def raise_retryable_failure!(what, user)
+      raise StandardError, "Salesforce #{what} for user #{user.id}"
     end
 
     # Sentry rather than SecurityLog: this runs inside the caller's transaction, which

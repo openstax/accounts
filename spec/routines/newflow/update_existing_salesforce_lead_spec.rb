@@ -71,6 +71,20 @@ module Newflow
       expect(SecurityLog.where(event_type: :no_salesforce_lead_to_update).count).to eq(0)
     end
 
+    it 'raises for retry when salesforce cannot be reached in a delayed job' do
+      allow(Delayed::Worker).to receive(:delay_jobs).and_return(true)
+      allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_raise(StandardError)
+      allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_raise(StandardError, 'timeout')
+      expect_any_instance_of(CreateOrUpdateSalesforceLead).not_to receive(:exec)
+      expect(Sentry).to receive(:capture_message).with(/lead lookup failed/)
+
+      expect {
+        described_class.call(user: user)
+      }.to raise_error(StandardError, /Salesforce lead lookup failed for user #{user.id}/)
+
+      expect(user.reload.salesforce_lead_id).to eq('SF_LEAD_123')
+    end
+
     it 'swallows a failure while pushing the lead' do
       allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_return(lead)
       allow_any_instance_of(CreateOrUpdateSalesforceLead).to receive(:exec).and_raise(StandardError, 'boom')
@@ -81,11 +95,36 @@ module Newflow
       expect(SecurityLog.where(event_type: :updated_salesforce_lead_after_role_switch).count).to eq(0)
     end
 
+    it 'raises for retry when lead update blows up in a delayed job' do
+      allow(Delayed::Worker).to receive(:delay_jobs).and_return(true)
+      allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_return(lead)
+      allow_any_instance_of(CreateOrUpdateSalesforceLead).to receive(:exec).and_raise(StandardError, 'boom')
+      expect(Sentry).to receive(:capture_message).with(/lead update failed/)
+
+      expect {
+        described_class.call(user: user)
+      }.to raise_error(StandardError, /Salesforce lead update failed for user #{user.id}/)
+
+      expect(SecurityLog.where(event_type: :updated_salesforce_lead_after_role_switch).count).to eq(0)
+    end
+
     it 'does not claim success when salesforce rejects the write' do
       allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_return(lead)
       allow_any_instance_of(CreateOrUpdateSalesforceLead).to receive(:exec) { |r, **_| r.send(:outputs).lead_saved = false }
 
       described_class.call(user: user)
+
+      expect(SecurityLog.where(event_type: :updated_salesforce_lead_after_role_switch).count).to eq(0)
+    end
+
+    it 'raises for retry when salesforce rejects the write in a delayed job' do
+      allow(Delayed::Worker).to receive(:delay_jobs).and_return(true)
+      allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_123').and_return(lead)
+      allow_any_instance_of(CreateOrUpdateSalesforceLead).to receive(:exec) { |r, **_| r.send(:outputs).lead_saved = false }
+
+      expect {
+        described_class.call(user: user)
+      }.to raise_error(StandardError, /Salesforce lead update failed for user #{user.id}/)
 
       expect(SecurityLog.where(event_type: :updated_salesforce_lead_after_role_switch).count).to eq(0)
     end
