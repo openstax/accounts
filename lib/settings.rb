@@ -142,8 +142,6 @@ module Settings
       field :educator_feature_flag, type: :boolean, default: true
       field :expected_start_semester_enabled, type: :boolean, default: false
       field :collect_student_count_all_paths, type: :boolean, default: false
-      field :sheer_id_base_url,
-            type: :string, default: 'https://offers.sheerid.com/openstax/staging/teacher/?env=dev'
       field :number_of_days_contacts_modified, type: :integer, default: 7
       field :minimum_recaptcha_score, type: :float, default: 0.2
     end
