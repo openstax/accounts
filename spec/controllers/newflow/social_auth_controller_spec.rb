@@ -154,13 +154,6 @@ module Newflow
     end
 
     describe 'POST #confirm_oauth_info' do
-      before(:all) do
-        DatabaseCleaner.start
-        load('db/seeds.rb')
-      end
-
-      after(:all) { DatabaseCleaner.clean }
-
       context 'with valid params' do
         let(:valid_params) do
           {

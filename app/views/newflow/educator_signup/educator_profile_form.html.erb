@@ -19,7 +19,25 @@
           header: educator_copy(:complete_page_header),
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 4, total_steps: 4),
           classes: 'signup-page completed-step') do %>
-    <% lev_form_for :signup, url: educator_complete_profile_path do |f| %>
+
+        <%= render partial: 'newflow/signup_alternatives', locals: {
+              collapsible: true,
+              heading: I18n.t(:"login_signup_form.alternatives_heading"),
+              actions: [
+                {
+                  label: I18n.t(:"login_signup_form.switch_role_student"),
+                  description: I18n.t(:"login_signup_form.switch_role_student_description"),
+                  path: switch_signup_role_path,
+                  method: :post,
+                  ga_label: 'switch-to-student'
+                }
+              ]
+            } %>
+
+    <%# Must be the printing form of ERB. With a sibling printed in the same
+        capture scope, a non-printing lev_form_for renders nothing at all and
+        does it silently. %>
+    <%= lev_form_for :signup, url: educator_complete_profile_path do |f| %>
     <% fh = NewflowFormHelper::Newflow.new(
       f: f,
       context: self,

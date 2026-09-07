@@ -26,6 +26,15 @@ feature 'Admin user pages', js: true do
           expect(page).to have_content("Administrator |")
         end
 
+        it 'shows the external id in the results' do
+          external_id = FactoryBot.create(:external_id, user: @sf_user).external_id
+
+          visit '/admin/users'
+          click_button 'Search'
+
+          expect(page).to have_css('td.external-id', text: external_id)
+        end
+
         it "can bring up the edit page without exploding" do
           visit "/admin/users/#{@sf_user.id}/edit"
           expect(page).to have_no_content("We had some unexpected")

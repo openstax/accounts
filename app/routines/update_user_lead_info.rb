@@ -12,7 +12,7 @@ class UpdateUserLeadInfo
     # .where("created_at <= ? AND created_at >= ?", start_date, end_date)
 
     users = User.where(salesforce_contact_id: nil)
-                .where.not(salesforce_lead_id: nil, role: :student, faculty_status: :rejected_faculty)
+                .where.not(role: :student, faculty_status: :rejected_faculty)
 
     leads = OpenStax::Salesforce::Remote::Lead.select(:id, :accounts_uuid, :verification_status)
                                               .where(accounts_uuid: users.map(&:uuid))

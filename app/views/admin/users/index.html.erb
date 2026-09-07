@@ -33,6 +33,7 @@
     <tr>
       <th class="expand"></th>
       <th>ID</th>
+      <th>External ID</th>
       <th>First Name</th>
       <th>Last Name</th>
       <th>Faculty Status</th>
@@ -50,6 +51,7 @@
             <i class="fa fa-plus" aria-hidden="false"></i></a>
         </td>
         <td><%= link_to user.id, edit_admin_user_path(user), target: '_blank' %></td>
+        <td class="external-id"><%= user.external_ids.map(&:external_id).join(', ').presence || '---' %></td>
         <td><%= user.first_name || '---' %></td>
         <td><%= user.last_name || '---' %></td>
         <td><%= user.faculty_status.humanize %></td>
@@ -94,7 +96,7 @@
       </tr>
       <tr class="<%= zebra %> details">
         <td></td>
-        <td colspan=8>
+        <td colspan=9>
           <div>
             <div style="float:right">
               <span class="created"><i>Created:</i> <%= user.created_at.in_time_zone('Central Time (US & Canada)') %></span>

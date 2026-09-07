@@ -4,6 +4,11 @@
 # this file to always be loaded, without a need to explicitly require it in any
 # files.
 #
+# NOTE: unlike the generated comment above, `.rspec` here does NOT contain
+# `--require spec_helper`. This file is loaded by `spec/rails_helper.rb`, and it has
+# to stay that way: `config.include I18nMacros` below needs spec/support to have been
+# required first, which rails_helper does immediately before requiring this file.
+#
 # Given that it is always loaded, you are encouraged to keep this file as
 # light-weight as possible. Requiring heavyweight dependencies from this file
 # will add to the boot time of your test suite on EVERY test run, even for an
@@ -19,18 +24,19 @@
 RSpec.configure do |config|
   config.include I18nMacros
 
-  def database_cleaner_strategy
-    metadata = self.class.metadata
-    metadata[:js] || metadata[:truncation] ? :truncation : :transaction
-  end
-
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
-  # If you're not using ActiveRecord, or you'd prefer not to run each of your
-  # examples within a transaction, remove the following line or assign false
-  # instead of true.
-  config.use_transactional_fixtures = false
+  # Every example runs in a transaction that is rolled back afterwards. This works
+  # for :js feature specs too: ActiveRecord::TestFixtures#setup_fixtures sets
+  # `connection.pool.lock_thread = true` (lock_threads defaults to true in Rails
+  # 6.1), so Capybara's in-process server thread shares the example's connection
+  # and sees its uncommitted data.
+  #
+  # This replaced a DatabaseCleaner setup that truncated every table and reloaded
+  # db/seeds.rb after each :js example -- which also destroyed anything a
+  # before(:all) in the same group had written.
+  config.use_transactional_fixtures = true
 
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
@@ -50,18 +56,20 @@ RSpec.configure do |config|
   #   config.infer_spec_type_from_file_location!
   config.infer_spec_type_from_file_location!
 
+  # Once, outside any example transaction, so the seeds stay committed for the whole
+  # run. Nothing truncates after this, so every example can rely on pristine seeds.
   config.prepend_before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
     load('db/seeds.rb')
   end
 
-  config.prepend_before(:all) do
-    DatabaseCleaner.strategy = database_cleaner_strategy
-    DatabaseCleaner.start
-  end
+  # use_transactional_fixtures only wraps examples, and before(:all) runs outside
+  # that transaction -- so without this wrapper anything a before(:all) writes
+  # commits and leaks into every later example for the rest of the run.
+  config.prepend_before(:all) { DatabaseCleaner.start }
+  config.append_after(:all) { DatabaseCleaner.clean }
 
   config.prepend_before(:each) do
-    DatabaseCleaner.start
     EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new
   end
 
@@ -76,25 +84,10 @@ RSpec.configure do |config|
     I18n.locale = :en
   end
 
-  # https://github.com/DatabaseCleaner/database_cleaner#rspec-with-capybara-example says:
-  #   "It's also recommended to use append_after to ensure DatabaseCleaner.clean
-  #    runs after the after-test cleanup capybara/rspec installs."
-  config.append_after(:each) do
-    DatabaseCleaner.clean
-    load('db/seeds.rb') if database_cleaner_strategy == :truncation
-  end
-
-  config.append_after(:all) do
-    DatabaseCleaner.clean
-    load('db/seeds.rb') if database_cleaner_strategy == :truncation
-  end
-
-  # These two settings work together to allow you to limit a spec run
-  # to individual examples or groups you care about by tagging them with
-  # `:focus` metadata. When nothing is tagged with `:focus`, all examples
-  # get run.
-  #config.filter_run :focus
-  config.run_all_when_everything_filtered = true
+  # Tag an example or group with `:focus` to run only that; when nothing is
+  # tagged, everything runs. Replaces the older filter_run/
+  # run_all_when_everything_filtered pair.
+  config.filter_run_when_matching :focus
 
   # Allows RSpec to persist some state between runs in order to support
   # the `--only-failures` and `--next-failure` CLI options. We recommend

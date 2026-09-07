@@ -33,6 +33,26 @@ def complete_newflow_log_in_screen(username_or_email, password = 'password')
   expect(page).to have_no_missing_translations
 end
 
+# A successful login is a full-page POST, which the wait_for_ajax/wait_for_animations
+# at the end of complete_newflow_log_in_screen do not track. A caller that immediately
+# visits another page can navigate before the session cookie is set and arrive
+# anonymous -- which then shows up as a missing link or an unexpected redirect much
+# later in the spec.
+#
+# Deliberately not folded into complete_newflow_log_in_screen: several specs submit bad
+# credentials on purpose and expect to stay on the form.
+def wait_for_successful_log_in
+  expect(page).to have_no_field('login_form_password')
+end
+
+# The inverse of wait_for_successful_log_in. Signing out is also a full page load, and
+# newflow_log_in_user decides whether to visit the login page from page.current_url --
+# which is stale until that navigation lands, so it can skip the visit and then submit
+# against a page that is about to be replaced.
+def wait_for_log_in_form
+  expect(page).to have_field('login_form_password')
+end
+
 def newflow_log_in_user(username_or_email, password = 'password')
   visit(newflow_login_path) unless page.current_url == newflow_login_url
   complete_newflow_log_in_screen(username_or_email, password)
