@@ -78,7 +78,7 @@ pl:
       Czy to na pewno Twój szkolny adres-email? Jeżeli tak, wciśnij %{button} poniżej.
       Jeżeli nie, wpisz adres e-mail przyznany Ci przez Twoją szkołę.
     school_issued_email_label: Adres e-mail wydany przez szkołę
-    phone_number_label: Numer telefonu
+    phone_number_label: Numer telefonu (opcjonalnie)
     password_label: Hasło
     pin_label: Potwierdź PIN
     pin_placeholder: Wprowadź 6-cyfrowy PIN
