@@ -52,10 +52,6 @@ class NewflowUi.SignupEmailValidations
     @group.find(".edu.warning").hide()
     @group.find(".mistype.warning").hide()
     @showing_warning = false
-    @checkCheckedButton('#signup_form_submit_button', '#signup_terms_accepted')
-
-  checkCheckedButton: (targetSelector, sourceSelector) ->
-    if $(sourceSelector).is(':checked')
-      @enableButton(targetSelector)
-    else
-      @disableButton(targetSelector)
+    # enableButton/disableButton live on the shared NewflowUi object, not on
+    # this class. Delegate so clearWarnings does not throw part-way through.
+    NewflowUi.checkCheckedButton('#signup_form_submit_button', '#signup_terms_accepted')
