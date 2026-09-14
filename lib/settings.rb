@@ -146,6 +146,20 @@ module Settings
             type: :string, default: 'https://offers.sheerid.com/openstax/staging/teacher/?env=dev'
       field :number_of_days_contacts_modified, type: :integer, default: 7
       field :minimum_recaptcha_score, type: :float, default: 0.2
+
+      # Salesforce sync redesign (see docs/superpowers/specs/2026-05-20-salesforce-sync-design.md)
+      field :salesforce_contacts_synced_through, type: :string, default: nil
+      field :salesforce_contacts_lookback_overlap_hours, type: :integer, default: 1
+      field :salesforce_reconcile_max_queries, type: :integer, default: 5000
+      field :salesforce_reconcile_pass_cursors, type: :hash, default: {}
+      field :salesforce_alert_lead_save_failure_rate_pct, type: :integer, default: 2
+      field :salesforce_alert_contact_id_conflict_count, type: :integer, default: 5
+      field :salesforce_alert_contact_id_swap_rate_pct, type: :integer, default: 5
+      field :salesforce_alert_unknown_uuid_count, type: :integer, default: 50
+      field :salesforce_alert_drift_open_total, type: :integer, default: 100
+      field :salesforce_alert_cron_drift_hours, type: :integer, default: 2
+      field :salesforce_sf_admin_notify_enabled, type: :boolean, default: false
+      field :salesforce_reconcile_self_heal_enabled, type: :boolean, default: false
     end
 
     mattr_accessor :store

@@ -1,0 +1,27 @@
+---
+1.0.0.pr2 omniauth:= 1.0.0.pr2|checksum:e7be46ccd16cfd327d363241b46fefe5f0ba9b2750db4b60a418c9df0af852c5,rubygems:>= 1.3.6,created_at:2011-10-13T00:34:46Z
+1.0.0.beta1 omniauth:= 1.0.0.beta1|checksum:9ce3a54cb155c399d22196dceececfdf93ce4ba8eb7d1939add0505bb6382138,rubygems:>= 1.3.6,created_at:2011-10-19T01:39:19Z
+1.0.0.rc1 omniauth:= 1.0.0.beta1|checksum:00b45e6a796bda5521d83e9164fc6dcdf883309876efa88fb52fd599a866eefc,rubygems:>= 1.3.6,created_at:2011-10-28T04:21:07Z
+1.0.0.rc2 omniauth:~> 1.0.0.rc2|checksum:caa5b834bcf279ab1f78453ed01d598268ccf33fa02b51d0b8d12d39d68ce839,rubygems:>= 1.3.6,created_at:2011-10-28T05:27:17Z
+1.0.0 omniauth:~> 1.0|checksum:db7299f025c2e0a9e70cd418748cf46588cb6802c919d11c52bd4f5239a8f528,rubygems:>= 1.3.6,created_at:2011-11-02T12:33:54Z
+1.1.0 bcrypt-ruby:~> 3.0,omniauth:~> 1.0|checksum:235922530fdb9749308d6fde0c874e42438246739680bf1f168e7907e9045848,rubygems:>= 1.3.6,created_at:2012-08-06T02:15:26Z
+1.1.1 bcrypt-ruby:~> 3.0,omniauth:~> 1.0|checksum:66481d23fa9b56e8afaf567a55de62ce5265de2877e9720d9d418faaa6e818b8,rubygems:>= 1.3.6,created_at:2013-07-04T02:24:29Z
+2.0.0 bcrypt:>= 0,omniauth:>= 0|checksum:61cea064756cd764448606b16f16a747cced3d2cb58b2eaf35648e00f9747415,rubygems:>= 1.3.6,created_at:2020-09-01T19:22:52Z
+3.0.0 bcrypt:>= 0,omniauth:>= 0|checksum:d67cc1b61f5b1d1eeccf79c83238c84f5ac9484791d5f865eddc1f682944cf97,ruby:>= 2.4,rubygems:>= 1.3.6,created_at:2021-02-13T09:29:44Z
+3.0.1 bcrypt:>= 0,omniauth:>= 0|checksum:273cb78b20e933b949bd38007f2817d01a77295fc31b65c7b5249fef83b48b59,ruby:>= 2.4,rubygems:>= 1.3.6,created_at:2021-02-14T04:01:34Z
+3.0.2 bcrypt:>= 0,omniauth:>= 0|checksum:f7f9bbe625b91cbb1e91f4b1c14de61578209c38ec8bf4888fa0a4149dcab384,ruby:>= 2.4,rubygems:>= 1.3.6,created_at:2021-02-14T05:12:08Z
+3.0.3 bcrypt:>= 0,omniauth:>= 0|checksum:619c2467828e5f37d4a1fc435ccc482b6285e947833f9e25ac6c7ae5a9d943e7,ruby:>= 2.4,rubygems:>= 1.3.6,created_at:2021-02-14T07:53:54Z
+3.0.4 bcrypt:>= 0,omniauth:>= 0|checksum:25e7a923eecb00502899cf9304cc6949febd0784245db07d4b7db02b92a61a70,ruby:>= 2.4,rubygems:>= 1.3.6,created_at:2021-02-14T09:19:12Z
+3.0.5 bcrypt:>= 0,omniauth:>= 0|checksum:195ab860825c2055903b5d1a4473187a0d62a98ae6d5b49a7ed842745e510f44,ruby:>= 2.4,rubygems:>= 1.3.6,created_at:2021-03-20T03:47:06Z
+3.0.6 bcrypt:>= 0,omniauth:>= 0|checksum:69317b9d7ebedc471a434948d02c7c91a04e9a156956c4315e8cbefb8ce6b7be,ruby:>= 2.4,rubygems:>= 1.3.6,created_at:2021-03-21T02:36:38Z
+3.0.7 bcrypt:>= 0,omniauth:>= 0|checksum:171c2a879fc293a24a60b1522d62b9107b8986abd72e384c54aa81249341c52f,ruby:>= 2.4,rubygems:>= 1.3.6,created_at:2021-03-24T02:25:22Z
+3.0.8 bcrypt:>= 0,omniauth:>= 0|checksum:d24a3b9d3c94f34835ef30955d9d8a8deb0662e69513a876787ed2e772314e03,ruby:>= 2.4,rubygems:>= 1.3.6,created_at:2021-03-24T06:19:36Z
+3.0.9 bcrypt:>= 0,omniauth:>= 0|checksum:cf1a22e4a8484ec09d171d3b72c7daaafa4801765e4da2457447e23c8f0d258f,ruby:>= 2.4,rubygems:>= 1.3.6,created_at:2021-06-16T17:48:09Z
+3.1.0 bcrypt:~> 3.1,omniauth:>= 1,version_gem:>= 1.1.4&~> 1.1|checksum:f9535e116644eed4f67eece3ecb6faa2e1bd5a9665dcd743909e5f77fcd2eae5,ruby:>= 2.4,created_at:2024-11-18T17:15:18Z
+3.1.1 bcrypt:~> 3.1,omniauth:>= 1,version_gem:>= 1.1.4&~> 1.1|checksum:67466afa99c5d77f145ada9c417096fe8dc7b34a49f761c99a1aaf2a75284272,ruby:>= 2.4,created_at:2024-11-18T18:24:16Z
+3.1.2 bcrypt:~> 3.1,mutex_m:~> 0.1,omniauth:>= 1,version_gem:>= 1.1.8&~> 1.1|checksum:312f54a716ed75469853fb8250f5fb711445131b95f1285db172cf8720089407,ruby:>= 2.4,created_at:2025-05-07T20:07:05Z
+3.1.3 bcrypt:~> 3.1,mutex_m:~> 0.1,omniauth:>= 1,version_gem:< 3&>= 1.1.8|checksum:f2dd7ca6e980c59cf43a6609ea32201b2aa471904e9128d8f2941337e0f49079,ruby:>= 2.4,created_at:2025-06-08T10:11:46Z
+3.1.4 bcrypt:~> 3.1,mutex_m:~> 0.1,omniauth:>= 1,version_gem:< 3&>= 1.1.8|checksum:c4493a244d175b88ba0953ff39d6240f0978e05e48bd503f0e6af6d4bea74984,ruby:>= 2.4,created_at:2025-07-29T02:54:22Z
+3.1.5 bcrypt:~> 3.1,mutex_m:~> 0.1,omniauth:>= 1,version_gem:>= 1.1.9&~> 1.1|checksum:f900435044726704bca7486c27fd7695f5ffca63e2c338607cb4e972af947e33,ruby:>= 2.4,created_at:2025-10-14T00:33:04Z
+3.2.0 auth-sanitizer:>= 0.2.0&~> 0.2,bcrypt:~> 3.1,mutex_m:~> 0.1,omniauth:>= 1,version_gem:>= 1.1.9&~> 1.1|checksum:4ebbe68c28b09388ce7738be101434b4fd8cbae3a065801444e8639932a9c63f,ruby:>= 2.4,created_at:2026-06-05T10:42:38Z
+3.2.1 anonymous_loader:>= 0.1.3&~> 0.1,auth-sanitizer:>= 0.2.3&~> 0.2,bcrypt:~> 3.1,mutex_m:~> 0.1,omniauth:>= 1,version_gem:>= 1.1.14&~> 1.1|checksum:0a97180517e6ff2ac6e9efc9a7b8eb81b10495cb3a6c65eacd33adf1eb756177,ruby:>= 2.4,created_at:2026-07-15T00:57:16Z

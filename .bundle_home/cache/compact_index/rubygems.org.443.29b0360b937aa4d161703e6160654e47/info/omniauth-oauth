@@ -1,0 +1,10 @@
+---
+1.0.0.pr2 oauth:>= 0,omniauth:~> 1.0.0.pr2|checksum:58535042023afcd3442229a538f9ae14eec42ab13bee0f7e1f0c06ed80064d22,rubygems:> 1.3.1,created_at:2011-10-13T00:33:07Z
+1.0.0.beta1 oauth:>= 0,omniauth:~> 1.0.0.beta1|checksum:0e0a9c83a0ce35b2a3bb5e307dd05cc48b81c6eac8711c937abd2f3aad0bc168,rubygems:> 1.3.1,created_at:2011-10-19T01:35:38Z
+1.0.0.rc1 oauth:>= 0,omniauth:~> 1.0.0.beta1|checksum:f137a37af772e33078d57c53a1c032b26b465f33573f1ea632e4284a8a7f3bb5,rubygems:> 1.3.1,created_at:2011-10-28T04:19:31Z
+1.0.0.rc2 oauth:>= 0,omniauth:~> 1.0.0.rc2|checksum:292de2d1c35d775afc8d482019f575442d393c87778d3adc6591029daa61447f,rubygems:> 1.3.1,created_at:2011-10-28T05:34:30Z
+1.0.0 oauth:>= 0,omniauth:~> 1.0|checksum:9223cfef036ea576118f95c2db00c9409c5ae03e86752ccc868ef3dfeef70dd5,created_at:2011-11-02T12:30:24Z
+1.0.1 oauth:>= 0,omniauth:~> 1.0|checksum:9f1bfb30fe6ba823935330d2036e08a5406e980f1e20c9b1271b82ee34fbe759,created_at:2012-03-02T15:51:45Z
+1.1.0 oauth:>= 0,omniauth:~> 1.0|checksum:67808f891c2b6961090d7c3dc22f57c5e79795e099aed412607ec2e31799bbd8,created_at:2015-04-22T11:02:20Z
+1.2.0 oauth:>= 0,omniauth:< 3&>= 1.0|checksum:e7a78658498dc83aa3f3be1a776425c0f06a60d45d9236dbe5e98e61fadf827b,created_at:2021-01-28T19:40:37Z
+1.2.1 oauth:>= 0,omniauth:< 3&>= 1.0,rack:< 4&>= 1.6.2|checksum:25bf22c90234280fa825200490f03ff1ce7d76f1a4fbd6c882c6c5b169c58da8,created_at:2024-08-27T16:21:28Z

@@ -1,0 +1,27 @@
+---
+0.0.1 oa-core:~> 0.0.0,rack-openid:>= 0|checksum:bcc19e64f27d0cb7e0fefcfc17818b301dcfc922b28286ff6f06c64523881de0,created_at:2010-04-29T20:57:58Z
+0.0.2 oa-core:~> 0.0.0,rack-openid:>= 0|checksum:4b1ac0c7fbc3e6fb7b22cbe5bcab0738d89eb5d7b9bfc9901340b478aa41ee14,created_at:2010-05-01T18:43:46Z
+0.0.4 oa-core:= 0.0.4,rack-openid:~> 1.1.1,ruby-openid-apps-discovery:>= 0|checksum:2b36a5207276e3f256b15689bb416bec720f28a01854cec85cb987a2b602560f,created_at:2010-08-24T02:17:26Z
+0.0.5 oa-core:= 0.0.5,rack-openid:~> 1.1.1,ruby-openid-apps-discovery:>= 0|checksum:7002602857719119face17fdd635e292a40751b7ce4f03f14dd8571e41958449,created_at:2010-09-01T23:46:49Z
+0.1.0 oa-core:= 0.1.0,rack-openid:~> 1.1.1,ruby-openid-apps-discovery:>= 0|checksum:3b184bb046920fdba895c22d2672d62615fbf26f369cd10a27eac1b0b99c3b1b,created_at:2010-10-01T15:32:10Z
+0.1.1 oa-core:= 0.1.1,rack-openid:~> 1.1.1,ruby-openid-apps-discovery:>= 0|checksum:8314233d8fc55cc9e00e4598d0d987b92ce464e04a94ec5a71e02d73700ce2fd,created_at:2010-10-04T18:34:55Z
+0.1.2 oa-core:= 0.1.2,rack-openid:~> 1.1.1,ruby-openid-apps-discovery:>= 0|checksum:ae163d24021c3bd81f67c2fa014c957cfe62e2596bf1e452e21308d706c9ebbd,created_at:2010-10-06T12:50:18Z
+0.1.3 oa-core:= 0.1.3,rack-openid:~> 1.1.1,ruby-openid-apps-discovery:>= 0|checksum:fac3887844dabafed629ebaf3164bf46a314e8273e9bdb0e6b4efa1ddff35bc0,created_at:2010-10-11T16:09:43Z
+0.1.4 oa-core:= 0.1.4,rack-openid:~> 1.1.1,ruby-openid-apps-discovery:>= 0|checksum:824282ed350fb9d41a6777d7325c990d2ee9f29d1fba9324b30405d666d2a641,created_at:2010-10-12T17:12:26Z
+0.1.5 oa-core:= 0.1.5,rack-openid:~> 1.1.1,ruby-openid-apps-discovery:>= 0|checksum:e187496c4445932355f58917a3ef8dd417f4da903b36f9523cf140d736683d5c,created_at:2010-10-19T14:54:05Z
+0.1.6 oa-core:= 0.1.6,rack-openid:~> 1.2.0,ruby-openid-apps-discovery:>= 0|checksum:41d337d98dcf2b020ac149e20207ffedc3ded80fbb0e41043986a499ca010c87,created_at:2010-10-25T22:24:26Z
+0.2.0.beta1 oa-core:= 0.2.0.beta1,rack-openid:~> 1.2.0,ruby-openid-apps-discovery:>= 0|checksum:b1fa0f36504957908e49e9107ec1ad52db6e1da052bab82ddaa8e232bca51e29,rubygems:> 1.3.1,created_at:2010-11-29T19:01:21Z
+0.2.0.beta2 oa-core:= 0.2.0.beta2,rack-openid:~> 1.2.0,ruby-openid-apps-discovery:>= 0|checksum:559cda062b3a4f00ed82586a2cdd44a1c9b7a0f1462c49946f618a2f06a56cdb,rubygems:> 1.3.1,created_at:2011-01-14T21:19:53Z
+0.2.0.beta3 oa-core:= 0.2.0.beta3,rack-openid:~> 1.2.0,ruby-openid-apps-discovery:>= 0|checksum:1863cdcbeabcb86eb2f5ae6d756d361899b3aec862a65e965a6e48b630619e15,rubygems:> 1.3.1,created_at:2011-02-04T05:43:34Z
+0.2.0.beta4 oa-core:= 0.2.0.beta4,rack-openid:~> 1.2.0,ruby-openid-apps-discovery:>= 0|checksum:9eb75a1fd36f91bc91de7ca33a906deb3539cdc7d15d2b2b87c7d8fe8a66571a,rubygems:> 1.3.1,created_at:2011-02-11T18:39:19Z
+0.2.0.beta5 oa-core:= 0.2.0.beta5,rack-openid:~> 1.2.0,ruby-openid-apps-discovery:>= 0|checksum:7ae3d474f25d6b97d0fa668fe3c43ba0512ee784a6ddc54c739233ec858dea81,rubygems:> 1.3.1,created_at:2011-03-01T19:15:11Z
+0.2.0 oa-core:= 0.2.0,rack-openid:~> 1.2.0,ruby-openid-apps-discovery:>= 0|checksum:db2274e554d00a7a07a244ccc9a94c9f519de81415e0a124b13caa9797128859,created_at:2011-03-11T17:35:17Z
+0.2.1 oa-core:= 0.2.1,rack-openid:~> 1.2.0,ruby-openid-apps-discovery:>= 0|checksum:24bff1dbdf01e5db14d6813eaa4105e7d41aba326b74ab8e73a3b6200b46923e,created_at:2011-04-05T18:33:18Z
+0.2.2 oa-core:= 0.2.2,rack-openid:~> 1.2.0,ruby-openid-apps-discovery:>= 0|checksum:6b46b08974513a2ef197b54e7dfc68fa3a4aac6060315d1b6e0c987fb045a81f,created_at:2011-04-16T16:15:47Z
+0.2.3 oa-core:= 0.2.3,rack-openid:~> 1.2.0,ruby-openid-apps-discovery:>= 0|checksum:6639ef3782e756639f2561564d47fe24fa0c0e238215499511e5ff6ae2640d23,created_at:2011-04-21T06:50:04Z
+0.2.4 oa-core:= 0.2.4,rack-openid:~> 1.2.0,ruby-openid-apps-discovery:>= 0|checksum:44608b87d34e03c26f832b99036bed6eb79004a28ed46081920540e18c323644,rubygems:>= 1.3.6,created_at:2011-04-22T08:45:46Z
+0.2.5 oa-core:= 0.2.5,rack-openid:~> 1.3.1,ruby-openid-apps-discovery:~> 1.2.0|checksum:3a2c2092e94686e062b1e6fd1384f82223648368065b83336460541445423e8e,rubygems:>= 1.3.6,created_at:2011-04-29T01:33:14Z
+0.2.6 oa-core:= 0.2.6,rack-openid:~> 1.3.1,ruby-openid-apps-discovery:~> 1.2.0|checksum:7cb9528c1d9bd8b91cb38d727bceca9665ea28717c0f9b9da27b99b235428064,rubygems:>= 1.3.6,created_at:2011-05-20T21:09:44Z
+0.3.0.rc3 oa-core:= 0.3.0.rc3,rack-openid:~> 1.3.1,ruby-openid-apps-discovery:~> 1.2.0|checksum:3e3c3dafcf84acb019f25a8ac81867a5d1b8d3533511f3976301316fce7b76ac,rubygems:> 1.3.1,created_at:2011-09-03T18:40:19Z
+0.3.0 oa-core:= 0.3.0,rack-openid:~> 1.3.1,ruby-openid-apps-discovery:~> 1.2.0|checksum:89a274adc5f2cc5e9536aac2536fa7316c025a5aee9f33bbf8abcf4f49974413,rubygems:>= 1.3.6,created_at:2011-09-22T17:00:22Z
+0.3.2 oa-core:= 0.3.2,rack-openid:~> 1.3.1,ruby-openid-apps-discovery:~> 1.2.0|checksum:052a69ff567aabc5c19eecbcd2e2a486e98d7bc71e1498859c59cc03e95e7422,rubygems:>= 1.3.6,created_at:2011-10-20T23:21:54Z

@@ -1,0 +1,29 @@
+<section class="salesforce-timeline">
+  <h3>Salesforce timeline</h3>
+  <% if @salesforce_timeline.nil? || @salesforce_timeline.empty? %>
+    <p>No Salesforce events recorded for this user.</p>
+  <% else %>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th style="width: 18%">When</th>
+          <th style="width: 28%">Event</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @salesforce_timeline.each do |event| %>
+          <tr>
+            <td><%= event.created_at.strftime('%Y-%m-%d %H:%M:%S') %></td>
+            <td><%= event.event_type %></td>
+            <td><pre style="white-space: pre-wrap; margin: 0;"><%= JSON.pretty_generate(event.event_data) rescue event.event_data.inspect %></pre></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <p>
+      <%= link_to 'Open drift findings for this user',
+                  admin_salesforce_drift_findings_path(user_id: @user.id) %>
+    </p>
+  <% end %>
+</section>

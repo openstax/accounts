@@ -1,0 +1,21 @@
+---
+0.9.2 rack:>= 0.9.1,test-spec:~> 0.9.0|checksum:d78b715c05a64291e34a70e6c6a0ad37e46df004a7895fb5180b10399bf6f050,created_at:2009-07-25T18:02:11Z
+0.9.0 rack:~> 0.9.1,test-spec:~> 0.9.0|checksum:323a87917e8b40bfa2ecf34a3ee53b0c9713e5e4eec6df2f1c40d8570afdfc54,created_at:2009-07-25T18:02:12Z
+1.0.0 rack:>= 0.9.1|checksum:a527b563acb6f97b6be173b40fb153284e5ae68b354ad4ab2e8ca859fe4ab01f,created_at:2010-06-07T17:06:35Z
+1.0.1 rack:>= 0.9.1|checksum:413a1e98f4d7b0f92551e01cb0b2097de8b135d0cadef85ab7212cc2cdb06b36,created_at:2010-06-10T00:54:58Z
+1.1.0 rack:>= 0.9.1|checksum:4639f330d18387ad21457d44079d954686d8cc28982ad80f8e04a2705affa32b,created_at:2010-10-19T10:53:25Z
+1.2.0 rack:>= 0.9.1|checksum:38aa803a1801fd0818060c8c6f34f3ffd6a4a45807c27f2121141669ed1ab9d5,created_at:2014-10-31T16:16:27Z
+1.2.0.39.g17d21b4 git-version-bump:~> 0.15,rack:~> 1.4|checksum:796c44e8a51ac8ef484223d94cbc201c0ab07ee0b04813f7fe259a55055d2728,rubygems:> 1.3.1,created_at:2015-06-26T03:29:15Z
+1.3.0 git-version-bump:~> 0.15,rack:~> 1.4|checksum:1bb12c0666e941c8c69be5ca5321f3d9e82240270f26ff5eaa407c9978d72a49,created_at:2015-07-01T02:55:17Z
+1.4.0 git-version-bump:~> 0.15,rack:~> 1.4|checksum:06962bb07f3fb4d10117729a34d3ea2369991fb75184ebbcf6fd571d9ee6f348,created_at:2015-08-02T05:17:47Z
+1.5.0 rack:~> 1.4|checksum:c899a893df593c8a7244d662ec9d7b909bcdc1cdb6b6f09c67a108c04b898ff7,created_at:2017-07-19T00:04:41Z
+1.6.0 rack:~> 1.4|checksum:f0203c44f678e15f64aa1457f712313fb75dc29d166e0e03a0aa19d7b43799b6,created_at:2017-09-01T01:01:11Z
+1.7.0 rack:~> 1.4|checksum:5c12b0aa2147f739a6c8a50d41c03245d1d3593afe0b1bfcde9a07f10ad7e1f9,created_at:2017-10-01T01:45:06Z
+1.8.0 rack:~> 1.4|checksum:9d97fe1c0190679ad691824da400ba1372196e9cf7484489b985ca4bb602f5d0,created_at:2017-11-08T00:18:22Z
+2.0.0 rack:~> 2.0|checksum:49747b3c31d56dc598aee0d40953ea59cc3c9005a10d29c890a65a98f575dea3,ruby:>= 2.2.2,created_at:2017-11-30T08:58:26Z
+2.0.1 rack:~> 2.0|checksum:255d8e9c1349b40342753a4cfe1860064c68fec42d3eabf1fc280157b44b6587,ruby:>= 2.2.2,created_at:2017-12-08T05:31:39Z
+2.1.0 rack:~> 2.0|checksum:263e533c0d85bcbf1797b1e49dae0671b09d9463649b856dd1af983bc0b4e184,ruby:>= 2.2.2,created_at:2018-10-04T03:18:15Z
+2.2.0 rack:~> 2.0|checksum:8cf71d5662ba1033106395dd8c0123dcb28ef94da21c3b671efe401eb24ea2e0,ruby:>= 2.2.2,created_at:2020-03-31T21:15:01Z
+2.3.0 rack:~> 2.0|checksum:72cfcfc083513c1000cdfe4d19ef4761ca85c298b8ce5903ef56bce26501ee2b,ruby:>= 2.2.2,created_at:2020-11-30T23:50:40Z
+2.4.0 rack:< 4|checksum:394748067e6bf956a78539bf61b516f910e8fba3c0adbbe6cb36c7efb6193731,ruby:>= 2.2.2,created_at:2023-10-24T12:05:24Z
+2.5.0 rack:< 4|checksum:51bd2ce82b8a3270f9173130c4cdaea72aab8b03dce8cd6af1c4344d84a32d02,ruby:>= 2.2.2,created_at:2024-05-24T00:51:46Z

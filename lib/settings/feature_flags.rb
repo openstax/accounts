@@ -38,6 +38,14 @@ module Settings
         Settings::Db.store.collect_student_count_all_paths = bool
       end
 
+      def salesforce_reconcile_self_heal
+        Settings::Db.store.salesforce_reconcile_self_heal_enabled
+      end
+
+      def salesforce_reconcile_self_heal=(bool)
+        Settings::Db.store.salesforce_reconcile_self_heal_enabled = bool
+      end
+
     end
   end
 end

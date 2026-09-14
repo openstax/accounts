@@ -1,0 +1,56 @@
+---
+0.1.0 gherkin:~> 2.12.0|checksum:b562d1d40a4d7632682aa9a92e279c39a7759761e8ea3ca339749d7881d9b211,ruby:>= 1.9.3,created_at:2014-02-12T17:34:47Z
+0.2.0 gherkin:~> 2.12.0|checksum:9beb41b6ab6cc03694a92cc9714ccd0faf1c6dcf6cc6fa784bc2bcd2c740e8ca,ruby:>= 1.9.3,created_at:2014-02-28T21:45:55Z
+1.0.0.beta.1 gherkin:~> 2.12.0|checksum:e5b482de8ad061b0be125dd8604774cc4e517ec2f87a924c7c201ceba79d453c,ruby:>= 1.9.3,rubygems:> 1.3.1,created_at:2014-08-22T13:38:35Z
+1.0.0.beta.2 gherkin:~> 2.12.0|checksum:45486f9c8631601a09ecb8489cefcdee4f8debf1344ec7c93696e89d191a01a5,ruby:>= 1.9.3,rubygems:> 1.3.1,created_at:2014-08-29T14:22:53Z
+1.0.0.beta.3 gherkin:~> 2.12.0|checksum:ab5a42d16482718a2017cd9992491b36084b6d6f1c86c30ba734c8f5a014a770,ruby:>= 1.9.3,rubygems:> 1.3.1,created_at:2014-09-14T08:46:33Z
+1.0.0.beta.4 gherkin:~> 2.12.0|checksum:e2bcd82d51af0a358df41dcf150328813c1cd39075ca8f33498a0a5bc59ca3b9,ruby:>= 1.9.3,rubygems:> 1.3.1,created_at:2014-12-18T18:28:53Z
+1.0.0 gherkin:~> 2.12.0|checksum:1fe52f2ad6b2ee1b7948e840ff4ebaf9889dad5968f3728e3fd075d8a4373ff9,ruby:>= 1.9.3,created_at:2015-01-23T12:24:22Z
+1.1.0 gherkin:~> 2.12.0|checksum:4d9d8d0dc590e2730e580e3112a3ed3a531758382593741f7d9379e5de39d5b7,ruby:>= 1.9.3,created_at:2015-02-08T10:14:27Z
+1.1.1 gherkin:~> 2.12.0|checksum:b0d915082b1a109a05acdbfc4d6bb06aab2916b40e7b77fdde2f98fb31ad10c9,ruby:>= 1.9.3,created_at:2015-02-13T15:25:01Z
+1.1.2 gherkin:~> 2.12.0|checksum:db9b2abd0b65de9b08b774f84e76b4944efcbe2dc3e326331d337c934db61953,ruby:>= 1.9.3,created_at:2015-03-19T13:13:34Z
+1.1.3 gherkin:~> 2.12.0|checksum:e6d1d41dd048e16161de92ddb415e2e599c6182923f9c6a2a2fcce63ce9dad94,ruby:>= 1.9.3,created_at:2015-03-25T09:28:49Z
+1.2.0 gherkin:~> 2.12.0|checksum:390e4d05a99d4b648f75343b553cb22c59aa9b4e461ab383323d4ca381b4b4bb,ruby:>= 1.9.3,created_at:2015-07-08T21:57:37Z
+1.3.0 gherkin3:~> 3.1.0|checksum:28dfebe5e003a28c60266468f781968e30fe26858a823001be3f9aa481fbb98a,ruby:>= 1.9.3,created_at:2015-09-11T14:18:36Z
+1.3.1 gherkin3:~> 3.1.0|checksum:0c86987380e5e91904dc98939aa3b88e66fc6151af4500a1e61bb67f0bccc573,ruby:>= 1.9.3,created_at:2015-12-17T13:07:22Z
+1.4.0 gherkin:~> 3.2.0|checksum:683809be76902c34d056a4554d2ef1c060d256d222e9d304f50926fbf2840538,ruby:>= 1.9.3,created_at:2016-01-13T20:09:59Z
+1.5.0 gherkin:~> 4.0|checksum:594a30969a33f03693915db7eaa2a137e45fed76d9ae19ed7b96a4bbb1764262,ruby:>= 1.9.3,created_at:2016-06-09T18:31:47Z
+2.0.0 backports:~> 3.6,gherkin:~> 4.0|checksum:75614abf0fffb7641527192f9aac1e9699483c3033f8c77ef79810b2f1b6d08c,ruby:>= 1.9.3,created_at:2016-09-02T22:13:31Z
+3.0.0.pre.2 backports:>= 3.8.0,cucumber-tag_expressions:>= 1.0.1,gherkin:>= 4.1.3|checksum:d8fc36bdb13eef50dba5814d680d83170b408039073883ca6b1351a203fd34dd,ruby:>= 1.9.3,rubygems:> 1.3.1,created_at:2017-07-26T14:25:06Z
+3.0.0 backports:>= 3.8.0,cucumber-tag_expressions:>= 1.0.1,gherkin:>= 4.1.3|checksum:14877556e8f05aae857f2f2a5356cb96dfabf40e244a2544c57d2d6f54b71b9f,ruby:>= 1.9.3,created_at:2017-09-27T21:37:13Z
+3.1.0 backports:>= 3.8.0,cucumber-tag_expressions:~> 1.1.0,gherkin:>= 5.0.0|checksum:568f3643303be1088f8b69efaa771a7f9659a3a2614bcda5e78353a21bba911a,ruby:>= 2.1,created_at:2017-11-28T10:04:43Z
+3.2.0 backports:>= 3.8.0,cucumber-tag_expressions:~> 1.1.0,gherkin:>= 5.0.0|checksum:cf6ce921d44f3c40e115f14e3cd1306162daf3ebcc11031c83f2e3a964bb35ae,ruby:>= 2.1,created_at:2018-07-13T12:31:00Z
+3.2.1 backports:>= 3.8.0,cucumber-tag_expressions:~> 1.1.0,gherkin:~> 5.0|checksum:6c4c94dfd7c80eef8b5cd7acb6425e2cb6978a3080cfbb24e534490c11a45bc5,ruby:>= 2.1,created_at:2018-09-24T09:01:30Z
+4.0.0 backports:>= 3.8.0,cucumber-tag_expressions:~> 1.1.0,gherkin:~> 6.0|checksum:94bda95816d620d140cb13899a83771fa5a40aa18d645666b9a23060fdba0e21,ruby:>= 2.2,created_at:2018-09-29T18:25:13Z
+5.0.0 backports:>= 3.15.0&~> 3.15,cucumber-tag_expressions:>= 2.0.2&~> 2.0,gherkin:>= 7.0.3&~> 7.0|checksum:549bcf983ccbb973ba4958836dec135ad48d559039e932123c2b66d2de2329b9,ruby:>= 2.2,created_at:2019-08-15T13:16:10Z
+5.0.1 backports:>= 3.15.0&~> 3.15,cucumber-tag_expressions:>= 2.0.2&~> 2.0,gherkin:>= 7.0.3&~> 7.0|checksum:3138ce1c233c10f2c754ba8fa160872b727c025a5072b1b83c4c2b47773ea3c5,ruby:>= 2.3,created_at:2019-08-16T12:30:20Z
+5.0.2 backports:>= 3.15.0&~> 3.15,cucumber-tag_expressions:>= 2.0.2&~> 2.0,gherkin:>= 8.1.1&~> 8.1|checksum:aa3940fc33a03353816b9bfffb8e15ae9a776b441b4726585fa6976d0f31387c,ruby:>= 2.3,created_at:2019-10-31T10:20:50Z
+6.0.0 cucumber-gherkin:>= 10.0.0&~> 10.0,cucumber-messages:>= 10.0.1&~> 10.0,cucumber-tag_expressions:>= 2.0.2&~> 2.0|checksum:3469e4649dd2caeb771ddc7f3c88fd763f4560c27974d17a5bcd4657d5740360,ruby:>= 2.3,created_at:2020-02-24T11:51:33Z
+7.0.0 cucumber-gherkin:>= 13.0.0&~> 13.0,cucumber-messages:>= 12.1.1&~> 12.1,cucumber-tag-expressions:>= 2.0.4&~> 2.0|checksum:8a1ea6c880a64194ea4298d40b92421f169713b2fa153ff1a84f384978ba253b,ruby:>= 2.3,created_at:2020-04-24T12:22:55Z
+7.1.0 cucumber-gherkin:>= 14.0.1&~> 14.0,cucumber-messages:>= 12.2.0&~> 12.2,cucumber-tag-expressions:>= 2.0.4&~> 2.0|checksum:e5fc20a68c0a4af6b03c2c214e3f4c007296b31e4c62c72c75fa1270fa67183d,ruby:>= 2.3,created_at:2020-07-01T07:41:57Z
+8.0.1 cucumber-gherkin:>= 15.0.2&~> 15.0,cucumber-messages:>= 13.0.1&~> 13.0,cucumber-tag-expressions:>= 2.0.4&~> 2.0|checksum:24c2511a8c51e57435805df1a67d09d3bf7052c1c69bad2bb543b74369525520,ruby:>= 2.3,created_at:2020-08-19T14:12:43Z
+9.0.0 cucumber-gherkin:>= 18.1.0&~> 18.1,cucumber-messages:>= 15.0.0&~> 15.0,cucumber-tag-expressions:>= 3.0.1&~> 3.0|checksum:910a3d6a38d26b3e3d1651460521b34d27745fabe4e76ef6bcf269e16581a3d3,ruby:>= 2.3,created_at:2021-04-07T19:06:44Z
+9.0.1 cucumber-gherkin:>= 18.1.0&~> 18.1,cucumber-messages:>= 15.0.0&~> 15.0,cucumber-tag-expressions:>= 3.0.1&~> 3.0|checksum:8e24175aa05d2da1621f27cde6f5c58ced301f38bf3a786b1416a684eea2cd00,ruby:>= 2.3,created_at:2021-05-18T07:41:41Z
+10.0.0 cucumber-gherkin:>= 20.0.0&~> 20.0,cucumber-messages:>= 17.0.0&~> 17.0,cucumber-tag-expressions:>= 3.0.1&~> 3.0|checksum:0d8f6242837a0e49c48930f520d1945d8f7b57ccf0e66855d75077852e166cb9,ruby:>= 2.3,created_at:2021-07-09T09:55:57Z
+10.0.1 cucumber-gherkin:>= 20.0.1&~> 20.0,cucumber-messages:>= 17.0.1&~> 17.0,cucumber-tag-expressions:>= 3.0.1&~> 3.0|checksum:5851eefed2d25d583c85f5705aaa4bc484eb26c7ae55e406ec1af4197fa7886d,ruby:>= 2.3,created_at:2021-07-19T16:27:42Z
+10.1.0 cucumber-gherkin:>= 22.0.0&~> 22.0,cucumber-messages:>= 17.1.1&~> 17.1,cucumber-tag-expressions:>= 4.0.2&~> 4.0|checksum:1b13f9d81708dae89a17a3ee915b3e8e8f2303b480d0978278d61e474001d700,ruby:>= 2.3,created_at:2021-10-11T12:03:30Z
+10.1.1 cucumber-gherkin:>= 22.0.0&~> 22.0,cucumber-messages:>= 17.1.1&~> 17.1,cucumber-tag-expressions:>= 4.1.0&~> 4.1|checksum:d929773b4f821b20427876602c3698525280acf2c230bd3c33eeee1e08a25630,ruby:>= 2.3,created_at:2022-01-17T13:41:34Z
+11.0.0 cucumber-gherkin:>= 23.0.1&~> 23.0,cucumber-messages:>= 18.0.0&~> 18.0,cucumber-tag-expressions:>= 4.1.0&~> 4.1|checksum:300f0b27e54cee4167ad4930ccc6fbd9477fbcee31f9730084ac96cf0a4f2f37,ruby:>= 2.3,created_at:2022-05-18T09:52:44Z
+11.1.0 cucumber-gherkin:< 27&>= 24,cucumber-messages:< 22&>= 19,cucumber-tag-expressions:>= 4.1.0&~> 4.1|checksum:4b5a76518555f97be0e7220011a593462941c7dbd225e610f0f1f7ccf5f4b90a,ruby:>= 2.3,created_at:2022-12-23T08:41:54Z
+12.0.0 cucumber-gherkin:< 27&>= 25,cucumber-messages:< 23&>= 20,cucumber-tag-expressions:>= 5.0.4&~> 5.0|checksum:c2a7f4c457dd64df6cc7f430392fb5c03160805eafb27849639fee65d5bb9dfa,ruby:>= 2.5,created_at:2023-09-06T10:33:01Z
+13.0.0 cucumber-gherkin:< 28&>= 27,cucumber-messages:< 23&>= 20,cucumber-tag-expressions:< 7&> 5|checksum:7d417e02fbe6accfe9aed30df73a7df0b65b8f82490647ad148346af01f9adcc,ruby:>= 2.5,rubygems:>= 3.0.1,created_at:2023-12-05T10:52:53Z
+13.0.1 cucumber-gherkin:< 28&>= 27,cucumber-messages:< 23&>= 20,cucumber-tag-expressions:< 7&> 5|checksum:757f9dbfb1e2e0eec19f5fc1091b56a388fb42ba23322be8f10207e6fab3c5c9,ruby:>= 2.5,rubygems:>= 3.0.1,created_at:2024-01-31T16:41:14Z
+13.0.2 cucumber-gherkin:< 28&>= 27,cucumber-messages:< 23&>= 20,cucumber-tag-expressions:< 7&> 5|checksum:eeb62b06ba538a24f1c7df591253a7deeb0552c1e9f3f36adca153921ffb0064,ruby:>= 2.5,rubygems:>= 3.0.1,created_at:2024-03-21T14:54:24Z
+13.0.3 cucumber-gherkin:< 28&>= 27,cucumber-messages:< 23&>= 20,cucumber-tag-expressions:< 7&> 5|checksum:e01c28d658dc0a8d5804507e0b63b58ba0e4fbe8e7d50f8f19c17b44872c5344,ruby:>= 2.5,rubygems:>= 3.0.1,created_at:2024-07-24T10:55:33Z
+14.0.0 cucumber-gherkin:< 30&> 27,cucumber-messages:< 27&> 22,cucumber-tag-expressions:< 7&> 5|checksum:12c9ffba129967efa65df48f077f79b7ff923d3d163590b86c9b3108386f4869,ruby:>= 2.7,rubygems:>= 3.2.8,created_at:2024-08-08T11:09:57Z
+15.0.0 cucumber-gherkin:< 30&> 27,cucumber-messages:< 28&> 25,cucumber-tag-expressions:< 7&> 5|checksum:57859a6c5ea2c5d3934b963e450b4560ee3d4121d4e49bc61ec16544d7891fc2,ruby:>= 3.0,rubygems:>= 3.2.8,created_at:2024-12-24T10:45:56Z
+15.1.0 cucumber-gherkin:< 31&> 27,cucumber-messages:< 29&> 26,cucumber-tag-expressions:< 7&> 5|checksum:2d5c56425d5f663a58647e12969288d555fd78a1e18bfe34d1957f0b3c4134b7,ruby:>= 3.0,rubygems:>= 3.2.8,created_at:2025-02-28T14:08:21Z
+15.2.0 cucumber-gherkin:< 33&> 27,cucumber-messages:< 30&> 26,cucumber-tag-expressions:< 7&> 5|checksum:18e45bd05d0fa44342b9f39d89b07a832063922d946c854e87013f94461b72a8,ruby:>= 3.0,rubygems:>= 3.2.8,created_at:2025-08-08T07:36:55Z
+15.2.1 cucumber-gherkin:< 33&> 27,cucumber-messages:< 30&> 26,cucumber-tag-expressions:< 7&> 5|checksum:636a329f877c7ba478b5d9090f810c1b21796f9b601fa33532133ad1910b8588,ruby:>= 3.0,rubygems:>= 3.2.8,created_at:2025-08-21T06:48:01Z
+15.3.0 cucumber-gherkin:< 35&> 27,cucumber-messages:< 30&> 26,cucumber-tag-expressions:< 9&> 5|checksum:7a5c79e443b52096ca7f7df05b749e16abecb3b7d6f40f3074d30afc7464c14f,ruby:>= 3.0,rubygems:>= 3.2.8,created_at:2025-10-14T17:10:32Z
+15.4.0 cucumber-gherkin:< 40&> 27,cucumber-messages:< 33&> 26,cucumber-tag-expressions:< 9&> 5|checksum:161309d85847b336c998b201e2003d3f4a86207fa4816da2678fe3d7f3735e45,ruby:>= 3.0,rubygems:>= 3.2.8,created_at:2025-12-10T17:36:40Z
+16.0.0 cucumber-gherkin:< 40&> 33,cucumber-messages:< 33&> 28,cucumber-tag-expressions:< 9&> 6|checksum:f26d75895de85272dd7db9f14176220cb229a74dd332d18e231bda28aa9eaa45,ruby:>= 3.2,rubygems:>= 3.2.8,created_at:2025-12-16T18:06:46Z
+16.1.1 cucumber-gherkin:< 40&> 36,cucumber-messages:< 33&> 31,cucumber-tag-expressions:< 9&> 6|checksum:d3aaa80a1ee2865f63f1a21ef496129f675af9099993b9af9608c4ef8ae26b89,ruby:>= 3.2,rubygems:>= 3.2.8,created_at:2025-12-24T09:47:52Z
+16.2.0 cucumber-gherkin:< 40&> 36,cucumber-messages:< 33&> 31,cucumber-tag-expressions:< 9&> 6|checksum:592b58a95cf42feef8e5a349f68e363784ba3b6568ffbcf6776e38e136cf970b,ruby:>= 3.2,rubygems:>= 3.2.8,created_at:2026-02-06T09:24:56Z
+17.0.0 cucumber-gherkin:< 40&> 36,cucumber-messages:< 33&> 31,cucumber-tag-expressions:< 10&> 6|checksum:a5be7a4b9cdf3c899a7376b26df4b7c4c7eea2cda8b716203f2fbbb9d1a7ad60,ruby:>= 3.2,rubygems:>= 3.2.8,created_at:2026-06-01T22:50:42Z
+18.0.0 cucumber-gherkin:< 40&> 36,cucumber-messages:< 33&> 31,cucumber-tag-expressions:< 10&> 6|checksum:27ffe026a1398ed81797d4256c93d52326acc7c0c382c0d8f95b0d4a458803ec,ruby:>= 3.2,rubygems:>= 3.2.8,created_at:2026-07-13T16:39:52Z

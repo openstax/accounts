@@ -1,0 +1,4 @@
+---
+0.1.0 actionpack:>= 7.1.0,aws-sessionstore-dynamodb:~> 2,railties:>= 7.1.0|checksum:436dced782b89ec723f462379a6c859b681206278cec4560d4277831d252d1bb,ruby:>= 2.7,created_at:2024-11-16T23:57:54Z
+0.2.0 actionpack:>= 7.1.0,aws-sessionstore-dynamodb:~> 3,railties:>= 7.1.0|checksum:6728fce38cfc70481308a7f37203df51bf1fa92dd17557825ee9f5002d649c30,ruby:>= 2.7,created_at:2024-11-17T17:02:22Z
+1.0.0 actionpack:>= 7.1.0,aws-sessionstore-dynamodb:~> 3,railties:>= 7.1.0|checksum:c9f29b0e6ee1265a0750a764e896db0b93b560fd157a009ceb74a7dbfd351447,ruby:>= 2.7,created_at:2024-11-21T19:01:57Z

@@ -1,0 +1,29 @@
+---
+0.0.1.dev activesupport:~> 3.0,faraday:~> 0.8,multi_json:~> 1.3|checksum:91d21bb2c534d9c490070a020ca95dedc32fe0c5b9ef9032fac6370abcf0938c,rubygems:> 1.3.1,created_at:2012-11-26T12:35:54Z
+0.1.0 activesupport:~> 3.0,faraday:~> 0.8,multi_json:~> 1.3|checksum:872d9fe73e736f79af2f0f52a4ce97feae8056698d2efa19d90aa19bdbd74d99,created_at:2012-12-03T13:24:25Z
+0.1.1 activesupport:~> 3.0,faraday:~> 0.8,multi_json:~> 1.3|checksum:dcded085fed8e3a4f36aa9209c4efe1ecfe86e6c11bc6deaec4a641d909b701e,created_at:2012-12-20T21:21:48Z
+0.2.0 activesupport:>= 3.0,faraday:~> 0.8,multi_json:~> 1.3|checksum:d028ad9c91acda0a402262da5a79cae32868c34f3c1d4b05fcbe0b136d3c3fff,created_at:2013-06-03T12:57:18Z
+0.2.1 activesupport:>= 3.0,faraday:~> 0.8,multi_json:~> 1.3|checksum:15e187e23f08620186273fc96238a53698db29f99f95782b31756a266f720b57,created_at:2013-06-26T13:23:35Z
+0.3.0 activesupport:>= 3.0,faraday:~> 0.8,multi_json:~> 1.3|checksum:25d6bcbc55b5b7f4604efc26bd8cb3500036978dd2c9b1c473cd0e05eaaf9415,created_at:2013-10-09T22:36:06Z
+0.4.0 faraday:~> 0.8|checksum:5f37a9314e14a71d1c12e943bc79459c6c91ff3bc924957062431ed36b5cb145,created_at:2014-01-30T13:44:12Z
+0.4.1 faraday:~> 0.8|checksum:2d4853c73f9d733df2f2ddeb9ab7523e9eea955b9d8f71e5de60d9a2eaebee0e,created_at:2014-06-26T22:35:37Z
+0.4.2 faraday:~> 0.8|checksum:6e71b7c0169fc00f47c641562629d8ea5232e1842dcc05b5aa6dd877cbccc9c3,created_at:2014-08-17T23:22:33Z
+1.0.0 faraday:~> 0.8|checksum:e699eec2b20be2725ddd20e6cb7b24e11179dabd97cfab496b86e737438f5ddf,created_at:2015-01-27T20:11:03Z
+1.0.1 faraday:~> 0.8|checksum:cada9a02c05120427445f43c7fe7d6374ef13da0b33b6b18abf2c4d99a81ca4d,created_at:2015-01-30T13:43:46Z
+1.1.0 faraday:~> 0.8|checksum:c941d42c3d3ec54ec4f2a5f2abd4453334c0b48111eacaf3125123f52233092f,created_at:2015-04-02T16:44:21Z
+1.1.1 faraday:~> 0.8|checksum:5ad1a2bdb049188fb9390e778ef0c8bc74c6ab92eb34a9e807d21c67afaef8d1,created_at:2015-06-04T18:03:38Z
+1.2.0 faraday:~> 0.8|checksum:951093366a8732eb16881937313313d9a9a8d57a4d783bc61646dd3990d95e2d,created_at:2015-08-14T21:53:19Z
+1.2.2 faraday:~> 0.8|checksum:7b8606692ffe61fe945e1ef2fdf4cbbb0e012e23cbc7c5a90ba24f62bdc65b58,created_at:2015-08-27T19:59:10Z
+1.3.0 faraday:~> 0.8|checksum:124914e91b4310824d485b05bf52ba80ac91dd951b5dcdee1988d7255cb72f2a,created_at:2016-03-24T19:20:57Z
+1.3.1 faraday:~> 0.8|checksum:95891d972f88123a526abc4d98034a29a5b03d6b49c7b2ff9f8b21f1222a97c1,created_at:2016-08-12T15:59:25Z
+2.0.0 faraday:~> 0.8|checksum:208a7ceacae217409424a2e1e6a3bb3f2b800cd64d468f453aff50ce9e334822,ruby:>= 2.1.0,created_at:2016-11-16T10:57:06Z
+2.1.0 faraday:~> 0.8|checksum:f65d99f53174369cf6bcaf9defe84cfb457bd9bc7ede4471514cc834b1cd2826,ruby:>= 2.1.0,created_at:2020-04-06T20:56:50Z
+2.2.0 faraday:>= 0.8|checksum:e799c16344d573149ccfb24f198a3ebc904ef01254b747db4dbcc24a26e50e52,ruby:>= 2.1.0,created_at:2020-04-13T20:45:34Z
+2.3.0 faraday:>= 0.8|checksum:174b00ca0f8606dc2acd95f76730b2347facc867bb5e2d0b2aceec4e8ce3d629,ruby:>= 2.4.0,created_at:2022-05-25T18:54:14Z
+2.4.0 faraday:>= 0.8|checksum:388f901d63bd5903b470c5696bc886ed94fab0c4206b25c3761e7b9bdbbf6c90,ruby:>= 2.4.0,created_at:2022-06-08T02:58:20Z
+2.4.1 faraday:>= 0.8|checksum:fb51b2e9ee72f89e81cc277ee574dbc5940f3db95431b3533de9882f92635ee3,ruby:>= 2.4.0,created_at:2022-08-08T14:51:43Z
+2.5.0 faraday:>= 0.8|checksum:64b7366d66e508e1c3dd855ebb20ce9da429330e412a23d9ebbc0a7a7b227463,ruby:>= 2.4.0,created_at:2023-04-27T15:37:50Z
+2.5.1 faraday:>= 0.8|checksum:cbfc129a85e1ad8580130189832cf59e7e117d94fe277547d61fc531f7689483,ruby:>= 2.4.0,created_at:2024-01-16T12:41:35Z
+2.6.0 faraday:>= 0.8|checksum:c353b9e74e5fbd55912761138520ae144266fb06cc415ec9d939b1cdb178542f,ruby:>= 3.2.0,created_at:2026-01-19T22:20:51Z
+2.6.1 faraday:>= 0.8|checksum:7772ae61c5fe1c0243452dec1f069b15bcc3304e9436e4f8545ccdb5963c4285,ruby:>= 3.2.0,created_at:2026-01-19T23:05:44Z
+2.7.0 faraday:>= 0.8|checksum:cd7ac4bbe6c08592ea7af6655f98b2f76c4db0bad31bf40340df5aad719f0d89,ruby:>= 3.2.0,created_at:2026-04-14T00:23:03Z

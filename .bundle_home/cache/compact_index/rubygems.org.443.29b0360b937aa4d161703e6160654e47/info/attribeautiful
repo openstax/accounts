@@ -1,0 +1,8 @@
+---
+0.0.1 active_support:>= 3.0.0,eager_beaver:>= 0|checksum:da5aff2a44f5f64a7b96a36a9ec4ebecf70160a4e7215869de04740365146be5,created_at:2013-04-04T08:55:25Z
+0.0.2 active_support:~> 3.0,eager_beaver:>= 0|checksum:eedf1cd3f2ccd0d6046a75c3171277ce807adf7d69476c05e05656e8e4e1c00e,created_at:2013-04-18T06:49:04Z
+0.0.3 active_support:> 3.0,eager_beaver:>= 0|checksum:672d1b042c372ce89cb4476c80fc6aa226ca700ae4c0e7548c1736b162b250bc,created_at:2013-04-18T07:06:22Z
+0.0.4 active_support:< 4.0.0&>= 3.0.0,eager_beaver:>= 0|checksum:15419ca3d7e56166ecb784a56b42441cb26021fe2a89b953839d04be2b3f3c59,created_at:2013-04-18T07:21:37Z
+0.0.5 active_support:~> 3.0,eager_beaver:>= 0|checksum:1b43524d6083e6b8690b28a8e9376e653293f138658344d1956099bcbb98dd2c,created_at:2013-04-18T07:31:04Z
+0.0.6 activesupport:~> 3.0,eager_beaver:= 0.0.1|checksum:d25bf21691c2575f6d1b52ab0dbd88b1859c0ab07582a94e663ad1c94c1f0166,created_at:2013-04-18T08:00:58Z
+0.0.7 activesupport:~> 3.0,eager_beaver:~> 0.0.4|checksum:2fc97cd31e450ead9192cb270163e1f18ff4baab6df7fae2b68b7261510c6932,created_at:2013-04-21T03:58:55Z

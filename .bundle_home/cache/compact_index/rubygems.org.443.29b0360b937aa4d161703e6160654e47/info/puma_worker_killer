@@ -1,0 +1,14 @@
+---
+0.0.1 get_process_mem:~> 0,puma:~> 2|checksum:b9d7621a29b02643ab3ad36e1878fe40432bd2753098b44819a93c51b9f475f6,created_at:2014-02-14T01:50:25Z
+0.0.2 get_process_mem:~> 0,puma:~> 2|checksum:84e36a4269a88b0e4aaf2c9a92cf7a0c4171d5d6316080a7dcaea5c37bb86e39,created_at:2014-02-28T20:35:49Z
+0.0.3 get_process_mem:~> 0.1,puma:~> 2.7|checksum:61704ba7a3b67fadae92d69f4b470ad7f6ef1351d741dc360064c87cbfe31786,created_at:2014-04-03T14:38:20Z
+0.0.4 get_process_mem:~> 0.2,puma:~> 2.7|checksum:8b1702a7447b45ea74933b88d3077a2c54c7f57c0b6c2c30f31a5dd0a2fd25c2,created_at:2015-09-09T22:04:02Z
+0.0.5 get_process_mem:~> 0.2,puma:< 4&>= 2.7|checksum:7c1bfb8deedb0213de46d2a3236cd04bcfd2d129b67aa527249a3182eec42a10,created_at:2016-03-02T15:41:25Z
+0.0.6 get_process_mem:~> 0.2,puma:< 4&>= 2.7|checksum:53ac391c23013c46c73590ff2e643d70f9fff5684f6c825f8ee46e566cd85bb4,created_at:2016-04-01T21:20:16Z
+0.0.7 get_process_mem:~> 0.2,puma:< 4&>= 2.7|checksum:764b6ced590a60a5fef546392e24f250fb80163608c97dc02e0302d03e5f6a43,created_at:2016-10-13T14:56:15Z
+0.1.0 get_process_mem:~> 0.2,puma:< 4&>= 2.7|checksum:710096143e16504b83a35b15eb8a4dc26ad033fb3e4989f107e2de5e51c408d4,created_at:2017-05-12T15:28:50Z
+0.1.1 get_process_mem:~> 0.2,puma:< 5&>= 2.7|checksum:560e17c78d6d839d6bda7aaa7b8c59a63999211e914f024afeb4b275a4ae8d4b,created_at:2019-06-26T19:07:12Z
+0.2.0 get_process_mem:~> 0.2,puma:< 5&>= 2.7|checksum:3e6dee9a6a0300f9c5daf5acf6c237b3610f353ba4e5705fcbe2be8962e27746,created_at:2020-08-18T19:50:31Z
+0.3.0 get_process_mem:~> 0.2,puma:< 5&>= 2.7|checksum:69616d98d226de4d206523d04a40ef45985caecd14e2407df2ac8dd45a663072,created_at:2020-08-26T16:19:44Z
+0.3.1 get_process_mem:~> 0.2,puma:>= 2.7|checksum:9c5534d296b5e92d1ad4a578f2daf2aa71563003c84f7263f0a8dfd22b5c614a,created_at:2020-09-22T18:38:25Z
+1.0.0 bigdecimal:>= 2.0,get_process_mem:>= 0.2,puma:>= 2.7|checksum:12dc54feecb1758df70d9f4788841423c5416aa370feda4e51e2112a5ff909e9,created_at:2024-07-22T20:31:33Z
