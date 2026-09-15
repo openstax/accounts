@@ -146,7 +146,7 @@ en:
     legal_last_name_label: Legal last name
     email_label: Email
     school_issued_email_label: Institutional email address
-    phone_number_label: Phone number
+    phone_number_label: Phone number (optional)
     password_label: Password
     pin_label: Confirm PIN
     pin_placeholder: Enter 6-digit PIN here
