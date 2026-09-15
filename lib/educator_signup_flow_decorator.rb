@@ -41,7 +41,11 @@ class EducatorSignupFlowDecorator
   # The next path or page to go to
   def next_step
     case true
-    when current_step == 'login' && !user.is_profile_complete && user.sheerid_verification_id.blank?
+    # is_sheerid_unviable? means they already told us instant verification can't
+    # work for them, so this clause must not claim them ahead of the next one --
+    # exit_signup_if_steps_complete would only bounce them off step 3 again.
+    when current_step == 'login' && !user.is_profile_complete &&
+         user.sheerid_verification_id.blank? && !user.is_sheerid_unviable?
       educator_sheerid_form_path
     when current_step == 'login' && (user.sheerid_verification_id.present? || user.is_sheerid_unviable?)
       educator_profile_form_path
