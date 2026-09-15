@@ -119,6 +119,10 @@ class SecurityLog < ApplicationRecord
     salesforce_lead_already_converted
     updated_salesforce_contact
     salesforce_contact_save_failed
+    user_switched_signup_role
+    updated_salesforce_lead_after_role_switch
+    no_salesforce_lead_to_update
+    sheerid_webhook_ignored_after_role_switch
   ]
 
   json_serialize :event_data, Hash

@@ -60,10 +60,12 @@ class NewflowUi.EducatorComplete
 
     @total_num_students_input?.on('keyup change blur', @onTotalNumStudentsChange)
 
-    @findOrLogNotFound(@form, 'form').submit(@onSubmit)
-
     # Continue button
     @continue = @findOrLogNotFound(@form, '#signup_form_submit_button')
+
+    # Only the profile form. The card also holds the "switch to a student account"
+    # button_to, and validating that form blocks the one exit that needs no answers.
+    @continue.closest('form').submit(@onSubmit)
 
     # Disable submitting initially
     @continue.prop('disabled', true)
