@@ -71,7 +71,7 @@
 
         <% if preview_current_year %>
         
-          <div class="impact-locked" aria-label="Preview — report an adoption to populate these totals.">
+          <div class="impact-locked" aria-label="Preview — report an adoption to fill in these totals.">
             <% locked_items = [
               { label: 'Adoptions reported', icon_class: 'fa fa-check-circle' },
               { label: 'Students supported', icon_class: 'fa fa-users' },
@@ -82,7 +82,7 @@
                   <div class="impact-badge_locked <%= preview_current_year ? 'impact-badge--muted' : '' %>">
                     <span class="impact-badge__icon_locked fa fa-lock" aria-hidden="true"></span>
                     <div>
-                      <p class="impact-badge__title">Unlock today!</p>
+                      <p class="impact-badge__title">Unlock your summary</p>
                       <p class="impact-badge__meta">Once you report, your year summary and reported adoptions will appear here.</p>
                     </div>
                   </div>
@@ -100,7 +100,7 @@
             </div>
           </div>
         <% elsif preview_lifetime %>
-          <div class="impact-locked" aria-label="Preview — report an adoption to populate these totals.">
+          <div class="impact-locked" aria-label="Preview — report an adoption to fill in these totals.">
             <% locked_items = [
               { label: 'Years reported', icon_class: 'fa fa-clock-o' },
               { label: 'Books reported', icon_class: 'fa fa-book' },
@@ -175,7 +175,7 @@
           <div class="impact-milestones__header">
             <div class="impact-milestones__title">
               <% if next_milestone %>
-                Next milestone — <%= next_milestone.label %> reached
+                Next milestone: <%= next_milestone.label %>
               <% else %>
                 You’ve reached every milestone — thank you!
               <% end %>
@@ -215,7 +215,7 @@
         <div class="account-callout account-callout--pending account-callout--report-usage">
           <div class="account-callout__text">
             <h3>Report your <%= @current_school_year %> usage</h3>
-            <p>30 seconds — it keeps your impact numbers current.</p>
+            <p>A quick update keeps your impact numbers current.</p>
           </div>
           <div class="account-callout__actions">
             <button type="button"

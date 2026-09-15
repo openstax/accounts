@@ -63,7 +63,7 @@
       <div class="<%= value_classes %>">
         <% if current_user.confirmed_faculty? %>
           Verified
-          <% tooltip_text = "You have been confirmed as a verified instructor. You have access to all instructor resources provided by OpenStax." %>
+          <% tooltip_text = "We've confirmed you as a verified instructor. You have access to all OpenStax instructor resources." %>
           <% verification_cta = nil %>
           <span class="account-profile__help"
             data-tooltip="<%= tooltip_text %>"
@@ -71,7 +71,7 @@
             tabindex="0">i</span>
         <% elsif current_user.rejected_faculty? || current_user.rejected_by_sheerid? %>
           Not verified
-          <% tooltip_text = "We cannot verify your status as an instructor. Contact support@openstax.org with questions or concerns." %>
+          <% tooltip_text = "We weren't able to verify your instructor status. Contact support@openstax.org with questions or concerns." %>
           <% verification_cta = { text: "Get help with verification", url: "https://help.openstax.org/s/article/My-request-to-access-Instructor-Resources-was-rejected" } %>
         <% else %>
           Pending review
@@ -130,7 +130,7 @@
           <% end %>
           </ul>
         <% else %>
-          <p>You have no linked providers.</p>
+          <p>You haven't added any other ways to sign in yet.</p>
         <% end %>
         <%= link_to 'Enable other login options', account_security_path, class: 'account-profile__security-link account-security__add-email' %>
       </div>

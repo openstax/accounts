@@ -126,8 +126,8 @@ en:
   staff_details_form:
     header: Tell us about your work
     subheader: >-
-      Staff and administrators make most adoption decisions possible —
-      these questions are written for your role, not a classroom.
+      Staff and administrators often make the adoption decisions instructors
+      rely on — these questions are written for your role, not a classroom.
     describe_role: What's your role?
     role_department_chair: Department chair
     role_librarian: Librarian
@@ -142,7 +142,7 @@ en:
     num_learners_supported: >-
       On average, how many learners per year do you support with OpenStax materials?
     num_learners_supported_helper: >-
-      A ballpark is fine — this helps us measure mission impact.
+      A ballpark is fine — this helps us measure our impact.
     num_learners_supported_placeholder: "e.g. 400"
     select_option: Please select one of these options
     other_must_be_entered: Please enter your role
@@ -163,7 +163,7 @@ en:
     step_counter: Step %{current_step} of %{total_steps}
     login_page_header: Log in to your OpenStax account
     login_page_welcome_header: Welcome back
-    login_with: 'LOG IN WITH:'
+    login_with: 'Log in with:'
     signup_with: 'Sign up with:'
     signup_page_header: Set up your account
     student_signup_page_header: Sign up — it's free, forever
@@ -192,9 +192,9 @@ en:
     sheerid_verification_page_header: Verify you're an educator
     sheerid_verification_page_description: >-
       Instructor resources include answer keys, so we confirm educator
-      status once. Usually instant.
+      status once. It usually only takes a minute.
     sheerid_verification_step_phase: Verification
-    school_email_gate_title: SheerID needs your school email
+    school_email_gate_title: We need your school email to verify you
     school_email_gate_description_html: >-
       You signed up with <strong>%{current_email}</strong>. Verification
       checks your institution's records, so it needs an address at your
@@ -366,8 +366,8 @@ en:
     learner_agrees_to_terms_html: >-
       By continuing you agree to the %{terms_of_use} and %{privacy_policy}.
     learner_email_verification_form_decription: >-
-      An email has been sent to <b>%{email}</b>.
-      Please enter the PIN you received below.
+      We emailed a code to <b>%{email}</b>.
+      Enter it below to continue.
       You can also %{edit_your_email}
     learner_welcome_header: Welcome to OpenStax
     learner_welcome_title: You're all set%{first_name}
@@ -389,9 +389,8 @@ en:
     learner_go_to_account: Go to my account →
 
     staff_email_verification_form_description: >-
-      An email has been sent to <b>%{email}</b>.
-      Please enter the PIN you received below.
-      Once your email has been confirmed, you'll tell us a bit about your work.
+      We emailed a code to <b>%{email}</b>.
+      Enter it below — once we confirm your email, you'll tell us a bit about your work.
 
   student_profile:
     enable_other_sign_in_options: Enable other login options
@@ -1065,10 +1064,10 @@ en:
     headline: Welcome back, %{name} — still accurate?
     default_name: friend
     body: >-
-      It's been a year. A 20-second check keeps your instructor access current and our impact
+      It's been a year. A quick check keeps your instructor access current and our impact
       numbers honest.
     school_label: School
-    no_school: Not set
+    no_school: No school added yet
     books_label: Books you're using
     no_books: No books saved yet
     students_label: Students this year
