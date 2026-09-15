@@ -78,7 +78,7 @@ A `*_pushed_at` column that is NULL means "never sent" -- and SQL's `last_signed
 
 One-time backfills, run in order (each is inert before the one above it): `rake accounts:backfill_last_signed_in_at` (from `sign_in_successful` security logs), then `rake accounts:reconcile_salesforce_student_ids` (links pre-existing `Student__c` records to users by uuid -- see `ReconcileSalesforceStudentIds`), then enable the flags above. Instructors need no reconciliation step: `salesforce_contact_id` is already populated by the lead/contact sync.
 
-Remote models (`Student`, `Book#osc_url`, `Contact#last_osweb_login_date`) live in the `openstax_salesforce` gem, not the app. The gem requires each remote model explicitly in its own `lib/openstax_salesforce.rb` -- it does not autoload them, and a model missing from that require list fails as a confusing "duplicate factory" error far from the real cause.
+Remote models (`Student`, `Book#osc_url`, `Contact#last_osweb_login_date`, all from gem 10.2.0) live in the `openstax_salesforce` gem, not the app. The gem requires each remote model explicitly in its own `lib/openstax_salesforce.rb` -- it does not autoload them, and a model missing from that require list fails as a confusing "duplicate factory" error far from the real cause.
 
 ### Cloudfront path prefix
 Accounts can run entirely under an `/accounts` path prefix (for Cloudfront routing). `SIMULATE_CLOUDFRONT=true` makes the server raise if a request ever escapes that prefix — useful for verifying new routes don't leak out of the prefix.
