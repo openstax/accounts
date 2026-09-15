@@ -37,6 +37,15 @@ describe AddEmailToUser do
       result = AddEmailToUser.call('user@example.com', user, already_verified: true)
       expect(result.errors.none?).to be_truthy
     end
+
+    it 'matches its own existing email case-insensitively instead of creating a duplicate' do
+      AddEmailToUser.call('User@Example.com', user, already_verified: false)
+      result = AddEmailToUser.call('user@example.com', user, already_verified: true)
+
+      expect(result.errors).to be_empty
+      expect(user.email_addresses.count).to eq(1)
+      expect(user.email_addresses.first.verified).to be_truthy
+    end
   end
 
   context 'when email address is not valid' do
@@ -46,6 +55,68 @@ describe AddEmailToUser do
       AddEmailToUser.call('example.com', user)
 
       expect(EmailAddress.find_by_value('example.com')).to be_nil
+    end
+  end
+
+  context 'when the email is already attached to a different user' do
+    let(:other_user) { FactoryBot.create :user }
+
+    it 'reclaims it when the other copy is unverified' do
+      AddEmailToUser.call('shared@example.com', other_user, already_verified: false)
+
+      result = AddEmailToUser.call('shared@example.com', user, already_verified: true)
+
+      expect(result.errors).to be_empty
+      expect(other_user.reload.contact_infos).to be_empty
+      email = EmailAddress.find_by_value('shared@example.com')
+      expect(email.user).to eq(user)
+      expect(email.verified).to be_truthy
+    end
+
+    it 'matches case-insensitively when reclaiming' do
+      AddEmailToUser.call('Shared@Example.com', other_user, already_verified: false)
+
+      result = AddEmailToUser.call('shared@example.com', user, already_verified: true)
+
+      expect(result.errors).to be_empty
+      expect(other_user.reload.contact_infos).to be_empty
+    end
+
+    it 'still blocks the attempt when the other copy is verified' do
+      AddEmailToUser.call('shared@example.com', other_user, already_verified: true)
+
+      result = AddEmailToUser.call('shared@example.com', user, already_verified: true)
+
+      expect(result.errors).not_to be_empty
+      expect(other_user.reload.contact_infos.first.value).to eq('shared@example.com')
+    end
+
+    it 'does not reclaim (and still blocks) when this attempt is itself unverified' do
+      AddEmailToUser.call('shared@example.com', other_user, already_verified: false)
+
+      result = AddEmailToUser.call('shared@example.com', user, already_verified: false)
+
+      expect(result.errors).not_to be_empty
+      expect(other_user.reload.contact_infos.first.value).to eq('shared@example.com')
+    end
+
+    it 'merges the placeholder (transferring associations) when the unverified copy belongs to an unclaimed user' do
+      unclaimed_user = FactoryBot.create :user, state: 'unclaimed'
+      AddEmailToUser.call('shared@example.com', unclaimed_user, already_verified: false)
+
+      group = FactoryBot.create(:group)
+      group.add_member unclaimed_user
+      group.add_owner unclaimed_user
+
+      result = AddEmailToUser.call('shared@example.com', user, already_verified: true)
+
+      expect(result.errors).to be_empty
+      expect { unclaimed_user.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(user.reload.owned_groups).to include(group)
+      expect(user.reload.member_groups).to include(group)
+      email = EmailAddress.find_by_value('shared@example.com')
+      expect(email.user).to eq(user)
+      expect(email.verified).to be_truthy
     end
   end
 

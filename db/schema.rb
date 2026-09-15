@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_07_19_143022) do
+ActiveRecord::Schema.define(version: 2026_09_15_190000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -78,17 +78,6 @@ ActiveRecord::Schema.define(version: 2026_07_19_143022) do
     t.index ["user_id"], name: "index_adoptions_on_user_id"
   end
 
-  create_table "application_groups", id: :serial, force: :cascade do |t|
-    t.integer "application_id", null: false
-    t.integer "group_id", null: false
-    t.integer "unread_updates", default: 1, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["application_id", "unread_updates"], name: "index_application_groups_on_application_id_and_unread_updates"
-    t.index ["group_id", "application_id"], name: "index_application_groups_on_group_id_and_application_id", unique: true
-    t.index ["group_id", "unread_updates"], name: "index_application_groups_on_group_id_and_unread_updates"
-  end
-
   create_table "application_users", id: :serial, force: :cascade do |t|
     t.integer "application_id", null: false
     t.integer "user_id", null: false
@@ -97,8 +86,8 @@ ActiveRecord::Schema.define(version: 2026_07_19_143022) do
     t.datetime "updated_at", null: false
     t.integer "unread_updates", default: 1, null: false
     t.string "roles", default: [], null: false, array: true
+    t.index ["application_id", "roles", "user_id"], name: "index_application_users_on_application_id_and_roles_and_user_id", where: "(roles <> '{}'::character varying[])"
     t.index ["application_id", "unread_updates"], name: "index_application_users_on_application_id_and_unread_updates"
-    t.index ["application_id"], name: "index_application_users_on_application_id"
     t.index ["default_contact_info_id"], name: "index_application_users_on_default_contact_info_id"
     t.index ["user_id", "application_id"], name: "index_application_users_on_user_id_and_application_id", unique: true
     t.index ["user_id", "unread_updates"], name: "index_application_users_on_user_id_and_unread_updates"
@@ -285,15 +274,6 @@ ActiveRecord::Schema.define(version: 2026_07_19_143022) do
     t.index ["user_id"], name: "index_group_members_on_user_id"
   end
 
-  create_table "group_nestings", id: :serial, force: :cascade do |t|
-    t.integer "member_group_id", null: false
-    t.integer "container_group_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["container_group_id"], name: "index_group_nestings_on_container_group_id"
-    t.index ["member_group_id"], name: "index_group_nestings_on_member_group_id", unique: true
-  end
-
   create_table "group_owners", id: :serial, force: :cascade do |t|
     t.integer "group_id", null: false
     t.integer "user_id", null: false
@@ -304,13 +284,9 @@ ActiveRecord::Schema.define(version: 2026_07_19_143022) do
   end
 
   create_table "groups", id: :serial, force: :cascade do |t|
-    t.boolean "is_public", default: false, null: false
     t.string "name"
-    t.text "cached_subtree_group_ids"
-    t.text "cached_supertree_group_ids"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["is_public"], name: "index_groups_on_is_public"
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
@@ -579,6 +555,10 @@ ActiveRecord::Schema.define(version: 2026_07_19_143022) do
     t.jsonb "consent_preferences"
     t.boolean "is_deleted"
     t.string "expected_start_semester"
+    t.datetime "salesforce_student_pushed_at"
+    t.datetime "last_signed_in_at"
+    t.string "salesforce_student_id"
+    t.datetime "salesforce_contact_login_pushed_at"
     t.datetime "check_in_completed_at"
     t.datetime "check_in_dismissed_at"
     t.integer "check_in_dismissal_count", default: 0, null: false
@@ -589,9 +569,13 @@ ActiveRecord::Schema.define(version: 2026_07_19_143022) do
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
+    t.index ["id"], name: "index_users_unlinked_students_with_school", where: "((role = 1) AND (school_id IS NOT NULL) AND (salesforce_student_pushed_at IS NULL))"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"
     t.index ["salesforce_contact_id"], name: "index_users_on_salesforce_contact_id"
+    t.index ["salesforce_contact_login_pushed_at", "last_signed_in_at"], name: "index_users_with_contact_by_login", where: "(salesforce_contact_id IS NOT NULL)"
+    t.index ["salesforce_student_id"], name: "index_users_on_salesforce_student_id"
+    t.index ["salesforce_student_pushed_at", "last_signed_in_at"], name: "index_users_linked_students_by_login", where: "((role = 1) AND (salesforce_student_id IS NOT NULL))"
     t.index ["school_id"], name: "index_users_on_school_id"
     t.index ["school_type"], name: "index_users_on_school_type"
     t.index ["source_application_id"], name: "index_users_on_source_application_id"

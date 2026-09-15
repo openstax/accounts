@@ -8,6 +8,9 @@ namespace :cron do
     Rails.logger.info 'UpdateSalesforceAssignableFields.call'
     OpenStax::RescueFrom.this { UpdateSalesforceAssignableFields.call }
 
+    Rails.logger.info 'PushUserActivityToSalesforce.call'
+    OpenStax::RescueFrom.this { PushUserActivityToSalesforce.call }
+
     Rails.logger.info 'BookCatalogSync.call'
     OpenStax::RescueFrom.this { BookCatalogSync.call }
 

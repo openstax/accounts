@@ -37,7 +37,7 @@ Name.editable = function(el, attribs) {
   return el.editable({
     value: attribs,
     success(response) {
-      $(this).find('.text-content').html(response.full_name);
+      $(this).find('.text-content').text(response.full_name);
       const $container = $(this).closest('.account-profile__value--name');
       const $display = $container.find('.account-profile__text');
       if ($display.length) { $display.text(response.full_name); }

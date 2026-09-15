@@ -22,7 +22,7 @@
                     <p class="join-as__subheader"><%= I18n.t(:"login_signup_form.welcome_page_subheader") %></p>
 
                     <div class="join-as join-as--rows">
-                        <%= link_to educator_signup_path, class: 'join-as__option join-as__option--educator educator', data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2B-Educator' } do %>
+                        <%= link_to educator_signup_path(email: params[:email]), class: 'join-as__option join-as__option--educator educator', data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2B-Educator' } do %>
                             <span class="join-as__option-icon" aria-hidden="true"><%= image_tag('educator-icon.svg', alt: '') %></span>
                             <span class="join-as__option-text">
                                 <span class="join-as__option-title"><%= I18n.t(:"login_signup_form.join_as_educator_title") %></span>
@@ -31,7 +31,7 @@
                             <span class="join-as__option-arrow" aria-hidden="true">&rarr;</span>
                         <% end %>
 
-                        <%= link_to (get_alternate_signup_url || newflow_signup_student_path), class: 'join-as__option join-as__option--student student', data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2A-Student' } do %>
+                        <%= link_to (get_alternate_signup_url || newflow_signup_student_path(email: params[:email])), class: 'join-as__option join-as__option--student student', data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2A-Student' } do %>
                             <span class="join-as__option-icon" aria-hidden="true"><%= image_tag('student-icon.svg', alt: '') %></span>
                             <span class="join-as__option-text">
                                 <span class="join-as__option-title"><%= I18n.t(:"login_signup_form.join_as_student_title") %></span>

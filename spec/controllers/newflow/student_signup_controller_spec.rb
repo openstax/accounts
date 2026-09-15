@@ -154,6 +154,7 @@ module Newflow
         it 'redirects to student_email_verification_form_updated_email_path' do
           user = User.last
           user.update_attribute('state', 'unverified')
+          user.email_addresses.first.update!(verified: false)
           session[:unverified_user_id] = user.id
           post(:student_change_signup_email, params: params)
           expect(response).to redirect_to(student_email_verification_form_updated_email_path)
@@ -170,6 +171,7 @@ module Newflow
         it 'renders student_change_signup_email_form' do
           user = User.last
           user.update_attribute('state', 'unverified')
+          user.email_addresses.first.update!(verified: false)
           session[:unverified_user_id] = user.id
 
           post(:student_change_signup_email, params: params)
@@ -193,6 +195,7 @@ module Newflow
         it 'bypasses recaptcha verification and allows email change' do
           user = User.last
           user.update_attribute('state', 'unverified')
+          user.email_addresses.first.update!(verified: false)
           session[:unverified_user_id] = user.id
           expect_any_instance_of(described_class).not_to receive(:verify_recaptcha)
           post(:student_change_signup_email, params: params)
@@ -208,6 +211,7 @@ module Newflow
 
         user = create_newflow_user('user@openstax.org')
         user.update_attribute('state', 'unverified')
+          user.email_addresses.first.update!(verified: false)
         session[:unverified_user_id] = user.id
 
         get(:student_email_verification_form)
@@ -218,6 +222,7 @@ module Newflow
     describe 'GET #student_email_verification_form_updated_email' do
       it 'renders OK' do
         user = create_newflow_user('user@openstax.org')
+        user.email_addresses.first.update!(verified: false)
         allow_any_instance_of(described_class).to receive(:unverified_user) { user }
         get('student_email_verification_form_updated_email')
         expect(response.status).to eq(200)

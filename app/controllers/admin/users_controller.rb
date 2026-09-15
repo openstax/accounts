@@ -59,7 +59,7 @@ module Admin
     def become
       admin = current_user
       security_log :admin_became_user, user_id: params[:id], username: @user.username
-      sign_in!(@user)
+      sign_in!(@user, {}, false)
       security_log :sign_in_successful, admin_user_id: admin.id, admin_username: admin.username
       redirect_to request.referrer
     end
@@ -147,7 +147,7 @@ module Admin
         end
         application_user = @user.application_users.new(application_id: au[:application_id].to_i)\
           if application_user.nil?
-        application_user.roles = au[:roles].split(',').map(&:strip)
+        application_user.roles = au[:roles].split(',').map(&:strip).reject(&:blank?)
         application_user.save!
         application_user
       end

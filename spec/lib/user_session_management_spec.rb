@@ -31,6 +31,16 @@ describe UserSessionManagement, type: :lib do
       expect(controller.current_user).to eq user_1
     end
 
+    it 'sign_in! stamps last_signed_in_at' do
+      expect { controller.sign_in! user_1 }.to change { user_1.reload.last_signed_in_at }.from(nil)
+    end
+
+    it 'sign_in! does not stamp last_signed_in_at when record_login is false' do
+      expect { controller.sign_in! user_1, {}, false }.not_to(
+        change { user_1.reload.last_signed_in_at }
+      )
+    end
+
     it 'sign_out! calls clear_pre_auth_state' do
       expect(controller).to receive(:clear_pre_auth_state)
       controller.sign_out!
@@ -204,6 +214,10 @@ describe UserSessionManagement, type: :lib do
       expect(controller).to receive(:clear_pre_auth_state)
       controller.sign_out!
       expect(controller.current_user).to eq AnonymousUser.instance
+    end
+
+    it 'sign_out! does not stamp last_signed_in_at' do
+      expect { controller.sign_out! }.not_to change { user_1.reload.last_signed_in_at }
     end
 
     it 'signed_in returns true' do

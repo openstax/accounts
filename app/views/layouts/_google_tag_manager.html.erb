@@ -1,4 +1,4 @@
-<% if Rails.env.production? and Settings::GoogleAnalytics.send_google_analytics == true and !Settings::GoogleAnalytics.google_tag_manager_code.blank?  %>
+<% if google_tag_manager_enabled? %>
 <script>
   //Code from Google
 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

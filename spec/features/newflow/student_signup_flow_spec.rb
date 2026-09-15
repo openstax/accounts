@@ -4,7 +4,6 @@ module Newflow
   feature 'Student signup flow', js: true do
     before do
       disable_sfdc_client
-      load 'db/seeds.rb'
       turn_on_student_feature_flag
     end
 
@@ -96,10 +95,13 @@ module Newflow
       submit_signup_form
       screenshot!
 
+      # Wait for the POST to land before draining the queue: perform_enqueued_jobs
+      # only runs what is already enqueued.
+      expect(page).to have_current_path student_email_verification_form_path
+
       perform_enqueued_jobs
 
       # sends an email address confirmation email
-      expect(page).to have_current_path student_email_verification_form_path
       open_email email
       capture_email!(address: email)
       expect(current_email).to be_truthy
@@ -155,6 +157,10 @@ module Newflow
         fill_in 'signup_password',	with: password
         submit_signup_form
         screenshot!
+
+        # Wait for the POST to land before draining the queue: perform_enqueued_jobs
+        # only runs what is already enqueued.
+        expect(page).to have_current_path student_email_verification_form_path
 
         perform_enqueued_jobs
 

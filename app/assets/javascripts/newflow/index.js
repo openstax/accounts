@@ -9,6 +9,7 @@
 //= require ./educator_signup_email_validations
 //= require ./educator_complete_dynamic
 //= require ./staff_signup
+//= require ./recaptcha_submit
 //= require intlTelInput
 //= require multiselect
 //= require libphonenumber/utils

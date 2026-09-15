@@ -157,8 +157,11 @@ OX.Profile.Email = {
           'contact_info[value]': params.value
         };
       },
+      // This replaces the page-wide ajaxOptions wholesale, so dataType has to be
+      // repeated to keep the Accept header on JSON.
       ajaxOptions: {
-        type: 'POST'
+        type: 'POST',
+        dataType: 'json'
       }
     }).on('hidden', (e, reason) => {
       this.addEmail.show();

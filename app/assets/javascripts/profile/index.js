@@ -1,6 +1,7 @@
 //= require bootstrap-editable
 //= require ../vendor/underscore
 //= require ./namespace
+//= require ./editable_error
 //= require ../confirmation-popover
 //= require ../alert
 //= require ./name

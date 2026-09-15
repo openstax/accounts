@@ -70,10 +70,6 @@ class SecurityLog < ApplicationRecord
     educator_sign_up_failed
     educator_verified_email
     educator_verify_email_failed
-    staff_began_signup
-    staff_sign_up_failed
-    staff_verified_email
-    staff_verify_email_failed
     user_viewed_signup_form
     user_viewed_sheerid_form
     user_completed_cs_form
@@ -117,12 +113,26 @@ class SecurityLog < ApplicationRecord
     user_already_has_contact_not_creating_lead
     creating_new_salesforce_lead
     salesforce_lead_save_failed
+    reset_password_unverified_email
+    recaptcha_verified
+    recaptcha_blocked
+    salesforce_lead_already_converted
+    updated_salesforce_contact
+    salesforce_contact_save_failed
+    user_switched_signup_role
+    updated_salesforce_lead_after_role_switch
+    no_salesforce_lead_to_update
+    sheerid_webhook_ignored_after_role_switch
     educator_used_current_email_for_sheerid
     self_learner_signed_up
     self_learner_sign_up_failed
     self_learner_verified_email
     self_learner_verify_email_failed
     self_learner_social_sign_up
+    staff_began_signup
+    staff_sign_up_failed
+    staff_verified_email
+    staff_verify_email_failed
   ]
 
   json_serialize :event_data, Hash

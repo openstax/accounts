@@ -23,6 +23,9 @@ class ContactInfo < ApplicationRecord
 
   scope :with_users, lambda { joins(:user).eager_load(:user) }
 
+  # Matches the case-insensitive uniqueness validation above
+  scope :with_value, ->(value) { where('LOWER(value) = LOWER(?)', value.to_s.strip) }
+
   def confirmed;  verified;  end
   def confirmed?; verified?; end
 

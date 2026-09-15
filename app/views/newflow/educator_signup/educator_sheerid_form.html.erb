@@ -65,29 +65,37 @@
           </div>
         <% end %>
 
+        <%= render partial: 'newflow/signup_alternatives', locals: {
+              collapsible: true,
+              heading: I18n.t(:"login_signup_form.alternatives_heading"),
+              actions: [
+                {
+                  label: I18n.t(:"login_signup_form.alternative_manual_verification"),
+                  description: I18n.t(:"login_signup_form.alternative_manual_verification_description"),
+                  path: educator_profile_form_path(school: 'unknown'),
+                  method: :get,
+                  ga_label: 'skip-instant-verification'
+                },
+                {
+                  label: I18n.t(:"login_signup_form.switch_role_student"),
+                  description: I18n.t(:"login_signup_form.switch_role_student_description"),
+                  path: switch_signup_role_path,
+                  method: :post,
+                  ga_label: 'switch-to-student'
+                }
+              ]
+            } %>
+
         <form>
           <div class="content control-group">
             <iframe
               title='instructor verification'
-              src=<%= @sheerid_url %>
+              src="<%= @sheerid_url %>"
               frameborder=0
               width="100%">
             </iframe>
           </div>
         </form>
-
     <% end %>
-    <br><br>
-    <div>
-      <%=
-        I18n.t(
-          :"login_signup_form.sheerid_manual_review_link",
-          link: link_to(
-            I18n.t(:"login_signup_form.sheerid_manual_review_link_text"),
-            educator_profile_form_url(:school => 'unknown')
-          )
-        ).html_safe
-      %>
-    </div>
   </div>
 </div>

@@ -16,7 +16,9 @@ module Newflow
     end
 
     def restart_signup_if_missing_unverified_user
-      redirect_to newflow_signup_path unless unverified_user.present?
+      # No unverified address means there is nothing for the PIN form to confirm,
+      # so send them back to signup rather than into a form that cannot succeed.
+      redirect_to newflow_signup_path unless unverified_user.present? && unverified_email_address.present?
     end
 
     def set_active_banners

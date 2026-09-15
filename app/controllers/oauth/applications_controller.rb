@@ -19,6 +19,8 @@ module Oauth
     def show
       OSU::AccessPolicy.require_action_allowed!(:read, @user, @application)
 
+      @application_roles = ListApplicationUserRoles.call(@application).outputs.roles
+
       respond_to do |format|
         format.html
         format.json { render json: @application }
@@ -115,6 +117,14 @@ module Oauth
         format.html { redirect_to oauth_applications_url }
         format.json { head :no_content }
       end
+    end
+
+    def roles
+      set_application
+      OSU::AccessPolicy.require_action_allowed!(:read, @user, @application)
+
+      @role = params[:role]
+      @users = ListApplicationUsersWithRole.call(@application, @role).outputs.users
     end
 
     private
