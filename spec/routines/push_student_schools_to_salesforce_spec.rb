@@ -388,6 +388,50 @@ describe PushStudentSchoolsToSalesforce, type: :routine do
       end
     end
 
+    context 'a student linked by the reconciliation backfill, never pushed' do
+      let(:login_time) { 3.hours.ago }
+
+      let!(:reconciled_student) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0RECONCILED1',
+          salesforce_student_pushed_at: nil,
+          last_signed_in_at: login_time
+      end
+
+      it 'is refreshed rather than excluded by the NULL pushed_at' do
+        expect(sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          expect(subrequests).to receive(:update).with(
+            'Student__c', Id: 'a0RECONCILED1',
+            Last_OSweb_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
+          )
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+
+        expect(reconciled_student.reload.salesforce_student_pushed_at).to be > 1.hour.ago
+      end
+    end
+
+    context 'a linked student who has never signed in' do
+      let!(:never_signed_in) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0NEVERLOGIN1',
+          salesforce_student_pushed_at: nil,
+          last_signed_in_at: nil
+      end
+
+      it 'is skipped rather than sent a null login date' do
+        expect(sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(never_signed_in.reload.salesforce_student_pushed_at).to be_nil
+      end
+    end
+
     context 'a linked student whose login has not moved since the last push' do
       let!(:stale_student) do
         FactoryBot.create :user, role: :student,

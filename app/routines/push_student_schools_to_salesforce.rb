@@ -108,10 +108,17 @@ class PushStudentSchoolsToSalesforce
     Sentry.capture_exception(e)
   end
 
+  # A NULL salesforce_student_pushed_at means the link came from
+  # ReconcileSalesforceStudentIds rather than from pass 1, so it has to
+  # count as "never sent" -- comparing against it would return NULL and
+  # silently exclude every reconciled student forever.
   def sync_login_dates
     User.student
         .where.not(salesforce_student_id: nil)
-        .where('last_signed_in_at > salesforce_student_pushed_at')
+        .where.not(last_signed_in_at: nil)
+        .where(
+          'salesforce_student_pushed_at IS NULL OR last_signed_in_at > salesforce_student_pushed_at'
+        )
         .find_in_batches(batch_size: BATCH_SIZE) do |users|
       push_login_dates(users)
     end
