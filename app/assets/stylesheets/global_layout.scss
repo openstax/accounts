@@ -1,9 +1,17 @@
 
 .os-app,
 body {
-  font-family: 'Neue Helvetica W01', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: normal;
+}
+
+h1, h2 {
+  letter-spacing: -0.03em;
+}
+
+p {
+  letter-spacing: normal;
 }
 
 .os-app {
@@ -531,7 +539,7 @@ body {
 .status-chip {
   border: 1px solid #E0E0E0;
   border-radius: 12px;
-  background: #f9fafb;
+  background: #F5F5F5;
   padding: 10px 12px;
   min-width: 0;
 }
@@ -681,7 +689,7 @@ body {
   border: 2px dashed #E0E0E0;
   border-radius: 16px;
   padding: 2rem;
-  background: #f9fafb;
+  background: #F5F5F5;
   text-align: center;
   color: #6A6A6A;
 }
@@ -2095,7 +2103,7 @@ body {
 
   .card p {
     margin-bottom: 20px;
-    color: #666;
+    color: #6A6A6A;
   }
 }
 

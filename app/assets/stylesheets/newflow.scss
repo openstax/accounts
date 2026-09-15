@@ -5,28 +5,38 @@ $font-path: '/accounts/fonts';
 @import "newflow_colors";
 @import "intlTelInput";
 
+h1, h2 {
+    letter-spacing: -0.03em;
+}
+
+p {
+    letter-spacing: normal;
+}
+
 .banner {
-    background-color: #d9edf7;
+    background-color: #F7FCFF;
     padding: 1rem;
     padding-left: 2rem;
-    border-bottom: 0.1rem solid #bce8f1;
-    color: #31708f;
+    border-bottom: 0.1rem solid #00C1DE;
+    color: #002E6D;
 }
 
 .newflow-layout-alert {
-    background-color: #f2dede;
+    background-color: #FFF5F0;
     padding: 1rem;
     padding-left: 2rem;
     border-bottom: 0.1rem solid var(--input-error-border-color);
-    color: var(--input-error-message-color);
+    // The orange border and tint carry the error signal; orange text on the
+    // tint is only 4.2:1, so the copy itself stays at body contrast.
+    color: var(--os-text-on-tint);
 }
 
 .newflow-layout-notice {
-    background-color: #d9edf7;
-    color: #31708f;
+    background-color: #F7FCFF;
+    color: #002E6D;
     padding: 1rem;
     padding-left: 2rem;
-    border-bottom: 0.1rem solid #bce8f1;
+    border-bottom: 0.1rem solid #00C1DE;
 }
 
 .newflow-mustdo-alert {
@@ -63,7 +73,7 @@ $font-path: '/accounts/fonts';
     text-align: center;
 
     .line {
-        border-bottom: 0.1rem solid #d5d5d5;
+        border-bottom: 0.1rem solid #E0E0E0;
         width: 100%;
         height: 0.1rem;
         transform: translateY(1rem);
@@ -236,7 +246,7 @@ input.has-error {
 
 // Book Picker Accordion
 .book-picker {
-  border: 1px solid #d5d5d5;
+  border: 1px solid #E0E0E0;
   border-radius: 3px;
   margin-top: 0.5rem;
 }
@@ -252,19 +262,19 @@ input.has-error {
   width: 100%;
   padding: 0.8rem 1rem;
   border: none;
-  border-bottom: 1px solid #d5d5d5;
+  border-bottom: 1px solid #E0E0E0;
   font-size: 14px;
   outline: none;
-  &::placeholder { color: #999; }
-  &:focus { box-shadow: inset 0 -2px 0 0 #0dc0dc; }
+  &::placeholder { color: #9A9A9B; }
+  &:focus { box-shadow: inset 0 -2px 0 0 #00C1DE; }
 }
 
 .book-picker-subtitle {
   padding: 0.5rem 1rem;
   font-size: 12px;
-  color: #666;
+  color: #6A6A6A;
   margin: 0;
-  border-bottom: 1px solid #d5d5d5;
+  border-bottom: 1px solid #E0E0E0;
   em { font-style: italic; }
 }
 
@@ -276,7 +286,7 @@ input.has-error {
   padding: 0.7rem 1rem;
   background-color: #f5f5f5;
   border: none;
-  border-bottom: 1px solid #d5d5d5;
+  border-bottom: 1px solid #E0E0E0;
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
@@ -284,11 +294,11 @@ input.has-error {
   height: auto;
   text-align: left;
   &:hover { background-color: #ebebeb; }
-  .fa { font-size: 16px; color: #999; }
+  .fa { font-size: 16px; color: #9A9A9B; }
 }
 
 .book-picker-subject-body {
-  border-bottom: 1px solid #d5d5d5;
+  border-bottom: 1px solid #E0E0E0;
 }
 
 .book-picker-selections {
@@ -296,7 +306,7 @@ input.has-error {
   flex-wrap: wrap;
   gap: 0.4rem;
   padding: 0.5rem 1rem;
-  border-bottom: 1px solid #d5d5d5;
+  border-bottom: 1px solid #E0E0E0;
   &:empty { display: none; padding: 0; border-bottom: none; }
 }
 
@@ -306,13 +316,13 @@ input.has-error {
   gap: 0.3rem;
   padding: 0.3rem 0.6rem;
   background-color: #e8f7fa;
-  border: 1px solid #0dc0dc;
+  border: 1px solid #00C1DE;
   border-radius: 3px;
   font-size: 12px;
   color: #424242;
   .remove-tag {
     cursor: pointer;
-    color: #999;
+    color: #9A9A9B;
     font-size: 14px;
     line-height: 1;
     &:hover { color: #333; }
@@ -328,7 +338,7 @@ input.has-error {
   flex-direction: row;
   align-items: center;
   padding: 0.5rem 1rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #E0E0E0;
   border-left: 3px solid transparent;
   cursor: pointer;
   gap: 0.8rem;
@@ -336,12 +346,12 @@ input.has-error {
   &:hover { background-color: #f9f9f9; }
   &:focus-within {
     background-color: #f9f9f9;
-    outline: 2px solid #0dc0dc;
+    outline: 2px solid #00C1DE;
     outline-offset: 2px;
   }
   &.selected {
-    background-color: rgba(13, 192, 220, 0.08);
-    border-left-color: #0dc0dc;
+    background-color: rgba(0, 193, 222, 0.08);
+    border-left-color: #00C1DE;
     .book-tile-title { font-weight: bold; }
   }
   &.disabled {
@@ -380,7 +390,7 @@ input.has-error {
 
 // Book Detail Cards (for books_used as_primary path)
 .book-detail-card {
-  border: 1px solid #d5d5d5;
+  border: 1px solid #E0E0E0;
   border-radius: 4px;
   margin-top: 1rem;
   overflow: hidden;
@@ -413,7 +423,7 @@ input.has-error {
 .book-detail-helper {
   font-style: italic;
   font-size: 13px;
-  color: #666;
+  color: #6A6A6A;
   margin: 0 0 0.8rem 0;
 }
 
@@ -454,8 +464,8 @@ select:not([multiple]) {
     border: 1px solid #000;
   }
   &:focus {
-    border: thin solid #0dc0dc;
-    box-shadow: 0 0 0.4rem 0 #0dc0dc80;
+    border: thin solid #00C1DE;
+    box-shadow: 0 0 0.4rem 0 #00C1DE80;
   }
 }
 
@@ -505,12 +515,12 @@ label.required::after {
 
 .step-counter {
     height: 3rem;
-    border-left: 0.1rem solid #d5d5d5;
-    border-right: 0.1rem solid #d5d5d5;
+    border-left: 0.1rem solid #E0E0E0;
+    border-right: 0.1rem solid #E0E0E0;
     padding: 1.5rem 0 0 1.5rem;
 
     .without-tabs & {
-      border-top: 0.1rem solid #d5d5d5;
+      border-top: 0.1rem solid #E0E0E0;
     }
 
     @include wider-than($phone-max) {
@@ -671,8 +681,8 @@ input.has-error {
         margin: 0;
         padding: 1.6rem 1.5rem 2rem;
         border: 0;
-        border-left: 0.1rem solid #d5d5d5;
-        border-right: 0.1rem solid #d5d5d5;
+        border-left: 0.1rem solid #E0E0E0;
+        border-right: 0.1rem solid #E0E0E0;
         border-radius: 0;
         background-color: #fff;
 
@@ -683,7 +693,7 @@ input.has-error {
         // Slices only paint their own sides; whichever one ends the card has to
         // close it.
         &:last-child {
-            border-bottom: 0.1rem solid #d5d5d5;
+            border-bottom: 0.1rem solid #E0E0E0;
         }
 
         .signup-alternatives__form {
@@ -831,7 +841,7 @@ $very-narrow: 37rem * $scale-factor;
             background-color: #f5f5f5;
             border-bottom-width: 0;
             border-bottom-color: #fff;
-            border: 0.1rem solid #d5d5d5;
+            border: 0.1rem solid #E0E0E0;
             @include set-font(h4);
 
             &:first-child {
@@ -874,7 +884,7 @@ $very-narrow: 37rem * $scale-factor;
 
             cursor: default;
             border: 0;
-            border-bottom: 0.1rem solid #d5d5d5;
+            border-bottom: 0.1rem solid #E0E0E0;
             background-color: transparent;
         }
 
@@ -885,7 +895,7 @@ $very-narrow: 37rem * $scale-factor;
             gap: 0.25rem;
             padding: 0.8rem 1rem;
             border: 0;
-            border-bottom: 0.1rem solid #d5d5d5;
+            border-bottom: 0.1rem solid #E0E0E0;
             color: var(--greyish-brown);
             text-decoration: none;
             background: transparent;
@@ -902,8 +912,8 @@ $very-narrow: 37rem * $scale-factor;
     }
 
     .page-header {
-        border-left: 0.1rem solid #d5d5d5;
-        border-right: 0.1rem solid #d5d5d5;
+        border-left: 0.1rem solid #E0E0E0;
+        border-right: 0.1rem solid #E0E0E0;
         text-align: center;
         background: #ffffff;
 
@@ -931,7 +941,7 @@ $very-narrow: 37rem * $scale-factor;
             padding-top: 3rem;
         }
 
-        border-color: #d5d5d5;
+        border-color: #E0E0E0;
         border-style: solid;
         border-width: 0.1rem;
         border-top: 0;
@@ -956,7 +966,7 @@ $very-narrow: 37rem * $scale-factor;
             }
 
             &.recaptcha-disclaimer {
-              color: #aaa;
+              color: #9A9A9B;
               font-size: 1rem;
               margin-top: -1.5rem;
             }
@@ -967,7 +977,7 @@ $very-narrow: 37rem * $scale-factor;
 
             // Override international telephone widget color
             .iti__dial-code {
-                color: #666;
+                color: #6A6A6A;
             }
 
             // Add contrasting border to active item for accessibility
@@ -1018,7 +1028,7 @@ $very-narrow: 37rem * $scale-factor;
             padding-left: 0;
             padding-right: 0;
 
-            background-color: #f1f1f1;
+            background-color: #F5F5F5;
             color: #666666;
 
             @include title-font(2.4rem);
@@ -1113,15 +1123,15 @@ $very-narrow: 37rem * $scale-factor;
 
     input[type=text]:disabled, input[readonly=readonly] {
         color: #C1C1C1;
-        background-color: #f1f1f1;
+        background-color: #F5F5F5;
         cursor: not-allowed;
     }
 
     input[type=submit] {
         &:disabled {
-            background-color: #ccc;
+            background-color: #E0E0E0;
             box-shadow: none;
-            color: #666;
+            color: #6A6A6A;
             opacity: 0.85;
         }
     }
@@ -1169,12 +1179,12 @@ $very-narrow: 37rem * $scale-factor;
         }
 
         &.mistype {
-            color: #c22032;
+            color: #D4450C;
         }
 
         // A non-institutional address is a nudge to use a school email, not a rejection.
         &.edu {
-            color: #31708f;
+            color: #026AA1;
         }
     }
 
@@ -1608,9 +1618,9 @@ $very-narrow: 37rem * $scale-factor;
 
 .error-page {
     .page-header {
-        border-left: 0.1rem solid #d5d5d5;
-        border-right: 0.1rem solid #d5d5d5;
-        border-top: 0.1rem solid #d5d5d5;
+        border-left: 0.1rem solid #E0E0E0;
+        border-right: 0.1rem solid #E0E0E0;
+        border-top: 0.1rem solid #E0E0E0;
         border-top-left-radius: 0.3rem;
         border-top-right-radius: 0.3rem;
         text-align: center;
@@ -1630,7 +1640,7 @@ $very-narrow: 37rem * $scale-factor;
 
     .error-page-body {
         background-color: white;
-        border: 0.1rem solid #d5d5d5;
+        border: 0.1rem solid #E0E0E0;
         border-top: 0;
         border-bottom-left-radius: 0.3rem;
         border-bottom-right-radius: 0.3rem;
@@ -1661,7 +1671,7 @@ $very-narrow: 37rem * $scale-factor;
     padding: 0;
     list-style: none;
     background: #fff;
-    border: 1px solid #d5d5d5;
+    border: 1px solid #E0E0E0;
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     max-height: 19em;
@@ -1681,7 +1691,7 @@ $very-narrow: 37rem * $scale-factor;
       cursor: pointer;
 
       &.active {
-        background-color: #f1f1f1;
+        background-color: #F5F5F5;
       }
 
       .school-autocomplete-name {
@@ -1852,7 +1862,7 @@ $very-narrow: 37rem * $scale-factor;
 
 .signup-progress-bar {
   height: 0.4rem;
-  background: #d5d5d5;
+  background: #E0E0E0;
   border-radius: 999px;
   margin-bottom: 2rem;
   overflow: hidden;
@@ -2069,7 +2079,7 @@ $very-narrow: 37rem * $scale-factor;
         width: 100%;
         box-sizing: border-box;
         padding: 1.2rem 1.4rem;
-        border: 1px solid #ccc;
+        border: 1px solid #E0E0E0;
         border-radius: 0.4rem;
         font-size: 1.6rem;
 
@@ -2088,7 +2098,7 @@ $very-narrow: 37rem * $scale-factor;
 
     &__tag {
         font-size: 1.4rem;
-        border: 1px solid #ccc;
+        border: 1px solid #E0E0E0;
         border-radius: 999px;
         padding: 0.6rem 1.4rem;
         color: #212121;
