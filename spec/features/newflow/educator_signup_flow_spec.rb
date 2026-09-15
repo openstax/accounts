@@ -133,7 +133,7 @@ module Newflow
       before do
         visit(login_path(return_param))
         click_on(I18n.t(:"login_signup_form.sign_up"))
-        click_on(I18n.t(:"login_signup_form.educator"))
+        click_on(I18n.t(:"login_signup_form.join_as_educator_title"))
       end
 
       it 'lets an educator sign up without a phone number' do

@@ -88,7 +88,7 @@ RSpec.describe AccountController, type: :controller do
     it 'shows the card for a user who has neither answered nor dismissed it' do
       get :overview
       expect(response.body).to include('lms-question-card')
-      expect(response.body).to include('Do you use an LMS?')
+      expect(response.body).to include('Do you use a learning management system (LMS)?')
     end
 
     it 'hides the card once the user has answered' do
@@ -96,7 +96,7 @@ RSpec.describe AccountController, type: :controller do
 
       get :overview
 
-      expect(response.body).not_to include('Do you use an LMS?')
+      expect(response.body).not_to include('Do you use a learning management system (LMS)?')
     end
 
     it 'hides the card once the user has dismissed it' do
@@ -104,7 +104,7 @@ RSpec.describe AccountController, type: :controller do
 
       get :overview
 
-      expect(response.body).not_to include('Do you use an LMS?')
+      expect(response.body).not_to include('Do you use a learning management system (LMS)?')
     end
 
     it 're-shows a dismissed card when jumped to via ?show_lms=1' do
@@ -112,7 +112,7 @@ RSpec.describe AccountController, type: :controller do
 
       get :overview, params: { show_lms: '1' }
 
-      expect(response.body).to include('Do you use an LMS?')
+      expect(response.body).to include('Do you use a learning management system (LMS)?')
     end
 
     it 'shows the completeness chip for LMS as done once answered' do
