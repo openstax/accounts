@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_09_15_060000) do
+ActiveRecord::Schema.define(version: 2026_09_15_190000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -454,6 +454,7 @@ ActiveRecord::Schema.define(version: 2026_09_15_060000) do
     t.datetime "salesforce_student_pushed_at"
     t.datetime "last_signed_in_at"
     t.string "salesforce_student_id"
+    t.datetime "salesforce_contact_login_pushed_at"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
@@ -462,6 +463,7 @@ ActiveRecord::Schema.define(version: 2026_09_15_060000) do
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"
     t.index ["salesforce_contact_id"], name: "index_users_on_salesforce_contact_id"
+    t.index ["salesforce_contact_login_pushed_at", "last_signed_in_at"], name: "index_users_with_contact_by_login", where: "(salesforce_contact_id IS NOT NULL)"
     t.index ["salesforce_student_id"], name: "index_users_on_salesforce_student_id"
     t.index ["salesforce_student_pushed_at", "last_signed_in_at"], name: "index_users_linked_students_by_login", where: "((role = 1) AND (salesforce_student_id IS NOT NULL))"
     t.index ["school_id"], name: "index_users_on_school_id"

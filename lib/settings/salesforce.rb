@@ -19,6 +19,14 @@ module Settings
         Settings::Db.store.push_salesforce_students_enabled = bool
       end
 
+      def push_contact_logins_enabled
+        Settings::Db.store.push_salesforce_contact_logins_enabled
+      end
+
+      def push_contact_logins_enabled=(bool)
+        Settings::Db.store.push_salesforce_contact_logins_enabled = bool
+      end
+
       def user_info_error_emails_enabled
         Settings::Db.store.user_info_error_emails_enabled
       end

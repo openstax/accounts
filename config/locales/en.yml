@@ -450,6 +450,9 @@ en:
       push_salesforce_students_enabled:
         name: 'Push students to Salesforce?'
         help_block: 'If checked (and SF configured), student school picks will be pushed to SF as Student__c records'
+      push_salesforce_contact_logins_enabled:
+        name: 'Push instructor login dates to Salesforce?'
+        help_block: 'If checked (and SF configured), instructors'' most recent login date will be pushed to their SF Contact'
       show_support_chat:
         name: 'Show support chat widget'
         help_block: 'If checked users will see CS chat widget'
