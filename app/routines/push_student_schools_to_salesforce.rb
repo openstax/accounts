@@ -181,7 +181,7 @@ class PushStudentSchoolsToSalesforce
   # Slug => Book__c id map, queried from Salesforce at most once per call
   # and only if some student actually has a book redirect to resolve.
   def book_id_by_slug
-    @book_id_by_slug ||= OpenStax::Salesforce::Remote::BookUrl.active_with_url
+    @book_id_by_slug ||= OpenStax::Salesforce::Remote::Book.where('OSC_URL__c != null')
       .each_with_object({}) do |book, map|
         slug = book.osc_url.to_s[BOOK_SLUG_REGEX, 1]
         map[slug] = book.id if slug.present?

@@ -192,10 +192,10 @@ describe PushStudentSchoolsToSalesforce, type: :routine do
     end
 
     context 'initial book resolution' do
-      let(:book_url_remote) { OpenStax::Salesforce::Remote::BookUrl }
+      let(:book_remote) { OpenStax::Salesforce::Remote::Book }
 
       before do
-        allow(book_url_remote).to receive(:active_with_url).and_return(
+        allow(book_remote).to receive(:where).with('OSC_URL__c != null').and_return(
           [
             double(id: 'a0BTEST1', osc_url: 'https://openstax.org/details/books/chemistry-2e'),
             double(id: 'a0BTEST2', osc_url: 'https://openstax.org/details/books/biology-2e')
