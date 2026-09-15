@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'Admin user pages', js: true do
   context 'as an admin user' do
     before(:each) do
+      disable_sfdc_client
       @admin_user = create_admin_user
       visit '/'
       complete_newflow_log_in_screen('admin', 'password')

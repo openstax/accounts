@@ -138,6 +138,15 @@ Capybara.configure do |config|
 end
 
 RSpec.configure do |config|
+
+  # Any spec file that requires 'webmock/rspec' enables WebMock for the whole
+  # process, and WebMock blocks localhost by default -- which takes out Capybara's
+  # own server and every feature spec that shares the process. Only the four specs
+  # that require vcr_helper get localhost back via VCR's ignore_localhost, so
+  # whether feature specs pass depends on how the runner groups files.
+  config.before(:suite) do
+    WebMock.disable_net_connect!(allow_localhost: true) if defined?(WebMock)
+  end
   config.include ActiveJob::TestHelper
 
   # Whitelist the capybara host (which can change)
