@@ -17,7 +17,7 @@
           <h3>Assignable is available at <%= current_user.school&.name || 'your institution' %></h3>
           <p>
             Good news — <%= current_user.school&.name || 'your institution' %> supports OpenStax Assignable.
-            Use Assignable to give your students auto-graded practice and keep grades synced, all within your LMS.
+            Use Assignable to give your students auto-graded practice and keep grades synced, all within your learning management system (LMS).
           </p>
           <p>You can choose whether and when to use it — support is available if you’d like help getting started.</p>
         </div>
@@ -199,7 +199,7 @@
             <div class="account-callout__lms-header">
               <div class="account-callout__text">
                 <p class="account-callout__eyebrow account-callout__eyebrow--alert">One quick question</p>
-                <h3>Do you use an LMS?</h3>
+                <h3>Do you use a learning management system (LMS)?</h3>
                 <p>We'll point you to the right Assignable setup guide.</p>
               </div>
               <%= button_to 'Not now', account_lms_answer_dismiss_path,
