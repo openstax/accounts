@@ -48,6 +48,13 @@ describe Admin::UsersController, type: :controller do
     end
   end
 
+  describe 'POST #become' do
+    it 'signs the admin in as the user without stamping last_signed_in_at' do
+      expect { post :become, params: { id: user.id } }.not_to change { user.reload.last_signed_in_at }
+      expect(controller.current_user).to eq user
+    end
+  end
+
   describe "PUT #mark_users_updated" do
     it "should update unread_updates at a button push" do
       FactoryBot.create :application_user, unread_updates: 1
