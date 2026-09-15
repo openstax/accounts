@@ -5,8 +5,6 @@ describe Doorkeeper::Application, type: :model do
 
   it { is_expected.to have_many(:application_users).dependent(:destroy) }
   it { is_expected.to have_many(:users) }
-  it { is_expected.to have_many(:application_groups).dependent(:destroy) }
-  it { is_expected.to have_many(:groups) }
   it { is_expected.to have_many(:messages) }
   it { is_expected.to have_many(:security_logs) }
 

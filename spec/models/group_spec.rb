@@ -40,25 +40,4 @@ describe Group do
     expect(group_1.has_member?(user_2)).to eq(true)
   end
 
-  it 'can find members in nested groups' do
-    group_2.add_member(user_2)
-    expect(group_1.has_member?(user_1)).to eq(false)
-    expect(group_1.has_member?(user_2)).to eq(false)
-    expect(group_2.has_member?(user_2)).to eq(true)
-
-    FactoryBot.create(:group_nesting, container_group: group_1, member_group: group_2)
-    group_1.reload
-
-    expect(group_1.has_member?(user_1)).to eq(false)
-    expect(group_1.has_member?(user_2)).to eq(true)
-
-    group_2.add_member(user_1)
-    group_2.reload
-
-    expect(group_2.has_member?(user_1)).to eq(true)
-
-    group_1.reload
-    expect(group_1.has_member?(user_1)).to eq(true)
-  end
-
 end

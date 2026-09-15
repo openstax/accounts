@@ -90,6 +90,60 @@ describe FindOrCreateUser do
 
     end
 
+    context "already linked under a different role" do
+
+      it "reuses the existing user instead of creating a duplicate, and leaves the existing ExternalId untouched" do
+        existing_user = described_class.call(
+          external_id: 'google-classroom/999', email: 'instructor@example.com',
+          first_name: 'Bob', last_name: 'Smith', already_verified: true, role: 'instructor'
+        ).outputs.user
+
+        found = nil
+        expect {
+          found = described_class.call(
+            external_id: 'google-classroom/999',
+            first_name: 'Bob', last_name: 'Smith', already_verified: false, role: 'student'
+          ).outputs.user
+        }.not_to change(User, :count)
+
+        expect(found).to eq(existing_user)
+        expect(existing_user.reload.external_ids.map(&:role)).to eq(['instructor'])
+      end
+
+      it "prefers the matching-role ExternalId when multiple match the external_id" do
+        instructor_user = described_class.call(
+          external_id: 'google-classroom/1000', email: 'instructor@example.com',
+          first_name: 'Ada', last_name: 'Lovelace', already_verified: true, role: 'instructor'
+        ).outputs.user
+
+        student_user = FactoryBot.create :user
+        ExternalId.create!(external_id: 'google-classroom/1000', role: 'student', user: student_user)
+
+        found = described_class.call(
+          external_id: 'google-classroom/1000',
+          first_name: 'Ada', last_name: 'Lovelace', already_verified: false, role: 'instructor'
+        ).outputs.user
+
+        expect(found).to eq(instructor_user)
+      end
+
+      it "falls back deterministically (by most recent linkage)" do
+        legacy_user = FactoryBot.create :user
+        ExternalId.create!(external_id: 'google-classroom/1001', role: 'unknown_role', user: legacy_user)
+
+        other_role_user = FactoryBot.create :user
+        other_role_external_id = ExternalId.create!(external_id: 'google-classroom/1001', role: 'librarian', user: other_role_user)
+
+        found = described_class.call(
+          external_id: 'google-classroom/1001',
+          first_name: 'Bob', last_name: 'Smith', already_verified: false, role: 'instructor'
+        ).outputs.user
+
+        expect(found).to eq(other_role_external_id.user)
+      end
+
+    end
+
     context "given an email already claimed (unverified) by a different user" do
       let!(:other_user) { FactoryBot.create :user }
       let(:conflicting_email) { 'shared@example.com' }

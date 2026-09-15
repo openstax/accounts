@@ -296,8 +296,13 @@
 
 $.fn.editable.defaults.mode = 'inline';
 $.fn.editable.defaults.send = "always";
-$.fn.editable.defaults.ajaxOptions = {type: "PUT"};
+// dataType pins the Accept header to JSON so the server never negotiates an HTML
+// representation of the save, and a 200 that isn't JSON (the login page, after a
+// session times out) fails loudly instead of writing "undefined" into the field.
+$.fn.editable.defaults.ajaxOptions = {type: "PUT", dataType: "json"};
 $.fn.editable.defaults.url = "<%= profile_path %>";
+// Without this x-editable renders xhr.responseText as markup on any failure.
+$.fn.editable.defaults.error = OX.Profile.editableError;
 
 $('#username').editable({
   success: function(response, newValue) {

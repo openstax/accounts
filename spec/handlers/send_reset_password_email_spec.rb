@@ -90,6 +90,30 @@ describe SendResetPasswordEmail, type: :handler do
     end
   end
 
+  # The account that produced support case 00128408 was created in 2021 and
+  # abandoned at the PIN screen; whatever state it ended up in, nobody ever
+  # proved control of the address, and reset is the only door back in.
+  context 'when the account never verified its email but is not in the unverified state' do
+    let!(:stale_user) do
+      user = FactoryBot.create(:user, state: User::ACTIVATED, is_newflow: true, role: 'instructor')
+      FactoryBot.create(:email_address, user: user, value: 'abandoned@openstax.org', verified: false)
+      user
+    end
+
+    let(:params) do
+      { forgot_password_form: { email: 'abandoned@openstax.org' } }
+    end
+
+    it 'resends the email verification rather than erroring cannot_find_user' do
+      result = described_class.handle(caller: AnonymousUser.instance, params: params)
+
+      expect(result).not_to have_routine_error(:cannot_find_user)
+      expect(result.outputs.user).to eq(stale_user)
+      expect(result.outputs.needs_email_verification).to be(true)
+      expect(result.outputs.email_address.value).to eq('abandoned@openstax.org')
+    end
+  end
+
   context 'when the account is unverified but has no unverified address left' do
     # `ConfirmByPin` returns without error for an already-confirmed address, so a
     # user routed to the PIN form in this state would be signed in by any PIN.

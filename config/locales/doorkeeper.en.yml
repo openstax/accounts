@@ -56,6 +56,11 @@ en:
         confidential: 'Confidential'
         callback_urls: 'Callback urls'
         actions: 'Actions'
+        roles_in_use: 'Roles:'
+        no_roles: "No roles have been assigned to this application's users."
+      roles:
+        title: '%{name} users with role "%{role}":'
+        no_users: 'No users currently have this role.'
 
     authorizations:
       buttons:

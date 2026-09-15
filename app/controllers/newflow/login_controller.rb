@@ -36,7 +36,7 @@ module Newflow
             log_data[:redirect] = stored_url
           end
           sign_in!(user, log_data)
-          log_posthog(user, 'user_logged_in', { client_app: get_client_app&.name })
+          log_posthog(user, 'user_logged_in')
 
           if current_user.student? || !current_user.is_newflow? || (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login'))
             did_user_sign_recent_privacy_notice? ? redirect_back : redirect_to_sign_privacy_notice

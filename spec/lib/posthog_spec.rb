@@ -61,6 +61,7 @@ RSpec.describe OXPosthog, type: :lib do
               role: 'instructor',
               faculty_status: 'confirmed_faculty',
               school: school.id,
+              salesforce_school_id: school.salesforce_id,
               salesforce_contact_id: 'sf_contact_123',
               salesforce_lead_id: 'sf_lead_456',
               adopter_status: 'current_adopter',
@@ -72,12 +73,23 @@ RSpec.describe OXPosthog, type: :lib do
               is_sheerid_verified: true,
               which_books: 'Biology',
               how_many_students: '100-200',
+              title_1_school: false,
               country_code: 'US',
               receive_newsletter: true,
               is_administrator: user.is_administrator,
               has_external_id: false,
             )
           )
+        )
+      )
+    end
+
+    it 'disables server-side GeoIP so datacenter geo never overwrites person geo' do
+      described_class.log(user, 'signed_up')
+
+      expect(posthog_client).to have_received(:capture).with(
+        hash_including(
+          properties: hash_including('$geoip_disable': true)
         )
       )
     end
@@ -186,6 +198,36 @@ RSpec.describe OXPosthog, type: :lib do
       )
     end
 
+    context 'client_app fallback for Assignable users' do
+      it 'defaults client_app to Assignable when the user has an external id' do
+        FactoryBot.create(:external_id, user: user)
+
+        described_class.log(user, 'signed_up')
+
+        expect(posthog_client).to have_received(:capture).with(
+          hash_including(properties: hash_including(client_app: 'Assignable'))
+        )
+      end
+
+      it 'does not override an explicitly passed client_app' do
+        FactoryBot.create(:external_id, user: user)
+
+        described_class.log(user, 'signed_up', client_app: 'OpenStax Tutor')
+
+        expect(posthog_client).to have_received(:capture).with(
+          hash_including(properties: hash_including(client_app: 'OpenStax Tutor'))
+        )
+      end
+
+      it 'sends no client_app when none is known' do
+        described_class.log(user, 'signed_up')
+
+        expect(posthog_client).to have_received(:capture) do |attrs|
+          expect(attrs[:properties]).not_to have_key(:client_app)
+        end
+      end
+    end
+
     context 'guard clauses' do
       it 'returns early for nil user' do
         described_class.log(nil, 'signed_up')
@@ -220,7 +262,7 @@ RSpec.describe OXPosthog, type: :lib do
       expect(posthog_client).to have_received(:capture).with(
         distinct_id: 'anon-123',
         event: 'user_login_failed',
-        properties: { '$process_person_profile': false }
+        properties: { '$process_person_profile': false, '$geoip_disable': true }
       )
     end
 
