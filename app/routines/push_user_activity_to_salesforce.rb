@@ -1,18 +1,24 @@
-# Nightly sync of students' picked schools and login activity to Salesforce
-# Student__c records (Name = accounts UUID, School__c = school's Salesforce
-# Account id, Last_OSweb_Login_Date__c = most recent login).
-# Pseudonymous by design: no name or email is ever sent.
+# Nightly sync of students' picked schools and both students' and
+# instructors' login activity to Salesforce. Pseudonymous by design: no name
+# or email is ever sent.
 #
-# Two bounded passes, each backed by its own partial index:
+# Three bounded passes, each backed by its own partial index and gated by
+# its own feature flag:
 #   1. link/create -- runs once per student. Resolves or creates the
-#      Student__c, stamps its Salesforce id onto the user, and records the
-#      first known login date.
-#   2. login refresh -- recurring. Updates only Last_OSweb_Login_Date__c on
-#      students already linked, straight from the stored Salesforce id, with
-#      no SOQL lookup. Never creates a Student__c: a student who never
-#      finishes pass 1 must not gain a record whose only content is a login
-#      date.
-class PushStudentSchoolsToSalesforce
+#      Student__c (Name = accounts UUID, School__c = school's Salesforce
+#      Account id, Last_OSweb_Login_Date__c = most recent login), stamps its
+#      Salesforce id onto the user, and records the first known login date.
+#   2. student login refresh -- recurring. Updates only
+#      Last_OSweb_Login_Date__c on students already linked, straight from the
+#      stored Salesforce id, with no SOQL lookup. Never creates a Student__c:
+#      a student who never finishes pass 1 must not gain a record whose only
+#      content is a login date.
+#   3. instructor login refresh -- recurring. Same as pass 2 but for
+#      instructors' Contact records, keyed by the salesforce_contact_id
+#      already linked elsewhere (lead conversion, profile sync). Never
+#      creates or otherwise touches a Contact -- Last_OSweb_Login_Date__c is
+#      the only field Accounts is allowed to write there.
+class PushUserActivityToSalesforce
   BATCH_SIZE = 250
   LOOKUP_CHUNK_SIZE = 200
 
@@ -25,10 +31,12 @@ class PushStudentSchoolsToSalesforce
   end
 
   def call
-    return unless Settings::Salesforce.push_students_enabled
+    if Settings::Salesforce.push_students_enabled
+      link_and_create_students
+      sync_student_login_dates
+    end
 
-    link_and_create_students
-    sync_login_dates
+    sync_contact_login_dates if Settings::Salesforce.push_contact_logins_enabled
   end
 
   private
@@ -112,7 +120,7 @@ class PushStudentSchoolsToSalesforce
   # ReconcileSalesforceStudentIds rather than from pass 1, so it has to
   # count as "never sent" -- comparing against it would return NULL and
   # silently exclude every reconciled student forever.
-  def sync_login_dates
+  def sync_student_login_dates
     User.student
         .where.not(salesforce_student_id: nil)
         .where.not(last_signed_in_at: nil)
@@ -120,14 +128,14 @@ class PushStudentSchoolsToSalesforce
           'salesforce_student_pushed_at IS NULL OR last_signed_in_at > salesforce_student_pushed_at'
         )
         .find_in_batches(batch_size: BATCH_SIZE) do |users|
-      push_login_dates(users)
+      push_student_login_dates(users)
     end
   end
 
   # One composite/batch request per 25 students instead of one update per
   # student -- this pass only ever touches already-linked students, so there
   # is no lookup to batch, just the writes.
-  def push_login_dates(users)
+  def push_student_login_dates(users)
     results = OpenStax::Salesforce::Remote::Student.sfdc_client.batch do |batch|
       users.each do |user|
         batch.update(
@@ -143,7 +151,50 @@ class PushStudentSchoolsToSalesforce
         user.update_column(:salesforce_student_pushed_at, Time.current)
       else
         Sentry.capture_message(
-          "[PushStudentSchoolsToSalesforce] login-date update failed for user #{user.id}: #{result.inspect}",
+          "[PushUserActivityToSalesforce] student login-date update failed for user #{user.id}: #{result.inspect}",
+          level: :warning
+        )
+      end
+    end
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
+
+  # Same NULL reasoning as sync_student_login_dates: salesforce_contact_id is
+  # populated by lead conversion and profile-completion code paths that never
+  # stamp salesforce_contact_login_pushed_at, so those instructors must count
+  # as "never sent" too.
+  def sync_contact_login_dates
+    User.where.not(salesforce_contact_id: nil)
+        .where.not(last_signed_in_at: nil)
+        .where(
+          'salesforce_contact_login_pushed_at IS NULL OR last_signed_in_at > salesforce_contact_login_pushed_at'
+        )
+        .find_in_batches(batch_size: BATCH_SIZE) do |users|
+      push_contact_login_dates(users)
+    end
+  end
+
+  # Only Last_OSweb_Login_Date__c -- never FV_Status__c, Adoption_Status__c,
+  # name or school, which belong to Customer Experience once a Contact
+  # exists.
+  def push_contact_login_dates(users)
+    results = OpenStax::Salesforce::Remote::Contact.sfdc_client.batch do |batch|
+      users.each do |user|
+        batch.update(
+          'Contact',
+          Id: user.salesforce_contact_id,
+          Last_OSweb_Login_Date__c: login_date(user)
+        )
+      end
+    end
+
+    users.zip(results).each do |user, result|
+      if batch_update_succeeded?(result)
+        user.update_column(:salesforce_contact_login_pushed_at, Time.current)
+      else
+        Sentry.capture_message(
+          "[PushUserActivityToSalesforce] contact login-date update failed for user #{user.id}: #{result.inspect}",
           level: :warning
         )
       end

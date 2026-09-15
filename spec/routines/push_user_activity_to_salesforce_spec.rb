@@ -1,10 +1,11 @@
 require 'rails_helper'
 
-describe PushStudentSchoolsToSalesforce, type: :routine do
+describe PushUserActivityToSalesforce, type: :routine do
   let(:remote) { OpenStax::Salesforce::Remote::Student }
 
   before do
     allow(Settings::Salesforce).to receive(:push_students_enabled) { true }
+    allow(Settings::Salesforce).to receive(:push_contact_logins_enabled) { false }
   end
 
   context 'when the setting is disabled' do
@@ -471,6 +472,179 @@ describe PushStudentSchoolsToSalesforce, type: :routine do
 
         expect(first.reload.salesforce_student_pushed_at).to be > 1.hour.ago
         expect(second.reload.salesforce_student_pushed_at).to be > 1.hour.ago
+      end
+    end
+  end
+
+  describe 'pass 3: instructor Contact login refresh' do
+    let(:contact_remote) { OpenStax::Salesforce::Remote::Contact }
+    let(:contact_sfdc_client) { double('contact sfdc client') }
+
+    before do
+      allow(Settings::Salesforce).to receive(:push_contact_logins_enabled) { true }
+      allow(contact_remote).to receive(:sfdc_client).and_return(contact_sfdc_client)
+    end
+
+    context 'an instructor whose login moved on' do
+      let(:login_time) { 2.hours.ago }
+
+      let!(:instructor) do
+        FactoryBot.create :user, role: :instructor,
+          salesforce_contact_id: 'a0CLINKED001',
+          salesforce_contact_login_pushed_at: 30.days.ago,
+          last_signed_in_at: login_time
+      end
+
+      it 'sends a batched Contact update with the login date and re-stamps the user' do
+        expect(contact_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          expect(subrequests).to receive(:update).with(
+            'Contact', Id: 'a0CLINKED001', Last_OSweb_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
+          )
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+
+        expect(instructor.reload.salesforce_contact_login_pushed_at).to be > 1.hour.ago
+      end
+
+      it 'sends only Last_OSweb_Login_Date__c, never name/school/FV/adoption fields' do
+        expect(contact_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          expect(subrequests).to receive(:update) do |object, attrs|
+            expect(object).to eq 'Contact'
+            expect(attrs.keys).to match_array(%i[Id Last_OSweb_Login_Date__c])
+          end
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+      end
+
+      it 'does not re-stamp the user when the batch item reports failure' do
+        allow(contact_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          allow(subrequests).to receive(:update)
+          block.call(subrequests)
+          [{ 'statusCode' => 400, 'result' => [{ 'errorCode' => 'FIELD_CUSTOM_VALIDATION_EXCEPTION' }] }]
+        end
+        expect(Sentry).to receive(:capture_message)
+        previous_pushed_at = instructor.salesforce_contact_login_pushed_at
+
+        described_class.call
+
+        expect(instructor.reload.salesforce_contact_login_pushed_at).to be_within(1.second).of(previous_pushed_at)
+      end
+    end
+
+    context 'an instructor with salesforce_contact_login_pushed_at NULL' do
+      let(:login_time) { 3.hours.ago }
+
+      let!(:instructor) do
+        FactoryBot.create :user, role: :instructor,
+          salesforce_contact_id: 'a0CNULL00001',
+          salesforce_contact_login_pushed_at: nil,
+          last_signed_in_at: login_time
+      end
+
+      it 'is included rather than excluded by the NULL pushed_at' do
+        expect(contact_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          expect(subrequests).to receive(:update).with(
+            'Contact', Id: 'a0CNULL00001', Last_OSweb_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
+          )
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+
+        expect(instructor.reload.salesforce_contact_login_pushed_at).to be > 1.hour.ago
+      end
+    end
+
+    context 'a user with no salesforce_contact_id' do
+      let!(:user) do
+        FactoryBot.create :user, role: :instructor, school: nil,
+          salesforce_contact_id: nil,
+          last_signed_in_at: 1.hour.ago
+      end
+
+      it 'is skipped and no Contact is created' do
+        expect(contact_remote).not_to receive(:new)
+        expect(contact_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(user.reload.salesforce_contact_login_pushed_at).to be_nil
+      end
+    end
+
+    context 'an instructor whose login has not moved since the last contact push' do
+      let!(:instructor) do
+        FactoryBot.create :user, role: :instructor,
+          salesforce_contact_id: 'a0CSTALE0001',
+          salesforce_contact_login_pushed_at: 1.hour.ago,
+          last_signed_in_at: 2.hours.ago
+      end
+
+      it 'is not re-pushed' do
+        expect(contact_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(instructor.reload.salesforce_contact_login_pushed_at).to be_within(1.second).of(1.hour.ago)
+      end
+    end
+
+    context 'the contact-login flag is off but the student flag is on' do
+      before { allow(Settings::Salesforce).to receive(:push_contact_logins_enabled) { false } }
+
+      let!(:instructor) do
+        FactoryBot.create :user, role: :instructor, school: nil,
+          salesforce_contact_id: 'a0CFLAGOFF1',
+          salesforce_contact_login_pushed_at: nil,
+          last_signed_in_at: 1.hour.ago
+      end
+
+      it 'does not touch the Contact' do
+        expect(contact_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(instructor.reload.salesforce_contact_login_pushed_at).to be_nil
+      end
+    end
+
+    context 'the student flag is off but the contact-login flag is on' do
+      before { allow(Settings::Salesforce).to receive(:push_students_enabled) { false } }
+
+      let!(:school) { FactoryBot.create :school, salesforce_id: '001TEST00000001' }
+      let!(:student) { FactoryBot.create :user, role: :student, school: school }
+
+      let!(:instructor) do
+        FactoryBot.create :user, role: :instructor,
+          salesforce_contact_id: 'a0CFLAGON01',
+          salesforce_contact_login_pushed_at: nil,
+          last_signed_in_at: 1.hour.ago
+      end
+
+      it 'still runs the instructor Contact pass while skipping the student passes' do
+        expect(remote).not_to receive(:where)
+        expect(contact_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          allow(subrequests).to receive(:update)
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+
+        expect(student.reload.salesforce_student_pushed_at).to be_nil
+        expect(instructor.reload.salesforce_contact_login_pushed_at).not_to be_nil
       end
     end
   end
