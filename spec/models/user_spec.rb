@@ -354,6 +354,46 @@ describe User, type: :model do
     end
   end
 
+  describe '.verified_instructors_matching' do
+    let(:school) { FactoryBot.create(:school, name: 'Rice University') }
+
+    let!(:verified_delgado) do
+      FactoryBot.create(:user, role: :instructor, faculty_status: :confirmed_faculty, school: school,
+                                first_name: 'Sarah', last_name: 'Delgado')
+    end
+
+    let!(:pending_delgado) do
+      FactoryBot.create(:user, role: :instructor, faculty_status: :pending_faculty,
+                                first_name: 'Marcus', last_name: 'Delgado')
+    end
+
+    let!(:unrelated_instructor) do
+      FactoryBot.create(:user, role: :instructor, faculty_status: :confirmed_faculty,
+                                first_name: 'Jamie', last_name: 'Nguyen')
+    end
+
+    it 'matches verified instructors by (partial) name, case-insensitively' do
+      expect(User.verified_instructors_matching('delg')).to contain_exactly(verified_delgado)
+      expect(User.verified_instructors_matching('DELGADO')).to contain_exactly(verified_delgado)
+    end
+
+    it 'excludes instructors who are not yet confirmed_faculty' do
+      results = User.verified_instructors_matching('Delgado')
+      expect(results).not_to include(pending_delgado)
+    end
+
+    it 'excludes students entirely, even with a matching name' do
+      FactoryBot.create(:user, role: :student, first_name: 'Delgado', last_name: 'Student')
+      results = User.verified_instructors_matching('Delgado')
+      expect(results).to contain_exactly(verified_delgado)
+    end
+
+    it 'returns none for queries shorter than 2 characters' do
+      expect(User.verified_instructors_matching('d')).to be_empty
+      expect(User.verified_instructors_matching('')).to be_empty
+    end
+  end
+
   describe 'activated_at gets updated when user changes state to activated' do
     let(:user) do
       FactoryBot.create(:user, state: User::UNVERIFIED)
@@ -507,6 +547,60 @@ describe User, type: :model do
       it 'is valid when books_used_details is blank' do
         user.books_used_details = {}
         expect(user).to be_valid
+      end
+    end
+  end
+
+  describe '#profile_needs_enrichment?' do
+    it 'is false when the profile is not yet complete' do
+      user.update!(is_profile_complete: false)
+      expect(user.profile_needs_enrichment?).to be false
+    end
+
+    context 'when is_profile_complete is true' do
+      before { user.update!(is_profile_complete: true, which_books: 'Biology 2e', how_many_students: '30', self_reported_school: 'Rice University') }
+
+      it 'is false when books, student count, and school are all present' do
+        expect(user.profile_needs_enrichment?).to be false
+      end
+
+      it 'is true when which_books is blank (deferred via "finish later")' do
+        user.update!(which_books: nil)
+        expect(user.profile_needs_enrichment?).to be true
+      end
+
+      it 'is true when how_many_students is blank' do
+        user.update!(how_many_students: nil)
+        expect(user.profile_needs_enrichment?).to be true
+      end
+
+      it 'is true when there is no linked school and no self-reported school' do
+        user.update!(school: nil, self_reported_school: nil)
+        expect(user.profile_needs_enrichment?).to be true
+      end
+
+      it 'is false when there is no self-reported school but a linked School is present' do
+        school = FactoryBot.create(:school)
+        user.update!(school: school, self_reported_school: nil)
+        expect(user.profile_needs_enrichment?).to be false
+      end
+
+      it 'is false when which_books is blank but the user has added books via the Books tab' do
+        user.update!(which_books: nil)
+        book = Book.create!(book_uuid: SecureRandom.uuid, title: 'Biology 2e')
+        UserBook.create!(user: user, book: book)
+
+        expect(user.profile_needs_enrichment?).to be false
+      end
+
+      it 'is false when how_many_students is blank but the user has reported an adoption' do
+        user.update!(how_many_students: nil)
+        AdoptionReport.create!(
+          user: user, book_title: 'Biology 2e', school_year: '2025-2026',
+          status: 'using', source: 'books_modal'
+        )
+
+        expect(user.profile_needs_enrichment?).to be false
       end
     end
   end

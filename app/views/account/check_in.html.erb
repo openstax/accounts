@@ -1,0 +1,103 @@
+<div class="account-layout">
+  <%= render 'account/navigation' %>
+  <div class="account-layout__content">
+    <%= render(
+          'shared/account_layout_shell',
+          locals: { title: nil, description: nil }
+        ) do %>
+      <div class="account-check-in">
+        <p class="account-shell__eyebrow"><%= t('annual_check_in.eyebrow') %></p>
+        <h1 class="account-check-in__title">
+          <%= t(
+                'annual_check_in.headline',
+                name: current_user.first_name.presence || t('annual_check_in.default_name')
+              ) %>
+        </h1>
+        <p class="account-check-in__body"><%= t('annual_check_in.body') %></p>
+
+        <% if @streak_years.positive? %>
+          <div class="account-check-in__streak">
+            <div class="account-check-in__streak-circles">
+              <% @streak_years.times do %>
+                <span class="account-check-in__streak-circle account-check-in__streak-circle--done" aria-hidden="true">&#10003;</span>
+              <% end %>
+              <span class="account-check-in__streak-circle account-check-in__streak-circle--pending" aria-hidden="true"><%= @streak_pending_year_label %></span>
+            </div>
+            <p class="account-check-in__streak-message">
+              <strong><%= @streak_lead %></strong> <%= @streak_rest %>
+            </p>
+          </div>
+        <% end %>
+
+        <%= form_with url: account_check_in_confirm_path,
+                      method: :post,
+                      local: true,
+                      id: 'account-check-in-confirm-form' do %>
+          <div class="account-profile__section-card account-check-in__rows">
+            <div class="account-profile__field">
+              <div class="account-profile__label"><%= t('annual_check_in.school_label') %></div>
+              <div class="account-profile__value account-check-in__row-value">
+                <span><%= @school_name.presence || t('annual_check_in.no_school') %></span>
+                <%= link_to t('annual_check_in.change'), account_profile_path, class: 'account-check-in__change-link' %>
+              </div>
+            </div>
+
+            <div class="account-profile__field">
+              <div class="account-profile__label"><%= t('annual_check_in.books_label') %></div>
+              <div class="account-profile__value account-check-in__row-value">
+                <span>
+                  <%= @book_rows.map { |row| row[:title] }.join(' · ').presence || t('annual_check_in.no_books') %>
+                </span>
+                <%= link_to t('annual_check_in.change'), account_books_path, class: 'account-check-in__change-link' %>
+              </div>
+            </div>
+
+            <div class="account-profile__field account-check-in__students-field">
+              <div class="account-profile__label"><%= t('annual_check_in.students_label') %></div>
+              <div class="account-profile__value account-check-in__students-inputs">
+                <% if @book_rows.empty? %>
+                  <p class="account-check-in__hint"><%= t('annual_check_in.no_books') %></p>
+                <% end %>
+
+                <% @book_rows.each do |row| %>
+                  <div class="account-check-in__student-input">
+                    <% if @book_rows.size > 1 %>
+                      <label for="account-check-in-students-<%= row[:user_book_id] %>"><%= row[:title] %></label>
+                    <% end %>
+                    <input type="number"
+                           min="0"
+                           inputmode="numeric"
+                           id="account-check-in-students-<%= row[:user_book_id] %>"
+                           name="students[<%= row[:field_key] %>]"
+                           value="<%= row[:last_year_students] %>"
+                           placeholder="0">
+                    <% if row[:last_year_students].present? %>
+                      <p class="account-check-in__hint">
+                        <%= t('annual_check_in.students_hint', count: row[:last_year_students]) %>
+                      </p>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="account-check-in__actions">
+          <button type="submit"
+                  form="account-check-in-confirm-form"
+                  class="account-check-in__button account-check-in__button--primary">
+            <%= t('annual_check_in.confirm_button') %>
+          </button>
+
+          <% if @show_dismiss %>
+            <%= button_to t('annual_check_in.dismiss_button'),
+                          account_check_in_dismiss_path,
+                          method: :post,
+                          class: 'account-check-in__button account-check-in__button--ghost' %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

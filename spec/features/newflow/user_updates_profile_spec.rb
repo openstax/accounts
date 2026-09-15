@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'User updates profile', js: true do
   before(:each) do
     mock_current_user(create_user('user'))
-    visit '/i/profile'
+    visit account_profile_path
   end
 
   describe 'Updating name' do
@@ -15,7 +15,7 @@ feature 'User updates profile', js: true do
       fill_in 'first_name', with: 'testuser'
       screenshot!
       find('.glyphicon-ok').click
-      expect(page).to have_button('testuser')
+      expect(page).to have_content('testuser')
       screenshot!
     end
 

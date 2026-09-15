@@ -1,0 +1,31 @@
+<%#
+  Shared "back link + step counter + thin progress bar + h1" header used by the
+  redesigned signup step-1 screens (student, educator) and the verify-email
+  screens. Rendered from *inside* the form so it appears above the existing
+  role/social/field sections in document order.
+
+  Locals:
+    step_text:        required. Rendered text, e.g. "Step 1 of 2".
+    progress_percent:  required. 0-100, width of the green fill.
+    header_text:       optional. If present, renders an <h1> below the bar.
+    back_path:         optional. If present (with back_label), renders a back link.
+    back_label:        optional. Visible text after the arrow, e.g. "Student".
+%>
+<% back_path = local_assigns[:back_path]
+   back_label = local_assigns[:back_label]
+   header_text = local_assigns[:header_text]
+%>
+<div class="signup-progress-header">
+  <% if back_path.present? %>
+    <%= link_to back_path, class: 'signup-progress-header__back' do %><i class="fa fa-arrow-left" aria-hidden="true"></i> <%= back_label %><% end %>
+  <% else %>
+    <span></span>
+  <% end %>
+  <span class="signup-progress-header__step"><%= step_text %></span>
+</div>
+<div class="signup-progress-bar" role="presentation">
+  <div class="signup-progress-bar__fill" style="width: <%= progress_percent %>%;"></div>
+</div>
+<% if header_text.present? %>
+  <h1 class="signup-progress-header__h1"><%= header_text %></h1>
+<% end %>

@@ -35,14 +35,14 @@ feature "Arriving with special params", js: true do
       scenario 'arriving from app gets redirected to alternate signup url' do
         arrive_from_app(params: {signup_at: alt_signup_url}, do_expect: false)
         click_link(t :"login_signup_form.sign_up")
-        click_link(t :"login_signup_form.student")
+        find('.join-as__option--student').click
         expect(page).to have_content(alt_signup_content)
       end
 
       scenario 'student straight to login gets redirected to alternate signup url' do
         visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
         click_link(t :"login_signup_form.sign_up")
-        click_link(t :"login_signup_form.student")
+        find('.join-as__option--student').click
         expect(page).to have_content(alt_signup_content)
       end
     end
@@ -51,14 +51,14 @@ feature "Arriving with special params", js: true do
       scenario 'arriving from app proceeds to signup form' do
         arrive_from_app(params: {signup_at: alt_signup_url}, do_expect: false)
         click_link(t :"login_signup_form.sign_up")
-        click_link(t :"login_signup_form.educator")
+        find('.join-as__option--educator').click
         expect(page).to have_current_path(educator_signup_path)
       end
 
       scenario 'straight to login proceeds to signup form' do
         visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
         click_link(t :"login_signup_form.sign_up")
-        click_link(t :"login_signup_form.educator")
+        find('.join-as__option--educator').click
         expect(page).to have_current_path(educator_signup_path)
       end
     end

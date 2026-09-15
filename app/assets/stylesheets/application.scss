@@ -20,6 +20,8 @@ $font-path: '/accounts/fonts';
 @import "misc";
 @import "application_js_hooks";
 @import "pagination";
+@import "report_adoption_modal";
+@import "impact_page";
 
 
 /* Set a max-width, maintaining responsiveness */
@@ -50,13 +52,13 @@ $font-path: '/accounts/fonts';
   padding: 10px;
 
   &.info {
-    background-color: #d9edf7;
-    border-bottom: 1px solid #bce8f1;
+    background-color: #F7FCFF;
+    border-bottom: 1px solid #00C1DE;
   }
 
   &.danger {
-    background-color: #f2dede;
-    border-bottom: 1px solid #ebccd1;
+    background-color: #FFF5F0;
+    border-bottom: 1px solid #D4450C;
   }
 
   div.alert {

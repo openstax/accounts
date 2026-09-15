@@ -16,4 +16,6 @@
 //= require ./jquery_extensions
 //= require ./ui
 //= require ./remote-access-helpers
+//= require ./report_adoption_modal
+//= require impact_countup
 //= require_self

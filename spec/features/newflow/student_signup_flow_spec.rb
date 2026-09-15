@@ -1,15 +1,10 @@
 require 'rails_helper'
-require 'vcr_helper'
-require 'byebug'
-module Newflow
-  feature 'Student signup flow', js: true, vcr: VCR_OPTS do
-     before { turn_on_student_feature_flag }
 
-    before(:all) do
-      VCR.use_cassette('Newflow/Students/student_signup_flow/sf_setup', VCR_OPTS) do
-        @proxy = SalesforceProxy.new
-        @proxy.setup_cassette
-      end
+module Newflow
+  feature 'Student signup flow', js: true do
+    before do
+      disable_sfdc_client
+      turn_on_student_feature_flag
     end
 
     let(:email) do
@@ -23,7 +18,7 @@ module Newflow
     context 'signup happy path' do
       before do
         visit newflow_signup_path(r: external_app_for_specs_path)
-        find('.join-as__role.student').click
+        find('.join-as__option--student').click
         fill_in 'signup_first_name',	with: 'Sally'
         fill_in 'signup_last_name',	with: 'Port'
         fill_in 'signup_email',	with: email
@@ -50,7 +45,7 @@ module Newflow
         screenshot!
 
         # can exit and go back to the app they came from
-        find('#exit-icon a').click
+        find('#exit-icon').click
         expect(page).to have_current_path(external_app_for_specs_path)
         screenshot!
       end
@@ -69,7 +64,7 @@ module Newflow
         screenshot!
 
         # can exit and go back to the app they came from
-        find('#exit-icon a').click
+        find('#exit-icon').click
         expect(page).to have_current_path(external_app_for_specs_path)
         screenshot!
       end
@@ -85,7 +80,7 @@ module Newflow
         visit(newflow_login_path)
         fill_in('login_form_email', with: email_address.value)
         fill_in('login_form_password', with: password)
-        find('[type=submit]').click
+        find('#login-submit-button').click
         expect(page).to have_current_path(student_email_verification_form_path)
       end
     end
@@ -125,7 +120,7 @@ module Newflow
     context 'not happy path' do
       example 'All fields blank' do
         visit newflow_signup_path
-        find('.join-as__role.student').click
+        find('.join-as__option--student').click
         check('signup_terms_accepted')
         find('[type=submit]').click
         screenshot!
@@ -136,7 +131,7 @@ module Newflow
 
       example 'user gets PIN wrong' do
         visit newflow_signup_path(r: external_app_for_specs_path)
-        find('.join-as__role.student').click
+        find('.join-as__option--student').click
         fill_in 'signup_first_name',	with: 'Sally'
         fill_in 'signup_last_name',	with: 'Port'
         fill_in 'signup_email',	with: email
@@ -155,7 +150,7 @@ module Newflow
     context 'change signup email' do
       example 'user can change their initial email during the signup flow' do
         visit newflow_signup_path(r: external_app_for_specs_path)
-        find('.join-as__role.student').click
+        find('.join-as__option--student').click
         fill_in 'signup_first_name',	with: 'Sally'
         fill_in 'signup_last_name',	with: 'Port'
         fill_in 'signup_email',	with: email
@@ -177,7 +172,7 @@ module Newflow
         old_confirmation_code_url = get_path_from_absolute_link(current_email, '#confirm-link')
 
         # edit email
-        click_on('edit your email')
+        click_on(t(:"login_signup_form.verify_email_edit_link"))
         screenshot!
         # page contains tooltip
         expect(page).to have_text(t(:"login_signup_form.change_signup_email_form_tooltip"))

@@ -134,7 +134,32 @@ The 2026 redesign (Claude Design project "Accounts Redesign") reshaped signup + 
 - **Account pages** (`AccountController`, `/i/account/...`): tabbed shell; students get a single-column overview (saved books + instructor-connect) with instructor-only tabs hidden. `InstructorConnection` stores student→instructor claims, always `status: 'unverified'`, never pushed to Salesforce, never counted in impact.
 - **Annual check-in** (`Account::CheckInController`): confirm-first rows, 7-day snooze dismissable twice then required, streak banner from `User#check_in_streak_years`.
 - **Impact tab**: `ImpactMilestones` PORO derives earned/next milestones purely from Adoption data. **Overview**: LMS question card persists to `users.lms_used`/`lms_prompt_dismissed_at`.
-- `SecurityLog.event_type` and `users.role` are **positional integer enums** — only ever append new values at the end.
+- `SecurityLog.event_type` and `users.role` are **positional integer enums** — only ever append new values at the end. Appending "near the related ones" is the tempting mistake and it is silent: inserting four `staff_*` values beside the `educator_*` block once shifted 44 already-deployed values by four, which would have re-labelled every existing `security_logs` row from that index up. When merging a long-lived branch, diff the enum against the merge base and confirm the shared prefix is byte-identical before trusting it.
+
+### Brand: fonts, palette, alert contrast
+The brand font is Helvetica Neue and **no webfont is loaded anywhere** — there is no
+`@font-face`, no Google Fonts link, nothing. So the only stack that works is
+`'Helvetica Neue', Helvetica, Arial, sans-serif`, and it must be spelled exactly that
+way. `'HelveticaNeue'` (no space) and `'Neue Helvetica W01'` are dead names that match
+no installed font; they were both live in this repo and silently fell through to
+different fallbacks, so headings and body copy could render in different faces on the
+same page. Use `$os_font_family` / `$os_heading_font_family` from `common.scss` where the
+file imports it — `global_layout.scss` has no `@import`s and needs the literal. H1/H2
+carry `letter-spacing: -0.03em`.
+
+Colors come from the 7-hue x 4-shade brand palette: buttons `#D4450C`, links `#026AA1`,
+body text `#424242`, muted `#6A6A6A`. **The palette has no red** — don't reintroduce
+`#c22032` or Bootstrap's `#f2dede`/`#d9edf7`/`#31708f` alert colors.
+
+Error and info banners are the one place this fights accessibility, so the pattern is
+deliberate: the tint and border carry the color signal and **the copy sits at body
+contrast**, because orange-on-orange-tint only reaches 4.2:1. `.newflow-layout-alert` is
+`#FFF5F0` + `#D4450C` border + `var(--os-text-on-tint)` copy (9.37:1); info/notice are
+`#F7FCFF` + `#00C1DE` + `#002E6D` (12.61:1). Inline field errors stay `#D4450C` because
+they sit on white (4.51:1). Re-check contrast before changing any of these five values.
+
+Never hardcode impact figures (students served, dollars saved, adoption or school counts)
+into copy — they go stale and are owned elsewhere.
 
 ### View gotcha: lev_form_for needs `<%=`
 `capture` falls back to a block's return value only when the output buffer is empty, so a bare `<% lev_form_for ... do %>` renders only while the form is the sole printed content in its capture scope — adding any sibling `<%= %>` silently drops the whole form (no error, empty <form>). Always use `<%= lev_form_for ... do %>`. Related: never write literal ERB delimiters inside an ERB comment — a `%​>` sequence in the comment text terminates the comment early and the rest renders/compiles as template code (this has caused a whole-page 500).

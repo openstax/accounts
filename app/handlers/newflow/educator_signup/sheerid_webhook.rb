@@ -182,7 +182,7 @@ module Newflow
           SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)
         end
 
-        CreateOrUpdateSalesforceLead.perform_later(user: user)
+        CreateOrUpdateSalesforceLead.perform_later(user: user) if Settings::Salesforce.push_leads_enabled
 
         OXPosthog.log(user, 'sheerid_verification_received', {
           result: verification.current_step,

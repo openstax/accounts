@@ -3,7 +3,6 @@ ENV['RAILS_ENV'] ||= 'test'
 require 'simplecov_helper'
 require File.expand_path('../../config/environment', __FILE__)
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
-require 'openstax/salesforce/spec_helpers'
 require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/email/rspec'
@@ -11,8 +10,6 @@ require 'shoulda/matchers'
 require 'parallel_tests'
 require 'database_cleaner'
 require 'spec_helper'
-
-include OpenStax::Salesforce::SpecHelpers
 
 # https://github.com/colszowka/simplecov/issues/369#issuecomment-313493152
 # Load rake tasks so they can be tested.
@@ -141,6 +138,15 @@ Capybara.configure do |config|
 end
 
 RSpec.configure do |config|
+
+  # Any spec file that requires 'webmock/rspec' enables WebMock for the whole
+  # process, and WebMock blocks localhost by default -- which takes out Capybara's
+  # own server and every feature spec that shares the process. Only the four specs
+  # that require vcr_helper get localhost back via VCR's ignore_localhost, so
+  # whether feature specs pass depends on how the runner groups files.
+  config.before(:suite) do
+    WebMock.disable_net_connect!(allow_localhost: true) if defined?(WebMock)
+  end
   config.include ActiveJob::TestHelper
 
   # Whitelist the capybara host (which can change)
@@ -194,8 +200,3 @@ class ActionDispatch::TestResponse
   end
 end
 
-def disable_sfdc_client
-  allow(ActiveForce)
-    .to receive(:sfdc_client)
-    .and_return(double('null object').as_null_object)
-end

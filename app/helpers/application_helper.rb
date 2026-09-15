@@ -224,7 +224,8 @@ module ApplicationHelper
 
   def newflow_login_signup_card(
     classes: "", header: "", id: '',
-    banners: nil, current_step: nil, show_exit_icon: false, &block
+    banners: nil, current_step: nil, show_exit_icon: false,
+    progress_bar: nil, &block
   )
     @hide_layout_errors = true
 
@@ -240,10 +241,18 @@ module ApplicationHelper
       end
 
       exit_icon = if show_exit_icon
-        content_tag(:div, id: 'exit-icon') {
-          content_tag(:a, 'aria-label': 'exit accounts', href: exit_accounts_path) {
-            content_tag(:i, class: 'fa fa-times') { }
-          }
+        link_to exit_accounts_path,
+                id: 'exit-icon',
+                'aria-label': t(:"login_signup_form.exit_accounts_link", default: 'Exit OpenStax Accounts') do
+          content_tag(:i, '', class: 'fa fa-times', aria: { hidden: true })
+        end
+      end
+
+      # Opt-in only: existing steps don't pass progress_bar, so this is a no-op
+      # for every caller except the ones that explicitly ask for it.
+      progress = if progress_bar.present?
+        content_tag(:div, class: 'profile-progress-bar') {
+          content_tag(:div, '', class: 'profile-progress-bar__fill', style: "width: #{(progress_bar.to_f * 100).clamp(0, 100)}%")
         }
       end
 
@@ -253,7 +262,7 @@ module ApplicationHelper
 
       body = capture(&block)
 
-      "#{step_counter}\n#{exit_icon}\n#{header}\n#{body}".html_safe
+      "#{exit_icon}\n#{step_counter}\n#{progress}\n#{header}\n#{body}".html_safe
     end
   end
 

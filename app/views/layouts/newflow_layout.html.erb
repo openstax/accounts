@@ -16,11 +16,11 @@
         <title><%= @page_title + ' - ' unless @page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
 
         <% unless Rails.env.test? %>
-          <%= render partial: 'layouts/posthog' %>
+          <%#= render partial: 'layouts/posthog' %>
         <% end %>
       <%= render partial: "layouts/google_tag_manager" %>
 
-        <%= stylesheet_link_tag 'newflow', media: 'all', 'data-turbolinks-track' => true %>
+        <%= stylesheet_link_tag 'newflow', 'global_layout', media: 'all', 'data-turbolinks-track' => true %>
         <%= javascript_include_tag 'newflow', 'data-turbolinks-track' => true %>
         <%= csrf_meta_tags %>
 
@@ -34,7 +34,7 @@
 
       <%= content_for :page_specific %>
     </head>
-    <body>
+    <body class="os-app <%= controller_name %> <%= action_name %> newflow-layout">
         <%= render partial: "layouts/tag_manager_snippet" %>
         <% if @banners.present? %>
             <% @banners.each do |banner| %>
@@ -56,13 +56,15 @@
             </div>
         <% end %>
 
-        <%= render(partial: 'layouts/main_menu') %>
+        <%= render partial: "shared/header" %>
 
-        <div class="content">
-            <%= yield %>
-        </div>
+        <main class="os-main">
+            <div class="content">
+                <%= yield %>
+            </div>
+        </main>
 
-        <%= render partial: 'layouts/newflow_footer' %>
+        <%= render partial: "shared/footer" %>
 
         <%= yield :javascript %>
         <%= render partial: 'layouts/chat'  %>

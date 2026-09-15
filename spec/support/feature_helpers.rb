@@ -239,7 +239,7 @@ end
 
 def expect_sign_in_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"legacy.sessions.start.page_heading")
+  expect(page).to have_content(t :"login_signup_form.login_page_welcome_header")
 end
 
 def expect_sign_up_page

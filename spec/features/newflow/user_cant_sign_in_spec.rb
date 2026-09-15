@@ -66,6 +66,11 @@ feature "User can't sign in", js: true do
 
     with_omniauth_test_mode(uid: "different_than_#{authentication.uid}", email: email_address) do
       find('.google.btn').click
+      # Wait for the redirect through the (now form-submitted, POST) social
+      # button to land before this block's `ensure` flips OmniAuth test_mode
+      # back off — otherwise the in-flight request can race past the mock
+      # and fall through to the real provider.
+      wait_for_ajax
     end
 
     screenshot!

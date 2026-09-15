@@ -25,7 +25,7 @@ feature 'User manages emails', js: true do
   context 'create' do
     before(:each) do
       mock_current_user(user)
-      visit '/i/profile'
+      visit account_security_path
     end
 
     scenario 'with invalid email format' do
@@ -41,7 +41,7 @@ feature 'User manages emails', js: true do
   context 'destroy' do
     before(:each) do
       mock_current_user(user)
-      visit '/i/profile'
+      visit account_security_path
     end
 
     context 'when there is only one email' do
@@ -54,7 +54,7 @@ feature 'User manages emails', js: true do
   context 'resend_confirmation' do
     before(:each) do
       mock_current_user(user)
-      visit '/i/profile'
+      visit account_security_path
     end
 
     let(:verified_emails) { [] }
@@ -63,11 +63,11 @@ feature 'User manages emails', js: true do
 
   scenario 'confirmation does not log user in' do
     create_email_address_for(user, 'yoyo@yoyo.com', 'atoken')
-    visit '/i/profile'
+    visit account_security_path
     expect_sign_in_page
     visit(confirm_path(code: 'atoken'))
     expect(page).to have_content(t :"contact_infos.confirm.page_heading.success")
-    visit('/i/profile')
+    visit(account_security_path)
     expect_sign_in_page
   end
 end

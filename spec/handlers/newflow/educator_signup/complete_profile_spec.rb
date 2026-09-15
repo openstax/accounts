@@ -367,6 +367,111 @@ module Newflow
         end
       end
 
+      describe 'grade_band' do
+        let(:params) do
+          {
+            signup: {
+              school_name: 'Test K12 School',
+              books_used: books_used,
+              books_used_details: books_used_details,
+              using_openstax_how: using_openstax_how,
+              educator_specific_role: educator_specific_role,
+              grade_band: 'high'
+            }
+          }
+        end
+
+        it 'persists the submitted grade band' do
+          handle
+          user.reload
+          expect(user.grade_band).to eq('high')
+        end
+
+        it 'persists nil when omitted' do
+          params[:signup].delete(:grade_band)
+          handle
+          user.reload
+          expect(user.grade_band).to be_nil
+        end
+      end
+
+      describe 'finish_later' do
+        context 'submitting a mostly-blank form' do
+          let(:params) do
+            { signup: { finish_later: 'true', educator_specific_role: 'instructor' } }
+          end
+
+          it 'does not error even though required fields are missing' do
+            result = handle
+            expect(result.errors).to be_empty
+          end
+
+          it 'still completes signup' do
+            handle
+            user.reload
+            expect(user.is_profile_complete).to be true
+          end
+
+          it 'leaves unanswered fields blank' do
+            handle
+            user.reload
+            expect(user.which_books).to be_nil
+            expect(user.how_many_students).to be_nil
+            expect(user.self_reported_school).to be_nil
+          end
+
+          it 'marks the user as needing profile enrichment' do
+            handle
+            user.reload
+            expect(user.profile_needs_enrichment?).to be true
+          end
+        end
+
+        context 'submitting a partially-filled form (school and books given, no student count)' do
+          let(:params) do
+            {
+              signup: {
+                finish_later: 'true',
+                school_name: 'Test School',
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor'
+              }
+            }
+          end
+
+          before do
+            allow(Settings::FeatureFlags).to receive(:collect_student_count_all_paths).and_return(true)
+          end
+
+          it 'saves what was provided without erroring on what was not' do
+            result = handle
+            expect(result.errors).to be_empty
+            user.reload
+            expect(user.self_reported_school).to eq('Test School')
+            expect(user.which_books).to eq('Test Book')
+            expect(user.how_many_students).to be_nil
+          end
+        end
+
+        context 'the CS form still requires a school-issued email even when finishing later' do
+          let(:params) do
+            {
+              signup: {
+                finish_later: 'true',
+                educator_specific_role: 'instructor',
+                is_cs_form: 'true'
+              }
+            }
+          end
+
+          it 'returns a validation error for the missing school-issued email' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :school_issued_email }).to be true
+          end
+        end
+      end
+
       describe 'expected_start_semester' do
         let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR }
 

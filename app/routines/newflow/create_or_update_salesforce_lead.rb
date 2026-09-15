@@ -18,6 +18,11 @@ module Newflow
 
     def exec(user:)
       return unless user
+      # Self-learners have no course/school affiliation to report and must never
+      # inflate student adoption/lead counts in Salesforce. Belt-and-suspenders:
+      # no current caller pushes leads for this role, but guard here too in case
+      # a future caller (e.g. an admin action) invokes this routine directly.
+      return if user.self_learner?
 
       status.set_job_name(self.class.name)
       status.set_job_args(user: user.to_global_id.to_s)

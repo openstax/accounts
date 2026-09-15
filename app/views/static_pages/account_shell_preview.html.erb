@@ -1,0 +1,24 @@
+<%= render(
+      'shared/account_layout_shell',
+      locals: {
+        title: 'Account Layout Shell',
+        description: 'This preview shows how shared account pages can share a consistent structure.'
+      }
+    ) do %>
+  <div class="row">
+    <div class="col-sm-3 category">Account summary</div>
+    <div class="col-sm-9 info">
+      <p>This is placeholder content rendered inside the shell. Replace this area with page-specific information.</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-3 category">Actions</div>
+    <div class="col-sm-9 info">
+      <ul>
+        <li>Use this wrapper to keep margins, typography, and spacing aligned with the profile page.</li>
+        <li>Pass optional titles or descriptions when rendering the shell.</li>
+      </ul>
+    </div>
+  </div>
+<% end %>
