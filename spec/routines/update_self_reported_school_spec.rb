@@ -40,6 +40,26 @@ describe UpdateSelfReportedSchool, type: :routine do
     expect(user.self_reported_school).to eq 'Somewhere'
   end
 
+  describe 'free text with no autocomplete pick' do
+    it 'links a School that fuzzy-matches, but keeps the typed text' do
+      school
+
+      described_class.call(user: user, school_name: 'Ricee University', school_id: nil)
+
+      expect(user.reload.school).to eq school
+      expect(user.self_reported_school).to eq 'Ricee University'
+    end
+
+    it 'leaves the school nil when nothing matches' do
+      school
+
+      described_class.call(user: user, school_name: 'Hogwarts School of Witchcraft', school_id: nil)
+
+      expect(user.reload.school).to be_nil
+      expect(user.self_reported_school).to eq 'Hogwarts School of Witchcraft'
+    end
+  end
+
   describe 'pushing the change to Salesforce' do
     it 'enqueues PushUserSchoolToSalesforce when the school actually changes' do
       expect(PushUserSchoolToSalesforce).to receive(:perform_later).with(user: user)
