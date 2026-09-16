@@ -39,22 +39,24 @@ class PushUserSchoolToSalesforce
   # Mirrors PushUserActivityToSalesforce#link_or_create: an Assignable
   # LMS-derived school beats a signup-form pick, so School__c is filled in
   # only when Salesforce doesn't already have one -- never overwritten,
-  # never cleared. Free text has no Account id to write, so it's skipped.
+  # never cleared. Nothing resolved (no school, or a school with no
+  # salesforce_id, e.g. unmatched free text) still fills a blank field with
+  # the Find Me A Home fallback -- that's the review bucket doing its job.
   def push_student_school(user)
     return unless Settings::Salesforce.push_students_enabled
 
-    sf_school_id = user.school&.salesforce_id
-    return if sf_school_id.blank?
-
-    succeeded = set_student_school(user, sf_school_id)
+    succeeded = set_student_school(user)
     return if succeeded || !retry_on_failure?
 
     raise_retryable_failure!('student school update failed', user)
   end
 
-  def set_student_school(user, sf_school_id)
+  def set_student_school(user)
     student = OpenStax::Salesforce::Remote::Student.find(user.salesforce_student_id)
     return true if student.nil? || student.school_id.present?
+
+    sf_school_id = resolved_school_id(user)
+    return true if sf_school_id.nil?
 
     student.school_id = sf_school_id
     student.save!
@@ -64,32 +66,59 @@ class PushUserSchoolToSalesforce
   end
 
   # The one path allowed to move AccountId on a Contact (see CLAUDE.md's
-  # narrowed Salesforce boundary) -- overwrites outright, since this is an
-  # explicit school change, not the wholesale lead/contact resync that must
-  # never reparent a Contact. Free text has no Account to point at, and
-  # never clears an existing AccountId: a user backing out to free text must
-  # not orphan their Contact from whatever school it already has.
+  # narrowed Salesforce boundary). A resolved, real school overwrites outright,
+  # since this is an explicit school change, not the wholesale lead/contact
+  # resync that must never reparent a Contact. But when nothing resolved, the
+  # Find Me A Home fallback only fills a blank AccountId -- moving a Contact
+  # off an Account Customer Experience may have set deliberately, onto a
+  # review bucket, would be strictly worse than leaving it alone.
   def push_contact_school(user)
     return unless Settings::Salesforce.push_leads_enabled
 
-    sf_school_id = user.school&.salesforce_id
-    return if sf_school_id.blank?
-
-    succeeded = set_contact_school(user, sf_school_id)
+    succeeded = set_contact_school(user)
     return if succeeded || !retry_on_failure?
 
     raise_retryable_failure!('contact school update failed', user)
   end
 
-  def set_contact_school(user, sf_school_id)
+  def set_contact_school(user)
     contact = OpenStax::Salesforce::Remote::Contact.find(user.salesforce_contact_id)
     return true if contact.nil?
+
+    sf_school_id = user.school&.salesforce_id
+    if sf_school_id.blank?
+      return true if contact.school_id.present?
+
+      sf_school_id = fallback_school_id(user)
+      return true if sf_school_id.nil?
+    end
 
     contact.school_id = sf_school_id
     contact.save!
   rescue StandardError => e
     report(user, 'contact school update failed', e)
     false
+  end
+
+  def resolved_school_id(user)
+    user.school&.salesforce_id || fallback_school_id(user)
+  end
+
+  # Looked up only when something actually needs it, and memoized so a single
+  # push never re-queries or double-reports. A missing fallback account is a
+  # data problem, not a transient Salesforce hiccup -- report it and skip this
+  # user's write rather than raising, in production as much as anywhere else.
+  def fallback_school_id(user)
+    return @fallback_school_id if defined?(@fallback_school_id)
+
+    fallback_school = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home')
+    @fallback_school_id = fallback_school&.id
+    if @fallback_school_id.nil?
+      Sentry.capture_message(
+        "Salesforce 'Find Me A Home' school not found; skipping school push for user #{user.id}"
+      )
+    end
+    @fallback_school_id
   end
 
   # CreateOrUpdateSalesforceLead already writes self_reported_school,
