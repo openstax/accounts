@@ -24,7 +24,8 @@ module Admin
         old_updated_at = @user.updated_at
 
         respond_to do |format|
-          if change_user_password && add_email_to_user && change_salesforce_contact && update_user
+          if change_user_password && add_email_to_user && change_salesforce_contact &&
+             update_self_reported_school && update_user
             @user.touch if @user.updated_at == old_updated_at
             security_log :user_updated_by_admin, user_id: params[:id], username: @user.username,
                                                 user_params: request.filtered_parameters['user']
@@ -124,6 +125,21 @@ module Admin
       end
 
       # if haven't returned yet, either exploded or contact was `nil` (not found)
+      false
+    end
+
+    def update_self_reported_school
+      new_name = params[:user][:self_reported_school]
+      new_school_id = params[:user][:school_id]
+
+      return true if new_name.to_s == @user.self_reported_school.to_s &&
+                     new_school_id.to_s == @user.school_id.to_s
+
+      result = UpdateSelfReportedSchool.call(
+        user: @user, school_name: new_name, school_id: new_school_id
+      )
+      return true unless result.errors.any?
+      flash[:alert] = "Failed to update self-reported school: #{result.errors.collect(&:translate)}"
       false
     end
 
