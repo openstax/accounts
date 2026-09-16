@@ -86,6 +86,15 @@ describe Legacy::UsersController, type: :controller do
         expect(user.self_reported_school).to eq 'Hogwarts Academy'
       end
 
+      # `self_reported_school` is not a single-field editor, so a String value
+      # under that name is refused by the allowlist rather than reaching the
+      # combobox branch, where it would have raised NoMethodError as a 500.
+      it 'refuses a string value under the school field name' do
+        put(:update, params: { name: 'self_reported_school', value: 'Rice' })
+
+        expect(response.status).to eq 403
+      end
+
       it 'clears the school when the name is blank' do
         user.update!(school: school, self_reported_school: school.name)
 

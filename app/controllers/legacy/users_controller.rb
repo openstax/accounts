@@ -28,7 +28,8 @@ module Legacy
       # format that a `format.json`-only block doesn't list raises UnknownFormat
       # -- which comes back as a full HTML error page that x-editable then
       # injects into the form as markup.
-      return update_self_reported_school if params[:name] == 'self_reported_school'
+      return update_self_reported_school \
+        if params[:name] == 'self_reported_school' && !params[:value].is_a?(String)
 
       attrs = user_params
 
@@ -46,7 +47,9 @@ module Legacy
 
     # The school combobox submits `value` as a hash (`school_name`, `school_id`)
     # under `name=self_reported_school`, so it has to be routed here before
-    # `user_params`'s hash branch, which only permits the name fields.
+    # `user_params`'s hash branch, which only permits the name fields. A String
+    # `value` under that name isn't this editor at all, so it is left to the
+    # single-field path, whose allowlist refuses it.
     def update_self_reported_school
       school_params = params.require(:value).permit(:school_name, :school_id)
       result = UpdateSelfReportedSchool.call(
