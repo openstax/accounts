@@ -28,4 +28,37 @@ feature 'User updates profile', js: true do
     end
 
   end
+
+  describe 'Updating self-reported school' do
+    before(:each) do
+      load 'db/seeds.rb'
+      FactoryBot.create :school, name: 'Rice University', city: 'Houston', state: 'TX'
+
+      find('#self-reported-school').click
+    end
+
+    scenario 'picking a suggested school' do
+      fill_in 'school_name', with: 'Rice'
+
+      expect(page).to have_css('.school-autocomplete-results li', text: 'Rice University')
+
+      find('.school-autocomplete-results li', text: 'Rice University', match: :first).click
+      find('.glyphicon-ok').click
+
+      expect(page).to have_button('Rice University')
+      screenshot!
+    end
+
+    scenario 'typing a school name not in the list' do
+      fill_in 'school_name', with: 'Hogwarts Academy'
+
+      expect(page).to have_css('.school-autocomplete-use-as-entered', text: 'Hogwarts Academy')
+
+      find('.school-autocomplete-use-as-entered').click
+      find('.glyphicon-ok').click
+
+      expect(page).to have_button('Hogwarts Academy')
+      screenshot!
+    end
+  end
 end

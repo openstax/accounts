@@ -136,6 +136,21 @@ The 2026 redesign (Claude Design project "Accounts Redesign") reshaped signup + 
 - **Impact tab**: `ImpactMilestones` PORO derives earned/next milestones purely from Adoption data. **Overview**: LMS question card persists to `users.lms_used`/`lms_prompt_dismissed_at`.
 - `SecurityLog.event_type` and `users.role` are **positional integer enums** — only ever append new values at the end.
 
+### The `/i/profile` page (My Account) actually renders under the `application` layout
+`OtherController#profile_newflow` (routed from `scope controller: 'other'`) explicitly
+calls `render layout: 'application'`, even though it inherits `layout 'newflow_layout'`
+from `Newflow::BaseController` and its template lives at
+`app/views/newflow/base/profile_newflow.html.erb` (found via Rails' `_prefixes`
+ancestor lookup, not because `OtherController` is namespaced under `newflow`). That
+means the page loads the `application`/`profile` JS and CSS bundles, **not**
+`newflow.js`/`newflow.scss` — anything the page needs from the newflow bundle
+(`OxSchoolAutocomplete`, the `_school_autocomplete` styles, underscore, etc.) has to be
+required/imported explicitly from `app/assets/javascripts/profile/index.js` and
+`app/assets/stylesheets/profile.scss`; it is not already on the page just because a
+signup view down the hall uses it. The `PUT /profile` save action, by contrast, is
+`legacy/users#update` (`scope controller: 'legacy/users'`) — a different controller
+from the one that renders the page.
+
 ### View gotcha: lev_form_for needs `<%=`
 `capture` falls back to a block's return value only when the output buffer is empty, so a bare `<% lev_form_for ... do %>` renders only while the form is the sole printed content in its capture scope — adding any sibling `<%= %>` silently drops the whole form (no error, empty <form>). Always use `<%= lev_form_for ... do %>`. Related: never write literal ERB delimiters inside an ERB comment — a `%​>` sequence in the comment text terminates the comment early and the rest renders/compiles as template code (this has caused a whole-page 500).
 
