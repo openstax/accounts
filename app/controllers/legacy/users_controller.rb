@@ -45,11 +45,9 @@ module Legacy
 
     private
 
-    # The school combobox submits `value` as a hash (`school_name`, `school_id`)
-    # under `name=self_reported_school`, so it has to be routed here before
-    # `user_params`'s hash branch, which only permits the name fields. A String
-    # `value` under that name isn't this editor at all, so it is left to the
-    # single-field path, whose allowlist refuses it.
+    # Routed before `user_params`'s hash branch, which permits only the name
+    # fields. A String `value` isn't this editor, so it falls through to the
+    # single-field path and is refused by the allowlist there.
     def update_self_reported_school
       school_params = params.require(:value).permit(:school_name, :school_id)
       result = UpdateSelfReportedSchool.call(

@@ -10,14 +10,13 @@
 (function() {
   'use strict';
 
-  var ENDPOINT = '/i/schools';
+  var DEFAULT_ENDPOINT = '/i/schools';
   var DEBOUNCE_MS = 300;
   var MIN_QUERY_LENGTH = 2;
   var instanceCount = 0;
 
-  // Accepts a selector or the container element itself -- the profile page's
-  // inline editor builds its form on the fly, so it has an element and no
-  // selector that would single it out.
+  // Takes a selector or the element: the profile page's inline editor builds
+  // its form on the fly, so it has no selector that singles it out.
   function attach(containerOrSelector) {
     var container = typeof containerOrSelector === 'string' ?
       document.querySelector(containerOrSelector) : containerOrSelector;
@@ -27,6 +26,8 @@
     var hiddenId = container.querySelector('input[type="hidden"]');
     var useAsEnteredLabel =
       container.getAttribute('data-use-as-entered-label') || 'Use "{school}"';
+    // Rails' path helper supplies it, so the Cloudfront /accounts prefix survives.
+    var endpoint = container.getAttribute('data-endpoint') || DEFAULT_ENDPOINT;
 
     var listbox = document.createElement('ul');
     listbox.className = 'school-autocomplete-results';
@@ -84,7 +85,7 @@
       if (state.abortController) { state.abortController.abort(); }
       state.abortController = new AbortController();
 
-      fetch(ENDPOINT + '?q=' + encodeURIComponent(query), {
+      fetch(endpoint + '?q=' + encodeURIComponent(query), {
         signal: state.abortController.signal
       })
         .then(function(response) { return response.ok ? response.json() : []; })

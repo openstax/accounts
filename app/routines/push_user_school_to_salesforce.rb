@@ -1,21 +1,19 @@
 # Propagates a school change made through UpdateSelfReportedSchool to whichever
-# Salesforce record the user is already linked to. Three mutually exclusive
-# cases, checked in order of how far into Salesforce the user has gotten:
-# a linked Student__c, a converted Contact, or an unconverted Lead. A user
-# with none of the three gets no Salesforce write -- same reasoning as
-# PushUserActivityToSalesforce's passes 2 and 3, which refuse to create a
-# record whose only content is one synced field.
+# Salesforce record the user is already linked to. A user linked to none of the
+# three gets no write -- same rule as PushUserActivityToSalesforce passes 2 and
+# 3, which refuse to create a record whose only content is one synced field.
 #
-# In development and test, `perform_later` runs inline inside
-# UpdateSelfReportedSchool's transaction (Delayed::Worker.delay_jobs is only
-# true in production), so a Salesforce failure must be swallowed there or it
-# would roll back the user's school change. In a real delayed job the same
-# failure must raise so the worker retries.
+# Outside production `perform_later` runs inline inside UpdateSelfReportedSchool's
+# transaction, so a Salesforce failure has to be swallowed there or it would roll
+# back the user's school change. In a real delayed job it must raise instead, so
+# the worker retries.
 class PushUserSchoolToSalesforce
 
   lev_routine active_job_enqueue_options: { queue: :salesforce }
 
   uses_routine Newflow::UpdateExistingSalesforceLead
+
+  FALLBACK_SCHOOL_NAME = 'Find Me A Home'.freeze
 
   protected #################
 
@@ -36,12 +34,6 @@ class PushUserSchoolToSalesforce
 
   private ###################
 
-  # Mirrors PushUserActivityToSalesforce#link_or_create: an Assignable
-  # LMS-derived school beats a signup-form pick, so School__c is filled in
-  # only when Salesforce doesn't already have one -- never overwritten,
-  # never cleared. Nothing resolved (no school, or a school with no
-  # salesforce_id, e.g. unmatched free text) still fills a blank field with
-  # the Find Me A Home fallback -- that's the review bucket doing its job.
   def push_student_school(user)
     return unless Settings::Salesforce.push_students_enabled
 
@@ -51,11 +43,13 @@ class PushUserSchoolToSalesforce
     raise_retryable_failure!('student school update failed', user)
   end
 
+  # Fill-in-blanks, mirroring PushUserActivityToSalesforce#link_or_create: an
+  # Assignable LMS-derived school beats a signup-form pick.
   def set_student_school(user)
     student = OpenStax::Salesforce::Remote::Student.find(user.salesforce_student_id)
     return true if student.nil? || student.school_id.present?
 
-    sf_school_id = resolved_school_id(user)
+    sf_school_id = user.school&.salesforce_id || fallback_school_id(user)
     return true if sf_school_id.nil?
 
     student.school_id = sf_school_id
@@ -65,13 +59,6 @@ class PushUserSchoolToSalesforce
     false
   end
 
-  # The one path allowed to move AccountId on a Contact (see CLAUDE.md's
-  # narrowed Salesforce boundary). A resolved, real school overwrites outright,
-  # since this is an explicit school change, not the wholesale lead/contact
-  # resync that must never reparent a Contact. But when nothing resolved, the
-  # Find Me A Home fallback only fills a blank AccountId -- moving a Contact
-  # off an Account Customer Experience may have set deliberately, onto a
-  # review bucket, would be strictly worse than leaving it alone.
   def push_contact_school(user)
     return unless Settings::Salesforce.push_leads_enabled
 
@@ -81,6 +68,10 @@ class PushUserSchoolToSalesforce
     raise_retryable_failure!('contact school update failed', user)
   end
 
+  # The one path allowed to move a Contact's AccountId (see CLAUDE.md's narrowed
+  # Salesforce boundary). A resolved school overwrites, but an unresolved one
+  # only fills a blank: moving a Contact off an Account Customer Experience may
+  # have set deliberately, onto the review bucket, is worse than doing nothing.
   def set_contact_school(user)
     contact = OpenStax::Salesforce::Remote::Contact.find(user.salesforce_contact_id)
     return true if contact.nil?
@@ -100,32 +91,27 @@ class PushUserSchoolToSalesforce
     false
   end
 
-  def resolved_school_id(user)
-    user.school&.salesforce_id || fallback_school_id(user)
-  end
-
-  # Looked up only when something actually needs it, and memoized so a single
-  # push never re-queries or double-reports. A missing fallback account is a
-  # data problem, not a transient Salesforce hiccup -- report it and skip this
-  # user's write rather than raising, in production as much as anywhere else.
+  # Memoized through `defined?` so a nil result is cached too. A missing
+  # fallback Account is a data problem, not a transient failure, so it skips
+  # the write rather than raising into a user's profile save.
   def fallback_school_id(user)
     return @fallback_school_id if defined?(@fallback_school_id)
 
-    fallback_school = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home')
-    @fallback_school_id = fallback_school&.id
+    @fallback_school_id =
+      OpenStax::Salesforce::Remote::School.find_by(name: FALLBACK_SCHOOL_NAME)&.id
+
     if @fallback_school_id.nil?
       Sentry.capture_message(
-        "Salesforce 'Find Me A Home' school not found; skipping school push for user #{user.id}"
+        "Salesforce '#{FALLBACK_SCHOOL_NAME}' school not found; " \
+        "skipping school push for user #{user.id}"
       )
     end
+
     @fallback_school_id
   end
 
-  # CreateOrUpdateSalesforceLead already writes self_reported_school,
-  # school, city, state/state_code, country and account_id from the user's
-  # current school, and UpdateExistingSalesforceLead already re-finds the
-  # lead, follows a since-converted lead to its Contact, and applies its own
-  # retry/swallow rules -- no field assignment or retry handling belongs here.
+  # UpdateExistingSalesforceLead re-finds the lead, follows conversion, and lets
+  # CreateOrUpdateSalesforceLead write the school fields and its own fallback.
   def push_lead_school(user)
     return unless Settings::Salesforce.push_leads_enabled
 
@@ -140,9 +126,6 @@ class PushUserSchoolToSalesforce
     raise StandardError, "Salesforce #{what} for user #{user.id}"
   end
 
-  # Sentry rather than SecurityLog: this runs inside the caller's transaction,
-  # which may roll back, and an unreachable Salesforce isn't an account-audit
-  # event.
   def report(user, what, error)
     Sentry.capture_message(
       "Salesforce #{what} for user #{user.id}: #{error.class.name}: #{error.message}"

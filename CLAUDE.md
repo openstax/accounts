@@ -115,9 +115,9 @@ A `*_pushed_at` column that is NULL means "never sent" -- and SQL's `last_signed
 
 One-time backfills, run in order (each is inert before the one above it): `rake accounts:backfill_last_signed_in_at` (from `sign_in_successful` security logs), then `rake accounts:reconcile_salesforce_student_ids` (links pre-existing `Student__c` records to users by uuid -- see `ReconcileSalesforceStudentIds`), then enable the flags above. Instructors need no reconciliation step: `salesforce_contact_id` is already populated by the lead/contact sync.
 
-**School-change push.** `UpdateSelfReportedSchool` (shared by the profile page and admin console) links a School two ways: an explicit autocomplete pick, or -- when the user only typed free text -- a quiet `School.fuzzy_search` behind the scenes, the same resolution `EducatorSignup::CompleteProfile` already applies. Either way `self_reported_school` keeps the user's typed words; only an explicit pick's canonical name overwrites it. It enqueues `PushUserSchoolToSalesforce` whenever a save actually changes `school_id` or `self_reported_school` -- not on a no-op save. That routine picks exactly one of three cases per user, in order: a student with `salesforce_student_id`, an instructor with `salesforce_contact_id`, or an instructor with only `salesforce_lead_id` (delegates to `Newflow::UpdateExistingSalesforceLead`, which re-finds the lead, follows conversion to a Contact if one happened, and lets `CreateOrUpdateSalesforceLead` write the school fields it already writes). A user linked to none of the three gets no Salesforce write.
+**School-change push.** `UpdateSelfReportedSchool` (profile page and admin console) links a School from an explicit autocomplete pick, or from `School.fuzzy_search` on free text — the same resolution `EducatorSignup::CompleteProfile` applies. `self_reported_school` always keeps the user's typed words; only an explicit pick's canonical name overwrites them. A save that actually changes the school enqueues `PushUserSchoolToSalesforce`, which picks one case: student with `salesforce_student_id`, instructor with `salesforce_contact_id`, or instructor with only `salesforce_lead_id` (delegated to `Newflow::UpdateExistingSalesforceLead`). Linked to none of the three, nothing is written.
 
-The first two cases resolve a target Account id -- the linked School's `salesforce_id`, or the "Find Me A Home" fallback Account (looked up lazily, memoized per push, Sentry-reported and skipped rather than raised if missing) when nothing resolved -- and then apply **asymmetric write rules**: `Student__c#School__c` only fills a blank field (same "never overwrite" rule as pass 1 above), so the fallback landing there just puts the student in the review bucket that's the whole point of "Find Me A Home". A Contact's `AccountId` is overwritten outright by a resolved real School, but the fallback is written **only when the Contact has no `AccountId` at all** -- nothing resolved must never downgrade a Contact off an Account (possibly one Customer Experience set deliberately) onto the review bucket. Neither case ever writes the fallback School onto `user.school` itself -- that would overwrite the deliberate `nil` `UpdateSelfReportedSchool` just set.
+The first two resolve an Account id — the School's `salesforce_id`, else the `Find Me A Home` fallback Account — and write it asymmetrically. `Student__c#School__c` only fills a blank (same never-overwrite rule as pass 1), so an unmatched school lands the student in the review bucket. A Contact's `AccountId` is overwritten by a resolved School, but the fallback fills only a **blank** `AccountId`: an unmatched name must never pull a Contact off an Account Customer Experience may have set. Neither writes the fallback onto `user.school`.
 
 Remote models (`Student`, `Book#osc_url`, `Contact#last_osweb_login_date`, all from gem 10.2.0) live in the `openstax_salesforce` gem, not the app. The gem requires each remote model explicitly in its own `lib/openstax_salesforce.rb` -- it does not autoload them, and a model missing from that require list fails as a confusing "duplicate factory" error far from the real cause.
 
@@ -140,20 +140,8 @@ The 2026 redesign (Claude Design project "Accounts Redesign") reshaped signup + 
 - **Impact tab**: `ImpactMilestones` PORO derives earned/next milestones purely from Adoption data. **Overview**: LMS question card persists to `users.lms_used`/`lms_prompt_dismissed_at`.
 - `SecurityLog.event_type` and `users.role` are **positional integer enums** — only ever append new values at the end.
 
-### The `/i/profile` page (My Account) actually renders under the `application` layout
-`OtherController#profile_newflow` (routed from `scope controller: 'other'`) explicitly
-calls `render layout: 'application'`, even though it inherits `layout 'newflow_layout'`
-from `Newflow::BaseController` and its template lives at
-`app/views/newflow/base/profile_newflow.html.erb` (found via Rails' `_prefixes`
-ancestor lookup, not because `OtherController` is namespaced under `newflow`). That
-means the page loads the `application`/`profile` JS and CSS bundles, **not**
-`newflow.js`/`newflow.scss` — anything the page needs from the newflow bundle
-(`OxSchoolAutocomplete`, the `_school_autocomplete` styles, underscore, etc.) has to be
-required/imported explicitly from `app/assets/javascripts/profile/index.js` and
-`app/assets/stylesheets/profile.scss`; it is not already on the page just because a
-signup view down the hall uses it. The `PUT /profile` save action, by contrast, is
-`legacy/users#update` (`scope controller: 'legacy/users'`) — a different controller
-from the one that renders the page.
+### `/i/profile` renders under the `application` layout
+`OtherController#profile_newflow` calls `render layout: 'application'`, overriding the `newflow_layout` it inherits from `Newflow::BaseController` despite its template living in `app/views/newflow/base/`. So the page loads the `application`/`profile` bundles, **not** `newflow.js`/`newflow.scss` — anything it needs from newflow must be required from `app/assets/javascripts/profile/index.js` and `app/assets/stylesheets/profile.scss`. The `PUT /profile` save is a different controller again: `legacy/users#update`.
 
 ### View gotcha: lev_form_for needs `<%=`
 `capture` falls back to a block's return value only when the output buffer is empty, so a bare `<% lev_form_for ... do %>` renders only while the form is the sole printed content in its capture scope — adding any sibling `<%= %>` silently drops the whole form (no error, empty <form>). Always use `<%= lev_form_for ... do %>`. Related: never write literal ERB delimiters inside an ERB comment — a `%​>` sequence in the comment text terminates the comment early and the rest renders/compiles as template code (this has caused a whole-page 500).

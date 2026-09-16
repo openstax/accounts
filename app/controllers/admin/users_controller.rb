@@ -25,7 +25,7 @@ module Admin
 
         respond_to do |format|
           if change_user_password && add_email_to_user && change_salesforce_contact &&
-             update_self_reported_school && update_user
+             update_user && update_self_reported_school
             @user.touch if @user.updated_at == old_updated_at
             security_log :user_updated_by_admin, user_id: params[:id], username: @user.username,
                                                 user_params: request.filtered_parameters['user']

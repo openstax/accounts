@@ -196,7 +196,7 @@
   <div class="form-group">
     <%= f.label :self_reported_school, 'Self-reported school', class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
-      <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>">
+      <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>" data-endpoint="<%= newflow_schools_path %>">
         <%= text_field_tag 'user[self_reported_school]', @user.self_reported_school, class: 'form-control' %>
         <%= hidden_field_tag 'user[school_id]', @user.school_id %>
       </div>

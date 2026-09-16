@@ -1,24 +1,22 @@
-// x-editable type for the profile page's "Self-reported school" row. Wraps the
-// shared school autocomplete combobox (app/assets/javascripts/newflow/school_autocomplete.js)
-// so picking a suggestion or typing free text both save through the same
-// {school_name, school_id} pair the routine expects.
+// x-editable type wrapping the shared school autocomplete
+// (newflow/school_autocomplete.js) for the profile page's school row.
 (function() {
   'use strict';
 
   function ProfileSchool(options) {
-    // Deferred like OX.Profile.Name: `tpl` is a function so OX.I18n.school is
-    // read at construction time, after application.html.erb has set it, not
-    // when this file is parsed.
+    // `tpl` is a function so OX.I18n is read at construction, not at parse
+    // time -- same deferral as OX.Profile.Name.
     var defaults = $.extend({}, ProfileSchool.defaults, { tpl: ProfileSchool.defaults.tpl() });
     this.init('profile_school', options, defaults);
   }
 
   ProfileSchool.defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults, {
     tpl: function() {
-      // The label carries literal double quotes (`Use "{school}"`), which
-      // would otherwise close the data attribute early.
+      // The label contains literal double quotes, which would close the
+      // attribute early.
       var label = OX.I18n.school.use_as_entered_label.replace(/"/g, '&quot;');
-      return '<div class="school-autocomplete" data-use-as-entered-label="' + label + '">' +
+      return '<div class="school-autocomplete" data-use-as-entered-label="' + label + '"' +
+        ' data-endpoint="' + OX.Profile.School.schoolsPath + '">' +
         '<input type="text" name="school_name" class="form-control input-sm" ' +
         'placeholder="' + OX.I18n.school.placeholder + '">' +
         '<input type="hidden" name="school_id">' +
@@ -63,6 +61,8 @@
   window.OX = window.OX || {};
   window.OX.Profile = window.OX.Profile || {};
   window.OX.Profile.School = {
+    schoolsPath: '/i/schools',
+
     editable: function(el, attribs) {
       el.editable({
         value: attribs,

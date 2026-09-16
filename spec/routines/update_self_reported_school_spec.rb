@@ -20,6 +20,17 @@ describe UpdateSelfReportedSchool, type: :routine do
     expect(user.self_reported_school).to eq 'Hogwarts Academy'
   end
 
+  # CreateOrUpdateSalesforceLead links the Find Me A Home placeholder when a
+  # user has no school, so it can arrive back as the form's prefilled school_id.
+  it 'does not report the fallback placeholder as the user school name' do
+    fallback = FactoryBot.create :school, name: 'Find Me A Home'
+    user.update!(self_reported_school: 'Hogwarts Academy')
+
+    described_class.call(user: user, school_name: 'Hogwarts Academy', school_id: fallback.id)
+
+    expect(user.reload.self_reported_school).to eq 'Hogwarts Academy'
+  end
+
   it 'clears the school when the name is blank' do
     user.update!(school: school)
 

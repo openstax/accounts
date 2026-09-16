@@ -326,6 +326,7 @@ OX.Profile.Name.editable($('#name'), {
     suffix: "<%= current_user.suffix %>"
 });
 
+OX.Profile.School.schoolsPath = "<%= newflow_schools_path %>";
 OX.Profile.School.editable($('#self-reported-school'), {
   school_name: $('#self-reported-school').data('school-name'),
   school_id: $('#self-reported-school').data('school-id')
