@@ -16,8 +16,10 @@
 #   3. instructor login refresh -- recurring. Same as pass 2 but for
 #      instructors' Contact records, keyed by the salesforce_contact_id
 #      already linked elsewhere (lead conversion, profile sync). Never
-#      creates or otherwise touches a Contact -- Last_OSweb_Login_Date__c is
-#      the only field Accounts is allowed to write there.
+#      creates a Contact, and Last_OSweb_Login_Date__c is the only field
+#      *this pass* writes there -- PushUserSchoolToSalesforce is the one
+#      other path allowed to touch a Contact, and only AccountId, on an
+#      explicit school change.
 class PushUserActivityToSalesforce
   BATCH_SIZE = 250
   LOOKUP_CHUNK_SIZE = 200
@@ -175,9 +177,10 @@ class PushUserActivityToSalesforce
     end
   end
 
-  # Only Last_OSweb_Login_Date__c -- never FV_Status__c, Adoption_Status__c,
-  # name or school, which belong to Customer Experience once a Contact
-  # exists.
+  # Only Last_OSweb_Login_Date__c -- never FV_Status__c, Adoption_Status__c
+  # or name, which belong to Customer Experience once a Contact exists.
+  # AccountId is the one Contact field Accounts writes elsewhere
+  # (PushUserSchoolToSalesforce, on an explicit school change), not here.
   def push_contact_login_dates(users)
     results = OpenStax::Salesforce::Remote::Contact.sfdc_client.batch do |batch|
       users.each do |user|

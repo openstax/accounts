@@ -14,13 +14,20 @@ class UpdateSelfReportedSchool
   protected
 
   def exec(user:, school_name:, school_id: nil)
+    previous_school_id = user.school_id
+    previous_self_reported_school = user.self_reported_school
+
     school = School.find_by(id: school_id) if school_id.present?
 
     user.school = school
     user.self_reported_school = school&.name || school_name.presence
 
-    user.save
+    saved = user.save
     transfer_errors_from(user, { type: :verbatim }, true)
+
+    school_changed = user.school_id != previous_school_id ||
+                     user.self_reported_school != previous_self_reported_school
+    PushUserSchoolToSalesforce.perform_later(user: user) if saved && school_changed
 
     outputs.user = user
   end
