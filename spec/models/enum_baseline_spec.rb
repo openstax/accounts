@@ -22,7 +22,9 @@ describe 'Enum integer stability', type: :model do
     'User.using_openstax_how' => -> { User.using_openstax_hows },
     'User.school_location' => -> { User.school_locations },
     'User.school_type' => -> { User.school_types },
-    'ExternalId.role' => -> { ExternalId.roles }
+    'ExternalId.role' => -> { ExternalId.roles },
+    'PreAuthState.contact_info_kind' => -> { PreAuthState.contact_info_kinds },
+    'SequentialFailure.kind' => -> { SequentialFailure.kinds }
   }.freeze
 
   def enum_mismatch_message(enum_name, name, expected_integer, actual_integer)
@@ -40,13 +42,16 @@ describe 'Enum integer stability', type: :model do
       or a value got removed, instead of a new value being appended at the end.
 
       DO NOT fix this by updating spec/fixtures/enum_baselines.yml -- that file records integers already
-      live in production. Instead, edit the enum declaration so `#{name}` goes back to integer
-      #{expected_integer}: move whatever you just added to the END of the list instead.
+      live in production. Instead, edit the enum declaration so `#{name}` reads `#{name}: #{expected_integer}`
+      again, and give whatever you just added its own unused integer, one higher than the current maximum.
+      Reordering the declaration will not help: each name carries the integer written beside it, so it
+      keeps that number wherever it sits in the literal.
     MESSAGE
   end
 
   def duplicate_integer_message(enum_name, live_mapping)
-    duplicates = live_mapping.group_by { |_name, integer| integer }.select { |_integer, pairs| pairs.size > 1 }
+    duplicates = live_mapping.group_by { |_name, integer|
+ integer }.select { |_integer, pairs| pairs.size > 1 }
 
     lines = duplicates.map do |integer, pairs|
       "  integer #{integer} is shared by: #{pairs.map(&:first).join(', ')}"
@@ -68,7 +73,7 @@ describe 'Enum integer stability', type: :model do
 
   baseline.each do |enum_name, expected_mapping|
     describe enum_name do
-      let(:live_mapping) { LIVE_ENUM_MAPPINGS.fetch(enum_name).call.transform_values(&:to_i) }
+      let(:live_mapping) { LIVE_ENUM_MAPPINGS.fetch(enum_name).call }
 
       expected_mapping.each do |name, expected_integer|
         it "keeps `#{name}` == #{expected_integer}" do
@@ -82,7 +87,8 @@ describe 'Enum integer stability', type: :model do
       end
 
       it 'never assigns the same integer to two different names' do
-        duplicates = live_mapping.group_by { |_name, integer| integer }.select { |_integer, pairs| pairs.size > 1 }
+        duplicates = live_mapping.group_by { |_name, integer|
+ integer }.select { |_integer, pairs| pairs.size > 1 }
 
         expect(duplicates).to be_empty, duplicate_integer_message(enum_name, live_mapping)
       end
@@ -90,8 +96,8 @@ describe 'Enum integer stability', type: :model do
   end
 
   it 'keeps ExternalId.role identical to User.role' do
-    user_roles = User.roles.transform_values(&:to_i)
-    external_id_roles = ExternalId.roles.transform_values(&:to_i)
+    user_roles = User.roles
+    external_id_roles = ExternalId.roles
 
     expect(external_id_roles).to(
       eq(user_roles),
