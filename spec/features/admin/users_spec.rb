@@ -41,6 +41,25 @@ feature 'Admin user pages', js: true do
         end
       end
 
+      context 'editing self-reported school' do
+        it 'picks a suggestion from the autocomplete and links it' do
+          FactoryBot.create :school, name: 'Rice University', city: 'Houston', state: 'TX'
+          @sf_user.update!(school: nil, self_reported_school: nil)
+
+          visit "/admin/users/#{@sf_user.id}/edit"
+          fill_in 'user[self_reported_school]', with: 'Rice'
+
+          expect(page).to have_css('.school-autocomplete-results li', text: 'Rice University')
+
+          find('.school-autocomplete-results li', text: 'Rice University', match: :first).click
+          click_button 'Save'
+
+          expect(page).to have_no_content("We had some unexpected")
+          expect(find_field('user[self_reported_school]').value).to eq 'Rice University'
+          expect(@sf_user.reload.school.name).to eq 'Rice University'
+        end
+      end
+
       context 'popup console' do
         it 'searches users and does not explode' do
           Capybara.current_session.current_window.resize_to 1200, 1200
