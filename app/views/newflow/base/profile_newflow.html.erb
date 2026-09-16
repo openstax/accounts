@@ -164,16 +164,25 @@
   </div>
   <% end %>
 
-  <% if current_user.self_reported_school.present? %>
   <div class="row">
     <div class="col-sm-2 category">
       <%= I18n.t(:"legacy.users.edit.self_reported_school") %>
     </div>
     <div class="col-sm-10 info">
-      <%= current_user.self_reported_school %>
+      <button type="button" id="self-reported-school"
+        class="editable"
+        data-type="profile_school"
+        data-name="self_reported_school"
+        data-school-name="<%= current_user.self_reported_school %>"
+        data-school-id="<%= current_user.school_id %>"
+      >
+        <span class="text-content"><%=
+          current_user.self_reported_school.presence || I18n.t(:"legacy.users.edit.self_reported_school_blank")
+        %></span>
+        <span class="glyphicon glyphicon-pencil" aria-label="edit self-reported school"></span>
+      </button>
     </div>
   </div>
-  <% end %>
 
     <div class="row">
       <div class="col-sm-2 category">
@@ -315,6 +324,11 @@ OX.Profile.Name.editable($('#name'), {
     first_name: "<%= current_user.first_name %>",
     last_name: "<%= current_user.last_name %>",
     suffix: "<%= current_user.suffix %>"
+});
+
+OX.Profile.School.editable($('#self-reported-school'), {
+  school_name: $('#self-reported-school').data('school-name'),
+  school_id: $('#self-reported-school').data('school-id')
 });
 </script>
 <% end # javscript content block %>
