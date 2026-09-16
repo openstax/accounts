@@ -13,9 +13,14 @@
   var ENDPOINT = '/i/schools';
   var DEBOUNCE_MS = 300;
   var MIN_QUERY_LENGTH = 2;
+  var instanceCount = 0;
 
-  function attach(containerSelector) {
-    var container = document.querySelector(containerSelector);
+  // Accepts a selector or the container element itself -- the profile page's
+  // inline editor builds its form on the fly, so it has an element and no
+  // selector that would single it out.
+  function attach(containerOrSelector) {
+    var container = typeof containerOrSelector === 'string' ?
+      document.querySelector(containerOrSelector) : containerOrSelector;
     if (!container) { return; }
 
     var input = container.querySelector('input[type="text"]');
@@ -25,7 +30,7 @@
 
     var listbox = document.createElement('ul');
     listbox.className = 'school-autocomplete-results';
-    listbox.id = input.id + '-results';
+    listbox.id = (input.id || 'school-autocomplete-' + (++instanceCount)) + '-results';
     listbox.setAttribute('role', 'listbox');
     listbox.hidden = true;
     container.appendChild(listbox);
