@@ -11,8 +11,6 @@ class PushUserSchoolToSalesforce
 
   lev_routine active_job_enqueue_options: { queue: :salesforce }
 
-  uses_routine Newflow::UpdateExistingSalesforceLead
-
   FALLBACK_SCHOOL_NAME = 'Find Me A Home'.freeze
 
   protected #################
@@ -110,12 +108,54 @@ class PushUserSchoolToSalesforce
     @fallback_school_id
   end
 
-  # UpdateExistingSalesforceLead re-finds the lead, follows conversion, and lets
-  # CreateOrUpdateSalesforceLead write the school fields and its own fallback.
   def push_lead_school(user)
     return unless Settings::Salesforce.push_leads_enabled
 
-    run(Newflow::UpdateExistingSalesforceLead, user: user)
+    succeeded = set_lead_school(user)
+    return if succeeded || !retry_on_failure?
+
+    raise_retryable_failure!('lead school update failed', user)
+  end
+
+  # Looked up by the stored id only: this branch is already gated on it being
+  # present, and reconciling a stale or missing id belongs to
+  # UpdateExistingSalesforceLead, not here -- a nil result is nothing to do.
+  def set_lead_school(user)
+    lead = OpenStax::Salesforce::Remote::Lead.find(user.salesforce_lead_id)
+    return true if lead.nil?
+
+    return set_converted_lead_contact_school(user, lead) if lead.is_converted
+
+    sf_school_id = user.school&.salesforce_id || fallback_school_id(user)
+    return true if sf_school_id.nil?
+
+    lead.school = user.most_accurate_school_name
+    lead.city = user.most_accurate_school_city
+    lead.country = user.most_accurate_school_country
+    lead.self_reported_school = user.self_reported_school
+    lead.account_id = sf_school_id
+    lead.school_id = sf_school_id
+    SalesforceLeadState.assign(lead, user.most_accurate_school_state)
+    lead.save!
+  rescue StandardError => e
+    report(user, 'lead school update failed', e)
+    false
+  end
+
+  # This org converts a Lead into an existing Contact on a matching email/UUID,
+  # and writing the Lead again would land on that dead record (same conversion
+  # CreateOrUpdateSalesforceLead follows). set_contact_school reads the id off
+  # the user, so it has to be stored before delegating to it -- which is also
+  # how update_contact gets to keep never writing school for a Contact.
+  def set_converted_lead_contact_school(user, lead)
+    contact_id = lead.converted_contact_id.presence
+    if contact_id.present? && user.salesforce_contact_id != contact_id && !user.update(salesforce_contact_id: contact_id)
+      Sentry.capture_message("User #{user.id} could not store contact #{contact_id}: #{user.errors.full_messages.join(', ')}")
+    end
+
+    return true if user.salesforce_contact_id.blank?
+
+    set_contact_school(user)
   end
 
   def retry_on_failure?
