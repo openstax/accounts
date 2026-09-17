@@ -98,6 +98,23 @@ ignores prefill query params, so name and email are passed as `data-sheerid-*`
 attributes and sent via `setViewModel` on `ON_VERIFICATION_READY`. Do not put
 them back in the URL: it leaked the user's email to a third party for nothing.
 
+**The focus ring is ours, delivered over the same channel.** SheerID's
+stylesheet ships `outline:none` on `.sid-text-input:focus` and
+`.sid-h-link-like:focus`, and leaves everything else to the browser default --
+which at the edge of their dark submit button is not distinguishable
+(CORE-909, WCAG 2.4.7 AA). Their Theme > Custom CSS field, the usual answer, is
+not offered on our program. So `sendFocusStyles` posts `setOptions` with a
+`customCss` string and the form renders it into a `<style>` tag of its own,
+ahead of any customCss the program theme carries. Two things to know before
+touching it:
+- Options are read **when the form next renders** and they stay set, so the
+  message has to arrive before a render. `ON_VERIFICATION_READY` is that
+  moment: the prefill sent immediately after it is what triggers the render
+  that picks the rules up. Keep `sendFocusStyles()` ahead of
+  `sendViewModel()`.
+- The ring matches the flow's own (`2px #026AA1`, offset 2px) on purpose --
+  crossing into the frame shouldn't change what focus looks like.
+
 **Don't assert on copy inside the frame.** Headings, button labels, the
 "can't find your school" hints and whether Country comes preselected are all
 Program Builder settings that differ per program, so `expect_sheerid_iframe`
