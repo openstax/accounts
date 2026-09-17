@@ -85,11 +85,19 @@ describe UpdateSelfReportedSchool, type: :routine do
       described_class.call(user: user, school_name: school.name, school_id: school.id)
     end
 
+    # `save` returning false with no errors on the record isn't a state
+    # ActiveRecord can produce, so the save is stubbed to fail the way a real
+    # validation failure would: populating `errors` before returning false.
     it 'does not enqueue anything when the save fails' do
-      allow_any_instance_of(User).to receive(:save).and_return(false)
+      allow_any_instance_of(User).to receive(:save) do |record|
+        record.errors.add(:base, 'stubbed failure')
+        false
+      end
       expect(PushUserSchoolToSalesforce).not_to receive(:perform_later)
 
-      described_class.call(user: user, school_name: 'Rice', school_id: school.id)
+      result = described_class.call(user: user, school_name: 'Rice', school_id: school.id)
+
+      expect(result.errors).not_to be_empty
     end
 
     # perform_later only enqueues in specs (ActiveJob::TestHelper swaps in the

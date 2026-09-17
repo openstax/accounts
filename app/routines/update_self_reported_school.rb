@@ -24,12 +24,14 @@ class UpdateSelfReportedSchool
     user.school = explicit_school || free_text_school(school_id, school_name)
     user.self_reported_school = reported_name(explicit_school, school_name)
 
-    saved = user.save
+    user.save
     transfer_errors_from(user, { type: :verbatim }, true)
 
+    # transfer_errors_from throws :fatal_errors_encountered (caught by Lev::Routine#call)
+    # as soon as it sees an error, so exec never reaches here with a failed save.
     changed = user.school_id != previous_school_id ||
               user.self_reported_school != previous_self_reported_school
-    PushUserSchoolToSalesforce.perform_later(user: user) if saved && changed
+    PushUserSchoolToSalesforce.perform_later(user: user) if changed
 
     outputs.user = user
   end
