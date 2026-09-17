@@ -64,10 +64,8 @@ feature 'User updates profile', js: true do
       find('.editable-cancel').click
       find('#self-reported-school').click
 
-      # Reopening alone can't duplicate anything: x-editable's prerender()
-      # re-parses $tpl into a fresh container on every show, and the inline
-      # container empties itself on cancel. The guard is against a second
-      # attach on a container that is still live, so force that directly.
+      # x-editable re-parses the container on every show, so reopening alone
+      # cannot duplicate anything: force the second attach directly.
       page.execute_script(
         "OxSchoolAutocomplete.attach(document.querySelector('.school-autocomplete'));"
       )

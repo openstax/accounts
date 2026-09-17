@@ -46,10 +46,8 @@ module Legacy
 
     private
 
-    # Routed before `user_params`'s hash branch, which permits only the name
-    # fields. Anything but a nested `value` (a bare String, or a malformed
-    # shape like an Array) isn't this editor, so it falls through to the
-    # single-field path and is refused by the allowlist there.
+    # Any other shape of `value` falls through to the single-field path, where
+    # the allowlist refuses it.
     def update_self_reported_school
       school_params = params.require(:value).permit(:school_name, :school_id)
       result = UpdateSelfReportedSchool.call(

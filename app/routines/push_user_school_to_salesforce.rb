@@ -66,27 +66,27 @@ class PushUserSchoolToSalesforce
     raise_retryable_failure!('contact school update failed', user)
   end
 
-  # The one path allowed to move a Contact's AccountId (see CLAUDE.md's narrowed
-  # Salesforce boundary). A resolved school overwrites, but an unresolved one
-  # only fills a blank: moving a Contact off an Account Customer Experience may
-  # have set deliberately, onto the review bucket, is worse than doing nothing.
+  # Whether the person is verified at the school they now claim is Customer
+  # Experience's call, so their answer is recorded for review rather than
+  # applied to the Contact's AccountId.
   def set_contact_school(user)
     contact = OpenStax::Salesforce::Remote::Contact.find(user.salesforce_contact_id)
     return true if contact.nil?
 
-    sf_school_id = user.school&.salesforce_id
-    if sf_school_id.blank?
-      return true if contact.school_id.present?
-
-      sf_school_id = fallback_school_id(user)
-      return true if sf_school_id.nil?
-    end
-
-    contact.school_id = sf_school_id
+    contact.self_reported_school = reported_school_with_account_id(user)
     contact.save!
   rescue StandardError => e
     report(user, 'contact school update failed', e)
     false
+  end
+
+  # The trailing id is what makes a drift report possible: its absence marks a
+  # name Accounts could not resolve to an Account.
+  def reported_school_with_account_id(user)
+    sf_school_id = user.school&.salesforce_id
+    return user.self_reported_school if sf_school_id.blank?
+
+    "#{user.self_reported_school} (#{sf_school_id})"
   end
 
   # Memoized through `defined?` so a nil result is cached too. A missing
@@ -142,11 +142,9 @@ class PushUserSchoolToSalesforce
     false
   end
 
-  # This org converts a Lead into an existing Contact on a matching email/UUID,
-  # and writing the Lead again would land on that dead record (same conversion
-  # CreateOrUpdateSalesforceLead follows). set_contact_school reads the id off
-  # the user, so it has to be stored before delegating to it -- which is also
-  # how update_contact gets to keep never writing school for a Contact.
+  # Writing a converted Lead lands on a dead record, so the conversion is
+  # followed to the Contact. set_contact_school reads the id off the user, so
+  # it has to be stored first.
   def set_converted_lead_contact_school(user, lead)
     contact_id = lead.converted_contact_id.presence
     if contact_id.present? && user.salesforce_contact_id != contact_id && !user.update(salesforce_contact_id: contact_id)

@@ -103,56 +103,50 @@ describe PushUserSchoolToSalesforce, type: :routine do
     let(:school) { FactoryBot.create :school, salesforce_id: '001SCHOOL0002' }
     let(:instructor) do
       FactoryBot.create :user, role: :instructor, school: school,
+                                self_reported_school: 'Rice University',
                                 salesforce_contact_id: 'a0CONTACT001'
     end
 
     before { allow(Settings::Salesforce).to receive(:push_leads_enabled) { true } }
 
-    it 'overwrites AccountId with the picked school' do
+    it 'records the reported school with the resolved Account id appended' do
       remote_contact = double('Contact')
       allow(contact_remote).to receive(:find).with('a0CONTACT001').and_return(remote_contact)
-      expect(remote_contact).to receive(:school_id=).with('001SCHOOL0002')
+      expect(remote_contact).to receive(:self_reported_school=)
+        .with('Rice University (001SCHOOL0002)')
       expect(remote_contact).to receive(:save!).and_return(true)
 
       described_class.call(user: instructor)
     end
 
-    it 'fills a blank AccountId with the Find Me A Home fallback when nothing resolved' do
+    it 'records the name alone when nothing resolved' do
       instructor.update!(school: nil, self_reported_school: 'Some Community College')
-      allow(OpenStax::Salesforce::Remote::School).to receive(:find_by).with(name: 'Find Me A Home')
-        .and_return(OpenStruct.new(id: 'SF_SCHOOL_HOME'))
-      remote_contact = double('Contact', school_id: nil)
+      remote_contact = double('Contact')
       allow(contact_remote).to receive(:find).with('a0CONTACT001').and_return(remote_contact)
-      expect(remote_contact).to receive(:school_id=).with('SF_SCHOOL_HOME')
+      expect(remote_contact).to receive(:self_reported_school=).with('Some Community College')
       expect(remote_contact).to receive(:save!).and_return(true)
 
       described_class.call(user: instructor)
     end
 
-    # The regression that matters most: nothing resolved must never downgrade
-    # a Contact that already points at a real Account (possibly one Customer
-    # Experience set deliberately) onto the Find Me A Home review bucket.
-    it 'leaves an existing AccountId untouched when nothing resolved' do
-      instructor.update!(school: nil, self_reported_school: 'Some Community College')
-      remote_contact = double('Contact', school_id: '001EXISTING01')
+    it 'never touches the Contact AccountId' do
+      remote_contact = double('Contact')
       allow(contact_remote).to receive(:find).with('a0CONTACT001').and_return(remote_contact)
-      expect(OpenStax::Salesforce::Remote::School).not_to receive(:find_by)
+      allow(remote_contact).to receive(:self_reported_school=)
       expect(remote_contact).not_to receive(:school_id=)
-      expect(remote_contact).not_to receive(:save!)
+      expect(remote_contact).to receive(:save!).and_return(true)
 
       described_class.call(user: instructor)
     end
 
-    it 'reports and skips, rather than raising, when the fallback Account is missing' do
-      instructor.update!(school: nil, self_reported_school: 'Some Community College')
-      allow(OpenStax::Salesforce::Remote::School).to receive(:find_by).with(name: 'Find Me A Home')
-        .and_return(nil)
-      remote_contact = double('Contact', school_id: nil)
+    it 'clears the recorded school when the user empties the field' do
+      instructor.update!(school: nil, self_reported_school: nil)
+      remote_contact = double('Contact')
       allow(contact_remote).to receive(:find).with('a0CONTACT001').and_return(remote_contact)
-      expect(remote_contact).not_to receive(:school_id=)
-      expect(Sentry).to receive(:capture_message).with(/Find Me A Home.*not found/)
+      expect(remote_contact).to receive(:self_reported_school=).with(nil)
+      expect(remote_contact).to receive(:save!).and_return(true)
 
-      expect { described_class.call(user: instructor) }.not_to raise_error
+      described_class.call(user: instructor)
     end
 
     it 'does nothing when push_leads_enabled is off' do
@@ -165,7 +159,7 @@ describe PushUserSchoolToSalesforce, type: :routine do
     it 'swallows a Salesforce failure when running inline' do
       remote_contact = double('Contact')
       allow(contact_remote).to receive(:find).with('a0CONTACT001').and_return(remote_contact)
-      allow(remote_contact).to receive(:school_id=)
+      allow(remote_contact).to receive(:self_reported_school=)
       allow(remote_contact).to receive(:save!).and_raise(StandardError, 'boom')
       expect(Sentry).to receive(:capture_message).with(/contact school update failed/)
 
@@ -176,7 +170,7 @@ describe PushUserSchoolToSalesforce, type: :routine do
       allow(Delayed::Worker).to receive(:delay_jobs).and_return(true)
       remote_contact = double('Contact')
       allow(contact_remote).to receive(:find).with('a0CONTACT001').and_return(remote_contact)
-      allow(remote_contact).to receive(:school_id=)
+      allow(remote_contact).to receive(:self_reported_school=)
       allow(remote_contact).to receive(:save!).and_raise(StandardError, 'boom')
       expect(Sentry).to receive(:capture_message).with(/contact school update failed/)
 
@@ -196,9 +190,6 @@ describe PushUserSchoolToSalesforce, type: :routine do
 
     before { allow(Settings::Salesforce).to receive(:push_leads_enabled) { true } }
 
-    # Regression test for Bug 1: the old delegation to CreateOrUpdateSalesforceLead
-    # recomputed faculty_status for every non-student and could drop a confirmed
-    # faculty member back into the CS verification queue over a mere school edit.
     it 'writes only the school-describing fields, leaving verification_status, name, role and faculty_status untouched' do
       lead = double('Lead', is_converted: false)
       allow(lead_remote).to receive(:find).with('SF_LEAD_001').and_return(lead)
@@ -218,10 +209,6 @@ describe PushUserSchoolToSalesforce, type: :routine do
       expect(instructor.reload.school).to eq(school)
     end
 
-    # Regression test for Bug 2: the old delegation assigned the fallback School
-    # onto user.school itself, which then fed most_accurate_school_city/country
-    # (unlike most_accurate_school_name, they don't exclude the fallback) and
-    # broke the "no-op save" guard in UpdateSelfReportedSchool.
     it 'falls back to the Find Me A Home Account id without assigning user.school' do
       instructor.update!(school: nil, self_reported_school: 'Some Community College')
       allow(OpenStax::Salesforce::Remote::School).to receive(:find_by).with(name: 'Find Me A Home')
@@ -300,20 +287,19 @@ describe PushUserSchoolToSalesforce, type: :routine do
     let(:school) { FactoryBot.create :school, salesforce_id: '001SCHOOL0004' }
     let(:instructor) do
       FactoryBot.create :user, role: :instructor, school: school, salesforce_contact_id: nil,
+                                self_reported_school: 'Rice University',
                                 salesforce_lead_id: 'SF_LEAD_002'
     end
 
     before { allow(Settings::Salesforce).to receive(:push_leads_enabled) { true } }
 
-    # Regression test for Bug 3: CreateOrUpdateSalesforceLead's update_contact
-    # deliberately never writes school, so following a conversion used to drop
-    # the user's explicit school change on the floor.
-    it 'stores the converted contact id on the user and writes the school to the Contact' do
+    it 'stores the converted contact id and records the school on the Contact' do
       lead = double('Lead', is_converted: true, converted_contact_id: 'SF_CONTACT_999')
       allow(lead_remote).to receive(:find).with('SF_LEAD_002').and_return(lead)
       remote_contact = double('Contact')
       allow(contact_remote).to receive(:find).with('SF_CONTACT_999').and_return(remote_contact)
-      expect(remote_contact).to receive(:school_id=).with('001SCHOOL0004')
+      expect(remote_contact).to receive(:self_reported_school=)
+        .with('Rice University (001SCHOOL0004)')
       expect(remote_contact).to receive(:save!).and_return(true)
 
       described_class.call(user: instructor)
@@ -321,19 +307,30 @@ describe PushUserSchoolToSalesforce, type: :routine do
       expect(instructor.reload.salesforce_contact_id).to eq('SF_CONTACT_999')
     end
 
-    it 'reports to Sentry, but still writes the school, when storing the contact id fails' do
+    it 'never writes the Lead itself' do
       lead = double('Lead', is_converted: true, converted_contact_id: 'SF_CONTACT_999')
       allow(lead_remote).to receive(:find).with('SF_LEAD_002').and_return(lead)
-      # A failed `update` still assigns attributes before validation runs, same as
-      # real ActiveRecord -- the production code relies on that to read the id
-      # back off the user right after logging the failure.
+      remote_contact = double('Contact')
+      allow(contact_remote).to receive(:find).with('SF_CONTACT_999').and_return(remote_contact)
+      allow(remote_contact).to receive(:self_reported_school=)
+      allow(remote_contact).to receive(:save!).and_return(true)
+      expect(lead).not_to receive(:save!)
+
+      described_class.call(user: instructor)
+    end
+
+    # A failed `update` still assigns in memory, which is what lets the Contact
+    # write go ahead on an id the user row never kept.
+    it 'reports to Sentry, but still records the school, when storing the id fails' do
+      lead = double('Lead', is_converted: true, converted_contact_id: 'SF_CONTACT_999')
+      allow(lead_remote).to receive(:find).with('SF_LEAD_002').and_return(lead)
       allow_any_instance_of(User).to receive(:update) do |user_instance, attrs|
         user_instance.assign_attributes(attrs)
         false
       end
       remote_contact = double('Contact')
       allow(contact_remote).to receive(:find).with('SF_CONTACT_999').and_return(remote_contact)
-      allow(remote_contact).to receive(:school_id=)
+      allow(remote_contact).to receive(:self_reported_school=)
       allow(remote_contact).to receive(:save!).and_return(true)
       expect(Sentry).to receive(:capture_message).with(/could not store contact SF_CONTACT_999/)
 
