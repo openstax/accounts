@@ -31,7 +31,6 @@ feature 'User updates profile', js: true do
 
   describe 'Updating self-reported school' do
     before(:each) do
-      load 'db/seeds.rb'
       FactoryBot.create :school, name: 'Rice University', city: 'Houston', state: 'TX'
 
       find('#self-reported-school').click
@@ -58,6 +57,27 @@ feature 'User updates profile', js: true do
       find('.glyphicon-ok').click
 
       expect(page).to have_button('Hogwarts Academy')
+      screenshot!
+    end
+
+    scenario 'reopening the editor does not duplicate the autocomplete list' do
+      find('.editable-cancel').click
+      find('#self-reported-school').click
+
+      # Reopening alone can't duplicate anything: x-editable's prerender()
+      # re-parses $tpl into a fresh container on every show, and the inline
+      # container empties itself on cancel. The guard is against a second
+      # attach on a container that is still live, so force that directly.
+      page.execute_script(
+        "OxSchoolAutocomplete.attach(document.querySelector('.school-autocomplete'));"
+      )
+
+      fill_in 'school_name', with: 'Rice'
+
+      expect(page).to have_css('.school-autocomplete-results', count: 1, visible: :all)
+      expect(page).to have_css(
+        '.school-autocomplete-results li', text: 'Rice University', count: 1, visible: :all
+      )
       screenshot!
     end
   end

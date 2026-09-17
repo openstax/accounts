@@ -22,6 +22,13 @@
       document.querySelector(containerOrSelector) : containerOrSelector;
     if (!container) { return; }
 
+    // A second attach on a live container silently doubles the listbox and every
+    // listener, and nothing in the markup contract stops a caller doing it --
+    // the profile editor calls attach() from an x-editable render(), which runs
+    // on every show.
+    if (container.getAttribute('data-school-autocomplete-attached')) { return; }
+    container.setAttribute('data-school-autocomplete-attached', 'true');
+
     var input = container.querySelector('input[type="text"]');
     var hiddenId = container.querySelector('input[type="hidden"]');
     var useAsEnteredLabel =
