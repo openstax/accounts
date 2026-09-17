@@ -4,8 +4,8 @@
   'use strict';
 
   function ProfileSchool(options) {
-    // `tpl` is a function so OX.I18n is read at construction, not at parse
-    // time -- same deferral as OX.Profile.Name.
+    // `tpl` is a function so OX.Profile.School's strings are read at
+    // construction, not at parse time -- same deferral as OX.Profile.Name.
     var defaults = $.extend({}, ProfileSchool.defaults, { tpl: ProfileSchool.defaults.tpl() });
     this.init('profile_school', options, defaults);
   }
@@ -14,11 +14,13 @@
     tpl: function() {
       // The label contains literal double quotes, which would close the
       // attribute early.
-      var label = OX.I18n.school.use_as_entered_label.replace(/"/g, '&quot;');
+      var label = OX.Profile.School.useAsEnteredLabel.replace(/"/g, '&quot;');
+      // The visible "Self-reported school" label lives in a div outside this
+      // generated form, so the input needs its own accessible name.
       return '<div class="school-autocomplete" data-use-as-entered-label="' + label + '"' +
         ' data-endpoint="' + OX.Profile.School.schoolsPath + '">' +
-        '<input type="text" name="school_name" class="form-control input-sm" ' +
-        'placeholder="' + OX.I18n.school.placeholder + '">' +
+        '<input type="text" name="school_name" aria-label="self-reported school" ' +
+        'class="form-control input-sm" placeholder="' + OX.Profile.School.placeholder + '">' +
         '<input type="hidden" name="school_id">' +
         '</div>';
     },
@@ -68,7 +70,7 @@
         value: attribs,
         success: function(response) {
           $(this).find('.text-content')
-            .text(response.self_reported_school || OX.I18n.school.blank_prompt);
+            .text(response.self_reported_school || OX.Profile.School.blankPrompt);
         }
       });
     }

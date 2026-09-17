@@ -327,6 +327,9 @@ OX.Profile.Name.editable($('#name'), {
 });
 
 OX.Profile.School.schoolsPath = "<%= newflow_schools_path %>";
+OX.Profile.School.useAsEnteredLabel = <%= I18n.t(:"school_autocomplete.use_as_entered_label").to_json.html_safe %>;
+OX.Profile.School.placeholder = <%= I18n.t(:"legacy.users.edit.self_reported_school_placeholder").to_json.html_safe %>;
+OX.Profile.School.blankPrompt = <%= I18n.t(:"legacy.users.edit.self_reported_school_blank").to_json.html_safe %>;
 OX.Profile.School.editable($('#self-reported-school'), {
   school_name: $('#self-reported-school').data('school-name'),
   school_id: $('#self-reported-school').data('school-id')
