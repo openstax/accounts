@@ -62,6 +62,17 @@ describe Legacy::UsersController, type: :controller do
       expect(user.first_name).to eq 'Ada'
     end
 
+    # `value[]=x` makes Rails parse `params[:value]` as an Array rather than a
+    # String or an ActionController::Parameters hash. `user_params`'s hash
+    # branch (used here, with no `name` param, for the whole-name form) must
+    # not try `.permit` on it -- that shape has to fall through to the
+    # single-field allowlist and be refused there, not raise NoMethodError.
+    it 'refuses an array value on the whole-name path, rather than raising' do
+      put(:update, params: { value: ['Ada'] })
+
+      expect(response.status).to eq 403
+    end
+
     context 'self-reported school' do
       let(:school) { FactoryBot.create :school, name: 'Rice University' }
 
@@ -91,6 +102,16 @@ describe Legacy::UsersController, type: :controller do
       # combobox branch, where it would have raised NoMethodError as a 500.
       it 'refuses a string value under the school field name' do
         put(:update, params: { name: 'self_reported_school', value: 'Rice' })
+
+        expect(response.status).to eq 403
+      end
+
+      # `value[]=x` parses as an Array, which is neither the String the
+      # single-field path expects nor the ActionController::Parameters the
+      # combobox branch expects -- it must be refused by the allowlist
+      # (self_reported_school isn't in it), not raise NoMethodError on `.permit`.
+      it 'refuses an array value under the school field name, rather than raising' do
+        put(:update, params: { name: 'self_reported_school', value: ['Rice'] })
 
         expect(response.status).to eq 403
       end

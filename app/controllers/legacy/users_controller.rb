@@ -29,7 +29,8 @@ module Legacy
       # -- which comes back as a full HTML error page that x-editable then
       # injects into the form as markup.
       return update_self_reported_school \
-        if params[:name] == 'self_reported_school' && !params[:value].is_a?(String)
+        if params[:name] == 'self_reported_school' &&
+           params[:value].is_a?(ActionController::Parameters)
 
       attrs = user_params
 
@@ -46,7 +47,8 @@ module Legacy
     private
 
     # Routed before `user_params`'s hash branch, which permits only the name
-    # fields. A String `value` isn't this editor, so it falls through to the
+    # fields. Anything but a nested `value` (a bare String, or a malformed
+    # shape like an Array) isn't this editor, so it falls through to the
     # single-field path and is refused by the allowlist there.
     def update_self_reported_school
       school_params = params.require(:value).permit(:school_name, :school_id)
@@ -65,7 +67,7 @@ module Legacy
     end
 
     def user_params
-      unless params[:value].is_a?(String)
+      if params[:value].is_a?(ActionController::Parameters)
         return params.require(:value).permit(:title, :first_name, :last_name, :suffix).to_h
       end
 
