@@ -2,17 +2,40 @@
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
 <% show_user = true if show_user.nil?
-   application = security_log_entry.application %>
+   application = security_log_entry.application
+   user = security_log_entry.user
+   column_count = show_user ? 6 : 5 %>
 
 <tr>
   <td class="text-nowrap"><%= security_log_entry.created_at.in_time_zone('Central Time (US & Canada)').to_formatted_s(:db) %></td>
   <% if show_user %>
-  <% user = security_log_entry.user
-     username = user.nil? ? (application.nil? ? 'Anonymous' : 'Application') : user.id %>
-  <td class="text-nowrap"><%= username %></td>
+  <td class="text-nowrap">
+    <% if user.nil? %>
+      <%= application.nil? ? 'Anonymous' : 'Application' %>
+    <% else %>
+      <%= link_to "##{user.id}", edit_admin_user_path(user), target: '_blank' %>
+      <%= link_to user.name, security_log_filter_path('user_id', user.id), title: 'Filter to this user' %>
+      <br>
+      <span class="text-muted"><%= user.email_addresses.first&.value %></span>
+    <% end %>
+  </td>
   <% end %>
   <td class="text-nowrap"><%= application.try(:name) || 'Accounts' %></td>
-  <td class="text-nowrap"><%= security_log_entry.remote_ip %></td>
-  <td class="text-nowrap"><%= security_log_entry.event_type.to_s.humanize %></td>
-  <td><pre><%= raw JSON.pretty_generate(security_log_entry.event_data).gsub(" ","&nbsp;") %></pre></td>
+  <td class="text-nowrap">
+    <%= link_to security_log_entry.remote_ip, security_log_filter_path('ip', security_log_entry.remote_ip),
+                title: 'Filter to this IP' %>
+  </td>
+  <td class="text-nowrap">
+    <%= link_to security_log_entry.event_type.to_s.humanize,
+                security_log_filter_path('type', security_log_entry.event_type),
+                title: 'Filter to this event type' %>
+  </td>
+  <td>
+    <a class="expand" href="#">
+      <i class="fa fa-plus" aria-hidden="true"></i></a>
+    <span class="event-data-summary"><%= security_log_event_summary(security_log_entry.event_data) %></span>
+  </td>
+</tr>
+<tr class="details">
+  <td colspan="<%= column_count %>"><pre><%= JSON.pretty_generate(security_log_entry.event_data) %></pre></td>
 </tr>

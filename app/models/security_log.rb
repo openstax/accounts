@@ -131,7 +131,7 @@ class SecurityLog < ApplicationRecord
 
   before_destroy { raise ActiveRecord::ReadOnlyRecord }
 
-  scope :preloaded, ->{ preload(:user, :application) }
+  scope :preloaded, ->{ preload(:application, user: :email_addresses) }
 
   default_scope { order(arel_table[:created_at].desc) }
 
