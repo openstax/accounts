@@ -5,7 +5,6 @@ module Newflow
 
   feature 'Educator signup flow', js: true do
 
-    background { load 'db/seeds.rb' }
     before(:each) { turn_on_educator_feature_flag }
 
     let(:first_name) { Faker::Name.first_name  }
@@ -34,9 +33,13 @@ module Newflow
           screenshot!
 
           # Step 2
-          # sends an email address confirmation email
+          # Wait for the POST to land before draining the queue: perform_enqueued_jobs
+          # only runs what is already enqueued.
           expect(page).to have_current_path(educator_email_verification_form_path)
+
           perform_enqueued_jobs
+
+          # sends an email address confirmation email
           open_email(email_value)
           capture_email!(address: email_value)
           expect(current_email).to be_truthy
@@ -83,9 +86,13 @@ module Newflow
           screenshot!
 
           # Step 2
-          # sends an email address confirmation email
+          # Wait for the POST to land before draining the queue: perform_enqueued_jobs
+          # only runs what is already enqueued.
           expect(page).to have_current_path(educator_email_verification_form_path)
+
           perform_enqueued_jobs
+
+          # sends an email address confirmation email
           open_email(email_value)
           capture_email!(address: email_value)
           expect(current_email).to be_truthy
@@ -105,6 +112,54 @@ module Newflow
           visit(signup_done_path)
           expect(page).to have_current_path(signup_done_path)
         end
+      end
+    end
+
+    context 'step 1 field handling' do
+      before do
+        visit(login_path(return_param))
+        click_on(I18n.t(:"login_signup_form.sign_up"))
+        click_on(I18n.t(:"login_signup_form.educator"))
+      end
+
+      it 'lets an educator sign up without a phone number' do
+        # The handler never requires a phone number, so step 1 must accept a
+        # blank one and move on to email verification.
+        fill_in 'signup_first_name', with: first_name
+        fill_in 'signup_last_name',  with: last_name
+        fill_in 'signup_email',      with: email_value
+        fill_in 'signup_password',   with: password
+        submit_signup_form
+
+        expect(page).to have_current_path(educator_email_verification_form_path)
+      end
+
+      it 'clears the non-institutional-email warning without a JavaScript error' do
+        # A non-.edu email raises the "is this your school email?" warning.
+        # Correcting the email fires clearWarnings, which used to call button
+        # helpers this class never defined and throw a TypeError.
+        fill_in 'signup_first_name', with: first_name
+        fill_in 'signup_last_name',  with: last_name
+        fill_in 'signup_email',      with: 'teacher@gmail.com'
+        fill_in 'signup_password',   with: password
+        check('signup_terms_accepted')
+        find('#signup_form_submit_button').click
+        expect(page).to have_selector('.warning.edu', visible: true)
+
+        page.execute_script(<<~JS)
+          window.__jsErrors = [];
+          window.addEventListener('error', function (event) {
+            window.__jsErrors.push(event.message);
+          });
+        JS
+
+        fill_in 'signup_email', with: email_value
+        find('#signup_password').click # blur the email field so its change event fires
+        wait_for_animations
+
+        expect(page.evaluate_script('window.__jsErrors.length')).to eq(0)
+        expect(page).to have_selector('.warning.edu', visible: :hidden)
+        expect(find('#signup_form_submit_button')).not_to be_disabled
       end
     end
 
@@ -299,7 +354,11 @@ module Newflow
 
         # Step 3
         expect_sheerid_iframe
-        click_on('Stuck? Click here to skip instant verification.')
+        # The escape hatches are collapsed so they don't outrank the verification
+        # form; open the disclosure the way a stuck user would. `click_on` only
+        # matches links and buttons, and <summary> is neither.
+        find('.signup-alternatives__summary').click
+        click_on(t(:"login_signup_form.alternative_manual_verification"))
 
         # Step 4
         expect_educator_step_4_page

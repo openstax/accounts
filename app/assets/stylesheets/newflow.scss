@@ -570,29 +570,74 @@ input.has-error {
         z-index: 100;
     }
 
+    // The frame is a fixed box: SheerID's hosted offers page never reports its
+    // content height. 100rem is what has always shipped; do not tune it down
+    // without measuring at the card's real inner width (~55rem), where the form
+    // is considerably taller than it looks at full width.
     iframe {
         position: relative;
         z-index: 0;
-        margin-top: -6.7rem;
-    }
-
-    form, iframe {
-        min-height: 100rem !important;
+        min-height: 100rem;
     }
 
     @include width-up-to($phone-max) {
-        form, iframe {
-            height: 117rem !important;
+        iframe {
+            min-height: 117rem;
             overflow-y: visible;
         }
     }
+}
 
-    @include wider-than($phone-max) {
-        form, iframe {
-            height: 80rem !important;
+// The card paints its form and submit chrome at ID specificity, so the
+// collapsible variant's class-only rules silently lose: one option is an <a>
+// and the other a button_to <button>, and the button kept a 5rem box that put
+// the two labels and their descriptions on different baselines. These are the
+// opt-outs that need to match that specificity; the visual styling stays with
+// the modifier.
+#login-signup-form {
+    // The card is drawn in slices -- .step-counter, .page-header and the form
+    // each paint their own left/right rails, and nothing paints a shared
+    // container. A block sitting between them has to continue those rails or
+    // the card visibly comes apart into stacked boxes.
+    .signup-alternatives--collapsible {
+        max-width: none;
+        margin: 0;
+        padding: 1.6rem 1.5rem 2rem;
+        border: 0;
+        border-left: 0.1rem solid #d5d5d5;
+        border-right: 0.1rem solid #d5d5d5;
+        border-radius: 0;
+        background-color: #fff;
+
+        @include wider-than($phone-max) {
+            padding: 1.6rem 2.9rem 2rem;
+        }
+
+        // Slices only paint their own sides; whichever one ends the card has to
+        // close it.
+        &:last-child {
+            border-bottom: 0.1rem solid #d5d5d5;
+        }
+
+        .signup-alternatives__form {
+            display: inline;
+            height: auto;
+            min-height: 0;
+        }
+
+        .signup-alternatives__action {
+            display: inline;
+            width: auto;
+            height: auto;
+            min-width: 0;
+            min-height: 0;
+            margin: 0;
+            padding: 0;
+            vertical-align: baseline;
         }
     }
 }
+
 // END per-page styles
 
 $very-narrow: 37rem * $scale-factor;
@@ -1397,4 +1442,228 @@ $very-narrow: 37rem * $scale-factor;
       }
     }
   }
+}
+
+// Escape hatches shared across the signup funnel: one visual vocabulary for
+// "this step isn't working for me" wherever it appears.
+.signup-alternatives {
+    // This stylesheet has no global border-box reset, so every padded/bordered
+    // box here sets its own or overflows its column.
+    box-sizing: border-box;
+    // Matches the signup card, since this block also renders outside
+    // #login-signup-form (signup_done), where nothing else constrains it.
+    max-width: 75rem;
+    margin: 1.5rem auto 2.5rem;
+    padding: 2rem;
+    border: 1px solid var(--very-light-pink);
+    border-radius: 5px;
+    background-color: var(--white-two);
+    text-align: left;
+
+    .signup-alternatives__heading {
+        margin: 0 0 1.6rem;
+        color: #002E6D;
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 2rem;
+    }
+
+    .signup-alternatives__options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    // Flex column, not the default list-item flow: an inline-flex action inside a
+    // list-item picks up line-box leading, which offset the two actions from each
+    // other and pushed their descriptions off a shared baseline.
+    .signup-alternatives__option {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 24rem;
+        min-width: 0;
+        margin: 0;
+
+        // A lone action shouldn't stretch the full card width.
+        &:only-child {
+            max-width: 34rem;
+        }
+    }
+
+    // The global `form, .form` rule paints a white 80rem card with 4rem of padding.
+    // button_to's wrapper has to opt out of it wherever this block renders.
+    .signup-alternatives__form {
+        display: block;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        row-gap: 0;
+        background: none;
+        height: auto;
+        min-height: 0;
+    }
+
+    .signup-alternatives__action {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        // Fits two wrapped lines at the narrowest column, so both actions are the
+        // same height and their descriptions start on the same baseline.
+        min-height: 5.6rem;
+        padding: 0.8rem 1.6rem;
+        border: 1px solid #002E6D;
+        border-radius: 5px;
+        background-color: var(--white);
+        color: #002E6D;
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 2rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.15s ease-out, color 0.15s ease-out;
+
+        &:hover,
+        &:focus {
+            background-color: #002E6D;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        &:focus-visible {
+            outline: 2px solid #026AA1;
+            outline-offset: 2px;
+        }
+
+        &:active {
+            background-color: #001E48;
+            color: var(--white);
+        }
+    }
+
+    // Collapsed, this is one quiet line above the task. The boxed-button
+    // treatment below is right on signup_done, where picking an alternative IS
+    // the job; here it competed with the real submit button inside the iframe.
+    &--collapsible {
+        .signup-alternatives__summary {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            width: max-content;
+            padding: 0.4rem 0;
+            color: #026AA1;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 2rem;
+            cursor: pointer;
+            // Safari still needs the vendor pseudo-element to drop the marker.
+            list-style: none;
+
+            &::-webkit-details-marker {
+                display: none;
+            }
+
+            &::after {
+                content: "";
+                width: 0.7rem;
+                height: 0.7rem;
+                border-right: 0.2rem solid currentColor;
+                border-bottom: 0.2rem solid currentColor;
+                transform: translateY(-0.2rem) rotate(45deg);
+                transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+            }
+
+            &:hover {
+                text-decoration: underline;
+            }
+
+            &:focus-visible {
+                outline: 0.2rem solid #026AA1;
+                outline-offset: 0.3rem;
+            }
+        }
+
+        &[open] .signup-alternatives__summary::after {
+            transform: translateY(0.1rem) rotate(-135deg);
+        }
+
+        .signup-alternatives__options {
+            gap: 1.2rem 3.2rem;
+            margin-top: 1.2rem;
+        }
+
+        .signup-alternatives__option {
+            display: block;
+            flex-basis: 26rem;
+        }
+
+        // A text link, not a button: the action is a way out, not the next step.
+        .signup-alternatives__action {
+            color: #026AA1;
+            border: 0;
+            border-radius: 0;
+            background: none;
+            font-family: inherit;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 2rem;
+            text-align: left;
+            text-decoration: underline;
+            cursor: pointer;
+
+            // The base rule's hover/focus/active invert a filled button: dark
+            // background, white text. This variant keeps the background
+            // transparent, so inheriting `color: white` left the label
+            // invisible until the pointer moved away.
+            &:hover,
+            &:focus,
+            &:active {
+                background: none;
+                color: #024f78;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .signup-alternatives__description {
+        // A global p rule adds padding-left; the description has to line up with
+        // the action above it.
+        margin: 0.8rem 0 0;
+        padding: 0;
+        color: var(--greyish-brown);
+        font-size: 1.4rem;
+        line-height: 1.9rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .signup-alternatives__action {
+            transition: none;
+        }
+    }
+}
+
+// #login-signup-form [type="submit"] sets a min-width and vertical margins for the
+// card's primary submit, some of it inside media queries and all of it at ID
+// specificity. The link and button_to variants of this action have to stay
+// interchangeable, so opt out at matching specificity.
+#login-signup-form .signup-alternatives__action {
+    min-width: 0;
+    margin: 0;
+}
+
+#login-signup-form .signup-alternatives__form {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    row-gap: 0;
+    height: auto;
+    min-height: 0;
 }
