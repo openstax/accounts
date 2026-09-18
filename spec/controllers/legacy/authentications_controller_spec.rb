@@ -10,7 +10,7 @@ module Legacy
       context 'when the user signed in recently' do
         before { controller.sign_in! user } # sign_in! logs a fresh :sign_in_successful
 
-        it 'renders an auto-submitting POST form that starts the omniauth request phase' do
+        it 'renders a POST form that starts the omniauth request phase after an explicit submit' do
           get :add, params: { provider: 'facebook' }
 
           expect(response).to have_http_status(:ok)
@@ -19,8 +19,8 @@ module Legacy
           # omniauth.params (see SessionsCreate), not the POST body.
           expect(response.body).to include('action="/auth/facebook?add=true"')
           expect(response.body).to include('method="post"')
-          # Submits without requiring the user to click.
-          expect(response.body).to include("getElementById('omniauth-add-form')")
+          expect(response.body).to include('Continue to finish adding this login option to your account.')
+          expect(response.body).to include('value="Continue"')
           # (The Rails CSRF token that omniauth-rails_csrf_protection validates is only emitted
           # when allow_forgery_protection is on, which is disabled in the test environment.)
         end
@@ -29,7 +29,7 @@ module Legacy
       context 'when the last successful sign in is too old' do
         before do
           controller.sign_in! user
-          SecurityLog.sign_in_successful.update_all(created_at: 20.minutes.ago)
+          SecurityLog.sign_in_successful.where(user: user).update_all(created_at: 20.minutes.ago)
         end
 
         it 'requires reauthentication instead of starting the request phase' do

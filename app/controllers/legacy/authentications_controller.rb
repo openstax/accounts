@@ -25,9 +25,10 @@ module Legacy
     # This wrapper of the oauth route exists to do reauth before adding.
     # omniauth 2.0 only accepts the request phase over POST (CVE-2015-9284), so we can't just
     # 302-redirect to /auth/:provider — a browser would follow that as a GET and be rejected.
-    # Instead we render an auto-submitting POST form (with the Rails CSRF token) that starts the
-    # request phase. `add=true` rides in the query string because omniauth captures request.GET
-    # (not the POST body) into `omniauth.params`, which SessionsCreate reads to branch the flow.
+    # Instead we render a POST form (with the Rails CSRF token) that the user explicitly submits
+    # to start the request phase. `add=true` rides in the query string because omniauth captures
+    # request.GET (not the POST body) into `omniauth.params`, which SessionsCreate reads to branch
+    # the flow.
     def add
       @provider = params[:provider]
     end

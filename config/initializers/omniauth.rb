@@ -36,10 +36,11 @@ OmniAuth.config.logger = Rails.logger
 # phase is forgeable via CSRF). We set it explicitly so the guarantee is visible and can't be
 # silently widened. Every social-login trigger POSTs with a Rails authenticity token: the login/
 # signup/reauth/external-credential views use `link_to ..., method: :post` (jquery_ujs), and the
-# reauth-then-add flow renders an auto-submitting POST form (Legacy::AuthenticationsController#add
-# -> app/views/legacy/authentications/add.html.erb). The omniauth-rails_csrf_protection gem
-# validates those tokens in the request_validation_phase. Do NOT add :get back without reverting
-# all of those call sites to plain GET links, which would reopen the CVE.
+# reauth-then-add flow renders a POST form that requires an explicit submit
+# (Legacy::AuthenticationsController#add -> app/views/legacy/authentications/add.html.erb). The
+# omniauth-rails_csrf_protection gem validates those tokens in the request_validation_phase. Do
+# NOT add :get back without reverting all of those call sites to plain GET links, which would
+# reopen the CVE.
 OmniAuth.config.allowed_request_methods = [:post]
 
 # http://stackoverflow.com/a/11461558/1664216
