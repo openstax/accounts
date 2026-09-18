@@ -44,6 +44,8 @@
       $('#add-application-select').val(undefined);
       $('#add-application').prop('disabled', 'disabled');
     };
+
+    OxSchoolAutocomplete.attach('.school-autocomplete');
   </script>
 <% end %>
 
@@ -190,6 +192,17 @@
     </div>
   </div>
   <% end %>
+
+  <div class="form-group">
+    <%= f.label :self_reported_school, 'Self-reported school', class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>" data-endpoint="<%= newflow_schools_path %>">
+        <%= text_field_tag 'user[self_reported_school]', @user.self_reported_school, class: 'form-control' %>
+        <%= hidden_field_tag 'user[school_id]', @user.school_id %>
+      </div>
+      <span class="help-block">Picking a suggestion links this user to that school record. Typing a name that doesn't match any suggestion keeps it as plain text, with no link.</span>
+    </div>
+  </div>
 
   <% if @user.which_books %>
   <div class="form-group">

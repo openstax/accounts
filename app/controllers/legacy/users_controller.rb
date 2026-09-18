@@ -28,6 +28,10 @@ module Legacy
       # format that a `format.json`-only block doesn't list raises UnknownFormat
       # -- which comes back as a full HTML error page that x-editable then
       # injects into the form as markup.
+      return update_self_reported_school \
+        if params[:name] == 'self_reported_school' &&
+           params[:value].is_a?(ActionController::Parameters)
+
       attrs = user_params
 
       if current_user.update(attrs)
@@ -42,8 +46,26 @@ module Legacy
 
     private
 
+    # Any other shape of `value` falls through to the single-field path, where
+    # the allowlist refuses it.
+    def update_self_reported_school
+      school_params = params.require(:value).permit(:school_name, :school_id)
+      result = UpdateSelfReportedSchool.call(
+        user: current_user,
+        school_name: school_params[:school_name],
+        school_id: school_params[:school_id]
+      )
+
+      if result.errors.empty?
+        security_log :user_updated, user_params: school_params.to_h
+        render json: { self_reported_school: current_user.self_reported_school }, status: :ok
+      else
+        render json: { errors: result.errors.map(&:translate) }, status: :unprocessable_entity
+      end
+    end
+
     def user_params
-      unless params[:value].is_a?(String)
+      if params[:value].is_a?(ActionController::Parameters)
         return params.require(:value).permit(:title, :first_name, :last_name, :suffix).to_h
       end
 

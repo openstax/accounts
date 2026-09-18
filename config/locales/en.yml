@@ -639,6 +639,8 @@ en:
         password: Password
         searchable: Let other users find me by this email.
         self_reported_school: Self-reported school
+        self_reported_school_blank: Add your school
+        self_reported_school_placeholder: School name
 
     signup:
       # In fields `first_name`, `last_name`, `email_address` and `username`

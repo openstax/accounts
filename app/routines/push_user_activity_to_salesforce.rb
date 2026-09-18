@@ -17,7 +17,7 @@
 #      instructors' Contact records, keyed by the salesforce_contact_id
 #      already linked elsewhere (lead conversion, profile sync). Never
 #      creates or otherwise touches a Contact -- Last_OSweb_Login_Date__c is
-#      the only field Accounts is allowed to write there.
+#      the only field this pass writes there.
 class PushUserActivityToSalesforce
   BATCH_SIZE = 250
   LOOKUP_CHUNK_SIZE = 200

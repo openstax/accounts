@@ -1,4 +1,7 @@
 pl:
+  school_autocomplete:
+    use_as_entered_label: Użyj "{school}"
+
   educator_profile_form:
     complete_page_header: Uzupełnij swój profil
     describe_role: Które z poniższych najlepiej opisuje twoją rolę?
@@ -479,6 +482,9 @@ pl:
         unconfirmed_warning: niepotwierdzony
         password: Hasło
         searchable: Pozwól innym wyszukać mnie po tym adresie e-mail
+        self_reported_school: Zgłoszona przez Ciebie szkoła
+        self_reported_school_blank: Dodaj swoją szkołę
+        self_reported_school_placeholder: Nazwa szkoły
 
     signup:
       exit_if_logged_in:

@@ -188,18 +188,7 @@ module Newflow
       lead.signup_date = user.created_at.strftime("%Y-%m-%dT%T.%L%z")
       lead.tracking_parameters = "#{Rails.application.secrets.openstax_url}/accounts/i/signup/"
 
-      state = user.most_accurate_school_state
-      unless state.blank?
-        state = nil unless US_STATES.map(&:downcase).include? state.downcase
-      end
-      unless state.nil?
-        # Figure out if the State is an abbreviation or the full name
-        if state == state.upcase
-          lead.state_code = state
-        else
-          lead.state = state
-        end
-      end
+      SalesforceLeadState.assign(lead, user.most_accurate_school_state)
 
       SecurityLog.create!(
         user: user,

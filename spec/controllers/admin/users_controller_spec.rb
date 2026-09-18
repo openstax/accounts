@@ -36,6 +36,73 @@ describe Admin::UsersController, type: :controller do
     end
   end
 
+  describe 'PUT #update self-reported school' do
+    it 'links a picked school and stores its canonical name' do
+      other_user = FactoryBot.create :user, school: nil, self_reported_school: nil
+      school = FactoryBot.create :school, name: 'Rice University'
+
+      put :update, params: {
+        id: other_user.id,
+        user: { self_reported_school: 'Rice', school_id: school.id.to_s }
+      }
+
+      other_user.reload
+      expect(other_user.school).to eq school
+      expect(other_user.self_reported_school).to eq 'Rice University'
+    end
+
+    it 'stores free text with no link when no suggestion is picked' do
+      other_user = FactoryBot.create :user, school: nil, self_reported_school: nil
+
+      put :update, params: {
+        id: other_user.id,
+        user: { self_reported_school: 'Hogwarts Academy', school_id: '' }
+      }
+
+      other_user.reload
+      expect(other_user.school).to be_nil
+      expect(other_user.self_reported_school).to eq 'Hogwarts Academy'
+    end
+
+    it 'clears both the link and the name when the field is emptied' do
+      school = FactoryBot.create :school
+      other_user = FactoryBot.create :user, school: school, self_reported_school: school.name
+
+      put :update, params: {
+        id: other_user.id,
+        user: { self_reported_school: '', school_id: '' }
+      }
+
+      other_user.reload
+      expect(other_user.school).to be_nil
+      expect(other_user.self_reported_school).to be_nil
+    end
+
+    it 'leaves the school alone when the request omits the school fields' do
+      school = FactoryBot.create :school
+      other_user = FactoryBot.create :user, school: school, self_reported_school: school.name
+
+      expect(UpdateSelfReportedSchool).not_to receive(:call)
+
+      put :update, params: { id: other_user.id, user: { is_test: true } }
+
+      other_user.reload
+      expect(other_user.school).to eq school
+      expect(other_user.self_reported_school).to eq school.name
+    end
+
+    it 'leaves the school alone when the form is submitted unchanged' do
+      other_user = FactoryBot.create :user, school: nil, self_reported_school: 'Existing School'
+
+      expect(UpdateSelfReportedSchool).not_to receive(:call)
+
+      put :update, params: {
+        id: other_user.id,
+        user: { self_reported_school: 'Existing School', school_id: '' }
+      }
+    end
+  end
+
   describe 'application_users roles' do
     it 'strips blank entries out of the comma-separated roles input' do
       application = FactoryBot.create :doorkeeper_application
