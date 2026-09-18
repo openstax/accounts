@@ -23,9 +23,9 @@ class PushUserSchoolToSalesforce
 
     if user.student? && user.salesforce_student_id.present?
       push_student_school(user)
-    elsif user.salesforce_contact_id.present?
+    elsif !user.student? && user.salesforce_contact_id.present?
       push_contact_school(user)
-    elsif user.salesforce_lead_id.present?
+    elsif !user.student? && user.salesforce_lead_id.present?
       push_lead_school(user)
     end
   end
