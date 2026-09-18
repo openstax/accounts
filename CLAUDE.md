@@ -99,6 +99,19 @@ Three traps, all of which cost real debugging time:
 ### Login tracking
 `sign_in!` (`lib/user_session_management.rb`) is the single choke point every login path funnels through, and it stamps `users.last_signed_in_at` via `update_column` -- skipping validations, leaving `updated_at` untouched, and swallowing any write error so a bookkeeping failure can never break a login. Admin "become user" passes the trailing `record_login = false` so impersonation doesn't count as the user logging in. `record_login` is a **trailing positional argument, not a keyword** -- making it a keyword breaks existing specs, because rspec-mocks' `verify_partial_doubles` reinterprets existing positional-Hash call sites (`sign_in!(user, log_data)`) as keyword arguments and raises inside its own mock dispatch, which surfaces as a login silently failing rather than as an obvious error.
 
+### Admin console
+Bootstrap 3, its own `admin` layout and `admin.scss` bundle. Per-screen styles live in their own partial (`_admin_user_details.scss`, `_admin_security_log.scss`) with a single `@import` in `admin.scss`, so two people editing different screens don't collide in one file.
+
+**`admin/users/_form.html.erb` is one `form_for` and must stay that way.** `Admin::UsersController#update` reads a long list of `params[:user][...]` keys straight out of that single submit, and several of the page's controls sit *outside* the `<form>` tag on purpose: `button_to` renders its own `<form>`, and a nested form is invalid HTML that browsers silently drop, so the External IDs and De-identify controls are deliberately below the form's `end`. Clearing the Salesforce contact is the odd one out -- it needs to submit *with* the form, so it's a plain `<button type="button">` whose JS writes the string `remove` into `user[salesforce_contact_id]` and submits. That string is the contract `change_salesforce_contact` has always honored; the input renders empty so the field reads as "paste a new ID" rather than "edit this one".
+
+**Never `raw` the security log's `event_data`.** It carries user-supplied values -- email addresses, admin search terms, redirect URLs -- so rendering it unescaped is XSS against whoever is reading the log. `<pre>` plus `white-space: pre-wrap` gives the formatting that the old `gsub(" ", "&nbsp;")` was reaching for.
+
+`SecurityLog.preloaded` is `preload(:application, user: :email_addresses)`. The log table shows each user's email, so dropping `email_addresses` from that scope reintroduces a query per row.
+
+The log's query grammar (`id: user_id: user: app: ip: type: time:`, spaces AND, commas OR) is implemented in `Admin::SearchSecurityLog` and documented both in its header comment and on the page itself. Keep the two in step, and don't advertise a keyword the routine doesn't implement.
+
+A **new** helper file under `app/helpers/` is not picked up by a running dev server -- Rails builds its helper list at boot, and the reloader only tracks changes to files that already existed. Adding a helper means restarting the server, and a phased puma restart re-forks the same preloaded image, so it has to be a full one.
+
 ### OAuth / Doorkeeper
 `config/initializers/doorkeeper.rb` and `config/initializers/doorkeeper_models.rb` wire Doorkeeper into the User/ApplicationUser models. Trusted `oauth_applications` skip the authorization screen. `FindOrCreateApplicationUser` associates users with the app that created them; non-trusted apps may only manage their own users.
 
