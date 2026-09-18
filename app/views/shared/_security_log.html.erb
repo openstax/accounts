@@ -29,8 +29,11 @@
   <script type="text/javascript">
     $('#security-log-table .expand').click(function(e) {
       e.preventDefault();
-      $(this).closest('tr').next('tr.details').toggle();
+      var expanded = $(this).attr('aria-expanded') !== 'true';
+      $(this).closest('tr').next('tr.details').toggle(expanded);
       $(this).find('i').toggleClass('fa-plus fa-minus');
+      $(this).attr('aria-expanded', expanded)
+             .attr('aria-label', expanded ? 'Hide event data' : 'Show event data');
     });
   </script>
 <% end %>
