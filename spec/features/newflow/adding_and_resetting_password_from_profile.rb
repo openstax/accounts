@@ -97,6 +97,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     click_link_or_button (t :"legacy.users.edit.sign_out")
     visit login_path
     expect(page).to have_current_path newflow_login_path
+    wait_for_log_in_form
 
     # try logging in with the old password
     complete_newflow_log_in_screen('user', 'password')
@@ -105,7 +106,11 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     # try logging in with the new password
     fill_in('login_form_email', with: 'user')
     fill_in('login_form_password', with: 'newpassword')
-    find('[type=submit]').click 
+    find('[type=submit]').click
+    # Waiting on the URL rather than a node: logging in navigates twice (POST
+    # then redirect), and Chrome raises an unretryable "Node with given id does
+    # not belong to the document" for any node query made across that swap.
+    expect(page).to have_current_path(profile_newflow_path, wait: 10)
     expect(page).to have_no_missing_translations
     expect(page).to have_content(@user.full_name)
   end
