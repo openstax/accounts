@@ -1,5 +1,5 @@
 class PreAuthState < ApplicationRecord
-  enum contact_info_kind: [:email_address]
+  enum contact_info_kind: { email_address: 0 }
 
   before_validation :prepare
   before_create :initialize_tokens
