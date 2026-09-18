@@ -146,7 +146,7 @@ en:
     legal_last_name_label: Legal last name
     email_label: Email
     school_issued_email_label: Institutional email address
-    phone_number_label: Phone number
+    phone_number_label: Phone number (optional)
     password_label: Password
     pin_label: Confirm PIN
     pin_placeholder: Enter 6-digit PIN here
@@ -171,6 +171,22 @@ en:
       Updates on your verification status will be sent to <b>%{email_address}</b>.
       In the meantime, you can access all books and resources
       except those that require instructor verification.
+    alternatives_heading: Having trouble?
+    alternative_manual_verification: Verify another way
+    alternative_manual_verification_description: >-
+      If your school isn't listed or the form won't accept your details,
+      our team can verify you by hand. It takes 3-4 business days.
+    switch_role_student: Switch to a student account
+    switch_role_student_description: >-
+      Students don't need instructor verification to read books, take notes,
+      or join a class. You can switch back later.
+    switch_role_educator: Switch to an educator account
+    switch_role_educator_description: >-
+      Educator accounts unlock answer keys and instructor resources once we
+      verify that you teach.
+    switched_role_notice:
+      student: You're now signing up as a student.
+      educator: You're now signing up as an educator.
     join_as_student_description: >-
       Sign up for a <b>Student</b> account to create and save
       notes and highlights in OpenStax study materials.
@@ -210,7 +226,7 @@ en:
       Finish resetting your password by entering the new one below.
       Your new password cannot be the same as your current password.
     same_password_error: Your new password cannot be the same as your current password
-    email_address_taken: Email already in use
+    email_address_taken: Email already in use. If it's yours, use “Forgot your password?” on the log in page to get back into your account.
     too_many_login_attempts: >-
       You have made too many login attempts recently. Please
       reset your password or try again later.
@@ -263,6 +279,10 @@ en:
       title: Are you sure?
       cancelText: Cancel
       confirmText: OK
+
+    editable:
+      save_failed: >-
+        Sorry, we couldn't save that change. Please try again.
 
     email:
       confirm_delete: >-
@@ -443,6 +463,12 @@ en:
       push_salesforce_lead_enabled:
         name: 'Push leads to Salesforce?'
         help_block: 'If checked (and SF configured), new accounts will be pushed to SF as Leads'
+      push_salesforce_students_enabled:
+        name: 'Push students to Salesforce?'
+        help_block: 'If checked (and SF configured), student school picks will be pushed to SF as Student__c records'
+      push_salesforce_contact_logins_enabled:
+        name: 'Push instructor login dates to Salesforce?'
+        help_block: 'If checked (and SF configured), instructors'' most recent login date will be pushed to their SF Contact'
       show_support_chat:
         name: 'Show support chat widget'
         help_block: 'If checked users will see CS chat widget'
@@ -464,6 +490,9 @@ en:
       educator_feature_flag:
         name: New educator flow feature flag
         help_block: New educator flow activated?
+      expected_start_semester_enabled:
+        name: Expected start semester question
+        help_block: Ask educators which semester they plan to start on the profile step?
       collect_student_count_all_paths:
         name: Collect student count on all signup paths
         help_block: Show student count field on as_future and as_recommending paths?

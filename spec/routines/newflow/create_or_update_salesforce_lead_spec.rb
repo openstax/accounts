@@ -53,6 +53,45 @@ module Newflow
       end
     end
 
+    describe 'a student' do
+      def push_lead_for(user)
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_STUDENT')
+
+        described_class.call(user: user)
+        mock_lead
+      end
+
+      # An incomplete profile means "educator who hasn't finished signup", which a
+      # student never is. Recomputing would erase the marker set by SwitchSignupRole.
+      it 'keeps the rejected_faculty marker left by a role switch' do
+        switched = FactoryBot.create(
+          :user, role: User::STUDENT_ROLE, faculty_status: User::REJECTED_FACULTY,
+          is_profile_complete: false
+        )
+
+        lead = push_lead_for(switched)
+
+        expect(switched.reload.faculty_status).to eq(User::REJECTED_FACULTY)
+        expect(lead.role).to eq('Student')
+        expect(lead.verification_status).to eq(User::REJECTED_FACULTY)
+      end
+
+      it 'is never stamped with a faculty status it did not have' do
+        student = FactoryBot.create(
+          :user, role: User::STUDENT_ROLE, faculty_status: User::NO_FACULTY_INFO,
+          is_profile_complete: false
+        )
+
+        lead = push_lead_for(student)
+
+        expect(student.reload.faculty_status).to eq(User::NO_FACULTY_INFO)
+        expect(lead.verification_status).to be_nil
+      end
+    end
+
     describe 'finding existing leads' do
       let(:existing_lead) do
         lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
@@ -166,25 +205,92 @@ module Newflow
 
     describe 'when user already has a contact' do
       let(:existing_contact) do
-        contact = OpenStruct.new(id: 'SF_CONTACT_123')
+        contact = OpenStax::Salesforce::Remote::Contact.new(email: user.best_email_address_for_salesforce)
+        allow(contact).to receive(:id).and_return('SF_CONTACT_123')
+        allow(contact).to receive(:save).and_return(true)
         contact
       end
 
-      it 'does not create a lead if user already has a contact' do
-        user.salesforce_contact_id = 'SF_CONTACT_123'
-        user.save!
-
-        # Stub all lead searches to return nil
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
-        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(nil)
-
-        # Stub contact lookup to return existing contact
+      before do
+        user.update!(salesforce_contact_id: 'SF_CONTACT_123', expected_start_semester: 'next_semester')
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
         allow(OpenStax::Salesforce::Remote::Contact).to receive(:find).with('SF_CONTACT_123').and_return(existing_contact)
+      end
 
+      it 'writes the signup profile to the contact instead of creating a lead' do
         result = described_class.call(user: user)
 
         expect(result.outputs.lead).to be_nil
+        expect(result.outputs.lead_saved).to eq(false)
+        expect(result.outputs.contact).to eq(existing_contact)
+        expect(existing_contact).to have_received(:save)
+        expect(existing_contact.role).to eq('Instructor')
+        expect(existing_contact.position).to eq('instructor')
+        expect(existing_contact.who_chooses_books).to eq('instructor')
+        expect(existing_contact.subject_interest).to eq('AP Macro Econ')
+        expect(existing_contact.num_students).to eq('35')
+        expect(existing_contact.expected_start_semester).to eq('Next semester')
+        expect(existing_contact.adoption_json).to be_nil
+        expect(existing_contact.os_accounts_id).to eq(user.id)
+        expect(existing_contact.accounts_uuid).to eq(user.uuid)
+        expect(existing_contact.newsletter_opt_in).to eq(false)
         expect(SecurityLog.where(event_type: :user_already_has_contact_not_creating_lead).count).to eq(1)
+        expect(SecurityLog.where(event_type: :updated_salesforce_contact).count).to eq(1)
+        expect(SecurityLog.where(event_type: :creating_new_salesforce_lead).count).to eq(0)
+      end
+
+      it 'leaves the CX-owned contact fields alone' do
+        described_class.call(user: user)
+
+        expect(existing_contact.faculty_verified).to be_nil
+        expect(existing_contact.adoption_status).to be_nil
+        expect(existing_contact.first_name).to be_nil
+        expect(existing_contact.school_id).to be_nil
+      end
+
+      it 'logs when the contact save fails' do
+        allow(existing_contact).to receive(:save).and_return(false)
+        allow(existing_contact).to receive(:errors).and_return(double(full_messages: ['INVALID_FIELD']))
+
+        described_class.call(user: user)
+
+        expect(SecurityLog.where(event_type: :salesforce_contact_save_failed).count).to eq(1)
+        expect(Sentry).to have_received(:capture_message).with(/Salesforce contact save failed for user #{user.id}/)
+      end
+    end
+
+    describe 'when the lead was converted into a contact' do
+      let(:converted_lead) do
+        lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(lead).to receive(:id).and_return('SF_LEAD_CONVERTED')
+        lead.is_converted = true
+        lead.converted_contact_id = 'SF_CONTACT_FROM_LEAD'
+        lead
+      end
+      let(:contact) do
+        contact = OpenStax::Salesforce::Remote::Contact.new(email: user.best_email_address_for_salesforce)
+        allow(contact).to receive(:id).and_return('SF_CONTACT_FROM_LEAD')
+        allow(contact).to receive(:save).and_return(true)
+        contact
+      end
+
+      before do
+        user.update!(salesforce_lead_id: 'SF_LEAD_CONVERTED')
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_CONVERTED').and_return(converted_lead)
+        allow(OpenStax::Salesforce::Remote::Contact).to receive(:find).with('SF_CONTACT_FROM_LEAD').and_return(contact)
+      end
+
+      it 'follows the conversion and writes the contact, not the lead' do
+        expect(converted_lead).not_to receive(:save)
+
+        result = described_class.call(user: user)
+
+        expect(user.reload.salesforce_contact_id).to eq('SF_CONTACT_FROM_LEAD')
+        expect(user.salesforce_lead_id).to eq('SF_LEAD_CONVERTED')
+        expect(result.outputs.contact).to eq(contact)
+        expect(contact).to have_received(:save)
+        expect(SecurityLog.where(event_type: :salesforce_lead_already_converted).count).to eq(1)
+        expect(SecurityLog.where(event_type: :updated_salesforce_contact).count).to eq(1)
         expect(SecurityLog.where(event_type: :creating_new_salesforce_lead).count).to eq(0)
       end
     end

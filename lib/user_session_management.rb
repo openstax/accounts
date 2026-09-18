@@ -38,7 +38,11 @@ module UserSessionManagement
     end
   end
 
-  def sign_in!(user, security_log_data = {})
+  # record_login is a trailing positional arg, not a keyword, because
+  # rspec-mocks' verify_partial_doubles misreads a keyword param on this method
+  # as turning every existing positional Hash call site (`sign_in!(user, log_data)`)
+  # into keyword arguments, breaking their argument validation.
+  def sign_in!(user, security_log_data = {}, record_login = true)
     clear_login_state
 
     @current_user = user || AnonymousUser.instance
@@ -60,6 +64,16 @@ module UserSessionManagement
       sso_cookie_jar.subject = SsoCookie.user_hash(@current_user)
 
       security_log :sign_in_successful, security_log_data
+
+      if record_login
+        begin
+          @current_user.update_column(:last_signed_in_at, Time.current)
+        rescue StandardError => e
+          Rails.logger.error(
+            "Failed to record last_signed_in_at for user #{@current_user.id}: #{e.message}"
+          )
+        end
+      end
     end
 
     @current_user

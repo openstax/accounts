@@ -12,6 +12,23 @@ module Newflow
     def welcome
     end
 
+    def switch_role
+      handle_with(
+        SwitchSignupRole,
+        user: signup_in_progress_user,
+        success: lambda {
+          user = @handler_result.outputs.user
+          switched_to = @handler_result.outputs.switched_to
+          log_posthog(user, 'user_switched_signup_role', { switched_to: switched_to, role: user.role })
+          flash[:notice] = I18n.t(:"login_signup_form.switched_role_notice.#{switched_to}")
+          redirect_to(next_step_after_role_switch(user))
+        },
+        failure: lambda {
+          redirect_to(newflow_signup_path)
+        }
+      )
+    end
+
     def verify_email_by_code
       handle_with(
         VerifyEmailByCode,
@@ -20,13 +37,13 @@ module Newflow
           user = @handler_result.outputs.user
           sign_in!(user)
 
-          log_posthog(user, 'verified_email', { role: user.role })
-
           if user.student?
             security_log(:student_verified_email, {user: user, message: "Student verified email."})
+            log_posthog(user, 'student_verified_email', { role: user.role })
             redirect_to signup_done_path
           else
             security_log(:educator_verified_email, {user: user, message: "Educator verified email."})
+            log_posthog(user, 'educator_verified_email', { role: user.role })
             redirect_to(educator_sheerid_form_path)
           end
         },
@@ -38,12 +55,33 @@ module Newflow
 
     def signup_done
       security_log(:user_viewed_signup_form, form_name: action_name)
-      log_posthog(current_user, 'signup_done', { role: current_user.role })
+      # Count the signup, not the visit: every funnel converges on this page, so
+      # it stays the capture point, but only the first render per account sends
+      # the event (see User#claim_signup_done_capture!).
+      if current_user.claim_signup_done_capture!
+        log_posthog(current_user, 'user_signup_done', { role: current_user.role })
+      end
       @first_name = current_user.first_name
       @email_address = current_user.email_addresses.first&.value
     end
 
     protected ###############
+
+    # Mid-signup the account lives in the session until the email PIN is entered,
+    # after which it's just the signed-in user.
+    def signup_in_progress_user
+      unverified_user || (current_user unless current_user.is_anonymous?)
+    end
+
+    def next_step_after_role_switch(user)
+      if unverified_user.present?
+        user.student? ? student_email_verification_form_path : educator_email_verification_form_path
+      elsif user.student?
+        signup_done_path
+      else
+        educator_sheerid_form_path
+      end
+    end
 
     def skip_signup_done_for_tutor_users
       return if !current_user.is_tutor_user?

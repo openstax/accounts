@@ -49,18 +49,22 @@ module Newflow
         adoption_json = build_book_adoption_json_for_salesforce(user)
       end
 
-      # Check the state of the SheerID response and profile completion to determine faculty status for lead
-      sheerid_response = SheeridVerification.find_by(verification_id: user.sheerid_verification_id)
-      if user.is_profile_complete?
-        user.faculty_status = :pending_faculty
-        unless sheerid_response.nil?
-          user.faculty_status = sheerid_response.current_step_to_faculty_status
+      # Faculty status describes the educator funnel only. A student has none to
+      # compute, and stamping one would drop them back into the verification queue.
+      unless user.student?
+        # Check the state of the SheerID response and profile completion to determine faculty status for lead
+        sheerid_response = SheeridVerification.find_by(verification_id: user.sheerid_verification_id)
+        if user.is_profile_complete?
+          user.faculty_status = :pending_faculty
+          unless sheerid_response.nil?
+            user.faculty_status = sheerid_response.current_step_to_faculty_status
+          end
+        else
+          # User has not completed their profile
+          user.faculty_status = :incomplete_signup
         end
-      else
-        # User has not completed their profile
-        user.faculty_status = :incomplete_signup
+        user.save!
       end
-      user.save!
 
       lead = nil
       if user.salesforce_lead_id
@@ -107,25 +111,41 @@ module Newflow
         end
       end
 
-      # If user has a contact (already converted from lead), don't create a new lead
-      if lead.nil? && user.salesforce_contact_id.present?
+      # Salesforce converts a lead into an existing Contact when one matches by email
+      # or UUID, and this org allows updates to converted leads -- so writing the lead
+      # again would land on a dead record. Follow the conversion to the Contact.
+      contact_id = user.salesforce_contact_id
+      if lead&.is_converted
+        SecurityLog.create!(
+          user: user,
+          event_type: :salesforce_lead_already_converted,
+          event_data: { lead_id: lead.id, contact_id: lead.converted_contact_id }
+        )
+        contact_id = lead.converted_contact_id.presence || contact_id
+        if contact_id.present? && user.salesforce_contact_id != contact_id && !user.update(salesforce_contact_id: contact_id)
+          Sentry.capture_message("User #{user.id} could not store contact #{contact_id}: #{user.errors.full_messages.join(', ')}")
+        end
+        lead = nil
+      end
+
+      # A user with a Contact gets their profile written there; a lead is never created
+      # beside a Contact.
+      if lead.nil? && contact_id.present?
         begin
-          contact = OpenStax::Salesforce::Remote::Contact.find(user.salesforce_contact_id)
+          contact = OpenStax::Salesforce::Remote::Contact.find(contact_id)
           if contact
             SecurityLog.create!(
               user: user,
               event_type: :user_already_has_contact_not_creating_lead,
-              event_data: { contact_id: user.salesforce_contact_id }
+              event_data: { contact_id: contact_id }
             )
-            # User already has a contact, return without creating a lead
-            outputs.lead = nil
-            outputs.user = user
+            update_contact(contact, user, sf_role, sf_position, adoption_json)
             return
           end
         rescue StandardError => e
           # Contact not found, proceed with lead creation
           Sentry.capture_message(
-            "Salesforce contact ID #{user.salesforce_contact_id} not found for user #{user.id}, will create lead. Error: #{e.class.name}: #{e.message}"
+            "Salesforce contact ID #{contact_id} not found for user #{user.id}, will create lead. Error: #{e.class.name}: #{e.message}"
           )
         end
       end
@@ -160,9 +180,6 @@ module Newflow
       lead.city = user.most_accurate_school_city
       lead.country = user.most_accurate_school_country
       lead.verification_status = user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status
-      lead.b_r_i_marketing = user.is_b_r_i_user?
-      lead.title_1_school = user.title_1_school?
-      lead.newsletter = user.receive_newsletter?
       lead.newsletter_opt_in = user.receive_newsletter?
       lead.self_reported_school = user.self_reported_school
       lead.sheerid_school_name = user.sheerid_reported_school
@@ -235,6 +252,50 @@ module Newflow
       end
 
       outputs.lead = lead
+      outputs.lead_saved = saved
+      outputs.user = user
+    end
+
+    # Only the signup-profile fields. FV_Status__c, Adoption_Status__c (a different
+    # picklist on Contact: adopter status, not adoption stage), name and school are
+    # owned by Customer Experience once a Contact exists.
+    def update_contact(contact, user, sf_role, sf_position, adoption_json)
+      contact.phone = user.phone_number
+      contact.role = sf_role
+      contact.position = sf_position
+      contact.title = user.other_role_name
+      contact.who_chooses_books = user.who_chooses_books
+      contact.subject_interest = user.which_books
+      contact.num_students = user.how_many_students
+      contact.expected_start_semester = expected_start_semester_label_for(user.expected_start_semester)
+      contact.adoption_json = adoption_json
+      contact.os_accounts_id = user.id
+      contact.accounts_uuid = user.uuid
+      contact.tracking_parameters = "#{Rails.application.secrets.openstax_url}/accounts/i/signup/"
+      contact.newsletter_opt_in = user.receive_newsletter?
+
+      saved = contact.save
+      if saved
+        SecurityLog.create!(
+          user: user,
+          event_type: :updated_salesforce_contact,
+          event_data: { contact_id: contact.id.to_s }
+        )
+      else
+        SecurityLog.create!(
+          user: user,
+          event_type: :salesforce_contact_save_failed,
+          event_data: { contact_errors: contact.errors&.full_messages, contact_id: contact.id.to_s }
+        )
+        Sentry.capture_message("Salesforce contact save failed for user #{user.id}: #{contact.errors&.full_messages&.join(', ')}")
+      end
+
+      outputs.contact = contact
+      outputs.contact_saved = saved
+      # Explicitly false, not nil: callers read lead_saved to decide whether a lead
+      # was written, and an unset output reads as a failed write.
+      outputs.lead = nil
+      outputs.lead_saved = false
       outputs.user = user
     end
 

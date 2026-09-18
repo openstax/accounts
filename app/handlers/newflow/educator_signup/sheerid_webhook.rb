@@ -3,6 +3,9 @@ module Newflow
     class SheeridWebhook
       lev_handler
 
+      EXPIRED_VERIFICATION = 'expiredVerification'.freeze
+      private_constant(:EXPIRED_VERIFICATION)
+
       protected ###############
 
       def authorized?
@@ -19,16 +22,26 @@ module Newflow
         # often users get stuck on the SheerID form and why, then return as before.
         # The user id (set during signup) lets us trace whether they eventually
         # verified; the SheerID response carries no personInfo for these steps.
+        #
+        # expiredVerification is the exception: it is the ordinary end of a
+        # verification nobody finished, not someone stuck. SheerID ages the record
+        # out and calls the webhook, and user_id is always nil for it because
+        # sheerid_verification_id is only written once the user lands back on step 4.
+        # It is the bulk of ACCOUNTS-67Z -- 11k warnings and climbing with signup
+        # volume -- which buries the ids this capture exists to surface. Step-3
+        # drop-off is already measurable from the educator_view_sheer_id_form funnel.
         if verification_details_from_sheerid.current_step == 'error'
-          Sentry.capture_message(
-            '[SheerID Webhook] error step received',
-            level: :warning,
-            extra: {
-              verification_id: verification_id,
-              error_ids: verification_details_from_sheerid.error_ids,
-              user_id: User.find_by(sheerid_verification_id: verification_id)&.id
-            }
-          )
+          unless verification_details_from_sheerid.error_ids == [EXPIRED_VERIFICATION]
+            Sentry.capture_message(
+              '[SheerID Webhook] error step received',
+              level: :warning,
+              extra: {
+                verification_id: verification_id,
+                error_ids: verification_details_from_sheerid.error_ids,
+                user_id: User.find_by(sheerid_verification_id: verification_id)&.id
+              }
+            )
+          end
           return
         end
 
@@ -61,95 +74,112 @@ module Newflow
           return
         end
 
-        # update the security log and the user to say we got the webhook - we use this in lead processing
-        SecurityLog.create!(event_type: :sheerid_webhook_received, user: user)
+        user.with_lock do
+          # update the security log and the user to say we got the webhook - we use this in lead processing
+          SecurityLog.create!(event_type: :sheerid_webhook_received, user: user)
 
-        # Set the user's sheerid_verification_id only if they didn't already have one  we don't want to overwrite the approved one
-        if verification_id.present? && user.sheerid_verification_id.blank? && user.sheerid_verification_id != verification_id
-          user.update!(sheerid_verification_id: verification_id)
-
-          SecurityLog.create!(
-            event_type: :sheerid_verification_id_added_to_user_from_webhook,
-            user: user,
-            event_data: { verification_id: verification_id }
-          )
-        else
-          SecurityLog.create!(
-            event_type: :sheerid_conflicting_verification_id,
-            user: user,
-            event_data: { verification_id: verification_id }
-          )
-        end
-
-
-        # Update the user account with the data returned from SheerID
-        if verification_details_from_sheerid.relevant?
-          user.first_name = verification.first_name
-          user.last_name = verification.last_name
-          user.sheerid_reported_school = verification.organization_name
-          user.faculty_status = verification.current_step_to_faculty_status
-          user.sheer_id_webhook_received = true
-
-          # Attempt to exactly match a school based on the sheerid_reported_school field
-          school = School.find_by sheerid_school_name: user.sheerid_reported_school
-
-          if school.nil?
-            # No exact match found, so attempt to fuzzy match the school name
-            match = SheeridAPI::SHEERID_REGEX.match user.sheerid_reported_school
-            name = match[1]
-            city = match[2]
-            state = match[3]
-
-            # Sometimes the city and/or state are duplicated, so remove them
-            name = name.chomp(" (#{city})") unless city.nil?
-            name = name.chomp(" (#{state})") unless state.nil?
-            name = name.chomp(" (#{city}, #{state})") unless city.nil? || state.nil?
-
-            # For Homeschool, the city is "Any" and the state is missing
-            city = nil if city == 'Any'
-
-            school = School.fuzzy_search name, city, state
+          # The user switched to a student account while this verification was in flight.
+          # Applying it would re-attach the educator fields SwitchSignupRole just cleared,
+          # and a 'success' step would strand them as confirmed_faculty -- which
+          # SwitchSignupRole then refuses to undo. Record it and return 200 so SheerID
+          # doesn't retry.
+          if user.student?
+            SecurityLog.create!(
+              event_type: :sheerid_webhook_ignored_after_role_switch,
+              user: user,
+              event_data: { verification_id: verification_id, current_step: verification.current_step }
+            )
+            return
           end
 
-          user.school = school
+          # Set the user's sheerid_verification_id only if they didn't already have one  we don't want to overwrite the approved one
+          if verification_id.present? && user.sheerid_verification_id.blank? && user.sheerid_verification_id != verification_id
+            user.update!(sheerid_verification_id: verification_id)
 
-          SecurityLog.create!(
-            event_type: :school_added_to_user_from_sheerid_webhook,
-            user: user,
-            event_data: { school: school }
-          )
-        end
+            SecurityLog.create!(
+              event_type: :sheerid_verification_id_added_to_user_from_webhook,
+              user: user,
+              event_data: { verification_id: verification_id }
+            )
+          else
+            SecurityLog.create!(
+              event_type: :sheerid_conflicting_verification_id,
+              user: user,
+              event_data: { verification_id: verification_id }
+            )
+          end
 
-        if verification.current_step == 'rejected'
-          user.update!(faculty_status: User::REJECTED_BY_SHEERID, sheerid_verification_id: verification_id)
-          SecurityLog.create!(
-            event_type: :fv_reject_by_sheerid,
-            user: user,
-            event_data: { verification_id: verification_id })
-        elsif verification.current_step == 'success'
-          user.update!(faculty_status: User::CONFIRMED_FACULTY, sheerid_verification_id: verification_id)
-          SecurityLog.create!(
-            event_type: :fv_success_by_sheerid,
-            user: user,
-            event_data: { verification_id: verification_id })
-        elsif verification.current_step == 'collectTeacherPersonalInfo'
-          user.update!(faculty_status: User::PENDING_SHEERID, sheerid_verification_id: verification_id)
-          SecurityLog.create!(
-            event_type: :sheerid_webhook_request_more_info,
-            user: user,
-            event_data: { verification: verification_details_from_sheerid.inspect })
-        elsif verification.current_step == 'error'
-          user.update!(sheerid_verification_id: verification_id)
-          SecurityLog.create!(
-            event_type: :sheerid_error,
-            user: user,
-            event_data: { verification: verification_details_from_sheerid.inspect })
-        else
-          user.update!(sheerid_verification_id: verification_id)
-          SecurityLog.create!(
-            event_type: :unknown_sheerid_response,
-            user: user,
-            event_data: { verification: verification_details_from_sheerid.inspect })
+          # Update the user account with the data returned from SheerID
+          if verification_details_from_sheerid.relevant?
+            user.first_name = verification.first_name
+            user.last_name = verification.last_name
+            user.sheerid_reported_school = verification.organization_name
+            user.faculty_status = verification.current_step_to_faculty_status
+            user.sheer_id_webhook_received = true
+
+            # Attempt to exactly match a school based on the sheerid_reported_school field
+            school = School.find_by sheerid_school_name: user.sheerid_reported_school
+
+            if school.nil?
+              # No exact match found, so attempt to fuzzy match the school name
+              match = SheeridAPI::SHEERID_REGEX.match user.sheerid_reported_school
+              name = match[1]
+              city = match[2]
+              state = match[3]
+
+              # Sometimes the city and/or state are duplicated, so remove them
+              name = name.chomp(" (#{city})") unless city.nil?
+              name = name.chomp(" (#{state})") unless state.nil?
+              name = name.chomp(" (#{city}, #{state})") unless city.nil? || state.nil?
+
+              # For Homeschool, the city is "Any" and the state is missing
+              city = nil if city == 'Any'
+
+              school = School.fuzzy_search name, city, state
+            end
+
+            user.school = school
+
+            SecurityLog.create!(
+              event_type: :school_added_to_user_from_sheerid_webhook,
+              user: user,
+              event_data: { school: school }
+            )
+          end
+
+          if verification.current_step == 'rejected'
+            user.update!(faculty_status: User::REJECTED_BY_SHEERID, sheerid_verification_id: verification_id)
+            SecurityLog.create!(
+              event_type: :fv_reject_by_sheerid,
+              user: user,
+              event_data: { verification_id: verification_id })
+          elsif verification.current_step == 'success'
+            user.update!(faculty_status: User::CONFIRMED_FACULTY, sheerid_verification_id: verification_id)
+            SecurityLog.create!(
+              event_type: :fv_success_by_sheerid,
+              user: user,
+              event_data: { verification_id: verification_id })
+          elsif verification.current_step == 'collectTeacherPersonalInfo'
+            user.update!(faculty_status: User::PENDING_SHEERID, sheerid_verification_id: verification_id)
+            SecurityLog.create!(
+              event_type: :sheerid_webhook_request_more_info,
+              user: user,
+              event_data: { verification: verification_details_from_sheerid.inspect })
+          elsif verification.current_step == 'error'
+            user.update!(sheerid_verification_id: verification_id)
+            SecurityLog.create!(
+              event_type: :sheerid_error,
+              user: user,
+              event_data: { verification: verification_details_from_sheerid.inspect })
+          else
+            user.update!(sheerid_verification_id: verification_id)
+            SecurityLog.create!(
+              event_type: :unknown_sheerid_response,
+              user: user,
+              event_data: { verification: verification_details_from_sheerid.inspect })
+          end
+
+          SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)
         end
 
         CreateOrUpdateSalesforceLead.perform_later(user: user)
@@ -159,7 +189,6 @@ module Newflow
           school_matched: user.school.present?,
         })
 
-        SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)
         outputs.verification_id = verification_id
       end
     end
