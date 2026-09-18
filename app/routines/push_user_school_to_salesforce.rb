@@ -81,9 +81,11 @@ class PushUserSchoolToSalesforce
   end
 
   # The trailing id is what makes a drift report possible: its absence marks a
-  # name Accounts could not resolve to an Account.
+  # name Accounts could not resolve to an Account. Signup links the placeholder
+  # School to users it couldn't match, so its id has to read as no match too.
   def reported_school_with_account_id(user)
-    sf_school_id = user.school&.salesforce_id
+    school = user.school
+    sf_school_id = school.salesforce_id if school && school.name != FALLBACK_SCHOOL_NAME
     return user.self_reported_school if sf_school_id.blank?
 
     "#{user.self_reported_school} (#{sf_school_id})"

@@ -78,6 +78,19 @@ describe Admin::UsersController, type: :controller do
       expect(other_user.self_reported_school).to be_nil
     end
 
+    it 'leaves the school alone when the request omits the school fields' do
+      school = FactoryBot.create :school
+      other_user = FactoryBot.create :user, school: school, self_reported_school: school.name
+
+      expect(UpdateSelfReportedSchool).not_to receive(:call)
+
+      put :update, params: { id: other_user.id, user: { is_test: true } }
+
+      other_user.reload
+      expect(other_user.school).to eq school
+      expect(other_user.self_reported_school).to eq school.name
+    end
+
     it 'leaves the school alone when the form is submitted unchanged' do
       other_user = FactoryBot.create :user, school: nil, self_reported_school: 'Existing School'
 

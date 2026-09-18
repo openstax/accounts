@@ -129,6 +129,18 @@ describe PushUserSchoolToSalesforce, type: :routine do
       described_class.call(user: instructor)
     end
 
+    it 'records the name alone when signup linked the placeholder School' do
+      fallback = FactoryBot.create :school, name: 'Find Me A Home',
+                                            salesforce_id: 'SF_SCHOOL_HOME'
+      instructor.update!(school: fallback, self_reported_school: 'Some Community College')
+      remote_contact = double('Contact')
+      allow(contact_remote).to receive(:find).with('a0CONTACT001').and_return(remote_contact)
+      expect(remote_contact).to receive(:self_reported_school=).with('Some Community College')
+      expect(remote_contact).to receive(:save!).and_return(true)
+
+      described_class.call(user: instructor)
+    end
+
     it 'never touches the Contact AccountId' do
       remote_contact = double('Contact')
       allow(contact_remote).to receive(:find).with('a0CONTACT001').and_return(remote_contact)

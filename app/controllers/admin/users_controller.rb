@@ -128,7 +128,11 @@ module Admin
       false
     end
 
+    # The console's form always carries both fields; a request without them is
+    # not an edit, and clearing a school here would push that to Salesforce.
     def update_self_reported_school
+      return true unless params[:user].key?(:self_reported_school)
+
       new_name = params[:user][:self_reported_school]
       new_school_id = params[:user][:school_id]
 
