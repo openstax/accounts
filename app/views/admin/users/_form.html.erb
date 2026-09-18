@@ -46,6 +46,14 @@
     };
 
     OxSchoolAutocomplete.attach('.school-autocomplete');
+
+    $('#remove-salesforce-contact').on('click', function() {
+      if (!window.confirm('Remove the linked Salesforce contact from this user? You can always link a new one afterward.')) {
+        return;
+      }
+      $('#user_salesforce_contact_id').val('remove');
+      $('#admin-user-form').trigger('submit');
+    });
   </script>
 <% end %>
 
@@ -58,431 +66,512 @@
     </div>
   <% end %>
 
-  <div class="form-group">
-    <%= f.label :name, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= @user.name %>
-          <%= link_to become_admin_user_path(@user),
-                      method: :post,
-                      data: {confirm: "Log in as user #{@user.id}, #{@user.full_name || '(no name)'}?"} do %>
-            <i class="fa fa-key" aria-hidden="false"></i>
+  <% sf_id = @user.salesforce_contact_id %>
+
+  <div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">Identity</h3></div>
+    <div class="panel-body">
+
+      <div class="form-group readonly-row">
+        <%= f.label :name, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <%= @user.name %>
+              <%= link_to become_admin_user_path(@user),
+                          method: :post,
+                          data: {confirm: "Log in as user #{@user.id}, #{@user.full_name || '(no name)'}?"} do %>
+                <i class="fa fa-key" aria-hidden="false"></i>
+              <% end %>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group readonly-row">
+        <%= f.label :uuid, "UUID", class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <%= @user.uuid %>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group readonly-row">
+        <%= f.label :created_at, "Account Created", class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <%= @user.created_at.strftime('%B %d, %Y at %l:%M %p %Z') %>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group readonly-row">
+        <%= f.label :last_signed_in_at, "Last Signed In", class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <% if @user.last_signed_in_at %>
+              <%= @user.last_signed_in_at.strftime('%B %d, %Y at %l:%M %p %Z') %>
+            <% else %>
+              Never
+            <% end %>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group readonly-row">
+        <%= f.label :login_methods, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <%= @user.authentications.map(&:display_name).sort.join(', ') %>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group readonly-row">
+        <%= f.label :security_log, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <%= link_to "Security Log", admin_security_log_path(search: { query: "user_id:#{@user.id}" }) %>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group readonly-row">
+        <%= f.label :consent_preferences, 'Consent Preferences', class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <div class="form-control-static">
+            <% consent = @user.consent_preferences.is_a?(Hash) ? @user.consent_preferences.stringify_keys : {} %>
+            <% accepted = Array(consent['accepted']) %>
+            <% rejected = Array(consent['rejected']) %>
+            <% if accepted.blank? && rejected.blank? %>
+              No preferences recorded
+            <% else %>
+              <strong>Accepted:</strong>
+              <%= accepted.any? ? accepted.map { |v| v.to_s.humanize }.join(', ') : 'None' %>
+              <br>
+              <strong>Rejected:</strong>
+              <%= rejected.any? ? rejected.map { |v| v.to_s.humanize }.join(', ') : 'None' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :is_administrator, 'Administrator?', class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <div class="checkbox">
+            <%= f.check_box :is_administrator, style: 'margin-left: 0px' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :is_test, 'Test User?', class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <div class="checkbox">
+            <%= f.check_box :is_test, style: 'margin-left: 0px' %>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">Emails</h3></div>
+    <div class="panel-body">
+
+      <div class="form-group readonly-row">
+        <%= f.label :email_addresses, class: "col-sm-2 control-label" %>
+        <ul class="col-sm-10 form-control-static">
+        <% @user.email_addresses.each do |email| %>
+        <li style="margin-left: 20px;">
+
+          <%= link_to raw('<i class="fa fa-trash" aria-hidden="false"></i>'),
+              admin_delete_contact_info_path(email),
+              method: :delete,
+              data: {confirm: "Are you sure you want to delete \"#{email.value}\" ?"}
+              %>
+          <%= email.value %>
+          <% if email.verified %>
+            (Confirmed)
+          <% else %>
+            <br>
+            Confirmation PIN: <%= email.confirmation_pin %>
+            <br>
+            Confirmation URL: <%= verify_email_by_code_url(email.confirmation_code) %>
+            <br>
+            OR
+            <br>
+            <%= link_to 'Mark this email address as confirmed', admin_verify_contact_info_path(email),
+                        remote: true, method: :post,
+                        class: 'btn btn-default btn-xs verify-email',
+                        data: {confirm: "Are you sure you want to mark \"#{email.value}\" as confirmed? (You are saying you absolutely know this email address belongs to this user)"}
+            %>
           <% end %>
-      </p>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :uuid, "UUID", class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= @user.uuid %>
-      </p>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :created_at, "Account Created", class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= @user.created_at.strftime('%B %d, %Y at %l:%M %p %Z') %>
-      </p>
-    </div>
-  </div>
-
-  <% if @user.confirmed_faculty? %>
-  <div class="form-group">
-    <%= f.label :faculty_verified_at, "Faculty Verified", class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <% verification_log = @user.security_logs.where(event_type: [:fv_success_by_sheerid, :faculty_verified, :faculty_verified_by_sheerid, :salesforce_updated_faculty_status]).last %>
-        <% if verification_log %>
-          <%= verification_log.created_at.strftime('%B %d, %Y at %l:%M %p %Z') %>
-          (<%= verification_log.event_type.humanize %>)
-        <% else %>
-          Confirmed (date not available)
+          </li>
         <% end %>
-      </p>
+        </ul>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :email_address, 'New email address', class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <%= text_field_tag 'user[email_address]', params[:user].try(:[], :email_address), class: 'form-control' %>
+        </div>
+      </div>
+
+      <% unless @user.identity.nil? %>
+        <div class="form-group">
+          <%= f.label :password, 'Change password to', class: "col-sm-2 control-label" %>
+          <div class="col-sm-10">
+            <%= f.text_field :password, value: '', class: 'form-control' %>
+          </div>
+        </div>
+      <% end %>
+
     </div>
   </div>
-  <% end %>
 
-  <div class="form-group">
-    <%= f.label :email_addresses, class: "col-sm-2 control-label" %>
-    <ul class="col-sm-10 form-control-static">
-    <% @user.email_addresses.each do |email| %>
-    <li style="margin-left: 20px;">
+  <div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">Role &amp; verification</h3></div>
+    <div class="panel-body">
 
-      <%= link_to raw('<i class="fa fa-trash" aria-hidden="false"></i>'),
-          admin_delete_contact_info_path(email),
-          method: :delete,
-          data: {confirm: "Are you sure you want to delete \"#{email.value}\" ?"}
+      <div class="form-group">
+        <%= f.label :role, 'Self-reported role', class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <% roles = User.roles.keys.sort.map{ |key| [key.humanize, key] } %>
+          <%= f.select :role, roles, {:selected => @user.role}, {class: "form-control"} %>
+        </div>
+      </div>
+
+      <% if @user.other_role_name.present? %>
+      <div class="form-group readonly-row">
+        <%= f.label :other_role_name, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <%= @user.other_role_name %>
+          </p>
+        </div>
+      </div>
+      <% end %>
+
+      <div class="form-group<%= sf_id.nil? ? '' : ' readonly-row' %>">
+        <%= f.label :faculty_status, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <% if sf_id.nil? %>
+            <% faculty_statuses = User.faculty_statuses.keys.map{ |key| [key.humanize, key] } %>
+            <%= f.select :faculty_status, faculty_statuses, {}, {class: "form-control"} %>
+          <% else %>
+            <p class="form-control-static">
+              <%= @user.faculty_status.humanize %>
+              <span class="help-block">This is a Salesforce user. You must change this setting in Salesforce.  If you just changed the Salesforce contact ID, this field will update within 20 minutes.</span>
+            </p>
+          <% end %>
+        </div>
+      </div>
+
+      <% if @user.confirmed_faculty? %>
+      <div class="form-group readonly-row">
+        <%= f.label :faculty_verified_at, "Faculty Verified", class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <% verification_log = @user.security_logs.where(event_type: [:fv_success_by_sheerid, :faculty_verified, :faculty_verified_by_sheerid, :salesforce_updated_faculty_status]).last %>
+            <% if verification_log %>
+              <%= verification_log.created_at.strftime('%B %d, %Y at %l:%M %p %Z') %>
+              (<%= verification_log.event_type.humanize %>)
+            <% else %>
+              Confirmed (date not available)
+            <% end %>
+          </p>
+        </div>
+      </div>
+      <% end %>
+
+      <% if @user.sheerid_verification_id %>
+      <div class="form-group readonly-row">
+        <%= f.label :sheerid_verification_id, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <%= @user.sheerid_verification_id %>
+          </p>
+        </div>
+      </div>
+      <% end %>
+
+      <% if @user.sheerid_reported_school %>
+      <div class="form-group readonly-row">
+        <%= f.label :sheerid_reported_school, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <%= @user.sheerid_reported_school %>
+          </p>
+        </div>
+      </div>
+      <% end %>
+
+      <% if @user.which_books %>
+      <div class="form-group readonly-row">
+        <%= f.label :which_books, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <%= @user.which_books %>
+          </p>
+        </div>
+      </div>
+      <% end %>
+
+      <div class="form-group<%= sf_id.nil? ? '' : ' readonly-row' %>">
+        <%= f.label :school_type, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <% if sf_id.nil? %>
+            <% school_types = User.school_types.keys.map{ |key| [key.humanize, key] } %>
+            <%= f.select :school_type, school_types, {}, {class: "form-control"} %>
+          <% else %>
+            <p class="form-control-static">
+              <%= @user.school_type.humanize %>
+              <span class="help-block">This is a Salesforce user. You must change this setting in Salesforce.  If you just changed the Salesforce contact ID, this field will update within 20 minutes.</span>
+            </p>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :first_name, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <%= f.text_field :first_name,
+                           value: params[:user].nil? ? @user.first_name : params[:user][:first_name],
+                           class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :last_name, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <%= f.text_field :last_name,
+                           value: params[:user].nil? ? @user.last_name : params[:user][:last_name],
+                           class: 'form-control' %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">School</h3></div>
+    <div class="panel-body">
+
+      <% if @user.school %>
+      <div class="form-group readonly-row">
+        <%= f.label :school, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <% sf_id_school = @user.school.salesforce_id %>
+              <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+              <% if instance_url.nil? %>
+                <%= @user.school.name %>
+              <% else %>
+                <%= link_to @user.school.name, instance_url + "/" + sf_id_school, target: '_blank' %>
+              <% end %>
+          </p>
+        </div>
+      </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label :self_reported_school, 'Self-reported school', class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>" data-endpoint="<%= newflow_schools_path %>">
+            <%= text_field_tag 'user[self_reported_school]', @user.self_reported_school, class: 'form-control' %>
+            <%= hidden_field_tag 'user[school_id]', @user.school_id %>
+          </div>
+          <span class="help-block">Picking a suggestion links this user to that school record. Typing a name that doesn't match any suggestion keeps it as plain text, with no link.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">Salesforce</h3></div>
+    <div class="panel-body">
+
+      <% if @user.salesforce_contact_id.nil? %>
+      <div class="form-group readonly-row">
+        <%= f.label :salesforce_lead, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <% lead_sf_id = @user.salesforce_lead_id %>
+          <p class="form-control-static">
+            <% if lead_sf_id.nil? %>
+              No Lead
+            <% else %>
+              <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+              <% if instance_url.nil? %>
+                <%= lead_sf_id %>
+              <% else %>
+                <%= link_to lead_sf_id, instance_url + "/" + lead_sf_id, target: '_blank' %>
+              <% end %>
+            <% end %>
+          </p>
+        </div>
+      </div>
+      <% end %>
+
+      <div class="form-group readonly-row">
+        <%= f.label :salesforce_contact, class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <p class="form-control-static">
+            <% if sf_id.nil? %>
+              Not Set
+            <% else %>
+              <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+              <% if instance_url.nil? %>
+                <%= sf_id %>
+              <% else %>
+                <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
+              <% end %>
+            <% end %>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label "New Salesforce contact", class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <div class="input-group">
+            <%= f.text_field :salesforce_contact_id,
+                             value: params[:user].try(:[], :salesforce_contact_id),
+                             placeholder: 'Paste a new Salesforce Contact ID',
+                             class: "form-control" %>
+            <% if @user.salesforce_contact_id.present? %>
+              <span class="input-group-btn">
+                <button type="button" id="remove-salesforce-contact" class="btn btn-danger">Remove link</button>
+              </span>
+            <% end %>
+          </div>
+          <span class="help-block">
+            Paste a Salesforce Contact ID above and Save to link this user to it.
+            <% if @user.salesforce_contact_id.present? %>
+              "Remove link" clears the existing link immediately.
+            <% end %>
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">Apps &amp; access</h3></div>
+    <div class="panel-body">
+
+      <div class="form-group">
+        <%= f.label :apps, class: "col-sm-2 control-label" %>
+        <ul id="application-users-list" class="col-sm-10 form-control-static">
+        <% @user.application_users.includes(:application).each_with_index do |app_user, index| %>
+          <% app_name = app_user.application.name %>
+          <% url = app_name == "OpenStax Tutor" ? begin
+              a_url = app_user.application.redirect_uri.split.first
+              uri = URI.parse(a_url)
+              uri.path = "/admin/users/info"
+              uri.query = "openstax_uid=#{@user.id}"
+              uri.to_s
+            rescue Exception => e
+              nil
+            end : ''
           %>
-      <%= email.value %>
-      <% if email.verified %>
-        (Confirmed)
-      <% else %>
-        <br>
-        Confirmation PIN: <%= email.confirmation_pin %>
-        <br>
-        Confirmation URL: <%= verify_email_by_code_url(email.confirmation_code) %>
-        <br>
-        OR
-        <br>
-        <%= link_to 'Mark this email address as confirmed', admin_verify_contact_info_path(email),
-                    remote: true, method: :post,
-                    class: 'btn btn-default btn-xs verify-email',
-                    data: {confirm: "Are you sure you want to mark \"#{email.value}\" as confirmed? (You are saying you absolutely know this email address belongs to this user)"}
-        %>
-      <% end %>
-      </li>
-    <% end %>
-    </ul>
-  </div>
 
-  <div class="form-group">
-    <%= f.label :email_address, 'New email address', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <%= text_field_tag 'user[email_address]', params[:user].try(:[], :email_address), class: 'form-control' %>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :security_log, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= link_to "Security Log", admin_security_log_path(search: { query: "user_id:#{@user.id}" }) %>
-      </p>
-    </div>
-  </div>
-
-  <% if @user.sheerid_verification_id %>
-  <div class="form-group">
-    <%= f.label :sheerid_verification_id, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= @user.sheerid_verification_id %>
-      </p>
-    </div>
-  </div>
-  <% end %>
-
-  <div class="form-group">
-    <%= f.label :consent_preferences, 'Consent Preferences', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <div class="form-control-static">
-        <%= @user.consent_preferences %>
-      </div>
-    </div>
-  </div>
-
-  <% if @user.school %>
-  <div class="form-group">
-    <%= f.label :school, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <% sf_id = @user.school.salesforce_id %>
-          <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
-          <% if instance_url.nil? %>
-            <%= @user.school.name %>
-          <% else %>
-            <%= link_to @user.school.name, instance_url + "/" + sf_id, target: '_blank' %>
-          <% end %>
-      </p>
-    </div>
-  </div>
-  <% end %>
-
-  <div class="form-group">
-    <%= f.label :self_reported_school, 'Self-reported school', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>" data-endpoint="<%= newflow_schools_path %>">
-        <%= text_field_tag 'user[self_reported_school]', @user.self_reported_school, class: 'form-control' %>
-        <%= hidden_field_tag 'user[school_id]', @user.school_id %>
-      </div>
-      <span class="help-block">Picking a suggestion links this user to that school record. Typing a name that doesn't match any suggestion keeps it as plain text, with no link.</span>
-    </div>
-  </div>
-
-  <% if @user.which_books %>
-  <div class="form-group">
-    <%= f.label :which_books, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= @user.which_books %>
-      </p>
-    </div>
-  </div>
-  <% end %>
-
-  <% if @user.sheerid_reported_school %>
-  <div class="form-group">
-    <%= f.label :sheerid_reported_school, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= @user.sheerid_reported_school %>
-      </p>
-    </div>
-  </div>
-  <% end %>
-
-  <% if @user.salesforce_contact_id.nil? %>
-  <div class="form-group">
-    <%= f.label :salesforce_lead, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <% sf_id = @user.salesforce_lead_id %>
-      <p class="form-control-static">
-        <% if sf_id.nil? %>
-          No Lead
-        <% else %>
-          <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
-          <% if instance_url.nil? %>
-            <%= sf_id %>
-          <% else %>
-            <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
-          <% end %>
+          <%= raw(
+            "<script type=\"text/javascript\">$(() => renderApplicationUser(
+              #{app_user.application_id},
+              \"#{app_name}\",
+              \"#{url}\",
+              \"#{app_user.roles.join(', ')}\",
+              #{index}
+            ));</script>"
+          ) %>
         <% end %>
-      </p>
-    </div>
-  </div>
-  <% end %>
+        </ul>
+      </div>
 
-  <div class="form-group">
-    <%= f.label :salesforce_contact, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <% sf_id = @user.salesforce_contact_id %>
-      <p class="form-control-static">
-        <% if sf_id.nil? %>
-          Not Set
-        <% else %>
-          <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
-          <% if instance_url.nil? %>
-            <%= sf_id %>
-          <% else %>
-            <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
-          <% end %>
-        <% end %>
-      </p>
-    </div>
-  </div>
+      <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+          <%= f.select nil, Doorkeeper::Application.pluck(:name, :id), {include_blank: true, selected: nil},
+                      {name: nil, id: 'add-application-select', class: "form-control",
+                       onchange: 'applicationOnChange()'} %>
+        </div>
+        <div class="col-sm-2">
+          <%= button_tag 'Add Application', id: 'add-application',
+                                            class: 'btn btn-primary',
+                                            disabled: true,
+                                            onclick: 'applicationOnClick(event)'
+          %>
+        </div>
+      </div>
 
-  <div class="form-group">
-    <%= f.label "New Salesforce contact", class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <%= f.text_field :salesforce_contact_id, class: "form-control" %>
-      <span class="help-block">Enter 'remove' to get rid of an existing SF contact ID.</span>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :role, 'Self-reported role', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <% roles = User.roles.keys.sort.map{ |key| [key.humanize, key] } %>
-      <%= f.select :role, roles, {:selected => @user.role}, {class: "form-control"} %>
-    </div>
-  </div>
-
-  <% if @user.other_role_name %>
-  <div class="form-group">
-    <%= f.label :other_role_name, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <% @user.other_role_name %>
-    </div>
-  </div>
-  <% end %>
-
-  <div class="form-group">
-    <%= f.label :faculty_status, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <% if sf_id.nil? %>
-        <% faculty_statuses = User.faculty_statuses.keys.map{ |key| [key.humanize, key] } %>
-        <%= f.select :faculty_status, faculty_statuses, {}, {class: "form-control"} %>
-      <% else %>
-        <p class="form-control-static">
-          <%= @user.faculty_status.humanize %>
-          <span class="help-block">This is a Salesforce user. You must change this setting in Salesforce.  If you just changed the Salesforce contact ID, this field will update within 20 minutes.</span>
-        </p>
+      <% if @user.external_uuids.any? %>
+      <div class="form-group">
+        <%= f.label :trusted_launch_user, 'Legacy External authentications?', class: "col-sm-2 control-label" %>
+        <div class="col-sm-10">
+          <div class="checkbox">
+            <%= f.check_box :keep_external_uuids, checked: true, style: 'margin-left: 0px'  %>
+            <i style="margin-left: 1rem">(Unchecking will remove all links between this account and external systems such as LMS)</i>
+          </div>
+        </div>
+      </div>
       <% end %>
+
     </div>
   </div>
 
-  <div class="form-group">
-    <%= f.label :first_name, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <%= f.text_field :first_name,
-                       value: params[:user].nil? ? @user.first_name : params[:user][:first_name],
-                       class: "form-control" %>
-    </div>
-  </div>
-
-
-  <div class="form-group">
-    <%= f.label :last_name, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <%= f.text_field :last_name,
-                       value: params[:user].nil? ? @user.last_name : params[:user][:last_name],
-                       class: 'form-control' %>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :school_type, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <% if sf_id.nil? %>
-        <% school_types = User.school_types.keys.map{ |key| [key.humanize, key] } %>
-        <%= f.select :school_type, school_types, {}, {class: "form-control"} %>
-      <% else %>
-        <p class="form-control-static">
-          <%= @user.school_type.humanize %>
-          <span class="help-block">This is a Salesforce user. You must change this setting in Salesforce.  If you just changed the Salesforce contact ID, this field will update within 20 minutes.</span>
-        </p>
-      <% end %>
-    </div>
-  </div>
-
-  <% unless @user.identity.nil? %>
-    <div class="form-group">
-      <%= f.label :password, 'Change password to', class: "col-sm-2 control-label" %>
-      <div class="col-sm-10">
-        <%= f.text_field :password, value: '', class: 'form-control' %>
-      </div>
-    </div>
-  <% end %>
-
-  <div class="form-group">
-    <%= f.label :apps, class: "col-sm-2 control-label" %>
-    <ul id="application-users-list" class="col-sm-10 form-control-static">
-    <% @user.application_users.includes(:application).each_with_index do |app_user, index| %>
-      <% app_name = app_user.application.name %>
-      <% url = app_name == "OpenStax Tutor" ? begin
-          a_url = app_user.application.redirect_uri.split.first
-          uri = URI.parse(a_url)
-          uri.path = "/admin/users/info"
-          uri.query = "openstax_uid=#{@user.id}"
-          uri.to_s
-        rescue Exception => e
-          nil
-        end : ''
-      %>
-
-      <%= raw(
-        "<script type=\"text/javascript\">$(() => renderApplicationUser(
-          #{app_user.application_id},
-          \"#{app_name}\",
-          \"#{url}\",
-          \"#{app_user.roles.join(', ')}\",
-          #{index}
-        ));</script>"
-      ) %>
-    <% end %>
-    </ul>
-  </div>
-
-  <div class="form-group">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-8">
-      <%= f.select nil, Doorkeeper::Application.pluck(:name, :id), {include_blank: true, selected: nil},
-                  {name: nil, id: 'add-application-select', class: "form-control",
-                   onchange: 'applicationOnChange()'} %>
-    </div>
-    <div class="col-sm-2">
-      <%= button_tag 'Add Application', id: 'add-application',
-                                        class: 'btn btn-primary',
-                                        disabled: true,
-                                        onclick: 'applicationOnClick(event)'
-      %>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :login_methods, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= @user.authentications.map(&:display_name).sort.join(', ') %>
-      </p>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :is_administrator, 'Administrator?', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <div class="checkbox">
-        <%= f.check_box :is_administrator, style: 'margin-left: 0px' %>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :is_test, 'Test User?', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <div class="checkbox">
-        <%= f.check_box :is_test, style: 'margin-left: 0px' %>
-      </div>
-    </div>
-  </div>
-
-  <% if @user.external_uuids.any? %>
-  <br>
-
-  <h4>Legacy External authentications</h4>
-
-  <div class="form-group">
-    <%= f.label :trusted_launch_user, 'Legacy External authentications?', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <div class="checkbox">
-        <%= f.check_box :keep_external_uuids, checked: true, style: 'margin-left: 0px'  %>
-        <i style="margin-left: 1rem">(Unchecking will remove all links between this account and external systems such as LMS)</i>
-      </div>
-    </div>
-  </div>
-  <% end %>
-
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <%= f.submit 'Save', class: 'btn btn-primary' %>
-    </div>
+  <div class="user-details-save-bar">
+    <%= f.submit 'Save', class: 'btn btn-primary' %>
   </div>
 <% end %>
 
-<div class="form-group">
-  <div class="col-sm-offset-2 col-sm-10">
+<% if @user.external_ids.any? %>
+<div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">External IDs</h3></div>
+  <div class="panel-body">
+    <% @user.external_ids.each do |external_id| %>
+      <div class="form-group" style="overflow: auto">
+        <%= label_tag(
+          "external_id_#{external_id.id}".to_sym,
+          external_id.external_id,
+          class: "col-sm-6 control-label"
+        ) %>
+
+        <div class="col-sm-6">
+          <%= button_to(
+            'Remove',
+            admin_external_id_path(external_id),
+            class: 'btn btn-danger',
+            data: {
+              confirm: "Are you sure you want to remove external id #{external_id.external_id}?",
+              disable_with: 'Removing...'
+            },
+            disabled: @user.contact_infos.empty?,
+            method: :delete
+          ) %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<% end %>
+
+<div class="panel panel-danger">
+  <div class="panel-heading"><h3 class="panel-title">Danger zone</h3></div>
+  <div class="panel-body">
+    <p>De-identifying a user account permanently removes all authentications, external ids, and PII from it. This cannot be undone.</p>
     <%= link_to('De-identify User Account',
                 soft_delete_admin_user_path(@user),
-                        class: 'btn btn-danger pull-right',
-                        style: 'margin-top: -50px; padding-top: -50px;',
+                        class: 'btn btn-danger',
                         data: {
                           confirm: 'Are you sure you want to completely destroy this user account? This is irreversible!',
                           disable_with: 'Destroying...'
                         },
                         method: :delete)
           %>
-    </div>
   </div>
-
-<% if @user.external_ids.any? %>
-  <h4>External IDs</h4>
-
-  <% @user.external_ids.each do |external_id| %>
-    <div class="form-group" style="overflow: auto">
-      <%= label_tag(
-        "external_id_#{external_id.id}".to_sym,
-        external_id.external_id,
-        class: "col-sm-6 control-label"
-      ) %>
-
-      <div class="col-sm-6">
-        <%= button_to(
-          'Remove',
-          admin_external_id_path(external_id),
-          class: 'btn btn-danger',
-          data: {
-            confirm: "Are you sure you want to remove external id #{external_id.external_id}?",
-            disable_with: 'Removing...'
-          },
-          disabled: @user.contact_infos.empty?,
-          method: :delete
-        ) %>
-      </div>
-    </div>
-  <% end %>
-<% end %>
+</div>
