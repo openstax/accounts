@@ -14,7 +14,8 @@
       <%= application.nil? ? 'Anonymous' : 'Application' %>
     <% else %>
       <%= link_to "##{user.id}", edit_admin_user_path(user), target: '_blank' %>
-      <%= link_to user.name, security_log_filter_path('user_id', user.id), title: 'Filter to this user' %>
+      <%= link_to user.name.presence || '(no name)',
+                  security_log_filter_path('user_id', user.id), title: 'Filter to this user' %>
       <br>
       <span class="text-muted"><%= user.email_addresses.first&.value %></span>
     <% end %>
@@ -22,8 +23,13 @@
   <% end %>
   <td class="text-nowrap"><%= application.try(:name) || 'Accounts' %></td>
   <td class="text-nowrap">
-    <%= link_to security_log_entry.remote_ip, security_log_filter_path('ip', security_log_entry.remote_ip),
-                title: 'Filter to this IP' %>
+    <% if security_log_entry.remote_ip.present? %>
+      <%= link_to security_log_entry.remote_ip,
+                  security_log_filter_path('ip', security_log_entry.remote_ip),
+                  title: 'Filter to this IP' %>
+    <% else %>
+      <span class="text-muted">&mdash;</span>
+    <% end %>
   </td>
   <td class="text-nowrap">
     <%= link_to security_log_entry.event_type.to_s.humanize,

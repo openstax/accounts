@@ -82,6 +82,29 @@ feature 'Admin security log page', js: true do
     end
   end
 
+  context 'entries missing the values the cells link on' do
+    # link_to renders its href as the link text when the name is blank, which
+    # turned an entry logged outside a request into a row displaying a URL.
+    it 'shows a placeholder instead of a link when there is no remote ip' do
+      FactoryBot.create(:security_log, remote_ip: nil, event_type: :user_became_activated)
+
+      visit admin_security_log_path
+
+      expect(page).to have_no_content('admin/security_log?search')
+      expect(find('#security-log-table tbody tr', match: :first)).to have_content('—')
+    end
+
+    it 'labels a user with no name rather than linking the filter url' do
+      nameless = FactoryBot.create(:user, first_name: nil, last_name: nil, username: nil)
+      FactoryBot.create(:security_log, user: nameless, remote_ip: '10.0.0.9')
+
+      visit admin_security_log_path
+
+      expect(page).to have_no_content('admin/security_log?search')
+      expect(page).to have_link('(no name)')
+    end
+  end
+
   context 'escaping event data' do
     let(:xss_payload) { '<script>window.xssFired = true</script>' }
 
