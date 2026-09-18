@@ -7,6 +7,7 @@ BASE_URL = "#{OX.url_prefix}"
 postToRequestPhase = (url) ->
   param = $('meta[name="csrf-param"]').attr('content') or 'authenticity_token'
   token = $('meta[name="csrf-token"]').attr('content')
+  return unless token?
   $('<form>', method: 'post', action: url)
     .append($('<input>', type: 'hidden', name: param, value: token))
     .hide()
