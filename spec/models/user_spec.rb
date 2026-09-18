@@ -488,6 +488,23 @@ describe User, type: :model do
     end
   end
 
+  describe '#claim_signup_done_capture!' do
+    # subject! so the account exists before the example stubs the query path
+    subject!(:user) { FactoryBot.create(:user) }
+
+    it 'is claimable exactly once' do
+      expect(user.claim_signup_done_capture!).to be true
+      expect(user.reload.signup_done_captured_at).to be_present
+      expect(user.claim_signup_done_capture!).to be false
+    end
+
+    it 'returns false instead of raising when the write fails' do
+      allow(User).to receive(:where).and_raise(ActiveRecord::StatementInvalid)
+
+      expect(user.claim_signup_done_capture!).to be false
+    end
+  end
+
   describe 'books_used_details' do
     context 'books_used_details validation' do
       it 'adds error when hash contains invalid keys' do
