@@ -135,6 +135,38 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
       described_class.call(params: { 'verificationId' => verification_id })
     end
 
+    it 'stays quiet for an expired verification, which is abandonment, not an error' do
+      allow(SheeridAPI).to receive(:get_verification_details).with(verification_id).and_return(
+        SheeridAPI::Response.new(
+          'lastResponse' => { 'currentStep' => 'error', 'errorIds' => ['expiredVerification'] },
+          'personInfo' => { 'email' => email_address.value }
+        )
+      )
+      expect(Sentry).not_to receive(:capture_message)
+
+      described_class.call(params: { 'verificationId' => verification_id })
+    end
+
+    it 'still reports an expired verification raised alongside another error' do
+      allow(SheeridAPI).to receive(:get_verification_details).with(verification_id).and_return(
+        SheeridAPI::Response.new(
+          'lastResponse' => {
+            'currentStep' => 'error',
+            'errorIds' => ['expiredVerification', 'verificationLimitExceeded']
+          },
+          'personInfo' => { 'email' => email_address.value }
+        )
+      )
+
+      expect(Sentry).to receive(:capture_message).with(
+        '[SheerID Webhook] error step received',
+        level: :warning,
+        extra: hash_including(error_ids: ['expiredVerification', 'verificationLimitExceeded'])
+      )
+
+      described_class.call(params: { 'verificationId' => verification_id })
+    end
+
     it 'reports a nil user id when no user matches the verification id' do
       expect(Sentry).to receive(:capture_message).with(
         '[SheerID Webhook] error step received',

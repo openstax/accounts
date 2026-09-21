@@ -20,6 +20,7 @@ module Newflow
           user = @handler_result.outputs.user
           switched_to = @handler_result.outputs.switched_to
           log_posthog(user, 'user_switched_signup_role', { switched_to: switched_to, role: user.role })
+          flash[:notice] = I18n.t(:"login_signup_form.switched_role_notice.#{switched_to}")
           redirect_to(next_step_after_role_switch(user))
         },
         failure: lambda {
@@ -54,7 +55,12 @@ module Newflow
 
     def signup_done
       security_log(:user_viewed_signup_form, form_name: action_name)
-      log_posthog(current_user, 'user_signup_done', { role: current_user.role })
+      # Count the signup, not the visit: every funnel converges on this page, so
+      # it stays the capture point, but only the first render per account sends
+      # the event (see User#claim_signup_done_capture!).
+      if current_user.claim_signup_done_capture!
+        log_posthog(current_user, 'user_signup_done', { role: current_user.role })
+      end
       @first_name = current_user.first_name
       @email_address = current_user.email_addresses.first&.value
     end

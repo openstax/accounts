@@ -58,10 +58,7 @@ module Newflow
     private #################
 
     def is_email_taken?(email)
-      user_who_owns_email_address = LookupUsers.by_verified_email(email).first
-      return false if user_who_owns_email_address.nil?
-
-      user_who_owns_email_address.id != @user.id
+      EmailAddress.claimed?(email, excluding_user_id: @user.id)
     end
 
     def email_taken_error!(user_id)

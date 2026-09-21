@@ -11,6 +11,54 @@ module Newflow
       end
     end
 
+    # Where an educator who abandoned signup lands when they come back. Two
+    # populations reach this: the ones who never finished SheerID (no lead in
+    # Salesforce at all -- the webhook returns on the error step before pushing
+    # one) and the ones who did but never finished step 4 (a lead stamped
+    # incomplete_signup). They have to resume at different steps.
+    describe 'POST #login resuming an abandoned educator signup' do
+      let(:params) { { login_form: { email: 'edu@openstax.org', password: 'password' } } }
+
+      let(:educator) do
+        user = create_newflow_user('edu@openstax.org', 'password', nil, nil, 'instructor')
+        user.update!(is_profile_complete: false)
+        user
+      end
+
+      it 'sends someone who never finished SheerID back to step 3' do
+        educator.update!(sheerid_verification_id: nil, is_sheerid_unviable: false)
+
+        post('login', params: params)
+
+        expect(response).to redirect_to(educator_sheerid_form_path)
+      end
+
+      it 'sends someone who finished SheerID on to step 4' do
+        educator.update!(sheerid_verification_id: 'a-verification-id')
+
+        post('login', params: params)
+
+        expect(response).to redirect_to(educator_profile_form_path)
+      end
+
+      it 'sends someone who opted out of SheerID on to step 4' do
+        educator.update!(sheerid_verification_id: nil, is_sheerid_unviable: true)
+
+        post('login', params: params)
+
+        expect(response).to redirect_to(educator_profile_form_path)
+      end
+
+      it 'does not drag a finished educator back into signup' do
+        educator.update!(sheerid_verification_id: 'a-verification-id', is_profile_complete: true)
+
+        post('login', params: params)
+
+        expect(response).not_to redirect_to(educator_sheerid_form_path)
+        expect(response).not_to redirect_to(educator_profile_form_path)
+      end
+    end
+
     describe 'POST #login' do
       describe 'success' do
         describe 'students' do
