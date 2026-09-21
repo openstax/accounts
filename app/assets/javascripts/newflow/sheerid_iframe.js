@@ -77,6 +77,15 @@
     var path = frame.getAttribute('data-sheerid-success-path');
     if (!path) { return; }
 
+    // Today this attribute is a Rails route helper, so the guard never fires.
+    // It is here because `location.assign` is a navigation sink and will run a
+    // `javascript:` URL or leave the origin for a protocol-relative one -- the
+    // day someone makes this path dynamic, that should fail closed rather than
+    // become an open redirect. Requiring a single leading slash allows exactly
+    // the same-origin absolute paths this is ever meant to send. (CodeQL flags
+    // the unguarded version as js/xss-through-dom.)
+    if (path.charAt(0) !== '/' || path.charAt(1) === '/') { return; }
+
     window.location.assign(path);
   }
 
