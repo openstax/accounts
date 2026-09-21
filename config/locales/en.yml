@@ -469,6 +469,9 @@ en:
       push_salesforce_contact_logins_enabled:
         name: 'Push instructor login dates to Salesforce?'
         help_block: 'If checked (and SF configured), instructors'' most recent login date will be pushed to their SF Contact'
+      push_salesforce_last_seen_enabled:
+        name: 'Push last-seen dates to Salesforce?'
+        help_block: 'If checked (and SF configured), students'' and instructors'' most recent website visit will be pushed to their SF Student__c/Contact'
       show_support_chat:
         name: 'Show support chat widget'
         help_block: 'If checked users will see CS chat widget'

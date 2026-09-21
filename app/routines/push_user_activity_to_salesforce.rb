@@ -1,8 +1,8 @@
 # Nightly sync of students' picked schools and both students' and
-# instructors' login activity to Salesforce. Pseudonymous by design: no name
-# or email is ever sent.
+# instructors' login/last-seen activity to Salesforce. Pseudonymous by
+# design: no name or email is ever sent.
 #
-# Three bounded passes, each backed by its own partial index and gated by
+# Four bounded passes, each backed by its own partial index and gated by
 # its own feature flag:
 #   1. link/create -- runs once per student. Resolves or creates the
 #      Student__c (Name = accounts UUID, School__c = school's Salesforce
@@ -18,6 +18,12 @@
 #      already linked elsewhere (lead conversion, profile sync). Never
 #      creates or otherwise touches a Contact -- Last_OSweb_Login_Date__c is
 #      the only field Accounts is allowed to write there.
+#   4. last-seen refresh -- recurring, one flag covering both populations.
+#      Updates Last_Website_Visit__c from users.last_seen_at on students
+#      already linked via salesforce_student_id and on users already linked
+#      via salesforce_contact_id, straight from those stored ids, with no
+#      SOQL lookup. Never creates a Student__c or a Contact, for the same
+#      reason as passes 2 and 3.
 class PushUserActivityToSalesforce
   BATCH_SIZE = 250
   LOOKUP_CHUNK_SIZE = 200
@@ -37,6 +43,11 @@ class PushUserActivityToSalesforce
     end
 
     sync_contact_login_dates if Settings::Salesforce.push_contact_logins_enabled
+
+    if Settings::Salesforce.push_last_seen_enabled
+      sync_student_last_seen_dates
+      sync_contact_last_seen_dates
+    end
   end
 
   private
@@ -203,6 +214,88 @@ class PushUserActivityToSalesforce
     Sentry.capture_exception(e)
   end
 
+  # Same NULL reasoning as sync_student_login_dates: salesforce_last_seen_pushed_at
+  # only gets stamped by this pass, so any student linked by pass 1 (or by
+  # ReconcileSalesforceStudentIds) but not yet reached by this one must count
+  # as "never sent".
+  def sync_student_last_seen_dates
+    User.student
+        .where.not(salesforce_student_id: nil)
+        .where.not(last_seen_at: nil)
+        .where(
+          'salesforce_last_seen_pushed_at IS NULL OR last_seen_at > salesforce_last_seen_pushed_at'
+        )
+        .find_in_batches(batch_size: BATCH_SIZE) do |users|
+      push_student_last_seen_dates(users)
+    end
+  end
+
+  # Only Last_Website_Visit__c -- this pass never creates a Student__c, and
+  # never touches Last_OSweb_Login_Date__c, which pass 2 owns.
+  def push_student_last_seen_dates(users)
+    results = OpenStax::Salesforce::Remote::Student.sfdc_client.batch do |batch|
+      users.each do |user|
+        batch.update(
+          'Student__c',
+          Id: user.salesforce_student_id,
+          Last_Website_Visit__c: last_seen_date(user)
+        )
+      end
+    end
+
+    users.zip(results).each do |user, result|
+      if batch_update_succeeded?(result)
+        user.update_column(:salesforce_last_seen_pushed_at, Time.current)
+      else
+        Sentry.capture_message(
+          "[PushUserActivityToSalesforce] student last-seen update failed for user #{user.id}: #{result.inspect}",
+          level: :warning
+        )
+      end
+    end
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
+
+  # Same NULL reasoning as sync_contact_login_dates.
+  def sync_contact_last_seen_dates
+    User.where.not(salesforce_contact_id: nil)
+        .where.not(last_seen_at: nil)
+        .where(
+          'salesforce_last_seen_pushed_at IS NULL OR last_seen_at > salesforce_last_seen_pushed_at'
+        )
+        .find_in_batches(batch_size: BATCH_SIZE) do |users|
+      push_contact_last_seen_dates(users)
+    end
+  end
+
+  # Only Last_Website_Visit__c -- never FV_Status__c, Adoption_Status__c,
+  # name, school, or Last_OSweb_Login_Date__c (owned by pass 3).
+  def push_contact_last_seen_dates(users)
+    results = OpenStax::Salesforce::Remote::Contact.sfdc_client.batch do |batch|
+      users.each do |user|
+        batch.update(
+          'Contact',
+          Id: user.salesforce_contact_id,
+          Last_Website_Visit__c: last_seen_date(user)
+        )
+      end
+    end
+
+    users.zip(results).each do |user, result|
+      if batch_update_succeeded?(result)
+        user.update_column(:salesforce_last_seen_pushed_at, Time.current)
+      else
+        Sentry.capture_message(
+          "[PushUserActivityToSalesforce] contact last-seen update failed for user #{user.id}: #{result.inspect}",
+          level: :warning
+        )
+      end
+    end
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
+
   def batch_update_succeeded?(result)
     result.present? && result['statusCode'].to_i.between?(200, 299)
   end
@@ -213,6 +306,14 @@ class PushUserActivityToSalesforce
     # A fixed zone, not the server's local time, so the date doesn't drift
     # with where this runs.
     user.last_signed_in_at.utc.strftime('%Y-%m-%d')
+  end
+
+  def last_seen_date(user)
+    return if user.last_seen_at.blank?
+
+    # A fixed zone, not the server's local time, so the date doesn't drift
+    # with where this runs.
+    user.last_seen_at.utc.strftime('%Y-%m-%d')
   end
 
   # The Salesforce Book__c id for the book whose page the student came from

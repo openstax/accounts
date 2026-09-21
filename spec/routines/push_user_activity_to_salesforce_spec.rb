@@ -6,6 +6,7 @@ describe PushUserActivityToSalesforce, type: :routine do
   before do
     allow(Settings::Salesforce).to receive(:push_students_enabled) { true }
     allow(Settings::Salesforce).to receive(:push_contact_logins_enabled) { false }
+    allow(Settings::Salesforce).to receive(:push_last_seen_enabled) { false }
   end
 
   context 'when the setting is disabled' do
@@ -645,6 +646,262 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         expect(student.reload.salesforce_student_pushed_at).to be_nil
         expect(instructor.reload.salesforce_contact_login_pushed_at).not_to be_nil
+      end
+    end
+  end
+
+  describe 'pass 4: last-seen refresh for already-linked students and contacts' do
+    let(:contact_remote) { OpenStax::Salesforce::Remote::Contact }
+    let(:student_sfdc_client) { double('student sfdc client') }
+    let(:contact_sfdc_client) { double('contact sfdc client') }
+
+    before do
+      allow(Settings::Salesforce).to receive(:push_last_seen_enabled) { true }
+      allow(remote).to receive(:sfdc_client).and_return(student_sfdc_client)
+      allow(contact_remote).to receive(:sfdc_client).and_return(contact_sfdc_client)
+    end
+
+    context 'the flag is off' do
+      let!(:linked_student) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0SEENOFF001',
+          salesforce_last_seen_pushed_at: nil,
+          last_seen_at: 1.hour.ago
+      end
+
+      before { allow(Settings::Salesforce).to receive(:push_last_seen_enabled) { false } }
+
+      it 'does nothing' do
+        expect(student_sfdc_client).not_to receive(:batch)
+        expect(contact_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(linked_student.reload.salesforce_last_seen_pushed_at).to be_nil
+      end
+    end
+
+    context 'a linked student with a newer last_seen_at' do
+      let(:seen_time) { 2.hours.ago }
+
+      let!(:linked_student) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0SEENSTUD01',
+          salesforce_last_seen_pushed_at: 30.days.ago,
+          last_seen_at: seen_time
+      end
+
+      it 'sends a batched Student__c update with the last-seen date and stamps the user' do
+        expect(student_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          expect(subrequests).to receive(:update).with(
+            'Student__c', Id: 'a0SEENSTUD01', Last_Website_Visit__c: seen_time.utc.strftime('%Y-%m-%d')
+          )
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+
+        expect(linked_student.reload.salesforce_last_seen_pushed_at).to be > 1.hour.ago
+      end
+    end
+
+    context 'a linked contact with a newer last_seen_at' do
+      let(:seen_time) { 2.hours.ago }
+
+      let!(:instructor) do
+        FactoryBot.create :user, role: :instructor,
+          salesforce_contact_id: 'a0SEENCONT1',
+          salesforce_last_seen_pushed_at: 30.days.ago,
+          last_seen_at: seen_time
+      end
+
+      it 'sends a batched Contact update with the last-seen date and stamps the user' do
+        expect(contact_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          expect(subrequests).to receive(:update).with(
+            'Contact', Id: 'a0SEENCONT1', Last_Website_Visit__c: seen_time.utc.strftime('%Y-%m-%d')
+          )
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+
+        expect(instructor.reload.salesforce_last_seen_pushed_at).to be > 1.hour.ago
+      end
+    end
+
+    context 'a never-pushed student (salesforce_last_seen_pushed_at NULL)' do
+      let(:seen_time) { 3.hours.ago }
+
+      let!(:linked_student) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0SEENNULL1',
+          salesforce_last_seen_pushed_at: nil,
+          last_seen_at: seen_time
+      end
+
+      it 'is included rather than excluded by the NULL pushed_at' do
+        expect(student_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          expect(subrequests).to receive(:update).with(
+            'Student__c', Id: 'a0SEENNULL1', Last_Website_Visit__c: seen_time.utc.strftime('%Y-%m-%d')
+          )
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+
+        expect(linked_student.reload.salesforce_last_seen_pushed_at).to be > 1.hour.ago
+      end
+    end
+
+    context 'a never-pushed contact (salesforce_last_seen_pushed_at NULL)' do
+      let(:seen_time) { 3.hours.ago }
+
+      let!(:instructor) do
+        FactoryBot.create :user, role: :instructor,
+          salesforce_contact_id: 'a0SEENCNULL',
+          salesforce_last_seen_pushed_at: nil,
+          last_seen_at: seen_time
+      end
+
+      it 'is included rather than excluded by the NULL pushed_at' do
+        expect(contact_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          expect(subrequests).to receive(:update).with(
+            'Contact', Id: 'a0SEENCNULL', Last_Website_Visit__c: seen_time.utc.strftime('%Y-%m-%d')
+          )
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+
+        expect(instructor.reload.salesforce_last_seen_pushed_at).to be > 1.hour.ago
+      end
+    end
+
+    context 'a user whose last_seen_at is older than the stamp' do
+      let!(:stale_student) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0SEENSTALE',
+          salesforce_last_seen_pushed_at: 1.hour.ago,
+          last_seen_at: 2.hours.ago
+      end
+
+      it 'is skipped' do
+        expect(student_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(stale_student.reload.salesforce_last_seen_pushed_at).to be_within(1.second).of(1.hour.ago)
+      end
+    end
+
+    context 'an unlinked user (no salesforce id)' do
+      let!(:unlinked_student) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: nil,
+          salesforce_last_seen_pushed_at: nil,
+          last_seen_at: 1.hour.ago
+      end
+      let!(:unlinked_instructor) do
+        FactoryBot.create :user, role: :instructor,
+          salesforce_contact_id: nil,
+          salesforce_last_seen_pushed_at: nil,
+          last_seen_at: 1.hour.ago
+      end
+
+      it 'is skipped and no record is created' do
+        expect(remote).not_to receive(:new)
+        expect(contact_remote).not_to receive(:new)
+        expect(student_sfdc_client).not_to receive(:batch)
+        expect(contact_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(unlinked_student.reload.salesforce_last_seen_pushed_at).to be_nil
+        expect(unlinked_instructor.reload.salesforce_last_seen_pushed_at).to be_nil
+      end
+    end
+
+    context 'a user who has never been seen' do
+      let!(:never_seen) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0NEVERSEEN',
+          salesforce_last_seen_pushed_at: nil,
+          last_seen_at: nil
+      end
+
+      it 'is skipped rather than sent a null date' do
+        expect(student_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(never_seen.reload.salesforce_last_seen_pushed_at).to be_nil
+      end
+    end
+
+    context 'a Salesforce failure on the student pass' do
+      let!(:linked_student) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0SEENFAIL1',
+          salesforce_last_seen_pushed_at: nil,
+          last_seen_at: 1.hour.ago
+      end
+
+      it 'is reported to Sentry and does not abort the run' do
+        allow(student_sfdc_client).to receive(:batch).and_raise('sf exploded')
+        expect(Sentry).to receive(:capture_exception)
+
+        expect { described_class.call }.not_to raise_error
+
+        expect(linked_student.reload.salesforce_last_seen_pushed_at).to be_nil
+      end
+    end
+
+    context 'a Salesforce failure on the contact pass' do
+      let!(:instructor) do
+        FactoryBot.create :user, role: :instructor,
+          salesforce_contact_id: 'a0SEENFAIL2',
+          salesforce_last_seen_pushed_at: nil,
+          last_seen_at: 1.hour.ago
+      end
+
+      it 'is reported to Sentry and does not abort the run' do
+        allow(contact_sfdc_client).to receive(:batch).and_raise('sf exploded')
+        expect(Sentry).to receive(:capture_exception)
+
+        expect { described_class.call }.not_to raise_error
+
+        expect(instructor.reload.salesforce_last_seen_pushed_at).to be_nil
+      end
+    end
+
+    context 'a batch item reports failure' do
+      let!(:linked_student) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0SEENBAD01',
+          salesforce_last_seen_pushed_at: nil,
+          last_seen_at: 1.hour.ago
+      end
+
+      it 'does not re-stamp the user and reports it to Sentry' do
+        allow(student_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          allow(subrequests).to receive(:update)
+          block.call(subrequests)
+          [{ 'statusCode' => 400, 'result' => [{ 'errorCode' => 'FIELD_CUSTOM_VALIDATION_EXCEPTION' }] }]
+        end
+        expect(Sentry).to receive(:capture_message)
+
+        described_class.call
+
+        expect(linked_student.reload.salesforce_last_seen_pushed_at).to be_nil
       end
     end
   end
