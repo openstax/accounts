@@ -179,12 +179,12 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(created_attrs[:last_osweb_login_date]).to eq '2026-09-10'
+        expect(created_attrs[:last_account_login_date]).to eq '2026-09-10'
       end
 
       it 'sets the login date on an existing record even when school/book are already filled' do
         existing = existing_student(student.uuid, school_id: '001OTHER0000001', initial_book_id: 'a0BOTHER000001')
-        expect(existing).to receive(:last_osweb_login_date=).with('2026-09-10')
+        expect(existing).to receive(:last_account_login_date=).with('2026-09-10')
         expect(existing).to receive(:save!).and_return(true)
         stub_lookup [existing]
 
@@ -336,7 +336,7 @@ describe PushUserActivityToSalesforce, type: :routine do
         expect(sfdc_client).to receive(:batch) do |&block|
           subrequests = double('subrequests')
           expect(subrequests).to receive(:update).with(
-            'Student__c', Id: 'a0LINKED0001', Last_OSweb_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
+            'Student__c', Id: 'a0LINKED0001', Last_Account_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
           )
           block.call(subrequests)
           [{ 'statusCode' => 204 }]
@@ -405,7 +405,7 @@ describe PushUserActivityToSalesforce, type: :routine do
           subrequests = double('subrequests')
           expect(subrequests).to receive(:update).with(
             'Student__c', Id: 'a0RECONCILED1',
-            Last_OSweb_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
+            Last_Account_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
           )
           block.call(subrequests)
           [{ 'statusCode' => 204 }]
@@ -500,7 +500,7 @@ describe PushUserActivityToSalesforce, type: :routine do
         expect(contact_sfdc_client).to receive(:batch) do |&block|
           subrequests = double('subrequests')
           expect(subrequests).to receive(:update).with(
-            'Contact', Id: 'a0CLINKED001', Last_OSweb_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
+            'Contact', Id: 'a0CLINKED001', Last_Account_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
           )
           block.call(subrequests)
           [{ 'statusCode' => 204 }]
@@ -511,12 +511,12 @@ describe PushUserActivityToSalesforce, type: :routine do
         expect(instructor.reload.salesforce_contact_login_pushed_at).to be > 1.hour.ago
       end
 
-      it 'sends only Last_OSweb_Login_Date__c, never name/school/FV/adoption fields' do
+      it 'sends only Last_Account_Login_Date__c, never name/school/FV/adoption fields' do
         expect(contact_sfdc_client).to receive(:batch) do |&block|
           subrequests = double('subrequests')
           expect(subrequests).to receive(:update) do |object, attrs|
             expect(object).to eq 'Contact'
-            expect(attrs.keys).to match_array(%i[Id Last_OSweb_Login_Date__c])
+            expect(attrs.keys).to match_array(%i[Id Last_Account_Login_Date__c])
           end
           block.call(subrequests)
           [{ 'statusCode' => 204 }]
@@ -555,7 +555,7 @@ describe PushUserActivityToSalesforce, type: :routine do
         expect(contact_sfdc_client).to receive(:batch) do |&block|
           subrequests = double('subrequests')
           expect(subrequests).to receive(:update).with(
-            'Contact', Id: 'a0CNULL00001', Last_OSweb_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
+            'Contact', Id: 'a0CNULL00001', Last_Account_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
           )
           block.call(subrequests)
           [{ 'statusCode' => 204 }]
@@ -665,7 +665,7 @@ describe PushUserActivityToSalesforce, type: :routine do
       let!(:linked_student) do
         FactoryBot.create :user, role: :student, school: nil,
           salesforce_student_id: 'a0SEENOFF001',
-          salesforce_last_seen_pushed_at: nil,
+          salesforce_student_last_seen_pushed_at: nil,
           last_seen_at: 1.hour.ago
       end
 
@@ -677,7 +677,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(linked_student.reload.salesforce_last_seen_pushed_at).to be_nil
+        expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be_nil
       end
     end
 
@@ -687,7 +687,7 @@ describe PushUserActivityToSalesforce, type: :routine do
       let!(:linked_student) do
         FactoryBot.create :user, role: :student, school: nil,
           salesforce_student_id: 'a0SEENSTUD01',
-          salesforce_last_seen_pushed_at: 30.days.ago,
+          salesforce_student_last_seen_pushed_at: 30.days.ago,
           last_seen_at: seen_time
       end
 
@@ -703,7 +703,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(linked_student.reload.salesforce_last_seen_pushed_at).to be > 1.hour.ago
+        expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be > 1.hour.ago
       end
     end
 
@@ -713,7 +713,7 @@ describe PushUserActivityToSalesforce, type: :routine do
       let!(:instructor) do
         FactoryBot.create :user, role: :instructor,
           salesforce_contact_id: 'a0SEENCONT1',
-          salesforce_last_seen_pushed_at: 30.days.ago,
+          salesforce_contact_last_seen_pushed_at: 30.days.ago,
           last_seen_at: seen_time
       end
 
@@ -729,17 +729,17 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(instructor.reload.salesforce_last_seen_pushed_at).to be > 1.hour.ago
+        expect(instructor.reload.salesforce_contact_last_seen_pushed_at).to be > 1.hour.ago
       end
     end
 
-    context 'a never-pushed student (salesforce_last_seen_pushed_at NULL)' do
+    context 'a never-pushed student (salesforce_student_last_seen_pushed_at NULL)' do
       let(:seen_time) { 3.hours.ago }
 
       let!(:linked_student) do
         FactoryBot.create :user, role: :student, school: nil,
           salesforce_student_id: 'a0SEENNULL1',
-          salesforce_last_seen_pushed_at: nil,
+          salesforce_student_last_seen_pushed_at: nil,
           last_seen_at: seen_time
       end
 
@@ -755,17 +755,17 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(linked_student.reload.salesforce_last_seen_pushed_at).to be > 1.hour.ago
+        expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be > 1.hour.ago
       end
     end
 
-    context 'a never-pushed contact (salesforce_last_seen_pushed_at NULL)' do
+    context 'a never-pushed contact (salesforce_contact_last_seen_pushed_at NULL)' do
       let(:seen_time) { 3.hours.ago }
 
       let!(:instructor) do
         FactoryBot.create :user, role: :instructor,
           salesforce_contact_id: 'a0SEENCNULL',
-          salesforce_last_seen_pushed_at: nil,
+          salesforce_contact_last_seen_pushed_at: nil,
           last_seen_at: seen_time
       end
 
@@ -781,7 +781,48 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(instructor.reload.salesforce_last_seen_pushed_at).to be > 1.hour.ago
+        expect(instructor.reload.salesforce_contact_last_seen_pushed_at).to be > 1.hour.ago
+      end
+    end
+
+    # An educator who switches to the student role keeps the Contact their
+    # lead converted into, so one user can hold both links. A single shared
+    # pushed_at column would let the student half's stamp suppress the
+    # Contact half on every subsequent run.
+    context 'a user linked as both a student and a Contact' do
+      let(:seen_time) { 2.hours.ago }
+
+      let!(:both) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0SEENBOTH1',
+          salesforce_contact_id: 'a0SEENBOTHC',
+          salesforce_student_last_seen_pushed_at: nil,
+          salesforce_contact_last_seen_pushed_at: nil,
+          last_seen_at: seen_time
+      end
+
+      it 'updates both records and stamps both columns' do
+        expect(student_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          expect(subrequests).to receive(:update).with(
+            'Student__c', Id: 'a0SEENBOTH1', Last_Website_Visit__c: seen_time.utc.strftime('%Y-%m-%d')
+          )
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+        expect(contact_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          expect(subrequests).to receive(:update).with(
+            'Contact', Id: 'a0SEENBOTHC', Last_Website_Visit__c: seen_time.utc.strftime('%Y-%m-%d')
+          )
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+
+        expect(both.reload.salesforce_student_last_seen_pushed_at).to be > 1.hour.ago
+        expect(both.reload.salesforce_contact_last_seen_pushed_at).to be > 1.hour.ago
       end
     end
 
@@ -789,7 +830,7 @@ describe PushUserActivityToSalesforce, type: :routine do
       let!(:stale_student) do
         FactoryBot.create :user, role: :student, school: nil,
           salesforce_student_id: 'a0SEENSTALE',
-          salesforce_last_seen_pushed_at: 1.hour.ago,
+          salesforce_student_last_seen_pushed_at: 1.hour.ago,
           last_seen_at: 2.hours.ago
       end
 
@@ -798,7 +839,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(stale_student.reload.salesforce_last_seen_pushed_at).to be_within(1.second).of(1.hour.ago)
+        expect(stale_student.reload.salesforce_student_last_seen_pushed_at).to be_within(1.second).of(1.hour.ago)
       end
     end
 
@@ -806,13 +847,13 @@ describe PushUserActivityToSalesforce, type: :routine do
       let!(:unlinked_student) do
         FactoryBot.create :user, role: :student, school: nil,
           salesforce_student_id: nil,
-          salesforce_last_seen_pushed_at: nil,
+          salesforce_student_last_seen_pushed_at: nil,
           last_seen_at: 1.hour.ago
       end
       let!(:unlinked_instructor) do
         FactoryBot.create :user, role: :instructor,
           salesforce_contact_id: nil,
-          salesforce_last_seen_pushed_at: nil,
+          salesforce_contact_last_seen_pushed_at: nil,
           last_seen_at: 1.hour.ago
       end
 
@@ -824,8 +865,8 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(unlinked_student.reload.salesforce_last_seen_pushed_at).to be_nil
-        expect(unlinked_instructor.reload.salesforce_last_seen_pushed_at).to be_nil
+        expect(unlinked_student.reload.salesforce_student_last_seen_pushed_at).to be_nil
+        expect(unlinked_instructor.reload.salesforce_contact_last_seen_pushed_at).to be_nil
       end
     end
 
@@ -833,7 +874,7 @@ describe PushUserActivityToSalesforce, type: :routine do
       let!(:never_seen) do
         FactoryBot.create :user, role: :student, school: nil,
           salesforce_student_id: 'a0NEVERSEEN',
-          salesforce_last_seen_pushed_at: nil,
+          salesforce_student_last_seen_pushed_at: nil,
           last_seen_at: nil
       end
 
@@ -842,7 +883,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(never_seen.reload.salesforce_last_seen_pushed_at).to be_nil
+        expect(never_seen.reload.salesforce_student_last_seen_pushed_at).to be_nil
       end
     end
 
@@ -850,7 +891,7 @@ describe PushUserActivityToSalesforce, type: :routine do
       let!(:linked_student) do
         FactoryBot.create :user, role: :student, school: nil,
           salesforce_student_id: 'a0SEENFAIL1',
-          salesforce_last_seen_pushed_at: nil,
+          salesforce_student_last_seen_pushed_at: nil,
           last_seen_at: 1.hour.ago
       end
 
@@ -860,7 +901,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         expect { described_class.call }.not_to raise_error
 
-        expect(linked_student.reload.salesforce_last_seen_pushed_at).to be_nil
+        expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be_nil
       end
     end
 
@@ -868,7 +909,7 @@ describe PushUserActivityToSalesforce, type: :routine do
       let!(:instructor) do
         FactoryBot.create :user, role: :instructor,
           salesforce_contact_id: 'a0SEENFAIL2',
-          salesforce_last_seen_pushed_at: nil,
+          salesforce_contact_last_seen_pushed_at: nil,
           last_seen_at: 1.hour.ago
       end
 
@@ -878,7 +919,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         expect { described_class.call }.not_to raise_error
 
-        expect(instructor.reload.salesforce_last_seen_pushed_at).to be_nil
+        expect(instructor.reload.salesforce_contact_last_seen_pushed_at).to be_nil
       end
     end
 
@@ -886,7 +927,7 @@ describe PushUserActivityToSalesforce, type: :routine do
       let!(:linked_student) do
         FactoryBot.create :user, role: :student, school: nil,
           salesforce_student_id: 'a0SEENBAD01',
-          salesforce_last_seen_pushed_at: nil,
+          salesforce_student_last_seen_pushed_at: nil,
           last_seen_at: 1.hour.ago
       end
 
@@ -901,7 +942,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(linked_student.reload.salesforce_last_seen_pushed_at).to be_nil
+        expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be_nil
       end
     end
   end
