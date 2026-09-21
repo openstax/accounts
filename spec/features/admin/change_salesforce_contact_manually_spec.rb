@@ -5,6 +5,7 @@ feature 'Change Salesforce contact manually', js: true do
     @admin_user = create_admin_user
     visit '/'
     complete_newflow_log_in_screen('admin')
+    wait_for_successful_log_in
 
     @target_user = FactoryBot.create(:user)
 

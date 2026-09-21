@@ -6,6 +6,7 @@ feature 'Admin oauth app create and edit', js: true do
       @admin_user = create_admin_user
       visit '/'
       complete_newflow_log_in_screen('admin')
+      wait_for_successful_log_in
     end
 
     it 'can create and edit applications' do

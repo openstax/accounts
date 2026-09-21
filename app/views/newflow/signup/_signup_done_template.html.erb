@@ -27,6 +27,19 @@
                     %>
                 </div>
             </form>
+
+            <%# After the message, not before it: this page's body is the
+                explanation of what the user is waiting for, and offering a way
+                out reads as noise until they have read it. The body form's
+                bottom border becomes the divider, and the block closes the
+                card -- see the `:last-child` rule. %>
+            <% if local_assigns[:alternatives].present? %>
+                <%= render partial: 'newflow/signup_alternatives', locals: {
+                      collapsible: true,
+                      heading: alternatives[:heading],
+                      actions: alternatives[:actions]
+                    } %>
+            <% end %>
         <% end  %>
     </div>
 </div>

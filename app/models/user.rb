@@ -214,6 +214,23 @@ class User < ApplicationRecord
     source_application&.name&.downcase&.include?('tutor')
   end
 
+  # `user_signup_done` is the headline signup-health metric, but the signup-done
+  # page it fires from is an ordinary GET: a revisit, a browser back-navigation
+  # or a second pass through signup renders it again, so a per-render capture
+  # counts visits rather than accounts. This claims the capture for the account
+  # exactly once -- the conditional UPDATE only matches while the column is
+  # still NULL, so concurrent renders can't both win it -- and returns whether
+  # this request is the one that should send the event. It deliberately skips
+  # validations and `updated_at`, like `sign_in!`'s login stamp, and swallows a
+  # write failure: bookkeeping must never break the page.
+  def claim_signup_done_capture!
+    User.where(id: id, signup_done_captured_at: nil)
+        .update_all(signup_done_captured_at: Time.current) == 1
+  rescue StandardError => e
+    Rails.logger.error("Failed to claim signup_done capture for user #{id}: #{e.message}")
+    false
+  end
+
   def self.username_is_valid?(username)
     user = User.new(username: username)
     user.valid?
