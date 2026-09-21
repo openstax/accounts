@@ -25,6 +25,11 @@
   var origin = frame.getAttribute('data-sheerid-origin');
   if (!origin) { return; }
 
+  // One leading slash, not two: `/i/signup/...` stays here, `//evil.com` and
+  // `javascript:...` do not. Anchored both ends so nothing rides along after
+  // a valid-looking prefix. See `goToNextStep`.
+  var SAME_ORIGIN_PATH = /^\/(?!\/)[\w\-./?=&%~+#]*$/;
+
   // SheerID's own stylesheet is why this form has no keyboard focus indicator:
   // it ships `outline:none` on `.sid-text-input:focus` and
   // `.sid-h-link-like:focus`, and gives the submit button, the dropzone and the
@@ -158,12 +163,14 @@
     // It is here because `location.assign` is a navigation sink and will run a
     // `javascript:` URL or leave the origin for a protocol-relative one -- the
     // day someone makes this path dynamic, that should fail closed rather than
-    // become an open redirect. Requiring a single leading slash allows exactly
-    // the same-origin absolute paths this is ever meant to send. (CodeQL flags
-    // the unguarded version as js/xss-through-dom.)
-    if (path.charAt(0) !== '/' || path.charAt(1) === '/') { return; }
+    // become an open redirect. `SAME_ORIGIN_PATH` allows exactly the rooted,
+    // same-origin paths this is ever meant to send, and reassigning the match
+    // is what lets CodeQL see the guard (it does not follow a `charAt` test,
+    // and reports js/xss-through-dom on the unguarded sink).
+    var safePath = SAME_ORIGIN_PATH.exec(path);
+    if (!safePath) { return; }
 
-    window.location.assign(path);
+    window.location.assign(safePath[0]);
   }
 
   // ON_VERIFICATION_READY is the form telling us it will accept input; prefill
