@@ -1,5 +1,7 @@
 <%= render 'newflow/educator_signup/refresh_upon_going_back' %>
 
+<% alternatives = local_assigns[:alternatives] %>
+
 <div id="login-signup-form">
     <div class="content">
         <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
@@ -9,7 +11,7 @@
                     classes: "signup-page",
                     header: header,
                     current_step: current_step) do %>
-            <% lev_form_for :confirm, url: submit_to_path do |form| %>
+            <%= lev_form_for :confirm, url: submit_to_path do |form| %>
                 <%
                     form_helper = NewflowFormHelper::Newflow.new(
                         f: form,
@@ -55,6 +57,10 @@
                     %>
                 </div>
 
+            <% end %>
+
+            <% if alternatives.present? %>
+                <%= render partial: 'newflow/signup_alternatives', locals: alternatives %>
             <% end %>
         <% end %>
     </div>

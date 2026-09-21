@@ -114,6 +114,11 @@ class SecurityLog < ApplicationRecord
     creating_new_salesforce_lead
     salesforce_lead_save_failed
     reset_password_unverified_email
+    recaptcha_verified
+    recaptcha_blocked
+    salesforce_lead_already_converted
+    updated_salesforce_contact
+    salesforce_contact_save_failed
     user_switched_signup_role
     updated_salesforce_lead_after_role_switch
     no_salesforce_lead_to_update

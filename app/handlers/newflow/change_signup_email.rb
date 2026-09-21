@@ -16,7 +16,7 @@ module Newflow
     def handle
       email_param = change_signup_email_params.email.squish!
 
-      if LookupUsers.by_verified_email(email_param).first
+      if EmailAddress.claimed?(email_param, excluding_user_id: options[:user].id)
         fatal_error(
           code: :email_taken,
           message: I18n.t(:"login_signup_form.email_address_taken"),
