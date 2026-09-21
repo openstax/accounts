@@ -12,8 +12,10 @@ describe 'whenever schedule' do
       end
       expect(salesforce_jobs.count).to eq 2
 
-      expect_any_instance_of(UpdateUserContactInfo).to receive(:call)
-      expect_any_instance_of(UpdateSchoolSalesforceInfo).to receive(:call)
+      # UpdateUserContactInfo and UpdateSchoolSalesforceInfo became shims
+      # that expose .call as a class method (delegating to Salesforce::*).
+      expect(UpdateUserContactInfo).to receive(:call)
+      expect(UpdateSchoolSalesforceInfo).to receive(:call)
 
       # Executes the actual rake tasks to make sure all constants and methods exist:
       salesforce_jobs.each do |job|

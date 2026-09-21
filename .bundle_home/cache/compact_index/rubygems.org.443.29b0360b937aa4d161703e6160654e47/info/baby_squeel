@@ -1,0 +1,29 @@
+---
+0.1.0 activerecord:>= 4.0.0|checksum:145a7ed414fc57fcb003860e58159ac33e711495534e49f1f0158b544bc24c2b,created_at:2016-03-16T16:19:28Z
+0.2.0 activerecord:>= 4.0.0|checksum:f808d404b82bf47737947257b737fca56873bc580e398a4306dbcb331ea4c443,created_at:2016-03-25T17:18:03Z
+0.2.1 activerecord:>= 4.0.0|checksum:60959f5d2718838b85ded0615f10fff94abc5031a0950207075fed30fe799745,created_at:2016-03-27T20:29:13Z
+0.2.2 activerecord:>= 4.0.0|checksum:f8a06a2365daf6e91d912a1af64976eb3cd63516dcac0a239b24d06edf31f974,created_at:2016-03-31T03:35:39Z
+0.3.0 activerecord:>= 4.0.0|checksum:01db6a1bed6f2890f59828fabf258cd78bda38b131fc35656c41d97d872c7b0a,created_at:2016-06-26T23:52:38Z
+0.3.1 activerecord:>= 4.0.0|checksum:789c1a1418e5c20c106db607a2003329cb0a06778fab81653abdf94f6262803f,created_at:2016-08-02T20:36:16Z
+1.0.0 activerecord:>= 4.1.0,polyamorous:~> 1.3|checksum:bf7793aeec6872b85457376dd801504290e7bffa7e6fc11a427d53cba79e3922,created_at:2016-09-09T22:38:44Z
+1.0.1 activerecord:>= 4.1.0,polyamorous:~> 1.3|checksum:af322e1afa808c299049cd274e1bfe9d03b2b1e223b0df7fb7e33fbe1f8c7ac4,created_at:2016-11-08T04:48:23Z
+1.0.2 activerecord:>= 4.1.0,polyamorous:~> 1.3|checksum:277a209d7c089636fe1fdf1ffea728249f7ed41103d30ccc8db7a402d375d66f,created_at:2017-02-07T05:31:21Z
+1.0.3 activerecord:>= 4.1.0,polyamorous:~> 1.3|checksum:e8f4d8d10293430113f463246d8ce67d8e1cc374d907bccdcbb24a19e8f20366,created_at:2017-02-09T23:00:30Z
+1.1.0 activerecord:>= 4.2.0,polyamorous:~> 1.3|checksum:d8dab41f0b77e392e8bd17d6fc4f33d472c1b07630ec6b6433b8c86038343096,created_at:2017-02-11T00:21:00Z
+1.1.1 activerecord:>= 4.2.0,polyamorous:~> 1.3|checksum:4e5040d2954cd88e65a8e2d278a2f2c49a1f103ad35e928cccbdcdaab6ac5c6f,created_at:2017-02-14T20:00:49Z
+1.1.2 activerecord:>= 4.2.0,polyamorous:~> 1.3|checksum:75d505e1d236b2903aca35d5d092a9e6948a2049cf7e318d3d02a2d72c2c2631,created_at:2017-03-21T14:32:41Z
+1.1.3 activerecord:>= 4.2.0,polyamorous:~> 1.3|checksum:353c8fa6180e412482557f7fa65be495b6a90aefbbfb1a500ecccfce3e6d34e2,created_at:2017-03-31T14:15:29Z
+1.1.4 activerecord:>= 4.2.0,polyamorous:~> 1.3|checksum:c71f01c1a66d315438b4a8e249f3ae2772014afc0fe6c957f0d4d299ebdb5ecd,created_at:2017-04-13T22:30:30Z
+1.1.5 activerecord:>= 4.2.0,polyamorous:~> 1.3|checksum:e33987f5ab0d027b3344a3d47a0a1e4af27afb605c701da913f701b3e3aace0e,created_at:2017-05-26T20:00:16Z
+1.2.0 activerecord:>= 4.2.0,polyamorous:~> 1.3|checksum:c6cb40fe0ccc04d023b179efb03bcdcee22e30196c58aabcbbe630843463d2df,created_at:2017-10-20T14:43:49Z
+1.2.1 activerecord:>= 4.2.0,join_dependency:~> 0.1.1,polyamorous:~> 1.3|checksum:89a9085a673e0c1d11741d629711b4ddfb1ee8cc3e25d324d5ff481467b3d95d,created_at:2018-04-25T18:41:35Z
+1.3.0 activerecord:>= 4.2.0,join_dependency:~> 0.1.1,polyamorous:~> 1.3|checksum:7ef55b9f57fe43a96ea1bc6657c4f721cb9ce1e60879acb5723a711370a979da,created_at:2018-05-04T17:15:20Z
+1.3.1 activerecord:>= 4.2.0,join_dependency:~> 0.1.2,polyamorous:~> 1.3|checksum:e45b5c2061498f4d9b3ee07ad7afa8618825af89f579c8e9a359f8247a5d9cd8,created_at:2018-05-15T21:41:58Z
+1.4.0.beta1 activerecord:~> 5.2,join_dependency:~> 0.1.4,ransack:~> 2.3|checksum:ce8e19ef021ff4958e74b9547cc3f83c929d13572eee2545b9b64fd719f913ed,rubygems:> 1.3.1,created_at:2021-04-21T17:45:33Z
+1.4.1 activerecord:~> 5.2,ransack:~> 2.3|checksum:869a6f50b24f4515e0017501e060865b6db58953412191e3f572f0907198957d,created_at:2021-06-17T15:24:01Z
+1.4.2 activerecord:< 7.1&>= 5.2,ransack:~> 2.3|checksum:9e185d5284915d897bcd381e1e3f5fe042af484e0c41114aa800ff9e523b0d15,created_at:2022-01-25T00:19:31Z
+1.4.3 activerecord:< 7.1&>= 5.2,ransack:~> 2.3|checksum:545c9c7639966b2c8f91560866ff313c48efbafc4e01c6dbb6a49dcd490cd52c,created_at:2022-02-04T17:08:48Z
+1.4.4 activerecord:< 7.1&>= 5.2,ransack:~> 2.3|checksum:8d919f08e961dcbbddbcadfba7b913920cb2069bb19ebbe5f81c7ef9cee51ea3,created_at:2022-02-08T06:16:20Z
+2.0.0 activerecord:< 7.1&>= 6.0,ransack:~> 2.3|checksum:30c70e71516d4f24579807607f2c5e602f794edcc4a5cae2c6fd767b75c83ea2,created_at:2022-08-28T15:42:56Z
+3.0.0 activerecord:< 7.2&>= 6.1.5,ransack:~> 4.1|checksum:53ebb00874da6a2bed589e02a21ae96bd05d667b48e338123323cb7974f9779d,created_at:2023-11-21T01:22:36Z
+4.0.0 activerecord:>= 7.1.5,ransack:~> 4.1|checksum:68563bb5bb6564a4630dd00c7448313759106ace2922eaba35e3ccca8e514f68,created_at:2025-11-30T04:16:15Z

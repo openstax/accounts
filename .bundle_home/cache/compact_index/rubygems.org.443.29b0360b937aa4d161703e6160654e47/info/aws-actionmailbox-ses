@@ -1,0 +1,4 @@
+---
+0.1.0 actionmailbox:>= 7.1.0,aws-sdk-s3:>= 1.123.0&~> 1,aws-sdk-sns:>= 1.61.0&~> 1|checksum:3fd4167cdbd456a325b2d0622482bd114741ac535f944c1c11e532eda6043a6d,ruby:>= 2.7,created_at:2024-11-16T23:47:05Z
+0.1.1 actionmailbox:>= 7.1.0,aws-sdk-s3:>= 1.123.0&~> 1,aws-sdk-sns:>= 1.61.0&~> 1|checksum:4765011aa9de4130c8ab56123165b6081fd7ae416fa0681ae4487ab405f1928a,ruby:>= 2.7,created_at:2026-03-31T20:05:29Z
+0.2.0 actionmailbox:>= 7.1.0,aws-sdk-s3:>= 1.123.0&~> 1,aws-sdk-sns:>= 1.61.0&~> 1|checksum:3b840be5de743a508084d9e5619aaed29af058e3d5000ada37dc6ed32c41706b,ruby:>= 2.7,created_at:2026-04-28T16:18:41Z

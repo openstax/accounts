@@ -1,0 +1,22 @@
+---
+1.0.0 loofah:~> 2.0|checksum:12487bac73912c6ee65436ee3e8dbb7259e1173f0a79d31e7f52e49ee9084f2b,created_at:2014-08-19T19:47:15Z
+1.0.1 loofah:~> 2.0|checksum:f8c08716c30a087d655ff99249a8cafd426344dc96d6647ee9015e4d06a08dee,created_at:2014-09-25T16:08:00Z
+1.0.2 loofah:~> 2.0|checksum:2481cfb60c4a03941489af5c92165c6dd169966f0b849d26d857cab5444b467a,created_at:2015-03-10T20:28:36Z
+1.0.3 loofah:~> 2.0|checksum:a7da8eb4ce2e673ba909d36a94a9e06f196e88a92e76d01dfee3803d0d6a0e8d,created_at:2016-01-25T19:26:56Z
+1.0.4 loofah:>= 2.2.2&~> 2.2|checksum:99cbc3d267856f6731663e654140be298393b1ee966027efab5dbcd44ade67bf,created_at:2018-03-22T19:08:45Z
+1.1.0 loofah:>= 2.2.2&~> 2.2|checksum:041fdfa18c6efb7308b8714dd470e7e8548d4aaf823f0d5aa5d6e49b7d378ea6,created_at:2019-08-05T01:27:12Z
+1.2.0 loofah:>= 2.2.2&~> 2.2|checksum:386f7b52a3c7a436ae2faa9886da3e5dc1b06c7ac90a9c58a1781d35eaef9c46,created_at:2019-08-08T22:04:21Z
+1.3.0 loofah:~> 2.3|checksum:8e348db43fcca066944ff580f39dc110161a1b3fbd195bbff584debb7ac597c5,created_at:2019-10-06T15:11:55Z
+1.4.0 loofah:~> 2.3|checksum:43a51896d384c2a5cd491e12e185ae307c1a8b3104de53501ae61ca02eef2fe5,created_at:2021-08-18T17:22:13Z
+1.4.1 loofah:~> 2.3|checksum:de9f23ddc47fc9abee0bade4e92e99a132ad49e96a7d393a6913552c49230c72,created_at:2021-08-18T20:52:44Z
+1.4.2 loofah:~> 2.3|checksum:7371cb1960c975130c929a6ab04fd1fd633093a594089011589dd27747741927,created_at:2021-08-24T00:16:54Z
+1.4.3 loofah:~> 2.3|checksum:2ebba6ad9a0b100f79fda853a46851e7664febe1728223f9734281e0d55940d6,created_at:2022-06-09T22:24:26Z
+1.4.4 loofah:>= 2.19.1&~> 2.19|checksum:895d0c87a2b6623891e85c1d507c7f16acda4e77d94692f537df35ba71398bd5,created_at:2022-12-13T13:23:37Z
+1.5.0 loofah:>= 2.19.1&~> 2.19|checksum:bf326075e8a968cd882c30b15a4c9100059be3af2356093dc68324ec3bd9ea79,created_at:2023-01-20T18:53:03Z
+1.6.0.rc1 loofah:~> 2.21,nokogiri:~> 1.14|checksum:82492b947e50827f55e0465b2f662895596451ecf70e133c226aebd552cc51dc,ruby:>= 2.7.0,rubygems:> 1.3.1,created_at:2023-05-24T16:22:38Z
+1.6.0.rc2 loofah:~> 2.21,nokogiri:~> 1.14|checksum:2aedb2fdec871f44bcc887a41614f8f49f11f7f9948adfb725f01e4f00eb469b,ruby:>= 2.7.0,rubygems:> 1.3.1,created_at:2023-05-24T21:21:49Z
+1.6.0 loofah:~> 2.21,nokogiri:~> 1.14|checksum:86e9f19d2e6748890dcc2633c8945ca45baa08a1df9d8c215ce17b3b0afaa4de,ruby:>= 2.7.0,created_at:2023-05-26T13:21:17Z
+1.6.1 loofah:~> 2.21,nokogiri:!= 1.16.0&!= 1.16.0.rc1&!= 1.16.1&!= 1.16.2&!= 1.16.3&!= 1.16.4&!= 1.16.5&!= 1.16.6&!= 1.16.7&>= 1.15.7|checksum:e3d2fb10339f03b802e39c7f6cac28c54fd404d3f65ae39c31cca9d150c5cbf0,ruby:>= 2.7.0,created_at:2024-12-02T20:51:56Z
+1.6.2 loofah:~> 2.21,nokogiri:!= 1.16.0&!= 1.16.0.rc1&!= 1.16.1&!= 1.16.2&!= 1.16.3&!= 1.16.4&!= 1.16.5&!= 1.16.6&!= 1.16.7&>= 1.15.7|checksum:35fce2ca8242da8775c83b6ba9c1bcaad6751d9eb73c1abaa8403475ab89a560,ruby:>= 2.7.0,created_at:2024-12-12T21:00:51Z
+1.7.0 loofah:~> 2.25,nokogiri:!= 1.16.0&!= 1.16.0.rc1&!= 1.16.1&!= 1.16.2&!= 1.16.3&!= 1.16.4&!= 1.16.5&!= 1.16.6&!= 1.16.7&>= 1.15.7|checksum:28b145cceaf9cc214a9874feaa183c3acba036c9592b19886e0e45efc62b1e89,ruby:>= 2.7.0,created_at:2026-02-24T18:46:02Z
+1.7.1 loofah:>= 2.25.2&~> 2.25,nokogiri:!= 1.16.0&!= 1.16.0.rc1&!= 1.16.1&!= 1.16.2&!= 1.16.3&!= 1.16.4&!= 1.16.5&!= 1.16.6&!= 1.16.7&>= 1.15.7|checksum:e797a7c9b01e567307e317c576b49ab4168017e63eea4dba9ce3cb587e2f22c2,ruby:>= 2.7.0,created_at:2026-07-16T03:01:05Z

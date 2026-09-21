@@ -1,0 +1,20 @@
+---
+0.0.1 |checksum:4f3f3029c0d5912ca789c4cd58bddf506a4b34c71b16bcb532ddbfc87fcb5d28,created_at:2010-04-28T09:24:08Z
+0.0.2 |checksum:a2c13b5eafc2bcfabe9b5d11531ee3e2872852d04c9f0da1f90a3ff75c3d0c05,created_at:2010-04-28T09:24:46Z
+0.0.3 |checksum:be44b18cb6a3d57844bd891f3224496d3bb66510852ca249aa1e34e0416e6eec,created_at:2010-04-28T10:59:50Z
+0.0.4 json:>= 0|checksum:4216e3952aed500daed64b20ea39dadde7d46f56d67867d3e613583f79b9e9aa,created_at:2010-04-28T13:52:05Z
+0.1 json:>= 0|checksum:572aa0d3be78c89b0d575a0df1a06540e115758a1c580387f1075a834d3c14ba,created_at:2010-06-18T22:28:55Z
+0.1.1 json:>= 0|checksum:89948103c9f39fd072b4b7128f0d6aea44a7e90645f5563a0074a32fb0d2b883,created_at:2010-06-18T23:12:06Z
+0.1.2 json:>= 0|checksum:5d064b71b895954b5eef069f5a3f521fe7b1add9d72a6bdab79486faa54a391d,created_at:2010-06-24T17:01:49Z
+0.1.3 json:>= 0|checksum:24cb80973cee57c2ec693a07f0072dae2b2a6bc3ddfed71e04ed07af3aadfb82,created_at:2010-06-24T17:28:59Z
+0.1.4 json:>= 0|checksum:d1ff9749da1ba428379d2bf2eefac8b3d4f679fdd461f41efc84237ad893ab92,created_at:2010-12-29T13:27:39Z
+0.2.0 json:>= 0|checksum:780a0f0983d5bef01b208debd3813bb1e3f65b6f1b1c120c0777865cf286d077,created_at:2011-02-01T03:48:20Z
+0.2.1 json:>= 0|checksum:141dae0e4defd9877253b9033c79b3492d4aa2f915d30ce48a602bf6154f5597,created_at:2011-03-25T21:07:15Z
+0.3.0 json:>= 0|checksum:1c8f32a170e13fe48363f2f36798f99f5db10bea99fbac4e0ae168c386d253fd,created_at:2012-01-03T13:30:28Z
+0.3.1 json:>= 0|checksum:dd6bcb42b22cb04ddcc61322d6b488c0c79a0190c00ad43643a8af4d4582d89f,created_at:2012-01-16T02:03:39Z
+0.3.2 json:>= 0|checksum:5920570374daf996591a09617bdc918f128109a80b1876c98012eea5a5591a29,created_at:2013-01-09T00:14:17Z
+0.3.3 json:>= 0|checksum:ae477f64fb4cd4244e2d8472faa90024a35d64edd8a1182278e12c78fbed7274,created_at:2013-04-25T11:35:18Z
+0.4.0 json:>= 0,thread:>= 0,thread_safe:>= 0|checksum:72ebef677705393976ee32d2c61962ac6f00a03cd4880bbbcfbd14a5a7fca9e5,created_at:2013-12-17T17:35:20Z
+0.5.0 json:>= 0,thread:>= 0,thread_safe:>= 0|checksum:e8ba957f52bba9df1230ca5959338cf353fc075add25b17c767c7f45e23a82b8,created_at:2014-03-31T19:27:02Z
+0.5.1 thread:>= 0,thread_safe:>= 0|checksum:44034131ab07e70a7a6624ca9b89bfeb465c46b6fb060b164b9e129e4c3c040a,created_at:2018-01-15T19:52:06Z
+0.5.2 thread:>= 0,thread_safe:>= 0|checksum:d6f65b0d0cdb2983391049b35fc4f67bae2f5dbc1e69e9805762673e0c02c35f,created_at:2026-07-19T00:44:07Z

@@ -1,0 +1,6 @@
+---
+1.0.0 |checksum:818a884db84e22c91e0b08c2b5d971c0bd89d8be26d256593045850ae07be1f2,ruby:>= 2.4.0,created_at:2021-07-04T13:52:33Z
+1.0.1 |checksum:4c8ff1f0973ff835be8d043ef16aaf54f47f25b7578f6d916deee8399a04d33b,ruby:>= 2.4.0,created_at:2021-07-04T14:04:32Z
+2.0.0 |checksum:6976d24a8ed6b9e539dcf9de9c34111ae6dbbde2d61a42951ee04a92f99ad28e,ruby:>= 2.6.0,created_at:2022-01-04T16:38:29Z
+2.0.1 httpclient:>= 2.2|checksum:2c4a378ba807dd5e360982d383584272cab4a0d682d097026df1167f516dfc5d,ruby:>= 2.6.0,created_at:2022-01-06T16:31:07Z
+2.0.2 httpclient:>= 2.2|checksum:d95fbe60cce5a87e157957d67c539a4c22fb8b0b0611d493a939cdde19d8d67c,ruby:>= 2.6.0,created_at:2025-06-17T19:29:29Z

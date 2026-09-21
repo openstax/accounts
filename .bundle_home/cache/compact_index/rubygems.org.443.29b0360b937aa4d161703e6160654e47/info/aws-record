@@ -1,0 +1,44 @@
+---
+1.0.0.pre.1 aws-sdk-resources:~> 2.0|checksum:cb71f12e78b072aa0b50eba46353b37f9ea2bcf034fe4dd97b9e3b97863e7de6,rubygems:> 1.3.1,created_at:2015-12-23T22:58:17Z
+1.0.0.pre.2 aws-sdk-resources:~> 2.0|checksum:1d1d914406fbb6e420fd2abe5691620bed40e1d1ce3457b235cf91cfe0ec3373,rubygems:> 1.3.1,created_at:2016-02-04T17:50:14Z
+1.0.0.pre.3 aws-sdk-resources:~> 2.0|checksum:ec5e3a0c5584d30619ba4e009044631010f6714df4ba07e1272cd522131c70f0,rubygems:> 1.3.1,created_at:2016-02-10T18:01:47Z
+1.0.0.pre.4 aws-sdk-resources:~> 2.0|checksum:1c77c0912d71074ac50a7d43bbd174be6afd6f1ced0b9eb2c236c3f796429ef9,rubygems:> 1.3.1,created_at:2016-02-11T21:22:35Z
+1.0.0.pre.5 aws-sdk-resources:~> 2.0|checksum:0016646e67724df76cda2ef7cf7493fc854173a61c59f2b79e30dd6d4fda7f62,rubygems:> 1.3.1,created_at:2016-04-19T17:32:22Z
+1.0.0.pre.6 aws-sdk-resources:~> 2.0|checksum:79cbb93a8b726f280bb350001d2a996d615925fba44ec73007b5fd5e99521d1d,rubygems:> 1.3.1,created_at:2016-04-19T22:26:10Z
+1.0.0.pre.7 aws-sdk-resources:~> 2.0|checksum:b412df4e3da98fea5e4566b6e13dbf43cc8b3cebb4129cd20b266028e08fc216,rubygems:> 1.3.1,created_at:2016-04-21T21:53:11Z
+1.0.0.pre.8 aws-sdk-resources:~> 2.0|checksum:0acde51334870bc93b5ee49af06084fc4319c9b2a24a59e596c8cea9469630ff,rubygems:> 1.3.1,created_at:2016-05-19T22:18:10Z
+1.0.0.pre.9 aws-sdk-resources:~> 2.0|checksum:7f01c7700b7dcd07028fdffcc47ccc8b548d302d118d6e5eaa27c981da653437,rubygems:> 1.3.1,created_at:2016-07-22T22:20:46Z
+1.0.0.pre.10 aws-sdk-resources:~> 2.0|checksum:dd1bffd19c9a8bb64582bb5899bab77a4ac314b8184fd9c1d679dffe661406de,rubygems:> 1.3.1,created_at:2016-08-03T19:54:43Z
+1.0.0 aws-sdk-resources:~> 2.0|checksum:0a07ad0868e583b61381eca1df4284d24d4c1be82a6bfdfa4efbd2a3b5eb6972,created_at:2016-08-15T20:01:00Z
+1.0.1 aws-sdk-resources:~> 2.0|checksum:06edb8102c739f0a78aae497cf912933f9365ecf743dcbb45910b1a96f97fc3d,created_at:2016-08-24T19:45:18Z
+1.0.2 aws-sdk-resources:~> 2.0|checksum:f10758bf260845e42d4db9cd398532fbda9a398a2ab26b851dbe434133fc3d81,created_at:2016-12-02T20:24:28Z
+1.0.3 aws-sdk-resources:~> 2.0|checksum:58219a43d765adf57e978531de1b3182ba0e41917c62e624ce6d944801b64488,created_at:2016-12-19T21:03:11Z
+1.1.0 aws-sdk-resources:~> 2.0|checksum:9407c1b7f986ad6f4fa4a6f96231cd51b12075fbd994ff8b26f9c549d00533c8,created_at:2017-04-21T16:51:23Z
+1.1.1 aws-sdk-resources:~> 2.0|checksum:31d8451bc9dc5bc2e4a41b4eef8aa25b6057e847b1e39edc4d48aca120607638,created_at:2017-06-16T15:57:19Z
+2.0.0 aws-sdk-dynamodb:~> 1.0|checksum:c7a7282da6040182ef6497042ba6260c12f70d993b246c4c7f1b90bc50c0071b,created_at:2017-08-29T18:24:15Z
+2.0.1 aws-sdk-dynamodb:~> 1.0|checksum:7ec39505babd2d62150131538670d4e31975d65975954b5dd96430f614fc3168,created_at:2017-10-27T21:25:37Z
+2.0.2 aws-sdk-dynamodb:~> 1.0|checksum:b96437f64ca72cf4474ab9ba3d3e1b0181cad42887e9c6e7a3cb774eb2ba126e,created_at:2018-06-08T16:46:37Z
+2.1.0 aws-sdk-dynamodb:~> 1.0|checksum:8cd5dcbbdf34df82fe843d5ba2cc71376ee5711f269aa7bef871638000ff8895,created_at:2018-06-25T17:15:29Z
+2.1.1 aws-sdk-dynamodb:~> 1.0|checksum:3982763db617de9e1cb40de4d2149a7d14bc4c40699efc5e1402a52b393d36be,created_at:2018-07-10T20:55:35Z
+2.1.2 aws-sdk-dynamodb:~> 1.0|checksum:68b41fc2ead3870babcbd8d5a9571c7581b8786cc586ba21719ff0d55b29b524,created_at:2018-11-15T17:55:49Z
+2.2.0 aws-sdk-dynamodb:~> 1.18|checksum:e9507d78df0d0adcecbf48ca39ef7c819cb143eb07df0940c5dcef3a4ce6e650,created_at:2018-12-05T23:14:25Z
+2.3.0 aws-sdk-dynamodb:~> 1.18|checksum:5964d935bfbd0510892d8214858ca6b45f9afad7bb48819ec284d88c17794b0d,created_at:2019-02-08T17:33:13Z
+2.4.0 aws-sdk-dynamodb:~> 1.18|checksum:7d8aaa6dfa22f2c8de2e3a544971172ba78720c39770531425fe942b32836610,created_at:2019-07-16T22:54:10Z
+2.4.1 aws-sdk-dynamodb:~> 1.18|checksum:54603af05d72b01951c9ec3531c91e3797bed09a6a0c592ef1a55817510b442e,created_at:2020-05-29T19:46:31Z
+2.5.0 aws-sdk-dynamodb:~> 1.18|checksum:7dcef72b0f673727b854d713dd25d7354ae834ca0fd3f8fcedfcc168a87f6084,created_at:2020-10-13T19:49:09Z
+2.6.0 aws-sdk-dynamodb:~> 1.18|checksum:f292f1b8bff24fae152f5b96561d8c20b1d47ec911ad62206ee025a2b3b681a0,created_at:2021-05-13T16:57:20Z
+2.6.1 aws-sdk-dynamodb:~> 1.18|checksum:33ff1fadbc611a347dfdfc3248af2738fe492a412091be65762b176973565e83,created_at:2021-08-10T18:54:08Z
+2.7.0 aws-sdk-dynamodb:~> 1.18|checksum:c87928c8ac0d00510306194520b6b71a11d0c240a22b6b3752f6634c4e2ca434,created_at:2021-10-28T21:17:53Z
+2.8.0 aws-sdk-dynamodb:~> 1.18|checksum:bcc3896e3a2b06641ad121d707a6fe43bfb6a68c77a4b2fd61d6bf390687415e,created_at:2022-10-12T19:15:54Z
+2.9.0 aws-sdk-dynamodb:~> 1.18|checksum:4b89adc346fd3ae062d88f5f7e76ffa29abeea9ace2eb01fef69fce5ad62d0c9,created_at:2022-11-16T17:54:24Z
+2.10.0 aws-sdk-dynamodb:~> 1.18|checksum:32b9bf78d2f180f3846987d25dffee5738169512d598c7482905e904ecc27c30,created_at:2023-01-13T16:34:33Z
+2.10.1 aws-sdk-dynamodb:~> 1.18|checksum:5c7dd3dbcbed343eda25beaaf9aed4a79a5ed618041f6dae856e1b5772b8a334,created_at:2023-01-17T21:54:52Z
+2.11.0 aws-sdk-dynamodb:>= 1.85.0&~> 1|checksum:2a01373718ace05211f14d28981cbb791c56df472a2d1986d1bc628f6183241d,created_at:2023-06-02T18:02:36Z
+2.12.0 aws-sdk-dynamodb:>= 1.85.0&~> 1|checksum:49fe3e60c31927c940a55a2f7883025f81b33ca2bf090d06cdbfd8571bd3153c,ruby:>= 2.3,created_at:2023-09-28T20:14:04Z
+2.13.0 aws-sdk-dynamodb:>= 1.85.0&~> 1|checksum:53879371db0865b452a047c30c63ee443a22a068c801c49955b27b7ef4cc2ef9,ruby:>= 2.3,created_at:2023-10-17T21:15:39Z
+2.13.1 aws-sdk-dynamodb:>= 1.85.0&~> 1|checksum:a235ee6c3547000b963b6168b01a7bec6f5bb48cdde2c86af0a2c244955aaf75,ruby:>= 2.3,created_at:2024-07-18T18:02:25Z
+2.13.2 aws-sdk-dynamodb:>= 1.85.0&~> 1|checksum:567f84d0cb98267f88fd537d3248b39a88ed18cf9dc29e1f5d1848a95187b776,ruby:>= 2.3,created_at:2024-08-21T20:13:23Z
+2.13.3 aws-sdk-dynamodb:>= 1.85.0&~> 1|checksum:9666b949c4f7d90ef297f845c93f361caaba3a2112f12204fb1b93e7c259ab01,ruby:>= 2.3,created_at:2025-01-02T16:06:32Z
+2.13.4 aws-sdk-dynamodb:>= 1.85.0&~> 1|checksum:7c733de5328689911dae6233ce304fb26856d692101531cfe958f2b2c39927a8,ruby:>= 2.3,created_at:2025-05-21T15:20:00Z
+2.14.0 aws-sdk-dynamodb:>= 1.85.0&~> 1|checksum:3d221d8d92c98b430c2798cfcc0994ffdda7e97311c1909142e4e79871c15896,ruby:>= 2.7,created_at:2025-06-04T15:48:03Z
+2.15.0 aws-sdk-dynamodb:>= 1.85.0&~> 1,ostruct:~> 0|checksum:087b6fff1bafe78f3897bd34233d6061091c9d8eda50728143f8fe74bcbf5877,ruby:>= 2.7,created_at:2026-04-20T19:53:42Z

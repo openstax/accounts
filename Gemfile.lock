@@ -293,7 +293,7 @@ GEM
     faraday-em_http (1.0.0)
     faraday-em_synchrony (1.0.0)
     faraday-excon (1.1.0)
-    faraday-follow_redirects (0.5.0)
+    faraday-follow_redirects (0.3.0)
       faraday (>= 1, < 3)
     faraday-http-cache (2.5.1)
       faraday (>= 0.8)
@@ -518,10 +518,6 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.3.0)
       rails (>= 3.1, < 7.0)
-    openstax_salesforce (10.2.0)
-      openstax_active_force
-      rails (>= 6.1)
-      restforce (>= 7.1)
     openstax_transaction_isolation (2.0.0)
       activerecord (>= 6)
     openstax_transaction_retry (2.0.0)
@@ -656,9 +652,9 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    restforce (8.0.1)
-      faraday (>= 1.1.0, < 3.0.0)
-      faraday-follow_redirects (< 0.6.0)
+    restforce (7.5.0)
+      faraday (>= 1.1.0, < 2.12.0)
+      faraday-follow_redirects (<= 0.3.0, < 1.0.0)
       faraday-multipart (>= 1.0.0, < 2.0.0)
       faraday-net_http (< 4.0.0)
       hashie (>= 1.2.0, < 6.0)
@@ -714,7 +710,7 @@ GEM
       rexml
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    rubyzip (2.4.1)
+    rubyzip (2.3.2)
     safely_block (0.4.1)
     sass (3.4.19)
     sass-rails (5.0.8)
@@ -726,9 +722,7 @@ GEM
     sassc (2.4.0)
       ffi (~> 1.9)
     sd_notify (0.1.1)
-    selenium-webdriver (4.32.0)
-      base64 (~> 0.2)
-      logger (~> 1.4)
+    selenium-webdriver (4.10.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
@@ -786,6 +780,10 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    webdrivers (5.3.1)
+      nokogiri (~> 1.6)
+      rubyzip (>= 1.3.0)
+      selenium-webdriver (~> 4.0, < 4.11)
     webmock (3.24.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -875,11 +873,11 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
+  openstax_active_force
   openstax_api
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce (~> 10.2)
   openstax_transaction_isolation
   openstax_transaction_retry
   openstax_utilities
@@ -902,6 +900,7 @@ DEPENDENCIES
   recaptcha
   redis-rails
   representable
+  restforce
   rexml
   rspec-instafail
   rspec-rails
@@ -910,7 +909,7 @@ DEPENDENCIES
   sass (= 3.4.19)
   sass-rails
   sd_notify
-  selenium-webdriver (>= 4.11)
+  selenium-webdriver
   sentry-delayed_job
   sentry-rails
   sentry-ruby
@@ -920,6 +919,7 @@ DEPENDENCIES
   timecop
   vcr
   web-console
+  webdrivers
   webmock
   whenever
   whenever-test
