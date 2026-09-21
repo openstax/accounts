@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe UserSessionManagement, type: :lib do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:user_1)     { FactoryBot.create(:user) }
   let(:user_2)     { FactoryBot.create(:user) }
 
@@ -195,6 +197,58 @@ describe UserSessionManagement, type: :lib do
 
       controller = ActionController::Base.new.tap { |controller| controller.request = request }
       expect(controller.current_user).to eq user_1
+    end
+
+    it 'record_last_seen does nothing for an anonymous request' do
+      # AnonymousUser has no last_seen_at/update_column -- if the anonymous
+      # guard didn't short-circuit first, this would raise NoMethodError.
+      expect { controller.record_last_seen }.not_to raise_error
+    end
+  end
+
+  context 'record_last_seen' do
+    before { allow(request).to receive(:options?).and_return(false) }
+
+    it 'does nothing for a CORS preflight (OPTIONS) request' do
+      controller.sign_in! user_1
+      allow(request).to receive(:options?).and_return(true)
+
+      expect { controller.record_last_seen }.not_to change { user_1.reload.last_seen_at }
+    end
+
+    it 'stamps last_seen_at for a signed-in user' do
+      controller.sign_in! user_1
+
+      expect { controller.record_last_seen }.to change { user_1.reload.last_seen_at }.from(nil)
+    end
+
+    it 'does not issue a second write for a second request the same UTC day' do
+      controller.sign_in! user_1
+      controller.record_last_seen
+      first_stamp = user_1.reload.last_seen_at
+
+      expect(user_1).not_to receive(:update_column)
+      controller.record_last_seen
+      expect(user_1.reload.last_seen_at).to eq first_stamp
+    end
+
+    it 're-stamps on a request the following UTC day' do
+      controller.sign_in! user_1
+      controller.record_last_seen
+      first_stamp = user_1.reload.last_seen_at
+
+      travel_to(first_stamp + 1.day) do
+        expect { controller.record_last_seen }.to change { user_1.reload.last_seen_at }
+      end
+    end
+
+    it 'swallows an error raised while writing the column' do
+      controller.sign_in! user_1
+      allow(user_1).to receive(:update_column).and_raise(StandardError, 'boom')
+
+      expect(Rails.logger).to receive(:error).with(/Failed to record last_seen_at for user #{user_1.id}/)
+      expect { controller.record_last_seen }.not_to raise_error
+      expect(user_1.last_seen_at).to be_nil
     end
   end
 
