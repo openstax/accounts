@@ -18,16 +18,12 @@
 #      already linked elsewhere (lead conversion, profile sync). Never
 #      creates or otherwise touches a Contact -- Last_Account_Login_Date__c is
 #      the only field Accounts is allowed to write there.
-#   4. last-seen refresh -- recurring, one flag covering both populations.
-#      Updates Last_Website_Visit__c from users.last_seen_at on students
-#      already linked via salesforce_student_id and on users already linked
-#      via salesforce_contact_id, straight from those stored ids, with no
-#      SOQL lookup. Never creates a Student__c or a Contact, for the same
-#      reason as passes 2 and 3. Its two halves stamp separate columns
-#      because one user can hold both links -- an educator who switched to
-#      the student role keeps the Contact their lead converted into -- and a
-#      shared column would let the student half's stamp permanently suppress
-#      the Contact half.
+#   4. last-seen refresh -- recurring, both populations under one flag.
+#      Writes Last_Website_Visit__c, creating nothing, like passes 2 and 3.
+#      Its halves stamp separate columns because one user can hold both
+#      links: an educator who switches to the student role keeps the Contact
+#      their lead converted into, and a shared column would let the student
+#      half suppress the Contact half.
 class PushUserActivityToSalesforce
   BATCH_SIZE = 250
   LOOKUP_CHUNK_SIZE = 200
@@ -49,7 +45,9 @@ class PushUserActivityToSalesforce
     sync_contact_login_dates if Settings::Salesforce.push_contact_logins_enabled
 
     if Settings::Salesforce.push_last_seen_enabled
-      sync_student_last_seen_dates
+      # push_students_enabled stays the single kill switch for all Student__c
+      # writes, as it is for passes 1 and 2.
+      sync_student_last_seen_dates if Settings::Salesforce.push_students_enabled
       sync_contact_last_seen_dates
     end
   end
@@ -150,6 +148,10 @@ class PushUserActivityToSalesforce
   # One composite/batch request per 25 students instead of one update per
   # student -- this pass only ever touches already-linked students, so there
   # is no lookup to batch, just the writes.
+  # Stamps the last_signed_in_at that was sent, not Time.current: a login
+  # landing mid-batch would otherwise sit under a newer watermark and never
+  # be sent. Pass 1 keeps Time.current -- its login date can be nil, and a
+  # nil stamp would re-select the user for linking forever.
   def push_student_login_dates(users)
     results = OpenStax::Salesforce::Remote::Student.sfdc_client.batch do |batch|
       users.each do |user|
@@ -163,7 +165,7 @@ class PushUserActivityToSalesforce
 
     users.zip(results).each do |user, result|
       if batch_update_succeeded?(result)
-        user.update_column(:salesforce_student_pushed_at, Time.current)
+        user.update_column(:salesforce_student_pushed_at, user.last_signed_in_at)
       else
         Sentry.capture_message(
           "[PushUserActivityToSalesforce] student login-date update failed for user #{user.id}: #{result.inspect}",
@@ -193,6 +195,7 @@ class PushUserActivityToSalesforce
   # Only Last_Account_Login_Date__c -- never FV_Status__c, Adoption_Status__c,
   # name or school, which belong to Customer Experience once a Contact
   # exists.
+  # Watermark caveat as in push_student_login_dates.
   def push_contact_login_dates(users)
     results = OpenStax::Salesforce::Remote::Contact.sfdc_client.batch do |batch|
       users.each do |user|
@@ -206,7 +209,7 @@ class PushUserActivityToSalesforce
 
     users.zip(results).each do |user, result|
       if batch_update_succeeded?(result)
-        user.update_column(:salesforce_contact_login_pushed_at, Time.current)
+        user.update_column(:salesforce_contact_login_pushed_at, user.last_signed_in_at)
       else
         Sentry.capture_message(
           "[PushUserActivityToSalesforce] contact login-date update failed for user #{user.id}: #{result.inspect}",
@@ -218,9 +221,7 @@ class PushUserActivityToSalesforce
     Sentry.capture_exception(e)
   end
 
-  # Same NULL reasoning as sync_student_login_dates: a student linked by
-  # pass 1 (or by ReconcileSalesforceStudentIds) but not yet reached by this
-  # pass must count as "never sent".
+  # Same NULL reasoning as sync_student_login_dates.
   def sync_student_last_seen_dates
     User.student
         .where.not(salesforce_student_id: nil)
@@ -234,11 +235,8 @@ class PushUserActivityToSalesforce
     end
   end
 
-  # Only Last_Website_Visit__c -- this pass never creates a Student__c, and
-  # never touches Last_Account_Login_Date__c, which pass 2 owns.
-  # The watermark is the last_seen_at we actually sent, not the time we sent
-  # it: a visit landing between loading this batch and stamping it would
-  # otherwise be buried under a newer Time.current and never pushed.
+  # Stamps the last_seen_at that was sent, not Time.current: a visit landing
+  # mid-batch would otherwise sit under a newer watermark and never be sent.
   def push_student_last_seen_dates(users)
     results = OpenStax::Salesforce::Remote::Student.sfdc_client.batch do |batch|
       users.each do |user|
@@ -277,11 +275,7 @@ class PushUserActivityToSalesforce
     end
   end
 
-  # Only Last_Website_Visit__c -- never FV_Status__c, Adoption_Status__c,
-  # name, school, or Last_Account_Login_Date__c (owned by pass 3).
-  # The watermark is the last_seen_at we actually sent, not the time we sent
-  # it: a visit landing between loading this batch and stamping it would
-  # otherwise be buried under a newer Time.current and never pushed.
+  # Watermark caveat as in push_student_last_seen_dates.
   def push_contact_last_seen_dates(users)
     results = OpenStax::Salesforce::Remote::Contact.sfdc_client.batch do |batch|
       users.each do |user|
@@ -322,8 +316,6 @@ class PushUserActivityToSalesforce
   def last_seen_date(user)
     return if user.last_seen_at.blank?
 
-    # A fixed zone, not the server's local time, so the date doesn't drift
-    # with where this runs.
     user.last_seen_at.utc.strftime('%Y-%m-%d')
   end
 

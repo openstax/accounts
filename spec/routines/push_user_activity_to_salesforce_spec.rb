@@ -344,7 +344,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(linked_student.reload.salesforce_student_pushed_at).to be > 1.hour.ago
+        expect(linked_student.reload.salesforce_student_pushed_at).to be_within(1.second).of(login_time)
       end
 
       it 'does not re-stamp the user when the batch item reports failure' do
@@ -413,7 +413,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(reconciled_student.reload.salesforce_student_pushed_at).to be > 1.hour.ago
+        expect(reconciled_student.reload.salesforce_student_pushed_at).to be_within(1.second).of(login_time)
       end
     end
 
@@ -471,8 +471,8 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(first.reload.salesforce_student_pushed_at).to be > 1.hour.ago
-        expect(second.reload.salesforce_student_pushed_at).to be > 1.hour.ago
+        expect(first.reload.salesforce_student_pushed_at).to be_within(1.second).of(first.last_signed_in_at)
+        expect(second.reload.salesforce_student_pushed_at).to be_within(1.second).of(second.last_signed_in_at)
       end
     end
   end
@@ -508,7 +508,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(instructor.reload.salesforce_contact_login_pushed_at).to be > 1.hour.ago
+        expect(instructor.reload.salesforce_contact_login_pushed_at).to be_within(1.second).of(login_time)
       end
 
       it 'sends only Last_Account_Login_Date__c, never name/school/FV/adoption fields' do
@@ -563,7 +563,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(instructor.reload.salesforce_contact_login_pushed_at).to be > 1.hour.ago
+        expect(instructor.reload.salesforce_contact_login_pushed_at).to be_within(1.second).of(login_time)
       end
     end
 
@@ -707,6 +707,25 @@ describe PushUserActivityToSalesforce, type: :routine do
       end
     end
 
+    context 'push_students_enabled is off' do
+      let!(:linked_student) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0SEENKILL1',
+          salesforce_student_last_seen_pushed_at: nil,
+          last_seen_at: 1.hour.ago
+      end
+
+      before { allow(Settings::Salesforce).to receive(:push_students_enabled) { false } }
+
+      it 'writes no Student__c even though push_last_seen_enabled is on' do
+        expect(student_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be_nil
+      end
+    end
+
     context 'a linked contact with a newer last_seen_at' do
       let(:seen_time) { 2.hours.ago }
 
@@ -785,9 +804,7 @@ describe PushUserActivityToSalesforce, type: :routine do
       end
     end
 
-    # The watermark must be the value sent, not the send time: otherwise a
-    # visit landing mid-batch is buried under a newer Time.current and that
-    # day's visit is never pushed.
+    # Regression: the watermark must be the value sent, not the send time.
     context 'a visit lands between loading the batch and stamping it' do
       let(:sent_time) { 2.days.ago }
       let(:concurrent_time) { 1.minute.ago }
@@ -804,7 +821,7 @@ describe PushUserActivityToSalesforce, type: :routine do
           subrequests = double('subrequests')
           allow(subrequests).to receive(:update)
           block.call(subrequests)
-          # Simulate the heartbeat firing after this batch was loaded.
+          # The heartbeat fires after this batch was loaded.
           linked_student.update_column(:last_seen_at, concurrent_time)
           [{ 'statusCode' => 204 }]
         end
@@ -817,10 +834,8 @@ describe PushUserActivityToSalesforce, type: :routine do
       end
     end
 
-    # An educator who switches to the student role keeps the Contact their
-    # lead converted into, so one user can hold both links. A single shared
-    # pushed_at column would let the student half's stamp suppress the
-    # Contact half on every subsequent run.
+    # Regression: an educator who switches to student keeps their Contact, so
+    # a shared pushed_at column would let the student half suppress the other.
     context 'a user linked as both a student and a Contact' do
       let(:seen_time) { 2.hours.ago }
 

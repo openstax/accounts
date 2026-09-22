@@ -22,13 +22,12 @@ ActiveSupport.on_load(:action_controller_base) do
     prepend_before_action :set_device_id
     before_action :save_redirect
     before_action :set_locale
-    before_action :complete_signup_profile
-    # Hooked here, not in ApplicationController, because
-    # OpenStax::Api::V1::ApiController (which serves /api/user, hit on every
-    # osweb/REX page load with the SSO cookie) inherits from
-    # ActionController::Base but not from ApplicationController. This is the
-    # one place that reaches both Accounts' own pages and the API.
+    # Here rather than ApplicationController: the API controller serving
+    # /api/user inherits from ActionController::Base but not from
+    # ApplicationController, and only this reaches both. Ahead of
+    # complete_signup_profile, whose redirect would halt the chain.
     before_action :record_last_seen
+    before_action :complete_signup_profile
 
     fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
