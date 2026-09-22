@@ -27,6 +27,14 @@ module Settings
         Settings::Db.store.push_salesforce_contact_logins_enabled = bool
       end
 
+      def push_last_seen_enabled
+        Settings::Db.store.push_salesforce_last_seen_enabled
+      end
+
+      def push_last_seen_enabled=(bool)
+        Settings::Db.store.push_salesforce_last_seen_enabled = bool
+      end
+
       def user_info_error_emails_enabled
         Settings::Db.store.user_info_error_emails_enabled
       end
