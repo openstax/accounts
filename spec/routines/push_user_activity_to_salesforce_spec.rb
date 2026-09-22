@@ -785,9 +785,7 @@ describe PushUserActivityToSalesforce, type: :routine do
       end
     end
 
-    # The watermark must be the value sent, not the send time: otherwise a
-    # visit landing mid-batch is buried under a newer Time.current and that
-    # day's visit is never pushed.
+    # Regression: the watermark must be the value sent, not the send time.
     context 'a visit lands between loading the batch and stamping it' do
       let(:sent_time) { 2.days.ago }
       let(:concurrent_time) { 1.minute.ago }
@@ -804,7 +802,7 @@ describe PushUserActivityToSalesforce, type: :routine do
           subrequests = double('subrequests')
           allow(subrequests).to receive(:update)
           block.call(subrequests)
-          # Simulate the heartbeat firing after this batch was loaded.
+          # The heartbeat fires after this batch was loaded.
           linked_student.update_column(:last_seen_at, concurrent_time)
           [{ 'statusCode' => 204 }]
         end
@@ -817,10 +815,8 @@ describe PushUserActivityToSalesforce, type: :routine do
       end
     end
 
-    # An educator who switches to the student role keeps the Contact their
-    # lead converted into, so one user can hold both links. A single shared
-    # pushed_at column would let the student half's stamp suppress the
-    # Contact half on every subsequent run.
+    # Regression: an educator who switches to student keeps their Contact, so
+    # a shared pushed_at column would let the student half suppress the other.
     context 'a user linked as both a student and a Contact' do
       let(:seen_time) { 2.hours.ago }
 

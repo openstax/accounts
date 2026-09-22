@@ -79,27 +79,16 @@ module UserSessionManagement
     @current_user
   end
 
-  # Stamps last_seen_at on any request carrying a valid SSO cookie, throttled
-  # to once per UTC day so this isn't a write on every page view. Hooked in
-  # from config/initializers/controllers.rb rather than called per-controller;
-  # see the comment there for why.
-  #
-  # `current_user` is undefined on OpenStax::Api::V1::ApiController and its
-  # subclasses (it undef's it to force API code onto current_api_user /
-  # current_human_user instead), so this falls back to current_session_user,
-  # the pre-undef alias of the same SSO-cookie-derived method, when current_user
-  # isn't callable. The `true` arg matters: some controllers (e.g.
-  # ExternalUserCredentialsController) override current_user as
-  # protected/private rather than undef it, and respond_to?'s default
-  # public-only check would misread that as "not callable" too.
+  # OpenStax::Api::V1::ApiController undef's current_user to force API code
+  # onto current_api_user, so fall back to current_session_user, its pre-undef
+  # alias. respond_to? needs `true` because some controllers (e.g.
+  # ExternalUserCredentialsController) override current_user as protected.
   def record_last_seen
     return if request.options?
 
     user = respond_to?(:current_user, true) ? current_user : current_session_user
     return if user.nil? || user.is_anonymous?
 
-    # A fixed UTC day boundary, not server-local time -- see the comment on
-    # PushUserActivityToSalesforce#login_date for why.
     today = Time.now.utc.strftime('%Y-%m-%d')
     return if user.last_seen_at.present? && user.last_seen_at.utc.strftime('%Y-%m-%d') == today
 

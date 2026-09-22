@@ -1,9 +1,7 @@
 require 'rails_helper'
 
-# Proves the before_action wired in config/initializers/controllers.rb reaches
-# Api::V1::UsersController, which serves /api/user and does NOT inherit from
-# ApplicationController -- the whole reason record_last_seen is hooked at the
-# ActionController::Base initializer rather than in ApplicationController.
+# Proves the before_action reaches Api::V1::UsersController, which does not
+# inherit from ApplicationController.
 describe 'last_seen_at tracking via /api/user', type: :request, api: true, version: :v1 do
   let!(:user) { FactoryBot.create :user_with_emails, :terms_agreed }
 

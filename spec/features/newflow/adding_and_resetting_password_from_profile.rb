@@ -95,9 +95,8 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     expect_newflow_profile_page
 
     click_link_or_button (t :"legacy.users.edit.sign_out")
-    # The sign-out is a full-page navigation, which Capybara's click does not
-    # wait for -- visiting login_path first would still be authenticated and
-    # bounce to the profile.
+    # Capybara's click does not wait for the sign-out navigation, so visiting
+    # login_path first would still be authenticated and bounce to the profile.
     wait_for_log_in_form
     visit login_path
     expect(page).to have_current_path newflow_login_path
