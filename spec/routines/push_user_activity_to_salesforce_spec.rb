@@ -344,7 +344,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(linked_student.reload.salesforce_student_pushed_at).to be > 1.hour.ago
+        expect(linked_student.reload.salesforce_student_pushed_at).to be_within(1.second).of(login_time)
       end
 
       it 'does not re-stamp the user when the batch item reports failure' do
@@ -413,7 +413,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(reconciled_student.reload.salesforce_student_pushed_at).to be > 1.hour.ago
+        expect(reconciled_student.reload.salesforce_student_pushed_at).to be_within(1.second).of(login_time)
       end
     end
 
@@ -471,8 +471,8 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(first.reload.salesforce_student_pushed_at).to be > 1.hour.ago
-        expect(second.reload.salesforce_student_pushed_at).to be > 1.hour.ago
+        expect(first.reload.salesforce_student_pushed_at).to be_within(1.second).of(first.last_signed_in_at)
+        expect(second.reload.salesforce_student_pushed_at).to be_within(1.second).of(second.last_signed_in_at)
       end
     end
   end
@@ -508,7 +508,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(instructor.reload.salesforce_contact_login_pushed_at).to be > 1.hour.ago
+        expect(instructor.reload.salesforce_contact_login_pushed_at).to be_within(1.second).of(login_time)
       end
 
       it 'sends only Last_Account_Login_Date__c, never name/school/FV/adoption fields' do
@@ -563,7 +563,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(instructor.reload.salesforce_contact_login_pushed_at).to be > 1.hour.ago
+        expect(instructor.reload.salesforce_contact_login_pushed_at).to be_within(1.second).of(login_time)
       end
     end
 

@@ -148,6 +148,10 @@ class PushUserActivityToSalesforce
   # One composite/batch request per 25 students instead of one update per
   # student -- this pass only ever touches already-linked students, so there
   # is no lookup to batch, just the writes.
+  # Stamps the last_signed_in_at that was sent, not Time.current: a login
+  # landing mid-batch would otherwise sit under a newer watermark and never
+  # be sent. Pass 1 keeps Time.current -- its login date can be nil, and a
+  # nil stamp would re-select the user for linking forever.
   def push_student_login_dates(users)
     results = OpenStax::Salesforce::Remote::Student.sfdc_client.batch do |batch|
       users.each do |user|
@@ -161,7 +165,7 @@ class PushUserActivityToSalesforce
 
     users.zip(results).each do |user, result|
       if batch_update_succeeded?(result)
-        user.update_column(:salesforce_student_pushed_at, Time.current)
+        user.update_column(:salesforce_student_pushed_at, user.last_signed_in_at)
       else
         Sentry.capture_message(
           "[PushUserActivityToSalesforce] student login-date update failed for user #{user.id}: #{result.inspect}",
@@ -191,6 +195,7 @@ class PushUserActivityToSalesforce
   # Only Last_Account_Login_Date__c -- never FV_Status__c, Adoption_Status__c,
   # name or school, which belong to Customer Experience once a Contact
   # exists.
+  # Watermark caveat as in push_student_login_dates.
   def push_contact_login_dates(users)
     results = OpenStax::Salesforce::Remote::Contact.sfdc_client.batch do |batch|
       users.each do |user|
@@ -204,7 +209,7 @@ class PushUserActivityToSalesforce
 
     users.zip(results).each do |user, result|
       if batch_update_succeeded?(result)
-        user.update_column(:salesforce_contact_login_pushed_at, Time.current)
+        user.update_column(:salesforce_contact_login_pushed_at, user.last_signed_in_at)
       else
         Sentry.capture_message(
           "[PushUserActivityToSalesforce] contact login-date update failed for user #{user.id}: #{result.inspect}",
