@@ -242,6 +242,19 @@ describe UserSessionManagement, type: :lib do
       end
     end
 
+    it 'does not stamp while an admin is impersonating the user' do
+      controller.sign_in! user_1, {}, false
+
+      expect { controller.record_last_seen }.not_to change { user_1.reload.last_seen_at }
+    end
+
+    it 'resumes stamping once the user signs in for real' do
+      controller.sign_in! user_1, {}, false
+      controller.sign_in! user_1
+
+      expect { controller.record_last_seen }.to change { user_1.reload.last_seen_at }.from(nil)
+    end
+
     it 'swallows an error raised while writing the column' do
       controller.sign_in! user_1
       allow(user_1).to receive(:update_column).and_raise(StandardError, 'boom')

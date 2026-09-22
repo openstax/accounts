@@ -56,6 +56,7 @@ module UserSessionManagement
       # events (a failed login, say) attach to whoever last used this browser.
       session[:posthog_reset] = true
 
+      session.delete(:impersonated)
       security_log(:sign_out, security_log_data)
     else
       session[:last_admin_activity] = DateTime.now.to_s if @current_user.is_administrator?
@@ -65,7 +66,12 @@ module UserSessionManagement
 
       security_log :sign_in_successful, security_log_data
 
+      # Admin "become" passes record_login = false so impersonation is not
+      # mistaken for the user's own activity; last_seen_at must honour that
+      # too, or a CS agent's debugging session lands in Salesforce as a visit.
       if record_login
+        session.delete(:impersonated)
+
         begin
           @current_user.update_column(:last_signed_in_at, Time.current)
         rescue StandardError => e
@@ -73,6 +79,8 @@ module UserSessionManagement
             "Failed to record last_signed_in_at for user #{@current_user.id}: #{e.message}"
           )
         end
+      else
+        session[:impersonated] = true
       end
     end
 
@@ -85,6 +93,7 @@ module UserSessionManagement
   # ExternalUserCredentialsController) override current_user as protected.
   def record_last_seen
     return if request.options?
+    return if session[:impersonated]
 
     user = respond_to?(:current_user, true) ? current_user : current_session_user
     return if user.nil? || user.is_anonymous?

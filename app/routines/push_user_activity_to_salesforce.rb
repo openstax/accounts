@@ -45,7 +45,9 @@ class PushUserActivityToSalesforce
     sync_contact_login_dates if Settings::Salesforce.push_contact_logins_enabled
 
     if Settings::Salesforce.push_last_seen_enabled
-      sync_student_last_seen_dates
+      # push_students_enabled stays the single kill switch for all Student__c
+      # writes, as it is for passes 1 and 2.
+      sync_student_last_seen_dates if Settings::Salesforce.push_students_enabled
       sync_contact_last_seen_dates
     end
   end

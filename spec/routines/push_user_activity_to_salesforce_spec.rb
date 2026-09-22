@@ -707,6 +707,25 @@ describe PushUserActivityToSalesforce, type: :routine do
       end
     end
 
+    context 'push_students_enabled is off' do
+      let!(:linked_student) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0SEENKILL1',
+          salesforce_student_last_seen_pushed_at: nil,
+          last_seen_at: 1.hour.ago
+      end
+
+      before { allow(Settings::Salesforce).to receive(:push_students_enabled) { false } }
+
+      it 'writes no Student__c even though push_last_seen_enabled is on' do
+        expect(student_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be_nil
+      end
+    end
+
     context 'a linked contact with a newer last_seen_at' do
       let(:seen_time) { 2.hours.ago }
 
