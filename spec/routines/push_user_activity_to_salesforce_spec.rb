@@ -703,7 +703,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be > 1.hour.ago
+        expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be_within(1.second).of(seen_time)
       end
     end
 
@@ -729,7 +729,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(instructor.reload.salesforce_contact_last_seen_pushed_at).to be > 1.hour.ago
+        expect(instructor.reload.salesforce_contact_last_seen_pushed_at).to be_within(1.second).of(seen_time)
       end
     end
 
@@ -755,7 +755,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be > 1.hour.ago
+        expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be_within(1.second).of(seen_time)
       end
     end
 
@@ -781,7 +781,39 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(instructor.reload.salesforce_contact_last_seen_pushed_at).to be > 1.hour.ago
+        expect(instructor.reload.salesforce_contact_last_seen_pushed_at).to be_within(1.second).of(seen_time)
+      end
+    end
+
+    # The watermark must be the value sent, not the send time: otherwise a
+    # visit landing mid-batch is buried under a newer Time.current and that
+    # day's visit is never pushed.
+    context 'a visit lands between loading the batch and stamping it' do
+      let(:sent_time) { 2.days.ago }
+      let(:concurrent_time) { 1.minute.ago }
+
+      let!(:linked_student) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0SEENRACE1',
+          salesforce_student_last_seen_pushed_at: nil,
+          last_seen_at: sent_time
+      end
+
+      it 'leaves the newer visit eligible for the next run' do
+        allow(student_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          allow(subrequests).to receive(:update)
+          block.call(subrequests)
+          # Simulate the heartbeat firing after this batch was loaded.
+          linked_student.update_column(:last_seen_at, concurrent_time)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+
+        stamp = linked_student.reload.salesforce_student_last_seen_pushed_at
+        expect(stamp).to be_within(1.second).of(sent_time)
+        expect(linked_student.last_seen_at).to be > stamp
       end
     end
 
@@ -821,8 +853,8 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         described_class.call
 
-        expect(both.reload.salesforce_student_last_seen_pushed_at).to be > 1.hour.ago
-        expect(both.reload.salesforce_contact_last_seen_pushed_at).to be > 1.hour.ago
+        expect(both.reload.salesforce_student_last_seen_pushed_at).to be_within(1.second).of(seen_time)
+        expect(both.reload.salesforce_contact_last_seen_pushed_at).to be_within(1.second).of(seen_time)
       end
     end
 

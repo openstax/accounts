@@ -236,6 +236,9 @@ class PushUserActivityToSalesforce
 
   # Only Last_Website_Visit__c -- this pass never creates a Student__c, and
   # never touches Last_Account_Login_Date__c, which pass 2 owns.
+  # The watermark is the last_seen_at we actually sent, not the time we sent
+  # it: a visit landing between loading this batch and stamping it would
+  # otherwise be buried under a newer Time.current and never pushed.
   def push_student_last_seen_dates(users)
     results = OpenStax::Salesforce::Remote::Student.sfdc_client.batch do |batch|
       users.each do |user|
@@ -249,7 +252,7 @@ class PushUserActivityToSalesforce
 
     users.zip(results).each do |user, result|
       if batch_update_succeeded?(result)
-        user.update_column(:salesforce_student_last_seen_pushed_at, Time.current)
+        user.update_column(:salesforce_student_last_seen_pushed_at, user.last_seen_at)
       else
         Sentry.capture_message(
           "[PushUserActivityToSalesforce] student last-seen update failed for user #{user.id}: #{result.inspect}",
@@ -276,6 +279,9 @@ class PushUserActivityToSalesforce
 
   # Only Last_Website_Visit__c -- never FV_Status__c, Adoption_Status__c,
   # name, school, or Last_Account_Login_Date__c (owned by pass 3).
+  # The watermark is the last_seen_at we actually sent, not the time we sent
+  # it: a visit landing between loading this batch and stamping it would
+  # otherwise be buried under a newer Time.current and never pushed.
   def push_contact_last_seen_dates(users)
     results = OpenStax::Salesforce::Remote::Contact.sfdc_client.batch do |batch|
       users.each do |user|
@@ -289,7 +295,7 @@ class PushUserActivityToSalesforce
 
     users.zip(results).each do |user, result|
       if batch_update_succeeded?(result)
-        user.update_column(:salesforce_contact_last_seen_pushed_at, Time.current)
+        user.update_column(:salesforce_contact_last_seen_pushed_at, user.last_seen_at)
       else
         Sentry.capture_message(
           "[PushUserActivityToSalesforce] contact last-seen update failed for user #{user.id}: #{result.inspect}",
