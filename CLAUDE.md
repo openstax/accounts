@@ -68,7 +68,44 @@ Switching *away* from educator resets every column the educator flow wrote (the 
 
 `rejected_faculty` (not `no_faculty_info`) is deliberate: **student role + a Salesforce lead + `rejected_faculty`** is this codebase's existing marker for "came through the educator funnel, isn't faculty". `UpdateUserLeadInfo` already excludes that exact triple from the nightly resync, and `UpdateUserContactInfo` refuses to downgrade `rejected_faculty` to `incomplete_signup`/`no_faculty_info`, so the marker survives both syncs and stays queryable as `Role__c = 'Student' AND FV_Status__c = 'rejected_faculty'`. It does inflate the admin report's "Rejected Faculty" count. Relatedly, `CreateOrUpdateSalesforceLead` skips its faculty-status recompute for students — otherwise the incomplete profile would re-stamp a switched user `incomplete_signup` and erase the marker. `confirmed_faculty` users are refused; a stray click must not undo a passed verification.
 
-Both signup escape hatches — "Verify another way" (the manual CS path) and "Switch to a student/educator account" — render from one component, `newflow/_signup_alternatives`, which takes a `heading` and an `actions` array (`label`, `description`, `path`, `method`, `ga_label`). On the SheerID step it sits **above** the iframe: that frame is pinned at 100rem (117rem on phones) and we don't control SheerID's content height, so anything below it is effectively invisible.
+Both signup escape hatches — "Verify another way" (the manual CS path) and "Switch to a student/educator account" — render from one component, `newflow/_signup_alternatives`, which takes a `heading` and an `actions` array (`label`, `description`, `path`, `method`, `ga_label`). On the SheerID step it sits **above** the iframe: that frame is floored at 110rem (117rem on phones) and grows to whatever height SheerID reports, so anything below it is effectively invisible.
+
+### SheerID instructor verification (step 3)
+The step-3 iframe loads a **program verification URL** built by
+`Settings::SheerId` (`https://services.sheerid.com/verify/<programId>/`). The
+program id is not a secret -- it ships in the iframe URL -- so it is a
+checked-in constant with a `SHEERID_PROGRAM_ID` env override, not a row in the
+admin settings store. The old admin-editable `sheer_id_base_url` field is gone.
+
+**The frame sizes itself.** SheerID posts `updateHeight` messages and
+`newflow/sheerid_iframe.js` applies them, clearing the CSS `min-height` floor as
+it does. Two things this depends on, both easy to break:
+- The URL must carry `installType=cdn_inline_iframe` and a
+  `verificationIframeUid` matching the iframe's `data-sheerid-uid`. Without
+  them no height is reported.
+- Only a program verification URL speaks this protocol. A hosted
+  `offers.sheerid.com` page renders the same form and never reports a height
+  (`updateHeight` appears nowhere in its bundle), which is what left the frame
+  pinned at a hardcoded size and ~20rem of dead space under it. Never restore a
+  fixed `height`; the floor exists only for the pre-message moment and the
+  no-JS case.
+
+We deliberately do **not** load SheerID's `sheerid-install.js`: it is ES-module
+only (older institutional browsers would get no iframe at all), it is a
+third-party script in the origin that handles passwords, and it copies every
+query param on the page into the third-party URL, which here would include `r`,
+`sp` and `client_id`. Its entire contribution to auto-height is the three lines
+we reimplemented.
+
+**Prefill goes over postMessage, not the URL.** A program verification URL
+ignores prefill query params, so name and email are passed as `data-sheerid-*`
+attributes and sent via `setViewModel` on `ON_VERIFICATION_READY`. Do not put
+them back in the URL: it leaked the user's email to a third party for nothing.
+
+**Don't assert on copy inside the frame.** Headings, button labels, the
+"can't find your school" hints and whether Country comes preselected are all
+Program Builder settings that differ per program, so `expect_sheerid_iframe`
+checks only that the form rendered and that our prefill reached it.
 
 ### Escape hatches out of a signup step
 Where the switch is offered is deliberate: **never on the PIN screens** (nobody
