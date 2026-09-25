@@ -82,7 +82,7 @@ way straight back.
 
 `newflow/_signup_alternatives` has two shapes. The default is an always-visible
 tinted panel, for where people actually get stuck: the SheerID step and the
-social `signup_done`. Collapsed behind a `<summary>` on SheerID, people walked
+The SheerID version used to be collapsed behind a `<summary>`, and people walked
 past it. Passing `collapsible: true` renders a quiet `<details>`/`<summary>`
 disclosure for pages where it sits alongside a real task -- step 4 and the
 pending-CS screen. Both shapes are card slices whose content sits in the body's
