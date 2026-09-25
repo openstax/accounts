@@ -15,7 +15,9 @@
 //= require_self
 
 $(document).ready(function(){
-  $('form:first *:input[type!=hidden]:first').focus();
+  // The escape-hatch button_to forms can precede the step's own form; focusing
+  // one would leave a stray Enter away from switching account type.
+  $('form:not(.signup-alternatives__form):first *:input[type!=hidden]:first').focus();
 
   $('[data-toggle="tooltip"]').tooltip()
 

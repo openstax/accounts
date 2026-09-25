@@ -71,19 +71,38 @@ Switching *away* from educator resets every column the educator flow wrote (the 
 Both signup escape hatches — "Verify another way" (the manual CS path) and "Switch to a student/educator account" — render from one component, `newflow/_signup_alternatives`, which takes a `heading` and an `actions` array (`label`, `description`, `path`, `method`, `ga_label`). On the SheerID step it sits **above** the iframe: that frame is pinned at 100rem (117rem on phones) and we don't control SheerID's content height, so anything below it is effectively invisible.
 
 ### Escape hatches out of a signup step
-`newflow/_signup_alternatives` has two shapes. The default renders boxed
-actions, for pages where choosing an alternative *is* the job (`signup_done`).
-Passing `collapsible: true` renders a quiet `<details>`/`<summary>` disclosure
-for pages where it sits alongside a real task -- steps 3 and 4 and the
-pending-CS screen.
+Where the switch is offered is deliberate: **never on the PIN screens** (nobody
+has hit a wall yet), on the educator steps after it (3, 4, pending-CS -- where
+students posing as instructors get stuck), and on `signup_done` **only for
+social signups** (`current_user.identity.nil?`). Social signup always creates a
+student -- there is no educator social flow -- so that is an instructor's only
+way into the educator funnel from there; everyone else picked a role on the
+welcome page, and a user who just switched to student must not be offered the
+way straight back.
+
+`newflow/_signup_alternatives` has two shapes. The default is an always-visible
+tinted panel, for where people actually get stuck: the SheerID step and the
+The SheerID version used to be collapsed behind a `<summary>`, and people walked
+past it. Passing `collapsible: true` renders a quiet `<details>`/`<summary>`
+disclosure for pages where it sits alongside a real task -- step 4 and the
+pending-CS screen. Both shapes are card slices whose content sits in the body's
+centered 55.5rem column.
 
 The card is drawn in **slices**: `.step-counter`, `.page-header` and the body
 form each paint their own left/right rails, and nothing paints a shared
 container. A block placed between them must continue those rails or the card
 visibly comes apart into stacked boxes, and whichever slice ends the card must
-close it -- hence `.signup-alternatives--collapsible:last-child`. The card's
-form and submit chrome is painted at ID specificity, so the variant's layout
-opt-outs live under `#login-signup-form`; a class-only rule silently loses.
+close it -- hence `.signup-alternatives:last-child`, and the
+`form:has(+ .signup-alternatives)` rule that drops the body form's rounded
+bottom border when the block follows it. The card's form and submit chrome is
+painted at ID specificity, so all of this lives under `#login-signup-form` and
+below those rules; a class-only rule silently loses.
+
+`newflow/index.js` autofocuses the first input of the first form on the page,
+and on SheerID that is the panel's `button_to` -- a stray Enter would switch the
+account to student. The selector skips `.signup-alternatives__form`; keep it
+that way. (Controls inside a closed `<details>` can't take focus, which is why
+this only surfaced once the panel became visible.)
 
 Collapsed, the actions are invisible to Capybara: open the disclosure first,
 and note `click_on` will not match a `<summary>`.

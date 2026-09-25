@@ -1,20 +1,12 @@
 <%#
-  Escape hatches out of a signup step. Two shapes for two jobs:
-  - default: boxed actions, for pages where picking an alternative IS the task
-  - collapsible: one quiet line, for pages where it sits above the real task
+  Escape hatches out of a signup step, drawn as a slice of the signup card.
+  Two shapes for two jobs:
+  - default: an always-visible panel, for the step people actually get stuck on
+  - collapsible: one quiet line, for pages where it sits alongside the real task
 %>
 <% collapsible = local_assigns.fetch(:collapsible, false) %>
 
-<%= content_tag(
-      collapsible ? :details : :div,
-      class: "signup-alternatives#{' signup-alternatives--collapsible' if collapsible}"
-    ) do %>
-  <% if collapsible %>
-    <%= content_tag(:summary, heading, class: 'signup-alternatives__summary') %>
-  <% else %>
-    <h2 class="signup-alternatives__heading"><%= heading %></h2>
-  <% end %>
-
+<% options = capture do %>
   <ul class="signup-alternatives__options">
     <% actions.each do |action| %>
       <li class="signup-alternatives__option">
@@ -45,4 +37,18 @@
       </li>
     <% end %>
   </ul>
+<% end %>
+
+<% if collapsible %>
+  <%= content_tag(:details, class: 'signup-alternatives signup-alternatives--collapsible') do %>
+    <%= content_tag(:summary, heading, class: 'signup-alternatives__summary') %>
+    <%= options %>
+  <% end %>
+<% else %>
+  <div class="signup-alternatives">
+    <div class="signup-alternatives__panel">
+      <h2 class="signup-alternatives__heading"><%= heading %></h2>
+      <%= options %>
+    </div>
+  </div>
 <% end %>
