@@ -6,6 +6,24 @@
     email_address: @email_address
   ).html_safe
   @page_title = 'Sign up (done)'
+
+  # Social signup always creates a student -- there is no educator social
+  # flow -- so this is the only way back into it for an instructor who used
+  # it. Everyone else chose their role on the welcome page.
+  alternatives = if current_user.student? && current_user.identity.nil?
+    {
+      heading: I18n.t(:"login_signup_form.alternatives_heading_educator"),
+      actions: [
+        {
+          label: I18n.t(:"login_signup_form.switch_role_educator"),
+          description: I18n.t(:"login_signup_form.switch_role_educator_description"),
+          path: switch_signup_role_path,
+          method: :post,
+          ga_label: 'switch-to-educator'
+        }
+      ]
+    }
+  end
 %>
 
 <%=
@@ -13,21 +31,7 @@
     'newflow/signup/signup_done_template',
     header: header,
     description: description,
-    image: image
+    image: image,
+    alternatives: alternatives
   )
 %>
-
-<% if current_user.student? %>
-  <%= render partial: 'newflow/signup_alternatives', locals: {
-        heading: I18n.t(:"login_signup_form.alternatives_heading"),
-        actions: [
-          {
-            label: I18n.t(:"login_signup_form.switch_role_educator"),
-            description: I18n.t(:"login_signup_form.switch_role_educator_description"),
-            path: switch_signup_role_path,
-            method: :post,
-            ga_label: 'switch-to-educator'
-          }
-        ]
-      } %>
-<% end %>
