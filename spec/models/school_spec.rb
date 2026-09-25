@@ -36,6 +36,19 @@ describe School, type: :model do
 
       expect(described_class.match_self_reported(described_class::PLACEHOLDER_NAME)).to eq nearby
     end
+
+    it 'skips the placeholder whatever the casing of its synced name' do
+      FactoryBot.create :school, name: 'find me a HOME'
+
+      expect(described_class.match_self_reported('Find Me A Home')).to be_nil
+    end
+  end
+
+  it 'never offers the placeholder in autocomplete' do
+    FactoryBot.create :school, name: described_class::PLACEHOLDER_NAME
+    homeschool = FactoryBot.create :school, name: 'Home School Academy'
+
+    expect(described_class.search('home')).to eq [homeschool]
   end
 
   it 'fuzzy search returns a fully-loaded record whose attributes are readable' do

@@ -81,7 +81,9 @@ module Newflow
       end
 
       def create_user
-        picked_school = School.find_by(id: signup_params.school_id) if signup_params.school_id.present?
+        if signup_params.school_id.present?
+          picked_school = School.not_placeholder.find_by(id: signup_params.school_id)
+        end
         # Typed without picking a suggestion: without a school_id, the nightly
         # PushUserActivityToSalesforce never gives the student a Student__c.
         school = picked_school || School.match_self_reported(signup_params.school)

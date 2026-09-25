@@ -132,6 +132,17 @@ module Newflow
             expect(result.errors).to be_empty
             expect(result.outputs.user.school).to be_nil
           end
+
+          it 'never links the placeholder even when its id is submitted as picked' do
+            placeholder = FactoryBot.create :school, name: School::PLACEHOLDER_NAME
+            result = described_class.call(
+              params: {
+                signup: params[:signup].merge(school: School::PLACEHOLDER_NAME, school_id: placeholder.id)
+              }
+            )
+            expect(result.errors).to be_empty
+            expect(result.outputs.user.school).to be_nil
+          end
         end
       end
 
