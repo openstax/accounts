@@ -96,7 +96,7 @@ class UpdateUserContactInfo
     watermark = Settings::Salesforce.contacts_synced_through
     return watermark - WATERMARK_OVERLAP if watermark
 
-    Settings::Db.store.number_of_days_contacts_modified.to_i.days.ago
+    Settings::Db.store.number_of_days_contacts_modified.to_i.days.ago.beginning_of_day
   end
 
   def contact_batch_query(since:, after_id: nil)
@@ -139,7 +139,10 @@ class UpdateUserContactInfo
   # isolated to this one user/Contact pair; anything else propagates and
   # fails the run.
   def process_user(user, sf_contact, schools_by_salesforce_id, counts)
-    result = update_user_from_contact(user, sf_contact, schools_by_salesforce_id)
+    # SecurityLog rows are written before save!, so a skipped user must roll them back too.
+    result = ActiveRecord::Base.transaction(requires_new: true) do
+      update_user_from_contact(user, sf_contact, schools_by_salesforce_id)
+    end
     counts[:updated] += 1 if result[:updated]
     counts[:fv_status_changed] += 1 if result[:fv_status_changed]
     counts[:without_cached_school] += 1 if result[:without_cached_school]

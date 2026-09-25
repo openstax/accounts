@@ -347,16 +347,18 @@ describe UpdateUserContactInfo, type: :routine do
 
       expect(bad_user.reload.faculty_status).to eq('no_faculty_info')
       expect(good_user.reload.faculty_status).to eq('confirmed_faculty')
+      expect(SecurityLog.where(user: bad_user)).to be_empty
+      expect(SecurityLog.where(user: good_user)).not_to be_empty
     end
   end
 
   describe '#window_start' do
-    it 'falls back to number_of_days_contacts_modified.days.ago when there is no watermark' do
+    it 'falls back to midnight UTC, number_of_days_contacts_modified days ago, when there is no watermark' do
       Settings::Db.store.number_of_days_contacts_modified = 3
       Settings::Salesforce.contacts_synced_through = nil
 
-      travel_to(Time.current) do
-        expect(described_class.new.window_start).to be_within(1.second).of(3.days.ago)
+      travel_to(Time.utc(2026, 9, 25, 15, 30, 0)) do
+        expect(described_class.new.window_start).to eq(Time.utc(2026, 9, 22, 0, 0, 0))
       end
     end
 
