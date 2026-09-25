@@ -12,39 +12,76 @@ class User < ApplicationRecord
     EXTERNAL = 'external', # lms users cannot login normally and skip most of the signup process
   ].freeze
 
-  VALID_ROLES = [
-    UNKNOWN_ROLE = :unknown_role,
-    STUDENT_ROLE = :student,
-    INSTRUCTOR_ROLE = :instructor,
-    ADMINISTRATOR_ROLE = :administrator,
-    LIBRARIAN_ROLE = :librarian,
-    DESIGNER_ROLE = :designer,
-    OTHER_ROLE = :other,
-    ADJUNCT_ROLE = :adjunct,
-    HOMESCHOOL_ROLE = :homeschool,
-    RESEARCHER_ROLE = :researcher,
-  ].freeze
+  UNKNOWN_ROLE = :unknown_role
+  STUDENT_ROLE = :student
+  INSTRUCTOR_ROLE = :instructor
+  ADMINISTRATOR_ROLE = :administrator
+  LIBRARIAN_ROLE = :librarian
+  DESIGNER_ROLE = :designer
+  OTHER_ROLE = :other
+  ADJUNCT_ROLE = :adjunct
+  HOMESCHOOL_ROLE = :homeschool
+  RESEARCHER_ROLE = :researcher
 
-  VALID_FACULTY_STATUSES = [
-    NO_FACULTY_INFO = 'no_faculty_info',
-    PENDING_FACULTY = 'pending_faculty',
-    CONFIRMED_FACULTY = 'confirmed_faculty',
-    REJECTED_FACULTY = 'rejected_faculty',
-    PENDING_SHEERID = 'pending_sheerid',
-    REJECTED_BY_SHEERID = 'rejected_by_sheerid',
-    INCOMPLETE_SIGNUP = 'incomplete_signup'
-  ].freeze
+  # Every enum below is integer-backed: the DB stores the number, not the name, so a
+  # value's integer is permanent. Add new ones with the next free integer; never
+  # renumber or reuse one. spec/models/enum_baseline_spec.rb enforces this.
+  ROLES = {
+    UNKNOWN_ROLE => 0,
+    STUDENT_ROLE => 1,
+    INSTRUCTOR_ROLE => 2,
+    ADMINISTRATOR_ROLE => 3,
+    LIBRARIAN_ROLE => 4,
+    DESIGNER_ROLE => 5,
+    OTHER_ROLE => 6,
+    ADJUNCT_ROLE => 7,
+    HOMESCHOOL_ROLE => 8,
+    RESEARCHER_ROLE => 9
+  }.freeze
+  VALID_ROLES = ROLES.keys.freeze
 
-  VALID_USING_OPENSTAX_HOW = [:as_primary, :as_recommending, :as_future].freeze
-  VALID_SCHOOL_LOCATIONS = [:unknown_school_location, :domestic_school, :foreign_school].freeze
-  VALID_SCHOOL_TYPES = [
-    :unknown_school_type,
-    :other_school_type,
-    :college,
-    :high_school,
-    :k12_school,
-    :home_school
-  ].freeze
+  NO_FACULTY_INFO = 'no_faculty_info'
+  PENDING_FACULTY = 'pending_faculty'
+  CONFIRMED_FACULTY = 'confirmed_faculty'
+  REJECTED_FACULTY = 'rejected_faculty'
+  PENDING_SHEERID = 'pending_sheerid'
+  REJECTED_BY_SHEERID = 'rejected_by_sheerid'
+  INCOMPLETE_SIGNUP = 'incomplete_signup'
+
+  FACULTY_STATUSES = {
+    NO_FACULTY_INFO => 0,
+    PENDING_FACULTY => 1,
+    CONFIRMED_FACULTY => 2,
+    REJECTED_FACULTY => 3,
+    PENDING_SHEERID => 4,
+    REJECTED_BY_SHEERID => 5,
+    INCOMPLETE_SIGNUP => 6
+  }.freeze
+  VALID_FACULTY_STATUSES = FACULTY_STATUSES.keys.freeze
+
+  USING_OPENSTAX_HOWS = {
+    as_primary: 0,
+    as_recommending: 1,
+    as_future: 2
+  }.freeze
+  VALID_USING_OPENSTAX_HOW = USING_OPENSTAX_HOWS.keys.freeze
+
+  SCHOOL_LOCATIONS = {
+    unknown_school_location: 0,
+    domestic_school: 1,
+    foreign_school: 2
+  }.freeze
+  VALID_SCHOOL_LOCATIONS = SCHOOL_LOCATIONS.keys.freeze
+
+  SCHOOL_TYPES = {
+    unknown_school_type: 0,
+    other_school_type: 1,
+    college: 2,
+    high_school: 3,
+    k12_school: 4,
+    home_school: 5
+  }.freeze
+  VALID_SCHOOL_TYPES = SCHOOL_TYPES.keys.freeze
 
   USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
   USERNAME_MIN_LENGTH = 3
@@ -53,11 +90,11 @@ class User < ApplicationRecord
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
   DEFAULT_SCHOOL_LOCATION = VALID_SCHOOL_LOCATIONS[0]
 
-  enum(faculty_status: VALID_FACULTY_STATUSES)
-  enum(role: VALID_ROLES)
-  enum(using_openstax_how: VALID_USING_OPENSTAX_HOW)
-  enum(school_location: VALID_SCHOOL_LOCATIONS)
-  enum(school_type: VALID_SCHOOL_TYPES)
+  enum(faculty_status: FACULTY_STATUSES)
+  enum(role: ROLES)
+  enum(using_openstax_how: USING_OPENSTAX_HOWS)
+  enum(school_location: SCHOOL_LOCATIONS)
+  enum(school_type: SCHOOL_TYPES)
 
   scope(
     :activated, -> {
@@ -133,7 +170,7 @@ class User < ApplicationRecord
   belongs_to :school, optional: true, inverse_of: :users
 
   belongs_to :source_application, optional: true,
-             class_name: 'Doorkeeper::Application', foreign_key: :source_application_id
+                                  class_name: 'Doorkeeper::Application', foreign_key: :source_application_id
 
   has_one :identity, dependent: :destroy, inverse_of: :user
   has_one :pre_auth_state
@@ -238,7 +275,7 @@ class User < ApplicationRecord
   end
 
   def self.create_random_username(base:, num_digits_in_suffix:)
-    "#{base}#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
+    "#{base}#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix, '0')}"
   end
 
   def self.cleanup_unverified_users
@@ -247,12 +284,12 @@ class User < ApplicationRecord
 
   def sheerid_supported?
     {
-      '1'   => 'United States & Canada',
-      '27'  => 'South Africa',
-      '44'  => 'United Kingdom',
-      '61'  => 'Australia',
-      '64'  => 'New Zealand',
-      '353' => 'Ireland',
+      '1' => 'United States & Canada',
+      '27' => 'South Africa',
+      '44' => 'United Kingdom',
+      '61' => 'Australia',
+      '64' => 'New Zealand',
+      '353' => 'Ireland'
     }.key?(country_code&.strip)
   end
 
@@ -358,7 +395,7 @@ class User < ApplicationRecord
   end
 
   def full_name
-    guess = "#{title} #{first_name} #{last_name} #{suffix}".gsub(/\s+/,' ').strip
+    guess = "#{title} #{first_name} #{last_name} #{suffix}".gsub(/\s+/, ' ').strip
     guess.blank? ? nil : guess
   end
 
@@ -381,7 +418,7 @@ class User < ApplicationRecord
   end
 
   def formal_name # TODO needs spec
-    "#{title} #{last_name} #{suffix}".gsub(/\s+/,' ').strip if title.present? && last_name.present?
+    "#{title} #{last_name} #{suffix}".gsub(/\s+/, ' ').strip if title.present? && last_name.present?
   end
 
   def add_unread_update
@@ -424,7 +461,7 @@ class User < ApplicationRecord
   # Login token
 
   def refresh_login_token(expiration_period: nil)
-    if login_token.blank? || login_token_expired? || expiration_period.try(:<,0)
+    if login_token.blank? || login_token_expired? || expiration_period.try(:<, 0)
       self.login_token = SecureRandom.hex(16)
     end
 
@@ -488,8 +525,8 @@ class User < ApplicationRecord
 
   def remove_special_chars
     if first_name && last_name
-      first_name.gsub(/[^\p{L}\s]/,'')
-      last_name.gsub(/[^\p{L}\s]/,'')
+      first_name.gsub(/[^\p{L}\s]/, '')
+      last_name.gsub(/[^\p{L}\s]/, '')
     end
   end
 
