@@ -81,7 +81,10 @@ module Newflow
       end
 
       def create_user
-        school = School.find_by(id: signup_params.school_id) if signup_params.school_id.present?
+        picked_school = School.find_by(id: signup_params.school_id) if signup_params.school_id.present?
+        # Typed without picking a suggestion: without a school_id, the nightly
+        # PushUserActivityToSalesforce never gives the student a Student__c.
+        school = picked_school || School.match_self_reported(signup_params.school)
 
         user = User.create(
           state: User::UNVERIFIED,
@@ -89,7 +92,7 @@ module Newflow
           first_name: signup_params.first_name,
           last_name: signup_params.last_name,
           school: school,
-          self_reported_school: school&.name || signup_params.school,
+          self_reported_school: picked_school&.name || signup_params.school,
           phone_number: signup_params.phone_number,
           receive_newsletter: signup_params.newsletter,
           source_application: options[:client_app],

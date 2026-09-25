@@ -7,6 +7,9 @@ class School < ApplicationRecord
     'Career School/For-Profit (2)'
   ]
 
+  # The Salesforce Account that leads fall back to when a user has no school.
+  PLACEHOLDER_NAME = 'Find Me A Home'
+
   # 0.0 == perfect match; 1.0 == perfect non-match
   MAX_NAME_MATCH_DISTANCE = 0.25
 
@@ -44,6 +47,15 @@ class School < ApplicationRecord
     end
 
     match_rel.first
+  end
+
+  # A school name someone typed instead of picking from the autocomplete.
+  # Never the placeholder: a student linked to it would get a Student__c
+  # pointing at that Account.
+  def self.match_self_reported(name)
+    return if name.blank?
+
+    where.not(name: PLACEHOLDER_NAME).fuzzy_search(name)
   end
 
   # Autocomplete search. Case-insensitive substring matches plus close trigram
