@@ -1,6 +1,8 @@
 module Settings
   module Salesforce
+
     class << self
+
       def push_leads_enabled
         Settings::Db.store.push_salesforce_lead_enabled
       end
@@ -38,7 +40,7 @@ module Settings
       end
 
       def user_info_error_emails_enabled=(bool)
-        Settings::Db.store.user_info_error_emails_enabled = bool
+        Settings::Db.store.user_info_error_emails_enabled=bool
       end
 
       def show_support_chat
@@ -57,6 +59,8 @@ module Settings
       def contacts_synced_through=(time)
         Settings::Db.store.contacts_synced_through = time&.utc&.iso8601
       end
+
     end
+
   end
 end

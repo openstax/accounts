@@ -28,6 +28,15 @@ class UpdateUserContactInfo
     'Not Adopter' => false
   }.freeze
 
+  # Don't overwrite confirmed or pending faculty status with incomplete/no_info.
+  # Don't overwrite confirmed with pending. Don't overwrite rejected_faculty
+  # with incomplete/no_info.
+  NO_DOWNGRADE_STATUSES = {
+    'confirmed_faculty' => %w[pending_faculty incomplete_signup no_faculty_info],
+    'pending_faculty' => %w[incomplete_signup no_faculty_info],
+    'rejected_faculty' => %w[incomplete_signup no_faculty_info]
+  }.freeze
+
   def self.call
     new.call
   end
@@ -138,15 +147,6 @@ class UpdateUserContactInfo
     counts[:failed] += 1
     Sentry.capture_exception(e, extra: { user_id: user.id, salesforce_contact_id: sf_contact.id })
   end
-
-  # Don't overwrite confirmed or pending faculty status with incomplete/no_info.
-  # Don't overwrite confirmed with pending. Don't overwrite rejected_faculty
-  # with incomplete/no_info.
-  NO_DOWNGRADE_STATUSES = {
-    'confirmed_faculty' => %w[pending_faculty incomplete_signup no_faculty_info],
-    'pending_faculty' => %w[incomplete_signup no_faculty_info],
-    'rejected_faculty' => %w[incomplete_signup no_faculty_info]
-  }.freeze
 
   def update_user_from_contact(user, sf_contact, schools_by_salesforce_id)
     update_salesforce_contact_id!(user, sf_contact)
