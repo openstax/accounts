@@ -11,6 +11,9 @@ namespace :cron do
     Rails.logger.info 'PushUserActivityToSalesforce.call'
     OpenStax::RescueFrom.this { PushUserActivityToSalesforce.call }
 
+    Rails.logger.info 'SyncEducatorLeads.call'
+    OpenStax::RescueFrom.this { SyncEducatorLeads.call }
+
     Rails.logger.debug 'Finished daily cron'
   end
 end

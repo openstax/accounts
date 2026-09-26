@@ -134,6 +134,28 @@ module Newflow
             end
           end
         end
+
+        describe 'profile_completed_at' do
+          it 'stamps it the first time the profile is completed' do
+            expect(user.profile_completed_at).to be_nil
+
+            handle
+            user.reload
+
+            expect(user.profile_completed_at).to be_present
+            expect(user.profile_completed_at).to be_within(5.seconds).of(Time.current)
+          end
+
+          it 'does not overwrite an existing value on a later completion' do
+            original = 2.days.ago
+            user.update!(profile_completed_at: original)
+
+            handle
+            user.reload
+
+            expect(user.profile_completed_at).to be_within(1.second).of(original)
+          end
+        end
       end
 
       context 'with total_num_students on non-primary paths' do
@@ -327,10 +349,11 @@ module Newflow
         context 'other must be filled out' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::OTHER }
 
+          # A SheerID-verified user has no school to type, so that error must not appear.
           it "should return correct error" do
             result = handle
-            expect(result.errors.count).to eq 2
-            expect(result.errors.first.message).to eq 'Please enter school name'
+            expect(result.errors.map(&:code)).to eq [:other_role_name]
+            expect(result.errors.first.message).to eq 'Please enter other role name'
           end
         end
 
@@ -341,8 +364,30 @@ module Newflow
 
           it "should return correct error" do
             result = handle
-            expect(result.errors.count).to eq 2
-            expect(result.errors.first.message).to eq 'Please enter school name'
+            expect(result.errors.map(&:code)).not_to include(:school_name)
+            expect(result.errors.first.message).to eq 'Please enter books used'
+          end
+        end
+
+        context 'other_role_name too long' do
+          let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::OTHER }
+          let(:params) do
+            {
+              signup: {
+                school_name: 'Test School',
+                other_role_name: 'x' * 129,
+                using_openstax_how: using_openstax_how,
+                educator_specific_role: educator_specific_role,
+                books_used: books_used,
+                books_used_details: books_used_details
+              }
+            }
+          end
+
+          it 'returns a param error instead of silently truncating' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :other_role_name }).to be true
+            expect(result.errors.first.message).to eq I18n.t('educator_profile_form.other_role_name_too_long')
           end
         end
 

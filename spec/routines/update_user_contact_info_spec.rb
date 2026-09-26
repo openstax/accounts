@@ -5,12 +5,21 @@ describe UpdateUserContactInfo, type: :routine do
 
   let!(:school) { FactoryBot.create :school, salesforce_id: 'SF_SCHOOL_001' }
 
-  describe 'faculty status preservation logic' do
+  # The ladder (FacultyStatusLadder, via User#advance_faculty_status!) is the
+  # single source of truth for what this routine is allowed to apply: any
+  # rank increase, and -- because this routine always passes source:
+  # :salesforce -- a flip between the two terminal states (confirmed_faculty
+  # <-> rejected_faculty). Every rank decrease is refused, even ones the old
+  # NO_DOWNGRADE_STATUSES table used to allow (e.g. confirmed_faculty ->
+  # rejected_by_sheerid): a lower value arriving from Salesforce is read as a
+  # stale Lead/Contact, not a real outcome.
+  describe 'faculty status transitions via the ladder' do
     before { stub_sentry }
+
     context 'when user has confirmed_faculty status' do
       let!(:user) { FactoryBot.create :user, faculty_status: :confirmed_faculty, uuid: 'test-uuid-001' }
 
-      it 'does not downgrade to pending_faculty' do
+      it 'refuses a downgrade to pending_faculty' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'pending_faculty')
         stub_salesforce_contacts([sf_contact])
 
@@ -19,7 +28,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('confirmed_faculty')
       end
 
-      it 'does not downgrade to incomplete_signup' do
+      it 'refuses a downgrade to incomplete_signup' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'incomplete_signup')
         stub_salesforce_contacts([sf_contact])
 
@@ -28,7 +37,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('confirmed_faculty')
       end
 
-      it 'does not downgrade to no_faculty_info' do
+      it 'refuses a downgrade to no_faculty_info' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'no_faculty_info')
         stub_salesforce_contacts([sf_contact])
 
@@ -37,7 +46,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('confirmed_faculty')
       end
 
-      it 'does not downgrade when faculty_verified is nil' do
+      it 'refuses a downgrade when faculty_verified is nil' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: nil)
         stub_salesforce_contacts([sf_contact])
 
@@ -46,22 +55,22 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('confirmed_faculty')
       end
 
-      it 'allows update to rejected_faculty' do
+      it 'refuses a downgrade to rejected_by_sheerid, a lower-ranked SheerID state' do
+        sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'rejected_by_sheerid')
+        stub_salesforce_contacts([sf_contact])
+
+        described_class.call
+
+        expect(user.reload.faculty_status).to eq('confirmed_faculty')
+      end
+
+      it 'allows the CX flip to rejected_faculty (same terminal rank, from Salesforce)' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'rejected_faculty')
         stub_salesforce_contacts([sf_contact])
 
         described_class.call
 
         expect(user.reload.faculty_status).to eq('rejected_faculty')
-      end
-
-      it 'allows update to rejected_by_sheerid' do
-        sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'rejected_by_sheerid')
-        stub_salesforce_contacts([sf_contact])
-
-        described_class.call
-
-        expect(user.reload.faculty_status).to eq('rejected_by_sheerid')
       end
 
       it 'preserves confirmed_faculty when already confirmed in Salesforce' do
@@ -77,7 +86,7 @@ describe UpdateUserContactInfo, type: :routine do
     context 'when user has pending_faculty status' do
       let!(:user) { FactoryBot.create :user, faculty_status: :pending_faculty, uuid: 'test-uuid-002' }
 
-      it 'does not downgrade to incomplete_signup' do
+      it 'refuses a downgrade to incomplete_signup' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'incomplete_signup')
         stub_salesforce_contacts([sf_contact])
 
@@ -86,7 +95,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('pending_faculty')
       end
 
-      it 'does not downgrade to no_faculty_info' do
+      it 'refuses a downgrade to no_faculty_info' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'no_faculty_info')
         stub_salesforce_contacts([sf_contact])
 
@@ -95,7 +104,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('pending_faculty')
       end
 
-      it 'does not downgrade when faculty_verified is nil' do
+      it 'refuses a downgrade when faculty_verified is nil' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: nil)
         stub_salesforce_contacts([sf_contact])
 
@@ -104,7 +113,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('pending_faculty')
       end
 
-      it 'allows upgrade to confirmed_faculty' do
+      it 'allows an upgrade to confirmed_faculty' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty')
         stub_salesforce_contacts([sf_contact])
 
@@ -113,7 +122,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('confirmed_faculty')
       end
 
-      it 'allows update to rejected_faculty' do
+      it 'allows an upgrade to rejected_faculty (higher rank)' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'rejected_faculty')
         stub_salesforce_contacts([sf_contact])
 
@@ -122,20 +131,20 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('rejected_faculty')
       end
 
-      it 'allows update to rejected_by_sheerid' do
+      it 'refuses a downgrade to rejected_by_sheerid (lower rank)' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'rejected_by_sheerid')
         stub_salesforce_contacts([sf_contact])
 
         described_class.call
 
-        expect(user.reload.faculty_status).to eq('rejected_by_sheerid')
+        expect(user.reload.faculty_status).to eq('pending_faculty')
       end
     end
 
     context 'when user has rejected_faculty status' do
       let!(:user) { FactoryBot.create :user, faculty_status: :rejected_faculty, uuid: 'test-uuid-003' }
 
-      it 'allows update to confirmed_faculty' do
+      it 'allows the CX flip to confirmed_faculty (same terminal rank, from Salesforce)' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty')
         stub_salesforce_contacts([sf_contact])
 
@@ -144,16 +153,16 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('confirmed_faculty')
       end
 
-      it 'allows update to pending_faculty' do
+      it 'refuses a downgrade to pending_faculty (lower rank than a terminal status)' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'pending_faculty')
         stub_salesforce_contacts([sf_contact])
 
         described_class.call
 
-        expect(user.reload.faculty_status).to eq('pending_faculty')
+        expect(user.reload.faculty_status).to eq('rejected_faculty')
       end
 
-      it 'does not downgrade to incomplete_signup' do
+      it 'refuses a downgrade to incomplete_signup' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'incomplete_signup')
         stub_salesforce_contacts([sf_contact])
 
@@ -162,7 +171,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('rejected_faculty')
       end
 
-      it 'does not downgrade to no_faculty_info' do
+      it 'refuses a downgrade to no_faculty_info' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'no_faculty_info')
         stub_salesforce_contacts([sf_contact])
 
@@ -171,7 +180,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('rejected_faculty')
       end
 
-      it 'does not downgrade when faculty_verified is nil' do
+      it 'refuses a downgrade when faculty_verified is nil' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: nil)
         stub_salesforce_contacts([sf_contact])
 
@@ -184,7 +193,7 @@ describe UpdateUserContactInfo, type: :routine do
     context 'when user has rejected_by_sheerid status' do
       let!(:user) { FactoryBot.create :user, faculty_status: :rejected_by_sheerid, uuid: 'test-uuid-004' }
 
-      it 'allows update to confirmed_faculty' do
+      it 'allows an upgrade to confirmed_faculty' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty')
         stub_salesforce_contacts([sf_contact])
 
@@ -193,7 +202,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('confirmed_faculty')
       end
 
-      it 'allows update to pending_faculty' do
+      it 'allows an upgrade to pending_faculty' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'pending_faculty')
         stub_salesforce_contacts([sf_contact])
 
@@ -206,7 +215,7 @@ describe UpdateUserContactInfo, type: :routine do
     context 'when user has incomplete_signup status' do
       let!(:user) { FactoryBot.create :user, faculty_status: :incomplete_signup, uuid: 'test-uuid-005' }
 
-      it 'allows update to confirmed_faculty' do
+      it 'allows an upgrade to confirmed_faculty' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty')
         stub_salesforce_contacts([sf_contact])
 
@@ -215,7 +224,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('confirmed_faculty')
       end
 
-      it 'allows update to pending_faculty' do
+      it 'allows an upgrade to pending_faculty' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'pending_faculty')
         stub_salesforce_contacts([sf_contact])
 
@@ -224,20 +233,20 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('pending_faculty')
       end
 
-      it 'allows update to no_faculty_info' do
+      it 'refuses a downgrade to no_faculty_info (lower rank)' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'no_faculty_info')
         stub_salesforce_contacts([sf_contact])
 
         described_class.call
 
-        expect(user.reload.faculty_status).to eq('no_faculty_info')
+        expect(user.reload.faculty_status).to eq('incomplete_signup')
       end
     end
 
     context 'when user has no_faculty_info status' do
       let!(:user) { FactoryBot.create :user, faculty_status: :no_faculty_info, uuid: 'test-uuid-006' }
 
-      it 'allows update to confirmed_faculty' do
+      it 'allows an upgrade to confirmed_faculty' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty')
         stub_salesforce_contacts([sf_contact])
 
@@ -246,7 +255,7 @@ describe UpdateUserContactInfo, type: :routine do
         expect(user.reload.faculty_status).to eq('confirmed_faculty')
       end
 
-      it 'allows update to pending_faculty' do
+      it 'allows an upgrade to pending_faculty' do
         sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'pending_faculty')
         stub_salesforce_contacts([sf_contact])
 
@@ -261,8 +270,27 @@ describe UpdateUserContactInfo, type: :routine do
     before { stub_sentry }
     let!(:user) { FactoryBot.create :user, faculty_status: :no_faculty_info, uuid: 'test-uuid-007', salesforce_contact_id: 'SF_CONTACT_001' }
 
-    it 'creates a SecurityLog when faculty status changes' do
+    it 'creates the ladder log and the sync-specific log when faculty status changes' do
       sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty')
+      stub_salesforce_contacts([sf_contact])
+
+      expect {
+        described_class.call
+      }.to change { SecurityLog.count }.by(2)
+
+      advanced_log = SecurityLog.find_by(event_type: 'faculty_status_advanced')
+      expect(advanced_log.event_data['from']).to eq('no_faculty_info')
+      expect(advanced_log.event_data['to']).to eq('confirmed_faculty')
+      expect(advanced_log.event_data['source']).to eq('salesforce')
+
+      synced_log = SecurityLog.find_by(event_type: 'salesforce_updated_faculty_status')
+      expect(synced_log.event_data['old_status']).to eq('no_faculty_info')
+      expect(synced_log.event_data['new_status']).to eq('confirmed_faculty')
+    end
+
+    it 'creates only the ladder refusal log when a downgrade is refused' do
+      user.update!(faculty_status: :confirmed_faculty)
+      sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'pending_faculty')
       stub_salesforce_contacts([sf_contact])
 
       expect {
@@ -270,17 +298,18 @@ describe UpdateUserContactInfo, type: :routine do
       }.to change { SecurityLog.count }.by(1)
 
       log = SecurityLog.last
-      expect(log.event_type).to eq('salesforce_updated_faculty_status')
-      expect(log.event_data['old_status']).to eq('no_faculty_info')
-      expect(log.event_data['new_status']).to eq('confirmed_faculty')
+      expect(log.event_type).to eq('faculty_status_downgrade_refused')
+      expect(log.event_data['from']).to eq('confirmed_faculty')
+      expect(log.event_data['to']).to eq('pending_faculty')
+
+      expect(user.reload.faculty_status).to eq('confirmed_faculty')
     end
 
-    it 'does not create a SecurityLog when faculty status is preserved' do
+    it 'creates no SecurityLog when faculty status is already correct (no-op)' do
       user.update!(faculty_status: :confirmed_faculty)
-      sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'pending_faculty')
+      sf_contact = create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty')
       stub_salesforce_contacts([sf_contact])
 
-      # Faculty status is preserved, so no SecurityLog should be created
       expect {
         described_class.call
       }.not_to change { SecurityLog.count }

@@ -79,6 +79,7 @@ en:
     fill_out: Please enter a value for this field
     school_name_must_be_entered: Please enter school name
     other_must_be_entered: Please enter other role name
+    other_role_name_too_long: Please shorten your role to 128 characters or fewer
     books_used_must_be_entered: Please enter books used
     books_used_details_must_be_entered: Please enter the number of students taught and how the book is used
     books_of_interest_must_be_entered: Please enter books of interest
@@ -109,6 +110,12 @@ en:
       include_ta_sections: Include all students across your classes
       students_per_semester: Students per school year
       num_students_using_book_placeholder: Number of students using this book per school year
+
+  profile_nudge_banner:
+    heading: Finish setting up your instructor account
+    body: You verified your instructor status -- just a couple more questions and you're done.
+    finish_button: Finish setting up
+    dismiss_button: Dismiss
 
   login_signup_form:
     cant_be_blank: can't be blank

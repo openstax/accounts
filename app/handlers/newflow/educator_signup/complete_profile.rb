@@ -59,14 +59,13 @@ module Newflow
         @is_on_cs_form = signup_params.is_cs_form?
         outputs.is_on_cs_form = @is_on_cs_form
 
-        # validate the form
-        check_params
-        return if errors?
-
-        # is this user coming from the sheerid flow? there are a few things we can check...
+        # check_params reads this: a SheerID-verified user has no school to type.
         @did_use_sheerid = !(signup_params.is_school_not_supported_by_sheerid == 'true' ||
                              signup_params.is_country_not_supported_by_sheerid == 'true' ||
                              user.is_sheerid_unviable? || @is_on_cs_form)
+
+        check_params
+        return if errors?
 
         total_students = calculate_total_students
         return if errors?
@@ -89,7 +88,8 @@ module Newflow
           self_reported_school: selected_school&.name || signup_params.school_name,
           is_profile_complete: true,
           is_educator_pending_cs_verification: !@did_use_sheerid,
-          expected_start_semester: expected_start_semester
+          expected_start_semester: expected_start_semester,
+          profile_completed_at: user.profile_completed_at || Time.current
         )
         # If anything happens during lead creation, it's helpful for us to have this on the log.
         SecurityLog.create!(user: user, event_type: :user_profile_complete, event_data: { books_used_details: books_used_details })
@@ -219,8 +219,12 @@ module Newflow
           param_error(:school_name, :school_name_must_be_entered)
         end
 
-        if role == OTHER && signup_params.other_role_name.nil?
-          param_error(:other_role_name, :other_must_be_entered)
+        if role == OTHER
+          if signup_params.other_role_name.nil?
+            param_error(:other_role_name, :other_must_be_entered)
+          elsif signup_params.other_role_name.strip.length > 128
+            param_error(:other_role_name, :other_role_name_too_long)
+          end
         end
 
         if role == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY

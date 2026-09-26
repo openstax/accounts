@@ -28,15 +28,6 @@ class UpdateUserContactInfo
     'Not Adopter' => false
   }.freeze
 
-  # Don't overwrite confirmed or pending faculty status with incomplete/no_info.
-  # Don't overwrite confirmed with pending. Don't overwrite rejected_faculty
-  # with incomplete/no_info.
-  NO_DOWNGRADE_STATUSES = {
-    'confirmed_faculty' => %w[pending_faculty incomplete_signup no_faculty_info],
-    'pending_faculty' => %w[incomplete_signup no_faculty_info],
-    'rejected_faculty' => %w[incomplete_signup no_faculty_info]
-  }.freeze
-
   def self.call
     new.call
   end
@@ -178,14 +169,18 @@ class UpdateUserContactInfo
     )
   end
 
+  # Moves faculty_status through the ladder (FacultyStatusLadder, via
+  # User#advance_faculty_status!); a refused downgrade is already logged there
+  # and needs nothing further here.
   def update_faculty_status!(user, sf_contact)
     old_fv_status = user.faculty_status
     new_status = faculty_status_from_contact(sf_contact)
 
-    downgrade = NO_DOWNGRADE_STATUSES.fetch(user.faculty_status, []).include?(new_status)
-    user.faculty_status = new_status unless downgrade
-
-    return false unless user.faculty_status_changed?
+    advanced = user.advance_faculty_status!(
+      new_status, source: :salesforce, event_data: { contact_id: sf_contact.id }
+    )
+    return false unless advanced
+    return false if user.faculty_status == old_fv_status
 
     SecurityLog.create!(
       user: user,
