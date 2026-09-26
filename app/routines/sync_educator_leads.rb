@@ -8,6 +8,9 @@
 class SyncEducatorLeads
   LEAD_BATCH_LIMIT = 500
   STALLED_SIGNUP_CUTOFF = 24.hours
+  # Older accounts with no Lead are history, not stalled signups; a reminder
+  # would make no sense to them and a Lead would only add noise to the queue.
+  STALLED_SIGNUP_MAX_AGE = 90.days
 
   def self.call
     new.call
@@ -28,8 +31,8 @@ class SyncEducatorLeads
   def stalled_signup_users
     User.where.not(role: :student)
         .where.not(role: :unknown_role)
-        .where(state: 'activated', salesforce_lead_id: nil, salesforce_contact_id: nil)
-        .where('created_at <= ?', STALLED_SIGNUP_CUTOFF.ago)
+        .where(state: 'activated', is_newflow: true, salesforce_lead_id: nil, salesforce_contact_id: nil)
+        .where(created_at: STALLED_SIGNUP_MAX_AGE.ago..STALLED_SIGNUP_CUTOFF.ago)
         .order(:created_at)
         .limit(LEAD_BATCH_LIMIT)
   end

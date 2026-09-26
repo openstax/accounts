@@ -17,7 +17,7 @@ describe SyncEducatorLeads do
 
   let!(:stalled_instructor) do
     FactoryBot.create(
-      :user, role: :instructor, state: 'activated', salesforce_lead_id: nil,
+      :user, role: :instructor, state: 'activated', is_newflow: true, salesforce_lead_id: nil,
              salesforce_contact_id: nil, created_at: 25.hours.ago
     )
   end
@@ -33,7 +33,7 @@ describe SyncEducatorLeads do
 
     it 'excludes students' do
       student = FactoryBot.create(
-        :user, role: :student, state: 'activated', salesforce_lead_id: nil,
+        :user, role: :student, state: 'activated', is_newflow: true, salesforce_lead_id: nil,
                salesforce_contact_id: nil, created_at: 25.hours.ago
       )
       stub_lead_creation(lead_saved: true)
@@ -43,9 +43,33 @@ describe SyncEducatorLeads do
       expect(Newflow::CreateOrUpdateSalesforceLead).not_to have_received(:call).with(user: student)
     end
 
+    it 'excludes legacy (non-newflow) accounts' do
+      legacy = FactoryBot.create(
+        :user, role: :instructor, state: 'activated', is_newflow: false, salesforce_lead_id: nil,
+               salesforce_contact_id: nil, created_at: 25.hours.ago
+      )
+      stub_lead_creation(lead_saved: true)
+
+      described_class.call
+
+      expect(Newflow::CreateOrUpdateSalesforceLead).not_to have_received(:call).with(user: legacy)
+    end
+
+    it 'excludes accounts older than the stalled-signup window' do
+      old = FactoryBot.create(
+        :user, role: :instructor, state: 'activated', is_newflow: true, salesforce_lead_id: nil,
+               salesforce_contact_id: nil, created_at: 91.days.ago
+      )
+      stub_lead_creation(lead_saved: true)
+
+      described_class.call
+
+      expect(Newflow::CreateOrUpdateSalesforceLead).not_to have_received(:call).with(user: old)
+    end
+
     it 'excludes unknown_role users' do
       unknown = FactoryBot.create(
-        :user, role: :unknown_role, state: 'activated', salesforce_lead_id: nil,
+        :user, role: :unknown_role, state: 'activated', is_newflow: true, salesforce_lead_id: nil,
                salesforce_contact_id: nil, created_at: 25.hours.ago
       )
       stub_lead_creation(lead_saved: true)
@@ -81,7 +105,7 @@ describe SyncEducatorLeads do
 
     it 'excludes users who already have a salesforce_contact_id' do
       has_contact = FactoryBot.create(
-        :user, role: :instructor, state: 'activated', salesforce_lead_id: nil,
+        :user, role: :instructor, state: 'activated', is_newflow: true, salesforce_lead_id: nil,
                salesforce_contact_id: 'SF_CONTACT_EXISTING', created_at: 25.hours.ago
       )
       stub_lead_creation(lead_saved: true)
@@ -93,7 +117,7 @@ describe SyncEducatorLeads do
 
     it 'excludes signups less than 24 hours old' do
       too_recent = FactoryBot.create(
-        :user, role: :instructor, state: 'activated', salesforce_lead_id: nil,
+        :user, role: :instructor, state: 'activated', is_newflow: true, salesforce_lead_id: nil,
                salesforce_contact_id: nil, created_at: 1.hour.ago
       )
       stub_lead_creation(lead_saved: true)
@@ -108,7 +132,7 @@ describe SyncEducatorLeads do
     it 'processes oldest signups first and caps at LEAD_BATCH_LIMIT' do
       stub_const('SyncEducatorLeads::LEAD_BATCH_LIMIT', 1)
       newer_stalled = FactoryBot.create(
-        :user, role: :instructor, state: 'activated', salesforce_lead_id: nil,
+        :user, role: :instructor, state: 'activated', is_newflow: true, salesforce_lead_id: nil,
                salesforce_contact_id: nil, created_at: 26.hours.ago
       )
       stalled_instructor.update!(created_at: 48.hours.ago)
@@ -166,7 +190,7 @@ describe SyncEducatorLeads do
   describe 'exception isolation' do
     it "reports one user's failure to Sentry and keeps processing the rest" do
       other_stalled = FactoryBot.create(
-        :user, role: :instructor, state: 'activated', salesforce_lead_id: nil,
+        :user, role: :instructor, state: 'activated', is_newflow: true, salesforce_lead_id: nil,
                salesforce_contact_id: nil, created_at: 26.hours.ago
       )
       good_result = stub_lead_creation(lead_saved: true)
