@@ -247,6 +247,7 @@ module Newflow
       lead.accounts_uuid = user.uuid
       lead.verification_status = user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status
       lead.newsletter_opt_in = user.receive_newsletter?
+      lead.last_account_login_date = user.last_signed_in_at&.to_date
       lead.signup_date = user.created_at.strftime("%Y-%m-%dT%T.%L%z")
       lead.tracking_parameters = "#{Rails.application.secrets.openstax_url}/accounts/i/signup/"
     end

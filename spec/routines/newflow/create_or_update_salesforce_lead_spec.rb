@@ -326,6 +326,34 @@ module Newflow
       end
     end
 
+    describe 'last account login date' do
+      it 'is populated on the lead from the moment it is created' do
+        user.update!(last_signed_in_at: Time.zone.parse('2026-09-25 20:22:12 UTC'))
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_LOGIN')
+
+        described_class.call(user: user)
+
+        expect(mock_lead.last_account_login_date).to eq(Date.new(2026, 9, 25))
+      end
+
+      it 'stays blank for a user who has never signed in' do
+        user.update!(last_signed_in_at: nil)
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_LOGIN')
+
+        described_class.call(user: user)
+
+        expect(mock_lead.last_account_login_date).to be_nil
+      end
+    end
+
     describe 'title truncation' do
       it 'truncates other_role_name to 128 characters on the lead' do
         user.update!(role: 'other', other_role_name: 'x' * 200)
