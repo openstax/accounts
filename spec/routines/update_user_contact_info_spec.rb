@@ -5,6 +5,35 @@ describe UpdateUserContactInfo, type: :routine do
 
   let!(:school) { FactoryBot.create :school, salesforce_id: 'SF_SCHOOL_001' }
 
+  describe 'the sync_contacts_enabled setting' do
+    it 'runs the sync as before when the setting is left at its default' do
+      stub_sentry
+      stub_salesforce_contacts([])
+
+      described_class.call
+
+      expect(Sentry).to have_received(:capture_check_in).with(
+        UpdateUserContactInfo::CHECK_IN_SLUG, :in_progress, monitor_config: anything
+      )
+    end
+
+    context 'when disabled' do
+      before { Settings::Salesforce.sync_contacts_enabled = false }
+
+      it 'makes no Sentry check-in, never queries Salesforce, and leaves the watermark unchanged' do
+        original_watermark = Time.utc(2026, 9, 20, 0, 0, 0)
+        Settings::Salesforce.contacts_synced_through = original_watermark
+
+        expect(Sentry).not_to receive(:capture_check_in)
+        expect_any_instance_of(described_class).not_to receive(:salesforce_contact_batch)
+
+        described_class.call
+
+        expect(Settings::Salesforce.contacts_synced_through).to eq(original_watermark)
+      end
+    end
+  end
+
   describe 'faculty status preservation logic' do
     before { stub_sentry }
     context 'when user has confirmed_faculty status' do

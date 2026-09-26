@@ -42,6 +42,15 @@ class UpdateUserContactInfo
   end
 
   def call
+    unless Settings::Salesforce.sync_contacts_enabled
+      log('Contact sync disabled in settings; skipping')
+      return
+    end
+
+    sync
+  end
+
+  def sync
     check_in_id = Sentry.capture_check_in(
       CHECK_IN_SLUG, :in_progress, monitor_config: MONITOR_CONFIG
     )

@@ -473,6 +473,9 @@ en:
       push_salesforce_last_seen_enabled:
         name: 'Push last-seen dates to Salesforce?'
         help_block: 'If checked (and SF configured), students'' and instructors'' most recent website visit will be pushed to their SF Student__c/Contact'
+      sync_salesforce_contacts_enabled:
+        name: 'Sync Salesforce Contacts?'
+        help_block: 'Pull faculty status, adoption status and school from Salesforce Contacts every 5 minutes. Turn off where it isn''t needed (e.g. staging, which points at production Salesforce).'
       show_support_chat:
         name: 'Show support chat widget'
         help_block: 'If checked users will see CS chat widget'

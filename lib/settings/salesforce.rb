@@ -35,6 +35,14 @@ module Settings
         Settings::Db.store.push_salesforce_last_seen_enabled = bool
       end
 
+      def sync_contacts_enabled
+        Settings::Db.store.sync_salesforce_contacts_enabled
+      end
+
+      def sync_contacts_enabled=(bool)
+        Settings::Db.store.sync_salesforce_contacts_enabled = bool
+      end
+
       def user_info_error_emails_enabled
         Settings::Db.store.user_info_error_emails_enabled
       end
