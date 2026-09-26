@@ -187,7 +187,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
       )
     end
 
-    it 'refuses to downgrade a confirmed_faculty user, but logs the refusal and reports it' do
+    it 'refuses to downgrade a confirmed_faculty user, logs the refusal, and stays out of Sentry' do
       user.update!(faculty_status: User::CONFIRMED_FACULTY)
       details = response_for(
         current_step: 'error', error_ids: ['expiredVerification'], with_person_info: false
@@ -201,8 +201,20 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
         SecurityLog.where(event_type: :faculty_status_downgrade_refused, user: user).count
       ).to eq(1)
       expect(SecurityLog.where(event_type: :sheerid_webhook_expired, user: user).count).to eq(1)
-      expect(Sentry).to have_received(:capture_message)
-        .with('[SheerID Webhook] error step received', anything)
+      expect(Sentry).not_to have_received(:capture_message)
+    end
+
+    it 'stays out of Sentry when a repeat expiry changes nothing' do
+      user.update!(faculty_status: User::SHEERID_EXPIRED)
+      details = response_for(
+        current_step: 'error', error_ids: ['expiredVerification'], with_person_info: false
+      )
+      stub_details(verification_id, details)
+
+      call_webhook
+
+      expect(user.reload.faculty_status).to eq(User::SHEERID_EXPIRED)
+      expect(Sentry).not_to have_received(:capture_message)
     end
   end
 

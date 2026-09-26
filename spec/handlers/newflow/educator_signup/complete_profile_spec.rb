@@ -349,10 +349,11 @@ module Newflow
         context 'other must be filled out' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::OTHER }
 
+          # A SheerID-verified user has no school to type, so that error must not appear.
           it "should return correct error" do
             result = handle
-            expect(result.errors.count).to eq 2
-            expect(result.errors.first.message).to eq 'Please enter school name'
+            expect(result.errors.map(&:code)).to eq [:other_role_name]
+            expect(result.errors.first.message).to eq 'Please enter other role name'
           end
         end
 
@@ -363,8 +364,8 @@ module Newflow
 
           it "should return correct error" do
             result = handle
-            expect(result.errors.count).to eq 2
-            expect(result.errors.first.message).to eq 'Please enter school name'
+            expect(result.errors.map(&:code)).not_to include(:school_name)
+            expect(result.errors.first.message).to eq 'Please enter books used'
           end
         end
 

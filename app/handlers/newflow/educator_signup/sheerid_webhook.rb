@@ -35,14 +35,15 @@ module Newflow
           return
         end
 
+        status_changed = false
         user.with_lock do
           SecurityLog.create!(event_type: :sheerid_webhook_received, user: user)
           assign_verification_id(user, verification_id)
-          apply_verification(user, verification, details, verification_id)
+          status_changed = apply_verification(user, verification, details, verification_id)
           SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)
         end
 
-        report(verification, verification_id, user)
+        report(verification, verification_id, user, status_changed: status_changed)
 
         CreateOrUpdateSalesforceLead.perform_later(user: user)
 
@@ -77,8 +78,6 @@ module Newflow
           EmailAddress.verified.find_by(value: verification.email)&.user
       end
 
-      # Set the user's sheerid_verification_id only if they didn't already have
-      # one -- we don't want to overwrite the approved one.
       def assign_verification_id(user, verification_id)
         if verification_id.present? && user.sheerid_verification_id.blank?
           user.update!(sheerid_verification_id: verification_id)
@@ -122,9 +121,12 @@ module Newflow
           rejection_reasons: verification.rejection_reasons,
         }
 
+        previous_status = user.faculty_status
         user.advance_faculty_status!(verification.faculty_status_for_step, source: :accounts, event_data: event_data)
 
         SecurityLog.create!(event_type: outcome_event_type(verification), user: user, event_data: event_data)
+
+        user.faculty_status != previous_status
       end
 
       def outcome_event_type(verification)
@@ -146,6 +148,8 @@ module Newflow
         return school if school
 
         match = SheeridAPI::SHEERID_REGEX.match(reported_school_name)
+        return nil if match.nil?
+
         name = match[1]
         city = match[2]
         state = match[3]
@@ -161,13 +165,12 @@ module Newflow
         School.fuzzy_search(name, city, state)
       end
 
-      # expiredVerification is the ordinary end of a verification nobody
-      # finished, not someone stuck -- SheerID ages the record out and calls the
-      # webhook regardless of whether anyone ever reached step 4. Only report to
-      # Sentry when there's a user attached: an anonymous expiry is unactionable
-      # noise (h1, 9/25; ACCOUNTS-67Z), but a user who reached step 4 with this
-      # outcome is worth seeing.
-      def report(verification, verification_id, user)
+      # SheerID ages out every unfinished verification and calls the webhook
+      # with an error step whether or not anyone ever reached step 4. Anonymous
+      # ones are unactionable noise at ~60/day; an error that just moved a real
+      # user's status is the case a human should see. A repeat delivery or an
+      # expiry landing on an already-decided user changes nothing and stays quiet.
+      def report(verification, verification_id, user, status_changed: false)
         if user.nil?
           return if verification.error?
 
@@ -175,7 +178,7 @@ module Newflow
             "[SheerID Webhook] No user found with verification id (#{verification_id}) and email (#{verification.email})",
             extra: { verification_id: verification_id, verification: verification.attributes }
           )
-        elsif verification.error?
+        elsif verification.error? && status_changed
           Sentry.capture_message(
             '[SheerID Webhook] error step received',
             level: :warning,
