@@ -23,6 +23,19 @@ describe 'accounts:repair_profile_complete_faculty_status' do
     expect(log.event_data['reason']).to eq('profile_completed_repair')
   end
 
+  it 'rolls the advance back when the lead push cannot be enqueued, so a rerun still finds the user' do
+    user = FactoryBot.create(
+      :user, role: User::INSTRUCTOR_ROLE, faculty_status: :incomplete_signup,
+             profile_completed_at: Time.current
+    )
+    allow(Newflow::CreateOrUpdateSalesforceLead).to receive(:perform_later).and_raise(StandardError, 'queue down')
+
+    expect { subject.invoke }.to output(/failed: 1/).to_stdout_from_any_process
+
+    expect(user.reload.faculty_status).to eq('incomplete_signup')
+    expect(SecurityLog.where(event_type: 'faculty_status_repaired', user: user)).to be_empty
+  end
+
   it 'skips a user whose profile_completed_at is nil' do
     user = FactoryBot.create(
       :user, role: User::INSTRUCTOR_ROLE, faculty_status: :incomplete_signup,

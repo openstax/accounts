@@ -152,14 +152,16 @@ module Newflow
             expect(profile_completed_advance_logged?(user)).to be true
           end
 
-          it 'advances incomplete_signup to pending_faculty when no SheerID outcome was recorded' do
-            user.update!(faculty_status: User::INCOMPLETE_SIGNUP)
+          %w[incomplete_signup no_faculty_info].each do |status|
+            it "advances #{status} to pending_faculty when no SheerID outcome was recorded" do
+              user.update!(faculty_status: status)
 
-            handle
-            user.reload
+              handle
+              user.reload
 
-            expect(user.faculty_status).to eq 'pending_faculty'
-            expect(profile_completed_advance_logged?(user)).to be true
+              expect(user.faculty_status).to eq 'pending_faculty'
+              expect(profile_completed_advance_logged?(user)).to be true
+            end
           end
 
           %w[pending_sheerid rejected_by_sheerid confirmed_faculty rejected_faculty].each do |status|

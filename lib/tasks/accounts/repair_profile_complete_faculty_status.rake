@@ -17,28 +17,31 @@ namespace :accounts do
       end
 
       begin
-        advanced = user.advance_faculty_status!(
-          User::PENDING_FACULTY,
-          source: :accounts,
-          event_data: { reason: 'profile_completed_repair' }
-        )
+        # Everything inside the lock is one transaction: the row is reloaded
+        # before it is judged, and a failure after the advance rolls the advance
+        # back so the user is still selected by a rerun.
+        user.with_lock do
+          next counts[:skipped] += 1 unless user.incomplete_signup?
 
-        unless advanced
-          counts[:refused] += 1
-          next
+          advanced = user.advance_faculty_status!(
+            User::PENDING_FACULTY,
+            source: :accounts,
+            event_data: { reason: 'profile_completed_repair' }
+          )
+          next counts[:refused] += 1 unless advanced
+
+          SecurityLog.create!(
+            user: user,
+            event_type: :faculty_status_repaired,
+            event_data: {
+              from: User::INCOMPLETE_SIGNUP,
+              to: User::PENDING_FACULTY,
+              reason: 'profile_completed_repair'
+            }
+          )
+          Newflow::CreateOrUpdateSalesforceLead.perform_later(user: user)
+          counts[:repaired] += 1
         end
-
-        SecurityLog.create!(
-          user: user,
-          event_type: :faculty_status_repaired,
-          event_data: {
-            from: User::INCOMPLETE_SIGNUP,
-            to: User::PENDING_FACULTY,
-            reason: 'profile_completed_repair'
-          }
-        )
-        Newflow::CreateOrUpdateSalesforceLead.perform_later(user: user)
-        counts[:repaired] += 1
       rescue StandardError => e
         counts[:failed] += 1
         Sentry.capture_exception(e, extra: { user_id: user.id })
@@ -47,7 +50,8 @@ namespace :accounts do
 
     STDOUT.puts(dry_run ? 'DRY RUN -- no users changed.' : 'Done.')
     STDOUT.puts(
-      "repaired: #{counts[:repaired]}, refused: #{counts[:refused]}, failed: #{counts[:failed]}"
+      "repaired: #{counts[:repaired]}, refused: #{counts[:refused]}, " \
+      "skipped: #{counts[:skipped]}, failed: #{counts[:failed]}"
     )
   end
 end
