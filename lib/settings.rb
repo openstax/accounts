@@ -149,6 +149,8 @@ module Settings
             type: :string, default: 'https://offers.sheerid.com/openstax/staging/teacher/?env=dev'
       field :number_of_days_contacts_modified, type: :integer, default: 7
       field :contacts_synced_through, type: :string, default: nil
+      field :leads_synced_through, type: :string, default: nil
+      field :push_incomplete_signup_leads_enabled, type: :boolean, default: false
       field :minimum_recaptcha_score, type: :float, default: 0.2
     end
 
