@@ -1,0 +1,12 @@
+<%#
+  POST bridge into the omniauth request phase for "add a login option" from the profile page.
+  Reauth (Legacy::AuthenticationsController before_action) has already run. omniauth 2.0
+  requires POST for the request phase, so we render a form carrying the Rails authenticity token
+  (validated by omniauth-rails_csrf_protection) and require an explicit submit. `add=true` stays
+  in the action's query string because omniauth stores request.GET — not the POST body — into
+  omniauth.params, which SessionsCreate checks to know this is an add-authentication flow.
+%>
+<%= form_tag oauth_path(@provider, add: true), method: :post, id: 'omniauth-add-form' do %>
+  <p><%= t('.continue_prompt') %></p>
+  <%= submit_tag t('.continue') %>
+<% end %>
