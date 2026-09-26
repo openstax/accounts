@@ -157,7 +157,9 @@ gem 'chronic'
 # Salesforce
 # >= 9.0 uses the client-credentials OAuth flow (Salesforce retires username-password in Spring '27);
 # 10.0 follows converted Leads to their Contact and drops dead Lead fields
-gem 'openstax_salesforce', '~> 11.1'
+# On the accounts-environment-fields branch (PR openstax/openstax_salesforce#88) until it's
+# published: adds Accounts_Environment__c/Accounts_Test_User__c to Lead and Contact.
+gem 'openstax_salesforce', github: 'openstax/openstax_salesforce', branch: 'accounts-environment-fields'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
