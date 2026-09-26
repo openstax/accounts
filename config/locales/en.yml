@@ -110,6 +110,12 @@ en:
       students_per_semester: Students per school year
       num_students_using_book_placeholder: Number of students using this book per school year
 
+  profile_nudge_banner:
+    heading: Finish setting up your instructor account
+    body: You verified your instructor status -- just a couple more questions and you're done.
+    finish_button: Finish setting up
+    dismiss_button: Dismiss
+
   login_signup_form:
     cant_be_blank: can't be blank
     cannot_find_user: We couldn't find an account with that email or username. Please check it and try again — or create a new account below.
