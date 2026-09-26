@@ -459,7 +459,7 @@ describe UpdateUserContactInfo, type: :routine do
   end
 
   describe 'the Sentry cron monitor schedule' do
-    it 'sends a monitor_config matching the cron:10-to-half-hour schedule on in_progress' do
+    it 'sends a monitor_config matching the cron:5-minutes schedule on in_progress' do
       allow(Sentry).to receive(:capture_check_in).and_return('check_in_id')
       allow(Sentry).to receive(:capture_message)
       stub_salesforce_contacts([])
@@ -470,7 +470,7 @@ describe UpdateUserContactInfo, type: :routine do
         UpdateUserContactInfo::CHECK_IN_SLUG,
         :in_progress,
         monitor_config: an_object_having_attributes(
-          schedule: an_object_having_attributes(value: '20,50 * * * *')
+          schedule: an_object_having_attributes(value: '*/5 * * * *')
         )
       )
     end
