@@ -155,46 +155,7 @@
   </div>
 
   <% if @user.sheerid_verification_id %>
-  <div class="form-group">
-    <%= f.label :sheerid_verification_id, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= @user.sheerid_verification_id %>
-      </p>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :sheerid_verification, "SheerID verification", class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <% if (verification = @user.sheerid_verification) %>
-        <p class="form-control-static">
-          Current step: <%= verification.current_step %><br>
-          Error IDs: <%= verification.error_ids.presence&.join(', ') || 'none' %><br>
-          Rejection reasons: <%= verification.rejection_reasons.presence&.join(', ') || 'none' %><br>
-          Segment: <%= verification.segment || 'unknown' %><br>
-          Organization: <%= verification.organization_name || 'unknown' %><br>
-          Webhook received at: <%= verification.webhook_received_at&.strftime('%B %d, %Y at %l:%M %p %Z') || 'never' %><br>
-          Webhook count: <%= verification.webhook_count %>
-        </p>
-        <% sheerid_event_types = SecurityLog.event_types.keys.select { |k| k.start_with?('sheerid_', 'fv_') } %>
-        <% sheerid_security_logs = @user.security_logs.where(event_type: sheerid_event_types).limit(5) %>
-        <% if sheerid_security_logs.any? %>
-          <p class="form-control-static"><strong>Recent SheerID activity</strong></p>
-          <ul class="form-control-static">
-            <% sheerid_security_logs.each do |log| %>
-              <li>
-                <%= log.event_type.humanize %> &mdash; <%= log.created_at.strftime('%B %d, %Y at %l:%M %p %Z') %><br>
-                <%= log.event_data %>
-              </li>
-            <% end %>
-          </ul>
-        <% end %>
-      <% else %>
-        <p class="form-control-static">No webhook received yet.</p>
-      <% end %>
-    </div>
-  </div>
+    <%= render 'sheerid_verification', f: f %>
   <% end %>
 
   <div class="form-group">

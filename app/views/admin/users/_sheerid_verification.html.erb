@@ -1,0 +1,64 @@
+<% verification = @user.sheerid_verification %>
+<% sheerid_security_logs = @user.security_logs.where(event_type: sheerid_activity_event_types).limit(8) %>
+<div class="form-group sheerid-verification">
+  <%= f.label :sheerid_verification, "SheerID verification", class: "col-sm-2 control-label" %>
+  <div class="col-sm-10">
+    <p class="form-control-static sheerid-verification__summary">
+      <% if verification %>
+        <%= sheerid_step_badge(verification) %>
+      <% else %>
+        <span class="label label-default">No webhook received yet</span>
+      <% end %>
+      <code><%= @user.sheerid_verification_id %></code>
+    </p>
+
+    <% if verification %>
+      <table class="table table-condensed sheerid-verification__details">
+        <tbody>
+          <tr>
+            <th>Organization</th>
+            <td><%= verification.organization_name.presence || content_tag(:span, 'unknown', class: 'text-muted') %></td>
+          </tr>
+          <tr>
+            <th>Segment</th>
+            <td><%= verification.segment.presence || content_tag(:span, 'unknown', class: 'text-muted') %></td>
+          </tr>
+          <tr>
+            <th>Error IDs</th>
+            <td><%= sheerid_list_or_none(verification.error_ids) %></td>
+          </tr>
+          <tr>
+            <th>Rejection reasons</th>
+            <td><%= sheerid_list_or_none(verification.rejection_reasons) %></td>
+          </tr>
+          <tr>
+            <th>Last webhook</th>
+            <td>
+              <%= sheerid_timestamp(verification.webhook_received_at) %>
+              <span class="text-muted">(<%= pluralize(verification.webhook_count, 'delivery', 'deliveries') %>)</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    <% end %>
+
+    <% if sheerid_security_logs.any? %>
+      <h5 class="sheerid-verification__heading">Recent activity</h5>
+      <table class="table table-condensed sheerid-verification__activity">
+        <tbody>
+          <% sheerid_security_logs.each do |log| %>
+            <tr>
+              <td class="sheerid-verification__when"><%= sheerid_timestamp(log.created_at) %></td>
+              <td>
+                <%= sheerid_event_name(log) %>
+                <% if (details = sheerid_event_details(log.event_data)) %>
+                  <div class="sheerid-verification__data"><%= details %></div>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>
