@@ -42,12 +42,67 @@ describe OtherController, type: :controller do
           get(:profile_newflow)
           expect(response).to redirect_to(educator_profile_form_path)
         end
+
+        it 'stamps profile_nudge_redirected_at so it is not redirected here again' do
+          expect { get(:profile_newflow) }.to change { user.reload.profile_nudge_redirected_at }.from(nil)
+        end
+      end
+
+      context 'when the user was already redirected to step 4 once before' do
+        before do
+          user.update!(
+            is_profile_complete: false,
+            sheerid_verification_id: 'a-verification-id',
+            profile_nudge_redirected_at: 1.day.ago
+          )
+        end
+
+        it 'renders the profile page instead of redirecting to step 4 again' do
+          get(:profile_newflow)
+          expect(response).to render_template(:profile_newflow)
+        end
+
+        it 'shows the profile-nudge banner and logs it once' do
+          get(:profile_newflow)
+          expect(assigns(:show_profile_nudge_banner)).to be(true)
+          expect(SecurityLog.where(user: user, event_type: :profile_nudge_banner_shown).count).to eq(1)
+
+          get(:profile_newflow)
+          expect(SecurityLog.where(user: user, event_type: :profile_nudge_banner_shown).count).to eq(1)
+        end
+
+        it 'does not show the banner once dismissed for the session' do
+          session[:profile_nudge_dismissed] = true
+          get(:profile_newflow)
+          expect(assigns(:show_profile_nudge_banner)).to be_falsey
+        end
       end
     end
 
     context 'while not logged in' do
       it 'redirects to login form' do
         get(:profile_newflow)
+        expect(response).to redirect_to newflow_login_path
+      end
+    end
+  end
+
+  describe 'POST #dismiss_profile_nudge' do
+    context 'when logged in' do
+      let(:user) { create_newflow_user('user@openstax.org') }
+
+      before { mock_current_user(user) }
+
+      it 'sets the session flag and redirects back to the profile page' do
+        post(:dismiss_profile_nudge)
+        expect(session[:profile_nudge_dismissed]).to be(true)
+        expect(response).to redirect_to(profile_newflow_path)
+      end
+    end
+
+    context 'while not logged in' do
+      it 'redirects to login form' do
+        post(:dismiss_profile_nudge)
         expect(response).to redirect_to newflow_login_path
       end
     end

@@ -346,6 +346,38 @@ module Newflow
       end
     end
 
+    describe 'GET #educator_profile_form exit_signup_if_steps_complete' do
+      # `is_educator_pending_cs_verification` is only cleared automatically by
+      # `advance_faculty_status!`; a direct admin edit of faculty_status (a
+      # deliberate ladder bypass, per FacultyStatusLadder) can leave it set on
+      # an already-confirmed user. The old condition
+      # `(!confirmed_faculty? || !rejected_faculty?)` was a tautology (a user
+      # can never be both), so it always redirected such a user back to the
+      # pending CS page even after CX approved them.
+      let(:user) do
+        u = create_newflow_user('cs-approved@openstax.org', 'password', nil, nil, 'instructor')
+        u.update!(
+          is_educator_pending_cs_verification: true,
+          faculty_status: User::CONFIRMED_FACULTY,
+          is_profile_complete: true
+        )
+        u
+      end
+
+      before { controller.sign_in!(user) }
+
+      it 'does not redirect a CS-form user who is now confirmed_faculty with a complete profile to the pending CS page' do
+        get(:educator_profile_form)
+        expect(response).not_to redirect_to(educator_pending_cs_verification_path)
+      end
+
+      it 'still redirects a pending CS-form user (not yet confirmed or rejected) to the pending CS page' do
+        user.update!(faculty_status: User::PENDING_FACULTY)
+        get(:educator_profile_form)
+        expect(response).to redirect_to(educator_pending_cs_verification_path)
+      end
+    end
+
     describe 'GET #educator_profile_form renders the expected_start_semester fieldset' do
       render_views
       let(:user) { create_newflow_user('educator2@openstax.org', 'password', nil, nil, 'instructor') }
