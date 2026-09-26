@@ -1,53 +1,64 @@
 require 'rails_helper'
-require 'vcr_helper'
 
-#describe Newflow::EducatorSignup::SheeridWebhook, type: :routine, vcr: VCR_OPTS do
 describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
-  let(:email_address)           { FactoryBot.create :email_address, :verified }
-  let(:user)                    { email_address.user }
-  let!(:school)                 {
-    FactoryBot.create :school,
-                      salesforce_id: '0017h00000doU3RAAU',
-                      name: 'University of Arkansas, Monticello',
-                      city: 'Monticello',
-                      state: 'AR',
-                      sheerid_school_name: 'University of Arkansas, Monticello (Monticello, AR)'
-  }
-  let(:verification)            do
-    FactoryBot.create :sheerid_verification, email: email_address.value,
-                      organization_name: school.sheerid_school_name, current_step: 'verified'
+  let(:user)           { FactoryBot.create(:user, role: User::INSTRUCTOR_ROLE) }
+  let!(:email_address) { FactoryBot.create(:email_address, :verified, user: user) }
+  let!(:school) do
+    FactoryBot.create(
+      :school,
+      salesforce_id: '0017h00000doU3RAAU',
+      name: 'University of Arkansas, Monticello',
+      city: 'Monticello',
+      state: 'AR',
+      sheerid_school_name: 'University of Arkansas, Monticello (Monticello, AR)'
+    )
   end
+  let(:verification_id) { Faker::Internet.uuid }
 
-  let(:verification_details)    do
-    SheeridAPI::Response.new(
-      'lastResponse' => { 'currentStep' => verification.current_step },
-      'personInfo' => {
+  # Builds a SheeridAPI::Response the way SheerID's actual verification-details
+  # payload shapes it: personInfo is entirely absent (JSON null) for error and
+  # collectTeacherPersonalInfo steps.
+  def response_for(
+    current_step:, error_ids: [], rejection_reasons: [], segment: 'teacher', with_person_info: true
+  )
+    body = {
+      'lastResponse' => {
+        'currentStep' => current_step,
+        'errorIds' => error_ids,
+        'rejectionReasons' => rejection_reasons,
+        'segment' => segment,
+      },
+      'personInfo' => with_person_info ? {
         'firstName' => user.first_name,
         'lastName' => user.last_name,
         'email' => email_address.value,
-        'organization' => { 'name' => school.sheerid_school_name }
-      }
-    )
+        'organization' => { 'name' => school.sheerid_school_name },
+      } : nil,
+    }
+    SheeridAPI::Response.new(body)
   end
 
-  # before(:all) do
-  #   VCR.use_cassette('SheeridWebhook/sf_setup', VCR_OPTS) do
-  #     @proxy = SalesforceProxy.new
-  #     @proxy.setup_cassette
-  #   end
-  # end
+  def stub_details(id, details)
+    allow(SheeridAPI).to receive(:get_verification_details).with(id).and_return(details)
+  end
 
-  context "user who has since switched to a student account" do
+  def call_webhook(id = verification_id)
+    described_class.call(params: { 'verificationId' => id })
+  end
+
+  before do
+    allow(Sentry).to receive(:capture_message)
+    allow(Newflow::CreateOrUpdateSalesforceLead).to receive(:perform_later)
+  end
+
+  context 'user who has since switched to a student account' do
     before do
-      allow(SheeridAPI).to receive(:get_verification_details).with(
-        verification.verification_id
-      ).and_return(verification_details)
-
       user.update!(role: User::STUDENT_ROLE, faculty_status: User::REJECTED_FACULTY)
+      stub_details(verification_id, response_for(current_step: 'success'))
     end
 
-    it "ignores the verification instead of re-attaching educator fields" do
-      described_class.call(params: { 'verificationId' => verification.verification_id })
+    it 'ignores the verification instead of re-attaching educator fields' do
+      call_webhook
 
       user.reload
       expect(user.role).to eq('student')
@@ -58,131 +69,207 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
       ).to eq(1)
     end
 
-    it "does not push a lead off the educator path" do
-      expect(Newflow::CreateOrUpdateSalesforceLead).not_to receive(:perform_later)
+    it 'does not push a lead off the educator path' do
+      call_webhook
 
-      described_class.call(params: { 'verificationId' => verification.verification_id })
+      expect(Newflow::CreateOrUpdateSalesforceLead).not_to have_received(:perform_later)
     end
   end
 
-  context "user with verified verification" do
-    before do
-      num_calls = verification.verified? ? :twice : :once
-      expect(SheeridAPI).to receive(:get_verification_details).with(
-        verification.verification_id
-      ).exactly(num_calls).and_return(verification_details)
+  describe 'the faculty_status_for_step mapping, applied end to end' do
+    it 'success -> confirmed_faculty' do
+      stub_details(verification_id, response_for(current_step: 'success'))
 
-      expect(School).to receive(:find_by).with(
-        sheerid_school_name: school.sheerid_school_name
-      ).and_call_original
-    end
+      call_webhook
 
-    xit 'finds schools based on the sheerid_reported_school field' do
-      expect(School).not_to receive(:fuzzy_search)
+      expect(user.reload.faculty_status).to eq(User::CONFIRMED_FACULTY)
+      expect(user.school).to eq(school)
+      expect(SecurityLog.where(event_type: :fv_success_by_sheerid, user: user).count).to eq(1)
 
-      #described_class.call verification_id: verification.verification_id
-      expect_any_instance_of(described_class).to receive(:exec).with(sheerid_provided_verification_id_param: verification.verification_id)
+      verification = SheeridVerification.find_by(verification_id: verification_id)
+      expect(verification.current_step).to eq('success')
 
-      expect(user.reload.school).to eq school
-    end
-
-    xit 'fuzzy searches schools based on the sheerid_reported_school field' do
-      school.update_attribute :sheerid_school_name, nil
-
-      expect(School).to receive(:fuzzy_search).with(
-        school.name, school.city, school.state
-      ).and_call_original
-
-      expect_any_instance_of(described_class).to receive(:exec).with(sheerid_provided_verification_id_param: verification.verification_id)
-
-      #described_class.call verification_id: verification.verification_id
-
-      expect(user.reload.school).to eq school
-    end
-  end
-
-  context 'when SheerID reports an error step' do
-    let(:verification_id) { 'error-verification-id' }
-    let(:verification_details) do
-      SheeridAPI::Response.new(
-        'lastResponse' => {
-          'currentStep' => 'error',
-          'errorIds' => ['verificationLimitExceeded']
-        },
-        'personInfo' => { 'email' => email_address.value }
+      log = SecurityLog.find_by(event_type: :fv_success_by_sheerid, user: user)
+      expect(log.event_data).to include(
+        'verification_id' => verification_id, 'current_step' => 'success', 'error_ids' => []
       )
+      expect(Sentry).not_to have_received(:capture_message)
     end
 
-    before do
-      allow(SheeridAPI).to receive(:get_verification_details).with(
-        verification_id
-      ).and_return(verification_details)
+    it 'rejected -> rejected_by_sheerid' do
+      stub_details(
+        verification_id,
+        response_for(current_step: 'rejected', rejection_reasons: ['nameMismatch'])
+      )
+
+      call_webhook
+
+      expect(user.reload.faculty_status).to eq(User::REJECTED_BY_SHEERID)
+      expect(SecurityLog.where(event_type: :fv_reject_by_sheerid, user: user).count).to eq(1)
+
+      verification = SheeridVerification.find_by(verification_id: verification_id)
+      expect(verification.rejection_reasons).to eq(['nameMismatch'])
+      expect(Sentry).not_to have_received(:capture_message)
     end
 
-    it 'reports the error details to Sentry as a warning with the matching user id' do
+    it 'docUpload -> pending_sheerid' do
+      stub_details(verification_id, response_for(current_step: 'docUpload'))
+
+      call_webhook
+
+      expect(user.reload.faculty_status).to eq(User::PENDING_SHEERID)
+      expect(SecurityLog.where(event_type: :sheerid_webhook_pending, user: user).count).to eq(1)
+      expect(Sentry).not_to have_received(:capture_message)
+    end
+
+    it 'collectTeacherPersonalInfo -> pending_sheerid, now persists a row (used to return early)' do
       user.update!(sheerid_verification_id: verification_id)
+      details = response_for(current_step: 'collectTeacherPersonalInfo', with_person_info: false)
+      stub_details(verification_id, details)
 
-      expect(Sentry).to receive(:capture_message).with(
+      expect { call_webhook }.to change(SheeridVerification, :count).by(1)
+
+      expect(user.reload.faculty_status).to eq(User::PENDING_SHEERID)
+      expect(SecurityLog.where(event_type: :sheerid_webhook_pending, user: user).count).to eq(1)
+      expect(Sentry).not_to have_received(:capture_message)
+    end
+
+    it 'resolves the user by sheerid_verification_id when the payload carries no email' do
+      user.update!(sheerid_verification_id: verification_id)
+      details = response_for(current_step: 'docUpload', with_person_info: false)
+      stub_details(verification_id, details)
+
+      call_webhook
+
+      expect(user.reload.faculty_status).to eq(User::PENDING_SHEERID)
+    end
+  end
+
+  context 'when SheerID reports an error step, with a user resolved by sheerid_verification_id' do
+    before { user.update!(sheerid_verification_id: verification_id) }
+
+    it 'maps verificationLimitExceeded to sheerid_error and reports it to Sentry as a warning' do
+      details = response_for(
+        current_step: 'error', error_ids: ['verificationLimitExceeded'], with_person_info: false
+      )
+      stub_details(verification_id, details)
+
+      call_webhook
+
+      expect(user.reload.faculty_status).to eq(User::SHEERID_ERROR)
+      expect(SecurityLog.where(event_type: :sheerid_webhook_error, user: user).count).to eq(1)
+      expect(Sentry).to have_received(:capture_message).with(
         '[SheerID Webhook] error step received',
         level: :warning,
         extra: {
-          verification_id: verification_id,
-          error_ids: ['verificationLimitExceeded'],
-          user_id: user.id
+          user_id: user.id, verification_id: verification_id,
+          error_ids: ['verificationLimitExceeded']
         }
       )
-
-      described_class.call(params: { 'verificationId' => verification_id })
     end
 
+    it 'maps expiredVerification to sheerid_expired, still reporting it since a user is attached' do
+      details = response_for(
+        current_step: 'error', error_ids: ['expiredVerification'], with_person_info: false
+      )
+      stub_details(verification_id, details)
+
+      call_webhook
+
+      expect(user.reload.faculty_status).to eq(User::SHEERID_EXPIRED)
+      expect(SecurityLog.where(event_type: :sheerid_webhook_expired, user: user).count).to eq(1)
+      expect(Sentry).to have_received(:capture_message).with(
+        '[SheerID Webhook] error step received',
+        level: :warning,
+        extra: {
+          user_id: user.id, verification_id: verification_id, error_ids: ['expiredVerification']
+        }
+      )
+    end
+
+    it 'refuses to downgrade a confirmed_faculty user, but logs the refusal and reports it' do
+      user.update!(faculty_status: User::CONFIRMED_FACULTY)
+      details = response_for(
+        current_step: 'error', error_ids: ['expiredVerification'], with_person_info: false
+      )
+      stub_details(verification_id, details)
+
+      call_webhook
+
+      expect(user.reload.faculty_status).to eq(User::CONFIRMED_FACULTY)
+      expect(
+        SecurityLog.where(event_type: :faculty_status_downgrade_refused, user: user).count
+      ).to eq(1)
+      expect(SecurityLog.where(event_type: :sheerid_webhook_expired, user: user).count).to eq(1)
+      expect(Sentry).to have_received(:capture_message)
+        .with('[SheerID Webhook] error step received', anything)
+    end
+  end
+
+  context 'when SheerID reports an error step and no user can be resolved' do
     it 'stays quiet for an expired verification, which is abandonment, not an error' do
-      allow(SheeridAPI).to receive(:get_verification_details).with(verification_id).and_return(
-        SheeridAPI::Response.new(
-          'lastResponse' => { 'currentStep' => 'error', 'errorIds' => ['expiredVerification'] },
-          'personInfo' => { 'email' => email_address.value }
-        )
+      details = response_for(
+        current_step: 'error', error_ids: ['expiredVerification'], with_person_info: false
       )
-      expect(Sentry).not_to receive(:capture_message)
+      stub_details(verification_id, details)
 
-      described_class.call(params: { 'verificationId' => verification_id })
+      call_webhook
+
+      expect(Sentry).not_to have_received(:capture_message)
     end
 
-    it 'still reports an expired verification raised alongside another error' do
-      allow(SheeridAPI).to receive(:get_verification_details).with(verification_id).and_return(
-        SheeridAPI::Response.new(
-          'lastResponse' => {
-            'currentStep' => 'error',
-            'errorIds' => ['expiredVerification', 'verificationLimitExceeded']
-          },
-          'personInfo' => { 'email' => email_address.value }
-        )
+    it 'stays quiet for any other error step too, once no user is resolved' do
+      details = response_for(
+        current_step: 'error', error_ids: ['verificationLimitExceeded'], with_person_info: false
       )
+      stub_details(verification_id, details)
 
-      expect(Sentry).to receive(:capture_message).with(
-        '[SheerID Webhook] error step received',
-        level: :warning,
-        extra: hash_including(error_ids: ['expiredVerification', 'verificationLimitExceeded'])
-      )
+      call_webhook
 
-      described_class.call(params: { 'verificationId' => verification_id })
+      expect(Sentry).not_to have_received(:capture_message)
     end
 
-    it 'reports a nil user id when no user matches the verification id' do
-      expect(Sentry).to receive(:capture_message).with(
-        '[SheerID Webhook] error step received',
-        level: :warning,
-        extra: hash_including(user_id: nil)
+    it 'still persists the verification row for an expired webhook' do
+      details = response_for(
+        current_step: 'error', error_ids: ['expiredVerification'], with_person_info: false
       )
+      stub_details(verification_id, details)
 
-      described_class.call(params: { 'verificationId' => verification_id })
+      expect { call_webhook }.to change(SheeridVerification, :count).by(1)
+
+      verification = SheeridVerification.find_by(verification_id: verification_id)
+      expect(verification.current_step).to eq('error')
+      expect(verification.error_ids).to eq(['expiredVerification'])
     end
 
-    it 'still returns early without creating a verification record' do
-      allow(Sentry).to receive(:capture_message)
+    it 'logs nothing at all for an expired webhook with no user attached' do
+      details = response_for(
+        current_step: 'error', error_ids: ['expiredVerification'], with_person_info: false
+      )
+      stub_details(verification_id, details)
 
-      expect {
-        described_class.call(params: { 'verificationId' => verification_id })
-      }.not_to change(SheeridVerification, :count)
+      expect { call_webhook }.not_to change(SecurityLog, :count)
+    end
+
+    it 'does not push a Salesforce lead' do
+      details = response_for(
+        current_step: 'error', error_ids: ['expiredVerification'], with_person_info: false
+      )
+      stub_details(verification_id, details)
+
+      call_webhook
+
+      expect(Newflow::CreateOrUpdateSalesforceLead).not_to have_received(:perform_later)
+    end
+  end
+
+  context 'when SheerID cannot be reached' do
+    it 'fatal_errors instead of processing a NullResponse' do
+      stub_details(verification_id, SheeridAPI::NullResponse.instance)
+
+      result = call_webhook
+
+      expect(result.errors.first.code).to eq(:sheerid_api_call_failed)
     end
   end
 end
