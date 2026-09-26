@@ -51,6 +51,15 @@ module Settings
         Settings::Db.store.show_support_chat = bool
       end
 
+      def contacts_synced_through
+        value = Settings::Db.store.contacts_synced_through
+        Time.iso8601(value) if value.present?
+      end
+
+      def contacts_synced_through=(time)
+        Settings::Db.store.contacts_synced_through = time&.utc&.iso8601
+      end
+
     end
 
   end

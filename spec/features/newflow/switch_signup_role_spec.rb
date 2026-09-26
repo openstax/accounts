@@ -1,67 +1,51 @@
 require 'rails_helper'
 
-# The handler and controller specs call `switch_role` directly. These two exercise
+# The handler and controller specs call `switch_role` directly. These exercise
 # the links themselves, which are `button_to`s rendered inside the signup card --
 # the combination that has silently broken here before (a `button_to` nested in a
 # form is dropped by the browser, and `#login-signup-form` styles submits at ID
-# specificity). A spec that never renders the page would not notice.
+# specificity). A spec that never renders the page would not notice. They also pin
+# down where the switch is offered at all: never on the PIN screen, and on the done
+# page only to social signups.
 module Newflow
   feature 'Switching signup role from the signup pages', js: true do
     let(:password) { 'password' }
     let(:email) { Faker::Internet.email }
 
     context 'an unverified student on the email confirmation step' do
-      let!(:student) do
-        create_newflow_user(email, password, nil, '123456', 'student').tap do |user|
-          user.update!(state: User::UNVERIFIED)
-        end
-      end
-
       before do
+        create_newflow_user(email, password, nil, '123456', 'student')
+          .update!(state: User::UNVERIFIED)
         visit newflow_login_path
         complete_newflow_log_in_screen(email, password)
         expect(page).to have_current_path(student_email_verification_form_path)
       end
 
-      it 'switches to educator from the email verification screen' do
-        click_on(I18n.t(:"login_signup_form.switch_role_educator"))
-
-        expect(page).to have_current_path(educator_email_verification_form_path)
-        expect(page).to have_text(I18n.t(:"login_signup_form.switched_role_notice.educator"))
-        expect(student.reload.role).to eq('instructor')
+      it 'does not offer a role switch' do
+        expect(page).to have_field('confirm_pin')
+        expect(page).to have_no_css('.signup-alternatives')
+        expect(page).to have_no_button(I18n.t(:"login_signup_form.switch_role_educator"))
       end
     end
 
     context 'an unverified educator on the email confirmation step' do
-      let!(:educator) do
-        create_newflow_user(email, password, nil, '123456', 'instructor').tap do |user|
-          user.update!(state: User::UNVERIFIED)
-        end
-      end
-
       before do
+        create_newflow_user(email, password, nil, '123456', 'instructor')
+          .update!(state: User::UNVERIFIED)
         visit newflow_login_path
         complete_newflow_log_in_screen(email, password)
         expect(page).to have_current_path(educator_email_verification_form_path)
       end
 
-      it 'switches to student from the email verification screen' do
-        click_on(I18n.t(:"login_signup_form.switch_role_student"))
-
-        expect(page).to have_current_path(student_email_verification_form_path)
-        expect(page).to have_text(I18n.t(:"login_signup_form.switched_role_notice.student"))
-        expect(educator.reload.role).to eq('student')
+      it 'does not offer a role switch' do
+        expect(page).to have_field('confirm_pin')
+        expect(page).to have_no_css('.signup-alternatives')
+        expect(page).to have_no_button(I18n.t(:"login_signup_form.switch_role_student"))
       end
     end
 
-    context 'a student on the done page' do
-      # The user factory defaults is_profile_complete to true, which only
-      # EducatorSignup::CompleteProfile ever sets in production. Left true it makes
-      # step_3_complete? true, and the switch lands on /i/profile instead of SheerID.
-      let!(:student) do
-        create_newflow_user(email, password, nil, nil, 'student')
-          .tap { |user| user.update!(is_profile_complete: false) }
-      end
+    context 'a student who signed up with a password, on the done page' do
+      let!(:student) { create_newflow_user(email, password, nil, nil, 'student') }
 
       before do
         visit newflow_login_path
@@ -70,12 +54,74 @@ module Newflow
         visit signup_done_path
       end
 
+      # They picked "student" on the welcome page, which offers both roles.
+      it 'does not offer a role switch' do
+        expect(page).to have_text(
+          I18n.t(:"login_signup_form.youre_done", first_name: student.first_name)
+        )
+        expect(page).to have_no_css('.signup-alternatives')
+      end
+    end
+
+    context 'a student who signed up with a social network, on the done page' do
+      before do
+        turn_on_student_feature_flag
+        turn_on_educator_feature_flag
+        visit(newflow_signup_student_path)
+
+        simulate_login_signup_with_social(name: 'Elon Musk', email: email) do
+          click_on('Facebook')
+          wait_for_ajax
+          expect(page).to have_field('signup_email', with: email)
+          check('signup_terms_accepted')
+          submit_signup_form
+          expect(page).to have_text(I18n.t(:"login_signup_form.youre_done", first_name: 'Elon'))
+        end
+      end
+
+      # Social signup only ever creates students, so this is an instructor's
+      # only way into the educator funnel from there.
       it 'switches to educator and lands on the SheerID step' do
+        expect(page).to have_text(I18n.t(:"login_signup_form.alternatives_heading_educator"))
         click_on(I18n.t(:"login_signup_form.switch_role_educator"))
 
         expect(page).to have_current_path(educator_sheerid_form_path)
         expect(page).to have_text(I18n.t(:"login_signup_form.switched_role_notice.educator"))
-        expect(student.reload.role).to eq('instructor')
+        expect(EmailAddress.find_by!(value: email).user.role).to eq('instructor')
+      end
+    end
+
+    context 'an educator on the SheerID step' do
+      let!(:educator) do
+        create_newflow_user(email, password, nil, nil, 'instructor')
+          .tap do |user|
+            user.update!(faculty_status: User::INCOMPLETE_SIGNUP, is_profile_complete: false)
+          end
+      end
+
+      before do
+        visit newflow_login_path
+        complete_newflow_log_in_screen(email, password)
+        wait_for_successful_log_in
+        visit educator_sheerid_form_path
+      end
+
+      # Visible from the start, so it has to stay out of the page's autofocus or a
+      # stray Enter would switch the account.
+      it 'offers the switch without a click to reveal it, and not under focus' do
+        expect(page).to have_button(I18n.t(:"login_signup_form.switch_role_student"))
+        expect(page).to have_link(I18n.t(:"login_signup_form.alternative_manual_verification"))
+        focused = page.evaluate_script('document.activeElement.className')
+        expect(focused).not_to include('signup-alternatives')
+      end
+
+      it 'switches to student and is not offered the way back on the done page' do
+        click_on(I18n.t(:"login_signup_form.switch_role_student"))
+
+        expect(page).to have_current_path(signup_done_path)
+        expect(page).to have_text(I18n.t(:"login_signup_form.switched_role_notice.student"))
+        expect(page).to have_no_css('.signup-alternatives')
+        expect(educator.reload.role).to eq('student')
       end
     end
 
