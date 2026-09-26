@@ -148,8 +148,10 @@ module Settings
       field :sheer_id_base_url,
             type: :string, default: 'https://offers.sheerid.com/openstax/staging/teacher/?env=dev'
       field :number_of_days_contacts_modified, type: :integer, default: 7
-      field :contacts_synced_through, type: :string, default: nil
-      field :leads_synced_through, type: :string, default: nil
+      # rails-settings-ui infers a field's form type from its default, and a nil
+      # default breaks the whole "save all" form (ACCOUNTS-78T). Blank means unset.
+      field :contacts_synced_through, type: :string, default: ''
+      field :leads_synced_through, type: :string, default: ''
       field :push_incomplete_signup_leads_enabled, type: :boolean, default: false
       field :minimum_recaptcha_score, type: :float, default: 0.2
     end
