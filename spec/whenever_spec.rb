@@ -8,7 +8,7 @@ describe 'whenever schedule' do
 
     it 'makes sure `rake` statements exist' do
       salesforce_jobs = schedule.jobs[:rake].select do |job|
-        [ 'cron:10-to-half-hour', 'cron:5-past-half-hour' ].include? job[:task]
+        [ 'cron:5-minutes', 'cron:5-past-half-hour' ].include? job[:task]
       end
       expect(salesforce_jobs.count).to eq 2
 
