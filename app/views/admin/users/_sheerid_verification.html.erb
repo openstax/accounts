@@ -14,25 +14,26 @@
 
     <% if verification %>
       <table class="table table-condensed sheerid-verification__details">
+        <caption class="sr-only">SheerID verification details</caption>
         <tbody>
           <tr>
-            <th>Organization</th>
+            <th scope="row">Organization</th>
             <td><%= verification.organization_name.presence || content_tag(:span, 'unknown', class: 'text-muted') %></td>
           </tr>
           <tr>
-            <th>Segment</th>
+            <th scope="row">Segment</th>
             <td><%= verification.segment.presence || content_tag(:span, 'unknown', class: 'text-muted') %></td>
           </tr>
           <tr>
-            <th>Error IDs</th>
+            <th scope="row">Error IDs</th>
             <td><%= sheerid_list_or_none(verification.error_ids) %></td>
           </tr>
           <tr>
-            <th>Rejection reasons</th>
+            <th scope="row">Rejection reasons</th>
             <td><%= sheerid_list_or_none(verification.rejection_reasons) %></td>
           </tr>
           <tr>
-            <th>Last webhook</th>
+            <th scope="row">Last webhook</th>
             <td>
               <%= sheerid_timestamp(verification.webhook_received_at) %>
               <span class="text-muted">(<%= pluralize(verification.webhook_count, 'delivery', 'deliveries') %>)</span>
@@ -45,6 +46,13 @@
     <% if sheerid_security_logs.any? %>
       <h5 class="sheerid-verification__heading">Recent activity</h5>
       <table class="table table-condensed sheerid-verification__activity">
+        <caption class="sr-only">Recent SheerID activity, newest first</caption>
+        <thead class="sr-only">
+          <tr>
+            <th scope="col">When</th>
+            <th scope="col">Event</th>
+          </tr>
+        </thead>
         <tbody>
           <% sheerid_security_logs.each do |log| %>
             <tr>
