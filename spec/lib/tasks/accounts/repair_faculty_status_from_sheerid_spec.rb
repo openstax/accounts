@@ -1,25 +1,11 @@
 require 'rails_helper'
 require 'rake'
 
-# `SheeridVerification#faculty_status_for_step` is being introduced in parallel
-# (the SheerID webhook rewrite); this task is written against that method name
-# per plan. It is stubbed here, keyed by the real `verification_id` (not by
-# Ruby object identity, since the task loads its own fresh AR instances),
-# rather than implemented in this worktree.
 describe 'accounts:repair_faculty_status_from_sheerid' do
   include_context 'rake'
 
-  # `verify_partial_doubles` refuses to stub a method the real class doesn't
-  # define; this worktree doesn't have `faculty_status_for_step` yet, so we
-  # give the class a placeholder to stub over, exactly as scoped above.
-  unless SheeridVerification.method_defined?(:faculty_status_for_step)
-    SheeridVerification.class_eval do
-      def faculty_status_for_step
-        raise NotImplementedError
-      end
-    end
-  end
-
+  # Keyed by verification_id, not object identity: the task loads its own
+  # fresh AR instances.
   let(:computed_statuses) { {} }
 
   before do
