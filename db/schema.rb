@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_09_21_180000) do
+ActiveRecord::Schema.define(version: 2026_09_26_000300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -386,6 +386,13 @@ ActiveRecord::Schema.define(version: 2026_09_21_180000) do
     t.string "organization_name"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.jsonb "error_ids", default: [], null: false
+    t.jsonb "rejection_reasons", default: [], null: false
+    t.string "segment"
+    t.jsonb "last_response"
+    t.datetime "webhook_received_at"
+    t.integer "webhook_count", default: 0, null: false
+    t.index ["verification_id"], name: "index_sheerid_verifications_on_verification_id", unique: true
   end
 
   create_table "user_external_uuids", id: :serial, force: :cascade do |t|
@@ -459,9 +466,12 @@ ActiveRecord::Schema.define(version: 2026_09_21_180000) do
     t.datetime "last_seen_at"
     t.datetime "salesforce_student_last_seen_pushed_at"
     t.datetime "salesforce_contact_last_seen_pushed_at"
+    t.datetime "profile_nudge_redirected_at"
+    t.datetime "profile_completed_at"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
+    t.index ["created_at"], name: "index_users_stalled_educator_signups", where: "((salesforce_lead_id IS NULL) AND (salesforce_contact_id IS NULL) AND (role <> 1) AND ((state)::text = 'activated'::text))"
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
     t.index ["id"], name: "index_users_unlinked_students_with_school", where: "((role = 1) AND (school_id IS NOT NULL) AND (salesforce_student_pushed_at IS NULL))"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
