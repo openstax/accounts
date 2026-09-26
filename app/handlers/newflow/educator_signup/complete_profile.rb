@@ -73,23 +73,28 @@ module Newflow
         if signup_params.school_id.present?
           picked_school = School.not_placeholder.find_by(id: signup_params.school_id)
         end
-        if signup_params.school_name.present? || signup_params.school_id.present?
-          @user.school = picked_school || school_for_typed_name
+        # The SheerID webhook links the school under this same row lock, so the
+        # school we judge the typed name against is whatever it committed, not a
+        # copy loaded before it ran.
+        @user.with_lock do
+          if signup_params.school_name.present? || signup_params.school_id.present?
+            @user.school = picked_school || school_for_typed_name
+          end
+          @user.update!(
+            role: signup_params.educator_specific_role,
+            other_role_name: other_role_name,
+            using_openstax_how: signup_params.using_openstax_how,
+            who_chooses_books: signup_params.who_chooses_books,
+            how_many_students: total_students,
+            which_books: which_books,
+            books_used_details: books_used_details,
+            self_reported_school: picked_school&.name || signup_params.school_name,
+            is_profile_complete: true,
+            is_educator_pending_cs_verification: !@did_use_sheerid,
+            expected_start_semester: expected_start_semester,
+            profile_completed_at: user.profile_completed_at || Time.current
+          )
         end
-        @user.update!(
-          role: signup_params.educator_specific_role,
-          other_role_name: other_role_name,
-          using_openstax_how: signup_params.using_openstax_how,
-          who_chooses_books: signup_params.who_chooses_books,
-          how_many_students: total_students,
-          which_books: which_books,
-          books_used_details: books_used_details,
-          self_reported_school: picked_school&.name || signup_params.school_name,
-          is_profile_complete: true,
-          is_educator_pending_cs_verification: !@did_use_sheerid,
-          expected_start_semester: expected_start_semester,
-          profile_completed_at: user.profile_completed_at || Time.current
-        )
         # If anything happens during lead creation, it's helpful for us to have this on the log.
         SecurityLog.create!(user: user, event_type: :user_profile_complete, event_data: { books_used_details: books_used_details })
 

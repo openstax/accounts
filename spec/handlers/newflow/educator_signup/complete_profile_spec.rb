@@ -164,6 +164,22 @@ module Newflow
             expect(user.reload.school).to eq sheerid_school
           end
 
+          # Two same-named campuses: only the row-locked reload can tell which one the
+          # webhook linked, so a stale in-memory copy would have to guess.
+          it 'judges the typed name against the school a webhook linked after this request loaded the user' do
+            user.update!(school: nil)
+            FactoryBot.create :school, name: 'University of the People', city: 'Tempe', state: 'AZ'
+            User.find(user.id).update!(school: sheerid_school)
+            expect(user.school).to be_nil
+
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'University of the People') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq sheerid_school
+          end
+
           it 'does not let the placeholder count as the current school' do
             user.update!(school: FactoryBot.create(:school, name: 'Find Me A Home'))
             result = described_class.handle(
