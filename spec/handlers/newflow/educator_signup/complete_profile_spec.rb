@@ -102,6 +102,93 @@ module Newflow
             expect(user.reload.school).to be_nil
             expect(user.self_reported_school).to eq 'Hogwarts Academy'
           end
+
+          it 'never links the Find Me A Home placeholder, even by id' do
+            placeholder = FactoryBot.create :school, name: 'Find Me A Home'
+            user.update!(school: nil)
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Find Me A Home', school_id: placeholder.id) },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to be_nil
+          end
+        end
+
+        # The autocomplete only fills school_id when a suggestion is picked, so a typed
+        # name arrives with school_id blank. Before this, that cleared the link -- including
+        # the one the SheerID webhook had already made -- and the lead push then fell back
+        # to the Find Me A Home Account.
+        context 'school typed without picking a suggestion' do
+          let(:sheerid_school) { FactoryBot.create :school, name: 'University of the People', city: 'Pasadena', state: 'CA' }
+
+          before { user.update!(school: sheerid_school) }
+
+          it 'keeps the school SheerID matched when the typed name is that school' do
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'university of the people') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq sheerid_school
+            expect(user.self_reported_school).to eq 'university of the people'
+          end
+
+          it 'relinks to the school the typed name matches when it is a different one' do
+            other = FactoryBot.create :school, name: 'Rice University', city: 'Houston', state: 'TX'
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Rice University') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq other
+          end
+
+          it 'clears the link when the typed name matches no school' do
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Hogwarts Academy') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to be_nil
+            expect(user.self_reported_school).to eq 'Hogwarts Academy'
+          end
+
+          it 'matches a typed name when the user had no school yet' do
+            user.update!(school: nil)
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'University of the People') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq sheerid_school
+          end
+
+          # Two same-named campuses: only the row-locked reload can tell which one the
+          # webhook linked, so a stale in-memory copy would have to guess.
+          it 'judges the typed name against the school a webhook linked after this request loaded the user' do
+            user.update!(school: nil)
+            FactoryBot.create :school, name: 'University of the People', city: 'Tempe', state: 'AZ'
+            User.find(user.id).update!(school: sheerid_school)
+            expect(user.school).to be_nil
+
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'University of the People') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq sheerid_school
+          end
+
+          it 'does not let the placeholder count as the current school' do
+            user.update!(school: FactoryBot.create(:school, name: 'Find Me A Home'))
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Find Me A Home') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to be_nil
+          end
         end
 
         context 'books used details' do
