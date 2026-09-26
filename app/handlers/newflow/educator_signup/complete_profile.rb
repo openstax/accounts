@@ -89,7 +89,8 @@ module Newflow
           self_reported_school: selected_school&.name || signup_params.school_name,
           is_profile_complete: true,
           is_educator_pending_cs_verification: !@did_use_sheerid,
-          expected_start_semester: expected_start_semester
+          expected_start_semester: expected_start_semester,
+          profile_completed_at: user.profile_completed_at || Time.current
         )
         # If anything happens during lead creation, it's helpful for us to have this on the log.
         SecurityLog.create!(user: user, event_type: :user_profile_complete, event_data: { books_used_details: books_used_details })
@@ -219,8 +220,12 @@ module Newflow
           param_error(:school_name, :school_name_must_be_entered)
         end
 
-        if role == OTHER && signup_params.other_role_name.nil?
-          param_error(:other_role_name, :other_must_be_entered)
+        if role == OTHER
+          if signup_params.other_role_name.nil?
+            param_error(:other_role_name, :other_must_be_entered)
+          elsif signup_params.other_role_name.strip.length > 128
+            param_error(:other_role_name, :other_role_name_too_long)
+          end
         end
 
         if role == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY

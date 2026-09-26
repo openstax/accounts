@@ -295,6 +295,112 @@ module Newflow
       end
     end
 
+    describe 'faculty status is written as stored, never recomputed' do
+      def push_lead_for(user)
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_STATUS')
+
+        described_class.call(user: user)
+        mock_lead
+      end
+
+      it 'keeps confirmed_faculty on a user whose profile is not yet complete' do
+        user.update!(faculty_status: User::CONFIRMED_FACULTY, is_profile_complete: false)
+
+        lead = push_lead_for(user)
+
+        expect(user.reload.faculty_status).to eq(User::CONFIRMED_FACULTY)
+        expect(lead.verification_status).to eq(User::CONFIRMED_FACULTY)
+      end
+
+      it 'writes incomplete_signup unchanged' do
+        user.update!(faculty_status: User::INCOMPLETE_SIGNUP, is_profile_complete: false)
+
+        lead = push_lead_for(user)
+
+        expect(user.reload.faculty_status).to eq(User::INCOMPLETE_SIGNUP)
+        expect(lead.verification_status).to eq(User::INCOMPLETE_SIGNUP)
+      end
+    end
+
+    describe 'title truncation' do
+      it 'truncates other_role_name to 128 characters on the lead' do
+        user.update!(role: 'other', other_role_name: 'x' * 200)
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_TITLE')
+
+        described_class.call(user: user)
+
+        expect(mock_lead.title.length).to eq(128)
+      end
+
+      it 'truncates other_role_name to 128 characters on the contact' do
+        user.update!(
+          role: 'other', other_role_name: 'y' * 200,
+          salesforce_contact_id: 'SF_CONTACT_TITLE'
+        )
+        contact = OpenStax::Salesforce::Remote::Contact.new(email: user.best_email_address_for_salesforce)
+        allow(contact).to receive(:id).and_return('SF_CONTACT_TITLE')
+        allow(contact).to receive(:save).and_return(true)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Contact).to receive(:find).with('SF_CONTACT_TITLE').and_return(contact)
+
+        described_class.call(user: user)
+
+        expect(contact.title.length).to eq(128)
+      end
+    end
+
+    describe 'picklist rejection resilience' do
+      let(:mock_lead) { OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce) }
+
+      before do
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_PICKLIST')
+      end
+
+      it 'drops an allowlisted field and retries once' do
+        picklist_error = double(full_messages: [
+          'INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST: bad value for restricted picklist field: Business Law' \
+          "\nRESPONSE: [{\"message\":\"bad value\",\"errorCode\":\"INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST\",\"fields\":[\"Subject_Interest__c\"]}]"
+        ])
+        allow(mock_lead).to receive(:errors).and_return(picklist_error)
+        save_results = [false, true]
+        allow(mock_lead).to receive(:save) { save_results.shift }
+
+        described_class.call(user: user)
+
+        expect(mock_lead.subject_interest).to be_nil
+        expect(user.reload.salesforce_lead_id).to eq('SF_LEAD_PICKLIST')
+        log = SecurityLog.find_by!(event_type: :salesforce_lead_save_failed, user: user)
+        expect(log.event_data).to include('retrying_without' => ['subject_interest'])
+        expect(Sentry).to have_received(:capture_message).with(
+          /rejected .*subject_interest.*as an invalid picklist value/, level: :warning
+        )
+      end
+
+      it 'does not retry when the rejected field is not in the allowlist' do
+        non_allowlisted_error = double(full_messages: [
+          'INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST: bad value' \
+          "\nRESPONSE: [{\"fields\":[\"Role__c\"]}]"
+        ])
+        allow(mock_lead).to receive(:errors).and_return(non_allowlisted_error)
+        allow(mock_lead).to receive(:save).and_return(false)
+
+        described_class.call(user: user)
+
+        expect(mock_lead).to have_received(:save).once
+        expect(SecurityLog.where(event_type: :salesforce_lead_save_failed).count).to eq(1)
+      end
+    end
+
     describe 'expected_start_semester assignment' do
       let(:mock_lead) do
         lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)

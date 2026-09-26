@@ -79,6 +79,7 @@ en:
     fill_out: Please enter a value for this field
     school_name_must_be_entered: Please enter school name
     other_must_be_entered: Please enter other role name
+    other_role_name_too_long: Please shorten your role to 128 characters or fewer
     books_used_must_be_entered: Please enter books used
     books_used_details_must_be_entered: Please enter the number of students taught and how the book is used
     books_of_interest_must_be_entered: Please enter books of interest
