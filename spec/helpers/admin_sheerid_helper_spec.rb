@@ -15,12 +15,14 @@ describe AdminSheeridHelper, type: :helper do
     it 'maps the SheerID steps to a label and a style' do
       expect(badge_for(SheeridVerification::VERIFIED)).to eq label('success', 'Verified')
       expect(badge_for(SheeridVerification::REJECTED)).to eq label('danger', 'Rejected')
-      expect(badge_for(SheeridVerification::PENDING)).to eq label('warning', 'Pending document review')
+      expect(badge_for(SheeridVerification::PENDING))
+        .to eq label('warning', 'Pending document review')
       expect(badge_for(SheeridVerification::ERROR)).to eq label('danger', 'Error')
     end
 
     it 'calls an expired error Expired' do
-      badge = badge_for(SheeridVerification::ERROR, error_ids: [SheeridVerification::EXPIRED_ERROR_ID])
+      badge = badge_for(SheeridVerification::ERROR,
+                        error_ids: [SheeridVerification::EXPIRED_ERROR_ID])
       expect(badge).to eq label('danger', 'Expired')
     end
 
