@@ -70,12 +70,11 @@ module Newflow
         total_students = calculate_total_students
         return if errors?
 
-        selected_school = School.find_by(id: signup_params.school_id) if signup_params.school_id.present?
-        # The school field was touched (typed text and/or picked a suggestion): update the link.
-        # A valid pick sets it to that school; a pick that was then edited (school_id cleared but
-        # school_name still present) clears the link, since selected_school is nil in that case.
+        if signup_params.school_id.present?
+          picked_school = School.not_placeholder.find_by(id: signup_params.school_id)
+        end
         if signup_params.school_name.present? || signup_params.school_id.present?
-          @user.school = selected_school
+          @user.school = picked_school || school_for_typed_name
         end
         @user.update!(
           role: signup_params.educator_specific_role,
@@ -85,7 +84,7 @@ module Newflow
           how_many_students: total_students,
           which_books: which_books,
           books_used_details: books_used_details,
-          self_reported_school: selected_school&.name || signup_params.school_name,
+          self_reported_school: picked_school&.name || signup_params.school_name,
           is_profile_complete: true,
           is_educator_pending_cs_verification: !@did_use_sheerid,
           expected_start_semester: expected_start_semester,
@@ -117,11 +116,6 @@ module Newflow
             # this user used the CS form and _should_ have provided us an email address -
             # so let's add it - validation happens before this in check_params
             run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
-          end
-
-          if user.school.nil? && !signup_params.school_name.blank?
-            user.school = School.fuzzy_search signup_params.school_name
-            user.save
           end
         end
 
@@ -219,6 +213,22 @@ module Newflow
 
       def books_of_interest
         Array(signup_params.books_of_interest).reject{ |b| b.blank? }
+      end
+
+      # A typed name with no suggestion picked. The SheerID webhook may already have
+      # linked the school this name describes; retyping it must not unlink that match
+      # (the lead push would then fall back to the Find Me A Home placeholder).
+      def school_for_typed_name
+        return if signup_params.school_name.blank?
+
+        current = @user.school
+        if current.present?
+          kept = School.not_placeholder.where(id: current.id)
+                       .fuzzy_search(signup_params.school_name)
+          return kept if kept
+        end
+
+        School.match_self_reported(signup_params.school_name)
       end
 
       def check_params
