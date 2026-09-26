@@ -38,12 +38,13 @@ module Newflow
           sign_in!(user, log_data)
           log_posthog(user, 'user_logged_in')
 
-          if current_user.needs_profile_nudge? && current_user.profile_nudge_redirected_at.nil?
+          # The privacy notice outranks the nudge; an unsigned user takes the
+          # normal path to it and is nudged on a later login instead.
+          if current_user.needs_profile_nudge? && current_user.profile_nudge_redirected_at.nil? &&
+             did_user_sign_recent_privacy_notice?
             redirect_to_educator_profile_nudge
-          # `needs_profile_nudge?` alone (without the check above) means this
-          # user was already sent to step 4 by an earlier login -- they get a
-          # normal landing plus the banner on the profile page from here on,
-          # not another forced redirect to step 4.
+          # A user already nudged once gets a normal landing plus the banner on
+          # the profile page, not another forced redirect to step 4.
           elsif current_user.student? || !current_user.is_newflow? ||
                 (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login')) ||
                 current_user.needs_profile_nudge?

@@ -49,19 +49,33 @@ class SheeridVerification < ApplicationRecord
   # webhook delivery -- including error and collectTeacherPersonalInfo steps,
   # which used to return before a row existed.
   def self.record_webhook!(details, verification_id:)
-    verification = find_or_initialize_by(verification_id: verification_id)
-    verification.email = details.email
-    verification.current_step = details.current_step
-    verification.first_name = details.first_name
-    verification.last_name = details.last_name
-    verification.organization_name = details.organization_name
-    verification.error_ids = details.error_ids
-    verification.rejection_reasons = details.rejection_reasons
-    verification.segment = details.segment
-    verification.last_response = details.raw
-    verification.webhook_received_at = Time.current
-    verification.webhook_count = (verification.webhook_count || 0) + 1
-    verification.save!
+    verification = find_or_create_for(verification_id, details.current_step)
+
+    verification.with_lock do
+      verification.update!(
+        email: details.email,
+        current_step: details.current_step,
+        first_name: details.first_name,
+        last_name: details.last_name,
+        organization_name: details.organization_name,
+        error_ids: details.error_ids,
+        rejection_reasons: details.rejection_reasons,
+        segment: details.segment,
+        last_response: details.raw,
+        webhook_received_at: Time.current,
+        webhook_count: verification.webhook_count + 1
+      )
+    end
+
     verification
   end
+
+  # SheerID retries and can deliver the same webhook twice at once; the unique
+  # index turns the loser of that race into a RecordNotUnique we can recover from.
+  def self.find_or_create_for(verification_id, current_step)
+    find_or_create_by!(verification_id: verification_id) { |v| v.current_step = current_step }
+  rescue ActiveRecord::RecordNotUnique
+    find_by!(verification_id: verification_id)
+  end
+  private_class_method :find_or_create_for
 end

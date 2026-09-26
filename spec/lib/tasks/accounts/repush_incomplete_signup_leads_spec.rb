@@ -73,12 +73,26 @@ describe 'accounts:repush_incomplete_signup_leads' do
 
     allow(Newflow::CreateOrUpdateSalesforceLead).to receive(:call) do |user:|
       raise StandardError, 'salesforce is down' if user == bad_user
+
+      push_result(lead_saved: true)
     end
 
     expect(Sentry).to receive(:capture_exception).with(
       instance_of(StandardError), extra: { user_id: bad_user.id, salesforce_lead_id: 'BAD' }
     )
 
-    expect { subject.invoke }.not_to raise_error
+    expect { subject.invoke }.to output(/pushed: 1, skipped: 0, failed: 1/).to_stdout_from_any_process
+  end
+
+  it 'counts a save Salesforce rejected as a failure, not a push' do
+    user = FactoryBot.create :user, faculty_status: :confirmed_faculty, uuid: 'uuid-rejected'
+    stub_stale_leads([build_lead(uuid: user.uuid, lead_id: 'REJECTED')])
+    allow(Newflow::CreateOrUpdateSalesforceLead).to receive(:call).and_return(push_result(lead_saved: false))
+
+    expect { subject.invoke }.to output(/pushed: 0, skipped: 0, failed: 1/).to_stdout_from_any_process
+  end
+
+  def push_result(lead_saved:, contact_saved: false)
+    double(outputs: double(lead_saved: lead_saved, contact_saved: contact_saved))
   end
 end

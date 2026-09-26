@@ -23,13 +23,14 @@ describe FacultyStatusLadder do
     from_rank = RANKS.fetch(from)
     to_rank = RANKS.fetch(to)
 
+    return true if from == to
     return true if to_rank > from_rank
     return false if to_rank < from_rank
 
     case to_rank
     when SHEERID_RANK then true
     when TERMINAL_RANK then source == :salesforce
-    else from == to
+    else false
     end
   end
 

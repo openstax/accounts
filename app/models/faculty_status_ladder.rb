@@ -35,13 +35,14 @@ module FacultyStatusLadder
     from_rank = RANK[from.to_s]
     to_rank = RANK[to.to_s]
     return false if to_rank.nil?
+    return true if from.to_s == to.to_s
     return true if from_rank.nil? || to_rank > from_rank
     return false if to_rank < from_rank
 
     case to_rank
     when SHEERID_RANK then true
     when TERMINAL_RANK then source == :salesforce
-    else from.to_s == to.to_s
+    else false
     end
   end
 end

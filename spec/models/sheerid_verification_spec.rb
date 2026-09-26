@@ -118,5 +118,17 @@ describe SheeridVerification, type: :model do
       expect(verification.current_step).to eq('docUpload')
       expect(verification.webhook_count).to eq(2)
     end
+
+    it 'recovers when a concurrent delivery creates the row first' do
+      existing = described_class.create!(verification_id: 'vid-race', current_step: 'success')
+      allow(described_class).to receive(:find_or_create_by!)
+        .and_raise(ActiveRecord::RecordNotUnique.new('duplicate key'))
+
+      verification = described_class.record_webhook!(details, verification_id: 'vid-race')
+
+      expect(verification.id).to eq(existing.id)
+      expect(verification.webhook_count).to eq(1)
+      expect(described_class.where(verification_id: 'vid-race').count).to eq(1)
+    end
   end
 end

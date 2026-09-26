@@ -61,6 +61,18 @@ feature 'Educator profile nudge', :js do
       expect(page).to have_current_path(educator_profile_form_path)
     end
 
+    it 'is asked to sign the privacy notice before being nudged' do
+      user.update!(faculty_status: User::CONFIRMED_FACULTY)
+      FinePrint::Signature.where(user: user).delete_all
+
+      visit(newflow_login_path)
+      complete_newflow_log_in_screen(email, password)
+      wait_for_successful_log_in
+
+      expect(page).to have_current_path(%r{/terms/.+/pose}, ignore_query: true)
+      expect(user.reload.profile_nudge_redirected_at).to be_nil
+    end
+
     it 'lets the banner be dismissed for the rest of the session' do
       visit(newflow_login_path)
       complete_newflow_log_in_screen(email, password)

@@ -39,8 +39,12 @@ namespace :accounts do
         end
 
         begin
-          Newflow::CreateOrUpdateSalesforceLead.call(user: user)
-          counts[:pushed] += 1
+          result = Newflow::CreateOrUpdateSalesforceLead.call(user: user)
+          if result.outputs.lead_saved || result.outputs.contact_saved
+            counts[:pushed] += 1
+          else
+            counts[:failed] += 1
+          end
         rescue StandardError => e
           counts[:failed] += 1
           Sentry.capture_exception(e, extra: { user_id: user.id, salesforce_lead_id: lead.id })
