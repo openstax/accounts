@@ -94,6 +94,15 @@ module Newflow
         # If anything happens during lead creation, it's helpful for us to have this on the log.
         SecurityLog.create!(user: user, event_type: :user_profile_complete, event_data: { books_used_details: books_used_details })
 
+        # No SheerID outcome means CX must review by hand; the ladder leaves any
+        # existing SheerID/terminal outcome alone. Locked so a webhook landing
+        # mid-request can't be judged against a stale status.
+        @user.with_lock do
+          if FacultyStatusLadder::RANK.fetch(@user.faculty_status, 0) < FacultyStatusLadder::SHEERID_RANK
+            @user.advance_faculty_status!(User::PENDING_FACULTY, source: :accounts, event_data: { reason: 'profile_completed' })
+          end
+        end
+
         if @is_on_cs_form
           SecurityLog.create!(
             user: user,

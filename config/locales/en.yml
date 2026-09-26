@@ -519,6 +519,12 @@ en:
       contacts_synced_through:
         name: Contacts synced through (UTC)
         help_block: Watermark for update_user_contact_info; the last time Salesforce Contacts were successfully synced. Clear it to force a full resync using "Contacts modified in last x days" instead.
+      leads_synced_through:
+        name: Leads synced through (UTC)
+        help_block: Watermark for the nightly Lead sync (SyncEducatorLeads → UpdateUserLeadInfo); set automatically after each successful run. Leave blank on first run (it falls back to the last 7 days) and clear it to force a resync.
+      push_incomplete_signup_leads_enabled:
+        name: Create Salesforce leads for stalled educator signups?
+        help_block: If checked (and SF configured), the nightly SyncEducatorLeads pass creates an incomplete_signup Lead for newflow educators who verified their email at least 24 hours ago (within the last 90 days) and have no Lead or Contact yet, up to 500 per night.
       minimum_recaptcha_score:
         name: Minimum reCAPTCHA score allowed to register a new account
         help_block: Humans should score closer to 1, bots should score closer to 0
