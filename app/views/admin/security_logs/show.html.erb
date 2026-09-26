@@ -21,10 +21,41 @@
     <span class="col-sm-1"></span>
 
     <span class="col-sm-10">
-      <small class="text-muted">Example: user:anon,admin time:"this week"</small>
+      <div class="search-quick-filters">
+        <%= link_to 'Today', security_log_filter_path('time', 'today'), class: 'btn btn-default btn-xs' %>
+        <%= link_to 'Failed logins', security_log_filter_path('type', 'sign_in_failed'), class: 'btn btn-default btn-xs' %>
+        <%= link_to 'Admin actions', security_log_filter_path('type', 'admin'), class: 'btn btn-default btn-xs' %>
+      </div>
+
+      <a href="#search-help" data-toggle="collapse" class="search-help-toggle">Search syntax help</a>
+
+      <div id="search-help" class="collapse search-help">
+        <p>
+          Combine keywords with a space for AND, or a comma (within the same keyword) for OR
+          &mdash; e.g. <code>user:jps,richb app:tutor</code>.
+        </p>
+        <ul>
+          <li><code>id:42</code> &mdash; the security log with id 42</li>
+          <li><code>user_id:42</code> &mdash; entries for the user with id 42</li>
+          <li><code>user:jps,richb</code> &mdash; entries for the "jps" and "richb" users (also matches "anonymous" or "application")</li>
+          <li><code>app:"OpenStax Tutor"</code> &mdash; entries from the OpenStax Tutor application</li>
+          <li><code>ip:127.0.0.1</code> &mdash; entries from that IP address</li>
+          <li><code>type:admin</code> &mdash; entries whose event type mentions "admin"</li>
+          <li><code>time:"this week"</code> &mdash; entries from this week</li>
+        </ul>
+      </div>
     </span>
   </div>
 
+<% end %>
+
+<%= form_tag admin_security_log_path, method: :get, class: 'form-inline per-page-form' do %>
+  <%= hidden_field_tag 'search[query]', params.dig(:search, :query) %>
+  <%= label_tag :per_page, 'Per page' %>
+  <%= select_tag :per_page,
+                 options_for_select([20, 50, 100], (params[:per_page] || 20).to_i),
+                 onchange: 'this.form.submit()',
+                 class: 'form-control input-sm' %>
 <% end %>
 
 <%= render partial: "shared/security_log", locals: { security_log: @security_log } %>

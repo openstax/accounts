@@ -3,10 +3,10 @@
 
 <% show_user = true if show_user.nil? %>
 
-<table class="table table-striped">
+<table id="security-log-table" class="table table-striped">
   <thead>
     <tr>
-      <th>Time</th>
+      <th>Time (CT)</th>
       <% if show_user %>
       <th>User</th>
       <% end %>
@@ -24,3 +24,16 @@
     <% end %>
   </tbody>
 </table>
+
+<% content_for :javascript do %>
+  <script type="text/javascript">
+    $('#security-log-table .expand').click(function(e) {
+      e.preventDefault();
+      var expanded = $(this).attr('aria-expanded') !== 'true';
+      $(this).closest('tr').next('tr.details').toggle(expanded);
+      $(this).find('i').toggleClass('fa-plus fa-minus');
+      $(this).attr('aria-expanded', expanded)
+             .attr('aria-label', expanded ? 'Hide event data' : 'Show event data');
+    });
+  </script>
+<% end %>

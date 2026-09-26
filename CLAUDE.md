@@ -120,6 +120,19 @@ Three traps, all of which cost real debugging time:
 
 `record_last_seen` (same file) is the activity counterpart, wired as a `before_action` on `ActionController::Base` in `config/initializers/controllers.rb` rather than on `ApplicationController` -- `OpenStax::Api::V1::ApiController` serves `/api/user` (hit on every osweb/REX page load) and inherits from `ActionController::Base` only, so that is the one hook reaching both. It stamps `users.last_seen_at` at most once per UTC day, via `update_column`, swallowing write errors for the same reason `sign_in!` does. Two traps: that ApiController **undef's `current_user`** to force API code onto `current_api_user`, so the method falls back to `current_session_user`, its pre-undef alias -- and `respond_to?` needs the `true` argument, because some controllers (`ExternalUserCredentialsController`) override `current_user` as *protected* rather than undef it. It also skips impersonated sessions: `sign_in!` sets `session[:impersonated]` whenever `record_login` is false, so admin "become" can't write a visit date onto the user being debugged. It must stay **ahead of** `complete_signup_profile` in the callback chain, whose redirect halts the chain for `is_needs_profile?` users.
 
+### Admin console
+Bootstrap 3, its own `admin` layout and `admin.scss` bundle. Per-screen styles live in their own partial (`_admin_user_details.scss`, `_admin_security_log.scss`) with a single `@import` in `admin.scss`, so two people editing different screens don't collide in one file.
+
+**`admin/users/_form.html.erb` is one `form_for` and must stay that way.** `Admin::UsersController#update` reads a long list of `params[:user][...]` keys straight out of that single submit, and several of the page's controls sit *outside* the `<form>` tag on purpose: `button_to` renders its own `<form>`, and a nested form is invalid HTML that browsers silently drop, so the External IDs and De-identify controls are deliberately below the form's `end`. Clearing the Salesforce contact is the odd one out -- it needs to submit *with* the form, so it's a plain `<button type="button">` whose JS writes the string `remove` into `user[salesforce_contact_id]` and submits. That string is the contract `change_salesforce_contact` has always honored; the input renders empty so the field reads as "paste a new ID" rather than "edit this one".
+
+**Never `raw` the security log's `event_data`.** It carries user-supplied values -- email addresses, admin search terms, redirect URLs -- so rendering it unescaped is XSS against whoever is reading the log. `<pre>` plus `white-space: pre-wrap` gives the formatting that the old `gsub(" ", "&nbsp;")` was reaching for.
+
+`SecurityLog.preloaded` is `preload(:application, user: :email_addresses)`. The log table shows each user's email, so dropping `email_addresses` from that scope reintroduces a query per row.
+
+The log's query grammar (`id: user_id: user: app: ip: type: time:`, spaces AND, commas OR) is implemented in `Admin::SearchSecurityLog` and documented both in its header comment and on the page itself. Keep the two in step, and don't advertise a keyword the routine doesn't implement.
+
+A **new** helper file under `app/helpers/` is not picked up by a running dev server -- Rails builds its helper list at boot, and the reloader only tracks changes to files that already existed. Adding a helper means restarting the server, and a phased puma restart re-forks the same preloaded image, so it has to be a full one.
+
 ### OAuth / Doorkeeper
 `config/initializers/doorkeeper.rb` and `config/initializers/doorkeeper_models.rb` wire Doorkeeper into the User/ApplicationUser models. Trusted `oauth_applications` skip the authorization screen. `FindOrCreateApplicationUser` associates users with the app that created them; non-trusted apps may only manage their own users.
 
