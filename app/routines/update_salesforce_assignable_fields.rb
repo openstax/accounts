@@ -28,7 +28,7 @@ class UpdateSalesforceAssignableFields
 
     adoption_date = external_id.min_created_at.to_date
 
-    # Fully Integrated is the terminal Assignable status: once Salesforce has set it,
+    # Fully Integrated is the terminal Assignable status. Once a Contact is there,
     # Salesforce owns the field and Accounts must never write any other value over it.
     unless contact.assignable_interest == FULLY_INTEGRATED
       contact.assignable_interest = FULLY_INTEGRATED
