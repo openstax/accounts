@@ -1,4 +1,6 @@
 class UpdateSalesforceAssignableFields
+  FULLY_INTEGRATED = 'Fully Integrated'.freeze
+
   def self.call(created_after = nil)
     new.call(created_after)
   end
@@ -12,16 +14,31 @@ class UpdateSalesforceAssignableFields
               .group(:user_id)
               .having(ExternalId.arel_table[:created_at].minimum.gt(created_after))
               .preload(:user)
-              .each do |external_id|
-      contact_id = external_id.user.salesforce_contact_id
-      next if contact_id.nil?
+              .each { |external_id| update_contact(external_id) }
+  end
 
-      contact = OpenStax::Salesforce::Remote::Contact.find(contact_id)
-      next if contact.nil?
+  private
 
-      contact.assignable_interest = 'Fully Integrated'
-      contact.assignable_adoption_date = external_id.min_created_at.strftime('%Y-%m-%d')
-      contact.save!
+  def update_contact(external_id)
+    contact_id = external_id.user.salesforce_contact_id
+    return if contact_id.nil?
+
+    contact = OpenStax::Salesforce::Remote::Contact.find(contact_id)
+    return if contact.nil?
+
+    adoption_date = external_id.min_created_at.to_date
+
+    # Fully Integrated is the terminal Assignable status: once Salesforce has set it,
+    # Salesforce owns the field and Accounts must never write any other value over it.
+    unless contact.assignable_interest == FULLY_INTEGRATED
+      contact.assignable_interest = FULLY_INTEGRATED
     end
+    unless contact.assignable_adoption_date&.to_date == adoption_date
+      contact.assignable_adoption_date = adoption_date.strftime('%Y-%m-%d')
+    end
+
+    contact.save! if contact.changed?
+  rescue StandardError => e
+    Sentry.capture_exception(e, extra: { user_id: external_id.user_id, contact_id: contact_id })
   end
 end
