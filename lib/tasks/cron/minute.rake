@@ -2,11 +2,13 @@ namespace :cron do
   task minute: :log_to_stdout do
     Rails.logger.debug 'Starting minute cron'
 
-    Rails.logger.info 'rake aws:update_cloudwatch_metrics'
-    OpenStax::RescueFrom.this { Rake::Task['aws:update_cloudwatch_metrics'].invoke }
+    cron_step('rake aws:update_cloudwatch_metrics') do
+      Rake::Task['aws:update_cloudwatch_metrics'].invoke
+    end
 
-    Rails.logger.info 'rake delayed:heartbeat:delete_timed_out_workers'
-    OpenStax::RescueFrom.this { Rake::Task['delayed:heartbeat:delete_timed_out_workers'].invoke }
+    cron_step('rake delayed:heartbeat:delete_timed_out_workers') do
+      Rake::Task['delayed:heartbeat:delete_timed_out_workers'].invoke
+    end
 
     Rails.logger.debug 'Finished minute cron'
   end
