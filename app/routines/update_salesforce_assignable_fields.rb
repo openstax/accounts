@@ -21,24 +21,29 @@ class UpdateSalesforceAssignableFields
 
   def update_contact(external_id)
     contact_id = external_id.user.salesforce_contact_id
-    return if contact_id.nil?
-
-    contact = OpenStax::Salesforce::Remote::Contact.find(contact_id)
+    contact = find_contact(contact_id)
     return if contact.nil?
 
-    adoption_date = external_id.min_created_at.to_date
-
-    # Fully Integrated is the terminal Assignable status. Once a Contact is there,
-    # Salesforce owns the field and Accounts must never write any other value over it.
-    unless contact.assignable_interest == FULLY_INTEGRATED
-      contact.assignable_interest = FULLY_INTEGRATED
-    end
-    unless contact.assignable_adoption_date&.to_date == adoption_date
-      contact.assignable_adoption_date = adoption_date.strftime('%Y-%m-%d')
-    end
-
+    assign_assignable_fields(contact, external_id.min_created_at.to_date)
     contact.save! if contact.changed?
   rescue StandardError => e
     Sentry.capture_exception(e, extra: { user_id: external_id.user_id, contact_id: contact_id })
+  end
+
+  def find_contact(contact_id)
+    return if contact_id.nil?
+
+    OpenStax::Salesforce::Remote::Contact.find(contact_id)
+  end
+
+  # Fully Integrated is the terminal Assignable status. Once a Contact is there,
+  # Salesforce owns the field and Accounts must never write any other value over it.
+  def assign_assignable_fields(contact, adoption_date)
+    unless contact.assignable_interest == FULLY_INTEGRATED
+      contact.assignable_interest = FULLY_INTEGRATED
+    end
+    return if contact.assignable_adoption_date&.to_date == adoption_date
+
+    contact.assignable_adoption_date = adoption_date.strftime('%Y-%m-%d')
   end
 end

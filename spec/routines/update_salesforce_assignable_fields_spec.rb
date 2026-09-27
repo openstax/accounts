@@ -37,7 +37,7 @@ describe UpdateSalesforceAssignableFields, type: :routine do
     end
   end
 
-  context 'Contact already Fully Integrated' do
+  context 'when the Contact is already Fully Integrated' do
     it 'does not call save! when the adoption date already matches' do
       adoption_date = assignable_instructor.external_ids.map(&:created_at).min.to_date
       contact = build_contact(
@@ -73,7 +73,7 @@ describe UpdateSalesforceAssignableFields, type: :routine do
     end
   end
 
-  context 'Contact not yet Fully Integrated' do
+  context 'when the Contact is not yet Fully Integrated' do
     it 'promotes a Contact with no prior Assignable interest' do
       contact = build_contact(id: 'TESTCONTACT2')
       stub_found_contacts('TESTCONTACT2' => contact)
@@ -100,7 +100,7 @@ describe UpdateSalesforceAssignableFields, type: :routine do
     end
   end
 
-  context 'one Contact fails to save' do
+  context 'when one Contact fails to save' do
     let!(:second_assignable_instructor) do
       FactoryBot.create(:user, salesforce_contact_id: 'TESTCONTACT3').tap do |user|
         FactoryBot.create :external_id, user: user
