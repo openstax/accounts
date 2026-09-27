@@ -37,15 +37,18 @@ class RemovePlaceholderSchoolStudents
 
   attr_reader :dry_run
 
-  def placeholder_school
-    @placeholder_school ||= School.where('LOWER(name) = ?', School::PLACEHOLDER_NAME.downcase).first
+  def placeholder_schools
+    @placeholder_schools ||=
+      School.where('LOWER(schools.name) = ?', School::PLACEHOLDER_NAME.downcase)
+  end
+
+  def placeholder_account_ids
+    @placeholder_account_ids ||= placeholder_schools.pluck(:salesforce_id).compact
   end
 
   def affected_users
-    return User.none unless placeholder_school
-
     User.student
-        .where(school_id: placeholder_school.id)
+        .where(school_id: placeholder_schools.select(:id))
         .where.not(salesforce_student_id: nil)
   end
 
@@ -58,7 +61,7 @@ class RemovePlaceholderSchoolStudents
       return
     end
 
-    if student.school_id == placeholder_school.salesforce_id
+    if placeholder_account_ids.include?(student.school_id)
       stats.deleted += 1
       unless dry_run
         student.destroy
