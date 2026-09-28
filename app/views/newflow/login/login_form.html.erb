@@ -26,6 +26,7 @@
                             <%=
                                 link_to(
                                     newflow_auth_path(:facebooknewflow, origin: :login_form),
+                                    method: :post,
                                     class: 'facebook btn',
                                     data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Facebook' }
                                 ) do
@@ -39,6 +40,7 @@
                             <%=
                                 link_to(
                                     newflow_auth_path(:googlenewflow, origin: :login_form),
+                                    method: :post,
                                     class: 'google btn',
                                     data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Google' }
                                 ) do
