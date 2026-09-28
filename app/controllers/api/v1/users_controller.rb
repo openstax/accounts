@@ -112,7 +112,8 @@ class Api::V1::UsersController < Api::V1::ApiController
   description <<-EOS
     Returns the current user's data.
     For users that are not logged in, a 403 forbidden response is normally returned.
-    However, if always_200 is set to true, then a 200 OK with a blank object is returned instead.
+    However, if always_200 is set to true, then a 200 OK with a JSON body of
+    {"status": "anonymous"} is returned instead.
 
     #{json_schema(Api::V1::UserRepresenter, include: :readable)}
   EOS
@@ -120,7 +121,10 @@ class Api::V1::UsersController < Api::V1::ApiController
     begin
       OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, current_human_user)
     rescue SecurityTransgression => error
-      return render(plain: {}) if params[:always_200] == 'true'
+      # When the caller opts into always_200, say *why* there is no user -- the
+      # caller is anonymous -- instead of returning a blank object a client
+      # cannot tell apart from a failed request.
+      return render(json: { status: 'anonymous' }) if params[:always_200] == 'true'
       raise error
     end
 
