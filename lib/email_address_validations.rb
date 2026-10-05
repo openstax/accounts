@@ -45,7 +45,8 @@ module EmailAddressValidations
           message: :leading_nonascii
         },
         {
-          # AWS::SES::ResponseError InvalidParameterValue - Local address contains control or whitespace
+          # AWS::SES::ResponseError InvalidParameterValue - Local address contains control or
+          # whitespace
           without: /[[:cntrl:]\u00AD\u200B-\u200D\u2060\uFEFF]/,
           message: :contains_invisible_characters
         }

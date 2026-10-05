@@ -42,6 +42,25 @@ class PushUserActivityToSalesforce
     salesforce_contact_id salesforce_contact_login_pushed_at salesforce_contact_last_seen_pushed_at
   ].freeze
 
+  PASSES = {
+    student_login: {
+      object: 'Student__c', id_column: :salesforce_student_id, unlink_columns: STUDENT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_student_pushed_at, stamp_value: :last_signed_in_at
+    },
+    contact_login: {
+      object: 'Contact', id_column: :salesforce_contact_id, unlink_columns: CONTACT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_contact_login_pushed_at, stamp_value: :last_signed_in_at
+    },
+    student_last_seen: {
+      object: 'Student__c', id_column: :salesforce_student_id, unlink_columns: STUDENT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_student_last_seen_pushed_at, stamp_value: :last_seen_at
+    },
+    contact_last_seen: {
+      object: 'Contact', id_column: :salesforce_contact_id, unlink_columns: CONTACT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_contact_last_seen_pushed_at, stamp_value: :last_seen_at
+    }
+  }.freeze
+
   # Matches the slug in both REX page URLs (openstax.org/books/{slug}/pages/…)
   # and book detail URLs (openstax.org/details/books/{slug}).
   BOOK_SLUG_REGEX = %r{openstax\.org/(?:details/)?books/([^/?#]+)}
@@ -179,11 +198,7 @@ class PushUserActivityToSalesforce
       end
     end
 
-    record_results(
-      users, results, failures,
-      pass: 'student_login', object: 'Student__c', id_column: :salesforce_student_id, unlink_columns: STUDENT_UNLINK_COLUMNS,
-      stamp_column: :salesforce_student_pushed_at, stamp_value: :last_signed_in_at
-    )
+    record_results(users, results, failures, :student_login)
   rescue StandardError => e
     Sentry.capture_exception(e)
   end
@@ -220,11 +235,7 @@ class PushUserActivityToSalesforce
       end
     end
 
-    record_results(
-      users, results, failures,
-      pass: 'contact_login', object: 'Contact', id_column: :salesforce_contact_id, unlink_columns: CONTACT_UNLINK_COLUMNS,
-      stamp_column: :salesforce_contact_login_pushed_at, stamp_value: :last_signed_in_at
-    )
+    record_results(users, results, failures, :contact_login)
   rescue StandardError => e
     Sentry.capture_exception(e)
   end
@@ -258,11 +269,7 @@ class PushUserActivityToSalesforce
       end
     end
 
-    record_results(
-      users, results, failures,
-      pass: 'student_last_seen', object: 'Student__c', id_column: :salesforce_student_id, unlink_columns: STUDENT_UNLINK_COLUMNS,
-      stamp_column: :salesforce_student_last_seen_pushed_at, stamp_value: :last_seen_at
-    )
+    record_results(users, results, failures, :student_last_seen)
   rescue StandardError => e
     Sentry.capture_exception(e)
   end
@@ -294,21 +301,18 @@ class PushUserActivityToSalesforce
       end
     end
 
-    record_results(
-      users, results, failures,
-      pass: 'contact_last_seen', object: 'Contact', id_column: :salesforce_contact_id, unlink_columns: CONTACT_UNLINK_COLUMNS,
-      stamp_column: :salesforce_contact_last_seen_pushed_at, stamp_value: :last_seen_at
-    )
+    record_results(users, results, failures, :contact_last_seen)
   rescue StandardError => e
     Sentry.capture_exception(e)
   end
 
-  def record_results(users, results, failures, pass:, object:, id_column:, unlink_columns:, stamp_column:, stamp_value:)
+  def record_results(users, results, failures, pass)
+    config = PASSES.fetch(pass)
     users.zip(results).each do |user, result|
       if batch_update_succeeded?(result)
-        user.update_column(stamp_column, user.public_send(stamp_value))
+        user.update_column(config[:stamp_column], user.public_send(config[:stamp_value]))
       elsif missing_record?(result)
-        unlink(user, pass: pass, object: object, id_column: id_column, columns: unlink_columns, result: result)
+        unlink(user, pass, config, result)
       else
         failures << { user_id: user.id, result: result }
       end
@@ -317,13 +321,13 @@ class PushUserActivityToSalesforce
 
   # Clearing the stamps along with the id: a record re-linked later would
   # otherwise look already up to date and miss its dates until the next login.
-  def unlink(user, pass:, object:, id_column:, columns:, result:)
-    dead_id = user.public_send(id_column)
-    user.update_columns(columns.index_with(nil))
+  def unlink(user, pass, config, result)
+    dead_id = user.public_send(config[:id_column])
+    user.update_columns(config[:unlink_columns].index_with(nil))
     SecurityLog.create!(
       user: user,
       event_type: :salesforce_record_unlinked,
-      event_data: { object: object, salesforce_id: dead_id, pass: pass, error: result['result'] }
+      event_data: { object: config[:object], salesforce_id: dead_id, pass: pass, error: result['result'] }
     )
   end
 
