@@ -32,7 +32,10 @@ class User < ApplicationRecord
     REJECTED_FACULTY = 'rejected_faculty',
     PENDING_SHEERID = 'pending_sheerid',
     REJECTED_BY_SHEERID = 'rejected_by_sheerid',
-    INCOMPLETE_SIGNUP = 'incomplete_signup'
+    INCOMPLETE_SIGNUP = 'incomplete_signup',
+    # Positional enum: append only.
+    SHEERID_EXPIRED = 'sheerid_expired',
+    SHEERID_ERROR = 'sheerid_error'
   ].freeze
 
   VALID_USING_OPENSTAX_HOW = [:as_primary, :as_recommending, :as_future].freeze
@@ -154,6 +157,7 @@ class User < ApplicationRecord
   has_many :member_groups, through: :group_members, source: :group
   has_many :oauth_applications, through: :member_groups
   has_many :security_logs
+  has_one :sheerid_verification, primary_key: :sheerid_verification_id, foreign_key: :verification_id
 
   delegate_to_routine :destroy
 
@@ -349,8 +353,45 @@ class User < ApplicationRecord
     faculty_status == INCOMPLETE_SIGNUP
   end
 
+  def sheerid_expired?
+    faculty_status == SHEERID_EXPIRED
+  end
+
+  def sheerid_error?
+    faculty_status == SHEERID_ERROR
+  end
+
   def in_pending_faculty_state?
-    pending_faculty? || pending_sheerid? || rejected_by_sheerid? || incomplete_signup?
+    pending_faculty? || pending_sheerid? || rejected_by_sheerid? || incomplete_signup? ||
+      sheerid_expired? || sheerid_error?
+  end
+
+  # Got a SheerID outcome (any) but never finished step 4.
+  def needs_profile_nudge?
+    !student? && is_newflow && !is_profile_complete &&
+      (sheerid_verification_id.present? || FacultyStatusLadder::RANK.fetch(faculty_status, 0) >= FacultyStatusLadder::SHEERID_RANK)
+  end
+
+  # Moves faculty_status up the ladder (see FacultyStatusLadder) and records the
+  # move; refuses and records a downgrade instead of applying it. Reaching a
+  # terminal status ends any CS review that was pending.
+  def advance_faculty_status!(to, source:, event_data: {})
+    to = to.to_s
+    from = faculty_status
+    data = event_data.merge(from: from, to: to, source: source)
+
+    unless FacultyStatusLadder.allowed?(from: from, to: to, source: source)
+      SecurityLog.create!(user: self, event_type: :faculty_status_downgrade_refused, event_data: data)
+      return false
+    end
+
+    return true if from == to
+
+    attrs = { faculty_status: to }
+    attrs[:is_educator_pending_cs_verification] = false if FacultyStatusLadder::RANK[to] == FacultyStatusLadder::TERMINAL_RANK
+    update!(attrs)
+    SecurityLog.create!(user: self, event_type: :faculty_status_advanced, event_data: data)
+    true
   end
 
   def name
