@@ -24,9 +24,23 @@
 #      links: an educator who switches to the student role keeps the Contact
 #      their lead converted into, and a shared column would let the student
 #      half suppress the Contact half.
+#
+# A 404 / missing-record answer on passes 2-4 (the Contact or Student__c was
+# merged or deleted) unlinks the user -- id and stamps cleared -- so the next
+# link/sync can re-resolve the record. Any other failure is reported once per
+# pass, not once per user.
 class PushUserActivityToSalesforce
   BATCH_SIZE = 250
   LOOKUP_CHUNK_SIZE = 200
+  MISSING_RECORD_ERROR_CODES = %w[INVALID_CROSS_REFERENCE_KEY ENTITY_IS_DELETED NOT_FOUND].freeze
+  MAX_REPORTED_FAILURES = 20
+
+  STUDENT_UNLINK_COLUMNS = %i[
+    salesforce_student_id salesforce_student_pushed_at salesforce_student_last_seen_pushed_at
+  ].freeze
+  CONTACT_UNLINK_COLUMNS = %i[
+    salesforce_contact_id salesforce_contact_login_pushed_at salesforce_contact_last_seen_pushed_at
+  ].freeze
 
   # Matches the slug in both REX page URLs (openstax.org/books/{slug}/pages/…)
   # and book detail URLs (openstax.org/details/books/{slug}).
@@ -134,6 +148,7 @@ class PushUserActivityToSalesforce
   # count as "never sent" -- comparing against it would return NULL and
   # silently exclude every reconciled student forever.
   def sync_student_login_dates
+    failures = []
     User.student
         .where.not(salesforce_student_id: nil)
         .where.not(last_signed_in_at: nil)
@@ -141,8 +156,9 @@ class PushUserActivityToSalesforce
           'salesforce_student_pushed_at IS NULL OR last_signed_in_at > salesforce_student_pushed_at'
         )
         .find_in_batches(batch_size: BATCH_SIZE) do |users|
-      push_student_login_dates(users)
+      push_student_login_dates(users, failures)
     end
+    report_failures('student login dates', failures)
   end
 
   # One composite/batch request per 25 students instead of one update per
@@ -152,7 +168,7 @@ class PushUserActivityToSalesforce
   # landing mid-batch would otherwise sit under a newer watermark and never
   # be sent. Pass 1 keeps Time.current -- its login date can be nil, and a
   # nil stamp would re-select the user for linking forever.
-  def push_student_login_dates(users)
+  def push_student_login_dates(users, failures)
     results = OpenStax::Salesforce::Remote::Student.sfdc_client.batch do |batch|
       users.each do |user|
         batch.update(
@@ -163,16 +179,11 @@ class PushUserActivityToSalesforce
       end
     end
 
-    users.zip(results).each do |user, result|
-      if batch_update_succeeded?(result)
-        user.update_column(:salesforce_student_pushed_at, user.last_signed_in_at)
-      else
-        Sentry.capture_message(
-          "[PushUserActivityToSalesforce] student login-date update failed for user #{user.id}: #{result.inspect}",
-          level: :warning
-        )
-      end
-    end
+    record_results(
+      users, results, failures,
+      pass: 'student_login', object: 'Student__c', id_column: :salesforce_student_id, unlink_columns: STUDENT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_student_pushed_at, stamp_value: :last_signed_in_at
+    )
   rescue StandardError => e
     Sentry.capture_exception(e)
   end
@@ -182,21 +193,23 @@ class PushUserActivityToSalesforce
   # stamp salesforce_contact_login_pushed_at, so those instructors must count
   # as "never sent" too.
   def sync_contact_login_dates
+    failures = []
     User.where.not(salesforce_contact_id: nil)
         .where.not(last_signed_in_at: nil)
         .where(
           'salesforce_contact_login_pushed_at IS NULL OR last_signed_in_at > salesforce_contact_login_pushed_at'
         )
         .find_in_batches(batch_size: BATCH_SIZE) do |users|
-      push_contact_login_dates(users)
+      push_contact_login_dates(users, failures)
     end
+    report_failures('contact login dates', failures)
   end
 
   # Only Last_Account_Login_Date__c -- never FV_Status__c, Adoption_Status__c,
   # name or school, which belong to Customer Experience once a Contact
   # exists.
   # Watermark caveat as in push_student_login_dates.
-  def push_contact_login_dates(users)
+  def push_contact_login_dates(users, failures)
     results = OpenStax::Salesforce::Remote::Contact.sfdc_client.batch do |batch|
       users.each do |user|
         batch.update(
@@ -207,22 +220,18 @@ class PushUserActivityToSalesforce
       end
     end
 
-    users.zip(results).each do |user, result|
-      if batch_update_succeeded?(result)
-        user.update_column(:salesforce_contact_login_pushed_at, user.last_signed_in_at)
-      else
-        Sentry.capture_message(
-          "[PushUserActivityToSalesforce] contact login-date update failed for user #{user.id}: #{result.inspect}",
-          level: :warning
-        )
-      end
-    end
+    record_results(
+      users, results, failures,
+      pass: 'contact_login', object: 'Contact', id_column: :salesforce_contact_id, unlink_columns: CONTACT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_contact_login_pushed_at, stamp_value: :last_signed_in_at
+    )
   rescue StandardError => e
     Sentry.capture_exception(e)
   end
 
   # Same NULL reasoning as sync_student_login_dates.
   def sync_student_last_seen_dates
+    failures = []
     User.student
         .where.not(salesforce_student_id: nil)
         .where.not(last_seen_at: nil)
@@ -231,13 +240,14 @@ class PushUserActivityToSalesforce
           'last_seen_at > salesforce_student_last_seen_pushed_at'
         )
         .find_in_batches(batch_size: BATCH_SIZE) do |users|
-      push_student_last_seen_dates(users)
+      push_student_last_seen_dates(users, failures)
     end
+    report_failures('student last seen dates', failures)
   end
 
   # Stamps the last_seen_at that was sent, not Time.current: a visit landing
   # mid-batch would otherwise sit under a newer watermark and never be sent.
-  def push_student_last_seen_dates(users)
+  def push_student_last_seen_dates(users, failures)
     results = OpenStax::Salesforce::Remote::Student.sfdc_client.batch do |batch|
       users.each do |user|
         batch.update(
@@ -248,22 +258,18 @@ class PushUserActivityToSalesforce
       end
     end
 
-    users.zip(results).each do |user, result|
-      if batch_update_succeeded?(result)
-        user.update_column(:salesforce_student_last_seen_pushed_at, user.last_seen_at)
-      else
-        Sentry.capture_message(
-          "[PushUserActivityToSalesforce] student last-seen update failed for user #{user.id}: #{result.inspect}",
-          level: :warning
-        )
-      end
-    end
+    record_results(
+      users, results, failures,
+      pass: 'student_last_seen', object: 'Student__c', id_column: :salesforce_student_id, unlink_columns: STUDENT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_student_last_seen_pushed_at, stamp_value: :last_seen_at
+    )
   rescue StandardError => e
     Sentry.capture_exception(e)
   end
 
   # Same NULL reasoning as sync_contact_login_dates.
   def sync_contact_last_seen_dates
+    failures = []
     User.where.not(salesforce_contact_id: nil)
         .where.not(last_seen_at: nil)
         .where(
@@ -271,12 +277,13 @@ class PushUserActivityToSalesforce
           'last_seen_at > salesforce_contact_last_seen_pushed_at'
         )
         .find_in_batches(batch_size: BATCH_SIZE) do |users|
-      push_contact_last_seen_dates(users)
+      push_contact_last_seen_dates(users, failures)
     end
+    report_failures('contact last seen dates', failures)
   end
 
   # Watermark caveat as in push_student_last_seen_dates.
-  def push_contact_last_seen_dates(users)
+  def push_contact_last_seen_dates(users, failures)
     results = OpenStax::Salesforce::Remote::Contact.sfdc_client.batch do |batch|
       users.each do |user|
         batch.update(
@@ -287,22 +294,58 @@ class PushUserActivityToSalesforce
       end
     end
 
-    users.zip(results).each do |user, result|
-      if batch_update_succeeded?(result)
-        user.update_column(:salesforce_contact_last_seen_pushed_at, user.last_seen_at)
-      else
-        Sentry.capture_message(
-          "[PushUserActivityToSalesforce] contact last-seen update failed for user #{user.id}: #{result.inspect}",
-          level: :warning
-        )
-      end
-    end
+    record_results(
+      users, results, failures,
+      pass: 'contact_last_seen', object: 'Contact', id_column: :salesforce_contact_id, unlink_columns: CONTACT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_contact_last_seen_pushed_at, stamp_value: :last_seen_at
+    )
   rescue StandardError => e
     Sentry.capture_exception(e)
   end
 
+  def record_results(users, results, failures, pass:, object:, id_column:, unlink_columns:, stamp_column:, stamp_value:)
+    users.zip(results).each do |user, result|
+      if batch_update_succeeded?(result)
+        user.update_column(stamp_column, user.public_send(stamp_value))
+      elsif missing_record?(result)
+        unlink(user, pass: pass, object: object, id_column: id_column, columns: unlink_columns, result: result)
+      else
+        failures << { user_id: user.id, result: result }
+      end
+    end
+  end
+
+  # Clearing the stamps along with the id: a record re-linked later would
+  # otherwise look already up to date and miss its dates until the next login.
+  def unlink(user, pass:, object:, id_column:, columns:, result:)
+    dead_id = user.public_send(id_column)
+    user.update_columns(columns.index_with(nil))
+    SecurityLog.create!(
+      user: user,
+      event_type: :salesforce_record_unlinked,
+      event_data: { object: object, salesforce_id: dead_id, pass: pass, error: result['result'] }
+    )
+  end
+
+  def report_failures(pass_name, failures)
+    return if failures.empty?
+
+    Sentry.capture_message(
+      "[PushUserActivityToSalesforce] #{pass_name} update failed for #{failures.size} users",
+      level: :warning,
+      extra: { failures: failures.first(MAX_REPORTED_FAILURES) }
+    )
+  end
+
   def batch_update_succeeded?(result)
     result.present? && result['statusCode'].to_i.between?(200, 299)
+  end
+
+  def missing_record?(result)
+    return false if result.blank?
+
+    result['statusCode'].to_i == 404 ||
+      Array(result['result']).any? { |error| MISSING_RECORD_ERROR_CODES.include?(error['errorCode']) }
   end
 
   def login_date(user)
