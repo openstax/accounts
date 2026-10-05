@@ -65,6 +65,27 @@ class PushUserActivityToSalesforce
   # and book detail URLs (openstax.org/details/books/{slug}).
   BOOK_SLUG_REGEX = %r{openstax\.org/(?:details/)?books/([^/?#]+)}
 
+  # Keeps a running count but only the first MAX_REPORTED_FAILURES responses:
+  # a widespread Salesforce error would otherwise retain one Restforce::Mash
+  # per affected user for the length of the pass.
+  class FailureTally
+    attr_reader :count, :samples
+
+    def initialize
+      @count = 0
+      @samples = []
+    end
+
+    def add(user_id, result)
+      @count += 1
+      @samples << { user_id: user_id, result: result } if @samples.size < MAX_REPORTED_FAILURES
+    end
+
+    def empty?
+      @count.zero?
+    end
+  end
+
   def self.call
     new.call
   end
@@ -167,7 +188,7 @@ class PushUserActivityToSalesforce
   # count as "never sent" -- comparing against it would return NULL and
   # silently exclude every reconciled student forever.
   def sync_student_login_dates
-    failures = []
+    failures = FailureTally.new
     User.student
         .where.not(salesforce_student_id: nil)
         .where.not(last_signed_in_at: nil)
@@ -208,7 +229,7 @@ class PushUserActivityToSalesforce
   # stamp salesforce_contact_login_pushed_at, so those instructors must count
   # as "never sent" too.
   def sync_contact_login_dates
-    failures = []
+    failures = FailureTally.new
     User.where.not(salesforce_contact_id: nil)
         .where.not(last_signed_in_at: nil)
         .where(
@@ -242,7 +263,7 @@ class PushUserActivityToSalesforce
 
   # Same NULL reasoning as sync_student_login_dates.
   def sync_student_last_seen_dates
-    failures = []
+    failures = FailureTally.new
     User.student
         .where.not(salesforce_student_id: nil)
         .where.not(last_seen_at: nil)
@@ -276,7 +297,7 @@ class PushUserActivityToSalesforce
 
   # Same NULL reasoning as sync_contact_login_dates.
   def sync_contact_last_seen_dates
-    failures = []
+    failures = FailureTally.new
     User.where.not(salesforce_contact_id: nil)
         .where.not(last_seen_at: nil)
         .where(
@@ -314,16 +335,22 @@ class PushUserActivityToSalesforce
       elsif missing_record?(result)
         unlink(user, pass, config, result)
       else
-        failures << { user_id: user.id, result: result }
+        failures.add(user.id, result)
       end
     end
   end
 
   # Clearing the stamps along with the id: a record re-linked later would
   # otherwise look already up to date and miss its dates until the next login.
+  # Compare-and-set on the dead id: the Contact sync or a webhook can re-link
+  # the user while the batch is in flight, and this stale instance must not
+  # wipe that live id.
   def unlink(user, pass, config, result)
     dead_id = user.public_send(config[:id_column])
-    user.update_columns(config[:unlink_columns].index_with(nil))
+    unlinked = User.where(id: user.id, config[:id_column] => dead_id)
+                   .update_all(config[:unlink_columns].index_with(nil))
+    return if unlinked.zero?
+
     SecurityLog.create!(
       user: user,
       event_type: :salesforce_record_unlinked,
@@ -335,9 +362,9 @@ class PushUserActivityToSalesforce
     return if failures.empty?
 
     Sentry.capture_message(
-      "[PushUserActivityToSalesforce] #{pass_name} update failed for #{failures.size} users",
+      "[PushUserActivityToSalesforce] #{pass_name} update failed for #{failures.count} users",
       level: :warning,
-      extra: { failures: failures.first(MAX_REPORTED_FAILURES) }
+      extra: { failures: failures.samples }
     )
   end
 

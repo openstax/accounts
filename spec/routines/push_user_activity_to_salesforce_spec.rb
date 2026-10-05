@@ -1015,11 +1015,12 @@ describe PushUserActivityToSalesforce, type: :routine do
     let(:sfdc_client) { double('sfdc client') }
     let(:old_stamp) { 30.days.ago }
 
-    def stub_batch(results)
+    def stub_batch(results, &during_batch)
       allow(sfdc_client).to receive(:batch) do |&block|
         subrequests = double('subrequests')
         allow(subrequests).to receive(:update)
         block.call(subrequests)
+        during_batch&.call
         results
       end
     end
@@ -1051,6 +1052,22 @@ describe PushUserActivityToSalesforce, type: :routine do
       end
     end
 
+    shared_examples 'a pass that leaves a record re-linked mid-batch alone' do
+      it 'does not clear an id that changed while the batch was in flight' do
+        stub_batch([missing_result('INVALID_CROSS_REFERENCE_KEY')]) do
+          linked_user.update_columns(id_column => 'a0LIVE000001')
+        end
+        expect(Sentry).not_to receive(:capture_message)
+
+        described_class.call
+
+        user = linked_user.reload
+        expect(user.public_send(id_column)).to eq 'a0LIVE000001'
+        stamp_columns.each { |column| expect(user.public_send(column)).to be_within(1.second).of(old_stamp) }
+        expect(SecurityLog.where(event_type: :salesforce_record_unlinked)).to be_empty
+      end
+    end
+
     shared_examples 'a pass that reports other failures once' do
       it 'sends one Sentry message for the pass and leaves the users alone' do
         stub_batch([failed_result, failed_result])
@@ -1067,6 +1084,17 @@ describe PushUserActivityToSalesforce, type: :routine do
           expect(user.public_send(stamp_columns.first)).to be_within(1.second).of(old_stamp)
         end
         expect(SecurityLog.where(event_type: :salesforce_record_unlinked)).to be_empty
+      end
+
+      it 'counts every failure but keeps only the first MAX_REPORTED_FAILURES as samples' do
+        stub_const('PushUserActivityToSalesforce::MAX_REPORTED_FAILURES', 1)
+        stub_batch([failed_result, failed_result])
+        expect(Sentry).to receive(:capture_message).once do |message, options|
+          expect(message).to include('2 users')
+          expect(options[:extra][:failures].size).to eq 1
+        end
+
+        described_class.call
       end
     end
 
@@ -1093,6 +1121,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         include_examples 'a pass that unlinks missing records', 'INVALID_CROSS_REFERENCE_KEY'
         include_examples 'a pass that unlinks missing records', 'ENTITY_IS_DELETED'
+        include_examples 'a pass that leaves a record re-linked mid-batch alone'
       end
 
       context 'with two users failing for another reason' do
@@ -1127,6 +1156,7 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         include_examples 'a pass that unlinks missing records', 'INVALID_CROSS_REFERENCE_KEY'
         include_examples 'a pass that unlinks missing records', 'ENTITY_IS_DELETED'
+        include_examples 'a pass that leaves a record re-linked mid-batch alone'
       end
 
       context 'with two users failing for another reason' do

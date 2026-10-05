@@ -17,6 +17,10 @@ describe Host do
       expect(Host.trusted?('')).to eq false
     end
 
+    it 'is false for a URL Addressable cannot parse' do
+      expect(Host.trusted?('http://ex ample.com/x')).to eq false
+    end
+
     it 'is true for a relative path' do
       expect(Host.trusted?('/relative/path')).to eq true
     end

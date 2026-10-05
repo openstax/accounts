@@ -10,5 +10,7 @@ module Host
     return true if not uri.host and url.starts_with?('/')
 
     trusted_host_regexes.any? { |regex| regex.match? uri.host }
+  rescue Addressable::URI::InvalidURIError
+    false
   end
 end
