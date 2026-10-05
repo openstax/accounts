@@ -43,6 +43,11 @@ module EmailAddressValidations
         {
           without: /\A[\u007f-\ufeff]+/,
           message: :leading_nonascii
+        },
+        {
+          # AWS::SES::ResponseError InvalidParameterValue - Local address contains control or whitespace
+          without: /[[:cntrl:]\u00AD\u200B-\u200D\u2060\uFEFF]/,
+          message: :contains_invisible_characters
         }
       ]
     end
