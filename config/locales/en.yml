@@ -79,6 +79,7 @@ en:
     fill_out: Please enter a value for this field
     school_name_must_be_entered: Please enter school name
     other_must_be_entered: Please enter other role name
+    other_role_name_too_long: Please shorten your role to 128 characters or fewer
     books_used_must_be_entered: Please enter books used
     books_used_details_must_be_entered: Please enter the number of students taught and how the book is used
     books_of_interest_must_be_entered: Please enter books of interest
@@ -109,6 +110,12 @@ en:
       include_ta_sections: Include all students across your classes
       students_per_semester: Students per school year
       num_students_using_book_placeholder: Number of students using this book per school year
+
+  profile_nudge_banner:
+    heading: Finish setting up your instructor account
+    body: You verified your instructor status -- just a couple more questions and you're done.
+    finish_button: Finish setting up
+    dismiss_button: Dismiss
 
   login_signup_form:
     cant_be_blank: can't be blank
@@ -172,6 +179,7 @@ en:
       In the meantime, you can access all books and resources
       except those that require instructor verification.
     alternatives_heading: Having trouble?
+    alternatives_heading_educator: Are you an educator?
     alternative_manual_verification: Verify another way
     alternative_manual_verification_description: >-
       If your school isn't listed or the form won't accept your details,
@@ -469,6 +477,9 @@ en:
       push_salesforce_contact_logins_enabled:
         name: 'Push instructor login dates to Salesforce?'
         help_block: 'If checked (and SF configured), instructors'' most recent login date will be pushed to their SF Contact'
+      push_salesforce_last_seen_enabled:
+        name: 'Push last-seen dates to Salesforce?'
+        help_block: 'If checked (and SF configured), students'' and instructors'' most recent website visit will be pushed to their SF Student__c/Contact'
       show_support_chat:
         name: 'Show support chat widget'
         help_block: 'If checked users will see CS chat widget'
@@ -505,6 +516,15 @@ en:
       number_of_days_contacts_modified:
         name: Contacts modified in last x days
         help_block: Retrieve contacts modified in the last X days in update_user_salesforce_info
+      contacts_synced_through:
+        name: Contacts synced through (UTC)
+        help_block: Watermark for update_user_contact_info; the last time Salesforce Contacts were successfully synced. Clear it to force a full resync using "Contacts modified in last x days" instead.
+      leads_synced_through:
+        name: Leads synced through (UTC)
+        help_block: Watermark for the nightly Lead sync (SyncEducatorLeads → UpdateUserLeadInfo); set automatically after each successful run. Leave blank on first run (it falls back to the last 7 days) and clear it to force a resync.
+      push_incomplete_signup_leads_enabled:
+        name: Create Salesforce leads for stalled educator signups?
+        help_block: If checked (and SF configured), the nightly SyncEducatorLeads pass creates an incomplete_signup Lead for newflow educators who verified their email at least 24 hours ago (within the last 90 days) and have no Lead or Contact yet, up to 500 per night.
       minimum_recaptcha_score:
         name: Minimum reCAPTCHA score allowed to register a new account
         help_block: Humans should score closer to 1, bots should score closer to 0

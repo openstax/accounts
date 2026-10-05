@@ -11,6 +11,9 @@ Rails.application.routes.draw do
     # Profile access
     get 'i/profile', action: :profile_newflow, as: :profile_newflow
 
+    # Dismiss the "finish your instructor profile" banner for the rest of the session
+    post 'i/profile/dismiss_profile_nudge', action: :dismiss_profile_nudge, as: :dismiss_profile_nudge
+
     # Exit accounts back to app they came from
     get 'i/exit_accounts', action: :exit_accounts, as: :exit_accounts
   end

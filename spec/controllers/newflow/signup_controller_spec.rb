@@ -10,14 +10,37 @@ module Newflow
     end
 
     describe 'GET #signup_done' do
+      let(:user) { FactoryBot.create(:user) }
+
       before do
-        user = FactoryBot.create(:user)
         mock_current_user(user)
+        allow(OXPosthog).to receive(:log)
       end
 
       it 'renders' do
         get(:signup_done)
         expect(response).to render_template(:signup_done)
+      end
+
+      it 'captures user_signup_done once per account, not once per render' do
+        get(:signup_done)
+        get(:signup_done)
+
+        expect(OXPosthog).to have_received(:log).with(
+          user, 'user_signup_done', hash_including(role: user.role)
+        ).once
+        expect(user.reload.signup_done_captured_at).to be_present
+      end
+
+      it 'does not capture again for an account that already completed signup' do
+        user.update_column(:signup_done_captured_at, 1.week.ago)
+
+        get(:signup_done)
+
+        expect(response).to render_template(:signup_done)
+        expect(OXPosthog).not_to have_received(:log).with(
+          user, 'user_signup_done', anything
+        )
       end
     end
     describe 'POST #switch_role' do
