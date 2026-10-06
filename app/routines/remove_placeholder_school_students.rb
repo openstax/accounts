@@ -47,9 +47,7 @@ class RemovePlaceholderSchoolStudents
   end
 
   def affected_users
-    User.student
-        .where(school_id: placeholder_schools.select(:id))
-        .where.not(salesforce_student_id: nil)
+    User.student.where.not(salesforce_student_id: nil)
   end
 
   def process(user, stats)
