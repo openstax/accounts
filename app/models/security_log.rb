@@ -133,7 +133,8 @@ class SecurityLog < ApplicationRecord
     profile_nudge_redirected: 126,
     profile_nudge_banner_shown: 127,
     salesforce_lead_status_synced: 128,
-    faculty_status_repaired: 129
+    faculty_status_repaired: 129,
+    salesforce_record_unlinked: 130
   }
 
   json_serialize :event_data, Hash

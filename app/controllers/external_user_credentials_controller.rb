@@ -32,6 +32,7 @@ class ExternalUserCredentialsController < Newflow::BaseController
       FinePrint.get_contract(:general_terms_of_use),
       FinePrint.get_contract(:privacy_policy)
     ]
+    session[:external_user_credentials] = { 'token' => params[:token], 'return_to' => @return_to }
     @signed_state = Rails.application.message_verifier('social_auth').generate({
       user_id: @user.id,
       return_to: @return_to

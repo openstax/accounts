@@ -81,6 +81,29 @@ describe EmailAddress, type: :model do
     end
   end
 
+  describe 'invisible and control characters' do
+    let(:user) { FactoryBot.create(:user) }
+    let(:message) { 'An email address should not contain invisible or control characters' }
+
+    def email_for(value)
+      EmailAddress.new(user: user, value: value).tap(&:valid?)
+    end
+
+    [
+      ["zero-width space", "jo\u200Bhn@gmail.com"],
+      ["soft hyphen", "john\u00ADsmith@gmail.com"],
+      ["tab", "jo\thn@gmail.com"]
+    ].each do |name, value|
+      it "rejects a #{name}" do
+        expect(email_for(value).errors[:value]).to include(message)
+      end
+    end
+
+    it 'accepts a plain address' do
+      expect(email_for('john@gmail.com').errors[:value]).to be_empty
+    end
+  end
+
   describe '.claimed?' do
     let(:value) { 'dominic@gmail.com' }
 
