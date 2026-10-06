@@ -122,12 +122,20 @@ module Newflow
           end
 
           it 'returns to the credentials page with token and return_to when the session remembers them' do
-            session[:external_user_credentials] = { 'token' => 'abc123', 'return_to' => return_to }
+            token = FactoryBot.create :doorkeeper_access_token, resource_owner_id: user.id
+            session[:external_user_credentials] = { 'token_id' => token.id, 'return_to' => return_to }
             get(:oauth_callback, params: params)
             expect(response).to redirect_to(
-              new_external_user_credentials_path(token: 'abc123', return_to: return_to)
+              new_external_user_credentials_path(token: token.token, return_to: return_to)
             )
             expect(flash[:alert]).to be_present
+          end
+
+          it "falls back to the login page when the remembered token isn't this user's" do
+            token = FactoryBot.create :doorkeeper_access_token, resource_owner_id: FactoryBot.create(:user).id
+            session[:external_user_credentials] = { 'token_id' => token.id, 'return_to' => return_to }
+            get(:oauth_callback, params: params)
+            expect(response).to redirect_to(newflow_login_path)
           end
 
           it 'falls back to the login page without the session entry' do
