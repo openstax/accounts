@@ -170,9 +170,11 @@ module Newflow
       # ones are unactionable noise at ~60/day; an error that just moved a real
       # user's status is the case a human should see. A repeat delivery or an
       # expiry landing on an already-decided user changes nothing and stays quiet.
+      # A no-user delivery with no email is the verification-created ping SheerID
+      # sends before any personal info exists, so there is nothing to match yet.
       def report(verification, verification_id, user, status_changed: false)
         if user.nil?
-          return if verification.error?
+          return if verification.error? || verification.email.blank?
 
           Sentry.capture_message(
             "[SheerID Webhook] No user found with verification id (#{verification_id}) and email (#{verification.email})",
