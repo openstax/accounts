@@ -163,7 +163,7 @@ module Newflow
     end
 
     def error_path(is_external, code)
-      return new_external_user_credentials_path if is_external
+      return external_error_path if is_external
 
       case code
       when :should_redirect_to_signup, :mismatched_authentication
@@ -171,6 +171,13 @@ module Newflow
       when :authentication_taken, :email_already_in_use
         profile_newflow_path
       end
+    end
+
+    def external_error_path
+      saved = session[:external_user_credentials] || {}
+      return newflow_login_path if saved['token'].blank? || saved['return_to'].blank?
+
+      new_external_user_credentials_path(token: saved['token'], return_to: saved['return_to'])
     end
 
     def ensure_unverified_user(user)
