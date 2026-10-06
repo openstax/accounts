@@ -1033,4 +1033,166 @@ describe PushUserActivityToSalesforce, type: :routine do
       existing_students.select { |s| uuids.include?(s.name) }
     end
   end
+
+  describe 'records that are gone from Salesforce, and other batch failures' do
+    let(:contact_remote) { OpenStax::Salesforce::Remote::Contact }
+    let(:sfdc_client) { double('sfdc client') }
+    let(:old_stamp) { 30.days.ago }
+
+    def stub_batch(results, &during_batch)
+      allow(sfdc_client).to receive(:batch) do |&block|
+        subrequests = double('subrequests')
+        allow(subrequests).to receive(:update)
+        block.call(subrequests)
+        during_batch&.call
+        results
+      end
+    end
+
+    def missing_result(code)
+      Restforce::Mash.new('statusCode' => 404, 'result' => [{ 'errorCode' => code, 'message' => 'gone' }])
+    end
+
+    def failed_result
+      Restforce::Mash.new(
+        'statusCode' => 400,
+        'result' => [{ 'errorCode' => 'FIELD_INTEGRITY_EXCEPTION', 'message' => 'nope' }]
+      )
+    end
+
+    shared_examples 'a pass that unlinks missing records' do |code|
+      it "unlinks the user and logs it when Salesforce answers #{code}" do
+        stub_batch([missing_result(code)])
+        expect(Sentry).not_to receive(:capture_message)
+
+        described_class.call
+
+        user = linked_user.reload
+        expect(user.public_send(id_column)).to be_nil
+        stamp_columns.each { |column| expect(user.public_send(column)).to be_nil }
+        log = SecurityLog.find_by!(user: user, event_type: :salesforce_record_unlinked)
+        expect(log.event_data).to include('object' => object, 'salesforce_id' => dead_id, 'pass' => pass)
+        expect(log.event_data['error'].first['errorCode']).to eq code
+      end
+    end
+
+    shared_examples 'a pass that leaves a record re-linked mid-batch alone' do
+      it 'does not clear an id that changed while the batch was in flight' do
+        stub_batch([missing_result('INVALID_CROSS_REFERENCE_KEY')]) do
+          linked_user.update_columns(id_column => 'a0LIVE000001')
+        end
+        expect(Sentry).not_to receive(:capture_message)
+
+        described_class.call
+
+        user = linked_user.reload
+        expect(user.public_send(id_column)).to eq 'a0LIVE000001'
+        stamp_columns.each { |column| expect(user.public_send(column)).to be_within(1.second).of(old_stamp) }
+        expect(SecurityLog.where(event_type: :salesforce_record_unlinked)).to be_empty
+      end
+    end
+
+    shared_examples 'a pass that reports other failures once' do
+      it 'sends one Sentry message for the pass and leaves the users alone' do
+        stub_batch([failed_result, failed_result])
+        expect(Sentry).to receive(:capture_message).once do |message, options|
+          expect(message).to include('2 users')
+          expect(options[:extra][:failures].map { |f| f[:user_id] }).to match_array(failing_users.map(&:id))
+        end
+
+        described_class.call
+
+        failing_users.each do |user|
+          user.reload
+          expect(user.public_send(id_column)).to be_present
+          expect(user.public_send(stamp_columns.first)).to be_within(1.second).of(old_stamp)
+        end
+        expect(SecurityLog.where(event_type: :salesforce_record_unlinked)).to be_empty
+      end
+
+      it 'counts every failure but keeps only the first MAX_REPORTED_FAILURES as samples' do
+        stub_const('PushUserActivityToSalesforce::MAX_REPORTED_FAILURES', 1)
+        stub_batch([failed_result, failed_result])
+        expect(Sentry).to receive(:capture_message).once do |message, options|
+          expect(message).to include('2 users')
+          expect(options[:extra][:failures].size).to eq 1
+        end
+
+        described_class.call
+      end
+    end
+
+    context 'contact login pass' do
+      let(:id_column) { :salesforce_contact_id }
+      let(:stamp_columns) { %i[salesforce_contact_login_pushed_at salesforce_contact_last_seen_pushed_at] }
+      let(:object) { 'Contact' }
+      let(:dead_id) { 'a0DEADCONT01' }
+      let(:pass) { 'contact_login' }
+
+      before do
+        allow(Settings::Salesforce).to receive(:push_contact_logins_enabled) { true }
+        allow(contact_remote).to receive(:sfdc_client).and_return(sfdc_client)
+      end
+
+      context 'with a Contact that is gone' do
+        let!(:linked_user) do
+          FactoryBot.create :user, role: :instructor,
+            salesforce_contact_id: dead_id,
+            salesforce_contact_login_pushed_at: old_stamp,
+            salesforce_contact_last_seen_pushed_at: old_stamp,
+            last_signed_in_at: 1.hour.ago
+        end
+
+        include_examples 'a pass that unlinks missing records', 'INVALID_CROSS_REFERENCE_KEY'
+        include_examples 'a pass that unlinks missing records', 'ENTITY_IS_DELETED'
+        include_examples 'a pass that leaves a record re-linked mid-batch alone'
+      end
+
+      context 'with two users failing for another reason' do
+        let!(:failing_users) do
+          FactoryBot.create_list :user, 2, role: :instructor,
+            salesforce_contact_id: 'a0FAILCONT01',
+            salesforce_contact_login_pushed_at: old_stamp,
+            last_signed_in_at: 1.hour.ago
+        end
+
+        include_examples 'a pass that reports other failures once'
+      end
+    end
+
+    context 'student login pass' do
+      let(:id_column) { :salesforce_student_id }
+      let(:stamp_columns) { %i[salesforce_student_pushed_at salesforce_student_last_seen_pushed_at] }
+      let(:object) { 'Student__c' }
+      let(:dead_id) { 'a0DEADSTUD01' }
+      let(:pass) { 'student_login' }
+
+      before { allow(remote).to receive(:sfdc_client).and_return(sfdc_client) }
+
+      context 'with a Student__c that is gone' do
+        let!(:linked_user) do
+          FactoryBot.create :user, role: :student,
+            salesforce_student_id: dead_id,
+            salesforce_student_pushed_at: old_stamp,
+            salesforce_student_last_seen_pushed_at: old_stamp,
+            last_signed_in_at: 1.hour.ago
+        end
+
+        include_examples 'a pass that unlinks missing records', 'INVALID_CROSS_REFERENCE_KEY'
+        include_examples 'a pass that unlinks missing records', 'ENTITY_IS_DELETED'
+        include_examples 'a pass that leaves a record re-linked mid-batch alone'
+      end
+
+      context 'with two users failing for another reason' do
+        let!(:failing_users) do
+          FactoryBot.create_list :user, 2, role: :student,
+            salesforce_student_id: 'a0FAILSTUD01',
+            salesforce_student_pushed_at: old_stamp,
+            last_signed_in_at: 1.hour.ago
+        end
+
+        include_examples 'a pass that reports other failures once'
+      end
+    end
+  end
 end
