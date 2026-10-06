@@ -299,7 +299,6 @@ module Newflow
       fallback_school = OpenStax::Salesforce::Remote::School.find_by(name: 'Find Me A Home')
       raise "Salesforce 'Find Me A Home' school not found — cannot assign fallback school for user #{user.id}" unless fallback_school
 
-      user.school = School.find_by(salesforce_id: fallback_school.id)
       fallback_school.id
     end
 
