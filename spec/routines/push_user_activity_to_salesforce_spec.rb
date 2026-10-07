@@ -7,6 +7,7 @@ describe PushUserActivityToSalesforce, type: :routine do
     allow(Settings::Salesforce).to receive(:push_students_enabled) { true }
     allow(Settings::Salesforce).to receive(:push_contact_logins_enabled) { false }
     allow(Settings::Salesforce).to receive(:push_last_seen_enabled) { false }
+    allow_any_instance_of(described_class).to receive(:fetch_created_students).and_return([])
   end
 
   context 'when the setting is disabled' do
@@ -991,6 +992,151 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be_nil
       end
+    end
+  end
+
+  describe 'link step: externally created Student__c records' do
+    let(:uuid) { SecureRandom.uuid }
+    let!(:user) { FactoryBot.create :user, role: :student, uuid: uuid, school: nil }
+
+    def sf_student(name, id)
+      double('Student__c', name: name, id: id)
+    end
+
+    def stub_fetch(*pages)
+      allow_any_instance_of(described_class).to receive(:fetch_created_students).and_return(*pages)
+    end
+
+    before { Settings::Salesforce.students_linked_through = nil }
+
+    it 'links an unlinked user by uuid and leaves the pushed stamp nil' do
+      stub_fetch [sf_student(uuid, 'a0NEW00000001')]
+
+      described_class.call
+
+      user.reload
+      expect(user.salesforce_student_id).to eq 'a0NEW00000001'
+      expect(user.salesforce_student_pushed_at).to be_nil
+    end
+
+    it 'leaves a user already linked to a different id untouched' do
+      user.update_column(:salesforce_student_id, 'a0OLD00000001')
+      stub_fetch [sf_student(uuid, 'a0NEW00000001')]
+
+      described_class.call
+
+      expect(user.reload.salesforce_student_id).to eq 'a0OLD00000001'
+    end
+
+    it 'ignores non-uuid names and names with no matching user' do
+      stub_fetch [sf_student('Some Student', 'a0JUNK0000001'), sf_student(SecureRandom.uuid, 'a0NOUSER00001')]
+
+      expect { described_class.call }.not_to(change { User.where.not(salesforce_student_id: nil).count })
+    end
+
+    it 'uses only the first (lowest Id) record when a name repeats' do
+      stub_fetch [sf_student(uuid, 'a0AAA0000001'), sf_student(uuid, 'a0BBB0000002')]
+
+      described_class.call
+
+      expect(user.reload.salesforce_student_id).to eq 'a0AAA0000001'
+    end
+
+    it 'pages until a short page, keyed on the last Id' do
+      full_page = Array.new(described_class::LINK_PAGE_SIZE) { |i| sf_student("name-#{i}", format('a0P%012d', i)) }
+      calls = []
+      allow_any_instance_of(described_class).to receive(:fetch_created_students) do |_inst, **args|
+        calls << args[:after_id]
+        calls.size == 1 ? full_page : [sf_student(uuid, 'a0ZZZ0000001')]
+      end
+
+      described_class.call
+
+      expect(calls).to eq [nil, full_page.last.id]
+      expect(user.reload.salesforce_student_id).to eq 'a0ZZZ0000001'
+    end
+
+    describe 'window' do
+      it 'starts 15 minutes before the watermark when set' do
+        watermark = Time.utc(2026, 10, 1, 12, 0, 0)
+        Settings::Salesforce.students_linked_through = watermark
+        expect_any_instance_of(described_class).to receive(:fetch_created_students)
+          .with(since: watermark - 15.minutes, after_id: nil).and_return([])
+
+        described_class.call
+      end
+
+      it 'starts 30 days back when blank' do
+        Timecop.freeze(Time.utc(2026, 10, 6, 3, 0, 0)) do
+          expect_any_instance_of(described_class).to receive(:fetch_created_students)
+            .with(since: 30.days.ago, after_id: nil).and_return([])
+
+          described_class.call
+        end
+      end
+    end
+
+    it 'advances the watermark to the run start on success' do
+      Timecop.freeze(Time.utc(2026, 10, 6, 3, 0, 0)) do
+        described_class.call
+
+        expect(Settings::Salesforce.students_linked_through).to eq Time.utc(2026, 10, 6, 3, 0, 0)
+      end
+    end
+
+    context 'when the fetch raises' do
+      let(:sfdc_client) { double('sfdc client') }
+      let!(:other) do
+        FactoryBot.create :user, role: :student, school: nil, salesforce_student_id: 'a0OTHER00001',
+          salesforce_student_pushed_at: nil, last_signed_in_at: 1.hour.ago
+      end
+
+      before do
+        allow(remote).to receive(:sfdc_client).and_return(sfdc_client)
+        allow_any_instance_of(described_class).to receive(:fetch_created_students).and_raise('sf exploded')
+      end
+
+      it 'reports, keeps the watermark, and still runs pass 2' do
+        expect(Sentry).to receive(:capture_exception).once
+        expect(sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          allow(subrequests).to receive(:update)
+          block.call(subrequests)
+          [{ 'statusCode' => 204 }]
+        end
+
+        described_class.call
+
+        expect(Settings::Salesforce.students_linked_through).to be_nil
+        expect(other.reload.salesforce_student_pushed_at).not_to be_nil
+      end
+    end
+
+    it 'has its login date pushed by pass 2 in the same run' do
+      login_time = 2.hours.ago
+      user.update_column(:last_signed_in_at, login_time)
+      stub_fetch [sf_student(uuid, 'a0NEW00000001')]
+      sfdc_client = double('sfdc client')
+      allow(remote).to receive(:sfdc_client).and_return(sfdc_client)
+      expect(sfdc_client).to receive(:batch) do |&block|
+        subrequests = double('subrequests')
+        expect(subrequests).to receive(:update).with(
+          'Student__c', Id: 'a0NEW00000001', Last_Account_Login_Date__c: login_time.utc.strftime('%Y-%m-%d')
+        )
+        block.call(subrequests)
+        [{ 'statusCode' => 204 }]
+      end
+
+      described_class.call
+
+      expect(user.reload.salesforce_student_pushed_at).to be_within(1.second).of(login_time)
+    end
+
+    it 'is never called when push_students_enabled is false' do
+      allow(Settings::Salesforce).to receive(:push_students_enabled) { false }
+      expect_any_instance_of(described_class).not_to receive(:fetch_created_students)
+
+      described_class.call
     end
   end
 

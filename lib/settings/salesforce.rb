@@ -69,6 +69,15 @@ module Settings
         Settings::Db.store.leads_synced_through = time&.utc&.iso8601
       end
 
+      def students_linked_through
+        value = Settings::Db.store.students_linked_through
+        Time.iso8601(value) if value.present?
+      end
+
+      def students_linked_through=(time)
+        Settings::Db.store.students_linked_through = time&.utc&.iso8601
+      end
+
       def push_incomplete_signup_leads_enabled
         Settings::Db.store.push_incomplete_signup_leads_enabled
       end

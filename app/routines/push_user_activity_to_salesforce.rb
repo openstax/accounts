@@ -25,6 +25,13 @@
 #      their lead converted into, and a shared column would let the student
 #      half suppress the Contact half.
 #
+# Between passes 1 and 2, a link-only step attaches Student__c records that
+# something else created (the Assignable loader, Name = accounts UUID) to
+# their users, so those students get dates in the same run. It scans records
+# created since the students_linked_through watermark and only fills a NULL
+# salesforce_student_id: duplicate Student__c records exist per UUID, and a
+# user already linked must never be re-pointed.
+#
 # A 404 / missing-record answer on passes 2-4 (the Contact or Student__c was
 # merged or deleted) unlinks the user -- id and stamps cleared -- so the next
 # link/sync can re-resolve the record. Any other failure is reported once per
@@ -34,6 +41,10 @@ class PushUserActivityToSalesforce
   LOOKUP_CHUNK_SIZE = 200
   MISSING_RECORD_ERROR_CODES = %w[INVALID_CROSS_REFERENCE_KEY ENTITY_IS_DELETED NOT_FOUND].freeze
   MAX_REPORTED_FAILURES = 20
+  LINK_PAGE_SIZE = 2000
+  LINK_WATERMARK_OVERLAP = 15.minutes
+  LINK_LOOKBACK = 30.days
+  UUID_REGEX = ReconcileSalesforceStudentIds::UUID_REGEX
 
   STUDENT_UNLINK_COLUMNS = %i[
     salesforce_student_id salesforce_student_pushed_at salesforce_student_last_seen_pushed_at
@@ -93,6 +104,7 @@ class PushUserActivityToSalesforce
   def call
     if Settings::Salesforce.push_students_enabled
       link_and_create_students
+      link_new_salesforce_students
       sync_student_login_dates
     end
 
@@ -181,6 +193,54 @@ class PushUserActivityToSalesforce
     user.update_columns(salesforce_student_id: student.id, salesforce_student_pushed_at: Time.current)
   rescue StandardError => e
     Sentry.capture_exception(e)
+  end
+
+  def link_new_salesforce_students
+    run_started_at = Time.current
+    watermark = Settings::Salesforce.students_linked_through
+    since = watermark ? watermark - LINK_WATERMARK_OVERLAP : LINK_LOOKBACK.ago
+    scanned = 0
+    linked = 0
+    after_id = nil
+
+    loop do
+      page = fetch_created_students(since: since, after_id: after_id)
+      scanned += page.size
+      linked += link_students_by_uuid(page)
+      break if page.size < LINK_PAGE_SIZE
+
+      after_id = page.last.id
+    end
+
+    Settings::Salesforce.students_linked_through = run_started_at
+    Rails.logger.info(
+      "[PushUserActivityToSalesforce] student link: scanned #{scanned} Student__c, linked #{linked} users"
+    )
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
+
+  def fetch_created_students(since:, after_id:)
+    query = OpenStax::Salesforce::Remote::Student
+            .select(:id, :name)
+            .where("CreatedDate >= #{since.utc.iso8601}")
+    query = query.where('Id > ?', after_id) if after_id.present?
+    query.order('Id').limit(LINK_PAGE_SIZE).to_a
+  end
+
+  # First (lowest Id) record per uuid wins, and the compare-and-set on a NULL
+  # id means an existing link is never overwritten.
+  def link_students_by_uuid(students)
+    id_by_uuid = {}
+    students.each do |student|
+      next unless student.name.to_s.match?(UUID_REGEX)
+
+      id_by_uuid[student.name.downcase] ||= student.id
+    end
+
+    id_by_uuid.sum do |uuid, salesforce_id|
+      User.where(uuid: uuid, salesforce_student_id: nil).update_all(salesforce_student_id: salesforce_id)
+    end
   end
 
   # A NULL salesforce_student_pushed_at means the link came from
