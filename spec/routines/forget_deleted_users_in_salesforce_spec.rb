@@ -17,11 +17,17 @@ describe ForgetDeletedUsersInSalesforce, type: :routine do
     FactoryBot.create(:user, is_deleted: true, **attrs)
   end
 
-  def stub_records(contacts: [], leads: [])
+  def stub_records(contacts: [], leads: [], by_uuid: {})
     allow(sfdc_client).to receive(:query) do |soql|
       queries << soql
-      rows = soql.include?('FROM Contact') ? contacts : leads
-      rows.map { |id, individual| { 'Id' => id, 'IndividualId' => individual } }
+      object = soql.include?('FROM Contact') ? 'Contact' : 'Lead'
+      if soql.include?('Accounts_UUID__c IN')
+        (by_uuid[object] || []).map do |uuid, id, individual|
+          { 'Id' => id, 'Accounts_UUID__c' => uuid, 'IndividualId' => individual }
+        end
+      else
+        (object == 'Contact' ? contacts : leads).map { |id, individual| { 'Id' => id, 'IndividualId' => individual } }
+      end
     end
   end
 
@@ -112,7 +118,7 @@ describe ForgetDeletedUsersInSalesforce, type: :routine do
       described_class.call
     end
 
-    it 'unlinks a Contact Salesforce no longer has and writes a security log' do
+    it 'unlinks a Contact Salesforce no longer has, writes a security log, and stamps the user' do
       stub_records(contacts: [])
       expect(sfdc_client).not_to receive(:batch)
 
@@ -120,7 +126,7 @@ describe ForgetDeletedUsersInSalesforce, type: :routine do
 
       user.reload
       expect(user.salesforce_contact_id).to be_nil
-      expect(user.salesforce_forgotten_at).to be_nil
+      expect(user.salesforce_forgotten_at).not_to be_nil
       expect(SecurityLog.where(user: user, event_type: :salesforce_record_unlinked).count).to eq(1)
     end
 
@@ -181,7 +187,8 @@ describe ForgetDeletedUsersInSalesforce, type: :routine do
       flagged = stub_batch
       described_class.call
 
-      expect(queries.size).to eq(1)
+      expect(queries.grep(/Id IN/).size).to eq(1)
+      expect(queries.grep(/Accounts_UUID__c IN/).size).to eq(2)
 
       expect(flagged.map { |_, attrs| attrs[:Id] }).to contain_exactly(individual_id, other_individual_id)
       expect([first, second, sharing].map { |u| u.reload.salesforce_forgotten_at }).to all(be_present)
@@ -212,14 +219,106 @@ describe ForgetDeletedUsersInSalesforce, type: :routine do
   end
 
   context 'users who are not pending' do
-    it 'ignores live users, deleted users with no Salesforce link, and students\' Student__c links' do
+    it 'ignores live users and users already stamped' do
       FactoryBot.create(:user, salesforce_contact_id: contact_id)
       FactoryBot.create(:user, is_deleted: false, salesforce_lead_id: lead_id)
-      deleted_user
-      deleted_user(salesforce_student_id: 'a0STUDENT0000001')
+      deleted_user(salesforce_forgotten_at: 1.day.ago)
       expect(sfdc_client).not_to receive(:query)
 
       described_class.call
+    end
+  end
+
+  describe 'finding records by Accounts_UUID__c' do
+    let(:other_individual_id) { '0PKBBBBBBBBBBBBBBB' }
+
+    it 'flags both Individuals when the stored Contact was merged into one with another Individual' do
+      user = deleted_user(salesforce_contact_id: contact_id)
+      survivor = '003SURVIVORAAAAAAA'
+      stub_records(contacts: [], by_uuid: { 'Contact' => [[user.uuid, survivor, other_individual_id]] })
+      flagged = stub_batch
+
+      described_class.call
+
+      user.reload
+      expect(flagged.map { |_, attrs| attrs[:Id] }).to eq([other_individual_id])
+      expect(user.salesforce_contact_id).to be_nil
+      expect(user.salesforce_forgotten_at).not_to be_nil
+    end
+
+    it 'flags the Individuals found by stored id and by uuid, de-duplicated' do
+      user = deleted_user(salesforce_contact_id: contact_id)
+      stub_records(contacts: [[contact_id, individual_id]],
+                   by_uuid: { 'Contact' => [[user.uuid, contact_id, individual_id]],
+                              'Lead' => [[user.uuid, lead_id, other_individual_id]] })
+      flagged = stub_batch
+
+      described_class.call
+
+      expect(flagged.map { |_, attrs| attrs[:Id] }).to contain_exactly(individual_id, other_individual_id)
+      expect(user.reload.salesforce_forgotten_at).not_to be_nil
+    end
+
+    it 'handles a user with no stored ids but a Lead carrying their uuid' do
+      user = deleted_user
+      stub_records(by_uuid: { 'Lead' => [[user.uuid, lead_id, individual_id]] })
+      flagged = stub_batch
+
+      described_class.call
+
+      expect(flagged.size).to eq(1)
+      expect(user.reload.salesforce_forgotten_at).not_to be_nil
+    end
+
+    it 'matches the uuid case-insensitively' do
+      user = deleted_user
+      stub_records(by_uuid: { 'Lead' => [[user.uuid.upcase, lead_id, individual_id]] })
+      stub_batch
+
+      described_class.call
+
+      expect(user.reload.salesforce_forgotten_at).not_to be_nil
+    end
+
+    it 'stamps a user with nothing in Salesforce' do
+      user = deleted_user
+      stub_records
+      expect(sfdc_client).not_to receive(:batch)
+
+      described_class.call
+
+      expect(user.reload.salesforce_forgotten_at).not_to be_nil
+    end
+
+    it 'leaves the user unstamped when a record found by uuid has no Individual' do
+      user = deleted_user
+      stub_records(by_uuid: { 'Lead' => [[user.uuid, lead_id, nil]] })
+      allow(Sentry).to receive(:capture_message)
+
+      described_class.call
+
+      expect(user.reload.salesforce_forgotten_at).to be_nil
+    end
+
+    it 'never sends a uuid that is not uuid-shaped to SOQL' do
+      user = deleted_user
+      allow_any_instance_of(User).to receive(:uuid).and_return("x' OR 1=1")
+      stub_records
+
+      described_class.call
+
+      expect(queries).to be_empty
+      expect(user.reload.salesforce_forgotten_at).not_to be_nil
+    end
+
+    it 'queries each object once per key type per batch' do
+      deleted_user(salesforce_contact_id: contact_id)
+      deleted_user(salesforce_lead_id: lead_id)
+      stub_records
+
+      described_class.call
+
+      expect(queries.size).to eq(4)
     end
   end
 end

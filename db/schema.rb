@@ -477,7 +477,7 @@ ActiveRecord::Schema.define(version: 2026_10_07_000200) do
     t.index ["account_deletion_token"], name: "index_users_on_account_deletion_token", unique: true
     t.index ["created_at"], name: "index_users_stalled_educator_signups", where: "((salesforce_lead_id IS NULL) AND (salesforce_contact_id IS NULL) AND (role <> 1) AND ((state)::text = 'activated'::text))"
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
-    t.index ["id"], name: "index_users_deleted_pending_salesforce_forget", where: "((is_deleted = true) AND (salesforce_forgotten_at IS NULL) AND ((salesforce_contact_id IS NOT NULL) OR (salesforce_lead_id IS NOT NULL)))"
+    t.index ["id"], name: "index_users_deleted_pending_salesforce_forget", where: "((is_deleted = true) AND (salesforce_forgotten_at IS NULL))"
     t.index ["id"], name: "index_users_unlinked_students_with_school", where: "((role = 1) AND (school_id IS NOT NULL) AND (salesforce_student_pushed_at IS NULL))"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"

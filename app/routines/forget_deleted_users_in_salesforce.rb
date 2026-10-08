@@ -1,21 +1,26 @@
 # Nightly (cron:day) pass that tells Salesforce to forget people who deleted
 # their Accounts account.
 #
-# Reads IndividualId from the user's linked Contact and Lead (a Lead and its
-# converted Contact share one Individual), sets ShouldForget = true on each
+# Reads IndividualId from every Contact and Lead that belongs to the user --
+# found by the stored salesforce_contact_id / salesforce_lead_id and by
+# Accounts_UUID__c, which also reaches a Contact the old one was merged into
+# and records Accounts never linked -- sets ShouldForget = true on each
 # distinct Individual, and stamps users.salesforce_forgotten_at. A Salesforce
 # flow does the scrubbing; this pass only raises the flag. It writes raw API
 # names straight into the Composite payload, like PushUserActivityToSalesforce,
 # so it doesn't depend on the gem's attribute mapping.
 #
-# A NULL salesforce_forgotten_at means "never sent". A user is stamped only
-# when every record still linked to them yielded an Individual that was
-# flagged; anything less leaves them unstamped, so the next run retries.
-# A Contact or Lead that no longer exists in Salesforce is unlinked, as in
-# PushUserActivityToSalesforce, so it can't be retried forever.
+# A NULL salesforce_forgotten_at means "not processed yet". A user is stamped
+# when every Individual found for them was flagged, which includes finding
+# nothing at all: deleted users are excluded from every push path, so no new
+# record can appear later. A found record with no IndividualId, or a rejected
+# Individual update, leaves the user unstamped so the next run retries.
+# A stored id that no longer exists in Salesforce is unlinked, as in
+# PushUserActivityToSalesforce.
 class ForgetDeletedUsersInSalesforce
   BATCH_SIZE = 100
   SALESFORCE_ID_REGEX = /\A[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?\z/
+  UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
 
   LINKS = {
     'Contact' => { id_column: :salesforce_contact_id, unlink_columns: PushUserActivityToSalesforce::CONTACT_UNLINK_COLUMNS },
@@ -45,7 +50,6 @@ class ForgetDeletedUsersInSalesforce
   # Backed by index_users_deleted_pending_salesforce_forget.
   def pending_users
     User.where(is_deleted: true, salesforce_forgotten_at: nil)
-        .where('salesforce_contact_id IS NOT NULL OR salesforce_lead_id IS NOT NULL')
   end
 
   # Returns false when the lookup fails: that points at Salesforce or the
@@ -53,10 +57,11 @@ class ForgetDeletedUsersInSalesforce
   # repeat the same Sentry event.
   def forget_batch(users)
     individuals_by_record = fetch_individuals(users)
-    individual_ids = individuals_by_record.values.grep(String).uniq
+    individuals_by_uuid = fetch_individuals_by_uuid(users)
+    individual_ids = (individuals_by_record.values + individuals_by_uuid.values.flat_map(&:values)).grep(String).uniq
     flagged = flag_individuals(individual_ids)
 
-    users.each { |user| settle(user, individuals_by_record, flagged) }
+    users.each { |user| settle(user, individuals_by_record, individuals_by_uuid, flagged) }
     true
   rescue StandardError => e
     Sentry.capture_exception(e)
@@ -84,6 +89,24 @@ class ForgetDeletedUsersInSalesforce
     end
   end
 
+  # { lowercase uuid => { [object, id15] => individual_id_or_nil } } for the
+  # Contacts and Leads carrying the users' uuids. Anything not shaped like a
+  # uuid never reaches SOQL.
+  def fetch_individuals_by_uuid(users)
+    uuids = users.map { |user| user.uuid.to_s.downcase }.grep(UUID_REGEX).uniq
+    return {} if uuids.empty?
+
+    quoted = uuids.map { |uuid| "'#{uuid}'" }.join(',')
+    LINKS.each_key.with_object({}) do |object, map|
+      ActiveForce.sfdc_client.query(
+        "SELECT Id, Accounts_UUID__c, IndividualId FROM #{object} WHERE Accounts_UUID__c IN (#{quoted})"
+      ).each do |record|
+        (map[record['Accounts_UUID__c'].to_s.downcase] ||= {})[key(object, record['Id'])] =
+          record['IndividualId'].presence
+      end
+    end
+  end
+
   def key(object, id)
     [object, id.to_s[0, 15]]
   end
@@ -105,31 +128,32 @@ class ForgetDeletedUsersInSalesforce
     end
   end
 
-  def settle(user, individuals_by_record, flagged)
-    flagged_ids = []
-    complete = true
+  def settle(user, individuals_by_record, individuals_by_uuid, flagged)
+    found = (individuals_by_uuid[user.uuid.to_s.downcase] || {}).dup
 
     LINKS.each do |object, config|
       record_id = user[config[:id_column]].presence
       next if record_id.nil?
 
       individual_id = individuals_by_record[key(object, record_id)]
-
       if individual_id == :missing
         unlink(user, object, config, record_id)
-      elsif individual_id.nil?
+      else
+        found[key(object, record_id)] = individual_id
+      end
+    end
+
+    complete = true
+    found.each do |(object, record_id), individual_id|
+      if individual_id.nil?
         @no_individual.add(user.id, { object: object, salesforce_id: record_id })
         complete = false
-      elsif flagged[individual_id]
-        flagged_ids << individual_id
-      else
+      elsif !flagged[individual_id]
         complete = false
       end
     end
 
-    # A user whose every record vanished has nothing left to forget; stamping
-    # them would claim a flag that was never raised.
-    user.update_column(:salesforce_forgotten_at, Time.current) if complete && flagged_ids.any?
+    user.update_column(:salesforce_forgotten_at, Time.current) if complete
   rescue StandardError => e
     Sentry.capture_exception(e, extra: { user_id: user.id })
   end
