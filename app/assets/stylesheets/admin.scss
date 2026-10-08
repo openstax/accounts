@@ -5,6 +5,7 @@
 @import "school_autocomplete";
 @import "admin_security_log";
 @import "admin_user_details";
+@import "admin_user_search";
 
 .underlined-spaced-row {
   border-bottom: 1px solid gray;
@@ -16,15 +17,6 @@ nav.navbar.production {
   border-bottom: 2px solid red;
 }
 
-
-body.admin {
-  .user-search-help {
-    float: right;
-    margin-top: -16px;
-    font-size: 10px;
-    margin-bottom: 10px;
-  }
-}
 
 #search-results-list {
   width: 100%;
@@ -40,10 +32,6 @@ body.admin {
 
   th.expand {
     width: 40px;
-  }
-
-  a.expand {
-    padding-left: 8px;
   }
 
   tr {

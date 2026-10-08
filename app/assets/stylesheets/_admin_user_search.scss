@@ -1,0 +1,121 @@
+#search-results-list {
+  min-width: 100%;
+
+  button.expand {
+    background: none;
+    border: 0;
+    padding: 0 8px;
+    cursor: pointer;
+    line-height: 1;
+
+    &:focus {
+      outline: 2px solid #2a6496;
+      outline-offset: 2px;
+    }
+  }
+
+  .user-email {
+    display: block;
+    white-space: nowrap;
+
+    &__address {
+      word-break: break-all;
+      white-space: normal;
+    }
+
+    &__badge {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+
+      i {
+        margin-right: 2px;
+      }
+    }
+
+    &.confirmed .user-email__badge {
+      color: #2c7a2c;
+    }
+
+    &.unconfirmed .user-email__badge {
+      color: #a94442;
+      font-weight: bold;
+    }
+  }
+}
+
+.user-search-help {
+  margin-bottom: 10px;
+
+  .btn-link {
+    padding-left: 0;
+  }
+}
+
+.user-search-syntax-help {
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin-bottom: 15px;
+  font-size: 13px;
+
+  code {
+    background-color: #eee;
+  }
+
+  ul {
+    margin-bottom: 10px;
+  }
+}
+
+.user-search-quick-filters {
+  margin-top: 8px;
+
+  &__label {
+    margin-right: 6px;
+    font-weight: bold;
+  }
+
+  .btn {
+    margin-right: 4px;
+    margin-bottom: 4px;
+  }
+}
+
+.user-search-empty-state {
+  background-color: #f7f7f7;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  padding: 20px;
+  text-align: center;
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.see-all-results {
+  display: block;
+  margin-top: 10px;
+  text-align: right;
+}
+
+@media (max-width: 767px) {
+  #search-results-list {
+    font-size: 12px;
+
+    td, th {
+      padding: 4px 2px;
+    }
+  }
+
+  .user-search-syntax-help {
+    font-size: 12px;
+  }
+
+  .user-search-quick-filters .btn {
+    padding: 2px 6px;
+  }
+}
