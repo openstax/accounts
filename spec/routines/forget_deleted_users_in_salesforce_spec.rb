@@ -17,16 +17,22 @@ describe ForgetDeletedUsersInSalesforce, type: :routine do
     FactoryBot.create(:user, is_deleted: true, **attrs)
   end
 
+  # Lead rows may carry a converted Contact id as a last element; a converted
+  # Lead has no IndividualId of its own, as in Salesforce.
+  def sf_row(row, uuid: nil)
+    id, individual, converted_contact = row
+    { 'Id' => id, 'IndividualId' => converted_contact ? nil : individual, 'Accounts_UUID__c' => uuid,
+      'IsConverted' => converted_contact.present?, 'ConvertedContactId' => converted_contact }
+  end
+
   def stub_records(contacts: [], leads: [], by_uuid: {})
     allow(sfdc_client).to receive(:query) do |soql|
       queries << soql
       object = soql.include?('FROM Contact') ? 'Contact' : 'Lead'
       if soql.include?('Accounts_UUID__c IN')
-        (by_uuid[object] || []).map do |uuid, id, individual|
-          { 'Id' => id, 'Accounts_UUID__c' => uuid, 'IndividualId' => individual }
-        end
+        (by_uuid[object] || []).map { |uuid, *row| sf_row(row, uuid: uuid) }
       else
-        (object == 'Contact' ? contacts : leads).map { |id, individual| { 'Id' => id, 'IndividualId' => individual } }
+        (object == 'Contact' ? contacts : leads).map { |row| sf_row(row) }
       end
     end
   end
@@ -187,7 +193,7 @@ describe ForgetDeletedUsersInSalesforce, type: :routine do
       flagged = stub_batch
       described_class.call
 
-      expect(queries.grep(/Id IN/).size).to eq(1)
+      expect(queries.grep(/FROM Lead WHERE Id IN/).size).to eq(1)
       expect(queries.grep(/Accounts_UUID__c IN/).size).to eq(2)
 
       expect(flagged.map { |_, attrs| attrs[:Id] }).to contain_exactly(individual_id, other_individual_id)
@@ -315,6 +321,77 @@ describe ForgetDeletedUsersInSalesforce, type: :routine do
       deleted_user(salesforce_contact_id: contact_id)
       deleted_user(salesforce_lead_id: lead_id)
       stub_records
+
+      described_class.call
+
+      expect(queries.size).to eq(4)
+    end
+  end
+
+  describe 'converted Leads' do
+    let(:converted_contact_id) { '003CONVERTEDAAAAAA' }
+    let(:contact_individual_id) { '0PKCONTACTAAAAAAA' }
+
+    it 'flags the converted Contact\'s Individual for a stored Lead id and stamps' do
+      user = deleted_user(salesforce_lead_id: lead_id)
+      stub_records(leads: [[lead_id, nil, converted_contact_id]], contacts: [[converted_contact_id, contact_individual_id]])
+      flagged = stub_batch
+
+      described_class.call
+
+      expect(flagged.map { |_, attrs| attrs[:Id] }).to eq([contact_individual_id])
+      expect(user.reload.salesforce_forgotten_at).not_to be_nil
+    end
+
+    it 'does the same for a converted Lead found only by uuid' do
+      user = deleted_user
+      stub_records(by_uuid: { 'Lead' => [[user.uuid, lead_id, nil, converted_contact_id]] },
+                   contacts: [[converted_contact_id, contact_individual_id]])
+      flagged = stub_batch
+
+      described_class.call
+
+      expect(flagged.map { |_, attrs| attrs[:Id] }).to eq([contact_individual_id])
+      expect(user.reload.salesforce_forgotten_at).not_to be_nil
+    end
+
+    it 'fetches the converted Contact in the same Contact query by id' do
+      deleted_user(salesforce_lead_id: lead_id)
+      stub_records(leads: [[lead_id, nil, converted_contact_id]], contacts: [[converted_contact_id, contact_individual_id]])
+      stub_batch
+
+      described_class.call
+
+      expect(queries.grep(/FROM Contact WHERE Id IN/).first).to include(converted_contact_id)
+    end
+
+    it 'reports and leaves the user unstamped when the converted Contact has no Individual' do
+      user = deleted_user(salesforce_lead_id: lead_id)
+      stub_records(leads: [[lead_id, nil, converted_contact_id]], contacts: [[converted_contact_id, nil]])
+      expect(Sentry).to receive(:capture_message).with(/no IndividualId for 1 records/, anything)
+
+      described_class.call
+
+      expect(user.reload.salesforce_forgotten_at).to be_nil
+    end
+
+    it 'still reports an open Lead with no Individual' do
+      user = deleted_user(salesforce_lead_id: lead_id)
+      stub_records(leads: [[lead_id, nil]])
+      expect(Sentry).to receive(:capture_message).with(/no IndividualId for 1 records/, anything)
+
+      described_class.call
+
+      expect(user.reload.salesforce_forgotten_at).to be_nil
+    end
+
+    it 'keeps a batch to four queries even with converted Leads' do
+      deleted_user(salesforce_lead_id: lead_id, salesforce_contact_id: contact_id)
+      deleted_user(salesforce_lead_id: '00QBBBBBBBBBBBBBBB')
+      stub_records(leads: [[lead_id, nil, converted_contact_id], ['00QBBBBBBBBBBBBBBB', nil, '003DDDDDDDDDDDDDDD']],
+                   contacts: [[converted_contact_id, contact_individual_id], [contact_id, individual_id],
+                              ['003DDDDDDDDDDDDDDD', contact_individual_id]])
+      stub_batch
 
       described_class.call
 
