@@ -134,10 +134,98 @@ feature 'Admin security log page', js: true do
       visit admin_security_log_path(search: { query: 'ip:"127.0.0.1"' })
 
       select '50', from: 'per_page'
+      click_button 'Apply'
 
       expect(page).to have_select('per_page', selected: '50')
       expect(current_search_query).to eq('ip:"127.0.0.1"')
       expect(current_query_params['per_page']).to eq('50')
+    end
+
+    it 'does not auto-submit merely from selecting a per_page option (WCAG 3.2.2)' do
+      visit admin_security_log_path
+      starting_url = page.current_url
+
+      select '50', from: 'per_page'
+
+      expect(page.current_url).to eq(starting_url)
+    end
+  end
+
+  context 'per-page clamping' do
+    before do
+      25.times { FactoryBot.create(:security_log, user: nil) }
+    end
+
+    it 'clamps an out-of-range per_page to the default instead of passing it through' do
+      visit admin_security_log_path(per_page: '999999')
+
+      expect(page).to have_select('per_page', selected: '20')
+    end
+
+    it 'clamps a non-numeric per_page to the default' do
+      visit admin_security_log_path(per_page: 'abc')
+
+      expect(page).to have_select('per_page', selected: '20')
+    end
+  end
+
+  context 'expand all / collapse all' do
+    before do
+      3.times { FactoryBot.create(:security_log, user: nil) }
+    end
+
+    it 'expands and collapses every row, flipping its own label and each row aria-expanded' do
+      visit admin_security_log_path
+
+      row_count = page.all('.expand', visible: :all).size
+      expect(row_count).to be >= 3
+
+      expect(page).to have_button('Expand all')
+      expect(page).to have_no_css('.expand[aria-expanded="true"]')
+
+      click_button 'Expand all'
+
+      expect(page).to have_button('Collapse all')
+      expect(page).to have_css('.expand[aria-expanded="true"]', count: row_count)
+
+      click_button 'Collapse all'
+
+      expect(page).to have_button('Expand all')
+      expect(page).to have_no_css('.expand[aria-expanded="true"]')
+    end
+  end
+
+  context 'active filter chips' do
+    let!(:log_a) { FactoryBot.create(:security_log, user: nil, remote_ip: '10.0.0.1') }
+    let!(:log_b) { FactoryBot.create(:security_log, user: nil, remote_ip: '10.0.0.2') }
+
+    it 'shows a readable chip for a query term and removes only that term' do
+      visit admin_security_log_path(search: { query: %(ip:"10.0.0.1" type:"sign_in_failed") })
+
+      expect(page).to have_css('.filter-chip', text: 'IP 10.0.0.1')
+      expect(page).to have_css('.filter-chip', text: 'Type Sign in failed')
+
+      within('.filter-chip', text: 'IP 10.0.0.1') { click_link '×' }
+
+      expect(current_search_query).to eq('type:"sign_in_failed"')
+      expect(page).to have_no_css('.filter-chip', text: 'IP 10.0.0.1')
+      expect(page).to have_css('.filter-chip', text: 'Type Sign in failed')
+    end
+
+    it 'renders nothing when there is no active query' do
+      visit admin_security_log_path
+
+      expect(page).to have_no_css('.security-log-filter-chips')
+    end
+  end
+
+  context 'empty results' do
+    it 'names the active query and points to the search syntax help' do
+      visit admin_security_log_path(search: { query: 'ip:"192.0.2.123"' })
+
+      expect(page).to have_content('No security log entries match')
+      expect(page).to have_content('ip:"192.0.2.123"')
+      expect(page).to have_link('search syntax help')
     end
   end
 end

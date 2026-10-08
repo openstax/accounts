@@ -27,7 +27,8 @@
         <%= link_to 'Admin actions', security_log_filter_path('type', 'admin'), class: 'btn btn-default btn-xs' %>
       </div>
 
-      <a href="#search-help" data-toggle="collapse" class="search-help-toggle">Search syntax help</a>
+      <a href="#search-help" data-toggle="collapse" class="search-help-toggle"
+         aria-expanded="false" aria-controls="search-help">Search syntax help</a>
 
       <div id="search-help" class="collapse search-help">
         <p>
@@ -49,17 +50,44 @@
 
 <% end %>
 
+<% active_filters = security_log_active_filters(params.dig(:search, :query)) %>
+<% if active_filters.any? %>
+  <ul class="security-log-filter-chips">
+    <% active_filters.each do |filter| %>
+      <li class="filter-chip">
+        <%= filter[:label] %>
+        <%= link_to filter[:remove_path], class: 'filter-chip__remove',
+                    aria: { label: "Remove filter #{filter[:label]}" } do %>&times;<% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
 <%= form_tag admin_security_log_path, method: :get, class: 'form-inline per-page-form' do %>
   <%= hidden_field_tag 'search[query]', params.dig(:search, :query) %>
   <%= label_tag :per_page, 'Per page' %>
   <%= select_tag :per_page,
-                 options_for_select([20, 50, 100], (params[:per_page] || 20).to_i),
-                 onchange: 'this.form.submit()',
+                 options_for_select(Admin::SecurityLogsController::PER_PAGE_OPTIONS, @per_page),
                  class: 'form-control input-sm' %>
+  <%= submit_tag 'Apply', class: 'btn btn-default btn-sm' %>
 <% end %>
 
-<%= render partial: "shared/security_log", locals: { security_log: @security_log } %>
+<% if @security_log.any? %>
+  <%= render partial: "shared/security_log", locals: { security_log: @security_log } %>
 
-<div class="digg_pagination">
-  <%= will_paginate @security_log %>
-</div>
+  <div class="digg_pagination">
+    <%= will_paginate @security_log %>
+  </div>
+<% else %>
+  <div class="security-log-empty-state" role="status">
+    <% if params.dig(:search, :query).present? %>
+      <p>
+        No security log entries match <code><%= params.dig(:search, :query) %></code>.
+        The query might be the problem &mdash; check the
+        <a href="#search-help" data-toggle="collapse">search syntax help</a> above.
+      </p>
+    <% else %>
+      <p>No security log entries yet.</p>
+    <% end %>
+  </div>
+<% end %>

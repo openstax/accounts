@@ -17,7 +17,7 @@
       <%= link_to user.name.presence || '(no name)',
                   security_log_filter_path('user_id', user.id), title: 'Filter to this user' %>
       <br>
-      <span class="text-muted"><%= user.email_addresses.first&.value %></span>
+      <span><%= user.email_addresses.first&.value %></span>
     <% end %>
   </td>
   <% end %>
@@ -37,11 +37,12 @@
                 title: 'Filter to this event type' %>
   </td>
   <td>
-    <a class="expand" href="#" role="button" aria-expanded="false" aria-label="Show event data">
-      <i class="fa fa-plus" aria-hidden="true"></i></a>
+    <button type="button" class="expand" aria-expanded="false" aria-label="Show event data"
+            aria-controls="details-<%= security_log_entry.id %>">
+      <i class="fa fa-plus" aria-hidden="true"></i></button>
     <span class="event-data-summary"><%= security_log_event_summary(security_log_entry.event_data) %></span>
   </td>
 </tr>
-<tr class="details">
+<tr class="details" id="details-<%= security_log_entry.id %>">
   <td colspan="<%= column_count %>"><pre><%= JSON.pretty_generate(security_log_entry.event_data) %></pre></td>
 </tr>

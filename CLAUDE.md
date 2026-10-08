@@ -131,6 +131,10 @@ Bootstrap 3, its own `admin` layout and `admin.scss` bundle. Per-screen styles l
 
 The log's query grammar (`id: user_id: user: app: ip: type: time:`, spaces AND, commas OR) is implemented in `Admin::SearchSecurityLog` and documented both in its header comment and on the page itself. Keep the two in step, and don't advertise a keyword the routine doesn't implement.
 
+The log's active-filter chips come from `Admin::SearchSecurityLog.parse_filter_terms` / `remove_filter_term`, so a chip can never read the grammar differently than the search does. `per_page` is clamped to `Admin::SecurityLogsController::PER_PAGE_OPTIONS`, and the selector submits through an Apply button rather than `onchange` (auto-submitting on change fails WCAG 3.2.2).
+
+**User search (`/admin/users`).** `#search-results-list` is both the full page's `<table>` and the empty `<div>` the quick-search dialog (`admin/base/_users`) fills over AJAX, so `_admin_user_search.scss` styles it for both. In specs, `.expand` also matches the `<th class="expand">` header: use `button.expand`. The email badge is `text-transform: uppercase`, which Capybara matches as rendered, so assert it case-insensitively.
+
 A **new** helper file under `app/helpers/` is not picked up by a running dev server -- Rails builds its helper list at boot, and the reloader only tracks changes to files that already existed. Adding a helper means restarting the server, and a phased puma restart re-forks the same preloaded image, so it has to be a full one.
 
 ### OAuth / Doorkeeper

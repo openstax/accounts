@@ -3,37 +3,60 @@
 
 <% show_user = true if show_user.nil? %>
 
-<table id="security-log-table" class="table table-striped">
-  <thead>
-    <tr>
-      <th>Time (CT)</th>
-      <% if show_user %>
-      <th>User</th>
-      <% end %>
-      <th>App</th>
-      <th>IP</th>
-      <th>Type</th>
-      <th>Data</th>
-    </tr>
-  </thead>
+<% if security_log.any? %>
+<div class="security-log-toolbar">
+  <button type="button" id="security-log-toggle-all" class="btn btn-default btn-sm" aria-expanded="false">
+    Expand all
+  </button>
+</div>
+<% end %>
 
-  <tbody>
-    <% security_log.each do |log_entry| %>
-    <%= render partial: "shared/security_log_entry", locals: { security_log_entry: log_entry,
-                                                               show_user: show_user } %>
-    <% end %>
-  </tbody>
-</table>
+<div class="table-responsive security-log-table-wrapper">
+  <table id="security-log-table" class="table table-striped">
+    <caption class="sr-only">Security log entries</caption>
+    <thead>
+      <tr>
+        <th scope="col">Time (CT)</th>
+        <% if show_user %>
+        <th scope="col">User</th>
+        <% end %>
+        <th scope="col">App</th>
+        <th scope="col">IP</th>
+        <th scope="col">Type</th>
+        <th scope="col">Data</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% security_log.each do |log_entry| %>
+      <%= render partial: "shared/security_log_entry", locals: { security_log_entry: log_entry,
+                                                                 show_user: show_user } %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
 <% content_for :javascript do %>
   <script type="text/javascript">
-    $('#security-log-table .expand').click(function(e) {
-      e.preventDefault();
-      var expanded = $(this).attr('aria-expanded') !== 'true';
-      $(this).closest('tr').next('tr.details').toggle(expanded);
-      $(this).find('i').toggleClass('fa-plus fa-minus');
-      $(this).attr('aria-expanded', expanded)
+    $('#security-log-table .expand').click(function() {
+      var $toggle = $(this);
+      var expanded = $toggle.attr('aria-expanded') !== 'true';
+      $toggle.closest('tr').next('tr.details').toggle(expanded);
+      $toggle.find('i').toggleClass('fa-plus fa-minus');
+      $toggle.attr('aria-expanded', expanded)
              .attr('aria-label', expanded ? 'Hide event data' : 'Show event data');
+    });
+
+    $('#security-log-toggle-all').click(function() {
+      var $toggleAll = $(this);
+      var expand = $toggleAll.attr('aria-expanded') !== 'true';
+
+      $('#security-log-table .expand').each(function() {
+        var rowIsExpanded = $(this).attr('aria-expanded') === 'true';
+        if (rowIsExpanded !== expand) { $(this).trigger('click'); }
+      });
+
+      $toggleAll.attr('aria-expanded', expand).text(expand ? 'Collapse all' : 'Expand all');
     });
   </script>
 <% end %>
