@@ -254,7 +254,7 @@ class PushUserActivityToSalesforce
       UPDATE #{table}
       SET salesforce_student_id = links.salesforce_student_id
       FROM (VALUES #{values}) AS links(uuid, salesforce_student_id)
-      WHERE #{table}.uuid = links.uuid
+      WHERE #{table}.uuid = links.uuid::uuid
         AND #{table}.salesforce_student_id IS NULL
     SQL
   end
