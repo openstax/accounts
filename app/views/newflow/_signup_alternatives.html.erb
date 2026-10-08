@@ -1,0 +1,54 @@
+<%#
+  Escape hatches out of a signup step, drawn as a slice of the signup card.
+  Two shapes for two jobs:
+  - default: an always-visible panel, for the step people actually get stuck on
+  - collapsible: one quiet line, for pages where it sits alongside the real task
+%>
+<% collapsible = local_assigns.fetch(:collapsible, false) %>
+
+<% options = capture do %>
+  <ul class="signup-alternatives__options">
+    <% actions.each do |action| %>
+      <li class="signup-alternatives__option">
+        <% if action[:method] == :post %>
+          <%= button_to(
+                action[:path],
+                class: 'signup-alternatives__action',
+                form_class: 'signup-alternatives__form',
+                data: {
+                  'ga-category': 'Account Creation',
+                  'ga-action': 'Click',
+                  'ga-label': action[:ga_label]
+                }
+              ) do %><%= action[:label] %><% end %>
+        <% else %>
+          <%= link_to(
+                action[:label],
+                action[:path],
+                class: 'signup-alternatives__action',
+                data: {
+                  'ga-category': 'Account Creation',
+                  'ga-action': 'Click',
+                  'ga-label': action[:ga_label]
+                }
+              ) %>
+        <% end %>
+        <p class="signup-alternatives__description"><%= action[:description] %></p>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if collapsible %>
+  <%= content_tag(:details, class: 'signup-alternatives signup-alternatives--collapsible') do %>
+    <%= content_tag(:summary, heading, class: 'signup-alternatives__summary') %>
+    <%= options %>
+  <% end %>
+<% else %>
+  <div class="signup-alternatives">
+    <div class="signup-alternatives__panel">
+      <h2 class="signup-alternatives__heading"><%= heading %></h2>
+      <%= options %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,62 @@
+<% submitted_signup = params[:signup] || {} %>
+<% selected_books = Array(submitted_signup[field_name] || submitted_signup[field_name.to_s]).map(&:to_s) %>
+
+<div class="book-picker" data-field-name="<%= field_name %>">
+  <input type="text"
+         class="book-picker-search"
+         placeholder="<%= I18n.t(:'educator_profile_form.book_picker_search_placeholder') %>"
+         aria-label="<%= I18n.t(:'educator_profile_form.book_picker_search_placeholder') %>"
+         autocomplete="off">
+
+  <div class="book-picker-selections"></div>
+
+  <p class="book-picker-subtitle">
+    <%= I18n.t(:'educator_profile_form.book_picker_select_up_to') %>
+    <br>
+    <em><%= I18n.t(:'educator_profile_form.book_picker_select_up_to_titles') %></em>
+  </p>
+
+  <div class="book-picker-subjects">
+    <% (books_by_subject || []).each_with_index do |subject, index| %>
+      <% subject_id = "book-picker-subject-#{index}-#{subject[:subject_name].to_s.parameterize}" %>
+      <% header_id = "#{subject_id}-header" %>
+      <% body_id = "#{subject_id}-body" %>
+      <div class="book-picker-subject" data-subject="<%= subject[:subject_name] %>">
+        <button type="button"
+                class="book-picker-subject-header"
+                id="<%= header_id %>"
+                aria-expanded="false"
+                aria-controls="<%= body_id %>"
+                onclick="var controlledRegion = document.getElementById(this.getAttribute('aria-controls')); var isExpanded = this.getAttribute('aria-expanded') === 'true'; this.setAttribute('aria-expanded', (!isExpanded).toString()); if (controlledRegion) { controlledRegion.setAttribute('aria-hidden', isExpanded.toString()); }">
+          <span class="subject-name"><%= subject[:subject_name] %></span>
+          <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="book-picker-subject-body"
+             id="<%= body_id %>"
+             role="region"
+             aria-labelledby="<%= header_id %>"
+             aria-hidden="true"
+             style="display: none;">
+          <% subject[:books].each do |book| %>
+            <label class="book-tile" data-title="<%= book[:title] %>">
+              <% if book[:cover_url].present? %>
+                <img src="<%= book[:cover_url] %>"
+                     alt="<%= book[:title] %>"
+                     class="book-tile-cover"
+                     loading="lazy">
+              <% end %>
+              <span class="book-tile-title"><%= book[:title] %></span>
+              <input type="checkbox"
+                     name="signup[<%= field_name %>][]"
+                     value="<%= book[:salesforce_abbreviation] %>"
+                     class="book-tile-checkbox"
+                     data-cover-url="<%= book[:cover_url] %>"
+                     data-book-title="<%= book[:title] %>"
+                     <%= 'checked' if selected_books.include?(book[:salesforce_abbreviation].to_s) %>>
+            </label>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

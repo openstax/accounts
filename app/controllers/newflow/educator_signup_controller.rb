@@ -47,7 +47,7 @@ module Newflow
               log_data[:redirect] = stored_url
             end
             security_log(:educator_began_signup, log_data)
-            log_posthog(@user, 'educator_started_signup', { client_app: get_client_app&.name })
+            log_posthog(@user, 'educator_started_signup', { role: @user.role })
             clear_cache_BRI_marketing
             redirect_to(educator_email_verification_form_path)
           },
@@ -62,7 +62,7 @@ module Newflow
     end
 
     def educator_change_signup_email_form
-      @email = unverified_user.email_addresses.first.value
+      @email = unverified_email_address.value
       @total_steps = 4
     end
 
@@ -71,16 +71,17 @@ module Newflow
         handle_with(
           ChangeSignupEmail,
           user: unverified_user,
+          email_address: unverified_email_address,
           success: lambda {
             redirect_to(educator_email_verification_form_updated_email_path)
           },
           failure: lambda {
-            @email = unverified_user.email_addresses.first.value
+            @email = unverified_email_address.value
             render :educator_change_signup_email_form
           }
         )
       else
-        @email = unverified_user.email_addresses.first.value
+        @email = unverified_email_address.value
         render :educator_change_signup_email_form
       end
     end
@@ -88,32 +89,32 @@ module Newflow
     def educator_email_verification_form
       @total_steps = 4
       @first_name = unverified_user.first_name
-      @email = unverified_user.email_addresses.first.value
+      @email = unverified_email_address.value
     end
 
     def educator_email_verification_form_updated_email
       @total_steps = 4
-      @email = unverified_user.email_addresses.first.value
+      @email = unverified_email_address.value
     end
 
     def educator_verify_email_by_pin
       handle_with(
         EducatorSignup::VerifyEmailByPin,
-        email_address: unverified_user.email_addresses.first,
+        email_address: unverified_email_address,
         success: lambda {
-          @email = unverified_user.email_addresses.first.value
+          @email = unverified_email_address.value
           clear_unverified_user
           sign_in!(@handler_result.outputs.user)
           security_log(:educator_verified_email, email:@email)
-          log_posthog(@handler_result.outputs.user, 'educator_verified_email')
+          log_posthog(@handler_result.outputs.user, 'educator_verified_email', { role: @handler_result.outputs.user.role })
           redirect_to(educator_sheerid_form_path)
         },
         failure: lambda {
           @total_steps = 4
           @first_name = unverified_user.first_name
-          @email = unverified_user.email_addresses.first.value
+          @email = unverified_email_address.value
           security_log(:educator_verify_email_failed, email: @email)
-          log_posthog(unverified_user, "educator_verified_email_failed")
+          log_posthog(unverified_user, 'educator_verified_email_failed', { role: unverified_user.role })
           render(:educator_email_verification_form)
         }
       )
@@ -151,6 +152,7 @@ module Newflow
 
     def educator_profile_form
       @book_titles = book_data.titles
+      @books_by_subject = book_data.books_by_subject
       security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
       log_posthog(current_user, 'educator_viewed_profile_form')
     end
@@ -170,6 +172,7 @@ module Newflow
             total_students: user.how_many_students,
             did_use_sheerid: !user.is_educator_pending_cs_verification,
             is_cs_form: !!user.is_educator_pending_cs_verification,
+            expected_start_semester: user.expected_start_semester
           })
           security_log(:user_profile_complete, { user: user })
           clear_incomplete_educator
@@ -182,6 +185,7 @@ module Newflow
         },
         failure: lambda {
           @book_titles = book_data.titles
+          @books_by_subject = book_data.books_by_subject
           security_log(:educator_sign_up_failed, user: current_user, reason: @handler_result.errors)
           log_posthog(current_user, 'educator_complete_profile_failed')
           if @handler_result.outputs.is_on_cs_form
@@ -210,7 +214,7 @@ module Newflow
 
     def exit_signup_if_steps_complete
       case true
-      when current_user.is_educator_pending_cs_verification? && (!current_user.confirmed_faculty? || !current_user.rejected_faculty?)
+      when current_user.is_educator_pending_cs_verification? && !(current_user.confirmed_faculty? || current_user.rejected_faculty?)
         redirect_to(educator_pending_cs_verification_path)
       when (current_user.confirmed_faculty? || current_user.rejected_faculty?) && current_user.is_profile_complete?
         redirect_back(fallback_location: profile_newflow_path)
@@ -227,8 +231,14 @@ module Newflow
 
     def store_sheerid_verification_for_user
       if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
-        # create the verification object - this is verified later in SheeridWebhook
-        SheeridVerification.find_or_initialize_by(verification_id: sheerid_provided_verification_id_param)
+        # Persist a placeholder row -- the webhook fills in the real details
+        # later, but the admin panel and user-resolution-by-verification-id
+        # need a row to exist as soon as we know the id.
+        SheeridVerification.find_or_create_by!(
+          verification_id: sheerid_provided_verification_id_param
+        ) do |verification|
+          verification.current_step = 'pending'
+        end
 
         # update the user
         current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)

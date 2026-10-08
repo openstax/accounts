@@ -9,7 +9,7 @@
                     classes: "signup-page",
                     header: header,
                     current_step: current_step) do %>
-            <% lev_form_for :confirm, url: submit_to_path do |form| %>
+            <%= lev_form_for :confirm, url: submit_to_path do |form| %>
                 <%
                     form_helper = NewflowFormHelper::Newflow.new(
                         f: form,

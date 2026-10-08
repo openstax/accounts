@@ -2,11 +2,21 @@ namespace :cron do
   task day: :log_to_stdout do
     Rails.logger.debug 'Starting daily cron'
 
-    Rails.logger.info 'rake doorkeeper:cleanup'
-    OpenStax::RescueFrom.this { Rake::Task['doorkeeper:cleanup'].invoke }
+    cron_step('rake doorkeeper:cleanup') do
+      Rake::Task['doorkeeper:cleanup'].invoke
+    end
 
-    Rails.logger.info 'UpdateSalesforceAssignableFields.call'
-    OpenStax::RescueFrom.this { UpdateSalesforceAssignableFields.call }
+    cron_step('UpdateSalesforceAssignableFields.call') do
+      UpdateSalesforceAssignableFields.call
+    end
+
+    cron_step('PushUserActivityToSalesforce.call') do
+      PushUserActivityToSalesforce.call
+    end
+
+    cron_step('SyncEducatorLeads.call') do
+      SyncEducatorLeads.call
+    end
 
     Rails.logger.debug 'Finished daily cron'
   end

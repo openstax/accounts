@@ -45,13 +45,13 @@ module Newflow
             @last_name = user.last_name
             @email = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
-            log_posthog(user, 'student_signup_social', { provider: authentication.provider, client_app: get_client_app&.name })
+            log_posthog(user, 'student_signup_social', { provider: authentication.provider, role: user.role })
             # must confirm their social info on signup
             render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
           end
 
           sign_in!(user)
-          log_posthog(user, 'user_logged_in_social', { provider: authentication.provider, client_app: get_client_app&.name })
+          log_posthog(user, 'user_logged_in_social', { provider: authentication.provider })
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
           redirect_back(fallback_location: profile_newflow_path)
 
@@ -120,7 +120,7 @@ module Newflow
           clear_signup_state
           sign_in!(@handler_result.outputs.user)
           security_log(:student_social_auth_confirmation_success)
-          log_posthog(@handler_result.outputs.user, 'student_signup_done')
+          log_posthog(@handler_result.outputs.user, 'student_signup_done', { role: @handler_result.outputs.user.role })
           redirect_to return_to
         },
         failure: -> {
@@ -163,7 +163,7 @@ module Newflow
     end
 
     def error_path(is_external, code)
-      return new_external_user_credentials_path if is_external
+      return external_error_path if is_external
 
       case code
       when :should_redirect_to_signup, :mismatched_authentication
@@ -171,6 +171,13 @@ module Newflow
       when :authentication_taken, :email_already_in_use
         profile_newflow_path
       end
+    end
+
+    def external_error_path
+      saved = session[:external_user_credentials] || {}
+      return newflow_login_path if saved['token'].blank? || saved['return_to'].blank?
+
+      new_external_user_credentials_path(token: saved['token'], return_to: saved['return_to'])
     end
 
     def ensure_unverified_user(user)

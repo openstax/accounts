@@ -16,6 +16,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
     before(:each) do
       create_admin_user
       newflow_log_in_user 'admin'
+      wait_for_successful_log_in
       visit admin_feature_url
     end
 
@@ -85,6 +86,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
     before(:each) do
       create_user 'user'
       newflow_log_in_user 'user'
+      wait_for_successful_log_in
     end
 
     context "when accessing only non-admin features" do
@@ -146,6 +148,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
     scenario "later someone makes him/her an admin" do
       current_user = create_user 'user'
       newflow_log_in_user 'user'
+      wait_for_successful_log_in
       expect(current_user.is_administrator?).to eq false
 
       Timecop.travel(login_time + 31.minutes)

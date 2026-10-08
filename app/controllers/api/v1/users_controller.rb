@@ -211,17 +211,16 @@ class Api::V1::UsersController < Api::V1::ApiController
     state will be "unclaimed" meaning it is a place-holder account for
     an user who has not yet completed the sign up process.
 
-    An email address, username or external_id must be supplied.
+    An external_id or a verified (already_verified: true) email address must be supplied.
+    An unverified email address alone is not a valid identifier - it can never be matched
+    again later - so it must be accompanied by an external_id.
 
-    If the username, email or external_id is already in use, that existing user's ID
+    If a verified email or external_id is already in use, that existing user's account
     will be returned.
 
-    If an account is created with no username, it cannot be logged
-    into directly. It will merged with the user's account when they complete the
-    standard sign up process using a matching email address.
-
-    If an account is created with a username and password, it may be signed into and used
-    immediately once the user agress to the Terms and Conditions.
+    If an account is created without a verified email, it cannot be matched by email in future calls.
+    If it has an unverified email, it can be merged when the user completes the standard sign up process using that email.
+    If it has no email, it can only be accessed via external_id.
 
     #{json_schema(Api::V1::FindOrCreateUserRepresenter, include: [:readable, :writable])}
   EOS
@@ -234,7 +233,8 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     result = FindOrCreateUser.call(payload.except(:sso))
     if result.errors.any?
-      render json: { errors: result.errors }, status: :conflict
+      status = result.errors.any? { |error| error.code == :invalid_input } ? :unprocessable_entity : :conflict
+      render json: { errors: result.errors }, status: status
     else
       token = get_sso_token(payload.application, result.outputs.user) if payload.sso.present?
 

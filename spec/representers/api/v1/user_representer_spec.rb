@@ -149,19 +149,6 @@ describe Api::V1::UserRepresenter, type: :representer do
     end
   end
 
-  context 'grant_tutor_access' do
-    it 'can be read' do
-      expect(representer.to_hash['grant_tutor_access']).to eq user.grant_tutor_access
-    end
-
-    it 'cannot be written (attempts are silently ignored)' do
-      hash = { 'grant_tutor_access' => true }
-
-      expect(user).not_to receive(:grant_tutor_access=)
-      expect { representer.from_hash(hash) }.not_to change { user.reload.grant_tutor_access }
-    end
-  end
-
   context 'applications' do
     it 'can be read' do
       expected_hash = user.application_users.map do |application_user|

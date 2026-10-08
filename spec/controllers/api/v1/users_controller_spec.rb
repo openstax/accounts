@@ -364,7 +364,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect do
         api_post :find_or_create,
                  foc_trusted_application_token,
-                 body: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
+                 body: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones', already_verified: true}
       end.to change { User.count }.by(1)
       expect(response.code).to eq('201')
       new_user = User.order(:id).last
@@ -381,7 +381,8 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                    email: 'a-new-email@test.com',
                    first_name: 'Sarah',
                    last_name: 'Test',
-                   role: 'instructor'
+                   role: 'instructor',
+                   already_verified: true
                  }
       end.to change { User.count }.by(1)
       expect(response.code).to eq('201')
@@ -394,7 +395,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(new_user.uuid).not_to be_blank
     end
 
-    it 'creates an external user with an external_id and no username or email' do
+    it 'creates an external user with an external_id and no email' do
       external_id = "#{SecureRandom.uuid}/#{SecureRandom.uuid}"
 
       expect do
@@ -453,8 +454,9 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
 
     context "should return only IDs for a user" do
       it "does so for unclaimed users" do
+        AddEmailToUser.call('verified-unclaimed@test.com', unclaimed_user, already_verified: true)
         api_post :find_or_create, foc_trusted_application_token,
-                 body: { username: unclaimed_user.username }
+                 body: { email: 'verified-unclaimed@test.com', already_verified: true }
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
           id: unclaimed_user.id,
@@ -464,13 +466,46 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       end
 
       it "does so for claimed users" do
+        AddEmailToUser.call('verified-claimed@test.com', user_2, already_verified: true)
         api_post :find_or_create,
                  foc_trusted_application_token,
-                 body: { email: user_2.contact_infos.first.value }
+                 body: { email: 'verified-claimed@test.com', already_verified: true }
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
           id: user_2.id, uuid: user_2.uuid, external_ids: []
         )
+      end
+    end
+
+    context "input validation" do
+      it "returns unprocessable_entity when neither email nor external_id is given" do
+        api_post :find_or_create, foc_trusted_application_token, body: {}
+        expect(response).to have_http_status :unprocessable_entity
+      end
+
+      it "returns unprocessable_entity for an unverified email with no external_id" do
+        api_post :find_or_create, foc_trusted_application_token,
+                 body: { email: 'anunusedemail@test.com', already_verified: false }
+        expect(response).to have_http_status :unprocessable_entity
+      end
+
+      it "creates a new account without the email when an unverified email collides with a different account, even a verified one" do
+        AddEmailToUser.call('taken@test.com', user_2, already_verified: true)
+
+        expect do
+          api_post :find_or_create,
+                   foc_trusted_application_token,
+                   body: {
+                     external_id: "#{SecureRandom.uuid}/#{SecureRandom.uuid}",
+                     email: 'taken@test.com',
+                     already_verified: false,
+                     role: 'student'
+                   }
+        end.to change { User.count }.by(1)
+
+        expect(response.code).to eq('201')
+        new_user_id = JSON.parse(response.body)['id']
+        expect(new_user_id).not_to eq(user_2.id)
       end
     end
   end

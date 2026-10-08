@@ -17,6 +17,9 @@ module Settings
   module Db
     class Store < RailsSettings::Base
       field :push_salesforce_lead_enabled, type: :boolean, default: false
+      field :push_salesforce_students_enabled, type: :boolean, default: false
+      field :push_salesforce_contact_logins_enabled, type: :boolean, default: false
+      field :push_salesforce_last_seen_enabled, type: :boolean, default: false
       field :user_info_error_emails_enabled, type: :boolean, default: false
       field :show_support_chat, type: :boolean, default: false
       field :disable_recaptcha, type: :boolean, default: false
@@ -140,9 +143,16 @@ module Settings
       # The default here enables the old login flow in the test env
       field :student_feature_flag, type: :boolean, default: true
       field :educator_feature_flag, type: :boolean, default: true
+      field :expected_start_semester_enabled, type: :boolean, default: false
+      field :collect_student_count_all_paths, type: :boolean, default: false
       field :sheer_id_base_url,
             type: :string, default: 'https://offers.sheerid.com/openstax/staging/teacher/?env=dev'
       field :number_of_days_contacts_modified, type: :integer, default: 7
+      # rails-settings-ui infers a field's form type from its default, and a nil
+      # default breaks the whole "save all" form (ACCOUNTS-78T). Blank means unset.
+      field :contacts_synced_through, type: :string, default: ''
+      field :leads_synced_through, type: :string, default: ''
+      field :push_incomplete_signup_leads_enabled, type: :boolean, default: false
       field :minimum_recaptcha_score, type: :float, default: 0.2
     end
 

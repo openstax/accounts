@@ -4,8 +4,10 @@
 //= require ../vendor/underscore
 //= require ../vendor/mailcheck
 //= require ./newflow_ui
+//= require ./school_autocomplete
 //= require ./educator_signup_email_validations
 //= require ./educator_complete_dynamic
+//= require ./recaptcha_submit
 //= require intlTelInput
 //= require multiselect
 //= require libphonenumber/utils
@@ -13,7 +15,9 @@
 //= require_self
 
 $(document).ready(function(){
-  $('form:first *:input[type!=hidden]:first').focus();
+  // The escape-hatch button_to forms can precede the step's own form; focusing
+  // one would leave a stray Enter away from switching account type.
+  $('form:not(.signup-alternatives__form):first *:input[type!=hidden]:first').focus();
 
   $('[data-toggle="tooltip"]').tooltip()
 

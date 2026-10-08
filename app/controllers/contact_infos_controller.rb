@@ -29,7 +29,11 @@ class ContactInfosController < ApplicationController
                   status: :ok
                 end,
                 failure: lambda do
-                  render json: @handler_result.errors.first.translate, status: :unprocessable_entity
+                  # Wrapped rather than rendered bare: `render json:` passes a
+                  # String straight through, so the body was labelled
+                  # application/json while not being JSON at all.
+                  render json: { errors: [@handler_result.errors.first.translate] },
+                         status: :unprocessable_entity
                 end)
   end
 

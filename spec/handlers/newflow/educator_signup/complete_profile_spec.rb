@@ -69,6 +69,128 @@ module Newflow
           end
         end
 
+        context 'school selection via school_id' do
+          let(:school) { FactoryBot.create :school, name: 'Rice University', city: 'Houston', state: 'TX' }
+
+          it 'links the School, stores its canonical name, and skips the fuzzy match' do
+            expect(School).not_to receive(:fuzzy_search)
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'rice univ', school_id: school.id) },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq school
+            expect(user.self_reported_school).to eq 'Rice University'
+          end
+
+          it 'keeps free-text behavior when school_id is blank' do
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Hogwarts Academy') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.self_reported_school).to eq 'Hogwarts Academy'
+          end
+
+          it 'falls back to free text when school_id does not exist' do
+            user.update!(school: nil)
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Hogwarts Academy', school_id: 999999) },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to be_nil
+            expect(user.self_reported_school).to eq 'Hogwarts Academy'
+          end
+
+          it 'never links the Find Me A Home placeholder, even by id' do
+            placeholder = FactoryBot.create :school, name: 'Find Me A Home'
+            user.update!(school: nil)
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Find Me A Home', school_id: placeholder.id) },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to be_nil
+          end
+        end
+
+        # The autocomplete only fills school_id when a suggestion is picked, so a typed
+        # name arrives with school_id blank. Before this, that cleared the link -- including
+        # the one the SheerID webhook had already made -- and the lead push then fell back
+        # to the Find Me A Home Account.
+        context 'school typed without picking a suggestion' do
+          let(:sheerid_school) { FactoryBot.create :school, name: 'University of the People', city: 'Pasadena', state: 'CA' }
+
+          before { user.update!(school: sheerid_school) }
+
+          it 'keeps the school SheerID matched when the typed name is that school' do
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'university of the people') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq sheerid_school
+            expect(user.self_reported_school).to eq 'university of the people'
+          end
+
+          it 'relinks to the school the typed name matches when it is a different one' do
+            other = FactoryBot.create :school, name: 'Rice University', city: 'Houston', state: 'TX'
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Rice University') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq other
+          end
+
+          it 'clears the link when the typed name matches no school' do
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Hogwarts Academy') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to be_nil
+            expect(user.self_reported_school).to eq 'Hogwarts Academy'
+          end
+
+          it 'matches a typed name when the user had no school yet' do
+            user.update!(school: nil)
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'University of the People') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq sheerid_school
+          end
+
+          # Two same-named campuses: only the row-locked reload can tell which one the
+          # webhook linked, so a stale in-memory copy would have to guess.
+          it 'judges the typed name against the school a webhook linked after this request loaded the user' do
+            user.update!(school: nil)
+            FactoryBot.create :school, name: 'University of the People', city: 'Tempe', state: 'AZ'
+            User.find(user.id).update!(school: sheerid_school)
+            expect(user.school).to be_nil
+
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'University of the People') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to eq sheerid_school
+          end
+
+          it 'does not let the placeholder count as the current school' do
+            user.update!(school: FactoryBot.create(:school, name: 'Find Me A Home'))
+            result = described_class.handle(
+              params: { signup: params[:signup].merge(school_name: 'Find Me A Home') },
+              user: user
+            )
+            expect(result.errors).to be_empty
+            expect(user.reload.school).to be_nil
+          end
+        end
+
         context 'books used details' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR }
 
@@ -99,16 +221,274 @@ module Newflow
             end
           end
         end
+
+        context 'faculty status' do
+          def profile_completed_advance_logged?(user)
+            SecurityLog.where(user: user, event_type: :faculty_status_advanced)
+              .any? { |log| log.event_data['reason'] == 'profile_completed' }
+          end
+
+          it 'advances incomplete_signup to pending_faculty when the user skipped SheerID' do
+            user.update!(faculty_status: User::INCOMPLETE_SIGNUP, is_sheerid_unviable: true)
+
+            handle
+            user.reload
+
+            expect(user.faculty_status).to eq 'pending_faculty'
+            expect(user.is_educator_pending_cs_verification).to be true
+            expect(profile_completed_advance_logged?(user)).to be true
+          end
+
+          %w[incomplete_signup no_faculty_info].each do |status|
+            it "advances #{status} to pending_faculty when no SheerID outcome was recorded" do
+              user.update!(faculty_status: status)
+
+              handle
+              user.reload
+
+              expect(user.faculty_status).to eq 'pending_faculty'
+              expect(profile_completed_advance_logged?(user)).to be true
+            end
+          end
+
+          %w[pending_sheerid rejected_by_sheerid confirmed_faculty rejected_faculty].each do |status|
+            it "leaves a #{status} outcome alone" do
+              user.update!(faculty_status: status)
+
+              handle
+              user.reload
+
+              expect(user.faculty_status).to eq status
+              expect(profile_completed_advance_logged?(user)).to be false
+            end
+          end
+
+          it 'still pushes the lead' do
+            expect(Newflow::CreateOrUpdateSalesforceLead).to receive(:perform_later).with(user: user)
+
+            handle
+          end
+        end
+
+        describe 'profile_completed_at' do
+          it 'stamps it the first time the profile is completed' do
+            expect(user.profile_completed_at).to be_nil
+
+            handle
+            user.reload
+
+            expect(user.profile_completed_at).to be_present
+            expect(user.profile_completed_at).to be_within(5.seconds).of(Time.current)
+          end
+
+          it 'does not overwrite an existing value on a later completion' do
+            original = 2.days.ago
+            user.update!(profile_completed_at: original)
+
+            handle
+            user.reload
+
+            expect(user.profile_completed_at).to be_within(1.second).of(original)
+          end
+        end
+      end
+
+      context 'with total_num_students on non-primary paths' do
+        before do
+          allow(Settings::FeatureFlags).to receive(:collect_student_count_all_paths).and_return(true)
+        end
+
+        context 'as_recommending with total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor',
+                total_num_students: '150'
+              }
+            }
+          end
+
+          it 'saves the total_num_students value' do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '150'
+          end
+        end
+
+        context 'as_future with total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_future',
+                educator_specific_role: 'instructor',
+                total_num_students: '200'
+              }
+            }
+          end
+
+          it 'saves the total_num_students value' do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '200'
+          end
+        end
+
+        context 'as_recommending with a zero total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor',
+                total_num_students: '0'
+              }
+            }
+          end
+
+          it 'returns a validation error instead of raising' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :total_num_students }).to be true
+          end
+        end
+
+        context 'as_recommending with a non-numeric total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor',
+                total_num_students: 'about thirty'
+              }
+            }
+          end
+
+          it 'returns a validation error instead of raising' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :total_num_students }).to be true
+          end
+        end
+
+        context 'as_recommending without total_num_students' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor'
+              }
+            }
+          end
+
+          it 'returns a validation error' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :total_num_students }).to be true
+          end
+        end
+
+        context 'as_primary still uses per-book summing' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: ['Algebra and Trigonometry', 'Physics'],
+                books_used_details: {
+                  'Algebra and Trigonometry' => {
+                    'num_students_using_book' => '12',
+                    'how_using_book' => 'As the core textbook for my course'
+                  },
+                  'Physics' => {
+                    'num_students_using_book' => '2',
+                    'how_using_book' => 'As an optional/recommended textbook for my course'
+                  }
+                },
+                using_openstax_how: 'as_primary',
+                educator_specific_role: 'instructor',
+                total_num_students: '999'
+              }
+            }
+          end
+
+          it 'ignores total_num_students and sums per-book counts' do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '14'
+          end
+        end
+      end
+
+      context 'with feature flag off' do
+        before do
+          allow(Settings::FeatureFlags).to receive(:collect_student_count_all_paths).and_return(false)
+        end
+
+        context 'as_recommending falls back to books_used_details sum' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: 'as_recommending',
+                educator_specific_role: 'instructor'
+              }
+            }
+          end
+
+          it 'stores 0 (no books_used_details for this path)' do
+            handle
+            user.reload
+            expect(user.how_many_students).to eq '0'
+          end
+        end
       end
 
       context 'with invalid params' do
+        context 'a zero num_students_using_book on the as_primary path' do
+          let(:params) do
+            {
+              signup: {
+                school_name: 'School Name',
+                books_used: ['Algebra and Trigonometry'],
+                books_used_details: {
+                  'Algebra and Trigonometry' => {
+                    'num_students_using_book' => '0',
+                    'how_using_book' => 'As the core textbook for my course'
+                  }
+                },
+                using_openstax_how: Newflow::EducatorSignup::CompleteProfile::AS_PRIMARY,
+                educator_specific_role: Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR,
+              }
+            }
+          end
+
+          it 'returns a validation error instead of raising' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :books_used_details_0_num_students_using_book }).to be true
+          end
+        end
+
         context 'other must be filled out' do
           let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::OTHER }
 
+          # A SheerID-verified user has no school to type, so that error must not appear.
           it "should return correct error" do
             result = handle
-            expect(result.errors.count).to eq 2
-            expect(result.errors.first.message).to eq 'Please enter school name'
+            expect(result.errors.map(&:code)).to eq [:other_role_name]
+            expect(result.errors.first.message).to eq 'Please enter other role name'
           end
         end
 
@@ -119,8 +499,30 @@ module Newflow
 
           it "should return correct error" do
             result = handle
-            expect(result.errors.count).to eq 2
-            expect(result.errors.first.message).to eq 'Please enter school name'
+            expect(result.errors.map(&:code)).not_to include(:school_name)
+            expect(result.errors.first.message).to eq 'Please enter books used'
+          end
+        end
+
+        context 'other_role_name too long' do
+          let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::OTHER }
+          let(:params) do
+            {
+              signup: {
+                school_name: 'Test School',
+                other_role_name: 'x' * 129,
+                using_openstax_how: using_openstax_how,
+                educator_specific_role: educator_specific_role,
+                books_used: books_used,
+                books_used_details: books_used_details
+              }
+            }
+          end
+
+          it 'returns a param error instead of silently truncating' do
+            result = handle
+            expect(result.errors.any? { |e| e.code == :other_role_name }).to be true
+            expect(result.errors.first.message).to eq I18n.t('educator_profile_form.other_role_name_too_long')
           end
         end
 
@@ -141,6 +543,107 @@ module Newflow
             result = handle
             expect(result.errors.count).to eq 1
             expect(result.errors.first.message).to eq 'Please enter the number of students taught and how the book is used'
+          end
+        end
+      end
+
+      describe 'expected_start_semester' do
+        let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR }
+
+        context 'when using_openstax_how is as_primary' do
+          let(:using_openstax_how) { Newflow::EducatorSignup::CompleteProfile::AS_PRIMARY }
+          let(:params) do
+            {
+              signup: {
+                school_name: 'Test School',
+                books_used: books_used,
+                books_used_details: books_used_details,
+                using_openstax_how: using_openstax_how,
+                educator_specific_role: educator_specific_role
+              }
+            }
+          end
+
+          it 'persists a valid value' do
+            params[:signup][:expected_start_semester] = 'this_semester'
+            handle
+            user.reload
+            expect(user.expected_start_semester).to eq('this_semester')
+          end
+
+          it 'persists just_exploring (covers the fourth allow-list value)' do
+            params[:signup][:expected_start_semester] = 'just_exploring'
+            handle
+            user.reload
+            expect(user.expected_start_semester).to eq('just_exploring')
+          end
+
+          it 'rejects an unknown value as nil' do
+            params[:signup][:expected_start_semester] = 'not_a_real_value'
+            handle
+            user.reload
+            expect(user.expected_start_semester).to be_nil
+          end
+
+          it 'persists nil when the value is blank' do
+            params[:signup][:expected_start_semester] = ''
+            handle
+            user.reload
+            expect(user.expected_start_semester).to be_nil
+          end
+
+          it 'persists nil when the field is omitted entirely' do
+            handle
+            user.reload
+            expect(user.expected_start_semester).to be_nil
+          end
+        end
+
+        context 'when using_openstax_how is as_recommending' do
+          let(:using_openstax_how) { Newflow::EducatorSignup::CompleteProfile::AS_RECOMMENDING }
+          let(:books_used) { [] }
+          let(:books_used_details) { {} }
+          let(:params) do
+            {
+              signup: {
+                school_name: 'Test School',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: using_openstax_how,
+                educator_specific_role: educator_specific_role,
+                expected_start_semester: 'next_semester'
+              }
+            }
+          end
+
+          it 'persists a valid value' do
+            handle
+            user.reload
+            expect(user.expected_start_semester).to eq('next_semester')
+          end
+        end
+
+        context 'when using_openstax_how is as_future' do
+          let(:using_openstax_how) { Newflow::EducatorSignup::CompleteProfile::AS_FUTURE }
+          let(:books_used) { [] }
+          let(:books_used_details) { {} }
+          let(:params) do
+            {
+              signup: {
+                school_name: 'Test School',
+                books_used: [],
+                books_of_interest: ['Test Book'],
+                using_openstax_how: using_openstax_how,
+                educator_specific_role: educator_specific_role,
+                expected_start_semester: 'next_semester'
+              }
+            }
+          end
+
+          it 'persists nil (path guard rejects adopter-only value)' do
+            handle
+            user.reload
+            expect(user.expected_start_semester).to be_nil
           end
         end
       end

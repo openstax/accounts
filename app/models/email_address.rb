@@ -18,6 +18,14 @@ class EmailAddress < ContactInfo
 
   validate :mx_domain_validation
 
+  # Mirrors ContactInfo's uniqueness validation (case-insensitive, and it
+  # ignores `verified`) so signup gates on the same rule the write will hit.
+  def self.claimed?(value, excluding_user_id: nil)
+    scope = with_value(value)
+    scope = scope.where.not(user_id: excluding_user_id) if excluding_user_id.present?
+    scope.exists?
+  end
+
   def mx_domain_validation
     return false if errors.any?
     return true if self.is_domain_trusted? # check in our DB first

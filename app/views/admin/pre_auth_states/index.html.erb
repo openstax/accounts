@@ -37,7 +37,7 @@
         created at <b><%= unverified_contact.created_at %></b>
       </div>
       <div class="token">
-        <%= signup_verify_by_token_url(code: unverified_contact.confirmation_code) %>
+        <%= verify_email_by_code_url(unverified_contact.confirmation_code) %>
       </div>
 
     </div>

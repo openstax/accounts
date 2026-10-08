@@ -12,6 +12,7 @@ module Newflow
         attribute :last_name, type: String
         attribute :email, type: String
         attribute :school, type: String
+        attribute :school_id, type: Integer
         attribute :password, type: String
         attribute :is_title_1_school, type: boolean
         attribute :newsletter, type: boolean
@@ -38,7 +39,7 @@ module Newflow
 
         outputs.email = signup_params.email.squish!
 
-        if LookupUsers.by_verified_email(signup_params.email.squish!).first
+        if EmailAddress.claimed?(outputs.email)
           fatal_error(
             code: :email_taken,
             message: I18n.t(:"login_signup_form.email_address_taken"),
@@ -80,12 +81,20 @@ module Newflow
       end
 
       def create_user
+        if signup_params.school_id.present?
+          picked_school = School.not_placeholder.find_by(id: signup_params.school_id)
+        end
+        # Typed without picking a suggestion: without a school_id, the nightly
+        # PushUserActivityToSalesforce never gives the student a Student__c.
+        school = picked_school || School.match_self_reported(signup_params.school)
+
         user = User.create(
           state: User::UNVERIFIED,
           role: :student,
           first_name: signup_params.first_name,
           last_name: signup_params.last_name,
-          self_reported_school: signup_params.school,
+          school: school,
+          self_reported_school: picked_school&.name || signup_params.school,
           phone_number: signup_params.phone_number,
           receive_newsletter: signup_params.newsletter,
           source_application: options[:client_app],

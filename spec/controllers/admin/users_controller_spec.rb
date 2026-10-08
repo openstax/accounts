@@ -36,6 +36,23 @@ describe Admin::UsersController, type: :controller do
     end
   end
 
+  describe 'application_users roles' do
+    it 'strips blank entries out of the comma-separated roles input' do
+      application = FactoryBot.create :doorkeeper_application
+      application_user = FactoryBot.create :application_user, application: application, user: user
+
+      put :update, params: {
+        id: user.id,
+        user: { username: user.username },
+        application_users: {
+          '0' => { application_id: application.id.to_s, roles: 'instructor, ,student' }
+        }
+      }
+
+      expect(application_user.reload.roles).to eq ['instructor', 'student']
+    end
+  end
+
   describe 'trusted lauch removal' do
     it 'removes all the external uuids' do
       user.external_uuids.create!({ uuid: SecureRandom.uuid })
@@ -45,6 +62,13 @@ describe Admin::UsersController, type: :controller do
       }
 
       expect(user.external_uuids.reload.none?).to be true
+    end
+  end
+
+  describe 'POST #become' do
+    it 'signs the admin in as the user without stamping last_signed_in_at' do
+      expect { post :become, params: { id: user.id } }.not_to change { user.reload.last_signed_in_at }
+      expect(controller.current_user).to eq user
     end
   end
 

@@ -106,6 +106,37 @@ module Newflow
           end
         end
 
+        context 'with a signed external state and a failing handler' do
+          let(:user)      { FactoryBot.create :user, state: User::EXTERNAL }
+          let(:return_to) { 'http://localhost' }
+          let(:state) do
+            Rails.application.message_verifier('social_auth').generate({
+              user_id: user.id, return_to: return_to
+            }.to_json)
+          end
+          let(:params) { { provider: 'facebook', uid: 'nonexistent', state: state } }
+
+          before do
+            other = FactoryBot.create :user
+            FactoryBot.create :email_address, user: other, value: info[:email], verified: true
+          end
+
+          it 'returns to the credentials page with token and return_to when the session remembers them' do
+            session[:external_user_credentials] = { 'token' => 'abc123', 'return_to' => return_to }
+            get(:oauth_callback, params: params)
+            expect(response).to redirect_to(
+              new_external_user_credentials_path(token: 'abc123', return_to: return_to)
+            )
+            expect(flash[:alert]).to be_present
+          end
+
+          it 'falls back to the login page without the session entry' do
+            get(:oauth_callback, params: params)
+            expect(response).to redirect_to(newflow_login_path)
+            expect(flash[:alert]).to be_present
+          end
+        end
+
         context 'when omniauth.auth is missing (no OmniAuth middleware)' do
           let(:params) do
             { provider: 'facebook' }
@@ -154,13 +185,6 @@ module Newflow
     end
 
     describe 'POST #confirm_oauth_info' do
-      before(:all) do
-        DatabaseCleaner.start
-        load('db/seeds.rb')
-      end
-
-      after(:all) { DatabaseCleaner.clean }
-
       context 'with valid params' do
         let(:valid_params) do
           {

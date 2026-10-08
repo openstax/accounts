@@ -36,7 +36,7 @@ module LookupUsers
     end
     # Case-insensitive email search
     ContactInfo.verified
-               .where('lower(value) = ?', email.downcase)
+               .with_value(email)
                .preload(:user)
                .tap do |matches|
       return matches.map(&:user) if matches.any?
@@ -56,7 +56,7 @@ module LookupUsers
     end
 
     # Case-insensitive email search
-    ContactInfo.where('lower(value) = ?', email_or_username.downcase)
+    ContactInfo.with_value(email_or_username)
                .preload(:user)
                .tap do |matches|
       return matches.map(&:user) if matches.any?

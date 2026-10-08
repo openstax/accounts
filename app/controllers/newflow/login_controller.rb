@@ -36,9 +36,18 @@ module Newflow
             log_data[:redirect] = stored_url
           end
           sign_in!(user, log_data)
-          log_posthog(user, 'user_logged_in', { client_app: get_client_app&.name })
+          log_posthog(user, 'user_logged_in')
 
-          if current_user.student? || !current_user.is_newflow? || (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login'))
+          # The privacy notice outranks the nudge; an unsigned user takes the
+          # normal path to it and is nudged on a later login instead.
+          if current_user.needs_profile_nudge? && current_user.profile_nudge_redirected_at.nil? &&
+             did_user_sign_recent_privacy_notice?
+            redirect_to_educator_profile_nudge
+          # A user already nudged once gets a normal landing plus the banner on
+          # the profile page, not another forced redirect to step 4.
+          elsif current_user.student? || !current_user.is_newflow? ||
+                (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login')) ||
+                current_user.needs_profile_nudge?
             did_user_sign_recent_privacy_notice? ? redirect_back : redirect_to_sign_privacy_notice
           else
             redirect_to(decorated_user.next_step)
@@ -53,9 +62,17 @@ module Newflow
           when :cannot_find_user, :multiple_users, :incorrect_password, :too_many_login_attempts
             user = @handler_result.outputs.user
             security_log(:sign_in_failed, { reason: code, email: email, user: user })
-            log_posthog(user, 'user_login_failed', { reason: code.to_s })
+            # `cannot_find_user` has no user by definition, and OXPosthog.log
+            # drops user-less events -- so log those against the anonymous
+            # distinct_id instead, otherwise the failure never reaches PostHog.
+            if user.present?
+              log_posthog(user, 'user_login_failed', { reason: code.to_s })
+            else
+              log_posthog_anonymous('user_login_failed', { reason: code.to_s })
+            end
           end
 
+          @login_failed_email = email
           render :login_form
         }
       )
@@ -69,6 +86,25 @@ module Newflow
     end
 
     protected ###############
+
+    # Sends a verified-but-incomplete educator to step 4 exactly once, so a
+    # user who ignores it isn't bounced back there on every subsequent login
+    # (the banner picks up from there). Bookkeeping must never break login,
+    # so a failed stamp is swallowed the same way sign_in! swallows a failed
+    # last_signed_in_at write.
+    def redirect_to_educator_profile_nudge
+      begin
+        current_user.update_column(:profile_nudge_redirected_at, Time.current)
+      rescue StandardError => e
+        Rails.logger.error(
+          "Failed to record profile_nudge_redirected_at for user #{current_user.id}: #{e.message}"
+        )
+      end
+
+      security_log(:profile_nudge_redirected)
+      log_posthog(current_user, 'educator_profile_nudge_redirected')
+      redirect_to(educator_profile_form_path)
+    end
 
     def redirect_to_signup_if_go_param_present
       if params[:go]&.strip&.downcase == 'student_signup'

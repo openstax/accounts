@@ -6,6 +6,25 @@ require 'active_support/core_ext/integer/time'
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
+  # Serve a 404 for missing font files instead of raising a RoutingError.
+  # The pattern-library gem references licensed Helvetica fonts that are not
+  # committed to the repo.  Browsers fall back gracefully, but the test server
+  # would otherwise blow up Capybara feature specs.
+  config.middleware.insert_before 0, Class.new {
+    def initialize(app) @app = app end
+    def call(env)
+      if env['PATH_INFO'] =~ %r{\.(woff2?|ttf|eot|otf)\z}
+        begin
+          @app.call(env)
+        rescue ActionController::RoutingError
+          [404, { 'Content-Type' => 'text/plain' }, ['Font not found']]
+        end
+      else
+        @app.call(env)
+      end
+    end
+  }
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   config.cache_classes = false

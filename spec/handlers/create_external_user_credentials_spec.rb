@@ -27,13 +27,6 @@ describe CreateExternalUserCredentials, type: :handler do
   let(:handler_call) { described_class.call caller: user, params: params }
 
   context 'when successful' do
-    before(:all) do
-      DatabaseCleaner.start
-      load('db/seeds.rb')
-    end
-
-    after(:all) { DatabaseCleaner.clean }
-
     it 'creates an identity' do
       expect { handler_call }.to change { Identity.count }
     end

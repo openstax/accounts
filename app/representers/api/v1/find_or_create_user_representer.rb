@@ -28,14 +28,6 @@ module Api::V1
                },
                decorator: ExternalIdRepresenter
 
-    property :username,
-             type: String,
-             readable: false,
-             writeable: true,
-             schema_info: {
-               description: "Username to search by or assign to newly created user"
-             }
-
     property :email,
              type: String,
              readable: false,
@@ -50,24 +42,6 @@ module Api::V1
              writeable: true,
              schema_info: {
                  description: "Controls whether email should be marked as verified"
-             }
-
-    property :password,
-             type: String,
-             readable: false,
-             writeable: true,
-             schema_info: {
-               required: true,
-               description: "Password to set for user, username must also be given"
-             }
-
-    property :password_confirmation,
-             type: String,
-             readable: false,
-             writeable: true,
-             schema_info: {
-               required: true,
-               description: "Password to set for user, must match 'password'"
              }
 
     property :first_name,

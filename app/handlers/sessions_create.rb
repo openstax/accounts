@@ -142,7 +142,7 @@ class SessionsCreate
 
       return :new_signin_required if user_signin_is_too_old?
 
-      if ContactInfo.verified.where(value: @data.email).where.not(user_id: current_user.id).exists?
+      if ContactInfo.verified.with_value(@data.email).where.not(user_id: current_user.id).exists?
         return :email_already_in_use
       end
 
@@ -181,7 +181,7 @@ class SessionsCreate
     #   true for Google (omniauth strategy checks that the emails are verified)
     #   true for FB (their API only returns verified emails)
 
-    @users_matching_oauth_data ||= EmailAddress.where(value: @data.email)
+    @users_matching_oauth_data ||= EmailAddress.with_value(@data.email)
                                                .verified
                                                .with_users
                                                .map(&:user)

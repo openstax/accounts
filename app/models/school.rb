@@ -7,8 +7,17 @@ class School < ApplicationRecord
     'Career School/For-Profit (2)'
   ]
 
+  # The Salesforce Account that leads fall back to when a user has no school.
+  # Not a real school, so it's never offered or matched: a student linked to it
+  # would get a Student__c pointing at that Account.
+  PLACEHOLDER_NAME = 'Find Me A Home'
+
   # 0.0 == perfect match; 1.0 == perfect non-match
   MAX_NAME_MATCH_DISTANCE = 0.25
+
+  # Looser threshold for autocomplete: short partial queries share fewer trigrams
+  # with full school names, pushing distances higher than fuzzy_search sees.
+  MAX_SEARCH_DISTANCE = 0.3
 
   # Mispelling 'Houston' as 'Huston' gives a match distance of 0.5
   MAX_CITY_MATCH_DISTANCE = 0.5
@@ -19,9 +28,13 @@ class School < ApplicationRecord
 
   has_many :users, inverse_of: :school
 
+  # Case-insensitive: the row's name is synced from Salesforce, whose lookup of
+  # the fallback Account by name is case-insensitive too.
+  scope :not_placeholder, -> { where.not('LOWER(schools.name) = ?', PLACEHOLDER_NAME.downcase) }
+
   def self.fuzzy_search(name, city = nil, state = nil)
     name_expression = sanitize_sql(["? <-> name", name])
-    match_rel = select(:id).where(
+    match_rel = where(
       Arel.sql "#{name_expression} <= #{MAX_NAME_MATCH_DISTANCE}"
     ).order(Arel.sql name_expression)
 
@@ -40,6 +53,29 @@ class School < ApplicationRecord
     end
 
     match_rel.first
+  end
+
+  # A school name someone typed instead of picking from the autocomplete.
+  def self.match_self_reported(name)
+    return if name.blank?
+
+    not_placeholder.fuzzy_search(name)
+  end
+
+  # Autocomplete search. Case-insensitive substring matches plus close trigram
+  # matches (typo tolerance), prefix matches first, then by trigram distance.
+  def self.search(query, limit: 10)
+    q = query.to_s.strip
+    return none if q.length < 2
+
+    distance = sanitize_sql(["? <-> name", q])
+    prefix = sanitize_sql(["name ILIKE ?", "#{sanitize_sql_like(q)}%"])
+    substring = sanitize_sql(["name ILIKE ?", "%#{sanitize_sql_like(q)}%"])
+
+    not_placeholder
+      .where(Arel.sql("(#{substring}) OR (#{distance}) <= #{MAX_SEARCH_DISTANCE}"))
+      .order(Arel.sql("(#{prefix}) DESC, (#{distance}) ASC, name ASC"))
+      .limit(limit)
   end
 
   def user_school_type

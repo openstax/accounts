@@ -30,6 +30,9 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  school_autocomplete:
+    use_as_entered_label: Use "{school}"
+
   educator_profile_form:
     complete_page_header: Complete your profile
     school_name: School name
@@ -52,9 +55,19 @@ en:
     num_students_using_book_time_period: each semester?
     num_students_using_book_supplemental: Include sections taught by TAs that you oversee
     num_students_using_book_placeholder:  Number of students using this book per semester
+    num_students_future_recommending: "Approx. how many students would you teach each year with OpenStax?"
+    num_students_administrator: "What is your average annual class size?"
+    num_students_other: "Approx. how many students does your institution serve annually?"
+    num_students_total_placeholder: "Number of students"
+    book_picker_search_placeholder: "Search for a book..."
+    book_picker_select_up_to: "Select up to 5"
+    book_picker_select_up_to_titles: "Select titles you are using even if the edition number is different."
+    include_ta_sections: "Include sections taught by TAs that you oversee"
+    students_per_semester: "Students per semester"
+    how_using_this_book: "How are you using this book?"
     subjects_of_interest: Subjects of interest
-    books_used: Which textbook(s) are you currently using?
-    books_of_interest: Books of interest
+    books_used: Which OpenStax book(s)?
+    books_of_interest: Which OpenStax book(s)?
     using_primary_textbook: Using an OpenStax book as our primary textbook
     using_recommending_openstax: Recommending the book -- my students buy a different one
     using_future: Interested in using OpenStax in the future
@@ -66,6 +79,7 @@ en:
     fill_out: Please enter a value for this field
     school_name_must_be_entered: Please enter school name
     other_must_be_entered: Please enter other role name
+    other_role_name_too_long: Please shorten your role to 128 characters or fewer
     books_used_must_be_entered: Please enter books used
     books_used_details_must_be_entered: Please enter the number of students taught and how the book is used
     books_of_interest_must_be_entered: Please enter books of interest
@@ -73,10 +87,40 @@ en:
     school_issued_email_must_be_entered: Please enter your school-issued email address
     school_issued_email_is_invalid: Please enter a valid email address
     school_issued_email_is_taken: Email already in use
+    expected_start_semester: When do you plan to start using OpenStax?
+    expected_start_semester_options:
+      this_semester: This semester
+      next_semester: Next semester
+      next_academic_year: Next academic year
+      just_exploring: Just exploring
+    k12:
+      instructor: K-12 Teacher
+      administrator: School or district administrator
+      other: Other school staff
+      complete_page_header: Complete your teacher profile
+      school_name: School or district name
+      describe_role: Which best describes your role at your school?
+      how_textbooks_chosen: How are textbooks chosen at your school or district?
+      chosen_by_instructor: Teachers choose textbooks for their classes
+      chosen_by_coordinator: School or district coordinator chooses the textbook
+      using_primary_textbook: Using an OpenStax book as my primary textbook
+      using_recommending_openstax: Recommending the book — my students use a different one
+      books_used: Which OpenStax book(s) are you using?
+      books_of_interest: Which OpenStax book(s) are you interested in?
+      include_ta_sections: Include all students across your classes
+      students_per_semester: Students per school year
+      num_students_using_book_placeholder: Number of students using this book per school year
+
+  profile_nudge_banner:
+    heading: Finish setting up your instructor account
+    body: You verified your instructor status -- just a couple more questions and you're done.
+    finish_button: Finish setting up
+    dismiss_button: Dismiss
 
   login_signup_form:
     cant_be_blank: can't be blank
-    cannot_find_user: We could not find your account. Please try again.
+    cannot_find_user: We couldn't find an account with that email or username. Please check it and try again — or create a new account below.
+    no_account_sign_up_html: Don't have an account yet? %{sign_up_link}
     multiple_users: We found several accounts with this email
     incorrect_password: The password you provided is incorrect.
     log_in: Log in
@@ -109,7 +153,7 @@ en:
     legal_last_name_label: Legal last name
     email_label: Email
     school_issued_email_label: Institutional email address
-    phone_number_label: Phone number
+    phone_number_label: Phone number (optional)
     password_label: Password
     pin_label: Confirm PIN
     pin_placeholder: Enter 6-digit PIN here
@@ -121,7 +165,7 @@ en:
       If not, please enter your school email address.
     or_login_below: OR LOG IN BELOW
     or_sign_up_below: OR SIGN UP BELOW
-    send_me_newsletter: Send me the OpenStax newsletter
+    send_me_newsletter: Send me OpenStax marketing emails
     agree_to_terms_of_use: I agree to the %{terms_of_use} and %{privacy_policy}
     youre_done: You're done, %{first_name}!
     youre_done_description: >-
@@ -134,6 +178,23 @@ en:
       Updates on your verification status will be sent to <b>%{email_address}</b>.
       In the meantime, you can access all books and resources
       except those that require instructor verification.
+    alternatives_heading: Having trouble?
+    alternatives_heading_educator: Are you an educator?
+    alternative_manual_verification: Verify another way
+    alternative_manual_verification_description: >-
+      If your school isn't listed or the form won't accept your details,
+      our team can verify you by hand. It takes 3-4 business days.
+    switch_role_student: Switch to a student account
+    switch_role_student_description: >-
+      Students don't need instructor verification to read books, take notes,
+      or join a class. You can switch back later.
+    switch_role_educator: Switch to an educator account
+    switch_role_educator_description: >-
+      Educator accounts unlock answer keys and instructor resources once we
+      verify that you teach.
+    switched_role_notice:
+      student: You're now signing up as a student.
+      educator: You're now signing up as an educator.
     join_as_student_description: >-
       Sign up for a <b>Student</b> account to create and save
       notes and highlights in OpenStax study materials.
@@ -173,7 +234,7 @@ en:
       Finish resetting your password by entering the new one below.
       Your new password cannot be the same as your current password.
     same_password_error: Your new password cannot be the same as your current password
-    email_address_taken: Email already in use
+    email_address_taken: Email already in use. If it's yours, use “Forgot your password?” on the log in page to get back into your account.
     too_many_login_attempts: >-
       You have made too many login attempts recently. Please
       reset your password or try again later.
@@ -226,6 +287,10 @@ en:
       title: Are you sure?
       cancelText: Cancel
       confirmText: OK
+
+    editable:
+      save_failed: >-
+        Sorry, we couldn't save that change. Please try again.
 
     email:
       confirm_delete: >-
@@ -406,6 +471,15 @@ en:
       push_salesforce_lead_enabled:
         name: 'Push leads to Salesforce?'
         help_block: 'If checked (and SF configured), new accounts will be pushed to SF as Leads'
+      push_salesforce_students_enabled:
+        name: 'Push students to Salesforce?'
+        help_block: 'If checked (and SF configured), student school picks will be pushed to SF as Student__c records'
+      push_salesforce_contact_logins_enabled:
+        name: 'Push instructor login dates to Salesforce?'
+        help_block: 'If checked (and SF configured), instructors'' most recent login date will be pushed to their SF Contact'
+      push_salesforce_last_seen_enabled:
+        name: 'Push last-seen dates to Salesforce?'
+        help_block: 'If checked (and SF configured), students'' and instructors'' most recent website visit will be pushed to their SF Student__c/Contact'
       show_support_chat:
         name: 'Show support chat widget'
         help_block: 'If checked users will see CS chat widget'
@@ -427,6 +501,12 @@ en:
       educator_feature_flag:
         name: New educator flow feature flag
         help_block: New educator flow activated?
+      expected_start_semester_enabled:
+        name: Expected start semester question
+        help_block: Ask educators which semester they plan to start on the profile step?
+      collect_student_count_all_paths:
+        name: Collect student count on all signup paths
+        help_block: Show student count field on as_future and as_recommending paths?
       sheer_id_base_url:
         name: SheerID base URL
         help_block: >-
@@ -436,6 +516,15 @@ en:
       number_of_days_contacts_modified:
         name: Contacts modified in last x days
         help_block: Retrieve contacts modified in the last X days in update_user_salesforce_info
+      contacts_synced_through:
+        name: Contacts synced through (UTC)
+        help_block: Watermark for update_user_contact_info; the last time Salesforce Contacts were successfully synced. Clear it to force a full resync using "Contacts modified in last x days" instead.
+      leads_synced_through:
+        name: Leads synced through (UTC)
+        help_block: Watermark for the nightly Lead sync (SyncEducatorLeads → UpdateUserLeadInfo); set automatically after each successful run. Leave blank on first run (it falls back to the last 7 days) and clear it to force a resync.
+      push_incomplete_signup_leads_enabled:
+        name: Create Salesforce leads for stalled educator signups?
+        help_block: If checked (and SF configured), the nightly SyncEducatorLeads pass creates an incomplete_signup Lead for newflow educators who verified their email at least 24 hours ago (within the last 90 days) and have no Lead or Contact yet, up to 500 per night.
       minimum_recaptcha_score:
         name: Minimum reCAPTCHA score allowed to register a new account
         help_block: Humans should score closer to 1, bots should score closer to 0

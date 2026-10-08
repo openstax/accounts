@@ -59,7 +59,7 @@ module Admin
     def become
       admin = current_user
       security_log :admin_became_user, user_id: params[:id], username: @user.username
-      sign_in!(@user)
+      sign_in!(@user, {}, false)
       security_log :sign_in_successful, admin_user_id: admin.id, admin_username: admin.username
       redirect_to request.referrer
     end
@@ -136,7 +136,6 @@ module Admin
       @user.school_type = params[:user][:school_type] if params[:user][:school_type]
       @user.school_location = params[:user][:school_location] if params[:user][:school_location]
       @user.is_kip = params[:user][:is_kip]
-      @user.grant_tutor_access = params[:user][:grant_tutor_access]
       if @user.external_uuids.any? && params[:user][:keep_external_uuids] == '0'
         @user.external_uuids.destroy_all
       end
@@ -148,7 +147,7 @@ module Admin
         end
         application_user = @user.application_users.new(application_id: au[:application_id].to_i)\
           if application_user.nil?
-        application_user.roles = au[:roles].split(',').map(&:strip)
+        application_user.roles = au[:roles].split(',').map(&:strip).reject(&:blank?)
         application_user.save!
         application_user
       end

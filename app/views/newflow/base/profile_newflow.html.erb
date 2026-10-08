@@ -6,6 +6,7 @@
 
 <% content_for :head do %>
   <%= javascript_include_tag  "profile" %>
+  <%= javascript_include_tag 'newflow/profile_nudge_banner' if @show_profile_nudge_banner %>
 <% end %>
 
 <% unless @framed %>
@@ -79,9 +80,11 @@
     gap: 20px;
 }
  .card-link {
+     display: flex;
      text-decoration: none !important;
  }
 .card {
+    flex: 1;
     background-color: #fff;
     border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -117,6 +120,79 @@
     }
 }
 
+.profile-nudge-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem;
+    margin-bottom: 2rem;
+    padding: 1.6rem 2rem;
+    border: 0.1rem solid #d7e5ef;
+    border-radius: 0.6rem;
+    background-color: #f3f8fb;
+}
+
+.profile-nudge-banner__copy {
+    flex: 1 1 30rem;
+}
+
+.profile-nudge-banner__heading {
+    margin: 0 0 0.4rem;
+    color: #002E6D;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.profile-nudge-banner__body {
+    margin: 0;
+    color: #666;
+    font-size: 1.4rem;
+    line-height: 1.9rem;
+}
+
+.profile-nudge-banner__actions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.profile-nudge-banner__finish {
+    white-space: nowrap;
+}
+
+.profile-nudge-banner__dismiss-form {
+    margin: 0;
+}
+
+.profile-nudge-banner__dismiss {
+    border: 0;
+    background: none;
+    color: #026AA1;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .profile-nudge-banner {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: left;
+    }
+
+    .profile-nudge-banner__actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+    }
+
+    .profile-nudge-banner__finish {
+        text-align: center;
+    }
+}
+
 </style>
 
 <%= ox_card do %>
@@ -137,6 +213,8 @@
       )
     %>
   </div>
+
+  <%= render(partial: 'newflow/base/profile_nudge_banner') if @show_profile_nudge_banner %>
 
   <div class="row name">
     <div class="col-sm-2 category">
@@ -310,6 +388,7 @@
             <p>Discover and access textbooks and resources for your classes.</p>
           </div>
         </a>
+          <% unless current_user.student? %>
           <% if !@using_os %>
             <a href="https://openstax.org/adoption?related=Accounts&by=Profile" class="card-link">
               <div class="card">
@@ -325,18 +404,21 @@
             </div>
           </a>
           <% end %>
+          <% end %>
         <a href="https://help.openstax.org/" class="card-link" target="_blank">
           <div class="card">
               <h2>Get Help</h2>
               <p>Need assistance? Visit our support center for help. Email, Phone, Chat. We're here to help.</p>
           </div>
         </a>
+        <% unless current_user.student? %>
         <a href="https://www2.openstax.org/l/218812/2016-10-04/lvk" class="card-link" target="_blank">
           <div class="card">
               <h2>Keep in touch</h2>
               <p>Stay updated with the latest news from OpenStax. Subscribe to our quarterly newsletter.</p>
           </div>
         </a>
+        <% end %>
       </div>
       </div>
 
@@ -359,8 +441,13 @@
 
 $.fn.editable.defaults.mode = 'inline';
 $.fn.editable.defaults.send = "always";
-$.fn.editable.defaults.ajaxOptions = {type: "PUT"};
+// dataType pins the Accept header to JSON so the server never negotiates an HTML
+// representation of the save, and a 200 that isn't JSON (the login page, after a
+// session times out) fails loudly instead of writing "undefined" into the field.
+$.fn.editable.defaults.ajaxOptions = {type: "PUT", dataType: "json"};
 $.fn.editable.defaults.url = "<%= profile_path %>";
+// Without this x-editable renders xhr.responseText as markup on any failure.
+$.fn.editable.defaults.error = OX.Profile.editableError;
 
 $('#username').editable({
   success: function(response, newValue) {
