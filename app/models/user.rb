@@ -68,6 +68,13 @@ class User < ApplicationRecord
     }
   )
 
+  # is_deleted has no default, so live users carry NULL as often as false.
+  scope(
+    :not_deleted, -> {
+      where(is_deleted: [nil, false])
+    }
+  )
+
   scope(
     :by_unverified, -> {
       where(state: UNVERIFIED)

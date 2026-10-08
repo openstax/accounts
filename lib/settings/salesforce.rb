@@ -77,6 +77,14 @@ module Settings
         Settings::Db.store.push_incomplete_signup_leads_enabled = bool
       end
 
+      def forget_deleted_users_enabled
+        Settings::Db.store.forget_deleted_users_enabled
+      end
+
+      def forget_deleted_users_enabled=(bool)
+        Settings::Db.store.forget_deleted_users_enabled = bool
+      end
+
     end
 
   end

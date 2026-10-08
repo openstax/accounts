@@ -525,6 +525,9 @@ en:
       push_incomplete_signup_leads_enabled:
         name: Create Salesforce leads for stalled educator signups?
         help_block: If checked (and SF configured), the nightly SyncEducatorLeads pass creates an incomplete_signup Lead for newflow educators who verified their email at least 24 hours ago (within the last 90 days) and have no Lead or Contact yet, up to 500 per night.
+      forget_deleted_users_enabled:
+        name: Tell Salesforce to forget deleted users?
+        help_block: If checked (and SF configured), the nightly ForgetDeletedUsersInSalesforce pass sets ShouldForget on the Individual of each deleted user's Contact or Lead, which starts the Individual_Forget flow. Leave unchecked until that flow is active in production; records already flagged will not fire it again.
       minimum_recaptcha_score:
         name: Minimum reCAPTCHA score allowed to register a new account
         help_block: Humans should score closer to 1, bots should score closer to 0

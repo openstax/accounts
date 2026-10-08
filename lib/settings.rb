@@ -153,6 +153,7 @@ module Settings
       field :contacts_synced_through, type: :string, default: ''
       field :leads_synced_through, type: :string, default: ''
       field :push_incomplete_signup_leads_enabled, type: :boolean, default: false
+      field :forget_deleted_users_enabled, type: :boolean, default: false
       field :minimum_recaptcha_score, type: :float, default: 0.2
     end
 

@@ -14,6 +14,10 @@ namespace :cron do
       PushUserActivityToSalesforce.call
     end
 
+    cron_step('ForgetDeletedUsersInSalesforce.call') do
+      ForgetDeletedUsersInSalesforce.call
+    end
+
     cron_step('SyncEducatorLeads.call') do
       SyncEducatorLeads.call
     end
