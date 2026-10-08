@@ -221,11 +221,15 @@ class PushUserActivityToSalesforce
   end
 
   def fetch_created_students(since:, after_id:)
+    student_created_batch_query(since: since, after_id: after_id).to_a
+  end
+
+  def student_created_batch_query(since:, after_id: nil)
     query = OpenStax::Salesforce::Remote::Student
             .select(:id, :name)
             .where("CreatedDate >= #{since.utc.iso8601}")
     query = query.where('Id > ?', after_id) if after_id.present?
-    query.order('Id').limit(LINK_PAGE_SIZE).to_a
+    query.order('Id').limit(LINK_PAGE_SIZE)
   end
 
   # First (lowest Id) record per uuid wins, and the compare-and-set on a NULL
@@ -238,9 +242,21 @@ class PushUserActivityToSalesforce
       id_by_uuid[student.name.downcase] ||= student.id
     end
 
-    id_by_uuid.sum do |uuid, salesforce_id|
-      User.where(uuid: uuid, salesforce_student_id: nil).update_all(salesforce_student_id: salesforce_id)
-    end
+    return 0 if id_by_uuid.empty?
+
+    connection = User.connection
+    values = id_by_uuid.map do |uuid, salesforce_id|
+      "(#{connection.quote(uuid)}, #{connection.quote(salesforce_id)})"
+    end.join(', ')
+    table = connection.quote_table_name(User.table_name)
+
+    connection.update(<<~SQL.squish)
+      UPDATE #{table}
+      SET salesforce_student_id = links.salesforce_student_id
+      FROM (VALUES #{values}) AS links(uuid, salesforce_student_id)
+      WHERE #{table}.uuid = links.uuid
+        AND #{table}.salesforce_student_id IS NULL
+    SQL
   end
 
   # A NULL salesforce_student_pushed_at means the link came from

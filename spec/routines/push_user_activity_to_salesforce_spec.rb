@@ -1042,6 +1042,25 @@ describe PushUserActivityToSalesforce, type: :routine do
       expect(user.reload.salesforce_student_id).to eq 'a0AAA0000001'
     end
 
+    it 'links multiple users with a single guarded database update' do
+      second_uuid = SecureRandom.uuid
+      second_user = FactoryBot.create :user, role: :student, uuid: second_uuid, school: nil
+      stub_fetch [sf_student(uuid, 'a0FIRST000001'), sf_student(second_uuid, 'a0SECOND00001')]
+
+      updates = []
+      allow(User.connection).to receive(:update).and_wrap_original do |original, sql, *args|
+        updates << sql if sql.match?(/\AUPDATE "?users"? SET salesforce_student_id/)
+        original.call(sql, *args)
+      end
+
+      described_class.call
+
+      expect(updates.size).to eq 1
+      expect(updates.first).to include('salesforce_student_id IS NULL')
+      expect(user.reload.salesforce_student_id).to eq 'a0FIRST000001'
+      expect(second_user.reload.salesforce_student_id).to eq 'a0SECOND00001'
+    end
+
     it 'pages until a short page, keyed on the last Id' do
       full_page = Array.new(described_class::LINK_PAGE_SIZE) { |i| sf_student("name-#{i}", format('a0P%012d', i)) }
       calls = []
@@ -1054,6 +1073,29 @@ describe PushUserActivityToSalesforce, type: :routine do
 
       expect(calls).to eq [nil, full_page.last.id]
       expect(user.reload.salesforce_student_id).to eq 'a0ZZZ0000001'
+    end
+
+    describe '#student_created_batch_query' do
+      it 'builds the CreatedDate filter, ordering and limit, without an Id cursor' do
+        since = Time.utc(2026, 9, 24, 0, 0, 0)
+
+        soql = described_class.new.send(:student_created_batch_query, since: since).to_s
+
+        expect(soql).to include('CreatedDate >= 2026-09-24T00:00:00Z')
+        expect(soql).to include('ORDER BY Id')
+        expect(soql).to include("LIMIT #{described_class::LINK_PAGE_SIZE}")
+        expect(soql).not_to include('Id >')
+      end
+
+      it 'adds an Id cursor when after_id is given' do
+        since = Time.utc(2026, 9, 24, 0, 0, 0)
+
+        soql = described_class.new.send(
+          :student_created_batch_query, since: since, after_id: 'STUDENT123'
+        ).to_s
+
+        expect(soql).to include("Id > 'STUDENT123'")
+      end
     end
 
     describe 'window' do
