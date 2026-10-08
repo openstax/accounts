@@ -30,6 +30,14 @@ class DataExport
       suffix: user.suffix,
       role: user.role,
       self_reported_school: user.self_reported_school,
+      other_role_name: user.other_role_name,
+      how_many_students: user.how_many_students,
+      which_books: user.which_books,
+      who_chooses_books: user.who_chooses_books,
+      expected_start_semester: user.expected_start_semester,
+      receive_newsletter: user.receive_newsletter,
+      consent_preferences: user.consent_preferences,
+      has_password: user.identity.present?,
       phone_number: user.phone_number,
       country_code: user.country_code,
       created_at: user.created_at,
@@ -48,7 +56,6 @@ class DataExport
   end
 
   def authentication(auth)
-    # Provider name and timestamp only - never the uid/token, which is a credential
     {
       provider: auth.provider,
       created_at: auth.created_at

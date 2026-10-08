@@ -216,6 +216,13 @@
 
   <%= render(partial: 'newflow/base/profile_nudge_banner') if @show_profile_nudge_banner %>
 
+  <% if flash[:notice].present? %>
+    <div class="alert alert-success" role="alert"><%= flash[:notice] %></div>
+  <% end %>
+  <% if flash[:alert].present? %>
+    <div class="alert alert-danger" role="alert"><%= flash[:alert] %></div>
+  <% end %>
+
   <div class="row name">
     <div class="col-sm-2 category">
       <%= I18n.t(:"legacy.users.edit.name") %>
@@ -316,66 +323,40 @@
       </div>
     <% end %>
 
-      <hr>
-      <% if flash[:notice].present? %>
-        <div class="row"><div class="alert alert-success" role="alert"><%= flash[:notice] %></div></div>
-      <% end %>
-      <% if flash[:alert].present? %>
-        <div class="row"><div class="alert alert-danger" role="alert"><%= flash[:alert] %></div></div>
-      <% end %>
-
       <div class="row privacy-and-data">
-        <h2 class="title"><%= t(:'account_deletion.section_heading') %></h2>
-        <p><%= t(:'account_deletion.section_intro') %></p>
-
-        <div class="privacy-action">
-          <%= button_to(
-                t(:'account_deletion.download_my_data'),
-                data_export_path,
-                method: :get,
-                class: 'btn btn-default download-my-data',
-                data: {
-                  'ga-category': 'My Account',
-                  'ga-action': 'Click',
-                  'ga-label': 'Download My Data'
-                }
-              ) %>
+        <div class="col-sm-2 category">
+          <%= t(:'account_deletion.section_heading') %>
+        </div>
+        <div class="col-sm-10 info">
+          <p><%= t(:'account_deletion.section_intro') %></p>
+          <p>
+            <%= link_to(
+                  t(:'account_deletion.download_my_data'),
+                  data_export_path,
+                  class: 'btn btn-default download-my-data',
+                  data: {
+                    'ga-category': 'My Account',
+                    'ga-action': 'Click',
+                    'ga-label': 'Download My Data'
+                  }
+                ) %>
+          </p>
           <p class="muted"><%= t(:'account_deletion.download_my_data_description') %></p>
-        </div>
 
-        <div class="privacy-action">
-          <button type="button"
-                  class="btn btn-link delete-my-account"
-                  data-toggle="modal"
-                  data-target="#delete-account-modal"
-                  data-ga-category="My Account"
-                  data-ga-action="Click"
-                  data-ga-label="Delete My Account">
-            <%= t(:'account_deletion.delete_my_account') %>
-          </button>
-          <p class="muted"><%= t(:'account_deletion.delete_my_account_description') %></p>
-        </div>
-      </div>
-
-      <div class="modal fade" id="delete-account-modal" tabindex="-1" role="dialog" aria-labelledby="delete-account-modal-label" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-              <h4 class="modal-title" id="delete-account-modal-label"><%= t(:'account_deletion.modal.title') %></h4>
-            </div>
-            <div class="modal-body">
-              <%= raw t(:'account_deletion.modal.body_html') %>
-            </div>
-            <div class="modal-footer">
-              <%= form_tag(request_account_deletion_path, method: :post) do %>
-                <button type="button" class="btn btn-default" data-dismiss="modal"><%= t(:'account_deletion.modal.cancel') %></button>
-                <button type="submit" class="btn btn-primary"><%= t(:'account_deletion.modal.send_email') %></button>
-              <% end %>
-            </div>
-          </div>
+          <details class="delete-my-account">
+            <summary
+              data-ga-category="My Account"
+              data-ga-action="Click"
+              data-ga-label="Delete My Account"
+            ><%= t(:'account_deletion.delete_my_account') %></summary>
+            <%= t(:'account_deletion.delete_panel.body_html') %>
+            <%= button_to(
+                  t(:'account_deletion.delete_panel.send_email'),
+                  request_account_deletion_path,
+                  method: :post,
+                  class: 'btn btn-primary'
+                ) %>
+          </details>
         </div>
       </div>
 

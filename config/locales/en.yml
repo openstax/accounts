@@ -965,9 +965,6 @@ en:
       Get a JSON file containing your profile, email addresses, and connected
       sign-in providers.
     delete_my_account: Delete my account
-    delete_my_account_description: >-
-      Permanently remove your OpenStax account. We will email you to confirm
-      this request.
     email_sent: >-
       We've sent an email to confirm your account deletion. Please check your
       inbox to complete the process.
@@ -978,14 +975,12 @@ en:
       That account deletion link is invalid or has expired. If you still want
       to delete your account, please request deletion again from your settings.
     success: Your OpenStax account has been deleted.
-    modal:
-      title: Delete your OpenStax account?
+    delete_panel:
       body_html: >-
         <p>This will permanently delete your account, sign-in methods, and any
         personal information we have on file. This cannot be undone.</p>
         <p>We will send a confirmation email to your verified email address.
         You must click the link in that email to finish deleting your account.</p>
-      cancel: Cancel
       send_email: Send confirmation email
     confirm_page:
       title: Confirm OpenStax account deletion

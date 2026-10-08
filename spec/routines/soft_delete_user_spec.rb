@@ -69,4 +69,27 @@ describe SoftDeleteUser do
     expect(user.account_deletion_token).to be_nil
     expect(user.account_deletion_token_expires_at).to be_nil
   end
+
+  it 'clears profile fields a user typed in themselves' do
+    user.update!(
+      title: 'Dr.', suffix: 'Jr.', phone_number: '555-0100',
+      self_reported_school: 'Somewhere College', other_role_name: 'Librarian',
+      login_token: 'abc', login_token_expires_at: 1.day.from_now
+    )
+
+    described_class.call(user)
+    user.reload
+
+    expect([user.title, user.suffix, user.phone_number, user.self_reported_school,
+            user.other_role_name, user.login_token]).to all(be_nil)
+  end
+
+  it 'destroys the stored SheerID verification' do
+    verification = FactoryBot.create(:sheerid_verification)
+    user.update!(sheerid_verification_id: verification.verification_id)
+
+    described_class.call(user)
+
+    expect(SheeridVerification.exists?(verification.id)).to eq(false)
+  end
 end

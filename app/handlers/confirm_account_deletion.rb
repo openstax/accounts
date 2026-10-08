@@ -17,6 +17,7 @@ class ConfirmAccountDeletion
 
     fatal_error(code: :unknown_account_deletion_token) if user.nil?
     fatal_error(code: :expired_account_deletion_token) if user.account_deletion_token_expired?
+    fatal_error(code: :already_deleted) if user.is_deleted?
 
     run(SoftDeleteUser, user)
 

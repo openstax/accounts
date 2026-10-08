@@ -5,7 +5,7 @@ class OtherController < Newflow::BaseController
   ]
   before_action :ensure_complete_educator_signup, only: :profile_newflow
   before_action :prevent_caching, only: [
-    :profile_newflow, :confirm_account_deletion_form, :confirm_account_deletion
+    :profile_newflow, :data_export, :confirm_account_deletion_form, :confirm_account_deletion
   ]
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [

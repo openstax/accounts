@@ -28,4 +28,12 @@ describe ConfirmAccountDeletion, type: :handler do
     described_class.call(caller: AnonymousUser.instance, params: { token: user.account_deletion_token })
     expect(user.reload.is_deleted).to eq(true)
   end
+
+  it 'cannot be used twice' do
+    token = user.account_deletion_token
+    described_class.call(caller: AnonymousUser.instance, params: { token: token })
+
+    result = described_class.handle(caller: AnonymousUser.instance, params: { token: token })
+    expect(result).to have_routine_error(:unknown_account_deletion_token)
+  end
 end

@@ -7,7 +7,7 @@
     <h1 class="title"><%= I18n.t(:'account_deletion.confirm_page.heading') %></h1>
   </div>
 
-  <p><%= I18n.t(:'account_deletion.confirm_page.warning_html') %></p>
+  <p><%= t(:'account_deletion.confirm_page.warning_html') %></p>
 
   <%= form_tag(confirm_account_deletion_path, method: :post, class: 'account-deletion-confirm-form') do %>
     <%= hidden_field_tag :token, @token %>

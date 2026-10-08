@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_09_26_000300) do
+ActiveRecord::Schema.define(version: 2026_10_07_000100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -468,9 +468,12 @@ ActiveRecord::Schema.define(version: 2026_09_26_000300) do
     t.datetime "salesforce_contact_last_seen_pushed_at"
     t.datetime "profile_nudge_redirected_at"
     t.datetime "profile_completed_at"
+    t.string "account_deletion_token"
+    t.datetime "account_deletion_token_expires_at"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
+    t.index ["account_deletion_token"], name: "index_users_on_account_deletion_token", unique: true
     t.index ["created_at"], name: "index_users_stalled_educator_signups", where: "((salesforce_lead_id IS NULL) AND (salesforce_contact_id IS NULL) AND (role <> 1) AND ((state)::text = 'activated'::text))"
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
     t.index ["id"], name: "index_users_unlinked_students_with_school", where: "((role = 1) AND (school_id IS NOT NULL) AND (salesforce_student_pushed_at IS NULL))"

@@ -14,8 +14,7 @@ class RequestAccountDeletion
     user = caller
 
     user.refresh_account_deletion_token(expiration_period: TOKEN_EXPIRATION)
-    user.save!
-    transfer_errors_from(user, { type: :verbatim }, true)
+    user.save!(validate: false)
 
     email_addresses = user.email_addresses.verified.map(&:value)
 

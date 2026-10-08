@@ -51,4 +51,24 @@ describe DataExport do
     data = described_class.call(user).outputs.data
     expect(data[:exported_at]).to match(/\A\d{4}-\d{2}-\d{2}T/)
   end
+
+  it 'exports the profile answers the user entered' do
+    user.update!(other_role_name: 'Librarian', which_books: 'Biology 2e', how_many_students: '50')
+    data = described_class.call(user).outputs.data
+    expect(data[:profile]).to include(
+      other_role_name: 'Librarian', which_books: 'Biology 2e', how_many_students: '50'
+    )
+  end
+
+  it 'never includes credentials' do
+    FactoryBot.create(:identity, user: user, password: 'supersecret1', password_confirmation: 'supersecret1')
+    user.update!(login_token: 'login-token-value')
+
+    json = JSON.generate(described_class.call(user).outputs.data)
+
+    expect(json).not_to include('supersecret1')
+    expect(json).not_to include('login-token-value')
+    expect(json).not_to include(user.identity.password_digest)
+    expect(json).not_to match(/password_digest|login_token|confirmation_code|confirmation_pin/)
+  end
 end
