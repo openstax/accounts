@@ -957,9 +957,8 @@ en:
   account_deletion:
     section_heading: Privacy and your data
     section_intro: >-
-      You can download a copy of your OpenStax account data, or permanently
-      delete your account. Deletion removes your personal information and
-      cannot be undone.
+      You can download a copy of your OpenStax account data, or delete your
+      account. Deleting your account cannot be undone.
     download_my_data: Download my data
     download_my_data_description: >-
       Get a JSON file containing your profile, email addresses, and connected
@@ -977,17 +976,21 @@ en:
     success: Your OpenStax account has been deleted.
     delete_panel:
       body_html: >-
-        <p>This will permanently delete your account, sign-in methods, and any
-        personal information we have on file. This cannot be undone.</p>
-        <p>We will send a confirmation email to your verified email address.
-        You must click the link in that email to finish deleting your account.</p>
+        <p>Deleting your account removes your name, email addresses and
+        sign-in methods. We also remove your contact details from OpenStax's
+        records. We keep anonymous records of which OpenStax books were used, so
+        we can report on the impact of our books. This cannot be undone.</p>
+        <p>We'll send a confirmation email to your verified email address.
+        Click the link in that email to finish deleting your account.</p>
       send_email: Send confirmation email
     confirm_page:
       title: Confirm OpenStax account deletion
       heading: Confirm deletion of your OpenStax account
       warning_html: >-
-        <strong>This will permanently delete your account.</strong> Your
-        profile, email addresses, sign-in methods, and personal information
-        will be removed. This action cannot be undone.
+        <strong>This permanently deletes your account.</strong> We'll remove
+        your name, email addresses and sign-in methods, and your contact details
+        from OpenStax's records. We keep anonymous records of which OpenStax
+        books were used, so we can report on the impact of our books. You can't
+        undo this.
       confirm_button: Yes, permanently delete my account
       cancel: Cancel
