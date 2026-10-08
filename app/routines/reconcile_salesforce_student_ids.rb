@@ -74,7 +74,7 @@ class ReconcileSalesforceStudentIds
   end
 
   def update_matching_users(names_to_sfid, stats)
-    users = User.where(uuid: names_to_sfid.keys).pluck(:id, :uuid, :salesforce_student_id)
+    users = User.not_deleted.where(uuid: names_to_sfid.keys).pluck(:id, :uuid, :salesforce_student_id)
     stats.matched += users.size
     stats.unmatched += names_to_sfid.size - users.size
 

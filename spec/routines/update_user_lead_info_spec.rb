@@ -268,4 +268,21 @@ describe UpdateUserLeadInfo, type: :routine do
       )
     end
   end
+
+
+  describe 'deleted users' do
+    it 'does not pull Salesforce data back onto the scrubbed row' do
+      user = FactoryBot.create :user, is_deleted: true, faculty_status: :incomplete_signup,
+                                      salesforce_lead_id: nil, uuid: 'deleted-lead-uuid'
+      stub_salesforce_leads(
+        [create_sf_lead(uuid: user.uuid, verification_status: 'confirmed_faculty', lead_id: 'SF_LEAD_DEL')]
+      )
+
+      described_class.call
+
+      user.reload
+      expect(user.salesforce_lead_id).to be_nil
+      expect(user.faculty_status).to eq('incomplete_signup')
+    end
+  end
 end

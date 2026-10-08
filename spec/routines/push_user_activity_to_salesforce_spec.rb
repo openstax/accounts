@@ -1171,4 +1171,54 @@ describe PushUserActivityToSalesforce, type: :routine do
       end
     end
   end
+
+
+  describe 'deleted users' do
+    let(:sfdc_client) { double('sfdc client') }
+    let(:contact_remote) { OpenStax::Salesforce::Remote::Contact }
+    let!(:school) { FactoryBot.create :school, salesforce_id: '001TEST00000001' }
+
+    before do
+      allow(Settings::Salesforce).to receive(:push_contact_logins_enabled) { true }
+      allow(Settings::Salesforce).to receive(:push_last_seen_enabled) { true }
+      allow(remote).to receive(:sfdc_client).and_return(sfdc_client)
+      allow(contact_remote).to receive(:sfdc_client).and_return(sfdc_client)
+    end
+
+    it 'are excluded from every pass, including the NULL is_deleted of live users' do
+      deleted_student = FactoryBot.create :user, role: :student, is_deleted: true, school: school
+      deleted_linked_student = FactoryBot.create(
+        :user, role: :student, is_deleted: true, salesforce_student_id: 'a0DELSTUD001',
+               last_signed_in_at: 1.hour.ago, last_seen_at: 1.hour.ago
+      )
+      deleted_instructor = FactoryBot.create(
+        :user, role: :instructor, is_deleted: true, salesforce_contact_id: 'a0DELCONT001',
+               last_signed_in_at: 1.hour.ago, last_seen_at: 1.hour.ago
+      )
+      expect(remote).not_to receive(:where)
+      expect(sfdc_client).not_to receive(:batch)
+
+      described_class.call
+
+      expect(deleted_student.reload.salesforce_student_pushed_at).to be_nil
+      expect(deleted_linked_student.reload.salesforce_student_pushed_at).to be_nil
+      expect(deleted_linked_student.salesforce_student_last_seen_pushed_at).to be_nil
+      expect(deleted_instructor.reload.salesforce_contact_login_pushed_at).to be_nil
+      expect(deleted_instructor.salesforce_contact_last_seen_pushed_at).to be_nil
+    end
+
+    it 'does not stop live users with a NULL is_deleted from being pushed' do
+      live = FactoryBot.create :user, role: :instructor, is_deleted: nil,
+                                      salesforce_contact_id: 'a0LIVECONT01', last_signed_in_at: 1.hour.ago
+      allow(sfdc_client).to receive(:batch) do |&block|
+        subrequests = double('subrequests', update: nil)
+        block.call(subrequests)
+        [{ 'statusCode' => 204 }]
+      end
+
+      described_class.call
+
+      expect(live.reload.salesforce_contact_login_pushed_at).not_to be_nil
+    end
+  end
 end

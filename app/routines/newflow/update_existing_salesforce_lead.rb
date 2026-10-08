@@ -17,7 +17,7 @@ module Newflow
     # would roll back. In a real delayed job, the same failures must raise so the
     # worker retries and we don't silently leave the lead on the educator path.
     def exec(user:)
-      return unless user
+      return if user.nil? || user.is_deleted?
 
       status.set_job_name(self.class.name)
       status.set_job_args(user: user.to_global_id.to_s)
