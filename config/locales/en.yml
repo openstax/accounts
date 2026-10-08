@@ -864,3 +864,46 @@ en:
         trouble_logging_in: Trouble logging in?
         reset_password: Click here to reset it
         add_password: Click here to add a password
+
+  account_deletion:
+    section_heading: Privacy and your data
+    section_intro: >-
+      You can download a copy of your OpenStax account data, or permanently
+      delete your account. Deletion removes your personal information and
+      cannot be undone.
+    download_my_data: Download my data
+    download_my_data_description: >-
+      Get a JSON file containing your profile, email addresses, and connected
+      sign-in providers.
+    delete_my_account: Delete my account
+    delete_my_account_description: >-
+      Permanently remove your OpenStax account. We will email you to confirm
+      this request.
+    email_sent: >-
+      We've sent an email to confirm your account deletion. Please check your
+      inbox to complete the process.
+    request_failed: >-
+      We couldn't process your request. Please make sure your account has a
+      verified email address and try again.
+    invalid_or_expired_link: >-
+      That account deletion link is invalid or has expired. If you still want
+      to delete your account, please request deletion again from your settings.
+    success: Your OpenStax account has been deleted.
+    modal:
+      title: Delete your OpenStax account?
+      body_html: >-
+        <p>This will permanently delete your account, sign-in methods, and any
+        personal information we have on file. This cannot be undone.</p>
+        <p>We will send a confirmation email to your verified email address.
+        You must click the link in that email to finish deleting your account.</p>
+      cancel: Cancel
+      send_email: Send confirmation email
+    confirm_page:
+      title: Confirm OpenStax account deletion
+      heading: Confirm deletion of your OpenStax account
+      warning_html: >-
+        <strong>This will permanently delete your account.</strong> Your
+        profile, email addresses, sign-in methods, and personal information
+        will be removed. This action cannot be undone.
+      confirm_button: Yes, permanently delete my account
+      cancel: Cancel

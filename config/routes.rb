@@ -13,6 +13,12 @@ Rails.application.routes.draw do
 
     # Exit accounts back to app they came from
     get 'i/exit_accounts', action: :exit_accounts, as: :exit_accounts
+
+    # GDPR / privacy: data export + self-service account deletion
+    get 'i/data_export', action: :data_export, as: :data_export
+    post 'i/request_account_deletion', action: :request_account_deletion, as: :request_account_deletion
+    get 'i/confirm_account_deletion', action: :confirm_account_deletion_form, as: :confirm_account_deletion_form
+    post 'i/confirm_account_deletion', action: :confirm_account_deletion, as: :confirm_account_deletion
   end
 
   scope controller: 'newflow/login' do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_01_28_161718) do
+ActiveRecord::Schema.define(version: 2026_05_08_074941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -474,9 +474,12 @@ ActiveRecord::Schema.define(version: 2026_01_28_161718) do
     t.string "adopter_status"
     t.jsonb "consent_preferences"
     t.boolean "is_deleted"
+    t.string "account_deletion_token"
+    t.datetime "account_deletion_token_expires_at"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
+    t.index ["account_deletion_token"], name: "index_users_on_account_deletion_token", unique: true
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"

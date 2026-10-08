@@ -112,6 +112,10 @@ class SecurityLog < ApplicationRecord
     salesforce_lead_found_by_email
     user_already_has_contact_not_creating_lead
     creating_new_salesforce_lead
+    user_data_exported
+    account_deletion_requested
+    account_deletion_request_failed
+    account_deleted
   ]
 
   json_serialize :event_data, Hash

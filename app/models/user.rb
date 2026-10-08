@@ -121,6 +121,7 @@ class User < ApplicationRecord
   )
 
   validates(:login_token, uniqueness: { allow_nil: true })
+  validates(:account_deletion_token, uniqueness: { allow_nil: true })
 
   validates(:uuid, presence: true, uniqueness: true)
 
@@ -416,6 +417,24 @@ class User < ApplicationRecord
 
   def login_token_expired?
     !login_token_expires_at.nil? && login_token_expires_at <= DateTime.now
+  end
+
+  # Account deletion token
+
+  def refresh_account_deletion_token(expiration_period: 1.day)
+    self.account_deletion_token = SecureRandom.hex(16)
+    self.account_deletion_token_expires_at = DateTime.now + expiration_period
+  end
+
+  def account_deletion_token_expired?
+    account_deletion_token_expires_at.nil? || account_deletion_token_expires_at <= DateTime.now
+  end
+
+  def clear_account_deletion_token!
+    update_columns(
+      account_deletion_token: nil,
+      account_deletion_token_expires_at: nil
+    )
   end
 
   def self.known_roles

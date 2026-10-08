@@ -114,4 +114,94 @@ describe OtherController, type: :controller do
       end
     end
   end
+
+  describe 'GET #data_export' do
+    let(:user) { create_newflow_user('user@openstax.org', 'password') }
+
+    it 'redirects to login when not signed in' do
+      get :data_export
+      expect(response).to redirect_to(newflow_login_path)
+    end
+
+    it 'returns a JSON attachment for the current user' do
+      mock_current_user(user)
+      get :data_export
+
+      expect(response).to be_successful
+      expect(response.headers['Content-Type']).to include('application/json')
+      expect(response.headers['Content-Disposition']).to include('attachment')
+      payload = JSON.parse(response.body)
+      expect(payload['profile']['uuid']).to eq(user.uuid)
+    end
+
+    it 'logs a security event' do
+      mock_current_user(user)
+      expect {
+        get :data_export
+      }.to change { SecurityLog.where(event_type: :user_data_exported).count }.by(1)
+    end
+  end
+
+  describe 'POST #request_account_deletion' do
+    let(:user) { create_newflow_user('user@openstax.org', 'password') }
+
+    it 'redirects to login when not signed in' do
+      post :request_account_deletion
+      expect(response).to redirect_to(newflow_login_path)
+    end
+
+    it 'sets a deletion token and redirects with a notice' do
+      mock_current_user(user)
+      post :request_account_deletion
+
+      expect(user.reload.account_deletion_token).to be_present
+      expect(response).to redirect_to(profile_newflow_path)
+      expect(flash[:notice]).to be_present
+    end
+  end
+
+  describe 'GET #confirm_account_deletion_form' do
+    let(:user) { create_newflow_user('user@openstax.org', 'password') }
+
+    it 'redirects with an alert when the token is unknown' do
+      get :confirm_account_deletion_form, params: { token: 'nope' }
+      expect(response).to be_redirect
+      expect(flash[:alert]).to be_present
+    end
+
+    it 'renders the confirm form when the token is valid' do
+      user.refresh_account_deletion_token(expiration_period: 1.day)
+      user.save!
+
+      get :confirm_account_deletion_form, params: { token: user.account_deletion_token }
+      expect(response).to be_successful
+    end
+  end
+
+  describe 'POST #confirm_account_deletion' do
+    let(:user) { create_newflow_user('user@openstax.org', 'password') }
+
+    before do
+      user.refresh_account_deletion_token(expiration_period: 1.day)
+      user.save!
+    end
+
+    it 'soft-deletes the user and redirects to login' do
+      post :confirm_account_deletion, params: { token: user.account_deletion_token }
+      expect(user.reload.is_deleted).to eq(true)
+      expect(response).to redirect_to(newflow_login_path)
+    end
+
+    it 'logs an account_deleted security event' do
+      expect {
+        post :confirm_account_deletion, params: { token: user.account_deletion_token }
+      }.to change { SecurityLog.where(event_type: :account_deleted).count }.by(1)
+    end
+
+    it 'redirects with an alert when the token is invalid' do
+      post :confirm_account_deletion, params: { token: 'bogus' }
+      expect(user.reload.is_deleted).not_to eq(true)
+      expect(flash[:alert]).to be_present
+    end
+  end
 end
