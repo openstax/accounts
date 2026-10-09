@@ -73,7 +73,47 @@ module Newflow
           expect(mail.subject).to eq("[OpenStax] Confirm your email address")
           expect(mail.body.encoded).to include("<a href=\"#{confirm_url}\"")
           expect(mail.body.encoded).not_to include("use your pin: <b id='pin'>#{pin}</b>")
+          expect(mail.text_part.body.decoded).not_to include(pin)
         end
+      end
+
+      it 'has a plain-text alternative alongside the HTML, for spam filters and text-only clients' do
+        mail = NewflowMailer.signup_email_confirmation(email_address: email)
+
+        expect(mail.html_part.body.decoded).to include('Welcome to OpenStax!')
+        expect(mail.text_part.body.decoded).to include("Your PIN is: #{pin}")
+        expect(mail.text_part.body.decoded).to include(confirm_url)
+        expect(mail.attachments['openstax-logo.png']).to be_inline
+      end
+    end
+
+    describe 'SES event publishing' do
+      let(:delivery) { EmailDelivery.track_signup_confirmation!(email) }
+
+      it 'tags a tracked email with the configuration set and its delivery id' do
+        allow(EmailDelivery).to receive(:configuration_set).and_return('accounts-test-transactional')
+
+        mail = NewflowMailer.signup_email_confirmation(email_address: email, email_delivery_id: delivery.id)
+
+        expect(mail['X-SES-CONFIGURATION-SET'].to_s).to eq('accounts-test-transactional')
+        expect(mail['X-SES-MESSAGE-TAGS'].to_s).to eq(
+          "email_type=signup_confirmation, email_delivery_id=#{delivery.id}, accounts_env=test"
+        )
+      end
+
+      it 'adds no SES headers when no configuration set is configured' do
+        mail = NewflowMailer.signup_email_confirmation(email_address: email, email_delivery_id: delivery.id)
+
+        expect(mail['X-SES-CONFIGURATION-SET']).to be_nil
+        expect(mail['X-SES-MESSAGE-TAGS']).to be_nil
+      end
+
+      it 'adds no SES headers to an untracked email' do
+        allow(EmailDelivery).to receive(:configuration_set).and_return('accounts-test-transactional')
+
+        mail = NewflowMailer.signup_email_confirmation(email_address: email)
+
+        expect(mail['X-SES-CONFIGURATION-SET']).to be_nil
       end
     end
   end

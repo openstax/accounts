@@ -310,6 +310,9 @@ end
 group :production, :test do
   # AWS SES integration
   gem 'aws-sdk-rails'
+
+  # Verifies the signatures on SES event notifications (SesEventsController)
+  gem 'aws-sdk-sns', require: false
 end
 
 group :production do

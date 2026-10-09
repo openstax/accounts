@@ -13,6 +13,7 @@ class ContactInfo < ApplicationRecord
 
   has_many :application_users, foreign_key: :default_contact_info_id
   has_many :message_recipients, inverse_of: :contact_info
+  has_many :email_deliveries
 
   scope :email_addresses, -> { where(type: 'EmailAddress') }
 

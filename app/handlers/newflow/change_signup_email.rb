@@ -2,6 +2,8 @@ module Newflow
   class ChangeSignupEmail
     lev_handler
 
+    uses_routine SendSignupConfirmationEmail
+
     paramify :change_signup_email do
       attribute :email
       validates :email, presence: true
@@ -38,7 +40,7 @@ module Newflow
     private ###################
 
     def send_confirmation_email
-      NewflowMailer.signup_email_confirmation(email_address: @email_address).deliver_later
+      run(SendSignupConfirmationEmail, email_address: @email_address)
     end
   end
 end
