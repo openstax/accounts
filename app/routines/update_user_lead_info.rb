@@ -101,7 +101,8 @@ class UpdateUserLeadInfo
   # leaves behind (see CLAUDE.md "Switching account type mid-signup") -- a
   # stale Lead re-syncing that pair would erase the only record of the switch.
   def users_for_leads(leads)
-    User.where(uuid: leads.map(&:accounts_uuid))
+    User.not_deleted
+        .where(uuid: leads.map(&:accounts_uuid))
         .where.not(role: :student, faculty_status: :rejected_faculty)
   end
 

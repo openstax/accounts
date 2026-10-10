@@ -15,6 +15,16 @@ class NewflowMailer < ApplicationMailer
          subject: "Reset your OpenStax password"
   end
 
+  def account_deletion_confirmation(user:, email_address:)
+    @user = user
+
+    raise "No valid account deletion token" if user.account_deletion_token.nil? ||
+                                                user.account_deletion_token_expired?
+
+    mail to: "\"#{user.full_name}\" <#{email_address}>",
+         subject: 'Confirm your OpenStax account deletion'
+  end
+
   def signup_email_confirmation(email_address:, show_pin: true)
     @should_show_pin = show_pin != false &&
                        ConfirmByPin.sequential_failure_for(email_address).attempts_remaining?

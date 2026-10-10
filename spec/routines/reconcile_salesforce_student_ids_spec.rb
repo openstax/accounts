@@ -125,4 +125,18 @@ describe ReconcileSalesforceStudentIds, type: :routine do
       expect(stats.updated).to eq 2
     end
   end
+
+
+  describe 'deleted users' do
+    it 'does not link a Student__c onto a deleted user' do
+      user = FactoryBot.create :user, is_deleted: true
+      allow(sfdc_client).to receive(:query).and_return(
+        sf_page([sf_record('a0X000000000009AAA', user.uuid)])
+      )
+
+      described_class.call
+
+      expect(user.reload.salesforce_student_id).to be_nil
+    end
+  end
 end

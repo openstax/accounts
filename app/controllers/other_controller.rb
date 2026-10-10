@@ -1,8 +1,16 @@
 class OtherController < Newflow::BaseController
 
-  before_action :newflow_authenticate_user!, only: [:profile_newflow, :dismiss_profile_nudge]
+  before_action :newflow_authenticate_user!, only: [
+    :profile_newflow, :dismiss_profile_nudge, :data_export, :request_account_deletion
+  ]
   before_action :ensure_complete_educator_signup, only: :profile_newflow
-  before_action :prevent_caching, only: :profile_newflow
+  before_action :prevent_caching, only: [
+    :profile_newflow, :data_export, :confirm_account_deletion_form, :confirm_account_deletion
+  ]
+
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [
+    :confirm_account_deletion_form, :confirm_account_deletion
+  ]
 
   def profile_newflow
     if current_user.needs_profile_nudge? && !session[:profile_nudge_dismissed]
@@ -22,6 +30,62 @@ class OtherController < Newflow::BaseController
   def dismiss_profile_nudge
     session[:profile_nudge_dismissed] = true
     redirect_to(profile_newflow_path)
+  end
+
+  def data_export
+    result = DataExport.call(current_user)
+    security_log(:user_data_exported, user: current_user)
+    send_data(
+      JSON.pretty_generate(result.outputs.data),
+      filename: "openstax-data-export-#{Time.now.utc.strftime('%Y%m%d')}.json",
+      type: 'application/json',
+      disposition: 'attachment'
+    )
+  end
+
+  def request_account_deletion
+    handle_with(
+      RequestAccountDeletion,
+      success: lambda {
+        security_log(:account_deletion_requested, user: current_user)
+        flash[:notice] = I18n.t(:'account_deletion.email_sent')
+        redirect_to profile_newflow_path
+      },
+      failure: lambda {
+        code = @handler_result.errors.first&.code
+        security_log(:account_deletion_request_failed, user: current_user, reason: code)
+        flash[:alert] = I18n.t(:'account_deletion.request_failed')
+        redirect_to profile_newflow_path
+      }
+    )
+  end
+
+  def confirm_account_deletion_form
+    @token = params[:token]
+    user = User.find_by(account_deletion_token: @token) if @token.present?
+
+    if user.nil? || user.account_deletion_token_expired?
+      flash[:alert] = I18n.t(:'account_deletion.invalid_or_expired_link')
+      redirect_to(signed_in? ? profile_newflow_path : newflow_login_path) and return
+    end
+
+    render layout: 'application'
+  end
+
+  def confirm_account_deletion
+    handle_with(
+      ConfirmAccountDeletion,
+      success: lambda {
+        user = @handler_result.outputs.user
+        security_log(:account_deleted, user: user)
+        sign_out! if signed_in?
+        redirect_to newflow_login_path, notice: I18n.t(:'account_deletion.success')
+      },
+      failure: lambda {
+        flash[:alert] = I18n.t(:'account_deletion.invalid_or_expired_link')
+        redirect_to newflow_login_path
+      }
+    )
   end
 
   def exit_accounts

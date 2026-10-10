@@ -1,0 +1,21 @@
+<% content_for :head do %>
+  <title><%= I18n.t(:'account_deletion.confirm_page.title') %></title>
+<% end %>
+
+<%= ox_card do %>
+  <div class="profile-title">
+    <h1 class="title"><%= I18n.t(:'account_deletion.confirm_page.heading') %></h1>
+  </div>
+
+  <p><%= t(:'account_deletion.confirm_page.warning_html') %></p>
+
+  <%= form_tag(confirm_account_deletion_path, method: :post, class: 'account-deletion-confirm-form') do %>
+    <%= hidden_field_tag :token, @token %>
+    <button type="submit" class="btn btn-primary">
+      <%= I18n.t(:'account_deletion.confirm_page.confirm_button') %>
+    </button>
+    <%= link_to I18n.t(:'account_deletion.confirm_page.cancel'),
+                signed_in? ? profile_newflow_path : newflow_login_path,
+                class: 'btn btn-default' %>
+  <% end %>
+<% end %>

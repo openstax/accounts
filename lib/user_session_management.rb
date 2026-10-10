@@ -28,7 +28,7 @@ module UserSessionManagement
       user_hash = sso_cookie_jar.subject
       current_sso_user = User.find_by(uuid: user_hash['uuid']) if user_hash.present?
 
-      if current_sso_user.nil?
+      if current_sso_user.nil? || current_sso_user.is_deleted?
         AnonymousUser.instance
       else
         # Some users may not have the new SSO cookie yet, so set it

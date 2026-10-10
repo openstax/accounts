@@ -29,7 +29,8 @@ class SyncEducatorLeads
 
   # Backed by index_users_stalled_educator_signups.
   def stalled_signup_users
-    User.where.not(role: :student)
+    User.not_deleted
+        .where.not(role: :student)
         .where.not(role: :unknown_role)
         .where(state: 'activated', is_newflow: true, salesforce_lead_id: nil, salesforce_contact_id: nil)
         .where(created_at: STALLED_SIGNUP_MAX_AGE.ago..STALLED_SIGNUP_CUTOFF.ago)
