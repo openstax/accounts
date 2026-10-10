@@ -79,6 +79,7 @@ en:
     fill_out: Please enter a value for this field
     school_name_must_be_entered: Please enter school name
     other_must_be_entered: Please enter other role name
+    other_role_name_too_long: Please shorten your role to 128 characters or fewer
     books_used_must_be_entered: Please enter books used
     books_used_details_must_be_entered: Please enter the number of students taught and how the book is used
     books_of_interest_must_be_entered: Please enter books of interest
@@ -109,6 +110,12 @@ en:
       include_ta_sections: Include all students across your classes
       students_per_semester: Students per school year
       num_students_using_book_placeholder: Number of students using this book per school year
+
+  profile_nudge_banner:
+    heading: Finish setting up your instructor account
+    body: You verified your instructor status -- just a couple more questions and you're done.
+    finish_button: Finish setting up
+    dismiss_button: Dismiss
 
   login_signup_form:
     cant_be_blank: can't be blank
@@ -171,6 +178,23 @@ en:
       Updates on your verification status will be sent to <b>%{email_address}</b>.
       In the meantime, you can access all books and resources
       except those that require instructor verification.
+    alternatives_heading: Having trouble?
+    alternatives_heading_educator: Are you an educator?
+    alternative_manual_verification: Verify another way
+    alternative_manual_verification_description: >-
+      If your school isn't listed or the form won't accept your details,
+      our team can verify you by hand. It takes 3-4 business days.
+    switch_role_student: Switch to a student account
+    switch_role_student_description: >-
+      Students don't need instructor verification to read books, take notes,
+      or join a class. You can switch back later.
+    switch_role_educator: Switch to an educator account
+    switch_role_educator_description: >-
+      Educator accounts unlock answer keys and instructor resources once we
+      verify that you teach.
+    switched_role_notice:
+      student: You're now signing up as a student.
+      educator: You're now signing up as an educator.
     join_as_student_description: >-
       Sign up for a <b>Student</b> account to create and save
       notes and highlights in OpenStax study materials.
@@ -447,6 +471,15 @@ en:
       push_salesforce_lead_enabled:
         name: 'Push leads to Salesforce?'
         help_block: 'If checked (and SF configured), new accounts will be pushed to SF as Leads'
+      push_salesforce_students_enabled:
+        name: 'Push students to Salesforce?'
+        help_block: 'If checked (and SF configured), student school picks will be pushed to SF as Student__c records'
+      push_salesforce_contact_logins_enabled:
+        name: 'Push instructor login dates to Salesforce?'
+        help_block: 'If checked (and SF configured), instructors'' most recent login date will be pushed to their SF Contact'
+      push_salesforce_last_seen_enabled:
+        name: 'Push last-seen dates to Salesforce?'
+        help_block: 'If checked (and SF configured), students'' and instructors'' most recent website visit will be pushed to their SF Student__c/Contact'
       show_support_chat:
         name: 'Show support chat widget'
         help_block: 'If checked users will see CS chat widget'
@@ -468,6 +501,9 @@ en:
       educator_feature_flag:
         name: New educator flow feature flag
         help_block: New educator flow activated?
+      expected_start_semester_enabled:
+        name: Expected start semester question
+        help_block: Ask educators which semester they plan to start on the profile step?
       collect_student_count_all_paths:
         name: Collect student count on all signup paths
         help_block: Show student count field on as_future and as_recommending paths?
@@ -480,6 +516,15 @@ en:
       number_of_days_contacts_modified:
         name: Contacts modified in last x days
         help_block: Retrieve contacts modified in the last X days in update_user_salesforce_info
+      contacts_synced_through:
+        name: Contacts synced through (UTC)
+        help_block: Watermark for update_user_contact_info; the last time Salesforce Contacts were successfully synced. Clear it to force a full resync using "Contacts modified in last x days" instead.
+      leads_synced_through:
+        name: Leads synced through (UTC)
+        help_block: Watermark for the nightly Lead sync (SyncEducatorLeads → UpdateUserLeadInfo); set automatically after each successful run. Leave blank on first run (it falls back to the last 7 days) and clear it to force a resync.
+      push_incomplete_signup_leads_enabled:
+        name: Create Salesforce leads for stalled educator signups?
+        help_block: If checked (and SF configured), the nightly SyncEducatorLeads pass creates an incomplete_signup Lead for newflow educators who verified their email at least 24 hours ago (within the last 90 days) and have no Lead or Contact yet, up to 500 per night.
       minimum_recaptcha_score:
         name: Minimum reCAPTCHA score allowed to register a new account
         help_block: Humans should score closer to 1, bots should score closer to 0

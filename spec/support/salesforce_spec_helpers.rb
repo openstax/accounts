@@ -1,6 +1,7 @@
 module SalesforceSpecHelpers
   # Helper method to create a Salesforce contact mock
-  def create_sf_contact(uuid:, faculty_verified:, contact_id: 'SF_CONTACT_001', school_id: 'SF_SCHOOL_001')
+  def create_sf_contact(uuid:, faculty_verified:, contact_id: 'SF_CONTACT_001',
+                        school_id: 'SF_SCHOOL_001')
     contact = OpenStax::Salesforce::Remote::Contact.new(
       id: contact_id,
       accounts_uuid: uuid,
@@ -22,15 +23,18 @@ module SalesforceSpecHelpers
     contact
   end
 
-  # Helper method to stub the salesforce_contacts method
+  # Helper method to stub the salesforce_contact_batch method
   def stub_salesforce_contacts(contacts)
-    allow_any_instance_of(UpdateUserContactInfo).to receive(:salesforce_contacts).and_return(contacts)
+    allow_any_instance_of(UpdateUserContactInfo).to(
+      receive(:salesforce_contact_batch).and_return(contacts)
+    )
   end
 
   # Helper method to stub Sentry methods
   def stub_sentry
     allow(Sentry).to receive(:capture_check_in).and_return('check_in_id')
     allow(Sentry).to receive(:capture_message)
+    allow(Sentry).to receive(:capture_exception)
   end
 end
 

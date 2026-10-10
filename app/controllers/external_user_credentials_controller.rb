@@ -32,6 +32,9 @@ class ExternalUserCredentialsController < Newflow::BaseController
       FinePrint.get_contract(:general_terms_of_use),
       FinePrint.get_contract(:privacy_policy)
     ]
+    # The token's id, not the token: it is a JWE (SsoCookie) that alone can push
+    # the cookie session past 4KB (ActionDispatch::Cookies::CookieOverflow).
+    session[:external_user_credentials] = { 'token_id' => @access_token.id, 'return_to' => @return_to }
     @signed_state = Rails.application.message_verifier('social_auth').generate({
       user_id: @user.id,
       return_to: @return_to
@@ -41,7 +44,8 @@ class ExternalUserCredentialsController < Newflow::BaseController
   end
 
   def authenticate_external_user!
-    @user = User.find_by(id: Doorkeeper::AccessToken.find_by(token: params[:token])&.resource_owner_id)
+    @access_token = Doorkeeper::AccessToken.find_by(token: params[:token])
+    @user = User.find_by(id: @access_token&.resource_owner_id)
 
     # Cannot be used by users who can already login
     raise SecurityTransgression if @user.nil? || !@user.is_external?

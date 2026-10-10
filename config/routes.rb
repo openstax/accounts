@@ -11,6 +11,9 @@ Rails.application.routes.draw do
     # Profile access
     get 'i/profile', action: :profile_newflow, as: :profile_newflow
 
+    # Dismiss the "finish your instructor profile" banner for the rest of the session
+    post 'i/profile/dismiss_profile_nudge', action: :dismiss_profile_nudge, as: :dismiss_profile_nudge
+
     # Exit accounts back to app they came from
     get 'i/exit_accounts', action: :exit_accounts, as: :exit_accounts
   end
@@ -25,6 +28,7 @@ Rails.application.routes.draw do
   scope controller: 'newflow/signup' do
     get 'i/signup', action: :welcome, as: :newflow_signup
     get 'i/done', action: :signup_done, as: :signup_done
+    post 'i/signup/switch_role', action: :switch_role, as: :switch_signup_role
     get 'i/verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
     get 'i/check_your_email', action: :check_your_email, as: :check_your_email
   end

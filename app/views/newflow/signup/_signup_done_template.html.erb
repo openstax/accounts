@@ -27,6 +27,14 @@
                     %>
                 </div>
             </form>
+
+            <%# After the message, not before it: this page's body is the
+                explanation of what the user is waiting for, and offering a way
+                out reads as noise until they have read it. The block closes
+                the card -- see the `:last-child` rule. %>
+            <% if local_assigns[:alternatives].present? %>
+                <%= render partial: 'newflow/signup_alternatives', locals: alternatives %>
+            <% end %>
         <% end  %>
     </div>
 </div>

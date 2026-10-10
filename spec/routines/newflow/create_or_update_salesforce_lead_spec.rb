@@ -53,6 +53,45 @@ module Newflow
       end
     end
 
+    describe 'a student' do
+      def push_lead_for(user)
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_STUDENT')
+
+        described_class.call(user: user)
+        mock_lead
+      end
+
+      # An incomplete profile means "educator who hasn't finished signup", which a
+      # student never is. Recomputing would erase the marker set by SwitchSignupRole.
+      it 'keeps the rejected_faculty marker left by a role switch' do
+        switched = FactoryBot.create(
+          :user, role: User::STUDENT_ROLE, faculty_status: User::REJECTED_FACULTY,
+          is_profile_complete: false
+        )
+
+        lead = push_lead_for(switched)
+
+        expect(switched.reload.faculty_status).to eq(User::REJECTED_FACULTY)
+        expect(lead.role).to eq('Student')
+        expect(lead.verification_status).to eq(User::REJECTED_FACULTY)
+      end
+
+      it 'is never stamped with a faculty status it did not have' do
+        student = FactoryBot.create(
+          :user, role: User::STUDENT_ROLE, faculty_status: User::NO_FACULTY_INFO,
+          is_profile_complete: false
+        )
+
+        lead = push_lead_for(student)
+
+        expect(student.reload.faculty_status).to eq(User::NO_FACULTY_INFO)
+        expect(lead.verification_status).to be_nil
+      end
+    end
+
     describe 'finding existing leads' do
       let(:existing_lead) do
         lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
@@ -182,6 +221,7 @@ module Newflow
         result = described_class.call(user: user)
 
         expect(result.outputs.lead).to be_nil
+        expect(result.outputs.lead_saved).to eq(false)
         expect(result.outputs.contact).to eq(existing_contact)
         expect(existing_contact).to have_received(:save)
         expect(existing_contact.role).to eq('Instructor')
@@ -252,6 +292,140 @@ module Newflow
         expect(SecurityLog.where(event_type: :salesforce_lead_already_converted).count).to eq(1)
         expect(SecurityLog.where(event_type: :updated_salesforce_contact).count).to eq(1)
         expect(SecurityLog.where(event_type: :creating_new_salesforce_lead).count).to eq(0)
+      end
+    end
+
+    describe 'faculty status is written as stored, never recomputed' do
+      def push_lead_for(user)
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_STATUS')
+
+        described_class.call(user: user)
+        mock_lead
+      end
+
+      it 'keeps confirmed_faculty on a user whose profile is not yet complete' do
+        user.update!(faculty_status: User::CONFIRMED_FACULTY, is_profile_complete: false)
+
+        lead = push_lead_for(user)
+
+        expect(user.reload.faculty_status).to eq(User::CONFIRMED_FACULTY)
+        expect(lead.verification_status).to eq(User::CONFIRMED_FACULTY)
+      end
+
+      it 'writes incomplete_signup unchanged' do
+        user.update!(faculty_status: User::INCOMPLETE_SIGNUP, is_profile_complete: false)
+
+        lead = push_lead_for(user)
+
+        expect(user.reload.faculty_status).to eq(User::INCOMPLETE_SIGNUP)
+        expect(lead.verification_status).to eq(User::INCOMPLETE_SIGNUP)
+      end
+    end
+
+    describe 'last account login date' do
+      it 'is populated on the lead from the moment it is created' do
+        user.update!(last_signed_in_at: Time.zone.parse('2026-09-25 20:22:12 UTC'))
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_LOGIN')
+
+        described_class.call(user: user)
+
+        expect(mock_lead.last_account_login_date).to eq(Date.new(2026, 9, 25))
+      end
+
+      it 'stays blank for a user who has never signed in' do
+        user.update!(last_signed_in_at: nil)
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_LOGIN')
+
+        described_class.call(user: user)
+
+        expect(mock_lead.last_account_login_date).to be_nil
+      end
+    end
+
+    describe 'title truncation' do
+      it 'truncates other_role_name to 128 characters on the lead' do
+        user.update!(role: 'other', other_role_name: 'x' * 200)
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_TITLE')
+
+        described_class.call(user: user)
+
+        expect(mock_lead.title.length).to eq(128)
+      end
+
+      it 'truncates other_role_name to 128 characters on the contact' do
+        user.update!(
+          role: 'other', other_role_name: 'y' * 200,
+          salesforce_contact_id: 'SF_CONTACT_TITLE'
+        )
+        contact = OpenStax::Salesforce::Remote::Contact.new(email: user.best_email_address_for_salesforce)
+        allow(contact).to receive(:id).and_return('SF_CONTACT_TITLE')
+        allow(contact).to receive(:save).and_return(true)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Contact).to receive(:find).with('SF_CONTACT_TITLE').and_return(contact)
+
+        described_class.call(user: user)
+
+        expect(contact.title.length).to eq(128)
+      end
+    end
+
+    describe 'picklist rejection resilience' do
+      let(:mock_lead) { OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce) }
+
+      before do
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_PICKLIST')
+      end
+
+      it 'drops an allowlisted field and retries once' do
+        picklist_error = double(full_messages: [
+          'INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST: bad value for restricted picklist field: Business Law' \
+          "\nRESPONSE: [{\"message\":\"bad value\",\"errorCode\":\"INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST\",\"fields\":[\"Subject_Interest__c\"]}]"
+        ])
+        allow(mock_lead).to receive(:errors).and_return(picklist_error)
+        save_results = [false, true]
+        allow(mock_lead).to receive(:save) { save_results.shift }
+
+        described_class.call(user: user)
+
+        expect(mock_lead.subject_interest).to be_nil
+        expect(user.reload.salesforce_lead_id).to eq('SF_LEAD_PICKLIST')
+        log = SecurityLog.find_by!(event_type: :salesforce_lead_save_failed, user: user)
+        expect(log.event_data).to include('retrying_without' => ['subject_interest'])
+        expect(Sentry).to have_received(:capture_message).with(
+          /rejected .*subject_interest.*as an invalid picklist value/, level: :warning
+        )
+      end
+
+      it 'does not retry when the rejected field is not in the allowlist' do
+        non_allowlisted_error = double(full_messages: [
+          'INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST: bad value' \
+          "\nRESPONSE: [{\"fields\":[\"Role__c\"]}]"
+        ])
+        allow(mock_lead).to receive(:errors).and_return(non_allowlisted_error)
+        allow(mock_lead).to receive(:save).and_return(false)
+
+        described_class.call(user: user)
+
+        expect(mock_lead).to have_received(:save).once
+        expect(SecurityLog.where(event_type: :salesforce_lead_save_failed).count).to eq(1)
       end
     end
 

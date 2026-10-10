@@ -4,13 +4,6 @@ module Newflow
   module StudentSignup
     describe SignupForm, type: :handler do
       context 'when success' do
-        before(:all) do
-          DatabaseCleaner.start
-          load('db/seeds.rb')
-        end
-
-        after(:all) { DatabaseCleaner.clean }
-
         let(:handler_call) do
           described_class.call(params: params)
         end
@@ -118,6 +111,37 @@ module Newflow
             user = result.outputs.user
             expect(user.school).to be_nil
             expect(user.self_reported_school).to eq 'Hogwarts Academy'
+          end
+
+          it 'links the closest School to a typed name, keeping what was typed' do
+            school
+            result = described_class.call(
+              params: { signup: params[:signup].merge(school: 'Ricee University') }
+            )
+            expect(result.errors).to be_empty
+            user = result.outputs.user
+            expect(user.school).to eq school
+            expect(user.self_reported_school).to eq 'Ricee University'
+          end
+
+          it 'never links the Find Me A Home placeholder' do
+            FactoryBot.create :school, name: School::PLACEHOLDER_NAME
+            result = described_class.call(
+              params: { signup: params[:signup].merge(school: School::PLACEHOLDER_NAME) }
+            )
+            expect(result.errors).to be_empty
+            expect(result.outputs.user.school).to be_nil
+          end
+
+          it 'never links the placeholder even when its id is submitted as picked' do
+            placeholder = FactoryBot.create :school, name: School::PLACEHOLDER_NAME
+            result = described_class.call(
+              params: {
+                signup: params[:signup].merge(school: School::PLACEHOLDER_NAME, school_id: placeholder.id)
+              }
+            )
+            expect(result.errors).to be_empty
+            expect(result.outputs.user.school).to be_nil
           end
         end
       end

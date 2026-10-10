@@ -3,7 +3,6 @@ require 'rails_helper'
 module Newflow
   module EducatorSignup
     describe SignupForm, type: :handler do
-      before(:all) { load('db/seeds.rb') }
 
       context 'when success' do
         subject(:handler_call) {  described_class.call(params: params) }

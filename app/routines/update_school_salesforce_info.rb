@@ -1,4 +1,5 @@
 class UpdateSchoolSalesforceInfo
+  CHECK_IN_SLUG = 'update-school-salesforce'
   BATCH_SIZE = 250
   SALESFORCE_ID_REGEX = /\A[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?\z/
   MAX_MERGE_CHAIN_DEPTH = 10
@@ -26,7 +27,8 @@ class UpdateSchoolSalesforceInfo
   end
 
   def call
-    check_in_id = Sentry.capture_check_in('update-school-salesforce', :in_progress)
+    check_in_id = Sentry.capture_check_in(CHECK_IN_SLUG, :in_progress)
+    succeeded = false
     log('Starting UpdateSchoolSalesforceInfo')
 
     # Check if any Schools that have 0 users have been deleted from Salesforce and remove them
@@ -86,7 +88,9 @@ class UpdateSchoolSalesforceInfo
     reconcile_schools_with_users
 
     log("Finished updating #{schools_updated} schools")
-    Sentry.capture_check_in('update-school-salesforce', :ok, check_in_id: check_in_id)
+    succeeded = true
+  ensure
+    Sentry.capture_check_in(CHECK_IN_SLUG, succeeded ? :ok : :error, check_in_id: check_in_id)
   end
 
   private

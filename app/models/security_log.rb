@@ -119,6 +119,21 @@ class SecurityLog < ApplicationRecord
     salesforce_lead_already_converted
     updated_salesforce_contact
     salesforce_contact_save_failed
+    user_switched_signup_role
+    updated_salesforce_lead_after_role_switch
+    no_salesforce_lead_to_update
+    sheerid_webhook_ignored_after_role_switch
+    faculty_status_advanced
+    faculty_status_downgrade_refused
+    sheerid_webhook_expired
+    sheerid_webhook_error
+    sheerid_webhook_pending
+    incomplete_signup_lead_created
+    profile_nudge_redirected
+    profile_nudge_banner_shown
+    salesforce_lead_status_synced
+    faculty_status_repaired
+    salesforce_record_unlinked
   ]
 
   json_serialize :event_data, Hash

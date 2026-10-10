@@ -91,7 +91,8 @@ OX.Profile.Email = {
 
   onDeleteEmail: ->
     $('.info .email-entry').each (indx, el) ->
-      $(el).data().email.update()
+      # the blank entry added by onAddEmail has no instance until it's saved
+      $(el).data().email?.update()
 
   onAddEmail: ->
     @addEmail.hide()
@@ -117,8 +118,9 @@ OX.Profile.Email = {
       _.defer ->
         input.editable('destroy')
         input.text(params.response.contact_info.value)
-      email = new Email(email)
-      email.set(params.response.contact_info)
+      entry = new Email(email)
+      email.data(email: entry)
+      entry.set(params.response.contact_info)
     )
     # no idea why the defer is needed, but it fails (silently!) without it
     _.defer ->
