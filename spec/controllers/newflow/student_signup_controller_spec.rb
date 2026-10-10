@@ -217,6 +217,25 @@ module Newflow
         get(:student_email_verification_form)
         expect(response).to render_template(:student_email_verification_form)
       end
+
+      context 'with views rendered' do
+        render_views
+
+        it 'offers a resend button inside the PIN form, after the confirm button' do
+          user = create_newflow_user('user@openstax.org')
+          user.update_attribute('state', 'unverified')
+          user.email_addresses.first.update!(verified: false)
+          session[:unverified_user_id] = user.id
+
+          get(:student_email_verification_form)
+
+          form = Nokogiri::HTML(response.body).at_css("form[action='#{student_verify_pin_path}']")
+          submits = form.css('[type=submit]')
+          expect(submits.length).to eq(2)
+          expect(submits.last['formaction']).to eq(resend_signup_confirmation_email_path)
+          expect(submits.last).to have_attribute('formnovalidate')
+        end
+      end
     end
 
     describe 'GET #student_email_verification_form_updated_email' do

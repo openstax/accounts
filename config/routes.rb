@@ -31,7 +31,10 @@ Rails.application.routes.draw do
     post 'i/signup/switch_role', action: :switch_role, as: :switch_signup_role
     get 'i/verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
     get 'i/check_your_email', action: :check_your_email, as: :check_your_email
+    post 'i/signup/resend_confirmation_email', action: :resend_confirmation_email, as: :resend_signup_confirmation_email
   end
+
+  post 'i/ses/events', to: 'ses_events#create', as: :ses_events
 
   scope controller: 'newflow/student_signup' do
     get 'i/signup/student', action: :student_signup_form, as: :newflow_signup_student
