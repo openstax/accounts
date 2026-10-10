@@ -144,10 +144,19 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(response).to have_http_status :forbidden
     end
 
-    it "should return an empty object if always_200 is set" do
+    it "should report an anonymous status if always_200 is set" do
       api_get :show, trusted_application_token, params: { always_200: true }
       expect(response).to have_http_status :ok
-      expect(response.body_as_hash).to match({})
+      expect(response.body_as_hash).to match({ status: 'anonymous' })
+    end
+
+    # Login-loop regression: complete_signup_profile redirects an HTML request to
+    # the signup page, and the API turns that redirect into a bare 403. A
+    # signed-in user who still needs a profile then looks logged out. The API
+    # must never run that filter.
+    it "does not run complete_signup_profile so the API cannot redirect" do
+      callbacks = described_class._process_action_callbacks.map(&:filter)
+      expect(callbacks).not_to include(:complete_signup_profile)
     end
 
     it "should return a properly formatted JSON response for low-info user" do
