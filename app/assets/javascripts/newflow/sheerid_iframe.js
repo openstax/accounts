@@ -1,4 +1,5 @@
-// Sizes the SheerID verification iframe to its own content.
+// Talks to the SheerID verification iframe: sizes it to its own content, hands
+// it the prefill and the focus styles their form doesn't ship.
 //
 // SheerID's form posts its height to the parent window, and their install
 // library's whole contribution is to listen for that and set style.height.
@@ -10,6 +11,10 @@
 // Only a program verification URL (services.sheerid.com/verify/<id>/) reports a
 // height; a hosted offers.sheerid.com page never does. When nothing arrives the
 // iframe keeps the CSS floor, which is why that floor has to stay generous.
+//
+// The same postMessage channel carries what we can't otherwise reach: prefill,
+// and the keyboard focus ring their stylesheet suppresses -- see
+// `sendFocusStyles` below.
 (function () {
   'use strict';
 
@@ -24,6 +29,74 @@
   // `javascript:...` do not. Anchored both ends so nothing rides along after
   // a valid-looking prefix. See `goToNextStep`.
   var SAME_ORIGIN_PATH = /^\/(?!\/)[\w\-./?=&%~+#]*$/;
+
+  // SheerID's own stylesheet is why this form has no keyboard focus indicator:
+  // it ships `outline:none` on `.sid-text-input:focus` and
+  // `.sid-h-link-like:focus`, and gives the submit button, the dropzone and the
+  // "Add file" button no focus style at all (CORE-909, WCAG 2.4.7 AA).
+  //
+  // We can't reach into a cross-origin iframe with a stylesheet of our own, and
+  // the usual vendor answer -- Theme > Custom CSS in MySheerID -- isn't offered
+  // on our program, which exposes a palette and nothing else. But the form
+  // accepts a `setOptions` message and renders `options.customCss` into a
+  // <style> tag of its own, ahead of any customCss the program theme carries.
+  // So the rules travel to the form instead of being applied to it.
+  //
+  // `!important` earns its place twice over: their `:focus{outline:none}` rules
+  // are equally specific, and react-dropzone puts `outline:none` inline on the
+  // dropzone, where nothing but `!important` can reach it.
+  //
+  // 2px #026AA1 offset 2px is what the rest of the signup flow uses, so a
+  // keyboard user crossing into the frame sees one indicator rather than two
+  // designs. 5.9:1 against the form's white card and 5.3:1 against its grey
+  // dropzone, where 2.4.7 asks for 3:1.
+  var FOCUS_RING = [
+    '  outline: 2px solid #026AA1 !important;',
+    '  outline-offset: 2px !important;'
+  ];
+
+  var FOCUS_CSS = [
+    '.sid-btn:focus-visible,',
+    '.sid-btn-light:focus-visible,',
+    '.sid-uploadzone__button:focus-visible,',
+    '.sid-dropzone-wrap__dropzone:focus-visible,',
+    '.sid-text-input:focus-visible,',
+    '.sid-h-link-like:focus-visible,',
+    '.sid-file-list__remove-btn:focus-visible,',
+    '.sid-form-wrapper a:focus-visible,',
+    '.sid-form-wrapper button:focus-visible,',
+    '.sid-form-wrapper input:focus-visible,',
+    '.sid-form-wrapper select:focus-visible,',
+    '.sid-form-wrapper textarea:focus-visible,',
+    '.sid-form-wrapper [tabindex]:focus-visible {'
+  ].concat(FOCUS_RING).concat([
+    '}',
+    // The checkbox input is visually replaced by a sibling, so the ring has to
+    // move with it or it lands on a hidden box.
+    '.sid-checkbox__input:focus-visible ~ .sid-checkbox__input-like {'
+  ]).concat(FOCUS_RING).concat(['}']).join('\n');
+
+  // Sending this can't ping-pong -- a focus ring changes no layout, so it
+  // provokes no `updateHeight` -- but the cap makes that answerable without
+  // having to reason it out.
+  var MAX_FOCUS_CSS_SENDS = 3;
+  var focusCssSends = 0;
+
+  // Options are read when the form next renders, and they stay set, so one
+  // delivery before a render is enough. `ON_VERIFICATION_READY` is that moment:
+  // the prefill immediately after it updates the form's store, which is the
+  // render that picks these rules up. Re-sending on `updateHeight` covers a
+  // visitor with no prefill to send, where that render would otherwise wait for
+  // the first keystroke.
+  function sendFocusStyles() {
+    if (focusCssSends >= MAX_FOCUS_CSS_SENDS || !frame.contentWindow) { return; }
+
+    focusCssSends += 1;
+    frame.contentWindow.postMessage(
+      { action: 'setOptions', options: { customCss: FOCUS_CSS } },
+      origin
+    );
+  }
 
   function applyHeight(height) {
     var pixels = parseInt(height, 10);
@@ -67,9 +140,13 @@
     var action = data.action;
 
     if (action && action.type === 'updateHeight') {
-      if (!uid || data.verificationIframeUid === uid) { applyHeight(action.height); }
+      if (!uid || data.verificationIframeUid === uid) {
+        applyHeight(action.height);
+        sendFocusStyles();
+      }
     } else if (action === 'updateHeight') {
       applyHeight(data.height);
+      sendFocusStyles();
     }
   });
 
@@ -109,6 +186,9 @@
     if (!action || action.type !== 'hook' || !action.hook) { return; }
 
     if (action.hook.name === 'ON_VERIFICATION_READY') {
+      // Before the prefill, not after: the prefill is what re-renders the form,
+      // and a render is when it reads the options these rules live in.
+      sendFocusStyles();
       sendViewModel();
     } else if (action.hook.name === 'ON_VERIFICATION_SUCCESS') {
       goToNextStep();
