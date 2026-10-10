@@ -17,6 +17,15 @@ describe School, type: :model do
     expect(described_class.fuzzy_search('OpenStax')).to be_nil
   end
 
+  describe '#placeholder?' do
+    it 'matches the placeholder name case-insensitively and nothing else' do
+      expect(described_class.new(name: 'Find Me A Home')).to be_placeholder
+      expect(described_class.new(name: 'FIND me a HOME')).to be_placeholder
+      expect(described_class.new(name: 'Rice University')).not_to be_placeholder
+      expect(described_class.new(name: nil)).not_to be_placeholder
+    end
+  end
+
   describe '.match_self_reported' do
     # The 0.25 trigram threshold is tight: 'Rice Universty' (one letter
     # dropped) is 0.28 away and does not match.

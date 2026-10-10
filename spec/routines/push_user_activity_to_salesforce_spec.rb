@@ -101,6 +101,30 @@ describe PushUserActivityToSalesforce, type: :routine do
       end
     end
 
+    context 'student whose school is the placeholder' do
+      let!(:placeholder_school) do
+        FactoryBot.create :school, name: School::PLACEHOLDER_NAME, salesforce_id: '001PLACEHOLDER1'
+      end
+      let!(:placeholder_student) do
+        FactoryBot.create :user, role: :student, school: placeholder_school
+      end
+
+      it 'is neither looked up nor created, and stays unstamped, while a real-school student still is' do
+        expect(remote).to receive(:where) do |args|
+          uuids = Array(args[:name])
+          expect(uuids).not_to include(placeholder_student.uuid)
+          []
+        end
+        allow(remote).to receive(:new).and_return(double(save!: true, id: 'a0REALSCHOOL'))
+
+        described_class.call
+
+        expect(placeholder_student.reload.salesforce_student_pushed_at).to be_nil
+        expect(placeholder_student.salesforce_student_id).to be_nil
+        expect(student.reload.salesforce_student_pushed_at).not_to be_nil
+      end
+    end
+
     context 'already-stamped users' do
       it 'is excluded from the scope' do
         student.update_column(:salesforce_student_pushed_at, 1.day.ago)

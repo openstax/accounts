@@ -108,10 +108,15 @@ class PushUserActivityToSalesforce
 
   private
 
+  # School.not_placeholder is applied via the schools join rather than on
+  # users, so the users-only partial index still drives the scan; a
+  # placeholder-school student is left unstamped, same as a school with no
+  # salesforce_id, so they're picked up once they get a real school.
   def link_and_create_students
     User.student
         .where.not(school_id: nil)
         .where(salesforce_student_pushed_at: nil)
+        .joins(:school).merge(School.not_placeholder)
         .preload(:school)
         .find_in_batches(batch_size: BATCH_SIZE) do |users|
       linkable_users = users.select { |user| user.school&.salesforce_id.present? }
