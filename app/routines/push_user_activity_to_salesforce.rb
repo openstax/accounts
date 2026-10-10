@@ -17,7 +17,7 @@
 #      instructors' Contact records, keyed by the salesforce_contact_id
 #      already linked elsewhere (lead conversion, profile sync). Never
 #      creates or otherwise touches a Contact -- Last_Account_Login_Date__c is
-#      the only field Accounts is allowed to write there.
+#      the only field this pass writes there.
 #   4. last-seen refresh -- recurring, both populations under one flag.
 #      Writes Last_Website_Visit__c, creating nothing, like passes 2 and 3.
 #      Its halves stamp separate columns because one user can hold both
