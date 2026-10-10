@@ -197,12 +197,15 @@ describe PushUserActivityToSalesforce, type: :routine do
     context 'initial book resolution' do
       let(:book_remote) { OpenStax::Salesforce::Remote::Book }
 
+      # The real `where` returns an ActiveQuery, not an Array: it forwards only
+      # each/map/inspect, so a plain Array stub hid a NoMethodError (ACCOUNTS-790).
       before do
+        books = [
+          double(id: 'a0BTEST1', osc_url: 'https://openstax.org/details/books/chemistry-2e'),
+          double(id: 'a0BTEST2', osc_url: 'https://openstax.org/details/books/biology-2e')
+        ]
         allow(book_remote).to receive(:where).with('OSC_URL__c != null').and_return(
-          [
-            double(id: 'a0BTEST1', osc_url: 'https://openstax.org/details/books/chemistry-2e'),
-            double(id: 'a0BTEST2', osc_url: 'https://openstax.org/details/books/biology-2e')
-          ]
+          instance_double(ActiveForce::ActiveQuery, to_a: books)
         )
       end
 

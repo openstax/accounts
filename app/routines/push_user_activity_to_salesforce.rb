@@ -485,9 +485,11 @@ class PushUserActivityToSalesforce
 
   # Slug => Book__c id map, queried from Salesforce at most once per call
   # and only if some student actually has a book redirect to resolve.
+  # `where` returns an ActiveForce::ActiveQuery, which forwards only each/map/
+  # inspect to its results -- not the rest of Enumerable -- so materialize it.
   def book_id_by_slug
     @book_id_by_slug ||= OpenStax::Salesforce::Remote::Book.where('OSC_URL__c != null')
-      .each_with_object({}) do |book, map|
+      .to_a.each_with_object({}) do |book, map|
         slug = book.osc_url.to_s[BOOK_SLUG_REGEX, 1]
         map[slug] = book.id if slug.present?
       end
