@@ -275,6 +275,38 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
     end
   end
 
+  context 'when no user resolves on a non-error step' do
+    it 'stays quiet for the verification-created ping that carries no email, and still records it' do
+      stub_details(
+        verification_id,
+        response_for(current_step: 'collectTeacherPersonalInfo', with_person_info: false)
+      )
+
+      call_webhook
+
+      expect(Sentry).not_to have_received(:capture_message)
+      verification = SheeridVerification.find_by(verification_id: verification_id)
+      expect(verification.webhook_received_at).to be_present
+    end
+
+    it 'reports a delivery whose email matches no verified Accounts address' do
+      body = {
+        'lastResponse' => {
+          'currentStep' => 'collectTeacherPersonalInfo', 'errorIds' => [],
+          'rejectionReasons' => [], 'segment' => 'teacher'
+        },
+        'personInfo' => { 'email' => 'nobody@example.com' },
+      }
+      stub_details(verification_id, SheeridAPI::Response.new(body))
+
+      call_webhook
+
+      expect(Sentry).to have_received(:capture_message).with(
+        a_string_including('No user found', verification_id, 'nobody@example.com'), anything
+      )
+    end
+  end
+
   context 'when SheerID cannot be reached' do
     it 'fatal_errors instead of processing a NullResponse' do
       stub_details(verification_id, SheeridAPI::NullResponse.instance)

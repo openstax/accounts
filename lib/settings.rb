@@ -152,6 +152,7 @@ module Settings
       # default breaks the whole "save all" form (ACCOUNTS-78T). Blank means unset.
       field :contacts_synced_through, type: :string, default: ''
       field :leads_synced_through, type: :string, default: ''
+      field :students_linked_through, type: :string, default: ''
       field :push_incomplete_signup_leads_enabled, type: :boolean, default: false
       field :minimum_recaptcha_score, type: :float, default: 0.2
     end

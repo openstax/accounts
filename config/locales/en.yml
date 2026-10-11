@@ -522,6 +522,9 @@ en:
       leads_synced_through:
         name: Leads synced through (UTC)
         help_block: Watermark for the nightly Lead sync (SyncEducatorLeads → UpdateUserLeadInfo); set automatically after each successful run. Leave blank on first run (it falls back to the last 7 days) and clear it to force a resync.
+      students_linked_through:
+        name: Students linked through (UTC)
+        help_block: Watermark for nightly Student__c linking; automatically advances after each successful run. Leave blank on first run (it scans the last 30 days) and clear it to restart that 30-day window.
       push_incomplete_signup_leads_enabled:
         name: Create Salesforce leads for stalled educator signups?
         help_block: If checked (and SF configured), the nightly SyncEducatorLeads pass creates an incomplete_signup Lead for newflow educators who verified their email at least 24 hours ago (within the last 90 days) and have no Lead or Contact yet, up to 500 per night.
