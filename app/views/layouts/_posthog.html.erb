@@ -10,7 +10,7 @@
   - reset() after logout, so the next visitor isn't tracked as the previous user
   - a bare identify() once per login; person properties are set server-side by
     OXPosthog.log ($set on every captured event), the single source of truth
-  - the school group association (no properties -- OXPosthog.identify_school owns those)
+  - the school group association, never for students (no properties -- OXPosthog.identify_school owns those)
 %>
 <% posthog_reset = session.delete(:posthog_reset) %>
 <% if google_tag_manager_enabled? && (posthog_reset || !current_user.is_anonymous?) %>
@@ -24,7 +24,7 @@
             if (posthog.get_distinct_id() !== '<%= current_user.uuid %>') {
                 posthog.identify('<%= current_user.uuid %>');
             }
-            <% if current_user.school %>
+            <% if current_user.school && !current_user.student? %>
             posthog.group('school', '<%= current_user.school.id %>');
             <% end %>
             <% end %>

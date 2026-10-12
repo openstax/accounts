@@ -1,6 +1,10 @@
 require 'posthog'
 
 class OXPosthog
+  STUDENT_OMITTED_PERSON_PROPERTIES = %i[
+    email name school salesforce_school_id salesforce_contact_id salesforce_lead_id
+  ].freeze
+
   def self.posthog
     @posthog ||= PostHog::Client.new(
       api_key: Rails.application.secrets.posthog_project_api_key,
@@ -14,6 +18,7 @@ class OXPosthog
   # extra_props are merged into the event at the top level (alongside $set/$set_once).
   def self.log(user, event, extra_props = {})
     return if user.nil? || user.is_anonymous? || Rails.env.test?
+    student = user.student?
     attrs = {
       distinct_id: user.uuid,
       event: event,
@@ -46,7 +51,7 @@ class OXPosthog
           receive_newsletter: user.receive_newsletter,
           is_administrator: user.is_administrator,
           has_external_id: user.has_external_id?,
-        },
+        }.except(*(student ? STUDENT_OMITTED_PERSON_PROPERTIES : [])),
         '$set_once': {
           uuid: user.uuid,
           created_at: user.created_at&.iso8601,
@@ -60,9 +65,10 @@ class OXPosthog
     # client_id -- an external id is how we know this is an Assignable user
     # (the same rule as the API's `assignable_user`).
     attrs[:properties][:client_app] ||= 'Assignable' if user.has_external_id?
-    attrs[:groups] = { school: user.school.id.to_s } if user.school
+    share_school = user.school && !student
+    attrs[:groups] = { school: user.school.id.to_s } if share_school
     posthog.capture(attrs)
-    identify_school(user.school) if user.school
+    identify_school(user.school) if share_school
   rescue StandardError => e
     Sentry.capture_exception(e)
   end

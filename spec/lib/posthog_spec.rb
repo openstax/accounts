@@ -228,6 +228,39 @@ RSpec.describe OXPosthog, type: :lib do
       end
     end
 
+    context 'when the user is a student' do
+      before { user.update!(role: :student) }
+
+      let(:captured) do
+        described_class.log(user, 'signed_up')
+        attrs = nil
+        expect(posthog_client).to have_received(:capture) { |a| attrs = a }
+        attrs
+      end
+
+      it 'omits personal and school-identifying person properties' do
+        expect(captured[:properties][:'$set'].keys).not_to include(
+          :email, :name, :school, :salesforce_school_id, :salesforce_contact_id, :salesforce_lead_id
+        )
+      end
+
+      it 'keeps the event, distinct_id and non-identifying properties' do
+        expect(captured).to include(distinct_id: user.uuid, event: 'signed_up')
+        expect(captured[:properties][:'$set']).to include(
+          role: 'student',
+          account_state: User::ACTIVATED,
+          school_type: 'college',
+          school_location: 'domestic_school',
+        )
+        expect(captured[:properties][:'$set_once']).to include(uuid: user.uuid, signup_flow: 'newflow')
+      end
+
+      it 'does not attach the school group or identify the school' do
+        expect(captured).not_to have_key(:groups)
+        expect(posthog_client).not_to have_received(:group_identify)
+      end
+    end
+
     context 'guard clauses' do
       it 'returns early for nil user' do
         described_class.log(nil, 'signed_up')
