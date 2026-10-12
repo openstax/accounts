@@ -84,14 +84,22 @@ ActiveSupport.on_load(:action_controller_base) do
     end
 
     def set_device_id
-      cookies.delete(:oxdid) if device_id_invalid?
+      if analytics_consent?
+        cookies.delete(:oxdid, domain: :all) if device_id_invalid?
 
-      cookies[:oxdid] ||= {
-        value: SecureRandom.uuid,
-        expires: 20.years.from_now,
-        domain: :all,
-        secure: Rails.env.production?
-      }
+        cookies[:oxdid] ||= {
+          value: SecureRandom.uuid,
+          expires: 13.months.from_now,
+          domain: :all,
+          secure: Rails.env.production?
+        }
+      elsif cookies[:oxdid]
+        cookies.delete(:oxdid, domain: :all)
+      end
+    end
+
+    def analytics_consent?
+      cookies[:'cookieyes-consent'].to_s.split(',').include?('analytics:yes')
     end
 
     def get_device_id
