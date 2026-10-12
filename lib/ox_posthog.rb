@@ -1,9 +1,7 @@
 require 'posthog'
 
 class OXPosthog
-  STUDENT_OMITTED_PERSON_PROPERTIES = %i[
-    email name school salesforce_school_id salesforce_contact_id salesforce_lead_id
-  ].freeze
+  STUDENT_OMITTED_PERSON_PROPERTIES = %i[email name salesforce_contact_id salesforce_lead_id].freeze
 
   def self.posthog
     @posthog ||= PostHog::Client.new(
@@ -65,10 +63,9 @@ class OXPosthog
     # client_id -- an external id is how we know this is an Assignable user
     # (the same rule as the API's `assignable_user`).
     attrs[:properties][:client_app] ||= 'Assignable' if user.has_external_id?
-    share_school = user.school && !student
-    attrs[:groups] = { school: user.school.id.to_s } if share_school
+    attrs[:groups] = { school: user.school.id.to_s } if user.school
     posthog.capture(attrs)
-    identify_school(user.school) if share_school
+    identify_school(user.school) if user.school
   rescue StandardError => e
     Sentry.capture_exception(e)
   end

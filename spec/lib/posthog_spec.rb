@@ -238,9 +238,9 @@ RSpec.describe OXPosthog, type: :lib do
         attrs
       end
 
-      it 'omits personal and school-identifying person properties' do
+      it 'omits name, email and person-level Salesforce ids' do
         expect(captured[:properties][:'$set'].keys).not_to include(
-          :email, :name, :school, :salesforce_school_id, :salesforce_contact_id, :salesforce_lead_id
+          :email, :name, :salesforce_contact_id, :salesforce_lead_id
         )
       end
 
@@ -255,9 +255,10 @@ RSpec.describe OXPosthog, type: :lib do
         expect(captured[:properties][:'$set_once']).to include(uuid: user.uuid, signup_flow: 'newflow')
       end
 
-      it 'does not attach the school group or identify the school' do
-        expect(captured).not_to have_key(:groups)
-        expect(posthog_client).not_to have_received(:group_identify)
+      it 'keeps the school, its group and its identify' do
+        expect(captured[:properties][:'$set']).to include(school: user.school.id, salesforce_school_id: user.school.salesforce_id)
+        expect(captured[:groups]).to eq(school: user.school.id.to_s)
+        expect(posthog_client).to have_received(:group_identify)
       end
     end
 
