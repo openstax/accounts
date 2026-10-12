@@ -137,7 +137,17 @@ en:
     change_signup_email_form_page_description: >-
       Change your email below so we can send your PIN.
       You will need to use this updated email to log in.
-    didnt_receive_email: Didn't receive an email? You can %{sign_up_with_different_email_link}.
+    didnt_receive_email: >-
+      Didn't get it? Check your spam or junk folder. You can also %{sign_up_with_different_email_link}.
+    resend_email_prompt: Still nothing after a few minutes?
+    resend_email_button: Send the email again
+    confirmation_email_resent: >-
+      We sent another email to <b>%{email}</b>. It has the same PIN, so you can
+      use whichever email arrives first.
+    resend_too_soon: We just sent that email. Please wait a minute before asking for another.
+    resend_limit_reached: >-
+      We've sent several emails in the last hour. Please check your spam or junk
+      folder, or contact support@openstax.org.
     all_fields_required: '* All fields are required'
     sign_up_with_different_email: sign up with a different email
     check_your_updated_email: Check your updated email

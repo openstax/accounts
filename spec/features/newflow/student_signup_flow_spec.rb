@@ -55,6 +55,26 @@ module Newflow
         screenshot!
       end
 
+      example 'ask for the email again from the PIN screen and use the PIN it carries' do
+        first_pin = current_email.find('#pin').text
+        # Past the resend cooldown, which counts the signup's own email
+        EmailDelivery.update_all(created_at: 2.minutes.ago)
+
+        click_on(t(:"login_signup_form.resend_email_button"))
+        expect(page).to have_current_path(student_email_verification_form_path)
+        expect(page).to have_text(strip_html(t(:"login_signup_form.confirmation_email_resent", email: email)))
+        screenshot!
+
+        perform_enqueued_jobs
+        expect(all_emails.count { |mail| mail.to.include?(email) }).to eq(2)
+        resent_pin = Nokogiri::HTML(all_emails.last.html_part.body.decoded).at_css('#pin').text
+        expect(resent_pin).to eq(first_pin)
+
+        fill_in('confirm_pin', with: resent_pin)
+        click_on('commit')
+        expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Sally'))
+      end
+
       example 'verify email by entering PIN sent in the email' do
         # ... with a link
         pin = current_email.find('#pin').text

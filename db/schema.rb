@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_09_26_000300) do
+ActiveRecord::Schema.define(version: 2026_10_08_000100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -150,6 +150,25 @@ ActiveRecord::Schema.define(version: 2026_09_26_000300) do
     t.datetime "last_heartbeat_at"
     t.string "host_name"
     t.string "label"
+  end
+
+  create_table "email_deliveries", force: :cascade do |t|
+    t.integer "contact_info_id", null: false
+    t.string "kind", null: false
+    t.string "recipient", null: false
+    t.integer "status", default: 0, null: false
+    t.text "status_detail"
+    t.string "ses_message_id"
+    t.integer "send_attempts", default: 0, null: false
+    t.datetime "sent_at"
+    t.datetime "delivered_at"
+    t.datetime "status_changed_at"
+    t.jsonb "last_event"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["contact_info_id"], name: "index_email_deliveries_on_contact_info_id"
+    t.index ["kind", "created_at"], name: "index_email_deliveries_on_kind_and_created_at"
+    t.index ["ses_message_id"], name: "index_email_deliveries_on_ses_message_id"
   end
 
   create_table "email_domains", id: :serial, force: :cascade do |t|
@@ -489,6 +508,7 @@ ActiveRecord::Schema.define(version: 2026_09_26_000300) do
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
+  add_foreign_key "email_deliveries", "contact_infos", on_delete: :cascade
   add_foreign_key "external_ids", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"

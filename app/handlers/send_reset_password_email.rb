@@ -4,6 +4,8 @@
 class SendResetPasswordEmail
   lev_handler
 
+  uses_routine Newflow::SendSignupConfirmationEmail
+
   LOGIN_TOKEN_EXPIRATION = 2.days
 
   paramify :forgot_password_form do
@@ -40,7 +42,7 @@ class SendResetPasswordEmail
     # their email verification instead so they can finish claiming the account.
     unverified_email_address = unverified_email_address_for(user) unless logged_in_user
     if unverified_email_address.present?
-      NewflowMailer.signup_email_confirmation(email_address: unverified_email_address).deliver_later
+      run(Newflow::SendSignupConfirmationEmail, email_address: unverified_email_address)
       outputs.email_address = unverified_email_address
       outputs.needs_email_verification = true
       return
