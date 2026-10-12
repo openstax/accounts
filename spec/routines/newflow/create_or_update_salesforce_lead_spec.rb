@@ -53,6 +53,90 @@ module Newflow
       end
     end
 
+    describe 'accounts environment and test-user stamping' do
+      def push_new_lead_for(user)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(nil)
+
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_ENV')
+
+        described_class.call(user: user)
+        mock_lead
+      end
+
+      it 'stamps a brand-new lead with the environment name and accounts_test_user true for a test user' do
+        user.update!(is_test: true)
+
+        lead = push_new_lead_for(user)
+
+        expect(lead.accounts_environment).to eq(Rails.application.secrets.environment_name)
+        expect(lead.accounts_test_user).to eq(true)
+      end
+
+      it 'stamps a brand-new lead with accounts_test_user false for a non-test user' do
+        lead = push_new_lead_for(user)
+
+        expect(lead.accounts_environment).to eq(Rails.application.secrets.environment_name)
+        expect(lead.accounts_test_user).to eq(false)
+      end
+
+      it 'does not stamp a lead found by stored ID' do
+        user.salesforce_lead_id = 'SF_LEAD_STORED_ENV'
+        user.save!
+        existing_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(existing_lead).to receive(:id).and_return('SF_LEAD_STORED_ENV')
+        allow(existing_lead).to receive(:save).and_return(true)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find).with('SF_LEAD_STORED_ENV').and_return(existing_lead)
+
+        described_class.call(user: user)
+
+        expect(existing_lead.accounts_environment).to be_nil
+        expect(existing_lead.accounts_test_user).to be_nil
+      end
+
+      it 'does not stamp a lead found by UUID' do
+        existing_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(existing_lead).to receive(:id).and_return('SF_LEAD_UUID_ENV')
+        allow(existing_lead).to receive(:save).and_return(true)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(existing_lead)
+
+        described_class.call(user: user)
+
+        expect(existing_lead.accounts_environment).to be_nil
+        expect(existing_lead.accounts_test_user).to be_nil
+      end
+
+      it 'does not stamp a lead found by email -- it may belong to a real person' do
+        existing_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(existing_lead).to receive(:id).and_return('SF_LEAD_EMAIL_ENV')
+        allow(existing_lead).to receive(:save).and_return(true)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(accounts_uuid: user.uuid).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).with(email: user.best_email_address_for_salesforce).and_return(existing_lead)
+
+        described_class.call(user: user)
+
+        expect(existing_lead.accounts_environment).to be_nil
+        expect(existing_lead.accounts_test_user).to be_nil
+      end
+
+      it 'never stamps a Contact' do
+        user.update!(salesforce_contact_id: 'SF_CONTACT_ENV')
+        existing_contact = OpenStax::Salesforce::Remote::Contact.new(email: user.best_email_address_for_salesforce)
+        allow(existing_contact).to receive(:id).and_return('SF_CONTACT_ENV')
+        allow(existing_contact).to receive(:save).and_return(true)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        allow(OpenStax::Salesforce::Remote::Contact).to receive(:find).with('SF_CONTACT_ENV').and_return(existing_contact)
+
+        described_class.call(user: user)
+
+        expect(existing_contact.accounts_environment).to be_nil
+        expect(existing_contact.accounts_test_user).to be_nil
+      end
+    end
+
     describe 'a student' do
       def push_lead_for(user)
         mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
