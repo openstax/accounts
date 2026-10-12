@@ -53,6 +53,22 @@ module Newflow
       end
     end
 
+    describe 'an educator with no school' do
+      it 'puts the Find Me A Home account on the lead without saving it onto the user' do
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:new).and_return(mock_lead)
+        allow(mock_lead).to receive(:save).and_return(true)
+        allow(mock_lead).to receive(:id).and_return('SF_LEAD_NO_SCHOOL')
+
+        described_class.call(user: user)
+
+        expect(mock_lead.school_id).to eq('SF_SCHOOL_HOME')
+        expect(mock_lead.account_id).to eq('SF_SCHOOL_HOME')
+        expect(user.reload.school_id).to be_nil
+      end
+    end
+
     describe 'a student' do
       def push_lead_for(user)
         mock_lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)

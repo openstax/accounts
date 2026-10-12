@@ -52,7 +52,9 @@ module Newflow
         if outputs.switched_to == :educator
           user.update(role: User::INSTRUCTOR_ROLE, faculty_status: User::INCOMPLETE_SIGNUP)
         else
-          user.update(EDUCATOR_ARTIFACTS.merge(role: User::STUDENT_ROLE))
+          attrs = EDUCATOR_ARTIFACTS.merge(role: User::STUDENT_ROLE)
+          attrs[:school_id] = nil if user.school&.placeholder?
+          user.update(attrs)
           update_salesforce_lead = true
         end
 
