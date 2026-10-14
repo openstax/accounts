@@ -28,4 +28,5 @@ Rails.application.config.assets.precompile += %w(
   newflow.js
   newflow/educator_signup_email_validations.js
   newflow/sheerid_iframe.js
+  newflow/profile_nudge_banner.js
 )

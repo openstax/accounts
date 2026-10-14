@@ -232,6 +232,11 @@ module Newflow
             SecurityLog.where(event_type: :help_request_failed).count
           }
         end
+
+        it 'does not report to Sentry' do
+          expect(Sentry).not_to receive(:capture_message)
+          get('change_password_form', params: params)
+        end
       end
     end
 

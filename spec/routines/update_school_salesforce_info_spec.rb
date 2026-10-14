@@ -7,6 +7,12 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
     FactoryBot.create(:user, school: FactoryBot.create(:school)).school
   end
 
+  before do
+    allow_any_instance_of(described_class).to(
+      receive(:merge_winner_salesforce_id).and_return(nil)
+    )
+  end
+
   context 'new School' do
     it 'creates new School records to match the Salesforce data' do
       stub_schools school
@@ -20,14 +26,8 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
     end
   end
 
-  before do
-    allow_any_instance_of(described_class).to(
-      receive(:merge_winner_salesforce_id).and_return(nil)
-    )
-  end
-
   context 'existing School' do
-    before { school.save! }
+    before do school.save! end
 
     it "deletes schools that don't have users and are not present in Salesforce" do
       stub_schools school
@@ -66,7 +66,7 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
   context 'school with users that is missing from Salesforce' do
     let!(:stale_user) { User.find_by(school_id: deleted_school_with_users.id) }
 
-    before { school.save! }
+    before do school.save! end
 
     it 'repoints users to the merge winner and deletes the stale school' do
       stub_schools school
@@ -125,6 +125,21 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
     end
   end
 
+  describe 'Sentry cron check-in' do
+    it 'sends :error to the check-in and still raises when a run fails' do
+      allow(OpenStax::Salesforce::Remote::School).to(
+        receive(:select).and_raise(StandardError, 'boom')
+      )
+      allow(Sentry).to receive(:capture_check_in).and_return('the-check-in-id')
+
+      expect { described_class.call }.to raise_error(StandardError, 'boom')
+
+      expect(Sentry).to have_received(:capture_check_in).with(
+        UpdateSchoolSalesforceInfo::CHECK_IN_SLUG, :error, check_in_id: 'the-check-in-id'
+      )
+    end
+  end
+
   describe '#merge_winner_salesforce_id' do
     let(:routine)     { described_class.new }
     let(:sfdc_client) { double('sfdc_client') }
@@ -140,10 +155,10 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
 
     it 'follows the MasterRecordId chain to the surviving account' do
       allow(sfdc_client).to receive(:query_all).with(/#{loser_id}/).and_return(
-        [ { 'IsDeleted' => true, 'MasterRecordId' => winner_id } ]
+        [{ 'IsDeleted' => true, 'MasterRecordId' => winner_id }]
       )
       allow(sfdc_client).to receive(:query_all).with(/#{winner_id}/).and_return(
-        [ { 'IsDeleted' => false, 'MasterRecordId' => nil } ]
+        [{ 'IsDeleted' => false, 'MasterRecordId' => nil }]
       )
 
       expect(routine.send(:merge_winner_salesforce_id, loser_id)).to eq winner_id
@@ -157,7 +172,7 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
 
     it 'returns nil when the account was deleted without a merge' do
       allow(sfdc_client).to receive(:query_all).and_return(
-        [ { 'IsDeleted' => true, 'MasterRecordId' => nil } ]
+        [{ 'IsDeleted' => true, 'MasterRecordId' => nil }]
       )
 
       expect(routine.send(:merge_winner_salesforce_id, loser_id)).to be_nil
@@ -171,13 +186,13 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
   end
 
   def stub_schools(schools)
-    sf_schools = [schools].flatten.map do |school|
+    sf_schools = [schools].flatten.map { |school|
       attrs = school.attributes
       attrs['id'] = attrs.delete('salesforce_id')
       attrs['school_location'] = attrs.delete('location')
 
       OpenStax::Salesforce::Remote::School.new attrs
-    end
+    }
 
     # select(:id).where(id: ...) runs once for the user-less school sweep and
     # once for the schools-with-users reconciliation

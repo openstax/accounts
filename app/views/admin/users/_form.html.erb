@@ -155,14 +155,7 @@
   </div>
 
   <% if @user.sheerid_verification_id %>
-  <div class="form-group">
-    <%= f.label :sheerid_verification_id, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= @user.sheerid_verification_id %>
-      </p>
-    </div>
-  </div>
+    <%= render 'sheerid_verification', f: f %>
   <% end %>
 
   <div class="form-group">

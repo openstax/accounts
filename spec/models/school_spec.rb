@@ -17,6 +17,40 @@ describe School, type: :model do
     expect(described_class.fuzzy_search('OpenStax')).to be_nil
   end
 
+  describe '.match_self_reported' do
+    # The 0.25 trigram threshold is tight: 'Rice Universty' (one letter
+    # dropped) is 0.28 away and does not match.
+    it 'finds the closest School to a typed name' do
+      rice = FactoryBot.create :school, name: 'Rice University'
+
+      expect(described_class.match_self_reported('RICE UNIVERSITY')).to eq rice
+      expect(described_class.match_self_reported('Ricee University')).to eq rice
+      expect(described_class.match_self_reported('Rice Universty')).to be_nil
+      expect(described_class.match_self_reported('OpenStax')).to be_nil
+      expect(described_class.match_self_reported(' ')).to be_nil
+    end
+
+    it 'skips the placeholder for the next-closest School' do
+      FactoryBot.create :school, name: described_class::PLACEHOLDER_NAME
+      nearby = FactoryBot.create :school, name: 'Find Me A Homes'
+
+      expect(described_class.match_self_reported(described_class::PLACEHOLDER_NAME)).to eq nearby
+    end
+
+    it 'skips the placeholder whatever the casing of its synced name' do
+      FactoryBot.create :school, name: 'find me a HOME'
+
+      expect(described_class.match_self_reported('Find Me A Home')).to be_nil
+    end
+  end
+
+  it 'never offers the placeholder in autocomplete' do
+    FactoryBot.create :school, name: described_class::PLACEHOLDER_NAME
+    homeschool = FactoryBot.create :school, name: 'Home School Academy'
+
+    expect(described_class.search('home')).to eq [homeschool]
+  end
+
   it 'fuzzy search returns a fully-loaded record whose attributes are readable' do
     match = described_class.fuzzy_search(school.name)
 

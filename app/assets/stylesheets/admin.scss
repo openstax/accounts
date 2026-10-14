@@ -123,3 +123,55 @@ body.admin {
 
 
 }
+
+.sheerid-verification {
+  &__summary .label {
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  code {
+    color: #555;
+    background: #f5f5f5;
+  }
+
+  table {
+    width: auto;
+    min-width: 50%;
+    margin: 4px 0 8px;
+  }
+
+  &__details th {
+    color: #666;
+    font-weight: 600;
+    white-space: nowrap;
+    padding-right: 24px;
+  }
+
+  &__heading {
+    margin: 12px 0 4px;
+    font-weight: bold;
+  }
+
+  &__activity {
+    font-size: 12px;
+
+    td {
+      vertical-align: top;
+    }
+  }
+
+  &__when {
+    color: #777;
+    white-space: nowrap;
+  }
+
+  &__data {
+    color: #555;
+  }
+
+  &__pair {
+    display: inline-block;
+    margin-right: 12px;
+  }
+}
