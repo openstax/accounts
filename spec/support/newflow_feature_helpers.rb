@@ -237,6 +237,17 @@ def expect_sheerid_iframe
     expect(page).to have_field('sid-first-name', with: first_name)
     expect(page).to have_field('sid-last-name', with: last_name)
     expect(page).to have_field('sid-email', with: email_value)
+    # The focus ring travels the same way the prefill does, so the same spec can
+    # prove it arrived: their form renders `options.customCss` into a <style>
+    # tag of its own. Asserted in JS rather than with `have_css(text:)` because
+    # a <style> element has no rendered text for Capybara to match. The prefill
+    # assertions above have already waited out the render this rides on.
+    expect(
+      page.evaluate_script(
+        "Array.prototype.slice.call(document.querySelectorAll('style'))" \
+        ".some(function (s) { return s.textContent.indexOf('#026AA1') !== -1; })"
+      )
+    ).to be(true)
   end
 end
 
