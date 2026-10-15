@@ -25,6 +25,12 @@
   // a valid-looking prefix. See `goToNextStep`.
   var SAME_ORIGIN_PATH = /^\/(?!\/)[\w\-./?=&%~+#]*$/;
 
+  // Origin alone is not enough: any other window or sibling frame on
+  // services.sheerid.com shares it. Only our own iframe's window may drive us.
+  function fromOurFrame(event) {
+    return event.origin === origin && event.source === frame.contentWindow;
+  }
+
   function applyHeight(height) {
     var pixels = parseInt(height, 10);
     if (!pixels || pixels < 0) { return; }
@@ -55,15 +61,14 @@
   }
 
   window.addEventListener('message', function (event) {
-    if (event.origin !== origin) { return; }
+    if (!fromOurFrame(event)) { return; }
 
     var data = event.data;
     if (!data || typeof data !== 'object') { return; }
 
     // Two shapes come off the same form: a nested one carrying the uid we
     // minted, and a bare {action: 'updateHeight', height: n} with no uid. The
-    // second can only be matched on origin, which is why the frame is the only
-    // thing on the page allowed to talk to us.
+    // second carries no uid, which is why the sender window is checked above.
     var action = data.action;
 
     if (action && action.type === 'updateHeight') {
@@ -99,7 +104,7 @@
   // ON_VERIFICATION_READY is the form telling us it will accept input; prefill
   // before that lands is dropped. `load` alone is too early.
   window.addEventListener('message', function (event) {
-    if (event.origin !== origin) { return; }
+    if (!fromOurFrame(event)) { return; }
 
     var data = event.data;
     if (!data || typeof data !== 'object') { return; }
