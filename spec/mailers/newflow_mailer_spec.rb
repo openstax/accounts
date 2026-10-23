@@ -14,6 +14,25 @@ module Newflow
                         confirmation_pin: pin
     }
 
+    describe 'when SES rejects the request as malformed' do
+      before do
+        allow_any_instance_of(Mail::Message).to receive(:deliver).and_raise(
+          Aws::SES::Errors::InvalidParameterValue.new(nil, 'Local address contains control or whitespace')
+        )
+      end
+
+      it 'reports a warning to Sentry instead of raising so the job is not retried' do
+        expect(Sentry).to receive(:capture_exception).with(
+          instance_of(Aws::SES::Errors::InvalidParameterValue),
+          hash_including(level: :warning)
+        )
+
+        expect {
+          NewflowMailer.signup_email_confirmation(email_address: email, show_pin: true).deliver_now
+        }.not_to raise_error
+      end
+    end
+
     describe 'sends email confirmation' do
       it 'has basic header and from info and greeting' do
         mail = NewflowMailer.signup_email_confirmation email_address: email

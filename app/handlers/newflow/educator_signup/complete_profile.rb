@@ -59,40 +59,53 @@ module Newflow
         @is_on_cs_form = signup_params.is_cs_form?
         outputs.is_on_cs_form = @is_on_cs_form
 
-        # validate the form
-        check_params
-        return if errors?
-
-        # is this user coming from the sheerid flow? there are a few things we can check...
+        # check_params reads this: a SheerID-verified user has no school to type.
         @did_use_sheerid = !(signup_params.is_school_not_supported_by_sheerid == 'true' ||
                              signup_params.is_country_not_supported_by_sheerid == 'true' ||
                              user.is_sheerid_unviable? || @is_on_cs_form)
 
+        check_params
+        return if errors?
+
         total_students = calculate_total_students
         return if errors?
 
-        selected_school = School.find_by(id: signup_params.school_id) if signup_params.school_id.present?
-        # The school field was touched (typed text and/or picked a suggestion): update the link.
-        # A valid pick sets it to that school; a pick that was then edited (school_id cleared but
-        # school_name still present) clears the link, since selected_school is nil in that case.
-        if signup_params.school_name.present? || signup_params.school_id.present?
-          @user.school = selected_school
+        if signup_params.school_id.present?
+          picked_school = School.not_placeholder.find_by(id: signup_params.school_id)
         end
-        @user.update!(
-          role: signup_params.educator_specific_role,
-          other_role_name: other_role_name,
-          using_openstax_how: signup_params.using_openstax_how,
-          who_chooses_books: signup_params.who_chooses_books,
-          how_many_students: total_students,
-          which_books: which_books,
-          books_used_details: books_used_details,
-          self_reported_school: selected_school&.name || signup_params.school_name,
-          is_profile_complete: true,
-          is_educator_pending_cs_verification: !@did_use_sheerid,
-          expected_start_semester: expected_start_semester
-        )
+        # The SheerID webhook links the school under this same row lock, so the
+        # school we judge the typed name against is whatever it committed, not a
+        # copy loaded before it ran.
+        @user.with_lock do
+          if signup_params.school_name.present? || signup_params.school_id.present?
+            @user.school = picked_school || school_for_typed_name
+          end
+          @user.update!(
+            role: signup_params.educator_specific_role,
+            other_role_name: other_role_name,
+            using_openstax_how: signup_params.using_openstax_how,
+            who_chooses_books: signup_params.who_chooses_books,
+            how_many_students: total_students,
+            which_books: which_books,
+            books_used_details: books_used_details,
+            self_reported_school: picked_school&.name || signup_params.school_name,
+            is_profile_complete: true,
+            is_educator_pending_cs_verification: !@did_use_sheerid,
+            expected_start_semester: expected_start_semester,
+            profile_completed_at: user.profile_completed_at || Time.current
+          )
+        end
         # If anything happens during lead creation, it's helpful for us to have this on the log.
         SecurityLog.create!(user: user, event_type: :user_profile_complete, event_data: { books_used_details: books_used_details })
+
+        # No SheerID outcome means CX must review by hand; the ladder leaves any
+        # existing SheerID/terminal outcome alone. Locked so a webhook landing
+        # mid-request can't be judged against a stale status.
+        @user.with_lock do
+          if FacultyStatusLadder::RANK.fetch(@user.faculty_status, 0) < FacultyStatusLadder::SHEERID_RANK
+            @user.advance_faculty_status!(User::PENDING_FACULTY, source: :accounts, event_data: { reason: 'profile_completed' })
+          end
+        end
 
         if @is_on_cs_form
           SecurityLog.create!(
@@ -108,11 +121,6 @@ module Newflow
             # this user used the CS form and _should_ have provided us an email address -
             # so let's add it - validation happens before this in check_params
             run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
-          end
-
-          if user.school.nil? && !signup_params.school_name.blank?
-            user.school = School.fuzzy_search signup_params.school_name
-            user.save
           end
         end
 
@@ -212,6 +220,22 @@ module Newflow
         Array(signup_params.books_of_interest).reject{ |b| b.blank? }
       end
 
+      # A typed name with no suggestion picked. The SheerID webhook may already have
+      # linked the school this name describes; retyping it must not unlink that match
+      # (the lead push would then fall back to the Find Me A Home placeholder).
+      def school_for_typed_name
+        return if signup_params.school_name.blank?
+
+        current = @user.school
+        if current.present?
+          kept = School.not_placeholder.where(id: current.id)
+                       .fuzzy_search(signup_params.school_name)
+          return kept if kept
+        end
+
+        School.match_self_reported(signup_params.school_name)
+      end
+
       def check_params
         role = signup_params.educator_specific_role.strip.downcase
 
@@ -219,8 +243,12 @@ module Newflow
           param_error(:school_name, :school_name_must_be_entered)
         end
 
-        if role == OTHER && signup_params.other_role_name.nil?
-          param_error(:other_role_name, :other_must_be_entered)
+        if role == OTHER
+          if signup_params.other_role_name.nil?
+            param_error(:other_role_name, :other_must_be_entered)
+          elsif signup_params.other_role_name.strip.length > 128
+            param_error(:other_role_name, :other_role_name_too_long)
+          end
         end
 
         if role == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY

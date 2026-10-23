@@ -1,0 +1,35 @@
+<div class="profile-nudge-banner">
+  <div class="profile-nudge-banner__copy">
+    <h2 class="profile-nudge-banner__heading"><%= t(:"profile_nudge_banner.heading") %></h2>
+    <p class="profile-nudge-banner__body"><%= t(:"profile_nudge_banner.body") %></p>
+  </div>
+
+  <div class="profile-nudge-banner__actions">
+    <%=
+      link_to(
+        t(:"profile_nudge_banner.finish_button"),
+        educator_profile_form_path,
+        class: 'btn btn-primary profile-nudge-banner__finish',
+        data: {
+          'ga-category': 'Profile Nudge',
+          'ga-action': 'Click',
+          'ga-label': 'Finish setting up'
+        }
+      )
+    %>
+    <%=
+      button_to(
+        t(:"profile_nudge_banner.dismiss_button"),
+        dismiss_profile_nudge_path,
+        method: :post,
+        class: 'profile-nudge-banner__dismiss',
+        form_class: 'profile-nudge-banner__dismiss-form',
+        data: {
+          'ga-category': 'Profile Nudge',
+          'ga-action': 'Click',
+          'ga-label': 'Dismiss'
+        }
+      )
+    %>
+  </div>
+</div>

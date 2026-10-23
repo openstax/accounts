@@ -6,6 +6,7 @@
 
 <% content_for :head do %>
   <%= javascript_include_tag  "profile" %>
+  <%= javascript_include_tag 'newflow/profile_nudge_banner' if @show_profile_nudge_banner %>
 <% end %>
 
 <% unless @framed %>
@@ -119,6 +120,79 @@
     }
 }
 
+.profile-nudge-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem;
+    margin-bottom: 2rem;
+    padding: 1.6rem 2rem;
+    border: 0.1rem solid #d7e5ef;
+    border-radius: 0.6rem;
+    background-color: #f3f8fb;
+}
+
+.profile-nudge-banner__copy {
+    flex: 1 1 30rem;
+}
+
+.profile-nudge-banner__heading {
+    margin: 0 0 0.4rem;
+    color: #002E6D;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.profile-nudge-banner__body {
+    margin: 0;
+    color: #666;
+    font-size: 1.4rem;
+    line-height: 1.9rem;
+}
+
+.profile-nudge-banner__actions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.profile-nudge-banner__finish {
+    white-space: nowrap;
+}
+
+.profile-nudge-banner__dismiss-form {
+    margin: 0;
+}
+
+.profile-nudge-banner__dismiss {
+    border: 0;
+    background: none;
+    color: #026AA1;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .profile-nudge-banner {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: left;
+    }
+
+    .profile-nudge-banner__actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+    }
+
+    .profile-nudge-banner__finish {
+        text-align: center;
+    }
+}
+
 </style>
 
 <%= ox_card do %>
@@ -139,6 +213,8 @@
       )
     %>
   </div>
+
+  <%= render(partial: 'newflow/base/profile_nudge_banner') if @show_profile_nudge_banner %>
 
   <div class="row name">
     <div class="col-sm-2 category">
