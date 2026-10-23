@@ -16,12 +16,16 @@
 # A NULL salesforce_forgotten_at means "not processed yet". A user is stamped
 # when every Individual found for them was flagged, which includes finding
 # nothing at all: deleted users are excluded from every push path, so no new
-# record can appear later. A found record with no IndividualId, or a rejected
+# record can appear later. A push already past its is_deleted check when the
+# user was deleted could still land one, so users become eligible only
+# DELETION_GRACE after deletion (SoftDeleteUser's save! is the last write
+# that touches updated_at). A found record with no IndividualId, or a rejected
 # Individual update, leaves the user unstamped so the next run retries.
 # A stored id that no longer exists in Salesforce is unlinked, as in
 # PushUserActivityToSalesforce.
 class ForgetDeletedUsersInSalesforce
   BATCH_SIZE = 100
+  DELETION_GRACE = 1.hour
   SALESFORCE_ID_REGEX = /\A[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?\z/
   LEAD_FIELDS = 'Id, IndividualId, IsConverted, ConvertedContactId'.freeze
   UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
@@ -54,6 +58,7 @@ class ForgetDeletedUsersInSalesforce
   # Backed by index_users_deleted_pending_salesforce_forget.
   def pending_users
     User.where(is_deleted: true, salesforce_forgotten_at: nil)
+        .where(updated_at: ...DELETION_GRACE.ago)
   end
 
   # Returns false when the lookup fails: that points at Salesforce or the

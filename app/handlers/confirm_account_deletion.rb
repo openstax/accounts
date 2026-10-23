@@ -13,7 +13,9 @@ class ConfirmAccountDeletion
   def handle
     fatal_error(code: :token_blank) if params[:token].blank?
 
-    user = User.find_by(account_deletion_token: params[:token])
+    # Locked so two concurrent POSTs of the same link can't both pass the
+    # checks below; the second waits, then fails on the cleared token.
+    user = User.lock.find_by(account_deletion_token: params[:token])
 
     fatal_error(code: :unknown_account_deletion_token) if user.nil?
     fatal_error(code: :expired_account_deletion_token) if user.account_deletion_token_expired?

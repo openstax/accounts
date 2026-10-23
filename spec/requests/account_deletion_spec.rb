@@ -27,6 +27,9 @@ describe 'Self-service account deletion', type: :request do
     post confirm_account_deletion_path, params: { token: token }
 
     expect(user.reload.is_deleted).to eq(true)
+    log = SecurityLog.find_by(user: user, event_type: :account_deleted)
+    expect(log).to be_present
+    expect(log.remote_ip).to be_nil
 
     post confirm_account_deletion_path, params: { token: token }
     expect(response).to redirect_to(newflow_login_path)
@@ -45,12 +48,17 @@ describe 'Self-service account deletion', type: :request do
   end
 
   it 'revokes the user\'s OAuth access tokens and grants' do
+    other_user = FactoryBot.create(:user)
     token = FactoryBot.create(:doorkeeper_access_token, resource_owner_id: user.id)
-    other = FactoryBot.create(:doorkeeper_access_token, resource_owner_id: FactoryBot.create(:user).id)
+    other = FactoryBot.create(:doorkeeper_access_token, resource_owner_id: other_user.id)
+    grant = FactoryBot.create(:doorkeeper_access_grant, resource_owner_id: user.id)
+    other_grant = FactoryBot.create(:doorkeeper_access_grant, resource_owner_id: other_user.id)
 
     SoftDeleteUser.call(user)
 
     expect(token.reload).to be_revoked
     expect(other.reload).not_to be_revoked
+    expect(grant.reload).to be_revoked
+    expect(other_grant.reload).not_to be_revoked
   end
 end

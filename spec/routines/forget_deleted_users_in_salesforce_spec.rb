@@ -14,7 +14,7 @@ describe ForgetDeletedUsersInSalesforce, type: :routine do
   end
 
   def deleted_user(**attrs)
-    FactoryBot.create(:user, is_deleted: true, **attrs)
+    FactoryBot.create(:user, is_deleted: true, updated_at: 2.hours.ago, **attrs)
   end
 
   # Lead rows may carry a converted Contact id as a last element; a converted
@@ -60,6 +60,15 @@ describe ForgetDeletedUsersInSalesforce, type: :routine do
 
       expect(user.reload.salesforce_forgotten_at).to be_nil
     end
+  end
+
+  it 'leaves a user deleted within the grace period for a later run' do
+    user = FactoryBot.create(:user, is_deleted: true, salesforce_contact_id: contact_id)
+    expect(sfdc_client).not_to receive(:query)
+
+    described_class.call
+
+    expect(user.reload.salesforce_forgotten_at).to be_nil
   end
 
   context 'a deleted user with a Contact' do

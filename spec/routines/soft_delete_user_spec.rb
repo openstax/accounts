@@ -25,7 +25,6 @@ describe SoftDeleteUser do
     FactoryBot.create(:authentication, user: user, provider: 'google_oauth2')
     FactoryBot.create(:identity, user: user)
     FactoryBot.create(:application_user, user: user)
-    FactoryBot.create(:external_id, user: user)
 
     described_class.call(user)
     user.reload
@@ -35,7 +34,6 @@ describe SoftDeleteUser do
     expect(user.application_users).to be_empty
     expect(user.contact_infos).to be_empty
     expect(user.email_addresses).to be_empty
-    expect(user.external_ids).to be_empty
     expect(user.external_uuids).to be_empty
   end
 
@@ -51,12 +49,29 @@ describe SoftDeleteUser do
     expect(user.group_members).to be_empty
   end
 
-  it 'destroys security logs (which contain PII)' do
-    user.security_logs.create!(event_type: SecurityLog.event_types.keys.first)
-    expect(user.security_logs.count).to be > 0
+  it 'keeps external ids, which link Assignable users to the uuid' do
+    external_id = FactoryBot.create(:external_id, user: user)
 
     described_class.call(user)
-    expect(user.reload.security_logs).to be_empty
+
+    expect(user.reload.external_ids).to eq [external_id]
+  end
+
+  it 'keeps security logs but strips the IP address and event data' do
+    log = user.security_logs.create!(
+      event_type: :sign_in_successful, remote_ip: '203.0.113.7', event_data: { email: 'someone@example.com' }
+    )
+    other_log = FactoryBot.create(:user).security_logs.create!(
+      event_type: :sign_in_successful, remote_ip: '203.0.113.8', event_data: { email: 'other@example.com' }
+    )
+
+    described_class.call(user)
+
+    log.reload
+    expect(log.event_type).to eq 'sign_in_successful'
+    expect(log.remote_ip).to be_nil
+    expect(log.event_data).to eq({})
+    expect(other_log.reload.remote_ip).to eq '203.0.113.8'
   end
 
   it 'clears any pending account deletion token' do
@@ -91,5 +106,6 @@ describe SoftDeleteUser do
     described_class.call(user)
 
     expect(SheeridVerification.exists?(verification.id)).to eq(false)
+    expect(user.reload.sheerid_verification_id).to be_nil
   end
 end

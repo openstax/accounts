@@ -76,8 +76,9 @@ class OtherController < Newflow::BaseController
     handle_with(
       ConfirmAccountDeletion,
       success: lambda {
-        user = @handler_result.outputs.user
-        security_log(:account_deleted, user: user)
+        # Written directly rather than via security_log so no IP address is
+        # stored against an account whose logs SoftDeleteUser just scrubbed.
+        SecurityLog.create!(user: @handler_result.outputs.user, event_type: :account_deleted)
         sign_out! if signed_in?
         redirect_to newflow_login_path, notice: I18n.t(:'account_deletion.success')
       },
