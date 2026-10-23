@@ -8,6 +8,7 @@ module Newflow
     before_action(:exit_newflow_signup_if_logged_in, only: :welcome)
     before_action(:newflow_authenticate_user!, only: :signup_done)
     before_action(:skip_signup_done_for_tutor_users, only: :signup_done)
+    before_action(:restart_signup_if_missing_unverified_user, only: :resend_confirmation_email)
 
     def welcome
     end
@@ -25,6 +26,28 @@ module Newflow
         },
         failure: lambda {
           redirect_to(newflow_signup_path)
+        }
+      )
+    end
+
+    def resend_confirmation_email
+      user = unverified_user
+      handle_with(
+        ResendSignupConfirmationEmail,
+        email_address: unverified_email_address,
+        success: lambda {
+          security_log(:signup_confirmation_email_resent, user: user, email: unverified_email_address.value)
+          log_posthog(user, 'user_resent_signup_email', { role: user.role })
+          # The newflow layout renders notices with html_safe
+          flash[:notice] = I18n.t(
+            :"login_signup_form.confirmation_email_resent",
+            email: ERB::Util.html_escape(unverified_email_address.value)
+          )
+          redirect_to(email_verification_form_path_for(user))
+        },
+        failure: lambda {
+          flash[:alert] = I18n.t(:"login_signup_form.#{@handler_result.errors.first.code}")
+          redirect_to(email_verification_form_path_for(user))
         }
       )
     end
@@ -73,9 +96,13 @@ module Newflow
       unverified_user || (current_user unless current_user.is_anonymous?)
     end
 
+    def email_verification_form_path_for(user)
+      user.student? ? student_email_verification_form_path : educator_email_verification_form_path
+    end
+
     def next_step_after_role_switch(user)
       if unverified_user.present?
-        user.student? ? student_email_verification_form_path : educator_email_verification_form_path
+        email_verification_form_path_for(user)
       elsif user.student?
         signup_done_path
       else

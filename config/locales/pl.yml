@@ -59,7 +59,16 @@ pl:
     change_signup_email_form_page_description: >-
       Zmień adres e-mail poniżej, wyślemy na niego PIN.
       Do zalogowania się potrzebny Ci będzie właśnie ten adres e-mail
-    didnt_receive_email: Wiadomość nie dotarła? Zarejestruj się %{sign_up_with_different_email_link}.
+    didnt_receive_email: Wiadomość nie dotarła? Sprawdź folder spam lub zarejestruj się %{sign_up_with_different_email_link}.
+    resend_email_prompt: Nadal nic po kilku minutach?
+    resend_email_button: Wyślij wiadomość ponownie
+    confirmation_email_resent: >-
+      Wysłaliśmy kolejną wiadomość na adres <b>%{email}</b>. Zawiera ten sam PIN,
+      więc możesz użyć tej, która dotrze pierwsza.
+    resend_too_soon: Wiadomość została właśnie wysłana. Odczekaj minutę, zanim poprosisz o kolejną.
+    resend_limit_reached: >-
+      W ciągu ostatniej godziny wysłaliśmy już kilka wiadomości. Sprawdź folder
+      spam lub napisz do support@openstax.org.
     all_fields_required: '* Wszystkie pola są wymagane'
     sign_up_with_different_email: podając inny adres e-mail
     check_your_updated_email: Sprawdź nowy adres e-mail

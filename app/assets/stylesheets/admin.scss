@@ -175,3 +175,49 @@ body.admin {
     margin-right: 12px;
   }
 }
+
+.email-delivery-stats-item {
+  list-style: none;
+  margin-bottom: 8px;
+}
+
+.email-delivery-stats {
+  &__item {
+    display: inline-block;
+    margin-left: 10px;
+  }
+}
+
+.email-delivery {
+  margin: 4px 0 12px;
+
+  &__summary .label {
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  &__explanation {
+    color: #555;
+  }
+
+  table {
+    width: auto;
+    margin: 4px 0 0;
+    font-size: 12px;
+  }
+
+  td {
+    vertical-align: top;
+  }
+
+  &__when {
+    color: #777;
+    white-space: nowrap;
+  }
+
+  &__detail {
+    color: #555;
+    max-width: 40em;
+    word-break: break-word;
+  }
+}

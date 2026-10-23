@@ -1,0 +1,42 @@
+<% if deliveries.any? %>
+  <% latest = deliveries.first %>
+  <div class="email-delivery">
+    <p class="email-delivery__summary">
+      PIN email: <%= email_delivery_badge(latest) %>
+      <span class="email-delivery__explanation"><%= email_delivery_explanation(latest) %></span>
+    </p>
+
+    <table class="table table-condensed email-delivery__history">
+      <caption class="sr-only">PIN emails sent to this address, newest first</caption>
+      <thead>
+        <tr>
+          <th scope="col">Requested</th>
+          <th scope="col">Sent to</th>
+          <th scope="col">Status</th>
+          <th scope="col">Time to deliver</th>
+          <th scope="col">Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% deliveries.each do |delivery| %>
+          <tr>
+            <td class="email-delivery__when"><%= sheerid_timestamp(delivery.created_at) %></td>
+            <td><%= delivery.recipient %></td>
+            <td>
+              <%= email_delivery_badge(delivery) %>
+              <% if delivery.send_attempts > 1 %>
+                <span class="text-muted">(<%= delivery.send_attempts %> attempts)</span>
+              <% end %>
+            </td>
+            <td><%= email_delivery_duration(delivery.seconds_to_deliver) || content_tag(:span, '-', class: 'text-muted') %></td>
+            <td class="email-delivery__detail"><%= delivery.status_detail %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="email-delivery">
+    <span class="text-muted">No PIN email on record for this address. Emails sent before delivery tracking shipped don't appear here.</span>
+  </div>
+<% end %>
