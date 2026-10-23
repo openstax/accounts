@@ -32,6 +32,10 @@ class School < ApplicationRecord
   # the fallback Account by name is case-insensitive too.
   scope :not_placeholder, -> { where.not('LOWER(schools.name) = ?', PLACEHOLDER_NAME.downcase) }
 
+  def placeholder?
+    name.to_s.casecmp?(PLACEHOLDER_NAME)
+  end
+
   def self.fuzzy_search(name, city = nil, state = nil)
     name_expression = sanitize_sql(["? <-> name", name])
     match_rel = where(

@@ -70,6 +70,36 @@ module Newflow
       end
     end
 
+    context 'educator switching to student with a school' do
+      let(:user) do
+        FactoryBot.create(:user, role: User::INSTRUCTOR_ROLE, faculty_status: User::PENDING_FACULTY, school: school)
+      end
+
+      before { allow(UpdateExistingSalesforceLead).to receive(:perform_later) }
+
+      [School::PLACEHOLDER_NAME, 'FIND ME a home'].each do |placeholder_name|
+        context "on the placeholder school (#{placeholder_name})" do
+          let(:school) { FactoryBot.create(:school, name: placeholder_name) }
+
+          it 'clears the school' do
+            described_class.call(user: user)
+
+            expect(user.reload.school_id).to be_nil
+          end
+        end
+      end
+
+      context 'on a real school' do
+        let(:school) { FactoryBot.create(:school, name: 'Rice University') }
+
+        it 'keeps the school' do
+          described_class.call(user: user)
+
+          expect(user.reload.school_id).to eq(school.id)
+        end
+      end
+    end
+
     context 'student switching to educator' do
       let(:user) { FactoryBot.create(:user, role: User::STUDENT_ROLE) }
 
@@ -83,6 +113,16 @@ module Newflow
         expect(user.reload.role).to eq('instructor')
         expect(user.faculty_status).to eq(User::INCOMPLETE_SIGNUP)
         expect(UpdateExistingSalesforceLead).not_to have_received(:perform_later)
+      end
+
+      it 'leaves the school alone' do
+        allow(UpdateExistingSalesforceLead).to receive(:perform_later)
+        placeholder = FactoryBot.create(:school, name: School::PLACEHOLDER_NAME)
+        user.update!(school: placeholder)
+
+        described_class.call(user: user)
+
+        expect(user.reload.school_id).to eq(placeholder.id)
       end
     end
 
