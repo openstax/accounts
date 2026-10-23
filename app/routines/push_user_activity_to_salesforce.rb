@@ -32,6 +32,9 @@
 # salesforce_student_id: duplicate Student__c records exist per UUID, and a
 # user already linked must never be re-pointed.
 #
+# Deleted users are excluded from every pass: nothing about them may reach
+# Salesforce again, and ForgetDeletedUsersInSalesforce handles the erasure.
+#
 # A 404 / missing-record answer on passes 2-4 (the Contact or Student__c was
 # merged or deleted) unlinks the user -- id and stamps cleared -- so the next
 # link/sync can re-resolve the record. Any other failure is reported once per
@@ -121,7 +124,7 @@ class PushUserActivityToSalesforce
   private
 
   def link_and_create_students
-    User.student
+    User.student.not_deleted
         .where.not(school_id: nil)
         .where(salesforce_student_pushed_at: nil)
         .preload(:school)
@@ -233,7 +236,8 @@ class PushUserActivityToSalesforce
   end
 
   # First (lowest Id) record per uuid wins, and the compare-and-set on a NULL
-  # id means an existing link is never overwritten.
+  # id means an existing link is never overwritten. Deleted users are never
+  # linked.
   def link_students_by_uuid(students)
     id_by_uuid = {}
     students.each do |student|
@@ -256,6 +260,7 @@ class PushUserActivityToSalesforce
       FROM (VALUES #{values}) AS links(uuid, salesforce_student_id)
       WHERE #{table}.uuid = links.uuid::uuid
         AND #{table}.salesforce_student_id IS NULL
+        AND #{table}.is_deleted IS NOT TRUE
     SQL
   end
 
@@ -265,7 +270,7 @@ class PushUserActivityToSalesforce
   # silently exclude every reconciled student forever.
   def sync_student_login_dates
     failures = FailureTally.new
-    User.student
+    User.student.not_deleted
         .where.not(salesforce_student_id: nil)
         .where.not(last_signed_in_at: nil)
         .where(
@@ -306,7 +311,8 @@ class PushUserActivityToSalesforce
   # as "never sent" too.
   def sync_contact_login_dates
     failures = FailureTally.new
-    User.where.not(salesforce_contact_id: nil)
+    User.not_deleted
+        .where.not(salesforce_contact_id: nil)
         .where.not(last_signed_in_at: nil)
         .where(
           'salesforce_contact_login_pushed_at IS NULL OR last_signed_in_at > salesforce_contact_login_pushed_at'
@@ -340,7 +346,7 @@ class PushUserActivityToSalesforce
   # Same NULL reasoning as sync_student_login_dates.
   def sync_student_last_seen_dates
     failures = FailureTally.new
-    User.student
+    User.student.not_deleted
         .where.not(salesforce_student_id: nil)
         .where.not(last_seen_at: nil)
         .where(
@@ -374,7 +380,8 @@ class PushUserActivityToSalesforce
   # Same NULL reasoning as sync_contact_login_dates.
   def sync_contact_last_seen_dates
     failures = FailureTally.new
-    User.where.not(salesforce_contact_id: nil)
+    User.not_deleted
+        .where.not(salesforce_contact_id: nil)
         .where.not(last_seen_at: nil)
         .where(
           'salesforce_contact_last_seen_pushed_at IS NULL OR ' \

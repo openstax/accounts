@@ -134,6 +134,10 @@ class SecurityLog < ApplicationRecord
     salesforce_lead_status_synced
     faculty_status_repaired
     salesforce_record_unlinked
+    user_data_exported
+    account_deletion_requested
+    account_deletion_request_failed
+    account_deleted
   ]
 
   json_serialize :event_data, Hash

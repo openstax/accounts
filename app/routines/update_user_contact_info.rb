@@ -108,7 +108,7 @@ class UpdateUserContactInfo
     return counts if contacts.empty?
 
     contacts_by_uuid = contacts_by_uuid_hash(contacts)
-    users = User.where(uuid: contacts.map(&:accounts_uuid))
+    users = User.not_deleted.where(uuid: contacts.map(&:accounts_uuid))
     schools_by_salesforce_id = schools_by_salesforce_id_for(contacts_by_uuid)
 
     log("Updating #{users.count} users from Salesforce")

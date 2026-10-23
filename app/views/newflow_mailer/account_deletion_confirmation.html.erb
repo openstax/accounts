@@ -1,0 +1,11 @@
+<p>Hi <%= @user.casual_name %>,</p>
+
+<p>We received a request to permanently delete your OpenStax account. If you made this request, click the link below to confirm. This action cannot be undone.</p>
+
+<p>
+  <%= link_to "Confirm account deletion", confirm_account_deletion_form_url(token: @user.account_deletion_token) %>
+</p>
+
+<p>This confirmation link will expire in 24 hours. If you did not request to delete your account, you can safely ignore this email and your account will remain active.</p>
+
+<%= render :partial => 'shared/email_closing' %>

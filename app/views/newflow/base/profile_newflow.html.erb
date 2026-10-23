@@ -216,6 +216,13 @@
 
   <%= render(partial: 'newflow/base/profile_nudge_banner') if @show_profile_nudge_banner %>
 
+  <% if flash[:notice].present? %>
+    <div class="alert alert-success" role="alert"><%= flash[:notice] %></div>
+  <% end %>
+  <% if flash[:alert].present? %>
+    <div class="alert alert-danger" role="alert"><%= flash[:alert] %></div>
+  <% end %>
+
   <div class="row name">
     <div class="col-sm-2 category">
       <%= I18n.t(:"legacy.users.edit.name") %>
@@ -315,6 +322,43 @@
         </details>
       </div>
     <% end %>
+
+      <div class="row privacy-and-data">
+        <div class="col-sm-2 category">
+          <%= t(:'account_deletion.section_heading') %>
+        </div>
+        <div class="col-sm-10 info">
+          <p><%= t(:'account_deletion.section_intro') %></p>
+          <p>
+            <%= link_to(
+                  t(:'account_deletion.download_my_data'),
+                  data_export_path,
+                  class: 'btn btn-default download-my-data',
+                  data: {
+                    'ga-category': 'My Account',
+                    'ga-action': 'Click',
+                    'ga-label': 'Download My Data'
+                  }
+                ) %>
+          </p>
+          <p class="muted"><%= t(:'account_deletion.download_my_data_description') %></p>
+
+          <details class="delete-my-account">
+            <summary
+              data-ga-category="My Account"
+              data-ga-action="Click"
+              data-ga-label="Delete My Account"
+            ><%= t(:'account_deletion.delete_my_account') %></summary>
+            <%= t(:'account_deletion.delete_panel.body_html') %>
+            <%= button_to(
+                  t(:'account_deletion.delete_panel.send_email'),
+                  request_account_deletion_path,
+                  method: :post,
+                  class: 'btn btn-primary'
+                ) %>
+          </details>
+        </div>
+      </div>
 
       <hr>
       <div class="row">

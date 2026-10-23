@@ -518,4 +518,23 @@ describe UpdateUserContactInfo, type: :routine do
       expect(page_user_three.reload.faculty_status).to eq('confirmed_faculty')
     end
   end
+
+
+  describe 'deleted users' do
+    before { stub_sentry }
+
+    it 'does not pull Salesforce data back onto the scrubbed row' do
+      user = FactoryBot.create :user, is_deleted: true, faculty_status: :incomplete_signup,
+                                      salesforce_contact_id: nil, uuid: 'deleted-uuid-001'
+      stub_salesforce_contacts(
+        [create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty', contact_id: 'C-DELETED')]
+      )
+
+      described_class.call
+
+      user.reload
+      expect(user.salesforce_contact_id).to be_nil
+      expect(user.faculty_status).to eq('incomplete_signup')
+    end
+  end
 end

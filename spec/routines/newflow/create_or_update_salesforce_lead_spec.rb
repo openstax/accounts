@@ -471,5 +471,21 @@ module Newflow
         expect(mock_lead.expected_start_semester).to be_nil
       end
     end
+
+
+    describe 'a deleted user' do
+      it 'never reads or writes Salesforce and creates no lead' do
+        user.update_column(:is_deleted, true)
+        expect(OpenStax::Salesforce::Remote::Lead).not_to receive(:find_by)
+        expect(OpenStax::Salesforce::Remote::Lead).not_to receive(:new)
+        expect(OpenStax::Salesforce::Remote::Contact).not_to receive(:find)
+
+        result = described_class.call(user: user)
+
+        expect(result.outputs.lead_saved).to be_falsey
+        expect(user.reload.salesforce_lead_id).to be_nil
+        expect(SecurityLog.where(user: user, event_type: :starting_salesforce_lead_creation)).to be_empty
+      end
+    end
   end
 end
