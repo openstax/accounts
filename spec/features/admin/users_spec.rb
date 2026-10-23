@@ -78,5 +78,47 @@ feature 'Admin user pages', js: true do
         end
       end
     end
+
+    context 'user details page' do
+      before(:each) do
+        wait_for_successful_log_in
+        @target_user = create_user('target_user')
+      end
+
+      it 'shows the self-reported "other" role name' do
+        @target_user.update_attribute(:other_role_name, 'Curriculum Coordinator')
+
+        visit "/admin/users/#{@target_user.id}/edit"
+
+        expect(page).to have_content('Curriculum Coordinator')
+      end
+
+      it 'shows when the user last signed in, including "Never" when they have not' do
+        visit "/admin/users/#{@target_user.id}/edit"
+        expect(page).to have_content('Never')
+
+        @target_user.update_column(:last_signed_in_at, Time.zone.local(2026, 1, 15, 10, 30))
+        visit "/admin/users/#{@target_user.id}/edit"
+
+        expect(page).to have_content('January 15, 2026')
+      end
+
+      it 'can remove a linked Salesforce contact with the Remove link control' do
+        @target_user.update_attribute(:salesforce_contact_id, 'existingContactId')
+
+        visit "/admin/users/#{@target_user.id}/edit"
+        expect(page).to have_content('existingContactId')
+
+        accept_confirm do
+          click_button 'Remove link'
+        end
+
+        expect(page).to have_current_path("/admin/users/#{@target_user.id}/edit")
+        expect(page).to have_content('successfully updated')
+
+        @target_user.reload
+        expect(@target_user.salesforce_contact_id).to be_nil
+      end
+    end
   end
 end

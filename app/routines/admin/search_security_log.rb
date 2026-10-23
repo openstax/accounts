@@ -38,7 +38,7 @@ module Admin
     # Downcase and try to convert to an event_type integer
     def self.sanitize_event_types(event_type_strings)
       event_type_strings.map do |event_type_string|
-        Integer(event_type) \
+        Integer(event_type_string) \
           rescue SecurityLog.event_types.keys.select{ |key| key.include?(event_type_string) }
                                              .map{ |key| SecurityLog.event_types[key] }
       end.flatten
@@ -50,6 +50,49 @@ module Admin
         Chronic.parse(time_string, context: :past, ambiguous_time_range: :none, guess: false) \
           rescue nil
       end.compact
+    end
+
+    KEYWORDS = %i[ id user_id user app ip type time any ].freeze
+
+    # Flat list of { keyword:, occurrence:, value: } filter terms, parsed with the same
+    # KeywordSearch grammar #exec uses. `occurrence` tells apart separate (AND'd) uses of one
+    # keyword; comma-separated (OR'd) values within one occurrence are split out. Negated
+    # terms are ignored because #exec's keyword blocks never see them.
+    def self.parse_filter_terms(query)
+      return [] if query.blank?
+
+      occurrences_by_keyword = Hash.new { |h, k| h[k] = [] }
+
+      KeywordSearch.search(query.to_s) do |with|
+        with.default_keyword :any
+        KEYWORDS.each do |keyword|
+          with.keyword(keyword) { |values| occurrences_by_keyword[keyword].concat(values) }
+        end
+      end
+
+      occurrences_by_keyword.flat_map do |keyword, occurrences|
+        occurrences.each_with_index.flat_map do |raw_value, occurrence|
+          raw_value.to_s.split(',').reject(&:blank?).map do |value|
+            { keyword: keyword, occurrence: occurrence, value: value }
+          end
+        end
+      end
+    rescue KeywordSearch::ParseError
+      []
+    end
+
+    # The query with one term removed. Values that shared a comma-separated OR group stay joined.
+    def self.remove_filter_term(query, keyword:, occurrence:, value:)
+      remaining = parse_filter_terms(query).reject do |term|
+        term[:keyword].to_s == keyword.to_s &&
+          term[:occurrence].to_s == occurrence.to_s &&
+          term[:value] == value
+      end
+
+      remaining.group_by { |term| [term[:keyword], term[:occurrence]] }.map do |(kw, _), terms|
+        joined_value = terms.map { |t| t[:value] }.join(',').delete('"')
+        kw == :any ? %("#{joined_value}") : %(#{kw}:"#{joined_value}")
+      end.join(' ')
     end
 
     protected
