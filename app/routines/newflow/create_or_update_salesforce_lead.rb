@@ -91,6 +91,10 @@ module Newflow
       # Only create a new lead if none exists
       if lead.nil?
         lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
+        # Stamped only here, never on a lead found by id/UUID/email: a found lead by email
+        # could belong to a real person, and relabeling it would hide them from CX.
+        lead.accounts_environment = Rails.application.secrets.environment_name
+        lead.accounts_test_user = user.is_test?
         SecurityLog.create!(
           user: user,
           event_type: :creating_new_salesforce_lead,
