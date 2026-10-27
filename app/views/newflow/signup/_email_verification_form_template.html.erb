@@ -55,6 +55,22 @@
                     %>
                 </div>
 
+                <%# Not a button_to (a nested form); after the confirm button so Enter still confirms %>
+                <div class="content resend-email">
+                    <%= I18n.t(:"login_signup_form.resend_email_prompt") %>
+                    <%= button_tag I18n.t(:"login_signup_form.resend_email_button"),
+                                   type: 'submit',
+                                   formaction: resend_signup_confirmation_email_path,
+                                   formnovalidate: true,
+                                   class: 'signup-alternatives__action resend-email__button',
+                                   data: {
+                                       'ga-category': 'Account Creation',
+                                       'ga-action': 'Click',
+                                       'ga-label': '4A-Resend Email'
+                                   }
+                    %>
+                </div>
+
             <% end %>
         <% end %>
     </div>

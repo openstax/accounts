@@ -9,6 +9,32 @@ describe Admin::UsersController, type: :controller do
     controller.sign_in! admin
   end
 
+  describe 'GET #edit PIN email delivery panel' do
+    render_views
+
+    before { Rails.cache.clear }
+
+    it 'shows each address\'s PIN email history and the overall deliverability' do
+      email = FactoryBot.create(:email_address, user: user, verified: false)
+      delivered = EmailDelivery.track_signup_confirmation!(email)
+      delivered.update!(created_at: 2.hours.ago)
+      delivered.advance!(:delivered, detail: '250 OK', delivered_at: 2.hours.ago + 7)
+      EmailDelivery.track_signup_confirmation!(email).advance!(
+        :bounced, detail: 'Permanent/General: smtp; 550 5.1.1 user unknown'
+      )
+
+      get :edit, params: { id: user.id }
+
+      expect(response.body).to include('PIN email:')
+      expect(response.body).to include('Bounced')
+      expect(response.body).to include('550 5.1.1 user unknown')
+      expect(response.body).to include('Check the address for a typo')
+      expect(response.body).to include('7s')
+      expect(response.body).to include('All PIN emails, last 7 days:')
+      expect(response.body).to include('SES event tracking is not configured here')
+    end
+  end
+
   describe 'PUT #update' do
     it 'updates a user' do
       put :update, params: {

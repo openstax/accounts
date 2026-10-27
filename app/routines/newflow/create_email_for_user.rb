@@ -3,6 +3,8 @@ module Newflow
 
     lev_routine
 
+    uses_routine SendSignupConfirmationEmail
+
     protected ###############
 
     def exec(email:, user:, is_school_issued: nil, show_pin: true)
@@ -17,9 +19,7 @@ module Newflow
           event_type: :email_added_to_user,
           event_data: { email: @email }
         )
-        NewflowMailer.signup_email_confirmation(
-          email_address: @email, show_pin: show_pin
-        ).deliver_later
+        run(SendSignupConfirmationEmail, email_address: @email, show_pin: show_pin)
       end
 
       @email.save
