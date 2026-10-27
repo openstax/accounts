@@ -1,0 +1,48 @@
+name: Enums
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'app/models/**'
+      - 'script/dump_enums.rb'
+      - 'script/compare_enums.rb'
+      - '.github/workflows/enums.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  enum-integers:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      # The base branch won't have the scripts until this PR merges, so run copies of them.
+      - name: Dump enums on head
+        env:
+          RAILS_ENV: test
+        run: |
+          cp script/dump_enums.rb script/compare_enums.rb "$RUNNER_TEMP"/
+          bin/rails runner "$RUNNER_TEMP/dump_enums.rb" > "$RUNNER_TEMP/head.json"
+
+      - name: Dump enums on base
+        env:
+          RAILS_ENV: test
+        run: |
+          git checkout --detach origin/${{ github.base_ref }}
+          bundle install
+          bin/rails runner "$RUNNER_TEMP/dump_enums.rb" > "$RUNNER_TEMP/base.json"
+
+      - name: Compare enums
+        run: ruby "$RUNNER_TEMP/compare_enums.rb" "$RUNNER_TEMP/base.json" "$RUNNER_TEMP/head.json"
