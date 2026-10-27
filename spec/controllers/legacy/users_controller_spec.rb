@@ -61,5 +61,61 @@ describe Legacy::UsersController, type: :controller do
       expect(user.reload.is_administrator).to eq false
       expect(user.first_name).to eq 'Ada'
     end
+
+    # `value[]=x` parses as an Array, which does not respond to `permit`.
+    it 'refuses an array value on the whole-name path, rather than raising' do
+      put(:update, params: { value: ['Ada'] })
+
+      expect(response.status).to eq 403
+    end
+
+    context 'self-reported school' do
+      let(:school) { FactoryBot.create :school, name: 'Rice University' }
+
+      it 'links the School and returns its canonical name when one is picked' do
+        value = { school_name: 'Rice', school_id: school.id }
+        put(:update, params: { name: 'self_reported_school', value: value })
+
+        expect(response.status).to eq 200
+        expect(response.media_type).to eq 'application/json'
+        expect(JSON.parse(response.body)['self_reported_school']).to eq 'Rice University'
+        expect(user.reload.school).to eq school
+        expect(user.self_reported_school).to eq 'Rice University'
+      end
+
+      it 'keeps typed text with no link when no school is picked' do
+        value = { school_name: 'Hogwarts Academy', school_id: '' }
+        put(:update, params: { name: 'self_reported_school', value: value })
+
+        expect(response.status).to eq 200
+        expect(JSON.parse(response.body)['self_reported_school']).to eq 'Hogwarts Academy'
+        expect(user.reload.school).to be_nil
+        expect(user.self_reported_school).to eq 'Hogwarts Academy'
+      end
+
+      it 'refuses a string value under the school field name' do
+        put(:update, params: { name: 'self_reported_school', value: 'Rice' })
+
+        expect(response.status).to eq 403
+      end
+
+      it 'refuses an array value under the school field name, rather than raising' do
+        put(:update, params: { name: 'self_reported_school', value: ['Rice'] })
+
+        expect(response.status).to eq 403
+      end
+
+      it 'clears the school when the name is blank' do
+        user.update!(school: school, self_reported_school: school.name)
+
+        value = { school_name: '', school_id: '' }
+        put(:update, params: { name: 'self_reported_school', value: value })
+
+        expect(response.status).to eq 200
+        expect(JSON.parse(response.body)['self_reported_school']).to be_nil
+        expect(user.reload.school).to be_nil
+        expect(user.self_reported_school).to be_nil
+      end
+    end
   end
 end
