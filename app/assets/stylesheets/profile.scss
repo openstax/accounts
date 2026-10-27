@@ -1,6 +1,7 @@
 $font-path: '/accounts/fonts';
 @import "bootstrap-editable";
 @import "pattern-library/elements/menus";
+@import "school_autocomplete";
 
 .main-menu {
     box-shadow: none;
