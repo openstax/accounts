@@ -12,54 +12,35 @@ class User < ApplicationRecord
     EXTERNAL = 'external', # lms users cannot login normally and skip most of the signup process
   ].freeze
 
-  UNKNOWN_ROLE = :unknown_role
-  STUDENT_ROLE = :student
-  INSTRUCTOR_ROLE = :instructor
-  ADMINISTRATOR_ROLE = :administrator
-  LIBRARIAN_ROLE = :librarian
-  DESIGNER_ROLE = :designer
-  OTHER_ROLE = :other
-  ADJUNCT_ROLE = :adjunct
-  HOMESCHOOL_ROLE = :homeschool
-  RESEARCHER_ROLE = :researcher
-
   # Every enum below is integer-backed: the DB stores the number, not the name, so a
   # value's integer is permanent. Add new ones with the next free integer; never
-  # renumber or reuse one. spec/models/enum_baseline_spec.rb enforces this.
+  # renumber or reuse one. The Enums workflow (.github/workflows/enums.yml) enforces this.
   ROLES = {
-    UNKNOWN_ROLE => 0,
-    STUDENT_ROLE => 1,
-    INSTRUCTOR_ROLE => 2,
-    ADMINISTRATOR_ROLE => 3,
-    LIBRARIAN_ROLE => 4,
-    DESIGNER_ROLE => 5,
-    OTHER_ROLE => 6,
-    ADJUNCT_ROLE => 7,
-    HOMESCHOOL_ROLE => 8,
-    RESEARCHER_ROLE => 9
+    (UNKNOWN_ROLE = :unknown_role) => 0,
+    (STUDENT_ROLE = :student) => 1,
+    (INSTRUCTOR_ROLE = :instructor) => 2,
+    (ADMINISTRATOR_ROLE = :administrator) => 3,
+    (LIBRARIAN_ROLE = :librarian) => 4,
+    (DESIGNER_ROLE = :designer) => 5,
+    (OTHER_ROLE = :other) => 6,
+    (ADJUNCT_ROLE = :adjunct) => 7,
+    (HOMESCHOOL_ROLE = :homeschool) => 8,
+    (RESEARCHER_ROLE = :researcher) => 9
   }.freeze
   VALID_ROLES = ROLES.keys.freeze
 
-  NO_FACULTY_INFO = 'no_faculty_info'
-  PENDING_FACULTY = 'pending_faculty'
-  CONFIRMED_FACULTY = 'confirmed_faculty'
-  REJECTED_FACULTY = 'rejected_faculty'
-  PENDING_SHEERID = 'pending_sheerid'
-  REJECTED_BY_SHEERID = 'rejected_by_sheerid'
-  INCOMPLETE_SIGNUP = 'incomplete_signup'
-  SHEERID_EXPIRED = 'sheerid_expired'
-  SHEERID_ERROR = 'sheerid_error'
-
+  # Strings, not symbols: the enum reader returns a String, so callers compare
+  # `user.faculty_status == User::NO_FACULTY_INFO` and a symbol would never match.
   FACULTY_STATUSES = {
-    NO_FACULTY_INFO => 0,
-    PENDING_FACULTY => 1,
-    CONFIRMED_FACULTY => 2,
-    REJECTED_FACULTY => 3,
-    PENDING_SHEERID => 4,
-    REJECTED_BY_SHEERID => 5,
-    INCOMPLETE_SIGNUP => 6,
-    SHEERID_EXPIRED => 7,
-    SHEERID_ERROR => 8
+    (NO_FACULTY_INFO = 'no_faculty_info') => 0,
+    (PENDING_FACULTY = 'pending_faculty') => 1,
+    (CONFIRMED_FACULTY = 'confirmed_faculty') => 2,
+    (REJECTED_FACULTY = 'rejected_faculty') => 3,
+    (PENDING_SHEERID = 'pending_sheerid') => 4,
+    (REJECTED_BY_SHEERID = 'rejected_by_sheerid') => 5,
+    (INCOMPLETE_SIGNUP = 'incomplete_signup') => 6,
+    (SHEERID_EXPIRED = 'sheerid_expired') => 7,
+    (SHEERID_ERROR = 'sheerid_error') => 8
   }.freeze
   VALID_FACULTY_STATUSES = FACULTY_STATUSES.keys.freeze
 
