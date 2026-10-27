@@ -28,4 +28,55 @@ feature 'User updates profile', js: true do
     end
 
   end
+
+  describe 'Updating self-reported school' do
+    before(:each) do
+      FactoryBot.create :school, name: 'Rice University', city: 'Houston', state: 'TX'
+
+      find('#self-reported-school').click
+    end
+
+    scenario 'picking a suggested school' do
+      fill_in 'school_name', with: 'Rice'
+
+      expect(page).to have_css('.school-autocomplete-results li', text: 'Rice University')
+
+      find('.school-autocomplete-results li', text: 'Rice University', match: :first).click
+      find('.glyphicon-ok').click
+
+      expect(page).to have_button('Rice University')
+      screenshot!
+    end
+
+    scenario 'typing a school name not in the list' do
+      fill_in 'school_name', with: 'Hogwarts Academy'
+
+      expect(page).to have_css('.school-autocomplete-use-as-entered', text: 'Hogwarts Academy')
+
+      find('.school-autocomplete-use-as-entered').click
+      find('.glyphicon-ok').click
+
+      expect(page).to have_button('Hogwarts Academy')
+      screenshot!
+    end
+
+    scenario 'reopening the editor does not duplicate the autocomplete list' do
+      find('.editable-cancel').click
+      find('#self-reported-school').click
+
+      # x-editable re-parses the container on every show, so reopening alone
+      # cannot duplicate anything: force the second attach directly.
+      page.execute_script(
+        "OxSchoolAutocomplete.attach(document.querySelector('.school-autocomplete'));"
+      )
+
+      fill_in 'school_name', with: 'Rice'
+
+      expect(page).to have_css('.school-autocomplete-results', count: 1, visible: :all)
+      expect(page).to have_css(
+        '.school-autocomplete-results li', text: 'Rice University', count: 1, visible: :all
+      )
+      screenshot!
+    end
+  end
 end
