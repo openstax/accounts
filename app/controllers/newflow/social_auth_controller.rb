@@ -175,9 +175,12 @@ module Newflow
 
     def external_error_path
       saved = session[:external_user_credentials] || {}
-      return newflow_login_path if saved['token'].blank? || saved['return_to'].blank?
+      token = saved['token_id'].presence && Doorkeeper::AccessToken.find_by(
+        id: saved['token_id'], resource_owner_id: @token['user_id']
+      )&.token
+      return newflow_login_path if token.blank? || saved['return_to'].blank?
 
-      new_external_user_credentials_path(token: saved['token'], return_to: saved['return_to'])
+      new_external_user_credentials_path(token: token, return_to: saved['return_to'])
     end
 
     def ensure_unverified_user(user)
