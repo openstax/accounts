@@ -7,7 +7,8 @@
 #   user:jps,richb       --> returns the security log for requests by the "jps" and "richb" users
 #   app:"OpenStax Tutor" --> returns the security log for requests by the OpenStax Tutor application
 #   ip:127.0.0.1         --> returns the security log for requests from 127.0.0.1
-#   type:admin           --> returns security logs related to admin privileges
+#   type:admin           --> returns security logs whose event type mentions "admin"
+#   type:user_updated    --> returns only user_updated logs (a full event name matches exactly)
 #   time:"this week"     --> returns security logs for this week
 #   admin                --> returns admin security logs, plus security logs for anyone named admin
 #
@@ -35,13 +36,18 @@ module Admin
                  as: :search,
                  translations: { outputs: { type: :verbatim } }
 
-    # Downcase and try to convert to an event_type integer
+    # A full name matches exactly so that clicking an entry's user_updated type doesn't
+    # also pull in user_updated_by_admin; anything shorter still matches by substring.
     def self.sanitize_event_types(event_type_strings)
-      event_type_strings.map do |event_type_string|
-        Integer(event_type_string) \
-          rescue SecurityLog.event_types.keys.select{ |key| key.include?(event_type_string) }
-                                             .map{ |key| SecurityLog.event_types[key] }
-      end.flatten
+      event_type_strings.flat_map do |event_type_string|
+        if (number = Integer(event_type_string, exception: false))
+          number
+        elsif SecurityLog.event_types.key?(event_type_string)
+          SecurityLog.event_types[event_type_string]
+        else
+          SecurityLog.event_types.select { |key, _| key.include?(event_type_string) }.values
+        end
+      end
     end
 
     # Attempt to transform string representations of times into time ranges

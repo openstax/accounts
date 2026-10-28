@@ -136,6 +136,44 @@ describe Admin::SearchSecurityLog, type: :routine do
         SecurityLog.event_types.select { |key, _| key.include?('admin') }.values
       )
     end
+
+    it "returns only the one type for an exact event type name" do
+      matches = described_class.sanitize_event_types(['user_updated'])
+
+      expect(matches).to eq [SecurityLog.event_types['user_updated']]
+      expect(matches).not_to include(SecurityLog.event_types['user_updated_by_admin'])
+    end
+
+    it "combines numeric and exact values" do
+      matches = described_class.sanitize_event_types(['34', 'user_updated'])
+
+      expect(matches).to eq [34, SecurityLog.event_types['user_updated']]
+    end
+  end
+
+  describe "exact event type names" do
+    before do
+      @updated_sl = FactoryBot.create :security_log, event_type: :user_updated
+      @updated_by_admin_sl = FactoryBot.create :security_log, event_type: :user_updated_by_admin
+    end
+
+    it "matches only the named type for type:" do
+      items = described_class.call(query: 'type:"user_updated"').outputs.items.to_a
+
+      expect(items).to match_array [@updated_sl]
+    end
+
+    it "matches only the named type for a bare term" do
+      items = described_class.call(query: '"user_updated"').outputs.items.to_a
+
+      expect(items).to match_array [@updated_sl]
+    end
+
+    it "still matches every containing type for a partial name" do
+      items = described_class.call(query: 'type:"updated"').outputs.items.to_a
+
+      expect(items).to include(@updated_sl, @updated_by_admin_sl)
+    end
   end
 
   describe ".parse_filter_terms" do

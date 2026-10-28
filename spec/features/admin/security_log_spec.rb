@@ -63,6 +63,19 @@ feature 'Admin security log page', js: true do
       expect(page).to have_content('Sign in failed')
     end
 
+    it 'filters to an exact event type, not longer types that contain its name' do
+      by_admin_user = FactoryBot.create(:user, first_name: 'Morgan', last_name: 'Ellis')
+      FactoryBot.create(:security_log, user: target_user, event_type: :user_updated)
+      FactoryBot.create(:security_log, user: by_admin_user, event_type: :user_updated_by_admin)
+
+      visit admin_security_log_path
+      click_link 'User updated', exact: true
+
+      expect(current_search_query).to eq('type:"user_updated"')
+      expect(page).to have_css('#security-log-table', text: target_user.name)
+      expect(page).to have_no_content(by_admin_user.name)
+    end
+
     it 'filters by clicking the IP cell' do
       visit admin_security_log_path
 

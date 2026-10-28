@@ -146,7 +146,7 @@ Bootstrap 3, its own `admin` layout and `admin.scss` bundle. Per-screen styles l
 
 `SecurityLog.preloaded` is `preload(:application, user: :email_addresses)`. The log table shows each user's email, so dropping `email_addresses` from that scope reintroduces a query per row.
 
-The log's query grammar (`id: user_id: user: app: ip: type: time:`, spaces AND, commas OR) is implemented in `Admin::SearchSecurityLog` and documented both in its header comment and on the page itself. Keep the two in step, and don't advertise a keyword the routine doesn't implement.
+The log's query grammar (`id: user_id: user: app: ip: type: time:`, spaces AND, commas OR) is implemented in `Admin::SearchSecurityLog` and documented both in its header comment and on the page itself. Keep the two in step, and don't advertise a keyword the routine doesn't implement. `type:` (and bare terms) match a full event type name exactly and anything else by substring, because clicking an entry's event type filters on its name and would otherwise pull in longer names like `user_updated_by_admin`.
 
 The log's active-filter chips come from `Admin::SearchSecurityLog.parse_filter_terms` / `remove_filter_term`, so a chip can never read the grammar differently than the search does. `per_page` is clamped to `Admin::SecurityLogsController::PER_PAGE_OPTIONS`, and the selector submits through an Apply button rather than `onchange` (auto-submitting on change fails WCAG 3.2.2).
 
