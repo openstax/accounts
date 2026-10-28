@@ -48,7 +48,7 @@
     OxSchoolAutocomplete.attach('.school-autocomplete');
 
     $('#remove-salesforce-contact').on('click', function() {
-      if (!window.confirm('Remove the linked Salesforce contact from this user? You can always link a new one afterward.')) {
+      if (!window.confirm('Remove the linked Salesforce contact? This also saves any other changes you have made on this page.')) {
         return;
       }
       $('#user_salesforce_contact_id').val('remove');
@@ -444,7 +444,7 @@
           <span class="help-block">
             Paste a Salesforce Contact ID above and Save to link this user to it.
             <% if @user.salesforce_contact_id.present? %>
-              "Remove link" clears the existing link immediately.
+              "Remove link" saves this whole page, not just the link.
             <% end %>
           </span>
         </div>
