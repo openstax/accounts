@@ -31,6 +31,39 @@ describe Admin::SecurityLogsHelper, type: :helper do
     end
   end
 
+  describe "#security_log_filter_path with a current search" do
+    def params_from(path)
+      Rack::Utils.parse_nested_query(URI.parse(path).query)
+    end
+
+    before { controller.params = ActionController::Parameters.new(search: { query: 'user_id:"584"' }, per_page: '50', page: '3') }
+
+    it "adds the filter to the current query" do
+      path = helper.security_log_filter_path('time', 'today')
+
+      expect(params_from(path).dig('search', 'query')).to eq 'user_id:"584" time:"today"'
+    end
+
+    it "keeps per_page but not page" do
+      params = params_from(helper.security_log_filter_path('time', 'today'))
+
+      expect(params['per_page']).to eq '50'
+      expect(params).not_to have_key('page')
+    end
+
+    it "builds a Clear all path with no query and the same per_page" do
+      expect(params_from(helper.security_log_clear_path)).to eq('per_page' => '50')
+    end
+
+    it "keeps per_page on a chip remove path" do
+      filters = helper.security_log_active_filters('user_id:"584" time:"today"')
+
+      params = params_from(filters.first[:remove_path])
+      expect(params['per_page']).to eq '50'
+      expect(params.dig('search', 'query')).to eq 'time:"today"'
+    end
+  end
+
   describe "#security_log_active_filters" do
     it "returns nothing when the query is blank" do
       expect(helper.security_log_active_filters(nil)).to eq []

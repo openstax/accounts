@@ -235,6 +235,52 @@ feature 'Admin security log page', js: true do
     end
   end
 
+  context 'filters added to an existing search' do
+    let!(:user) { FactoryBot.create(:user, first_name: 'Jamie', last_name: 'Rivera') }
+    let!(:other_user) { FactoryBot.create(:user, first_name: 'Morgan', last_name: 'Ellis') }
+
+    before do
+      FactoryBot.create(:security_log, user: user, remote_ip: '10.0.0.5', event_type: :sign_in_failed)
+      FactoryBot.create(:security_log, user: user, remote_ip: '10.0.0.5', event_type: :admin_became_user)
+      FactoryBot.create(:security_log, user: other_user, remote_ip: '10.0.0.6', event_type: :sign_in_failed)
+    end
+
+    it 'keeps the user when a quick filter is clicked, replacing a filter of the same kind' do
+      visit admin_security_log_path(search: { query: "user_id:#{user.id}" })
+
+      click_link 'Today'
+      expect_search_query(%(user_id:"#{user.id}" time:"today"))
+      expect(page).to have_css('#security-log-table', text: user.name)
+      expect(page).to have_no_content(other_user.name)
+
+      click_link 'Failed logins'
+      expect_search_query(%(user_id:"#{user.id}" time:"today" type:"sign_in_failed"))
+
+      click_link 'Admin actions'
+      expect_search_query(%(user_id:"#{user.id}" time:"today" type:"admin"))
+      expect(page).to have_no_content(other_user.name)
+    end
+
+    it 'adds a clicked cell to the search' do
+      visit admin_security_log_path(search: { query: "user_id:#{user.id}" })
+
+      first(:link, '10.0.0.5').click
+
+      expect_search_query(%(user_id:"#{user.id}" ip:"10.0.0.5"))
+    end
+
+    it 'clears every filter with Clear all, keeping the page size' do
+      visit admin_security_log_path(search: { query: "user_id:#{user.id}" }, per_page: 50)
+
+      click_link 'Clear all'
+
+      expect_query_param(%w[per_page], '50')
+      expect_query_param(%w[search], nil)
+      expect(page).to have_content(other_user.name)
+      expect(page).to have_no_css('.security-log-filter-chips')
+    end
+  end
+
   context 'empty results' do
     it 'names the active query and points to the search syntax help' do
       visit admin_security_log_path(search: { query: 'ip:"192.0.2.123"' })

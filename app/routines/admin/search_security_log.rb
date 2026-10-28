@@ -15,6 +15,10 @@
 # Query terms can be combined, e.g.: user:jps app:tutor
 # Spaces combine terms with AND; Commas combine terms with OR (same prefix only)
 #
+# The page's filter links build on the current query with .add_filter_term, which replaces any
+# existing term of the same keyword and keeps the rest; chips remove one term with
+# .remove_filter_term.
+#
 # There are currently two options to control query pagination:
 #
 #   :per_page -- the max number of results to return per page (default: 20)
@@ -95,11 +99,26 @@ module Admin
           term[:value] == value
       end
 
-      remaining.group_by { |term| [term[:keyword], term[:occurrence]] }.map do |(kw, _), terms|
-        joined_value = terms.map { |t| t[:value] }.join(',').delete('"')
+      serialize_filter_terms(remaining)
+    end
+
+    # The query with `keyword` set to `value`. Every existing term for that keyword is replaced,
+    # because AND-ing two values of one keyword (two event types, two times) nearly always matches
+    # nothing; terms for other keywords and bare terms are kept in order.
+    def self.add_filter_term(query, keyword:, value:)
+      kept = parse_filter_terms(query).reject { |term| term[:keyword].to_s == keyword.to_s }
+      added = { keyword: keyword.to_sym, occurrence: 0, value: value.to_s }
+
+      serialize_filter_terms(kept + [added])
+    end
+
+    def self.serialize_filter_terms(terms)
+      terms.group_by { |term| [term[:keyword], term[:occurrence]] }.map do |(kw, _), grouped|
+        joined_value = grouped.map { |t| t[:value] }.join(',').delete('"')
         kw == :any ? %("#{joined_value}") : %(#{kw}:"#{joined_value}")
       end.join(' ')
     end
+    private_class_method :serialize_filter_terms
 
     protected
 

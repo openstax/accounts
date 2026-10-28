@@ -9,8 +9,20 @@ module Admin
       truncate(pairs.join(', '), length: EVENT_SUMMARY_LENGTH)
     end
 
+    def security_log_current_query
+      params.dig(:search, :query)
+    end
+
     def security_log_filter_path(prefix, value)
-      admin_security_log_path(search: { query: %(#{prefix}:"#{security_log_escape_filter_value(value)}") })
+      query = Admin::SearchSecurityLog.add_filter_term(
+        security_log_current_query, keyword: prefix, value: security_log_escape_filter_value(value)
+      )
+
+      security_log_path_with(query)
+    end
+
+    def security_log_clear_path
+      security_log_path_with(nil)
     end
 
     def security_log_active_filters(query)
@@ -21,12 +33,18 @@ module Admin
 
         {
           label: security_log_chip_label(term[:keyword], term[:value]),
-          remove_path: admin_security_log_path(search: { query: remaining_query })
+          remove_path: security_log_path_with(remaining_query)
         }
       end
     end
 
     private
+
+    # per_page survives a filter click; page does not, since a new filter starts at page 1.
+    def security_log_path_with(query)
+      admin_security_log_path({ search: ({ query: query } if query.present?),
+                                per_page: params[:per_page].presence }.compact)
+    end
 
     def security_log_chip_label(keyword, value)
       case keyword

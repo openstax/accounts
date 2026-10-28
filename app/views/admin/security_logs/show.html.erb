@@ -35,6 +35,10 @@
           Combine keywords with a space for AND, or a comma (within the same keyword) for OR
           &mdash; e.g. <code>user:jps,richb app:tutor</code>.
         </p>
+        <p>
+          Clicking a filter adds it to the current search, replacing any filter of the same kind.
+          Remove one with its &times; chip, or use Clear all to start over.
+        </p>
         <ul>
           <li><code>id:42</code> &mdash; the security log with id 42</li>
           <li><code>user_id:42</code> &mdash; entries for the user with id 42</li>
@@ -51,7 +55,7 @@
 
 <% end %>
 
-<% active_filters = security_log_active_filters(params.dig(:search, :query)) %>
+<% active_filters = security_log_active_filters(security_log_current_query) %>
 <% if active_filters.any? %>
   <ul class="security-log-filter-chips">
     <% active_filters.each do |filter| %>
@@ -61,11 +65,14 @@
                     aria: { label: "Remove filter #{filter[:label]}" } do %>&times;<% end %>
       </li>
     <% end %>
+    <li class="filter-chip-clear">
+      <%= link_to 'Clear all', security_log_clear_path, aria: { label: 'Clear all search filters' } %>
+    </li>
   </ul>
 <% end %>
 
 <%= form_tag admin_security_log_path, method: :get, class: 'form-inline per-page-form' do %>
-  <%= hidden_field_tag 'search[query]', params.dig(:search, :query) %>
+  <%= hidden_field_tag 'search[query]', security_log_current_query %>
   <%= label_tag :per_page, 'Per page' %>
   <%= select_tag :per_page,
                  options_for_select(Admin::SecurityLogsController::PER_PAGE_OPTIONS, @per_page),
@@ -81,9 +88,9 @@
   </div>
 <% else %>
   <div class="security-log-empty-state" role="status">
-    <% if params.dig(:search, :query).present? %>
+    <% if security_log_current_query.present? %>
       <p>
-        No security log entries match <code><%= params.dig(:search, :query) %></code>.
+        No security log entries match <code><%= security_log_current_query %></code>.
         The query might be the problem &mdash; check the
         <a href="#search-help" data-toggle="collapse">search syntax help</a> above.
       </p>

@@ -235,4 +235,37 @@ describe Admin::SearchSecurityLog, type: :routine do
     end
   end
 
+  describe ".add_filter_term" do
+    it "appends the term to the current query" do
+      result = described_class.add_filter_term('user_id:"584"', keyword: :time, value: 'today')
+
+      expect(result).to eq 'user_id:"584" time:"today"'
+    end
+
+    it "replaces an existing term of the same keyword and keeps the others in order" do
+      query = 'user_id:"584" type:"sign_in_failed" time:"this week" "jps"'
+
+      result = described_class.add_filter_term(query, keyword: :type, value: 'admin')
+
+      expect(result).to eq 'user_id:"584" time:"this week" "jps" type:"admin"'
+    end
+
+    it "replaces a comma-separated OR group of the same keyword" do
+      result = described_class.add_filter_term('user_id:"584" type:a,b', keyword: 'type', value: 'admin')
+
+      expect(result).to eq 'user_id:"584" type:"admin"'
+    end
+
+    it "returns just the new term for a blank query" do
+      expect(described_class.add_filter_term(nil, keyword: :ip, value: '10.0.0.1')).to eq 'ip:"10.0.0.1"'
+      expect(described_class.add_filter_term('', keyword: :ip, value: '10.0.0.1')).to eq 'ip:"10.0.0.1"'
+    end
+
+    it "round-trips through parse_filter_terms" do
+      result = described_class.add_filter_term('user_id:584', keyword: :type, value: 'admin')
+
+      terms = described_class.parse_filter_terms(result).map { |t| t.slice(:keyword, :value) }
+      expect(terms).to eq [{ keyword: :user_id, value: '584' }, { keyword: :type, value: 'admin' }]
+    end
+  end
 end
