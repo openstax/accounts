@@ -35,13 +35,13 @@ class SheeridVerification < ApplicationRecord
   def faculty_status_for_step
     case current_step
     when VERIFIED
-      User::CONFIRMED_FACULTY
+      'confirmed_faculty'
     when REJECTED
-      User::REJECTED_BY_SHEERID
+      'rejected_by_sheerid'
     when ERROR
-      expired? ? User::SHEERID_EXPIRED : User::SHEERID_ERROR
+      expired? ? 'sheerid_expired' : 'sheerid_error'
     else
-      User::PENDING_SHEERID
+      'pending_sheerid'
     end
   end
 

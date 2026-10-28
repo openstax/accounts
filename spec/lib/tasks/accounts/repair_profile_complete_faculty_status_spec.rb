@@ -8,7 +8,7 @@ describe 'accounts:repair_profile_complete_faculty_status' do
 
   it "advances a non-student user's faculty_status to pending_faculty and logs the repair" do
     user = FactoryBot.create(
-      :user, role: User::INSTRUCTOR_ROLE, faculty_status: :incomplete_signup,
+      :user, role: :instructor, faculty_status: :incomplete_signup,
              profile_completed_at: Time.current
     )
 
@@ -25,7 +25,7 @@ describe 'accounts:repair_profile_complete_faculty_status' do
 
   it 'rolls the advance back when the lead push cannot be enqueued, so a rerun still finds the user' do
     user = FactoryBot.create(
-      :user, role: User::INSTRUCTOR_ROLE, faculty_status: :incomplete_signup,
+      :user, role: :instructor, faculty_status: :incomplete_signup,
              profile_completed_at: Time.current
     )
     allow(Newflow::CreateOrUpdateSalesforceLead).to receive(:perform_later).and_raise(StandardError, 'queue down')
@@ -38,7 +38,7 @@ describe 'accounts:repair_profile_complete_faculty_status' do
 
   it 'skips a user whose profile_completed_at is nil' do
     user = FactoryBot.create(
-      :user, role: User::INSTRUCTOR_ROLE, faculty_status: :incomplete_signup,
+      :user, role: :instructor, faculty_status: :incomplete_signup,
              profile_completed_at: nil
     )
 
@@ -51,7 +51,7 @@ describe 'accounts:repair_profile_complete_faculty_status' do
 
   it 'skips a student even with profile_completed_at set and incomplete_signup' do
     user = FactoryBot.create(
-      :user, role: User::STUDENT_ROLE, faculty_status: :incomplete_signup,
+      :user, role: :student, faculty_status: :incomplete_signup,
              profile_completed_at: Time.current
     )
 
@@ -64,7 +64,7 @@ describe 'accounts:repair_profile_complete_faculty_status' do
 
   it 'skips a user already at pending_faculty' do
     user = FactoryBot.create(
-      :user, role: User::INSTRUCTOR_ROLE, faculty_status: :pending_faculty,
+      :user, role: :instructor, faculty_status: :pending_faculty,
              profile_completed_at: Time.current
     )
 
@@ -77,7 +77,7 @@ describe 'accounts:repair_profile_complete_faculty_status' do
 
   it 'skips a user already at confirmed_faculty' do
     user = FactoryBot.create(
-      :user, role: User::INSTRUCTOR_ROLE, faculty_status: :confirmed_faculty,
+      :user, role: :instructor, faculty_status: :confirmed_faculty,
              profile_completed_at: Time.current
     )
 
@@ -91,7 +91,7 @@ describe 'accounts:repair_profile_complete_faculty_status' do
   describe 'DRY_RUN' do
     it 'changes nothing and pushes no leads' do
       user = FactoryBot.create(
-        :user, role: User::INSTRUCTOR_ROLE, faculty_status: :incomplete_signup,
+        :user, role: :instructor, faculty_status: :incomplete_signup,
                profile_completed_at: Time.current
       )
       stub_const('ENV', ENV.to_hash.merge('DRY_RUN' => 'true'))

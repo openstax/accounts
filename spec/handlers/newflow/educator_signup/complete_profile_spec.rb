@@ -229,7 +229,7 @@ module Newflow
           end
 
           it 'advances incomplete_signup to pending_faculty when the user skipped SheerID' do
-            user.update!(faculty_status: User::INCOMPLETE_SIGNUP, is_sheerid_unviable: true)
+            user.update!(faculty_status: :incomplete_signup, is_sheerid_unviable: true)
 
             handle
             user.reload

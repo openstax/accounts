@@ -164,7 +164,7 @@ module Newflow
     end
 
     context 'when educator has not verified their only email address' do
-      let!(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: User::INSTRUCTOR_ROLE) }
+      let!(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: :instructor) }
       let!(:email_address) { FactoryBot.create(:email_address, user: user, verified: false) }
       let!(:identity) { FactoryBot.create(:identity, user: user, password: password) }
       let!(:password) { 'password' }
@@ -192,7 +192,7 @@ module Newflow
 
       let(:user) do
         FactoryBot.create(
-          :user, is_newflow: true, role: User::INSTRUCTOR_ROLE,
+          :user, is_newflow: true, role: :instructor,
           is_profile_complete: false, sheerid_verification_id: Faker::Alphanumeric.alphanumeric
         )
       end
@@ -234,7 +234,7 @@ module Newflow
 
       let(:user) do
         FactoryBot.create(
-          :user, is_newflow: true, role: User::INSTRUCTOR_ROLE,
+          :user, is_newflow: true, role: :instructor,
           is_profile_complete: false, sheerid_verification_id: Faker::Alphanumeric.alphanumeric
         )
       end

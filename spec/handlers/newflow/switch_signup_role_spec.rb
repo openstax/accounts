@@ -7,8 +7,8 @@ module Newflow
       let(:user) do
         FactoryBot.create(
           :user,
-          role: User::INSTRUCTOR_ROLE,
-          faculty_status: User::PENDING_FACULTY,
+          role: :instructor,
+          faculty_status: :pending_faculty,
           sheerid_verification_id: 'SHEERID_123',
           sheerid_reported_school: 'Wayne State University',
           is_sheerid_unviable: true,
@@ -26,7 +26,7 @@ module Newflow
 
         user.reload
         expect(user.role).to eq('student')
-        expect(user.faculty_status).to eq(User::REJECTED_FACULTY)
+        expect(user.faculty_status).to eq('rejected_faculty')
         expect(user.sheerid_verification_id).to be_nil
         expect(user.sheerid_reported_school).to be_nil
         expect(user.is_sheerid_unviable).to eq(false)
@@ -57,7 +57,7 @@ module Newflow
         }.not_to raise_error
 
         expect(user.reload.role).to eq('student')
-        expect(user.faculty_status).to eq(User::REJECTED_FACULTY)
+        expect(user.faculty_status).to eq('rejected_faculty')
       end
 
       it 'logs the switch' do
@@ -71,7 +71,7 @@ module Newflow
     end
 
     context 'student switching to educator' do
-      let(:user) { FactoryBot.create(:user, role: User::STUDENT_ROLE) }
+      let(:user) { FactoryBot.create(:user, role: :student) }
 
       it 'makes them an instructor with an incomplete signup' do
         allow(UpdateExistingSalesforceLead).to receive(:perform_later)
@@ -81,14 +81,14 @@ module Newflow
         expect(result.errors).to be_empty
         expect(result.outputs.switched_to).to eq(:educator)
         expect(user.reload.role).to eq('instructor')
-        expect(user.faculty_status).to eq(User::INCOMPLETE_SIGNUP)
+        expect(user.faculty_status).to eq('incomplete_signup')
         expect(UpdateExistingSalesforceLead).not_to have_received(:perform_later)
       end
     end
 
     it 'refuses to undo a confirmed faculty verification' do
       user = FactoryBot.create(
-        :user, role: User::INSTRUCTOR_ROLE, faculty_status: User::CONFIRMED_FACULTY
+        :user, role: :instructor, faculty_status: :confirmed_faculty
       )
 
       result = described_class.call(user: user)
@@ -98,7 +98,7 @@ module Newflow
     end
 
     it 'refuses accounts created outside the signup funnel' do
-      user = FactoryBot.create(:user, role: User::UNKNOWN_ROLE)
+      user = FactoryBot.create(:user, role: :unknown_role)
 
       result = described_class.call(user: user)
 
@@ -108,7 +108,7 @@ module Newflow
 
     it 'switches an educator who picked a step 4 role other than instructor' do
       user = FactoryBot.create(
-        :user, role: User::LIBRARIAN_ROLE, faculty_status: User::PENDING_FACULTY
+        :user, role: :librarian, faculty_status: :pending_faculty
       )
       allow(UpdateExistingSalesforceLead).to receive(:perform_later)
 

@@ -76,7 +76,7 @@ module Newflow
     end
 
     context 'when student has not verified their only email address' do
-      let!(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: User::STUDENT_ROLE) }
+      let!(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: :student) }
       let!(:email_address) { FactoryBot.create(:email_address, user: user, verified: false) }
       let!(:identity) { FactoryBot.create(:identity, user: user, password: password) }
       let!(:password) { 'password' }

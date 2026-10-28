@@ -5,7 +5,7 @@ FactoryBot.define do
     first_name { Faker::Name.first_name }
     last_name  { Faker::Name.last_name  }
     uuid {Faker::Alphanumeric.alphanumeric(number: 10, min_alpha: 3, min_numeric: 3)}
-    role { User::STUDENT_ROLE }
+    role { :student }
     school { FactoryBot.build(:school) }
     consent_preferences { JSON.generate({
       accepted: ['necessary', 'analytics', 'functional'],

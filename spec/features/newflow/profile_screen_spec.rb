@@ -54,7 +54,7 @@ feature 'profile screen', js: true do
     context 'when the user is an instructor' do
       let(:user) do
         create_user('profile_cards').tap do |instructor|
-          instructor.update!(role: User::INSTRUCTOR_ROLE, faculty_status: User::CONFIRMED_FACULTY)
+          instructor.update!(role: :instructor, faculty_status: :confirmed_faculty)
         end
       end
 

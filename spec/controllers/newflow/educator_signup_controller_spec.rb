@@ -13,7 +13,7 @@ module Newflow
 
     describe 'GET #educator_profile_form' do
       render_views
-      let(:user) { FactoryBot.create(:user, role: User::INSTRUCTOR_ROLE, school_type: school_type, is_profile_complete: false) }
+      let(:user) { FactoryBot.create(:user, role: :instructor, school_type: school_type, is_profile_complete: false) }
 
       before do
         allow_any_instance_of(FetchBookData).to receive(:titles).and_return([])
@@ -358,7 +358,7 @@ module Newflow
         u = create_newflow_user('cs-approved@openstax.org', 'password', nil, nil, 'instructor')
         u.update!(
           is_educator_pending_cs_verification: true,
-          faculty_status: User::CONFIRMED_FACULTY,
+          faculty_status: :confirmed_faculty,
           is_profile_complete: true
         )
         u
@@ -372,7 +372,7 @@ module Newflow
       end
 
       it 'still redirects a pending CS-form user (not yet confirmed or rejected) to the pending CS page' do
-        user.update!(faculty_status: User::PENDING_FACULTY)
+        user.update!(faculty_status: :pending_faculty)
         get(:educator_profile_form)
         expect(response).to redirect_to(educator_pending_cs_verification_path)
       end

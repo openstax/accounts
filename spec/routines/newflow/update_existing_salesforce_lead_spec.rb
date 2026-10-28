@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Newflow
   describe UpdateExistingSalesforceLead, type: :routine do
-    let(:user) { FactoryBot.create(:user, role: User::STUDENT_ROLE, salesforce_lead_id: 'SF_LEAD_123') }
+    let(:user) { FactoryBot.create(:user, role: :student, salesforce_lead_id: 'SF_LEAD_123') }
     let(:lead) { OpenStax::Salesforce::Remote::Lead.new(email: 'someone@example.com') }
 
     before do

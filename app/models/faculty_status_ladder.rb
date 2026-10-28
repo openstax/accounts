@@ -8,15 +8,15 @@
 # assign the column directly.
 module FacultyStatusLadder
   RANK = {
-    User::NO_FACULTY_INFO     => 0,
-    User::INCOMPLETE_SIGNUP   => 1,
-    User::PENDING_SHEERID     => 2,
-    User::SHEERID_EXPIRED     => 2,
-    User::SHEERID_ERROR       => 2,
-    User::REJECTED_BY_SHEERID => 2,
-    User::PENDING_FACULTY     => 3,
-    User::CONFIRMED_FACULTY   => 4,
-    User::REJECTED_FACULTY    => 4
+    'no_faculty_info'     => 0,
+    'incomplete_signup'   => 1,
+    'pending_sheerid'     => 2,
+    'sheerid_expired'     => 2,
+    'sheerid_error'       => 2,
+    'rejected_by_sheerid' => 2,
+    'pending_faculty'     => 3,
+    'confirmed_faculty'   => 4,
+    'rejected_faculty'    => 4
   }.freeze
 
   TERMINAL_RANK = 4

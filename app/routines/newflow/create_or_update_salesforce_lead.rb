@@ -245,7 +245,7 @@ module Newflow
       lead.adoption_json = adoption_json
       lead.os_accounts_id = user.id
       lead.accounts_uuid = user.uuid
-      lead.verification_status = user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status
+      lead.verification_status = user.no_faculty_info? ? nil : user.faculty_status
       lead.newsletter_opt_in = user.receive_newsletter?
       lead.last_account_login_date = user.last_signed_in_at&.to_date
       lead.signup_date = user.created_at.strftime("%Y-%m-%dT%T.%L%z")

@@ -64,7 +64,7 @@ module Newflow
         describe 'students' do
           before do
             user = create_newflow_user('user@openstax.org', 'password')
-            user.update!(role: User::STUDENT_ROLE)
+            user.update!(role: :student)
             expect_any_instance_of(LogInUser).to receive(:call).once.and_call_original
           end
 
@@ -133,7 +133,7 @@ module Newflow
           let(:user) { create_newflow_user('user@openstax.org', 'password') }
 
           before do
-            user.update!(role: User::INSTRUCTOR_ROLE)
+            user.update!(role: :instructor)
           end
 
           let(:params) do

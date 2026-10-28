@@ -22,15 +22,15 @@ describe UpdateUserLeadInfo, type: :routine do
   it 'skips switched student leads so the resync does not overwrite the marker' do
     switched_user = FactoryBot.create(
       :user,
-      role: User::STUDENT_ROLE,
-      faculty_status: User::REJECTED_FACULTY,
+      role: :student,
+      faculty_status: :rejected_faculty,
       salesforce_lead_id: 'SF_LEAD_123',
       uuid: 'switched-user-uuid'
     )
     other_user = FactoryBot.create(
       :user,
-      role: User::INSTRUCTOR_ROLE,
-      faculty_status: User::INCOMPLETE_SIGNUP,
+      role: :instructor,
+      faculty_status: :incomplete_signup,
       salesforce_lead_id: 'SF_LEAD_456',
       uuid: 'other-user-uuid'
     )
@@ -44,8 +44,8 @@ describe UpdateUserLeadInfo, type: :routine do
 
     described_class.call
 
-    expect(switched_user.reload.faculty_status).to eq(User::REJECTED_FACULTY)
-    expect(other_user.reload.faculty_status).to eq(User::CONFIRMED_FACULTY)
+    expect(switched_user.reload.faculty_status).to eq('rejected_faculty')
+    expect(other_user.reload.faculty_status).to eq('confirmed_faculty')
   end
 
   describe 'adopting salesforce_lead_id' do

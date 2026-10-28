@@ -12,7 +12,7 @@ module Newflow
     # won't downgrade it, so the marker survives both nightly syncs and stays
     # countable in Salesforce.
     EDUCATOR_ARTIFACTS = {
-      faculty_status: User::REJECTED_FACULTY,
+      faculty_status: :rejected_faculty,
       sheerid_verification_id: nil,
       sheerid_reported_school: nil,
       is_sheerid_unviable: false,
@@ -40,7 +40,7 @@ module Newflow
         # They already passed verification; a stray click shouldn't undo that.
         fatal_error(code: :already_verified_faculty) if user.confirmed_faculty?
 
-        # Every other role in VALID_ROLES is an educator role that step 4 can assign,
+        # Every other value of the role enum is an educator role that step 4 can assign,
         # so those are legitimately switchable. unknown_role is not: it belongs to
         # accounts created outside signup (API, LMS, OAuth), which have no funnel to
         # switch within.
@@ -50,9 +50,9 @@ module Newflow
         outputs.switched_to = user.student? ? :educator : :student
 
         if outputs.switched_to == :educator
-          user.update(role: User::INSTRUCTOR_ROLE, faculty_status: User::INCOMPLETE_SIGNUP)
+          user.update(role: :instructor, faculty_status: :incomplete_signup)
         else
-          user.update(EDUCATOR_ARTIFACTS.merge(role: User::STUDENT_ROLE))
+          user.update(EDUCATOR_ARTIFACTS.merge(role: :student))
           update_salesforce_lead = true
         end
 

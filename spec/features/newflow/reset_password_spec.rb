@@ -5,7 +5,7 @@ require_relative './adding_and_resetting_password_from_profile'
 feature 'Password reset', js: true do
   before do
     turn_on_student_feature_flag
-    user.update!(role: User::STUDENT_ROLE)
+    user.update!(role: :student)
   end
 
   let!(:user) {

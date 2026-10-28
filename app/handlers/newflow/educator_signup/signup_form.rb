@@ -3,10 +3,9 @@ module Newflow
     class SignupForm
 
       USER_DEFAULT_STATE = :unverified
-      USER_FACULTY_STATUS = User::INCOMPLETE_SIGNUP
       USER_ROLE = :instructor
       USER_IS_NEWFLOW = true
-      private_constant(:USER_DEFAULT_STATE, :USER_FACULTY_STATUS, :USER_ROLE, :USER_IS_NEWFLOW)
+      private_constant(:USER_DEFAULT_STATE, :USER_ROLE, :USER_IS_NEWFLOW)
 
       lev_handler
 
@@ -86,7 +85,7 @@ module Newflow
           is_newflow: USER_IS_NEWFLOW,
           state: USER_DEFAULT_STATE,
           role: USER_ROLE,
-          faculty_status: USER_FACULTY_STATUS,
+          faculty_status: :incomplete_signup,
           first_name: signup_params.first_name,
           last_name: signup_params.last_name,
           phone_number: signup_params.phone_number,

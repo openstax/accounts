@@ -172,8 +172,8 @@ class UpdateUserLeadInfo
   # name; nil maps to no_faculty_info, unknown values raise an error.
   def faculty_status_from_lead(lead)
     status = lead.verification_status
-    return User::NO_FACULTY_INFO if status.nil?
-    return status if User::VALID_FACULTY_STATUSES.include?(status)
+    return 'no_faculty_info' if status.nil?
+    return status if User.faculty_statuses.key?(status)
 
     raise UnknownVerificationStatusError,
           "Unknown FV_Status__c field: '#{status}' on lead #{lead.id}"
