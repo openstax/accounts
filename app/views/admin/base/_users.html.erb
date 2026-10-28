@@ -9,7 +9,15 @@
                  html: {class: 'form-inline'} do |f| %>
 
   Search for
-  <%= f.search_field :terms, style: 'width:500px;', class: 'form-control' %>
+  <%= f.search_field :terms,
+                      style: 'width:400px;',
+                      class: 'form-control',
+                      placeholder: 'id:42, email:jane@example.com, or name:garcia' %>
+
+  Ordered by
+  <%= f.search_field :order_by, style: 'width:150px;', class: 'form-control' %>
+
+  <%= f.hidden_field :per_page, value: 50 %>
 
   <%= f.submit 'Search', class: 'btn btn-primary' %>
 

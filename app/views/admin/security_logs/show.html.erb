@@ -21,14 +21,81 @@
     <span class="col-sm-1"></span>
 
     <span class="col-sm-10">
-      <small class="text-muted">Example: user:anon,admin time:"this week"</small>
+      <div class="search-quick-filters">
+        <%= link_to 'Today', security_log_filter_path('time', 'today'), class: 'btn btn-default btn-xs' %>
+        <%= link_to 'Failed logins', security_log_filter_path('type', 'sign_in_failed'), class: 'btn btn-default btn-xs' %>
+        <%= link_to 'Admin actions', security_log_filter_path('type', 'admin'), class: 'btn btn-default btn-xs' %>
+      </div>
+
+      <a href="#search-help" data-toggle="collapse" class="search-help-toggle"
+         aria-expanded="false" aria-controls="search-help">Search syntax help</a>
+
+      <div id="search-help" class="collapse search-help">
+        <p>
+          Combine keywords with a space for AND, or a comma (within the same keyword) for OR
+          &mdash; e.g. <code>user:jps,richb app:tutor</code>.
+        </p>
+        <p>
+          Clicking a filter adds it to the current search, replacing any filter of the same kind.
+          Remove one with its &times; chip, or use Clear all to start over.
+        </p>
+        <ul>
+          <li><code>id:42</code> &mdash; the security log with id 42</li>
+          <li><code>user_id:42</code> &mdash; entries for the user with id 42</li>
+          <li><code>user:jps,richb</code> &mdash; entries for the "jps" and "richb" users (also matches "anonymous" or "application")</li>
+          <li><code>app:"OpenStax Tutor"</code> &mdash; entries from the OpenStax Tutor application</li>
+          <li><code>ip:127.0.0.1</code> &mdash; entries from that IP address</li>
+          <li><code>type:admin</code> &mdash; entries whose event type mentions "admin"</li>
+          <li><code>type:user_updated</code> &mdash; only that event; a full event name matches exactly, a partial name matches every type containing it</li>
+          <li><code>time:"this week"</code> &mdash; entries from this week</li>
+        </ul>
+      </div>
     </span>
   </div>
 
 <% end %>
 
-<%= render partial: "shared/security_log", locals: { security_log: @security_log } %>
+<% active_filters = security_log_active_filters(security_log_current_query) %>
+<% if active_filters.any? %>
+  <ul class="security-log-filter-chips">
+    <% active_filters.each do |filter| %>
+      <li class="filter-chip">
+        <%= filter[:label] %>
+        <%= link_to filter[:remove_path], class: 'filter-chip__remove',
+                    aria: { label: "Remove filter #{filter[:label]}" } do %>&times;<% end %>
+      </li>
+    <% end %>
+    <li class="filter-chip-clear">
+      <%= link_to 'Clear all', security_log_clear_path, aria: { label: 'Clear all search filters' } %>
+    </li>
+  </ul>
+<% end %>
 
-<div class="digg_pagination">
-  <%= will_paginate @security_log %>
-</div>
+<%= form_tag admin_security_log_path, method: :get, class: 'form-inline per-page-form' do %>
+  <%= hidden_field_tag 'search[query]', security_log_current_query %>
+  <%= label_tag :per_page, 'Per page' %>
+  <%= select_tag :per_page,
+                 options_for_select(Admin::SecurityLogsController::PER_PAGE_OPTIONS, @per_page),
+                 class: 'form-control input-sm' %>
+  <%= submit_tag 'Apply', class: 'btn btn-default btn-sm' %>
+<% end %>
+
+<% if @security_log.any? %>
+  <%= render partial: "shared/security_log", locals: { security_log: @security_log } %>
+
+  <div class="digg_pagination">
+    <%= will_paginate @security_log %>
+  </div>
+<% else %>
+  <div class="security-log-empty-state" role="status">
+    <% if security_log_current_query.present? %>
+      <p>
+        No security log entries match <code><%= security_log_current_query %></code>.
+        The query might be the problem &mdash; check the
+        <a href="#search-help" data-toggle="collapse">search syntax help</a> above.
+      </p>
+    <% else %>
+      <p>No security log entries yet.</p>
+    <% end %>
+  </div>
+<% end %>
