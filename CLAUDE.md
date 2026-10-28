@@ -152,6 +152,8 @@ The log's active-filter chips come from `Admin::SearchSecurityLog.parse_filter_t
 
 **User search (`/admin/users`).** `#search-results-list` is both the full page's `<table>` and the empty `<div>` the quick-search dialog (`admin/base/_users`) fills over AJAX, so `_admin_user_search.scss` styles it for both. In specs, `.expand` also matches the `<th class="expand">` header: use `button.expand`. The email badge is `text-transform: uppercase`, which Capybara matches as rendered, so assert it case-insensitively.
 
+**SheerID block on the user page** (`admin/users/_sheerid_verification`) keeps the status badge and verification id visible and puts the details and recent activity in a `<details>` that starts closed, because it ran to a dozen rows on every educator's page. Specs must click its `<summary>` (`find('summary', text: ...)`) before asserting on anything inside.
+
 A **new** helper file under `app/helpers/` is not picked up by a running dev server -- Rails builds its helper list at boot, and the reloader only tracks changes to files that already existed. Adding a helper means restarting the server, and a phased puma restart re-forks the same preloaded image, so it has to be a full one.
 
 ### OAuth / Doorkeeper
