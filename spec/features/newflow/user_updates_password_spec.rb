@@ -5,7 +5,7 @@ feature 'User updates password on profile screen', js: true do
     turn_on_student_feature_flag
 
     @user = create_user('user', 'password', terms_agreed: true)
-    @user.update!(role: User::STUDENT_ROLE)
+    @user.update!(role: :student)
     visit '/'
     complete_newflow_log_in_screen('user', 'password')
   end

@@ -197,7 +197,7 @@ describe PushUserSchoolToSalesforce, type: :routine do
     let(:instructor) do
       FactoryBot.create :user, role: :instructor, school: school, salesforce_contact_id: nil,
                                 salesforce_lead_id: 'SF_LEAD_001',
-                                faculty_status: User::CONFIRMED_FACULTY
+                                faculty_status: :confirmed_faculty
     end
 
     before { allow(Settings::Salesforce).to receive(:push_leads_enabled) { true } }

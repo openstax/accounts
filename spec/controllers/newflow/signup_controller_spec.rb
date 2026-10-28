@@ -48,8 +48,8 @@ module Newflow
 
       it 'sends an educator who has not verified their email back to the student PIN screen' do
         user = FactoryBot.create(
-          :user, state: User::UNVERIFIED, role: User::INSTRUCTOR_ROLE,
-          faculty_status: User::INCOMPLETE_SIGNUP
+          :user, state: User::UNVERIFIED, role: :instructor,
+          faculty_status: :incomplete_signup
         )
         session[:unverified_user_id] = user.id
 
@@ -60,7 +60,7 @@ module Newflow
       end
 
       it 'sends a signed-in student into instructor verification' do
-        user = FactoryBot.create(:user, role: User::STUDENT_ROLE)
+        user = FactoryBot.create(:user, role: :student)
         mock_current_user(user)
 
         post(:switch_role)
@@ -71,7 +71,7 @@ module Newflow
 
       it 'sends a signed-in educator to the student done screen' do
         user = FactoryBot.create(
-          :user, role: User::INSTRUCTOR_ROLE, faculty_status: User::PENDING_FACULTY
+          :user, role: :instructor, faculty_status: :pending_faculty
         )
         mock_current_user(user)
 

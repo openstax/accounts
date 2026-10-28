@@ -3,7 +3,7 @@ require 'rails_helper'
 describe CreateExternalUserCredentials, type: :handler do
   let(:user)  do
     FactoryBot.create :user, receive_newsletter: false,
-                             role: User::UNKNOWN_ROLE,
+                             role: :unknown_role,
                              state: User::EXTERNAL
   end
 

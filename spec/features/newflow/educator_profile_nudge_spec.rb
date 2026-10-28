@@ -9,7 +9,7 @@ feature 'Educator profile nudge', :js do
   def create_confirmed_but_incomplete_educator(email)
     user = create_newflow_user(email, password, nil, nil, 'instructor')
     user.update!(
-      faculty_status: User::CONFIRMED_FACULTY,
+      faculty_status: :confirmed_faculty,
       sheerid_verification_id: Faker::Alphanumeric.alphanumeric(number: 24),
       is_profile_complete: false
     )
@@ -62,7 +62,7 @@ feature 'Educator profile nudge', :js do
     end
 
     it 'is asked to sign the privacy notice before being nudged' do
-      user.update!(faculty_status: User::CONFIRMED_FACULTY)
+      user.update!(faculty_status: :confirmed_faculty)
       FinePrint::Signature.where(user: user).delete_all
 
       visit(newflow_login_path)
@@ -116,7 +116,7 @@ feature 'Educator profile nudge', :js do
     let!(:user) do
       user = create_newflow_user(email, password, nil, nil, 'instructor')
       user.update!(
-        faculty_status: User::CONFIRMED_FACULTY,
+        faculty_status: :confirmed_faculty,
         sheerid_verification_id: Faker::Alphanumeric.alphanumeric(number: 24),
         is_profile_complete: true
       )

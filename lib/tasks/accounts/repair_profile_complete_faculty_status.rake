@@ -8,8 +8,8 @@ namespace :accounts do
     counts = Hash.new(0)
 
     User.where.not(profile_completed_at: nil)
-        .where(faculty_status: User::INCOMPLETE_SIGNUP)
-        .where.not(role: User::STUDENT_ROLE)
+        .where(faculty_status: :incomplete_signup)
+        .where.not(role: :student)
         .find_each do |user|
       if dry_run
         counts[:repaired] += 1
@@ -24,7 +24,7 @@ namespace :accounts do
           next counts[:skipped] += 1 unless user.incomplete_signup?
 
           advanced = user.advance_faculty_status!(
-            User::PENDING_FACULTY,
+            :pending_faculty,
             source: :accounts,
             event_data: { reason: 'profile_completed_repair' }
           )
@@ -34,8 +34,8 @@ namespace :accounts do
             user: user,
             event_type: :faculty_status_repaired,
             event_data: {
-              from: User::INCOMPLETE_SIGNUP,
-              to: User::PENDING_FACULTY,
+              from: 'incomplete_signup',
+              to: 'pending_faculty',
               reason: 'profile_completed_repair'
             }
           )

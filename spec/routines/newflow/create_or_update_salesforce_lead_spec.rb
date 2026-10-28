@@ -68,26 +68,26 @@ module Newflow
       # student never is. Recomputing would erase the marker set by SwitchSignupRole.
       it 'keeps the rejected_faculty marker left by a role switch' do
         switched = FactoryBot.create(
-          :user, role: User::STUDENT_ROLE, faculty_status: User::REJECTED_FACULTY,
+          :user, role: :student, faculty_status: :rejected_faculty,
           is_profile_complete: false
         )
 
         lead = push_lead_for(switched)
 
-        expect(switched.reload.faculty_status).to eq(User::REJECTED_FACULTY)
+        expect(switched.reload.faculty_status).to eq('rejected_faculty')
         expect(lead.role).to eq('Student')
-        expect(lead.verification_status).to eq(User::REJECTED_FACULTY)
+        expect(lead.verification_status).to eq('rejected_faculty')
       end
 
       it 'is never stamped with a faculty status it did not have' do
         student = FactoryBot.create(
-          :user, role: User::STUDENT_ROLE, faculty_status: User::NO_FACULTY_INFO,
+          :user, role: :student, faculty_status: :no_faculty_info,
           is_profile_complete: false
         )
 
         lead = push_lead_for(student)
 
-        expect(student.reload.faculty_status).to eq(User::NO_FACULTY_INFO)
+        expect(student.reload.faculty_status).to eq('no_faculty_info')
         expect(lead.verification_status).to be_nil
       end
     end
@@ -308,21 +308,21 @@ module Newflow
       end
 
       it 'keeps confirmed_faculty on a user whose profile is not yet complete' do
-        user.update!(faculty_status: User::CONFIRMED_FACULTY, is_profile_complete: false)
+        user.update!(faculty_status: :confirmed_faculty, is_profile_complete: false)
 
         lead = push_lead_for(user)
 
-        expect(user.reload.faculty_status).to eq(User::CONFIRMED_FACULTY)
-        expect(lead.verification_status).to eq(User::CONFIRMED_FACULTY)
+        expect(user.reload.faculty_status).to eq('confirmed_faculty')
+        expect(lead.verification_status).to eq('confirmed_faculty')
       end
 
       it 'writes incomplete_signup unchanged' do
-        user.update!(faculty_status: User::INCOMPLETE_SIGNUP, is_profile_complete: false)
+        user.update!(faculty_status: :incomplete_signup, is_profile_complete: false)
 
         lead = push_lead_for(user)
 
-        expect(user.reload.faculty_status).to eq(User::INCOMPLETE_SIGNUP)
-        expect(lead.verification_status).to eq(User::INCOMPLETE_SIGNUP)
+        expect(user.reload.faculty_status).to eq('incomplete_signup')
+        expect(lead.verification_status).to eq('incomplete_signup')
       end
     end
 

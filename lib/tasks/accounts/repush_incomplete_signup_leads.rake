@@ -6,14 +6,14 @@ namespace :accounts do
   task repush_incomplete_signup_leads: :environment do
     dry_run = ENV['DRY_RUN'] == 'true'
     batch_size = 2000
-    incomplete_rank = FacultyStatusLadder::RANK.fetch(User::INCOMPLETE_SIGNUP)
+    incomplete_rank = FacultyStatusLadder::RANK.fetch('incomplete_signup')
     counts = { pushed: 0, skipped: 0, failed: 0 }
     after_id = nil
 
     fetch_leads = lambda do |cursor|
       query = OpenStax::Salesforce::Remote::Lead
               .select(:id, :accounts_uuid)
-              .where(verification_status: User::INCOMPLETE_SIGNUP)
+              .where(verification_status: 'incomplete_signup')
               .where('Accounts_UUID__c != null')
               .where(is_converted: false)
       query = query.where('Id > ?', cursor) if cursor.present?

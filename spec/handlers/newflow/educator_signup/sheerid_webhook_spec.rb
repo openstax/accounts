@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
-  let(:user)           { FactoryBot.create(:user, role: User::INSTRUCTOR_ROLE) }
+  let(:user)           { FactoryBot.create(:user, role: :instructor) }
   let!(:email_address) { FactoryBot.create(:email_address, :verified, user: user) }
   let!(:school) do
     FactoryBot.create(
@@ -53,7 +53,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
 
   context 'user who has since switched to a student account' do
     before do
-      user.update!(role: User::STUDENT_ROLE, faculty_status: User::REJECTED_FACULTY)
+      user.update!(role: :student, faculty_status: :rejected_faculty)
       stub_details(verification_id, response_for(current_step: 'success'))
     end
 
@@ -62,7 +62,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
 
       user.reload
       expect(user.role).to eq('student')
-      expect(user.faculty_status).to eq(User::REJECTED_FACULTY)
+      expect(user.faculty_status).to eq('rejected_faculty')
       expect(user.sheerid_verification_id).to be_nil
       expect(
         SecurityLog.where(event_type: :sheerid_webhook_ignored_after_role_switch).count
@@ -82,7 +82,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
 
       call_webhook
 
-      expect(user.reload.faculty_status).to eq(User::CONFIRMED_FACULTY)
+      expect(user.reload.faculty_status).to eq('confirmed_faculty')
       expect(user.school).to eq(school)
       expect(SecurityLog.where(event_type: :fv_success_by_sheerid, user: user).count).to eq(1)
 
@@ -104,7 +104,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
 
       call_webhook
 
-      expect(user.reload.faculty_status).to eq(User::REJECTED_BY_SHEERID)
+      expect(user.reload.faculty_status).to eq('rejected_by_sheerid')
       expect(SecurityLog.where(event_type: :fv_reject_by_sheerid, user: user).count).to eq(1)
 
       verification = SheeridVerification.find_by(verification_id: verification_id)
@@ -117,7 +117,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
 
       call_webhook
 
-      expect(user.reload.faculty_status).to eq(User::PENDING_SHEERID)
+      expect(user.reload.faculty_status).to eq('pending_sheerid')
       expect(SecurityLog.where(event_type: :sheerid_webhook_pending, user: user).count).to eq(1)
       expect(Sentry).not_to have_received(:capture_message)
     end
@@ -129,7 +129,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
 
       expect { call_webhook }.to change(SheeridVerification, :count).by(1)
 
-      expect(user.reload.faculty_status).to eq(User::PENDING_SHEERID)
+      expect(user.reload.faculty_status).to eq('pending_sheerid')
       expect(SecurityLog.where(event_type: :sheerid_webhook_pending, user: user).count).to eq(1)
       expect(Sentry).not_to have_received(:capture_message)
     end
@@ -141,7 +141,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
 
       call_webhook
 
-      expect(user.reload.faculty_status).to eq(User::PENDING_SHEERID)
+      expect(user.reload.faculty_status).to eq('pending_sheerid')
     end
   end
 
@@ -156,7 +156,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
 
       call_webhook
 
-      expect(user.reload.faculty_status).to eq(User::SHEERID_ERROR)
+      expect(user.reload.faculty_status).to eq('sheerid_error')
       expect(SecurityLog.where(event_type: :sheerid_webhook_error, user: user).count).to eq(1)
       expect(Sentry).to have_received(:capture_message).with(
         '[SheerID Webhook] error step received',
@@ -176,7 +176,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
 
       call_webhook
 
-      expect(user.reload.faculty_status).to eq(User::SHEERID_EXPIRED)
+      expect(user.reload.faculty_status).to eq('sheerid_expired')
       expect(SecurityLog.where(event_type: :sheerid_webhook_expired, user: user).count).to eq(1)
       expect(Sentry).to have_received(:capture_message).with(
         '[SheerID Webhook] error step received',
@@ -188,7 +188,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
     end
 
     it 'refuses to downgrade a confirmed_faculty user, logs the refusal, and stays out of Sentry' do
-      user.update!(faculty_status: User::CONFIRMED_FACULTY)
+      user.update!(faculty_status: :confirmed_faculty)
       details = response_for(
         current_step: 'error', error_ids: ['expiredVerification'], with_person_info: false
       )
@@ -196,7 +196,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
 
       call_webhook
 
-      expect(user.reload.faculty_status).to eq(User::CONFIRMED_FACULTY)
+      expect(user.reload.faculty_status).to eq('confirmed_faculty')
       expect(
         SecurityLog.where(event_type: :faculty_status_downgrade_refused, user: user).count
       ).to eq(1)
@@ -205,7 +205,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
     end
 
     it 'stays out of Sentry when a repeat expiry changes nothing' do
-      user.update!(faculty_status: User::SHEERID_EXPIRED)
+      user.update!(faculty_status: :sheerid_expired)
       details = response_for(
         current_step: 'error', error_ids: ['expiredVerification'], with_person_info: false
       )
@@ -213,7 +213,7 @@ describe Newflow::EducatorSignup::SheeridWebhook, type: :routine do
 
       call_webhook
 
-      expect(user.reload.faculty_status).to eq(User::SHEERID_EXPIRED)
+      expect(user.reload.faculty_status).to eq('sheerid_expired')
       expect(Sentry).not_to have_received(:capture_message)
     end
   end

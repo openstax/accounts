@@ -3,14 +3,14 @@ require 'rails_helper'
 describe SheeridVerification, type: :model do
   describe '#faculty_status_for_step' do
     {
-      'success' => User::CONFIRMED_FACULTY,
-      'rejected' => User::REJECTED_BY_SHEERID,
-      'docUpload' => User::PENDING_SHEERID,
-      'pending' => User::PENDING_SHEERID,
-      'collectTeacherPersonalInfo' => User::PENDING_SHEERID,
-      'emailLoop' => User::PENDING_SHEERID,
-      'sso' => User::PENDING_SHEERID,
-      'somethingSheerIDInventsLater' => User::PENDING_SHEERID,
+      'success' => 'confirmed_faculty',
+      'rejected' => 'rejected_by_sheerid',
+      'docUpload' => 'pending_sheerid',
+      'pending' => 'pending_sheerid',
+      'collectTeacherPersonalInfo' => 'pending_sheerid',
+      'emailLoop' => 'pending_sheerid',
+      'sso' => 'pending_sheerid',
+      'somethingSheerIDInventsLater' => 'pending_sheerid',
     }.each do |current_step, expected_status|
       it "maps currentStep #{current_step.inspect} to #{expected_status.inspect}" do
         verification = FactoryBot.build(:sheerid_verification, current_step: current_step)
@@ -22,14 +22,14 @@ describe SheeridVerification, type: :model do
       verification = FactoryBot.build(
         :sheerid_verification, current_step: 'error', error_ids: ['expiredVerification']
       )
-      expect(verification.faculty_status_for_step).to eq(User::SHEERID_EXPIRED)
+      expect(verification.faculty_status_for_step).to eq('sheerid_expired')
     end
 
     it 'maps any other error to sheerid_error' do
       verification = FactoryBot.build(
         :sheerid_verification, current_step: 'error', error_ids: ['verificationLimitExceeded']
       )
-      expect(verification.faculty_status_for_step).to eq(User::SHEERID_ERROR)
+      expect(verification.faculty_status_for_step).to eq('sheerid_error')
     end
 
     it 'maps expiredVerification with another error id to sheerid_error, not sheerid_expired' do
@@ -38,12 +38,12 @@ describe SheeridVerification, type: :model do
         current_step: 'error',
         error_ids: ['expiredVerification', 'verificationLimitExceeded']
       )
-      expect(verification.faculty_status_for_step).to eq(User::SHEERID_ERROR)
+      expect(verification.faculty_status_for_step).to eq('sheerid_error')
     end
 
     it 'maps an error step with no error ids to sheerid_error' do
       verification = FactoryBot.build(:sheerid_verification, current_step: 'error', error_ids: [])
-      expect(verification.faculty_status_for_step).to eq(User::SHEERID_ERROR)
+      expect(verification.faculty_status_for_step).to eq('sheerid_error')
     end
   end
 

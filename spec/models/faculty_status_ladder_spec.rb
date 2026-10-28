@@ -66,53 +66,53 @@ end
 
 describe User, '#advance_faculty_status!' do
   let(:user) {
-    FactoryBot.create(:user, role: User::INSTRUCTOR_ROLE, faculty_status: User::INCOMPLETE_SIGNUP)
+    FactoryBot.create(:user, role: :instructor, faculty_status: :incomplete_signup)
   }
 
   it 'applies an allowed move and logs faculty_status_advanced' do
     result = user.advance_faculty_status!(
-      User::PENDING_SHEERID, source: :accounts, event_data: { verification_id: 'v1' }
+      :pending_sheerid, source: :accounts, event_data: { verification_id: 'v1' }
     )
 
     expect(result).to eq(true)
-    expect(user.reload.faculty_status).to eq(User::PENDING_SHEERID)
+    expect(user.reload.faculty_status).to eq('pending_sheerid')
 
     log = SecurityLog.find_by!(event_type: :faculty_status_advanced, user: user)
     expect(log.event_data).to include(
-      'from' => User::INCOMPLETE_SIGNUP, 'to' => User::PENDING_SHEERID,
+      'from' => 'incomplete_signup', 'to' => 'pending_sheerid',
       'source' => 'accounts', 'verification_id' => 'v1'
     )
   end
 
   it 'refuses a downgrade and logs faculty_status_downgrade_refused' do
-    user.update!(faculty_status: User::CONFIRMED_FACULTY)
+    user.update!(faculty_status: :confirmed_faculty)
 
-    result = user.advance_faculty_status!(User::INCOMPLETE_SIGNUP, source: :accounts)
+    result = user.advance_faculty_status!(:incomplete_signup, source: :accounts)
 
     expect(result).to eq(false)
-    expect(user.reload.faculty_status).to eq(User::CONFIRMED_FACULTY)
+    expect(user.reload.faculty_status).to eq('confirmed_faculty')
 
     log = SecurityLog.find_by!(event_type: :faculty_status_downgrade_refused, user: user)
     expect(log.event_data).to include(
-      'from' => User::CONFIRMED_FACULTY, 'to' => User::INCOMPLETE_SIGNUP, 'source' => 'accounts'
+      'from' => 'confirmed_faculty', 'to' => 'incomplete_signup', 'source' => 'accounts'
     )
     expect(SecurityLog.where(event_type: :faculty_status_advanced, user: user)).to be_empty
   end
 
   it 'clears is_educator_pending_cs_verification when reaching a terminal status' do
-    user.update!(faculty_status: User::PENDING_FACULTY, is_educator_pending_cs_verification: true)
+    user.update!(faculty_status: :pending_faculty, is_educator_pending_cs_verification: true)
 
-    user.advance_faculty_status!(User::CONFIRMED_FACULTY, source: :salesforce)
+    user.advance_faculty_status!(:confirmed_faculty, source: :salesforce)
 
     user.reload
-    expect(user.faculty_status).to eq(User::CONFIRMED_FACULTY)
+    expect(user.faculty_status).to eq('confirmed_faculty')
     expect(user.is_educator_pending_cs_verification).to eq(false)
   end
 
   it 'is a no-op that returns true and logs nothing when the status is unchanged' do
-    user.update!(faculty_status: User::INCOMPLETE_SIGNUP)
+    user.update!(faculty_status: :incomplete_signup)
 
-    result = user.advance_faculty_status!(User::INCOMPLETE_SIGNUP, source: :accounts)
+    result = user.advance_faculty_status!(:incomplete_signup, source: :accounts)
 
     expect(result).to eq(true)
     expect(SecurityLog.where(user: user,

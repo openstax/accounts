@@ -15,71 +15,65 @@ class User < ApplicationRecord
   # Every enum below is integer-backed: the DB stores the number, not the name, so a
   # value's integer is permanent. Add new ones with the next free integer; never
   # renumber or reuse one. The Enums workflow (.github/workflows/enums.yml) enforces this.
-  ROLES = {
-    (UNKNOWN_ROLE = :unknown_role) => 0,
-    (STUDENT_ROLE = :student) => 1,
-    (INSTRUCTOR_ROLE = :instructor) => 2,
-    (ADMINISTRATOR_ROLE = :administrator) => 3,
-    (LIBRARIAN_ROLE = :librarian) => 4,
-    (DESIGNER_ROLE = :designer) => 5,
-    (OTHER_ROLE = :other) => 6,
-    (ADJUNCT_ROLE = :adjunct) => 7,
-    (HOMESCHOOL_ROLE = :homeschool) => 8,
-    (RESEARCHER_ROLE = :researcher) => 9
-  }.freeze
-  VALID_ROLES = ROLES.keys.freeze
+  enum(
+    faculty_status: {
+      no_faculty_info: 0,
+      pending_faculty: 1,
+      confirmed_faculty: 2,
+      rejected_faculty: 3,
+      pending_sheerid: 4,
+      rejected_by_sheerid: 5,
+      incomplete_signup: 6,
+      sheerid_expired: 7,
+      sheerid_error: 8
+    }
+  )
 
-  # Strings, not symbols: the enum reader returns a String, so callers compare
-  # `user.faculty_status == User::NO_FACULTY_INFO` and a symbol would never match.
-  FACULTY_STATUSES = {
-    (NO_FACULTY_INFO = 'no_faculty_info') => 0,
-    (PENDING_FACULTY = 'pending_faculty') => 1,
-    (CONFIRMED_FACULTY = 'confirmed_faculty') => 2,
-    (REJECTED_FACULTY = 'rejected_faculty') => 3,
-    (PENDING_SHEERID = 'pending_sheerid') => 4,
-    (REJECTED_BY_SHEERID = 'rejected_by_sheerid') => 5,
-    (INCOMPLETE_SIGNUP = 'incomplete_signup') => 6,
-    (SHEERID_EXPIRED = 'sheerid_expired') => 7,
-    (SHEERID_ERROR = 'sheerid_error') => 8
-  }.freeze
-  VALID_FACULTY_STATUSES = FACULTY_STATUSES.keys.freeze
+  enum(
+    role: {
+      unknown_role: 0,
+      student: 1,
+      instructor: 2,
+      administrator: 3,
+      librarian: 4,
+      designer: 5,
+      other: 6,
+      adjunct: 7,
+      homeschool: 8,
+      researcher: 9
+    }
+  )
 
-  USING_OPENSTAX_HOWS = {
-    as_primary: 0,
-    as_recommending: 1,
-    as_future: 2
-  }.freeze
-  VALID_USING_OPENSTAX_HOW = USING_OPENSTAX_HOWS.keys.freeze
+  enum(
+    using_openstax_how: {
+      as_primary: 0,
+      as_recommending: 1,
+      as_future: 2
+    }
+  )
 
-  SCHOOL_LOCATIONS = {
-    unknown_school_location: 0,
-    domestic_school: 1,
-    foreign_school: 2
-  }.freeze
-  VALID_SCHOOL_LOCATIONS = SCHOOL_LOCATIONS.keys.freeze
+  enum(
+    school_location: {
+      unknown_school_location: 0,
+      domestic_school: 1,
+      foreign_school: 2
+    }
+  )
 
-  SCHOOL_TYPES = {
-    unknown_school_type: 0,
-    other_school_type: 1,
-    college: 2,
-    high_school: 3,
-    k12_school: 4,
-    home_school: 5
-  }.freeze
-  VALID_SCHOOL_TYPES = SCHOOL_TYPES.keys.freeze
+  enum(
+    school_type: {
+      unknown_school_type: 0,
+      other_school_type: 1,
+      college: 2,
+      high_school: 3,
+      k12_school: 4,
+      home_school: 5
+    }
+  )
 
   USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
   USERNAME_MIN_LENGTH = 3
   USERNAME_MAX_LENGTH = 50
-  DEFAULT_FACULTY_STATUS = VALID_FACULTY_STATUSES[0]
-  DEFAULT_SCHOOL_TYPE = :unknown_school_type
-  DEFAULT_SCHOOL_LOCATION = VALID_SCHOOL_LOCATIONS[0]
-
-  enum(faculty_status: FACULTY_STATUSES)
-  enum(role: ROLES)
-  enum(using_openstax_how: USING_OPENSTAX_HOWS)
-  enum(school_location: SCHOOL_LOCATIONS)
-  enum(school_type: SCHOOL_TYPES)
 
   scope(
     :activated, -> {
@@ -223,10 +217,6 @@ class User < ApplicationRecord
     email_addresses.first&.value
   end
 
-  def needs_to_complete_educator_profile?
-    (role != STUDENT_ROLE) && is_newflow && !is_profile_complete
-  end
-
   def is_instructor_verification_stale?
     pending_faculty? && activated? && activated_at.present? && \
     (activated_at <= STALE_VERIFICATION_PERIOD.ago) && \
@@ -342,42 +332,6 @@ class User < ApplicationRecord
 
   def is_external?
     state == EXTERNAL
-  end
-
-  def no_faculty_info?
-    faculty_status == NO_FACULTY_INFO
-  end
-
-  def pending_faculty?
-    faculty_status == PENDING_FACULTY
-  end
-
-  def confirmed_faculty?
-    faculty_status == CONFIRMED_FACULTY
-  end
-
-  def rejected_faculty?
-    faculty_status == REJECTED_FACULTY
-  end
-
-  def pending_sheerid?
-    faculty_status == PENDING_SHEERID
-  end
-
-  def rejected_by_sheerid?
-    faculty_status == REJECTED_BY_SHEERID
-  end
-
-  def incomplete_signup?
-    faculty_status == INCOMPLETE_SIGNUP
-  end
-
-  def sheerid_expired?
-    faculty_status == SHEERID_EXPIRED
-  end
-
-  def sheerid_error?
-    faculty_status == SHEERID_ERROR
   end
 
   def in_pending_faculty_state?

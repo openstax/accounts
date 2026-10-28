@@ -103,7 +103,7 @@ module Newflow
         # mid-request can't be judged against a stale status.
         @user.with_lock do
           if FacultyStatusLadder::RANK.fetch(@user.faculty_status, 0) < FacultyStatusLadder::SHEERID_RANK
-            @user.advance_faculty_status!(User::PENDING_FACULTY, source: :accounts, event_data: { reason: 'profile_completed' })
+            @user.advance_faculty_status!(:pending_faculty, source: :accounts, event_data: { reason: 'profile_completed' })
           end
         end
 
@@ -115,7 +115,7 @@ module Newflow
           # user needs CS review to become confirmed - set it as such in accounts
           @user.update(
             requested_cs_verification_at: DateTime.now,
-            faculty_status: User::PENDING_FACULTY
+            faculty_status: :pending_faculty
           )
           unless signup_params.school_issued_email.blank?
             # this user used the CS form and _should_ have provided us an email address -

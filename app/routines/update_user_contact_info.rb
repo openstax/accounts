@@ -198,7 +198,7 @@ class UpdateUserContactInfo
   def faculty_status_from_contact(sf_contact)
     faculty_verified = sf_contact.faculty_verified
     return 'no_faculty_info' if faculty_verified.nil?
-    return faculty_verified if User::VALID_FACULTY_STATUSES.include?(faculty_verified)
+    return faculty_verified if User.faculty_statuses.key?(faculty_verified)
 
     raise UnknownFacultyVerifiedError,
           "Unknown faculty_verified field: '#{faculty_verified}' on contact #{sf_contact.id}"

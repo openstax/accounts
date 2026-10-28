@@ -13,7 +13,7 @@ class AddLoginTrackingAndSalesforceStudentIdToUsers < ActiveRecord::Migration[6.
     remove_index :users, name: 'index_users_unpushed_students_with_school',
                  algorithm: :concurrently, if_exists: true
 
-    # role = 1 is User::STUDENT_ROLE (integer-backed enum)
+    # role = 1 is student
     add_index :users, :id,
               where: 'role = 1 AND school_id IS NOT NULL AND salesforce_student_pushed_at IS NULL',
               name: 'index_users_unlinked_students_with_school',

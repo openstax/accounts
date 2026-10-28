@@ -96,7 +96,7 @@ class AnonymousUser
 
   User.faculty_statuses.each do |status, value|
     define_method "#{status}?" do
-      User::DEFAULT_FACULTY_STATUS.to_s == status
+      status == 'no_faculty_info'
     end
 
     define_method "#{status}!" do
@@ -105,7 +105,7 @@ class AnonymousUser
   end
 
   def faculty_status
-    User::DEFAULT_FACULTY_STATUS.to_s
+    'no_faculty_info'
   end
 
   def faculty_status=(status)
@@ -114,7 +114,7 @@ class AnonymousUser
 
   User.school_types.each do |type, value|
     define_method "#{type}?" do
-      User::DEFAULT_SCHOOL_TYPE.to_s == type
+      type == 'unknown_school_type'
     end
 
     define_method "#{type}!" do
@@ -123,7 +123,7 @@ class AnonymousUser
   end
 
   def school_type
-    User::DEFAULT_SCHOOL_TYPE.to_s
+    'unknown_school_type'
   end
 
   def school_type=(type)
@@ -132,7 +132,7 @@ class AnonymousUser
 
   User.school_locations.each do |location, value|
     define_method "#{location}?" do
-      User::DEFAULT_SCHOOL_LOCATION.to_s == location
+      location == 'unknown_school_location'
     end
 
     define_method "#{location}!" do
@@ -141,7 +141,7 @@ class AnonymousUser
   end
 
   def school_location
-    User::DEFAULT_SCHOOL_LOCATION.to_s
+    'unknown_school_location'
   end
 
   def school_location=(type)

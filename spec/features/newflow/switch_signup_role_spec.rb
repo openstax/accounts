@@ -95,7 +95,7 @@ module Newflow
       let!(:educator) do
         create_newflow_user(email, password, nil, nil, 'instructor')
           .tap do |user|
-            user.update!(faculty_status: User::INCOMPLETE_SIGNUP, is_profile_complete: false)
+            user.update!(faculty_status: :incomplete_signup, is_profile_complete: false)
           end
       end
 
@@ -129,7 +129,7 @@ module Newflow
       let!(:educator) do
         user = create_newflow_user(email, password, nil, nil, 'instructor')
         user.update!(
-          faculty_status: User::PENDING_FACULTY,
+          faculty_status: :pending_faculty,
           sheerid_verification_id: 'sheerid-verification-123',
           is_profile_complete: false
         )
@@ -159,7 +159,7 @@ module Newflow
       let!(:educator) do
         user = create_newflow_user(email, password, nil, nil, 'instructor')
         user.update!(
-          faculty_status: User::PENDING_FACULTY,
+          faculty_status: :pending_faculty,
           is_educator_pending_cs_verification: true,
           requested_cs_verification_at: Time.current,
           is_profile_complete: true

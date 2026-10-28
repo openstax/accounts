@@ -24,7 +24,7 @@ describe 'accounts:repair_faculty_status_from_sheerid' do
 
   it "advances a user's faculty_status to match their verification and logs the repair" do
     user = FactoryBot.create :user, faculty_status: :pending_sheerid
-    link_verification(user, User::CONFIRMED_FACULTY)
+    link_verification(user, 'confirmed_faculty')
 
     expect(Newflow::CreateOrUpdateSalesforceLead).to receive(:perform_later).with(user: user)
 
@@ -38,7 +38,7 @@ describe 'accounts:repair_faculty_status_from_sheerid' do
 
   it 'refuses a downgrade (the ladder logs the refusal; no repair log, no lead push)' do
     user = FactoryBot.create :user, faculty_status: :confirmed_faculty
-    link_verification(user, User::REJECTED_BY_SHEERID)
+    link_verification(user, 'rejected_by_sheerid')
 
     expect(Newflow::CreateOrUpdateSalesforceLead).not_to receive(:perform_later)
 
@@ -51,7 +51,7 @@ describe 'accounts:repair_faculty_status_from_sheerid' do
 
   it 'is a no-op when the computed status already matches (idempotent)' do
     user = FactoryBot.create :user, faculty_status: :confirmed_faculty
-    link_verification(user, User::CONFIRMED_FACULTY)
+    link_verification(user, 'confirmed_faculty')
 
     expect(Newflow::CreateOrUpdateSalesforceLead).not_to receive(:perform_later)
 
@@ -79,7 +79,7 @@ describe 'accounts:repair_faculty_status_from_sheerid' do
   describe 'DRY_RUN' do
     it 'writes nothing but reports the transition it would make' do
       user = FactoryBot.create :user, faculty_status: :pending_sheerid
-      link_verification(user, User::CONFIRMED_FACULTY)
+      link_verification(user, 'confirmed_faculty')
       stub_const('ENV', ENV.to_hash.merge('DRY_RUN' => 'true'))
 
       expect(Newflow::CreateOrUpdateSalesforceLead).not_to receive(:perform_later)

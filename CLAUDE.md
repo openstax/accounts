@@ -190,7 +190,7 @@ Logged-in-user API responses (`/api/user`) include `is_not_gdpr_location`; overr
 
 ### Account-flow redesign (dm-account-features branch)
 The 2026 redesign (Claude Design project "Accounts Redesign") reshaped signup + account pages:
-- **Four signup funnels** off role selection (`newflow/signup/welcome.html.erb`): student, instructor (4 steps: account → verify email → SheerID → "about your teaching"), staff ("I support instruction" → `StaffSignupController`, skips SheerID, staff roles map onto existing `User::VALID_ROLES` with the label preserved in `other_role_name`), and lifelong learner (quiet text link; minimal signup; `role: :self_learner`, excluded from Salesforce lead push and all impact counts).
+- **Four signup funnels** off role selection (`newflow/signup/welcome.html.erb`): student, instructor (4 steps: account → verify email → SheerID → "about your teaching"), staff ("I support instruction" → `StaffSignupController`, skips SheerID, staff roles map onto existing `users.role` values with the label preserved in `other_role_name`), and lifelong learner (quiet text link; minimal signup; `role: :self_learner`, excluded from Salesforce lead push and all impact counts).
 - Choosing "Other staff" on instructor step 4 redirects to the staff questionnaire (`data-staff-details-path` + `onRoleChange` in `educator_complete_dynamic.js.coffee`).
 - **SheerID school-email gate**: `EmailAddress.looks_like_school_email?` (guidance-only heuristic) drives a banner on step 3 for personal-email users; adds school email via `EducatorSignup::AddSchoolEmail` → `CreateEmailForUser`.
 - **Account pages** (`AccountController`, `/i/account/...`): tabbed shell; students get a single-column overview (saved books + instructor-connect) with instructor-only tabs hidden. `InstructorConnection` stores student→instructor claims, always `status: 'unverified'`, never pushed to Salesforce, never counted in impact.
@@ -200,6 +200,8 @@ The 2026 redesign (Claude Design project "Accounts Redesign") reshaped signup + 
 
 ### Integer-backed enums
 Every `enum` in `app/models` stores an integer and declares it explicitly, so a value's integer is permanent: give a new value the next unused one, and never renumber, remove or reuse one, or existing rows silently change meaning (array enums once re-labelled 44 values that way). The **Enums** workflow (`.github/workflows/enums.yml`) compares every enum against the base branch and fails on a changed, removed or reused integer; `spec/models/enum_integrity_spec.rb` catches two names sharing one, which Rails accepts silently.
+
+Enums have no per-value constants: write values as symbols (`role: :student`) and read them with the generated predicates (`user.confirmed_faculty?`), not `==`. The reader returns a String, so `user.faculty_status == :confirmed_faculty` is always false. Assigning an unknown value raises `ArgumentError` and an unknown value in `where` raises from Postgres, so a typo there is never silent.
 
 ### `/i/profile` renders under the `application` layout
 `OtherController#profile_newflow` calls `render layout: 'application'`, overriding the `newflow_layout` it inherits from `Newflow::BaseController` despite its template living in `app/views/newflow/base/`. So the page loads the `application`/`profile` bundles, **not** `newflow.js`/`newflow.scss` — anything it needs from newflow must be required from `app/assets/javascripts/profile/index.js` and `app/assets/stylesheets/profile.scss`. The `PUT /profile` save is a different controller again: `legacy/users#update`.
