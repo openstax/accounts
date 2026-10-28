@@ -8,12 +8,15 @@ feature 'Admin security log page', js: true do
     wait_for_successful_log_in
   end
 
-  def current_query_params
-    Rack::Utils.parse_nested_query(URI.parse(page.current_url).query)
+  # Waits for the URL: reading page.current_url right after a click races the navigation.
+  def expect_query_param(key_path, value)
+    expect(page).to have_current_path(admin_security_log_path, ignore_query: true) { |uri|
+      Rack::Utils.parse_nested_query(uri.query).dig(*key_path) == value
+    }
   end
 
-  def current_search_query
-    current_query_params.dig('search', 'query')
+  def expect_search_query(query)
+    expect_query_param(%w[search query], query)
   end
 
   context 'with a user that has a name and email' do
@@ -59,7 +62,7 @@ feature 'Admin security log page', js: true do
 
       click_link 'Sign in failed'
 
-      expect(current_search_query).to eq('type:"sign_in_failed"')
+      expect_search_query('type:"sign_in_failed"')
       expect(page).to have_content('Sign in failed')
     end
 
@@ -71,7 +74,7 @@ feature 'Admin security log page', js: true do
       visit admin_security_log_path
       click_link 'User updated', exact: true
 
-      expect(current_search_query).to eq('type:"user_updated"')
+      expect_search_query('type:"user_updated"')
       expect(page).to have_css('#security-log-table', text: target_user.name)
       expect(page).to have_no_content(by_admin_user.name)
     end
@@ -81,7 +84,7 @@ feature 'Admin security log page', js: true do
 
       click_link '10.0.0.5'
 
-      expect(current_search_query).to eq('ip:"10.0.0.5"')
+      expect_search_query('ip:"10.0.0.5"')
       expect(page).to have_content('10.0.0.5')
     end
 
@@ -90,7 +93,7 @@ feature 'Admin security log page', js: true do
 
       click_link target_user.name
 
-      expect(current_search_query).to eq(%(user_id:"#{target_user.id}"))
+      expect_search_query(%(user_id:"#{target_user.id}"))
       expect(page).to have_content(target_user.name)
     end
   end
@@ -149,9 +152,9 @@ feature 'Admin security log page', js: true do
       select '50', from: 'per_page'
       click_button 'Apply'
 
+      expect_query_param(%w[per_page], '50')
+      expect_search_query('ip:"127.0.0.1"')
       expect(page).to have_select('per_page', selected: '50')
-      expect(current_search_query).to eq('ip:"127.0.0.1"')
-      expect(current_query_params['per_page']).to eq('50')
     end
 
     it 'does not auto-submit merely from selecting a per_page option (WCAG 3.2.2)' do
@@ -220,7 +223,7 @@ feature 'Admin security log page', js: true do
 
       within('.filter-chip', text: 'IP 10.0.0.1') { click_link '×' }
 
-      expect(current_search_query).to eq('type:"sign_in_failed"')
+      expect_search_query('type:"sign_in_failed"')
       expect(page).to have_no_css('.filter-chip', text: 'IP 10.0.0.1')
       expect(page).to have_css('.filter-chip', text: 'Type Sign in failed')
     end
