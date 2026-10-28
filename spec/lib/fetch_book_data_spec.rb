@@ -51,46 +51,73 @@ describe FetchBookData, type: :lib, vcr: VCR_OPTS do
 end
 
 describe FetchBookData, type: :lib do
-  def book_states_response(key, states, extra = {})
-    books = states.map { |state|
-      { 'title' => "#{state} book", 'salesforce_abbreviation' => "#{state} abbr",
-        'book_state' => state }.merge(extra)
-    }
-    { key => books }
+  def book(attrs = {})
+    { 'title' => 'A Book', 'salesforce_abbreviation' => 'A Book' }.merge(attrs)
   end
 
-  def stub_cms_response(url, body)
-    allow_any_instance_of(described_class).to receive(:cms_fetch).with(url).and_return(body)
+  def stub_cms(url, body)
+    fetcher = described_class.new
+    allow(fetcher).to receive(:cms_fetch).with(url).and_return(body)
+    fetcher
   end
-
-  let(:all_states) { %w[live new_edition_available coming_soon deprecated retired unlisted] }
-  let(:listed_states) { %w[live new_edition_available coming_soon] }
 
   describe '#fetch_titles' do
-    before do
-      subjects = [{ 'subject_name' => 'Business' }]
-      body = book_states_response('items', all_states, 'book_subjects' => subjects)
-      stub_cms_response(described_class::TITLES_URL, body)
+    def abbreviations_for(books)
+      items = books.map { |b| b.merge('book_subjects' => [{ 'subject_name' => 'Business' }]) }
+      fetcher = stub_cms(described_class::TITLES_URL, 'items' => items)
+
+      fetcher.fetch_titles.map { |_subject, titles| titles.first.last }
     end
 
-    it 'keeps live, new edition and coming soon books and drops the rest' do
-      abbreviations = described_class.new.fetch_titles.map { |_subject, books| books.first.last }
+    it 'lists only live, new edition and coming soon books' do
+      states = %w[live new_edition_available coming_soon deprecated retired unlisted]
+      books = states.map { |state| book('salesforce_abbreviation' => state, 'book_state' => state) }
 
-      expect(abbreviations).to eq(listed_states.map { |state| "#{state} abbr" })
+      expect(abbreviations_for(books)).to eq(%w[live new_edition_available coming_soon])
+    end
+
+    it 'drops a book with no state or an unrecognized one' do
+      books = [book('salesforce_abbreviation' => 'no state'),
+               book('salesforce_abbreviation' => 'odd', 'book_state' => 'something_new'),
+               book('salesforce_abbreviation' => 'live', 'book_state' => 'live')]
+
+      expect(abbreviations_for(books)).to eq(['live'])
     end
   end
 
   describe '#fetch_books_by_subject' do
-    before do
-      body = book_states_response('books', all_states, 'subjects' => ['Business'])
-      stub_cms_response(described_class::SUBJECTS_URL, body)
+    def books_for(books)
+      items = books.map { |b| b.merge('subjects' => ['Business']) }
+      fetcher = stub_cms(described_class::SUBJECTS_URL, 'books' => items)
+
+      fetcher.fetch_books_by_subject.flat_map { |subject| subject[:books] }
     end
 
-    it 'keeps live, new edition and coming soon books and drops the rest' do
-      subjects = described_class.new.fetch_books_by_subject
+    it 'lists only live, new edition and coming soon books' do
+      states = %w[live new_edition_available coming_soon deprecated retired unlisted]
+      books = states.map { |state| book('salesforce_abbreviation' => state, 'book_state' => state) }
 
-      expect(subjects.map { |s| s[:books].map { |b| b[:salesforce_abbreviation] } })
-        .to eq([listed_states.map { |state| "#{state} abbr" }.sort])
+      expect(books_for(books).map { |b| b[:salesforce_abbreviation] })
+        .to match_array(%w[live new_edition_available coming_soon])
+    end
+
+    it 'drops a book with no state or an unrecognized one' do
+      books = [book('salesforce_abbreviation' => 'no state'),
+               book('salesforce_abbreviation' => 'odd', 'book_state' => 'something_new'),
+               book('salesforce_abbreviation' => 'live', 'book_state' => 'live')]
+
+      expect(books_for(books).map { |b| b[:salesforce_abbreviation] }).to eq(['live'])
+    end
+
+    it 'shows the live edition, not an older one that sorts first and shares its abbreviation' do
+      old_edition = book('title' => 'Principles of Finance', 'salesforce_abbreviation' => 'Finance',
+                         'book_state' => 'deprecated', 'cover_url' => 'old.png')
+      new_edition = book('title' => 'Principles of Finance 2e', 'salesforce_abbreviation' => 'Finance',
+                         'book_state' => 'live', 'cover_url' => 'new.png')
+
+      expect(books_for([old_edition, new_edition]))
+        .to eq([{ title: 'Principles of Finance 2e', salesforce_abbreviation: 'Finance',
+                  cover_url: 'new.png' }])
     end
   end
 end
