@@ -49,3 +49,48 @@ describe FetchBookData, type: :lib, vcr: VCR_OPTS do
     end
   end
 end
+
+describe FetchBookData, type: :lib do
+  def book_states_response(key, states, extra = {})
+    books = states.map { |state|
+      { 'title' => "#{state} book", 'salesforce_abbreviation' => "#{state} abbr",
+        'book_state' => state }.merge(extra)
+    }
+    { key => books }
+  end
+
+  def stub_cms_response(url, body)
+    allow_any_instance_of(described_class).to receive(:cms_fetch).with(url).and_return(body)
+  end
+
+  let(:all_states) { %w[live new_edition_available coming_soon deprecated retired unlisted] }
+  let(:listed_states) { %w[live new_edition_available coming_soon] }
+
+  describe '#fetch_titles' do
+    before do
+      subjects = [{ 'subject_name' => 'Business' }]
+      body = book_states_response('items', all_states, 'book_subjects' => subjects)
+      stub_cms_response(described_class::TITLES_URL, body)
+    end
+
+    it 'keeps live, new edition and coming soon books and drops the rest' do
+      abbreviations = described_class.new.fetch_titles.map { |_subject, books| books.first.last }
+
+      expect(abbreviations).to eq(listed_states.map { |state| "#{state} abbr" })
+    end
+  end
+
+  describe '#fetch_books_by_subject' do
+    before do
+      body = book_states_response('books', all_states, 'subjects' => ['Business'])
+      stub_cms_response(described_class::SUBJECTS_URL, body)
+    end
+
+    it 'keeps live, new edition and coming soon books and drops the rest' do
+      subjects = described_class.new.fetch_books_by_subject
+
+      expect(subjects.map { |s| s[:books].map { |b| b[:salesforce_abbreviation] } })
+        .to eq([listed_states.map { |state| "#{state} abbr" }.sort])
+    end
+  end
+end

@@ -7,6 +7,8 @@ class FetchBookData
   SUBJECTS_URL = "#{CMS_API_URL}v2/pages/subjects/"
   TIMEOUT = 5
   CACHE_DURATION = 1.day
+  # Same states as the book selector on openstax.org
+  LISTED_BOOK_STATES = %w[live new_edition_available coming_soon].freeze
 
   def titles
     @titles ||= Rails.cache.fetch('BookData.titles', expires_in: CACHE_DURATION) do
@@ -26,7 +28,7 @@ class FetchBookData
 
     items = results.fetch('items', [])
     # See https://github.com/openstax/openstax-cms/blob/main/books/constants.py#L7 for book states
-    books = items.reject { |i| %w[retired unlisted].include?(i['book_state']) }
+    books = items.select { |i| LISTED_BOOK_STATES.include?(i['book_state']) }
 
     books_with_subject = []
 
@@ -52,7 +54,7 @@ class FetchBookData
     return [] if results.blank?
 
     books = results.fetch('books', [])
-    books = books.reject { |b| %w[retired unlisted].include?(b['book_state']) }
+    books = books.select { |b| LISTED_BOOK_STATES.include?(b['book_state']) }
     books = books.select { |b| b['salesforce_abbreviation'].present? && b['title'].present? }
 
     subject_map = {}
