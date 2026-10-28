@@ -103,6 +103,21 @@ feature 'Admin user pages', js: true do
         expect(page).to have_content('January 15, 2026')
       end
 
+      it "shows the user's recorded consent choices" do
+        visit "/admin/users/#{@target_user.id}/edit"
+
+        expect(page).to have_content('Accepted: Necessary, Analytics, Functional')
+        expect(page).to have_content('Rejected: Advertisement, Performance')
+      end
+
+      it 'says so when no consent preferences are recorded' do
+        @target_user.update_column(:consent_preferences, nil)
+
+        visit "/admin/users/#{@target_user.id}/edit"
+
+        expect(page).to have_content('No preferences recorded')
+      end
+
       it 'can remove a linked Salesforce contact with the Remove link control' do
         @target_user.update_attribute(:salesforce_contact_id, 'existingContactId')
 
