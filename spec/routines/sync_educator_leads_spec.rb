@@ -221,4 +221,16 @@ describe SyncEducatorLeads do
       expect(UpdateUserLeadInfo).to have_received(:call)
     end
   end
+
+
+  describe 'deleted users' do
+    it 'never creates a Lead for a deleted user' do
+      stalled_instructor.update_column(:is_deleted, true)
+      stub_lead_creation(lead_saved: true)
+
+      described_class.call
+
+      expect(Newflow::CreateOrUpdateSalesforceLead).not_to have_received(:call)
+    end
+  end
 end

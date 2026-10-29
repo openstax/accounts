@@ -20,6 +20,8 @@ class UpdateSalesforceAssignableFields
   private
 
   def update_contact(external_id)
+    return if external_id.user.is_deleted?
+
     contact_id = external_id.user.salesforce_contact_id
     contact = find_contact(contact_id)
     return if contact.nil?

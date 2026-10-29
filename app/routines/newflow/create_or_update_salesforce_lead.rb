@@ -25,7 +25,7 @@ module Newflow
     protected #################
 
     def exec(user:)
-      return unless user
+      return if user.nil? || user.is_deleted?
 
       status.set_job_name(self.class.name)
       status.set_job_args(user: user.to_global_id.to_s)

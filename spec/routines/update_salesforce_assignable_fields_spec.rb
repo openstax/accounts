@@ -143,4 +143,14 @@ describe UpdateSalesforceAssignableFields, type: :routine do
   def stub_found_contacts(contacts_by_id)
     allow(OpenStax::Salesforce::Remote::Contact).to receive(:find) { |id| contacts_by_id[id] }
   end
+
+
+  context 'a deleted user' do
+    it 'never writes their Contact' do
+      assignable_instructor.update_column(:is_deleted, true)
+      expect(OpenStax::Salesforce::Remote::Contact).not_to receive(:find)
+
+      described_class.call
+    end
+  end
 end

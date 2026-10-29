@@ -128,5 +128,17 @@ module Newflow
 
       expect(SecurityLog.where(event_type: :updated_salesforce_lead_after_role_switch).count).to eq(0)
     end
+
+
+    it 'does nothing for a deleted user' do
+      user.update_column(:is_deleted, true)
+      expect(OpenStax::Salesforce::Remote::Lead).not_to receive(:find)
+      expect(OpenStax::Salesforce::Remote::Lead).not_to receive(:find_by)
+      expect_any_instance_of(CreateOrUpdateSalesforceLead).not_to receive(:exec)
+
+      described_class.call(user: user)
+
+      expect(user.reload.salesforce_lead_id).to eq('SF_LEAD_123')
+    end
   end
 end
