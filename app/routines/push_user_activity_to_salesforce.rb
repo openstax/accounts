@@ -2,7 +2,7 @@
 # instructors' login/last-seen activity to Salesforce. Pseudonymous by
 # design: no name or email is ever sent.
 #
-# Four bounded passes, each backed by its own partial index and gated by
+# Five bounded passes, each backed by its own partial index and gated by
 # its own feature flag:
 #   1. link/create -- runs once per student. Resolves or creates the
 #      Student__c (Name = accounts UUID, School__c = school's Salesforce
@@ -24,6 +24,11 @@
 #      links: an educator who switches to the student role keeps the Contact
 #      their lead converted into, and a shared column would let the student
 #      half suppress the Contact half.
+#   5. student signup date -- once per linked student, after the link steps so
+#      new links get theirs the same night. Writes Signup_Date__c (the user's
+#      created_at, UTC date), creating nothing. Capped per run, newest signups
+#      first, so the first nights drain the backlog without starving the
+#      passes that follow.
 #
 # Between passes 1 and 2, a link-only step attaches Student__c records that
 # something else created (the Assignable loader, Name = accounts UUID) to
@@ -32,7 +37,7 @@
 # salesforce_student_id: duplicate Student__c records exist per UUID, and a
 # user already linked must never be re-pointed.
 #
-# A 404 / missing-record answer on passes 2-4 (the Contact or Student__c was
+# A 404 / missing-record answer on passes 2-5 (the Contact or Student__c was
 # merged or deleted) unlinks the user -- id and stamps cleared -- so the next
 # link/sync can re-resolve the record. Any other failure is reported once per
 # pass, not once per user.
@@ -44,10 +49,12 @@ class PushUserActivityToSalesforce
   LINK_PAGE_SIZE = 2000
   LINK_WATERMARK_OVERLAP = 15.minutes
   LINK_LOOKBACK = 30.days
+  SIGNUP_DATE_MAX_PER_RUN = 50_000
   UUID_REGEX = ReconcileSalesforceStudentIds::UUID_REGEX
 
   STUDENT_UNLINK_COLUMNS = %i[
     salesforce_student_id salesforce_student_pushed_at salesforce_student_last_seen_pushed_at
+    salesforce_student_signup_pushed_at
   ].freeze
   CONTACT_UNLINK_COLUMNS = %i[
     salesforce_contact_id salesforce_contact_login_pushed_at salesforce_contact_last_seen_pushed_at
@@ -66,15 +73,15 @@ class PushUserActivityToSalesforce
       object: 'Student__c', id_column: :salesforce_student_id, unlink_columns: STUDENT_UNLINK_COLUMNS,
       stamp_column: :salesforce_student_last_seen_pushed_at, stamp_value: :last_seen_at
     },
+    student_signup: {
+      object: 'Student__c', id_column: :salesforce_student_id, unlink_columns: STUDENT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_student_signup_pushed_at, stamp_value: :created_at
+    },
     contact_last_seen: {
       object: 'Contact', id_column: :salesforce_contact_id, unlink_columns: CONTACT_UNLINK_COLUMNS,
       stamp_column: :salesforce_contact_last_seen_pushed_at, stamp_value: :last_seen_at
     }
   }.freeze
-
-  # Matches the slug in both REX page URLs (openstax.org/books/{slug}/pages/…)
-  # and book detail URLs (openstax.org/details/books/{slug}).
-  BOOK_SLUG_REGEX = %r{openstax\.org/(?:details/)?books/([^/?#]+)}
 
   # Keeps a running count but only the first MAX_REPORTED_FAILURES responses:
   # a widespread Salesforce error would otherwise retain one Restforce::Mash
@@ -106,6 +113,7 @@ class PushUserActivityToSalesforce
       link_and_create_students
       link_new_salesforce_students
       sync_student_login_dates
+      sync_student_signup_dates
     end
 
     sync_contact_login_dates if Settings::Salesforce.push_contact_logins_enabled
@@ -161,7 +169,7 @@ class PushUserActivityToSalesforce
       student = OpenStax::Salesforce::Remote::Student.new(
         name: user.uuid,
         school_id: sf_school_id,
-        initial_book_id: initial_book_id_for(user),
+        initial_book_id: initial_book_resolver.book_id_for(user),
         last_account_login_date: login
       )
       student.save!
@@ -177,7 +185,7 @@ class PushUserActivityToSalesforce
         changed = true
       end
 
-      if student.initial_book_id.blank? && (book_id = initial_book_id_for(user)).present?
+      if student.initial_book_id.blank? && (book_id = initial_book_resolver.book_id_for(user)).present?
         student.initial_book_id = book_id
         changed = true
       end
@@ -371,6 +379,47 @@ class PushUserActivityToSalesforce
     Sentry.capture_exception(e)
   end
 
+  # Same population as pass 2 (User.student). Newest first, capped per run: a
+  # cursor on id rather than find_in_batches, which ignores order and limit.
+  # Rows that fail keep a NULL stamp but sit behind the cursor, so they are
+  # retried next night, not in a loop.
+  def sync_student_signup_dates
+    failures = FailureTally.new
+    remaining = SIGNUP_DATE_MAX_PER_RUN
+    before_id = nil
+
+    while remaining.positive?
+      scope = User.student
+                  .where.not(salesforce_student_id: nil)
+                  .where(salesforce_student_signup_pushed_at: nil)
+      scope = scope.where('id < ?', before_id) if before_id
+      users = scope.order(id: :desc).limit([BATCH_SIZE, remaining].min).to_a
+      break if users.empty?
+
+      push_student_signup_dates(users, failures)
+      remaining -= users.size
+      before_id = users.last.id
+    end
+    report_failures('student signup dates', failures)
+  end
+
+  # Stamps the created_at that was sent, as in the other passes.
+  def push_student_signup_dates(users, failures)
+    results = OpenStax::Salesforce::Remote::Student.sfdc_client.batch do |batch|
+      users.each do |user|
+        batch.update(
+          'Student__c',
+          Id: user.salesforce_student_id,
+          Signup_Date__c: signup_date(user)
+        )
+      end
+    end
+
+    record_results(users, results, failures, :student_signup)
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
+
   # Same NULL reasoning as sync_contact_login_dates.
   def sync_contact_last_seen_dates
     failures = FailureTally.new
@@ -469,29 +518,11 @@ class PushUserActivityToSalesforce
     user.last_seen_at.utc.strftime('%Y-%m-%d')
   end
 
-  # The Salesforce Book__c id for the book whose page the student came from
-  # when signing up, resolved from the redirect URL captured in the
-  # student_signed_up security log. Nil when unknown or unresolvable.
-  def initial_book_id_for(user)
-    # reorder: SecurityLog's default scope orders created_at desc; we want
-    # the earliest signup log.
-    redirect = SecurityLog.where(user: user, event_type: :student_signed_up)
-                          .reorder(:created_at).first&.event_data&.[]('redirect')
-    slug = redirect.to_s[BOOK_SLUG_REGEX, 1]
-    return nil if slug.blank?
-
-    book_id_by_slug[slug]
+  def signup_date(user)
+    user.created_at.utc.strftime('%Y-%m-%d')
   end
 
-  # Slug => Book__c id map, queried from Salesforce at most once per call
-  # and only if some student actually has a book redirect to resolve.
-  # `where` returns an ActiveForce::ActiveQuery, which forwards only each/map/
-  # inspect to its results -- not the rest of Enumerable -- so materialize it.
-  def book_id_by_slug
-    @book_id_by_slug ||= OpenStax::Salesforce::Remote::Book.where('OSC_URL__c != null')
-      .to_a.each_with_object({}) do |book, map|
-        slug = book.osc_url.to_s[BOOK_SLUG_REGEX, 1]
-        map[slug] = book.id if slug.present?
-      end
+  def initial_book_resolver
+    @initial_book_resolver ||= InitialBookResolver.new
   end
 end
