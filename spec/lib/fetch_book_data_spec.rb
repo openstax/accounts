@@ -120,4 +120,34 @@ describe FetchBookData, type: :lib do
                   cover_url: 'new.png' }])
     end
   end
+
+  describe '#abbreviations_by_slug' do
+    let(:body) do
+      {
+        'items' => [
+          { 'meta' => { 'slug' => 'psychology-2e' }, 'salesforce_abbreviation' => 'Psychology' },
+          { 'meta' => { 'slug' => 'psychology' }, 'salesforce_abbreviation' => 'Psychology' },
+          { 'meta' => { 'slug' => 'polish-book' }, 'salesforce_abbreviation' => nil },
+          { 'meta' => { 'slug' => 'unlisted-book' }, 'salesforce_abbreviation' => '' }
+        ]
+      }
+    end
+
+    it 'maps every slug with an abbreviation, whatever the book state' do
+      allow_any_instance_of(described_class).to receive(:cms_fetch).with(described_class::SLUGS_URL).and_return(body)
+
+      expect(described_class.new.abbreviations_by_slug).to eq(
+        'psychology-2e' => 'Psychology', 'psychology' => 'Psychology'
+      )
+    end
+
+    it 'returns an empty hash and does not cache when the fetch fails' do
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      calls = [nil, body]
+      allow_any_instance_of(described_class).to receive(:cms_fetch) { calls.shift }
+
+      expect(described_class.new.abbreviations_by_slug).to eq({})
+      expect(described_class.new.abbreviations_by_slug).to include('psychology-2e' => 'Psychology')
+    end
+  end
 end

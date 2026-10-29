@@ -4,6 +4,7 @@ require 'net/http'
 class FetchBookData
   CMS_API_URL = Rails.application.secrets.cms_api_url
   TITLES_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&fields=_,title,book_subjects,book_state,salesforce_abbreviation"
+  SLUGS_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&fields=_,slug,salesforce_abbreviation"
   SUBJECTS_URL = "#{CMS_API_URL}v2/pages/subjects/"
   TIMEOUT = 5
   CACHE_DURATION = 1.day
@@ -31,6 +32,14 @@ class FetchBookData
     end
   end
 
+  # Every book page in any state, so retired editions still resolve.
+  # Not cached when empty, so a failed fetch is retried on the next call.
+  def abbreviations_by_slug
+    @abbreviations_by_slug ||= Rails.cache.fetch(
+      "BookData.abbreviations_by_slug.v#{CACHE_VERSION}", expires_in: CACHE_DURATION, skip_nil: true
+    ) { fetch_abbreviations_by_slug.presence } || {}
+  end
+
   def fetch_titles
     results = cms_fetch(TITLES_URL)
     return [] if results.blank?
@@ -55,6 +64,17 @@ class FetchBookData
     }
 
     books_with_subject
+  end
+
+  def fetch_abbreviations_by_slug
+    results = cms_fetch(SLUGS_URL)
+    return {} if results.blank?
+
+    results.fetch('items', []).each_with_object({}) do |item, map|
+      slug = item.dig('meta', 'slug')
+      abbreviation = item['salesforce_abbreviation']
+      map[slug] = abbreviation if slug.present? && abbreviation.present?
+    end
   end
 
   def fetch_books_by_subject

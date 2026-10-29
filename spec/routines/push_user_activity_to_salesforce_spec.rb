@@ -197,16 +197,17 @@ describe PushUserActivityToSalesforce, type: :routine do
     context 'initial book resolution' do
       let(:book_remote) { OpenStax::Salesforce::Remote::Book }
 
-      # The real `where` returns an ActiveQuery, not an Array: it forwards only
+      # The real `all` returns an ActiveQuery, not an Array: it forwards only
       # each/map/inspect, so a plain Array stub hid a NoMethodError (ACCOUNTS-790).
+      # Resolution itself is covered in initial_book_resolver_spec.
       before do
         books = [
-          double(id: 'a0BTEST1', osc_url: 'https://openstax.org/details/books/chemistry-2e'),
-          double(id: 'a0BTEST2', osc_url: 'https://openstax.org/details/books/biology-2e')
+          double(id: 'a0BTEST1', name: 'Chemistry', osc_url: 'https://openstax.org/details/books/chemistry-2e'),
+          double(id: 'a0BTEST2', name: 'Biology', osc_url: 'https://openstax.org/details/books/biology-2e')
         ]
-        allow(book_remote).to receive(:where).with('OSC_URL__c != null').and_return(
-          instance_double(ActiveForce::ActiveQuery, to_a: books)
-        )
+        allow(book_remote).to receive(:all).and_return(instance_double(ActiveForce::ActiveQuery, to_a: books))
+        allow_any_instance_of(FetchBookData).to receive(:abbreviations_by_slug).and_return({})
+        allow(Sentry).to receive(:capture_message)
       end
 
       def expect_created_with_book_id(expected_book_id)

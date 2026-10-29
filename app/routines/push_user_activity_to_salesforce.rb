@@ -72,10 +72,6 @@ class PushUserActivityToSalesforce
     }
   }.freeze
 
-  # Matches the slug in both REX page URLs (openstax.org/books/{slug}/pages/…)
-  # and book detail URLs (openstax.org/details/books/{slug}).
-  BOOK_SLUG_REGEX = %r{openstax\.org/(?:details/)?books/([^/?#]+)}
-
   # Keeps a running count but only the first MAX_REPORTED_FAILURES responses:
   # a widespread Salesforce error would otherwise retain one Restforce::Mash
   # per affected user for the length of the pass.
@@ -161,7 +157,7 @@ class PushUserActivityToSalesforce
       student = OpenStax::Salesforce::Remote::Student.new(
         name: user.uuid,
         school_id: sf_school_id,
-        initial_book_id: initial_book_id_for(user),
+        initial_book_id: initial_book_resolver.book_id_for(user),
         last_account_login_date: login
       )
       student.save!
@@ -177,7 +173,7 @@ class PushUserActivityToSalesforce
         changed = true
       end
 
-      if student.initial_book_id.blank? && (book_id = initial_book_id_for(user)).present?
+      if student.initial_book_id.blank? && (book_id = initial_book_resolver.book_id_for(user)).present?
         student.initial_book_id = book_id
         changed = true
       end
@@ -469,29 +465,7 @@ class PushUserActivityToSalesforce
     user.last_seen_at.utc.strftime('%Y-%m-%d')
   end
 
-  # The Salesforce Book__c id for the book whose page the student came from
-  # when signing up, resolved from the redirect URL captured in the
-  # student_signed_up security log. Nil when unknown or unresolvable.
-  def initial_book_id_for(user)
-    # reorder: SecurityLog's default scope orders created_at desc; we want
-    # the earliest signup log.
-    redirect = SecurityLog.where(user: user, event_type: :student_signed_up)
-                          .reorder(:created_at).first&.event_data&.[]('redirect')
-    slug = redirect.to_s[BOOK_SLUG_REGEX, 1]
-    return nil if slug.blank?
-
-    book_id_by_slug[slug]
-  end
-
-  # Slug => Book__c id map, queried from Salesforce at most once per call
-  # and only if some student actually has a book redirect to resolve.
-  # `where` returns an ActiveForce::ActiveQuery, which forwards only each/map/
-  # inspect to its results -- not the rest of Enumerable -- so materialize it.
-  def book_id_by_slug
-    @book_id_by_slug ||= OpenStax::Salesforce::Remote::Book.where('OSC_URL__c != null')
-      .to_a.each_with_object({}) do |book, map|
-        slug = book.osc_url.to_s[BOOK_SLUG_REGEX, 1]
-        map[slug] = book.id if slug.present?
-      end
+  def initial_book_resolver
+    @initial_book_resolver ||= InitialBookResolver.new
   end
 end
