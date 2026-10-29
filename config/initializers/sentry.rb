@@ -7,8 +7,8 @@ Sentry.init do |config|
 
   config.breadcrumbs_logger = %i[sentry_logger active_support_logger http_logger]
 
-  # Send POST data and cookies to Sentry
-  config.send_default_pii = true
+  # Don't attach request bodies, cookies, IP addresses or headers to events
+  config.send_default_pii = false
 
   # Don't send transaction data to Sentry
   config.traces_sample_rate = 0.0

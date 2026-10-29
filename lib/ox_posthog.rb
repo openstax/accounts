@@ -1,6 +1,8 @@
 require 'posthog'
 
 class OXPosthog
+  STUDENT_OMITTED_PERSON_PROPERTIES = %i[email name salesforce_contact_id salesforce_lead_id].freeze
+
   def self.posthog
     @posthog ||= PostHog::Client.new(
       api_key: Rails.application.secrets.posthog_project_api_key,
@@ -14,6 +16,7 @@ class OXPosthog
   # extra_props are merged into the event at the top level (alongside $set/$set_once).
   def self.log(user, event, extra_props = {})
     return if user.nil? || user.is_anonymous? || Rails.env.test?
+    student = user.student?
     attrs = {
       distinct_id: user.uuid,
       event: event,
@@ -46,7 +49,7 @@ class OXPosthog
           receive_newsletter: user.receive_newsletter,
           is_administrator: user.is_administrator,
           has_external_id: user.has_external_id?,
-        },
+        }.except(*(student ? STUDENT_OMITTED_PERSON_PROPERTIES : [])),
         '$set_once': {
           uuid: user.uuid,
           created_at: user.created_at&.iso8601,
