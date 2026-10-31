@@ -268,6 +268,10 @@ class User < ApplicationRecord
     external_ids.exists?
   end
 
+  def latest_external_id
+    external_ids.max_by { |external_id| [external_id.created_at, external_id.id] }
+  end
+
   def is_anonymous?
     false
   end

@@ -316,6 +316,42 @@ describe UpdateUserContactInfo, type: :routine do
     end
   end
 
+  describe 'a Contact that replaces the linked one' do
+    before { stub_sentry }
+
+    let!(:user) do
+      FactoryBot.create :user, faculty_status: :confirmed_faculty, uuid: 'test-uuid-repoint',
+        salesforce_contact_id: 'SF_CONTACT_OLD',
+        salesforce_contact_login_pushed_at: 1.day.ago,
+        salesforce_contact_last_seen_pushed_at: 1.day.ago,
+        salesforce_contact_external_id_pushed_at: 1.day.ago
+    end
+
+    it 'clears the activity push stamps so the new Contact gets everything again' do
+      stub_salesforce_contacts(
+        [create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty', contact_id: 'SF_CONTACT_NEW')]
+      )
+
+      described_class.call
+
+      user.reload
+      expect(user.salesforce_contact_id).to eq 'SF_CONTACT_NEW'
+      expect(user.salesforce_contact_login_pushed_at).to be_nil
+      expect(user.salesforce_contact_last_seen_pushed_at).to be_nil
+      expect(user.salesforce_contact_external_id_pushed_at).to be_nil
+    end
+
+    it 'keeps the stamps when the Contact is the one already linked' do
+      stub_salesforce_contacts(
+        [create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty', contact_id: 'SF_CONTACT_OLD')]
+      )
+
+      described_class.call
+
+      expect(user.reload.salesforce_contact_external_id_pushed_at).to be_present
+    end
+  end
+
   describe 'unknown faculty_verified value handling' do
     before { stub_sentry }
     let!(:user) { FactoryBot.create :user, faculty_status: :no_faculty_info, uuid: 'test-uuid-008' }

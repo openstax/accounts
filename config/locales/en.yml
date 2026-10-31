@@ -480,6 +480,9 @@ en:
       push_salesforce_last_seen_enabled:
         name: 'Push last-seen dates to Salesforce?'
         help_block: 'If checked (and SF configured), students'' and instructors'' most recent website visit will be pushed to their SF Student__c/Contact'
+      push_salesforce_external_ids_enabled:
+        name: 'Push external IDs to Salesforce?'
+        help_block: 'If checked (and SF configured), students'' and instructors'' most recently added external ID will be pushed to their SF Student__c/Contact'
       show_support_chat:
         name: 'Show support chat widget'
         help_block: 'If checked users will see CS chat widget'

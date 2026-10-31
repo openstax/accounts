@@ -157,10 +157,15 @@ class UpdateUserContactInfo
     }
   end
 
+  # A re-pointed user clears PushUserActivityToSalesforce's Contact stamps, or
+  # the new Contact would look already up to date and never get the external
+  # id (and would wait for the next login or visit for its dates).
   def update_salesforce_contact_id!(user, sf_contact)
     previous_contact_id = user.salesforce_contact_id
     user.salesforce_contact_id = sf_contact.id
     return if sf_contact.id == previous_contact_id
+
+    user.assign_attributes(PushUserActivityToSalesforce::CONTACT_STAMP_COLUMNS.index_with(nil))
 
     SecurityLog.create!(
       user: user,

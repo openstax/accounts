@@ -1,9 +1,10 @@
 # Nightly sync of students' picked schools and both students' and
-# instructors' login/last-seen activity to Salesforce. Pseudonymous by
-# design: no name or email is ever sent.
+# instructors' login/last-seen activity and external ids to
+# Salesforce. Pseudonymous by design: no name or email is ever sent.
 #
-# Four bounded passes, each backed by its own partial index and gated by
-# its own feature flag:
+# Five bounded passes, each gated by its own feature flag. Passes 1-4 are each
+# backed by their own partial index on users; pass 5 starts from external_ids
+# (indexed on user_id) instead:
 #   1. link/create -- runs once per student. Resolves or creates the
 #      Student__c (Name = accounts UUID, School__c = school's Salesforce
 #      Account id, Last_Account_Login_Date__c = most recent login), stamps its
@@ -24,6 +25,10 @@
 #      links: an educator who switches to the student role keeps the Contact
 #      their lead converted into, and a shared column would let the student
 #      half suppress the Contact half.
+#   5. external id refresh -- recurring, both populations under one flag.
+#      Writes the user's most recently added external id to External_ID__c,
+#      creating nothing, with a separate stamp per half for the same reason
+#      as pass 4.
 #
 # Between passes 1 and 2, a link-only step attaches Student__c records that
 # something else created (the Assignable loader, Name = accounts UUID) to
@@ -48,10 +53,17 @@ class PushUserActivityToSalesforce
 
   STUDENT_UNLINK_COLUMNS = %i[
     salesforce_student_id salesforce_student_pushed_at salesforce_student_last_seen_pushed_at
+    salesforce_student_external_id_pushed_at
   ].freeze
-  CONTACT_UNLINK_COLUMNS = %i[
-    salesforce_contact_id salesforce_contact_login_pushed_at salesforce_contact_last_seen_pushed_at
+  CONTACT_STAMP_COLUMNS = %i[
+    salesforce_contact_login_pushed_at salesforce_contact_last_seen_pushed_at
+    salesforce_contact_external_id_pushed_at
   ].freeze
+  CONTACT_UNLINK_COLUMNS = [:salesforce_contact_id, *CONTACT_STAMP_COLUMNS].freeze
+
+  LATEST_EXTERNAL_ID_CREATED_AT = <<~SQL.squish.freeze
+    (SELECT MAX(external_ids.created_at) FROM external_ids WHERE external_ids.user_id = users.id)
+  SQL
 
   PASSES = {
     student_login: {
@@ -69,6 +81,16 @@ class PushUserActivityToSalesforce
     contact_last_seen: {
       object: 'Contact', id_column: :salesforce_contact_id, unlink_columns: CONTACT_UNLINK_COLUMNS,
       stamp_column: :salesforce_contact_last_seen_pushed_at, stamp_value: :last_seen_at
+    },
+    student_external_id: {
+      object: 'Student__c', id_column: :salesforce_student_id, unlink_columns: STUDENT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_student_external_id_pushed_at,
+      stamp_value: ->(user) { user.latest_external_id.created_at }
+    },
+    contact_external_id: {
+      object: 'Contact', id_column: :salesforce_contact_id, unlink_columns: CONTACT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_contact_external_id_pushed_at,
+      stamp_value: ->(user) { user.latest_external_id.created_at }
     }
   }.freeze
 
@@ -115,6 +137,11 @@ class PushUserActivityToSalesforce
       # writes, as it is for passes 1 and 2.
       sync_student_last_seen_dates if Settings::Salesforce.push_students_enabled
       sync_contact_last_seen_dates
+    end
+
+    if Settings::Salesforce.push_external_ids_enabled
+      sync_student_external_ids if Settings::Salesforce.push_students_enabled
+      sync_contact_external_ids
     end
   end
 
@@ -403,11 +430,76 @@ class PushUserActivityToSalesforce
     Sentry.capture_exception(e)
   end
 
+  # IS DISTINCT FROM rather than the other passes' "IS NULL OR >": an admin
+  # can delete a user's latest external id, which makes an older one the
+  # latest again, and Salesforce should follow.
+  def sync_student_external_ids
+    failures = FailureTally.new
+    User.student
+        .where.not(salesforce_student_id: nil)
+        .where(id: ExternalId.select(:user_id))
+        .where(
+          "salesforce_student_external_id_pushed_at IS DISTINCT FROM #{LATEST_EXTERNAL_ID_CREATED_AT}"
+        )
+        .preload(:external_ids)
+        .find_in_batches(batch_size: BATCH_SIZE) do |users|
+      push_student_external_ids(users, failures)
+    end
+    report_failures('student external ids', failures)
+  end
+
+  def push_student_external_ids(users, failures)
+    results = OpenStax::Salesforce::Remote::Student.sfdc_client.batch do |batch|
+      users.each do |user|
+        batch.update(
+          'Student__c',
+          Id: user.salesforce_student_id,
+          External_ID__c: user.latest_external_id.external_id
+        )
+      end
+    end
+
+    record_results(users, results, failures, :student_external_id)
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
+
+  # Same comparison as sync_student_external_ids.
+  def sync_contact_external_ids
+    failures = FailureTally.new
+    User.where.not(salesforce_contact_id: nil)
+        .where(id: ExternalId.select(:user_id))
+        .where(
+          "salesforce_contact_external_id_pushed_at IS DISTINCT FROM #{LATEST_EXTERNAL_ID_CREATED_AT}"
+        )
+        .preload(:external_ids)
+        .find_in_batches(batch_size: BATCH_SIZE) do |users|
+      push_contact_external_ids(users, failures)
+    end
+    report_failures('contact external ids', failures)
+  end
+
+  def push_contact_external_ids(users, failures)
+    results = OpenStax::Salesforce::Remote::Contact.sfdc_client.batch do |batch|
+      users.each do |user|
+        batch.update(
+          'Contact',
+          Id: user.salesforce_contact_id,
+          External_ID__c: user.latest_external_id.external_id
+        )
+      end
+    end
+
+    record_results(users, results, failures, :contact_external_id)
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
+
   def record_results(users, results, failures, pass)
     config = PASSES.fetch(pass)
     users.zip(results).each do |user, result|
       if batch_update_succeeded?(result)
-        user.update_column(config[:stamp_column], user.public_send(config[:stamp_value]))
+        user.update_column(config[:stamp_column], config[:stamp_value].to_proc.call(user))
       elsif missing_record?(result)
         unlink(user, pass, config, result)
       else

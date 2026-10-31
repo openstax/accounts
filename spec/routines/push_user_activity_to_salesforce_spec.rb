@@ -7,6 +7,7 @@ describe PushUserActivityToSalesforce, type: :routine do
     allow(Settings::Salesforce).to receive(:push_students_enabled) { true }
     allow(Settings::Salesforce).to receive(:push_contact_logins_enabled) { false }
     allow(Settings::Salesforce).to receive(:push_last_seen_enabled) { false }
+    allow(Settings::Salesforce).to receive(:push_external_ids_enabled) { false }
     allow_any_instance_of(described_class).to receive(:fetch_created_students).and_return([])
   end
 
@@ -1185,6 +1186,213 @@ describe PushUserActivityToSalesforce, type: :routine do
     end
   end
 
+  describe 'pass 5: external id refresh for already-linked students and contacts' do
+    let(:contact_remote) { OpenStax::Salesforce::Remote::Contact }
+    let(:student_sfdc_client) { double('student sfdc client') }
+    let(:contact_sfdc_client) { double('contact sfdc client') }
+
+    before do
+      allow(Settings::Salesforce).to receive(:push_external_ids_enabled) { true }
+      allow(remote).to receive(:sfdc_client).and_return(student_sfdc_client)
+      allow(contact_remote).to receive(:sfdc_client).and_return(contact_sfdc_client)
+    end
+
+    def expect_external_id_update(client, object, id, external_id)
+      expect(client).to receive(:batch) do |&block|
+        subrequests = double('subrequests')
+        expect(subrequests).to receive(:update).with(object, Id: id, External_ID__c: external_id)
+        block.call(subrequests)
+        [{ 'statusCode' => 204 }]
+      end
+    end
+
+    context 'the flag is off' do
+      let!(:student) do
+        FactoryBot.create :user, role: :student, school: nil, salesforce_student_id: 'a0EXTOFF0001'
+      end
+      let!(:external_id) { FactoryBot.create :external_id, user: student }
+
+      before { allow(Settings::Salesforce).to receive(:push_external_ids_enabled) { false } }
+
+      it 'does nothing' do
+        expect(student_sfdc_client).not_to receive(:batch)
+        expect(contact_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(student.reload.salesforce_student_external_id_pushed_at).to be_nil
+      end
+    end
+
+    context 'a linked student with an external id' do
+      let!(:student) do
+        FactoryBot.create :user, role: :student, school: nil, salesforce_student_id: 'a0EXTSTUD001'
+      end
+      let!(:external_id) { FactoryBot.create :external_id, user: student }
+
+      it 'sends it to the Student__c and stamps its created_at' do
+        expect_external_id_update(student_sfdc_client, 'Student__c', 'a0EXTSTUD001', external_id.external_id)
+
+        described_class.call
+
+        expect(student.reload.salesforce_student_external_id_pushed_at).to eq external_id.reload.created_at
+      end
+
+      it 'is not sent again on the next run' do
+        expect_external_id_update(student_sfdc_client, 'Student__c', 'a0EXTSTUD001', external_id.external_id)
+        described_class.call
+
+        expect(student_sfdc_client).not_to receive(:batch)
+        described_class.call
+      end
+    end
+
+    context 'push_students_enabled is off' do
+      let!(:student) do
+        FactoryBot.create :user, role: :student, school: nil, salesforce_student_id: 'a0EXTKILL001'
+      end
+      let!(:external_id) { FactoryBot.create :external_id, user: student }
+
+      before { allow(Settings::Salesforce).to receive(:push_students_enabled) { false } }
+
+      it 'writes no Student__c even though push_external_ids_enabled is on' do
+        expect(student_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+
+        expect(student.reload.salesforce_student_external_id_pushed_at).to be_nil
+      end
+    end
+
+    context 'a linked contact with an external id' do
+      let!(:instructor) do
+        FactoryBot.create :user, role: :instructor, salesforce_contact_id: '003EXTCONT001'
+      end
+      let!(:external_id) { FactoryBot.create :external_id, user: instructor, role: :instructor }
+
+      it 'sends it to the Contact and stamps its created_at' do
+        expect_external_id_update(contact_sfdc_client, 'Contact', '003EXTCONT001', external_id.external_id)
+
+        described_class.call
+
+        expect(instructor.reload.salesforce_contact_external_id_pushed_at).to eq external_id.reload.created_at
+      end
+    end
+
+    context 'a user with more than one external id' do
+      let!(:student) do
+        FactoryBot.create :user, role: :student, school: nil, salesforce_student_id: 'a0EXTMANY001'
+      end
+      let!(:older) { FactoryBot.create :external_id, user: student, created_at: 2.days.ago }
+      let!(:latest) { FactoryBot.create :external_id, user: student, created_at: 1.day.ago }
+      let!(:oldest) { FactoryBot.create :external_id, user: student, created_at: 3.days.ago }
+
+      it 'sends only the most recently added one' do
+        expect_external_id_update(student_sfdc_client, 'Student__c', 'a0EXTMANY001', latest.external_id)
+
+        described_class.call
+
+        expect(student.reload.salesforce_student_external_id_pushed_at).to eq latest.reload.created_at
+      end
+    end
+
+    context 'a new external id added after the last push' do
+      let!(:student) do
+        FactoryBot.create :user, role: :student, school: nil, salesforce_student_id: 'a0EXTNEW0001'
+      end
+      let!(:first) { FactoryBot.create :external_id, user: student, created_at: 2.days.ago }
+      let!(:second) { FactoryBot.create :external_id, user: student, created_at: 1.hour.ago }
+
+      before { student.update_column(:salesforce_student_external_id_pushed_at, first.reload.created_at) }
+
+      it 'sends the new one' do
+        expect_external_id_update(student_sfdc_client, 'Student__c', 'a0EXTNEW0001', second.external_id)
+
+        described_class.call
+
+        expect(student.reload.salesforce_student_external_id_pushed_at).to eq second.reload.created_at
+      end
+    end
+
+    context 'the pushed external id is deleted' do
+      let!(:student) do
+        FactoryBot.create :user, role: :student, school: nil, salesforce_student_id: 'a0EXTDEL0001'
+      end
+      let!(:remaining) { FactoryBot.create :external_id, user: student, created_at: 2.days.ago }
+      let!(:deleted) { FactoryBot.create :external_id, user: student, created_at: 1.day.ago }
+
+      before do
+        student.update_column(:salesforce_student_external_id_pushed_at, deleted.reload.created_at)
+        deleted.destroy!
+      end
+
+      it 'sends the one that is now the latest' do
+        expect_external_id_update(student_sfdc_client, 'Student__c', 'a0EXTDEL0001', remaining.external_id)
+
+        described_class.call
+
+        expect(student.reload.salesforce_student_external_id_pushed_at).to eq remaining.reload.created_at
+      end
+    end
+
+    context 'a user linked as both a student and a Contact' do
+      let!(:both) do
+        FactoryBot.create :user, role: :student, school: nil,
+          salesforce_student_id: 'a0EXTBOTH001', salesforce_contact_id: '003EXTBOTH01'
+      end
+      let!(:external_id) { FactoryBot.create :external_id, user: both }
+
+      it 'updates both records and stamps both columns' do
+        expect_external_id_update(student_sfdc_client, 'Student__c', 'a0EXTBOTH001', external_id.external_id)
+        expect_external_id_update(contact_sfdc_client, 'Contact', '003EXTBOTH01', external_id.external_id)
+
+        described_class.call
+
+        both.reload
+        expect(both.salesforce_student_external_id_pushed_at).to be_present
+        expect(both.salesforce_contact_external_id_pushed_at).to be_present
+      end
+    end
+
+    context 'users who are unlinked or have no external id' do
+      let!(:unlinked) { FactoryBot.create :user, role: :student, school: nil, salesforce_student_id: nil }
+      let!(:unlinked_external_id) { FactoryBot.create :external_id, user: unlinked }
+      let!(:no_external_id) do
+        FactoryBot.create :user, role: :instructor, salesforce_contact_id: '003EXTNONE01',
+          salesforce_contact_external_id_pushed_at: 1.day.ago
+      end
+
+      it 'are skipped and no record is created' do
+        expect(remote).not_to receive(:new)
+        expect(student_sfdc_client).not_to receive(:batch)
+        expect(contact_sfdc_client).not_to receive(:batch)
+
+        described_class.call
+      end
+    end
+
+    context 'a batch item reports failure' do
+      let!(:student) do
+        FactoryBot.create :user, role: :student, school: nil, salesforce_student_id: 'a0EXTBAD0001'
+      end
+      let!(:external_id) { FactoryBot.create :external_id, user: student }
+
+      it 'does not stamp the user and reports it to Sentry' do
+        allow(student_sfdc_client).to receive(:batch) do |&block|
+          subrequests = double('subrequests')
+          allow(subrequests).to receive(:update)
+          block.call(subrequests)
+          [{ 'statusCode' => 400, 'result' => [{ 'errorCode' => 'INVALID_FIELD' }] }]
+        end
+        expect(Sentry).to receive(:capture_message)
+
+        described_class.call
+
+        expect(student.reload.salesforce_student_external_id_pushed_at).to be_nil
+      end
+    end
+  end
+
   def existing_student(uuid, school_id: nil, initial_book_id: nil)
     student = remote.allocate
     allow(student).to receive(:name).and_return(uuid)
@@ -1291,7 +1499,12 @@ describe PushUserActivityToSalesforce, type: :routine do
 
     context 'contact login pass' do
       let(:id_column) { :salesforce_contact_id }
-      let(:stamp_columns) { %i[salesforce_contact_login_pushed_at salesforce_contact_last_seen_pushed_at] }
+      let(:stamp_columns) do
+        %i[
+          salesforce_contact_login_pushed_at salesforce_contact_last_seen_pushed_at
+          salesforce_contact_external_id_pushed_at
+        ]
+      end
       let(:object) { 'Contact' }
       let(:dead_id) { 'a0DEADCONT01' }
       let(:pass) { 'contact_login' }
@@ -1307,6 +1520,7 @@ describe PushUserActivityToSalesforce, type: :routine do
             salesforce_contact_id: dead_id,
             salesforce_contact_login_pushed_at: old_stamp,
             salesforce_contact_last_seen_pushed_at: old_stamp,
+            salesforce_contact_external_id_pushed_at: old_stamp,
             last_signed_in_at: 1.hour.ago
         end
 
@@ -1329,7 +1543,12 @@ describe PushUserActivityToSalesforce, type: :routine do
 
     context 'student login pass' do
       let(:id_column) { :salesforce_student_id }
-      let(:stamp_columns) { %i[salesforce_student_pushed_at salesforce_student_last_seen_pushed_at] }
+      let(:stamp_columns) do
+        %i[
+          salesforce_student_pushed_at salesforce_student_last_seen_pushed_at
+          salesforce_student_external_id_pushed_at
+        ]
+      end
       let(:object) { 'Student__c' }
       let(:dead_id) { 'a0DEADSTUD01' }
       let(:pass) { 'student_login' }
@@ -1342,6 +1561,7 @@ describe PushUserActivityToSalesforce, type: :routine do
             salesforce_student_id: dead_id,
             salesforce_student_pushed_at: old_stamp,
             salesforce_student_last_seen_pushed_at: old_stamp,
+            salesforce_student_external_id_pushed_at: old_stamp,
             last_signed_in_at: 1.hour.ago
         end
 
@@ -1359,6 +1579,38 @@ describe PushUserActivityToSalesforce, type: :routine do
         end
 
         include_examples 'a pass that reports other failures once'
+      end
+    end
+
+    context 'student external id pass' do
+      let(:id_column) { :salesforce_student_id }
+      let(:stamp_columns) do
+        %i[
+          salesforce_student_pushed_at salesforce_student_last_seen_pushed_at
+          salesforce_student_external_id_pushed_at
+        ]
+      end
+      let(:object) { 'Student__c' }
+      let(:dead_id) { 'a0DEADEXT001' }
+      let(:pass) { 'student_external_id' }
+
+      before do
+        allow(Settings::Salesforce).to receive(:push_external_ids_enabled) { true }
+        allow(remote).to receive(:sfdc_client).and_return(sfdc_client)
+      end
+
+      context 'with a Student__c that is gone' do
+        let!(:linked_user) do
+          FactoryBot.create(:user, role: :student,
+            salesforce_student_id: dead_id,
+            salesforce_student_pushed_at: old_stamp,
+            salesforce_student_last_seen_pushed_at: old_stamp,
+            salesforce_student_external_id_pushed_at: old_stamp).tap do |user|
+            FactoryBot.create :external_id, user: user
+          end
+        end
+
+        include_examples 'a pass that unlinks missing records', 'ENTITY_IS_DELETED'
       end
     end
   end
