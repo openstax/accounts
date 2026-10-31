@@ -56,6 +56,12 @@ class User < ApplicationRecord
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
   DEFAULT_SCHOOL_LOCATION = VALID_SCHOOL_LOCATIONS[0]
 
+  # What PushUserActivityToSalesforce last sent to the linked Contact.
+  SALESFORCE_CONTACT_PUSH_STAMPS = %i[
+    salesforce_contact_login_pushed_at salesforce_contact_last_seen_pushed_at
+    salesforce_contact_pushed_external_id
+  ].freeze
+
   enum(faculty_status: VALID_FACULTY_STATUSES)
   enum(role: VALID_ROLES)
   enum(using_openstax_how: VALID_USING_OPENSTAX_HOW)
@@ -130,6 +136,9 @@ class User < ApplicationRecord
   validate :books_used_details_valid
 
   before_save(:add_unread_update)
+  before_update(
+    :clear_salesforce_contact_push_stamps, if: :will_save_change_to_salesforce_contact_id?
+  )
 
   before_create(:make_first_user_an_admin)
 
@@ -266,6 +275,10 @@ class User < ApplicationRecord
 
   def has_external_id?
     external_ids.exists?
+  end
+
+  def latest_external_id
+    external_ids.max_by { |external_id| [external_id.created_at, external_id.id] }
   end
 
   def is_anonymous?
@@ -428,6 +441,13 @@ class User < ApplicationRecord
   def add_unread_update
     # Returns false if the update fails (aborting the save transaction)
     AddUnreadUpdateForUser.call(self).errors.none?
+  end
+
+  # Every writer of salesforce_contact_id (Contact sync, lead conversion, the
+  # admin form) goes through save. A different Contact that kept the old
+  # stamps would look up to date and never get the external id.
+  def clear_salesforce_contact_push_stamps
+    assign_attributes(SALESFORCE_CONTACT_PUSH_STAMPS.index_with(nil))
   end
 
   def has_emails_but_none_verified?

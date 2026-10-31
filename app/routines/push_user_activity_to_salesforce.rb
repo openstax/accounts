@@ -1,9 +1,10 @@
 # Nightly sync of students' picked schools and both students' and
-# instructors' login/last-seen activity to Salesforce. Pseudonymous by
-# design: no name or email is ever sent.
+# instructors' login/last-seen activity and external ids to
+# Salesforce. Pseudonymous by design: no name or email is ever sent.
 #
-# Four bounded passes, each backed by its own partial index and gated by
-# its own feature flag:
+# Five bounded passes, each gated by its own feature flag. Passes 1-4 are each
+# backed by their own partial index on users; pass 5 starts from external_ids
+# (indexed on user_id) instead:
 #   1. link/create -- runs once per student. Resolves or creates the
 #      Student__c (Name = accounts UUID, School__c = school's Salesforce
 #      Account id, Last_Account_Login_Date__c = most recent login), stamps its
@@ -24,6 +25,10 @@
 #      links: an educator who switches to the student role keeps the Contact
 #      their lead converted into, and a shared column would let the student
 #      half suppress the Contact half.
+#   5. external id refresh -- recurring, both populations under one flag.
+#      Writes the user's most recently added external id to External_ID__c,
+#      creating nothing. Each half records the id it sent, separately for the
+#      same reason as pass 4.
 #
 # Between passes 1 and 2, a link-only step attaches Student__c records that
 # something else created (the Assignable loader, Name = accounts UUID) to
@@ -46,12 +51,19 @@ class PushUserActivityToSalesforce
   LINK_LOOKBACK = 30.days
   UUID_REGEX = ReconcileSalesforceStudentIds::UUID_REGEX
 
-  STUDENT_UNLINK_COLUMNS = %i[
-    salesforce_student_id salesforce_student_pushed_at salesforce_student_last_seen_pushed_at
+  STUDENT_REFRESH_STAMPS = %i[
+    salesforce_student_last_seen_pushed_at salesforce_student_pushed_external_id
   ].freeze
-  CONTACT_UNLINK_COLUMNS = %i[
-    salesforce_contact_id salesforce_contact_login_pushed_at salesforce_contact_last_seen_pushed_at
+  STUDENT_UNLINK_COLUMNS = [
+    :salesforce_student_id, :salesforce_student_pushed_at, *STUDENT_REFRESH_STAMPS
   ].freeze
+  CONTACT_UNLINK_COLUMNS = [:salesforce_contact_id, *User::SALESFORCE_CONTACT_PUSH_STAMPS].freeze
+
+  # Same order as User#latest_external_id.
+  LATEST_EXTERNAL_ID = <<~SQL.squish.freeze
+    (SELECT external_ids.external_id FROM external_ids WHERE external_ids.user_id = users.id
+     ORDER BY external_ids.created_at DESC, external_ids.id DESC LIMIT 1)
+  SQL
 
   PASSES = {
     student_login: {
@@ -69,6 +81,16 @@ class PushUserActivityToSalesforce
     contact_last_seen: {
       object: 'Contact', id_column: :salesforce_contact_id, unlink_columns: CONTACT_UNLINK_COLUMNS,
       stamp_column: :salesforce_contact_last_seen_pushed_at, stamp_value: :last_seen_at
+    },
+    student_external_id: {
+      object: 'Student__c', id_column: :salesforce_student_id, unlink_columns: STUDENT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_student_pushed_external_id,
+      stamp_value: ->(user) { user.latest_external_id.external_id }
+    },
+    contact_external_id: {
+      object: 'Contact', id_column: :salesforce_contact_id, unlink_columns: CONTACT_UNLINK_COLUMNS,
+      stamp_column: :salesforce_contact_pushed_external_id,
+      stamp_value: ->(user) { user.latest_external_id.external_id }
     }
   }.freeze
 
@@ -116,6 +138,11 @@ class PushUserActivityToSalesforce
       sync_student_last_seen_dates if Settings::Salesforce.push_students_enabled
       sync_contact_last_seen_dates
     end
+
+    if Settings::Salesforce.push_external_ids_enabled
+      sync_student_external_ids if Settings::Salesforce.push_students_enabled
+      sync_contact_external_ids
+    end
   end
 
   private
@@ -138,19 +165,31 @@ class PushUserActivityToSalesforce
         next
       end
 
-      linkable_users.each { |user| link_or_create(user, students_by_uuid[user.uuid]) }
+      linkable_users.each do |user|
+        link_or_create(user, student_for(user, students_by_uuid[user.uuid]))
+      end
     end
   end
 
-  # One SOQL query per chunk of uuids instead of one per student.
+  # One SOQL query per chunk of uuids instead of one per student. Every
+  # record per uuid, lowest Id first: the Assignable loader creates several.
   def fetch_students_by_uuid(uuids)
     return {} if uuids.empty?
 
     uuids.each_slice(LOOKUP_CHUNK_SIZE).each_with_object({}) do |chunk, map|
-      OpenStax::Salesforce::Remote::Student.where(name: chunk).each do |student|
-        map[student.name] = student
+      OpenStax::Salesforce::Remote::Student.where(name: chunk).order('Id').each do |student|
+        (map[student.name] ||= []) << student
       end
     end
+  end
+
+  # Keeps a link the user already has while that record exists, and otherwise
+  # takes the lowest Id, as link_new_salesforce_students does -- so a student
+  # never moves between duplicates and splits their data across them.
+  def student_for(user, students)
+    return if students.blank?
+
+    students.find { |student| student.id == user.salesforce_student_id } || students.first
   end
 
   def link_or_create(user, student)
@@ -190,9 +229,19 @@ class PushUserActivityToSalesforce
       student.save! if changed
     end
 
-    user.update_columns(salesforce_student_id: student.id, salesforce_student_pushed_at: Time.current)
+    user.update_columns(link_columns(user, student))
   rescue StandardError => e
     Sentry.capture_exception(e)
+  end
+
+  # update_columns skips User's save hooks, so a student whose linked record
+  # is gone drops its stamps here. The login date needs no reset:
+  # link_or_create has just sent it to the new record.
+  def link_columns(user, student)
+    columns = { salesforce_student_id: student.id, salesforce_student_pushed_at: Time.current }
+    return columns if user.salesforce_student_id.blank? || user.salesforce_student_id == student.id
+
+    columns.merge(STUDENT_REFRESH_STAMPS.index_with(nil))
   end
 
   def link_new_salesforce_students
@@ -403,17 +452,90 @@ class PushUserActivityToSalesforce
     Sentry.capture_exception(e)
   end
 
+  # Compares the id last sent with the current latest rather than dates, as
+  # the other passes do: deleting the latest id makes an older one latest
+  # again, which no date comparison would notice.
+  def sync_student_external_ids
+    failures = FailureTally.new
+    User.student
+        .where.not(salesforce_student_id: nil)
+        .where(id: ExternalId.select(:user_id))
+        .where(
+          "salesforce_student_pushed_external_id IS DISTINCT FROM #{LATEST_EXTERNAL_ID}"
+        )
+        .preload(:external_ids)
+        .find_in_batches(batch_size: BATCH_SIZE) do |users|
+      push_student_external_ids(users, failures)
+    end
+    report_failures('student external ids', failures)
+  end
+
+  def push_student_external_ids(users, failures)
+    results = OpenStax::Salesforce::Remote::Student.sfdc_client.batch do |batch|
+      users.each do |user|
+        batch.update(
+          'Student__c',
+          Id: user.salesforce_student_id,
+          External_ID__c: user.latest_external_id.external_id
+        )
+      end
+    end
+
+    record_results(users, results, failures, :student_external_id)
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
+
+  # Same comparison as sync_student_external_ids.
+  def sync_contact_external_ids
+    failures = FailureTally.new
+    User.where.not(salesforce_contact_id: nil)
+        .where(id: ExternalId.select(:user_id))
+        .where(
+          "salesforce_contact_pushed_external_id IS DISTINCT FROM #{LATEST_EXTERNAL_ID}"
+        )
+        .preload(:external_ids)
+        .find_in_batches(batch_size: BATCH_SIZE) do |users|
+      push_contact_external_ids(users, failures)
+    end
+    report_failures('contact external ids', failures)
+  end
+
+  def push_contact_external_ids(users, failures)
+    results = OpenStax::Salesforce::Remote::Contact.sfdc_client.batch do |batch|
+      users.each do |user|
+        batch.update(
+          'Contact',
+          Id: user.salesforce_contact_id,
+          External_ID__c: user.latest_external_id.external_id
+        )
+      end
+    end
+
+    record_results(users, results, failures, :contact_external_id)
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
+
   def record_results(users, results, failures, pass)
     config = PASSES.fetch(pass)
     users.zip(results).each do |user, result|
       if batch_update_succeeded?(result)
-        user.update_column(config[:stamp_column], user.public_send(config[:stamp_value]))
+        stamp(user, config)
       elsif missing_record?(result)
         unlink(user, pass, config, result)
       else
         failures.add(user.id, result)
       end
     end
+  end
+
+  # Compare-and-set on the id that was sent, as in unlink: a re-link while
+  # the batch was in flight cleared the stamps for the new record, and
+  # stamping now would mark it as already sent.
+  def stamp(user, config)
+    User.where(id: user.id, config[:id_column] => user.public_send(config[:id_column]))
+        .update_all(config[:stamp_column] => config[:stamp_value].to_proc.call(user))
   end
 
   # Clearing the stamps along with the id: a record re-linked later would
