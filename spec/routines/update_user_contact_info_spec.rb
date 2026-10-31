@@ -324,7 +324,7 @@ describe UpdateUserContactInfo, type: :routine do
         salesforce_contact_id: 'SF_CONTACT_OLD',
         salesforce_contact_login_pushed_at: 1.day.ago,
         salesforce_contact_last_seen_pushed_at: 1.day.ago,
-        salesforce_contact_external_id_pushed_at: 1.day.ago
+        salesforce_contact_pushed_external_id: 'sent-to-old-contact'
     end
 
     it 'clears the activity push stamps so the new Contact gets everything again' do
@@ -338,7 +338,7 @@ describe UpdateUserContactInfo, type: :routine do
       expect(user.salesforce_contact_id).to eq 'SF_CONTACT_NEW'
       expect(user.salesforce_contact_login_pushed_at).to be_nil
       expect(user.salesforce_contact_last_seen_pushed_at).to be_nil
-      expect(user.salesforce_contact_external_id_pushed_at).to be_nil
+      expect(user.salesforce_contact_pushed_external_id).to be_nil
     end
 
     it 'keeps the stamps when the Contact is the one already linked' do
@@ -348,7 +348,7 @@ describe UpdateUserContactInfo, type: :routine do
 
       described_class.call
 
-      expect(user.reload.salesforce_contact_external_id_pushed_at).to be_present
+      expect(user.reload.salesforce_contact_pushed_external_id).to eq 'sent-to-old-contact'
     end
   end
 
