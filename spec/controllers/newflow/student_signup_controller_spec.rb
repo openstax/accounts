@@ -219,6 +219,46 @@ module Newflow
       end
     end
 
+    describe 'POST #student_resend_signup_email' do
+      let(:user) { FactoryBot.create(:user_with_emails, state: User::UNVERIFIED, emails_count: 1) }
+
+      before do
+        user.email_addresses.update_all(verified: false, confirmation_sent_at: nil)
+        allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user)
+        allow(OXPosthog).to receive(:log)
+      end
+
+      it 'resends the email and returns to the PIN screen' do
+        expect {
+          post(:student_resend_signup_email)
+        }.to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+        expect(response).to redirect_to(student_email_verification_form_path)
+        expect(OXPosthog).to have_received(:log).with(
+          user, 'student_resent_signup_email', hash_including(role: user.role)
+        )
+      end
+    end
+
+    describe 'POST #student_verify_email_by_pin' do
+      let(:user) { FactoryBot.create(:user_with_emails, state: User::UNVERIFIED, emails_count: 1) }
+
+      before do
+        user.email_addresses.update_all(verified: false)
+        allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user)
+        allow(OXPosthog).to receive(:log)
+      end
+
+      it 'captures the failure with an allowlisted reason' do
+        post(:student_verify_email_by_pin, params: { confirm: { pin: 'nope' } })
+
+        expect(response).to render_template(:student_email_verification_form)
+        expect(OXPosthog).to have_received(:log).with(
+          user, 'student_verified_email_failed', { role: user.role, reason: 'pin_not_correct' }
+        )
+      end
+    end
+
     describe 'GET #student_email_verification_form_updated_email' do
       it 'renders OK' do
         user = create_newflow_user('user@openstax.org')

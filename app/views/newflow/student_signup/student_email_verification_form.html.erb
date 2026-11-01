@@ -19,10 +19,8 @@
     ).html_safe
 
     help_message = I18n.t(
-        :"login_signup_form.didnt_receive_email",
-        sign_up_with_different_email_link: link_to(
-            I18n.t(:"login_signup_form.sign_up_with_different_email"), student_change_signup_email_form_path
-        )
+        :"login_signup_form.havent_received_message",
+        contact_us: contact_us_link
     ).html_safe
 %>
 
@@ -34,7 +32,9 @@
         form_description: form_description,
         current_step: current_step,
         help_message: help_message,
-        submit_to_path: student_verify_pin_path
+        submit_to_path: student_verify_pin_path,
+      resend_path: student_resend_signup_email_path,
+      change_email_path: student_change_signup_email_form_path
     }
   )
 %>

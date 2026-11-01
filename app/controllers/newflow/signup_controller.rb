@@ -3,6 +3,14 @@ module Newflow
     include LoginSignupHelper
     include RecaptchaController
 
+    # Allowlisted reason codes for the PIN failure events. Never the PIN, the
+    # address or the error message.
+    PIN_FAILURE_REASONS = {
+      invalid_confirmation_pin: 'pin_not_correct',
+      no_pin_confirmation_attempts_remaining: 'attempts_exhausted',
+      blank: 'pin_blank'
+    }.freeze
+
     fine_print_skip :general_terms_of_use, :privacy_policy
 
     before_action(:exit_newflow_signup_if_logged_in, only: :welcome)
@@ -66,6 +74,24 @@ module Newflow
     end
 
     protected ###############
+
+    def pin_failure_reason(errors)
+      errors.map { |error| PIN_FAILURE_REASONS[error.code] }.compact.first || 'other'
+    end
+
+    def resend_signup_email(verification_form_path:, posthog_event:)
+      result = ResendSignupEmail.call(email_address: unverified_email_address)
+
+      if result.errors.any?
+        flash[:alert] = I18n.t(:"login_signup_form.signup_email_resent_too_soon")
+      else
+        security_log(:signup_email_resent, user: unverified_user)
+        log_posthog(unverified_user, posthog_event, { role: unverified_user.role })
+        flash[:notice] = I18n.t(:"login_signup_form.signup_email_resent")
+      end
+
+      redirect_to(verification_form_path)
+    end
 
     # Mid-signup the account lives in the session until the email PIN is entered,
     # after which it's just the signed-in user.

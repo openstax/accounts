@@ -17,14 +17,9 @@
         )
     ).html_safe
 
-    edit_it_here_link = link_to(
-        I18n.t(:"login_signup_form.edit_it_here"), educator_change_signup_email_form_path
-    )
-
     help_message = I18n.t(
-        :"login_signup_form.educator_email_verification_help_msg",
-        edit_it_here: edit_it_here_link,
-        contact_us_link: contact_us_link
+        :"login_signup_form.havent_received_message",
+        contact_us: contact_us_link
     ).html_safe
 %>
 
@@ -36,7 +31,9 @@
       form_description: form_description,
       current_step: current_step,
       help_message: help_message,
-      submit_to_path: educator_verify_pin_path
+      submit_to_path: educator_verify_pin_path,
+      resend_path: educator_resend_signup_email_path,
+      change_email_path: educator_change_signup_email_form_path
     }
   )
 %>

@@ -6,6 +6,7 @@ module Newflow
         student_email_verification_form
         student_email_verification_form_updated_email
         student_verify_email_by_pin
+        student_resend_signup_email
       ]
     )
 
@@ -87,8 +88,19 @@ module Newflow
           @first_name = unverified_user.first_name
           @email = unverified_email_address.value
           security_log(:student_verify_email_failed, email: @email)
+          log_posthog(unverified_user, 'student_verified_email_failed', {
+            role: unverified_user.role,
+            reason: pin_failure_reason(@handler_result.errors)
+          })
           render(:student_email_verification_form)
         }
+      )
+    end
+
+    def student_resend_signup_email
+      resend_signup_email(
+        verification_form_path: student_email_verification_form_path,
+        posthog_event: 'student_resent_signup_email'
       )
     end
   end

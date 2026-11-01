@@ -34,6 +34,20 @@ module Newflow
         }.not_to change(EmailAddress, :count)
       end
 
+      it 'issues a new PIN for a new address' do
+        expect {
+          described_class.call(params: params, user: user)
+        }.to change { user.email_addresses.first.confirmation_pin }
+      end
+
+      it 'keeps the PIN when the same address is entered again' do
+        same = { change_signup_email: { email: before_change_email.upcase } }
+
+        expect {
+          described_class.call(params: same, user: user)
+        }.not_to change { user.email_addresses.first.reload.confirmation_pin }
+      end
+
       it 'sends an email to the new email address' do
         expect_any_instance_of(NewflowMailer).to(
           receive(:signup_email_confirmation).once.and_call_original

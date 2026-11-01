@@ -137,9 +137,7 @@ en:
     change_signup_email_form_page_description: >-
       Change your email below so we can send your PIN.
       You will need to use this updated email to log in.
-    didnt_receive_email: Didn't receive an email? You can %{sign_up_with_different_email_link}.
     all_fields_required: '* All fields are required'
-    sign_up_with_different_email: sign up with a different email
     check_your_updated_email: Check your updated email
     havent_received_message: Still haven't received an email? %{contact_us}
     contact_us: Contact us
@@ -158,6 +156,20 @@ en:
     pin_label: Confirm PIN
     pin_placeholder: Enter 6-digit PIN here
     pin_not_correct: This PIN is incorrect. Please enter the correct PIN.
+    pin_attempts_exhausted: >-
+      There have been too many incorrect tries, so this PIN no longer works.
+      Use the "Confirm Your Email Address" button in the email we sent you
+      instead. Can't find it? Send it again below.
+    didnt_get_the_email: Didn't get the email?
+    resend_signup_email: Send it again
+    resend_signup_email_description: >-
+      It can take a few minutes to arrive, and school email often files it under
+      spam, junk or quarantine, so check there too. We'll resend the same PIN.
+    use_a_different_email: Use a different email
+    use_a_different_email_description: >-
+      Fix a typo, or switch to an address that accepts mail from new senders.
+    signup_email_resent: We sent the email again. It can take a few minutes to arrive.
+    signup_email_resent_too_soon: We just sent you an email. Please wait a minute before asking for another one.
     continue_button: Continue
     forgot_password: Forgot your password?
     teacher_school_email_warning:
@@ -269,8 +281,6 @@ en:
       Please enter the PIN you received below.
       Once your email has been confirmed, you will need to complete
       the remaining steps to verify your instructor status.
-    educator_email_verification_help_msg: See a typo in your email address? %{edit_it_here}. Didn't receive a message? %{contact_us_link}.
-    edit_it_here: Edit it here
 
   student_profile:
     enable_other_sign_in_options: Enable other login options
