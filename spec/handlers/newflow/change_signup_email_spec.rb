@@ -57,6 +57,30 @@ module Newflow
       end
     end
 
+    context 'when the PIN attempts for the address are used up' do
+      let(:email_address) { user.email_addresses.first }
+
+      before do
+        ConfirmByPin.max_pin_failures.times { ConfirmByPin.call(contact_info: email_address, pin: 'nope') }
+      end
+
+      def locked?
+        result = ConfirmByPin.call(contact_info: email_address.reload, pin: email_address.confirmation_pin)
+        result.errors.map(&:code) == [:no_pin_confirmation_attempts_remaining]
+      end
+
+      it 'stays locked after a case-only edit' do
+        described_class.call(params: { change_signup_email: { email: before_change_email.upcase } }, user: user)
+        expect(locked?).to be(true)
+      end
+
+      it 'stays locked after A, then B, then A in different case' do
+        described_class.call(params: { change_signup_email: { email: 'other@example.com' } }, user: user)
+        described_class.call(params: { change_signup_email: { email: 'Original@Example.com' } }, user: user)
+        expect(locked?).to be(true)
+      end
+    end
+
     context 'when email address already taken' do
       # meaning when there's already a verified email address with the same value
       before do

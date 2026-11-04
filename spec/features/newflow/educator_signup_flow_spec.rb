@@ -53,11 +53,10 @@ module Newflow
           click_on(I18n.t(:"login_signup_form.confirm_my_account_button"))
           wait_for_ajax
           wait_for_animations
-          expect(page).to_not have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
-          expect(EmailAddress.verified.count).to eq(1)
 
           # Step 3
           expect_sheerid_iframe
+          expect(EmailAddress.verified.count).to eq(1)
 
           # Step 4
           expect_educator_step_4_page

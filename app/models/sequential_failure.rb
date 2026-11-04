@@ -12,9 +12,22 @@ class SequentialFailure < ApplicationRecord
     self.save!
   end
 
+  # One statement, so concurrent failures neither lose counts nor collide on
+  # the (kind, reference) unique index when the row doesn't exist yet.
   def increment!
-    self.length += 1
-    self.save!
+    row = self.class.connection.select_one(self.class.sanitize_sql_array([<<~SQL.squish, self.class.kinds.fetch(kind), reference]))
+      INSERT INTO sequential_failures (kind, reference, length, created_at, updated_at)
+      VALUES (?, ?, 1, NOW(), NOW())
+      ON CONFLICT (kind, reference)
+      DO UPDATE SET length = COALESCE(sequential_failures.length, 0) + 1, updated_at = NOW()
+      RETURNING id, length
+    SQL
+
+    self.id = row['id']
+    self.length = row['length']
+    @new_record = false
+    changes_applied
+    self
   end
 
   def attempts_remaining?

@@ -36,12 +36,6 @@ class VerifyUserEmailByPin
       )
     end
 
-    # ConfirmByPin counts a wrong PIN, but that write joins this handler's
-    # transaction and the fatal_error below rolls it back -- so the PIN form
-    # never counted a miss and the attempt limit never applied. Count it again
-    # once the rollback is done.
-    after_transaction { ConfirmByPin.sequential_failure_for(email_address).increment! }
-
     fatal_error(
       code: :invalid_confirmation_pin,
       offending_inputs: [:pin],
