@@ -234,9 +234,39 @@ module Newflow
         }.to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
 
         expect(response).to redirect_to(student_email_verification_form_path)
+        expect(flash[:notice]).to eq I18n.t(
+          :"login_signup_form.signup_email_resent",
+          email: ERB::Util.html_escape(user.email_addresses.first.value)
+        )
         expect(OXPosthog).to have_received(:log).with(
           user, 'student_resent_signup_email', hash_including(role: user.role)
         )
+      end
+
+      it 'asks the user to wait when the email was just sent' do
+        user.email_addresses.update_all(confirmation_sent_at: 10.seconds.ago)
+
+        expect {
+          post(:student_resend_signup_email)
+        }.not_to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+        expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resent_too_soon")
+      end
+
+      it 'tells the user when the hourly limit is reached' do
+        5.times { SecurityLog.create!(user: user, event_type: :signup_email_resent) }
+
+        post(:student_resend_signup_email)
+
+        expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resend_limit_reached")
+      end
+
+      it 'escapes the address in the notice, since the layout renders flash as html_safe' do
+        user.email_addresses.update_all(value: 'a<b>@example.com')
+
+        post(:student_resend_signup_email)
+
+        expect(flash[:notice]).to include('a&lt;b&gt;@example.com')
       end
     end
 

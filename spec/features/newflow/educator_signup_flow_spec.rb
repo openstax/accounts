@@ -132,7 +132,11 @@ module Newflow
         email.update_column(:confirmation_sent_at, 2.minutes.ago)
 
         click_on(I18n.t(:"login_signup_form.resend_signup_email"))
-        expect(page).to have_content(I18n.t(:"login_signup_form.signup_email_resent"))
+        expect(page).to have_content(
+          ActionController::Base.helpers.strip_tags(
+            I18n.t(:"login_signup_form.signup_email_resent", email: email_value)
+          )
+        )
         expect(page).to have_current_path(educator_email_verification_form_path)
 
         perform_enqueued_jobs

@@ -11,6 +11,12 @@ module Newflow
       blank: 'pin_blank'
     }.freeze
 
+    RESEND_FAILURE_MESSAGES = {
+      resent_too_soon: :signup_email_resent_too_soon,
+      resend_limit_reached: :signup_email_resend_limit_reached,
+      already_verified: :signup_email_already_confirmed
+    }.freeze
+
     fine_print_skip :general_terms_of_use, :privacy_policy
 
     before_action(:exit_newflow_signup_if_logged_in, only: :welcome)
@@ -83,11 +89,16 @@ module Newflow
       result = ResendSignupEmail.call(email_address: unverified_email_address)
 
       if result.errors.any?
-        flash[:alert] = I18n.t(:"login_signup_form.signup_email_resent_too_soon")
+        key = RESEND_FAILURE_MESSAGES.fetch(result.errors.first.code, :signup_email_resent_too_soon)
+        flash[:alert] = I18n.t(:"login_signup_form.#{key}")
       else
         security_log(:signup_email_resent, user: unverified_user)
         log_posthog(unverified_user, posthog_event, { role: unverified_user.role })
-        flash[:notice] = I18n.t(:"login_signup_form.signup_email_resent")
+        # The newflow layout renders flash as html_safe
+        flash[:notice] = I18n.t(
+          :"login_signup_form.signup_email_resent",
+          email: ERB::Util.html_escape(unverified_email_address.value)
+        )
       end
 
       redirect_to(verification_form_path)

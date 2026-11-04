@@ -312,7 +312,10 @@ module Newflow
         }.to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
 
         expect(response).to redirect_to(educator_email_verification_form_path)
-        expect(flash[:notice]).to eq I18n.t(:"login_signup_form.signup_email_resent")
+        expect(flash[:notice]).to eq I18n.t(
+          :"login_signup_form.signup_email_resent",
+          email: ERB::Util.html_escape(user.email_addresses.first.value)
+        )
         expect(OXPosthog).to have_received(:log).with(
           user, 'educator_resent_signup_email', hash_including(role: user.role)
         )
@@ -328,6 +331,17 @@ module Newflow
 
         expect(response).to redirect_to(educator_email_verification_form_path)
         expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resent_too_soon")
+      end
+
+      it 'tells the user when the hourly limit is reached' do
+        5.times { SecurityLog.create!(user: user, event_type: :signup_email_resent) }
+
+        expect {
+          post(:educator_resend_signup_email)
+        }.not_to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+        expect(response).to redirect_to(educator_email_verification_form_path)
+        expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resend_limit_reached")
       end
 
       it 'restarts signup when there is no signup in progress' do

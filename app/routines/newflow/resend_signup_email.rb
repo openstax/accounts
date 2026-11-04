@@ -7,22 +7,44 @@
 # the mailer leaves the PIN out and the email's confirmation link is the way in.
 module Newflow
   class ResendSignupEmail
-    lev_routine
+    # No transaction on purpose: the claim below must be an autocommit UPDATE.
+    # In repeatable read a row lock would make the losing request raise a
+    # serialization failure instead of waiting, while an UPDATE re-checks its
+    # WHERE once the winner commits.
+    lev_routine transaction: :no_transaction
 
     MIN_INTERVAL = 1.minute
+    HOURLY_LIMIT = 5
 
     protected
 
     def exec(email_address:)
       fatal_error(code: :already_verified) if email_address.verified?
+      fatal_error(code: :resend_limit_reached) if limit_reached?(email_address)
+      fatal_error(code: :resent_too_soon) unless claim_send(email_address)
 
-      sent_at = email_address.confirmation_sent_at
-      fatal_error(code: :resent_too_soon) if sent_at.present? && sent_at > MIN_INTERVAL.ago
+      result = SendSignupConfirmationEmail.call(email_address: email_address)
+      transfer_errors_from(result.errors, { type: :verbatim }, true)
+    end
 
-      # The mailer stamps this too, but only once a worker delivers it; stamping
-      # now keeps a double-click from queueing two emails.
-      email_address.update_column(:confirmation_sent_at, Time.current)
-      NewflowMailer.signup_email_confirmation(email_address: email_address).deliver_later
+    private
+
+    # The mailer stamps confirmation_sent_at too, but only once a worker delivers
+    # it. Claiming the stamp now is what keeps overlapping requests from each
+    # queueing an email.
+    def claim_send(email_address)
+      EmailAddress.where(id: email_address.id, verified: false)
+                  .where('confirmation_sent_at IS NULL OR confirmation_sent_at <= ?',
+                         MIN_INTERVAL.ago)
+                  .update_all(confirmation_sent_at: Time.current)
+                  .positive?
+    end
+
+    def limit_reached?(email_address)
+      SecurityLog.where(user_id: email_address.user_id,
+                        event_type: SecurityLog.event_types[:signup_email_resent])
+                 .where('created_at > ?', 1.hour.ago)
+                 .count >= HOURLY_LIMIT
     end
   end
 end

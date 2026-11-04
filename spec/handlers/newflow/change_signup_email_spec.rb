@@ -55,6 +55,12 @@ module Newflow
         described_class.call(params: params, user: user)
         perform_enqueued_jobs
       end
+
+      it 'enqueues the email at the signup-confirmation priority' do
+        described_class.call(params: params, user: user)
+
+        expect(enqueued_jobs.last['priority']).to eq SendSignupConfirmationEmail::PRIORITY
+      end
     end
 
     context 'when the PIN attempts for the address are used up' do
