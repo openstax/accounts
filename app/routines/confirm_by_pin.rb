@@ -38,7 +38,7 @@ class ConfirmByPin
     fatal_error(code: :pin_not_correct) unless contact_info.confirmation_pin == pin
 
     result = ConfirmContactInfo.call(contact_info)
-    transfer_errors_from(result.errors,{ type: :verbatim }, true)
+    transfer_errors_from(result.errors, { type: :verbatim }, true)
     sequential_failure.reset!
   end
 

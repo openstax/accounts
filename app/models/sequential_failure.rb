@@ -13,7 +13,8 @@ class SequentialFailure < ApplicationRecord
   end
 
   # One statement, so concurrent failures neither lose counts nor collide on
-  # the (kind, reference) unique index when the row doesn't exist yet.
+  # the unique index. The RETURNING value is this caller's own count; re-reading
+  # the row would pick up other requests' increments.
   def increment!
     row = self.class.connection.select_one(self.class.sanitize_sql_array([<<~SQL.squish, self.class.kinds.fetch(kind), reference]))
       INSERT INTO sequential_failures (kind, reference, length, created_at, updated_at)

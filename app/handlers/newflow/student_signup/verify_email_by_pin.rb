@@ -22,7 +22,7 @@ module Newflow
       private #################
 
       def activate_user(claiming_user)
-        transfer_errors_from(ActivateStudent.call(user: claiming_user).errors,{ type: :verbatim }, true)
+        transfer_errors_from(ActivateStudent.call(user: claiming_user).errors, { type: :verbatim }, true)
       end
 
     end
