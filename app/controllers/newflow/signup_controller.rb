@@ -104,6 +104,21 @@ module Newflow
       redirect_to(verification_form_path)
     end
 
+    def after_signup_email_change(verification_form_path:, resend_posthog_event:)
+      if @handler_result.outputs.unchanged
+        return resend_signup_email(
+          verification_form_path: verification_form_path, posthog_event: resend_posthog_event
+        )
+      end
+
+      security_log(:signup_email_changed, user: unverified_user, email: unverified_email_address.value)
+      flash[:notice] = I18n.t(
+        :"login_signup_form.signup_email_changed",
+        email: ERB::Util.html_escape(unverified_email_address.value)
+      )
+      redirect_to(verification_form_path)
+    end
+
     # Mid-signup the account lives in the session until the email PIN is entered,
     # after which it's just the signed-in user.
     def signup_in_progress_user

@@ -173,11 +173,13 @@ module Newflow
     end
 
     describe 'POST #educator_change_signup_email' do
+      let(:user) { create_newflow_user('original@openstax.org') }
+
       before do
-        user = create_newflow_user('original@openstax.org')
         user.update_attribute('state', 'unverified')
         user.email_addresses.first.update!(verified: false)
         allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user)
+        allow(OXPosthog).to receive(:log)
       end
 
       context 'success' do
@@ -189,10 +191,61 @@ module Newflow
           }
         }
 
-        it 'redirects to educator_email_verification_form_updated_email_path' do
-          user = User.last
-          post(:educator_change_signup_email, params: params)
-          expect(response).to redirect_to(educator_email_verification_form_updated_email_path)
+        it 'sends a new PIN and returns to the PIN screen' do
+          expect {
+            post(:educator_change_signup_email, params: params)
+          }.to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+          expect(response).to redirect_to(educator_email_verification_form_path)
+          expect(flash[:notice]).to eq I18n.t(
+            :"login_signup_form.signup_email_changed", email: 'newemail@openstax.org'
+          )
+          expect(SecurityLog.where(event_type: :signup_email_changed, user: user)).to exist
+        end
+      end
+
+      context 'when the same address is entered again' do
+        let(:params) { { change_signup_email: { email: 'Original@OpenStax.org' } } }
+
+        it 'resends it under the resend limits' do
+          user.email_addresses.update_all(confirmation_sent_at: nil)
+
+          expect {
+            post(:educator_change_signup_email, params: params)
+          }.to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+          expect(response).to redirect_to(educator_email_verification_form_path)
+          expect(SecurityLog.where(event_type: :signup_email_resent, user: user)).to exist
+        end
+
+        it 'asks the user to wait when the email was just sent' do
+          user.email_addresses.update_all(confirmation_sent_at: 10.seconds.ago)
+
+          expect {
+            post(:educator_change_signup_email, params: params)
+          }.not_to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+          expect(response).to redirect_to(educator_email_verification_form_path)
+          expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resent_too_soon")
+        end
+      end
+
+      context 'when the hourly email limit is used up' do
+        let(:params) { { change_signup_email: { email: 'newemail@openstax.org' } } }
+
+        before do
+          Newflow::ResendSignupEmail::HOURLY_LIMIT.times do
+            SecurityLog.create!(user: user, event_type: :signup_email_changed)
+          end
+        end
+
+        it 'keeps the address and shows the limit on the form' do
+          expect {
+            post(:educator_change_signup_email, params: params)
+          }.not_to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+          expect(response).to render_template(:educator_change_signup_email_form)
+          expect(user.email_addresses.first.reload.value).to eq 'original@openstax.org'
         end
       end
 
@@ -227,7 +280,7 @@ module Newflow
         it 'bypasses recaptcha verification and allows email change' do
           expect_any_instance_of(described_class).not_to receive(:verify_recaptcha)
           post(:educator_change_signup_email, params: params)
-          expect(response).to redirect_to(educator_email_verification_form_updated_email_path)
+          expect(response).to redirect_to(educator_email_verification_form_path)
         end
       end
     end
@@ -353,22 +406,6 @@ module Newflow
       end
     end
 
-    describe 'GET #educator_email_verification_form_updated_email' do
-      it 'renders OK' do
-        user = create_newflow_user('user@openstax.org')
-        user.update(state: User::UNVERIFIED)
-        user.email_addresses.first.update!(verified: false)
-        allow_any_instance_of(described_class).to receive(:unverified_user) { user }
-        get('educator_email_verification_form_updated_email')
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:educator_email_verification_form_updated_email)
-      end
-
-      it 'redirects when there is no unverified_user present' do
-        get('educator_email_verification_form_updated_email')
-        expect(response.status).to eq(302)
-      end
-    end
 
     describe 'POST #sheerid_webhook' do
       let(:handler) { EducatorSignup::SheeridWebhook }

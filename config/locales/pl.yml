@@ -66,12 +66,12 @@ pl:
       Wysłaliśmy kolejną wiadomość na adres <b>%{email}</b>. Zawiera ten sam PIN,
       więc możesz użyć tej, która dotrze pierwsza.
     signup_email_resent_too_soon: Wiadomość została właśnie wysłana. Odczekaj minutę, zanim poprosisz o kolejną.
+    signup_email_changed: Wysłaliśmy nowy PIN na adres <b>%{email}</b>.
     signup_email_resend_limit_reached: >-
       W ciągu ostatniej godziny wysłaliśmy już kilka wiadomości. Sprawdź folder
       spam lub napisz do support@openstax.org.
     signup_email_already_confirmed: Ten adres e-mail został już potwierdzony.
     all_fields_required: '* Wszystkie pola są wymagane'
-    check_your_updated_email: Sprawdź nowy adres e-mail
     havent_received_message: Still haven't received an email? %{contact_us}
     contact_us: Skontaktuj się z nami
     welcome_page_header: Witamy! Dołącz do OpenStax jako

@@ -151,13 +151,30 @@ module Newflow
           }
         }
 
-        it 'redirects to student_email_verification_form_updated_email_path' do
+        it 'sends a new PIN and returns to the PIN screen' do
           user = User.last
           user.update_attribute('state', 'unverified')
           user.email_addresses.first.update!(verified: false)
           session[:unverified_user_id] = user.id
           post(:student_change_signup_email, params: params)
-          expect(response).to redirect_to(student_email_verification_form_updated_email_path)
+          expect(response).to redirect_to(student_email_verification_form_path)
+          expect(flash[:notice]).to eq I18n.t(
+            :"login_signup_form.signup_email_changed", email: 'newemail@openstax.org'
+          )
+        end
+
+        it 'resends under the resend limits when the same address is entered again' do
+          user = User.last
+          user.update_attribute('state', 'unverified')
+          user.email_addresses.first.update!(verified: false, confirmation_sent_at: 10.seconds.ago)
+          session[:unverified_user_id] = user.id
+
+          expect {
+            post(:student_change_signup_email, params: { change_signup_email: { email: 'original@openstax.org' } })
+          }.not_to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+          expect(response).to redirect_to(student_email_verification_form_path)
+          expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resent_too_soon")
         end
       end
 
@@ -199,7 +216,7 @@ module Newflow
           session[:unverified_user_id] = user.id
           expect_any_instance_of(described_class).not_to receive(:verify_recaptcha)
           post(:student_change_signup_email, params: params)
-          expect(response).to redirect_to(student_email_verification_form_updated_email_path)
+          expect(response).to redirect_to(student_email_verification_form_path)
         end
       end
     end
@@ -289,20 +306,5 @@ module Newflow
       end
     end
 
-    describe 'GET #student_email_verification_form_updated_email' do
-      it 'renders OK' do
-        user = create_newflow_user('user@openstax.org')
-        user.email_addresses.first.update!(verified: false)
-        allow_any_instance_of(described_class).to receive(:unverified_user) { user }
-        get('student_email_verification_form_updated_email')
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:student_email_verification_form_updated_email)
-      end
-
-      it 'redirects when there is no unverified_user present' do
-        get('student_email_verification_form_updated_email')
-        expect(response.status).to eq(302)
-      end
-    end
   end
 end

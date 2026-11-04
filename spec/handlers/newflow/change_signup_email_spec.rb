@@ -40,12 +40,15 @@ module Newflow
         }.to change { user.email_addresses.first.confirmation_pin }
       end
 
-      it 'keeps the PIN when the same address is entered again' do
+      it 'writes nothing and sends nothing when the same address is entered again' do
         same = { change_signup_email: { email: before_change_email.upcase } }
 
+        result = nil
         expect {
-          described_class.call(params: same, user: user)
-        }.not_to change { user.email_addresses.first.reload.confirmation_pin }
+          result = described_class.call(params: same, user: user)
+        }.not_to change { user.email_addresses.first.reload.attributes }
+        expect(result.outputs.unchanged).to be(true)
+        expect(enqueued_jobs).to be_empty
       end
 
       it 'sends an email to the new email address' do
@@ -60,6 +63,34 @@ module Newflow
         described_class.call(params: params, user: user)
 
         expect(enqueued_jobs.last['priority']).to eq SendSignupConfirmationEmail::PRIORITY
+      end
+    end
+
+    context 'when the hourly email limit is used up' do
+      before do
+        Newflow::ResendSignupEmail::HOURLY_LIMIT.times do |i|
+          event_type = i.even? ? :signup_email_resent : :signup_email_changed
+          SecurityLog.create!(user: user, event_type: event_type, remote_ip: '127.0.0.1')
+        end
+      end
+
+      it 'refuses a new address and keeps the old one and its PIN' do
+        email_address = user.email_addresses.first
+
+        result = nil
+        expect {
+          result = described_class.call(params: params, user: user)
+        }.not_to change { email_address.reload.attributes }
+        expect(result.errors.map(&:code)).to eq [:resend_limit_reached]
+        expect(result.errors).to have_offending_input(:email)
+        expect(enqueued_jobs).to be_empty
+      end
+
+      it 'ignores changes older than an hour' do
+        SecurityLog.where(user: user).update_all(created_at: 2.hours.ago)
+
+        result = described_class.call(params: params, user: user)
+        expect(result.errors).to be_empty
       end
     end
 

@@ -15,12 +15,21 @@ module Newflow
 
     MIN_INTERVAL = 1.minute
     HOURLY_LIMIT = 5
+    # Changing the address sends a new email too, so it spends from the same cap.
+    REQUESTED_SEND_EVENTS = %i[signup_email_resent signup_email_changed].freeze
+
+    def self.limit_reached?(user_id)
+      SecurityLog.where(user_id: user_id,
+                        event_type: REQUESTED_SEND_EVENTS.map { |type| SecurityLog.event_types[type] })
+                 .where('created_at > ?', 1.hour.ago)
+                 .count >= HOURLY_LIMIT
+    end
 
     protected
 
     def exec(email_address:)
       fatal_error(code: :already_verified) if email_address.verified?
-      fatal_error(code: :resend_limit_reached) if limit_reached?(email_address)
+      fatal_error(code: :resend_limit_reached) if self.class.limit_reached?(email_address.user_id)
       fatal_error(code: :resent_too_soon) unless claim_send(email_address)
 
       result = SendSignupConfirmationEmail.call(email_address: email_address)
@@ -38,13 +47,6 @@ module Newflow
                          MIN_INTERVAL.ago)
                   .update_all(confirmation_sent_at: Time.current)
                   .positive?
-    end
-
-    def limit_reached?(email_address)
-      SecurityLog.where(user_id: email_address.user_id,
-                        event_type: SecurityLog.event_types[:signup_email_resent])
-                 .where('created_at > ?', 1.hour.ago)
-                 .count >= HOURLY_LIMIT
     end
   end
 end

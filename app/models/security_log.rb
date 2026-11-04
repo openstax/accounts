@@ -135,6 +135,7 @@ class SecurityLog < ApplicationRecord
     faculty_status_repaired
     salesforce_record_unlinked
     signup_email_resent
+    signup_email_changed
   ]
 
   json_serialize :event_data, Hash

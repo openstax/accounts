@@ -138,7 +138,6 @@ en:
       Change your email below so we can send your PIN.
       You will need to use this updated email to log in.
     all_fields_required: '* All fields are required'
-    check_your_updated_email: Check your updated email
     havent_received_message: Still haven't received an email? %{contact_us}
     contact_us: Contact us
     welcome_page_header: Welcome! Join OpenStax as
@@ -171,6 +170,7 @@ en:
     signup_email_resent: >-
       We sent another email to <b>%{email}</b>. It has the same PIN, so you can
       use whichever email arrives first.
+    signup_email_changed: We sent a new PIN to <b>%{email}</b>.
     signup_email_resend_limit_reached: >-
       We've sent several emails in the last hour. Please check your spam or junk
       folder, or contact support@openstax.org.
