@@ -18,14 +18,17 @@ namespace :cron do
       SyncEducatorLeads.call
     end
 
-    Rails.logger.info 'BookCatalogSync.call'
-    OpenStax::RescueFrom.this { BookCatalogSync.call }
+    cron_step('BookCatalogSync.call') do
+      BookCatalogSync.call
+    end
 
-    Rails.logger.info 'Salesforce::AdoptionSync.call'
-    OpenStax::RescueFrom.this { Salesforce::AdoptionSync.call }
+    cron_step('Salesforce::AdoptionSync.call') do
+      Salesforce::AdoptionSync.call
+    end
 
-    Rails.logger.info 'PushAdoptionReports.call_for_all_unpushed'
-    OpenStax::RescueFrom.this { PushAdoptionReports.call_for_all_unpushed }
+    cron_step('PushAdoptionReports.call_for_all_unpushed') do
+      PushAdoptionReports.call_for_all_unpushed
+    end
 
     Rails.logger.debug 'Finished daily cron'
   end
