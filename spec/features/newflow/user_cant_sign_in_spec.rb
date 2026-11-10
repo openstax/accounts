@@ -66,14 +66,12 @@ feature "User can't sign in", js: true do
 
     with_omniauth_test_mode(uid: "different_than_#{authentication.uid}", email: email_address) do
       find('.google.btn').click
-      # Wait for the redirect through the (now form-submitted, POST) social
-      # button to land before this block's `ensure` flips OmniAuth test_mode
-      # back off — otherwise the in-flight request can race past the mock
-      # and fall through to the real provider.
-      wait_for_ajax
+      # Assert inside the block: its `ensure` turns OmniAuth test_mode off, and
+      # the social button is a full-page POST that wait_for_ajax doesn't track,
+      # so a request still in flight would go to the real Google.
+      expect(page).to have_content(t(:"controllers.sessions.mismatched_authentication"))
     end
 
     screenshot!
-    expect(page).to have_content(t(:"controllers.sessions.mismatched_authentication"))
   end
 end
