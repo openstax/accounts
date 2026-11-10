@@ -26,6 +26,7 @@ class AccountController < Newflow::BaseController
       # LMS question" chip can force it back open with ?show_lms=1.
       @show_lms_card = !current_user.lms_answered? &&
                        (current_user.lms_question_pending? || params[:show_lms].present?)
+      @show_profile_nudge_banner = show_profile_nudge_banner?
 
       render_account_page :overview, title: 'Account overview', description: 'View a summary of your OpenStax account.'
     end
@@ -108,6 +109,15 @@ class AccountController < Newflow::BaseController
   end
 
   private
+
+  def show_profile_nudge_banner?
+    return false unless current_user.needs_profile_nudge? && !session[:profile_nudge_dismissed]
+
+    unless SecurityLog.exists?(user: current_user, event_type: :profile_nudge_banner_shown)
+      security_log(:profile_nudge_banner_shown)
+    end
+    true
+  end
 
   def render_student_overview
     @saved_books = current_user.user_books.includes(:book).order(created_at: :desc)

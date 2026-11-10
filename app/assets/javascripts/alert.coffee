@@ -1,7 +1,7 @@
 OX.Alert = {
   displayInsideElement: (element) ->
     # Return a function that will display the alert inside the given element
-    (options) -> OX.alert.display(_.extend(options, parentEl: element))
+    (options) -> OX.Alert.display(_.extend(options, parentEl: element))
 
   hideAll: ->
     $('.ox-alert').each -> $(this).alert('close')

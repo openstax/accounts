@@ -26,6 +26,13 @@ describe ExternalUserCredentialsController, type: :controller do
         end
       end
 
+      context 'missing return_to param' do
+        it 'raises SecurityTransgression' do
+          get :new, params: { token: token.token }
+          expect(response.status).to eq 403
+        end
+      end
+
       context 'untrusted return_to param' do
         it 'raises SecurityTransgression' do
           get :new, params: valid_get_params.merge(return_to: 'https://www.example.com')

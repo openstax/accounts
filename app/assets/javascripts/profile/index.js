@@ -1,10 +1,12 @@
 //= require bootstrap-editable
 //= require ../vendor/underscore
+//= require ../newflow/school_autocomplete
 //= require ./namespace
 //= require ./editable_error
 //= require ../confirmation-popover
 //= require ../alert
 //= require ./name
+//= require ./school
 //= require ./email
 //= require ./authentication
 //= require_self

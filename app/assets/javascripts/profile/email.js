@@ -141,7 +141,11 @@ OX.Profile.Email = {
   },
 
   onDeleteEmail() {
-    return $('.info .email-entry').each((indx, el) => $(el).data().email.update());
+    // the blank entry added by onAddEmail has no instance until it's saved
+    return $('.info .email-entry').each((indx, el) => {
+      const entry = $(el).data().email;
+      if (entry) { entry.update(); }
+    });
   },
 
   onAddEmail() {
@@ -173,8 +177,9 @@ OX.Profile.Email = {
         input.editable('destroy');
         return input.text(params.response.contact_info.value);
       });
-      email = new Email(email);
-      return email.set(params.response.contact_info);
+      const entry = new Email(email);
+      email.data({email: entry});
+      return entry.set(params.response.contact_info);
     });
     // no idea why the defer is needed, but it fails (silently!) without it
     return _.defer(function() {

@@ -141,6 +141,7 @@ en:
               contains_comma: An email should not contain a comma
               contains_semicolon: An email should not contain a semicolon
               leading_nonascii: An email address should not have leading non-ASCII characters
+              contains_invisible_characters: An email address should not contain invisible or control characters
 
         identity:
           attributes:

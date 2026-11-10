@@ -1,6 +1,7 @@
 class CreateAdoptionReports < ActiveRecord::Migration[6.1]
+  # if_not_exists: databases that ran this as version 20260915200004 already have it.
   def change
-    create_table :adoption_reports do |t|
+    create_table :adoption_reports, if_not_exists: true do |t|
       t.references :user, null: false, foreign_key: true
       t.references :book, foreign_key: true
       t.string :book_title, null: false
@@ -14,7 +15,7 @@ class CreateAdoptionReports < ActiveRecord::Migration[6.1]
     end
 
     add_index :adoption_reports, [:user_id, :book_title, :school_year],
-              unique: true, name: 'index_adoption_reports_on_user_book_year'
-    add_index :adoption_reports, :salesforce_pushed_at
+              unique: true, name: 'index_adoption_reports_on_user_book_year', if_not_exists: true
+    add_index :adoption_reports, :salesforce_pushed_at, if_not_exists: true
   end
 end

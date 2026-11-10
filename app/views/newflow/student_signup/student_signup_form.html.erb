@@ -121,7 +121,7 @@
                         <%= I18n.t(:"educator_profile_form.school_name") %>
                         <span class="field-label-optional"><%= I18n.t(:"login_signup_form.school_optional_suffix") %></span>
                     <% end %>
-                    <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>">
+                    <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>" data-endpoint="<%= newflow_schools_path %>">
                         <%=
                             form_helper.text_field(
                                 name: :school,

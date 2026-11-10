@@ -1,3 +1,7 @@
+<% content_for :head do %>
+  <%= javascript_include_tag 'newflow/profile_nudge_banner' if @show_profile_nudge_banner %>
+<% end %>
+
 <% school_supports_assignable = current_user.school&.has_assignable_contacts? %>
 <% assignable_enabled = current_user.external_ids.exists? %>
 <% dismissed_assignable_callout = cookies[:dismissed_assignable_callout] == 'true' %>
@@ -35,7 +39,9 @@
       </div>
     <% end %>
 
-    <% if pending_instructor %>
+    <% if @show_profile_nudge_banner %>
+      <%= render 'account/profile_nudge_callout' %>
+    <% elsif pending_instructor %>
       <div class="account-callout account-callout--pending" id="verification-callout">
         <div class="account-callout__text">
           <p class="account-callout__eyebrow account-callout__eyebrow--alert">Action required</p>

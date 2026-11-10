@@ -1,6 +1,9 @@
 <%# Copyright 2011-2016 Rice University. Licensed under the Affero General Public
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
-<% @page_header = 'User Details' %>
+<% @page_header = capture do %>
+  <%= @user.name %> <small>#<%= @user.id %></small>
+  <%= link_to 'Back to search', admin_users_path, class: 'btn btn-default btn-sm pull-right' %>
+<% end %>
 
 <%= render 'form' %>

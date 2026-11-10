@@ -11,7 +11,7 @@ def user_matcher(user, include_private_data: false)
     title: user.title,
     suffix: user.suffix,
     uuid: user.uuid,
-    consent_preferences: user.consent_preferences,
+    consent_preferences: user.consent_preferences&.deep_symbolize_keys,
     is_test: user.is_test?,
     is_administrator: user.is_administrator?,
     salesforce_contact_id: user.salesforce_contact_id,

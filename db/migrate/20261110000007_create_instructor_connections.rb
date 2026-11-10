@@ -1,6 +1,7 @@
 class CreateInstructorConnections < ActiveRecord::Migration[6.1]
+  # if_not_exists: databases that ran this as version 20260915200007 already have it.
   def change
-    create_table :instructor_connections do |t|
+    create_table :instructor_connections, if_not_exists: true do |t|
       t.references :student, null: false, foreign_key: { to_table: :users }
       t.references :instructor, foreign_key: { to_table: :users }
       t.references :school, foreign_key: true
@@ -21,7 +22,7 @@ class CreateInstructorConnections < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    add_index :instructor_connections, [:student_id, :instructor_id]
-    add_index :instructor_connections, :status
+    add_index :instructor_connections, [:student_id, :instructor_id], if_not_exists: true
+    add_index :instructor_connections, :status, if_not_exists: true
   end
 end

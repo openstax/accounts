@@ -79,7 +79,7 @@
                 <div class="school-name newflow-mustdo-alert">
                   <%= I18n.t(:"staff_details_form.school_name_must_be_entered") %>
                 </div>
-                <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>">
+                <div class="school-autocomplete" data-use-as-entered-label="<%= I18n.t(:"school_autocomplete.use_as_entered_label") %>" data-endpoint="<%= newflow_schools_path %>">
                   <%=
                     fh.text_field(
                       name: :school_name,

@@ -125,6 +125,40 @@ RSpec.describe AccountController, type: :controller do
     end
   end
 
+  describe 'the profile-nudge banner on Overview' do
+    before do
+      user.update!(
+        is_newflow: true,
+        is_profile_complete: false,
+        sheerid_verification_id: 'a-verification-id',
+        profile_nudge_redirected_at: 1.day.ago
+      )
+    end
+
+    it 'shows the banner and logs it once' do
+      get :overview
+      expect(assigns(:show_profile_nudge_banner)).to be(true)
+      expect(response.body).to include(I18n.t(:"profile_nudge_banner.heading"))
+      expect(SecurityLog.where(user: user, event_type: :profile_nudge_banner_shown).count).to eq(1)
+
+      get :overview
+      expect(SecurityLog.where(user: user, event_type: :profile_nudge_banner_shown).count).to eq(1)
+    end
+
+    it 'does not show the banner once dismissed for the session' do
+      session[:profile_nudge_dismissed] = true
+      get :overview
+      expect(assigns(:show_profile_nudge_banner)).to be_falsey
+      expect(response.body).not_to include(I18n.t(:"profile_nudge_banner.heading"))
+    end
+
+    it 'does not show the banner once the profile is complete' do
+      user.update!(is_profile_complete: true)
+      get :overview
+      expect(assigns(:show_profile_nudge_banner)).to be_falsey
+    end
+  end
+
   describe 'student account overview' do
     let(:student) { FactoryBot.create(:user, :terms_agreed, role: :student, first_name: 'Jordan') }
 

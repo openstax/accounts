@@ -9,7 +9,10 @@
 
 
   <div class="input-group" style="width:100%">
-    <%= f.search_field :terms,  class: 'form-control', placeholder: "Search terms" %>
+    <%= f.search_field :terms,
+                        class: 'form-control',
+                        id: 'user_search_terms',
+                        placeholder: 'id:42, email:jane@example.com, or name:garcia' %>
   </div>
   <div class="input-group" style="margin-bottom: 20px" >
     <%= f.search_field :order_by,  class: 'form-control', placeholder: "Ordered by" %>
@@ -17,7 +20,36 @@
       <%= f.submit 'Search', class: 'btn btn-primary' %>
     </span>
   </div>
-  <div class="user-search-help"><%= link_to "Search help", "/api/docs/v1/users/index" %></div>
+
+  <div class="user-search-help">
+    <button type="button"
+            class="btn btn-link user-search-help-toggle"
+            id="user-search-help-toggle"
+            aria-expanded="false"
+            aria-controls="user-search-syntax-help">
+      Search syntax help
+    </button>
+    <%= link_to "Full API docs", "/api/docs/v1/users/index" %>
+  </div>
+
+  <div id="user-search-syntax-help" class="user-search-syntax-help" hidden>
+    <p>Combine <code>keyword:value</code> terms with a space (AND). Supported keywords:</p>
+    <ul>
+      <li><code>name:</code> (or plain text) &mdash; matches first, last, or full name</li>
+      <li><code>first_name:</code> / <code>last_name:</code> / <code>full_name:</code></li>
+      <li><code>email:</code> &mdash; matches any contact email, confirmed or not</li>
+      <li><code>id:</code> &mdash; exact user id</li>
+      <li><code>uuid:</code> &mdash; full or 8-character partial uuid</li>
+      <li><code>external_id:</code> &mdash; matches an external id</li>
+    </ul>
+    <p>Example: <code>name:garcia email:rice.edu</code></p>
+    <div class="user-search-quick-filters">
+      <span class="user-search-quick-filters__label">Try:</span>
+      <% %w[id: email: uuid: external_id: name:].each do |term| %>
+        <button type="button" class="btn btn-default btn-xs user-search-quick-filter" data-term="<%= term %>"><%= term %></button>
+      <% end %>
+    </div>
+  </div>
 
   <%= f.hidden_field :per_page, value: 50 %>
 
@@ -25,129 +57,215 @@
 
 
 <% if @handler_result %>
+  <% items = @handler_result.outputs[:items] %>
+  <% query = @handler_result.outputs[:query] %>
 
-<%= render partial: 'new_search_pagination' %>
+  <% if items.blank? %>
+    <div class="user-search-empty-state" role="status">
+      <p>No users matched <strong>&ldquo;<%= query %>&rdquo;</strong>.</p>
+      <p>
+        Double-check the spelling, or review the
+        <button type="button" class="btn btn-link" id="user-search-empty-help-link">search syntax help</button>
+        &mdash; an unsupported keyword can silently match nothing.
+      </p>
+    </div>
+  <% else %>
 
-<table id="search-results-list">
+    <%= render partial: 'new_search_pagination' %>
 
-    <tr>
-      <th class="expand"></th>
-      <th>ID</th>
-      <th>External ID</th>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Faculty Status</th>
-      <th>Role</th>
-      <th>School</th>
-      <th>Salesforce</th>
-      <th></th>
-      <th></th>
-    </tr>
-    <% @handler_result.outputs[:items].each do |user| %>
-      <% zebra = cycle('odd', 'even') %>
-      <tr class="<%= zebra %>">
-        <td>
-          <a class="expand" href="#">
-            <i class="fa fa-plus" aria-hidden="false"></i></a>
-        </td>
-        <td><%= link_to user.id, edit_admin_user_path(user), target: '_blank' %></td>
-        <td class="external-id"><%= user.external_ids.map(&:external_id).join(', ').presence || '---' %></td>
-        <td><%= user.first_name || '---' %></td>
-        <td><%= user.last_name || '---' %></td>
-        <td><%= user.faculty_status.humanize %></td>
-        <td><%= user.school_type.humanize %></td>
-        <td>
-          <% if user.school %>
-            <% sf_id = user.school.salesforce_id %>
-            <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
-            <% if instance_url.nil? %>
-              <%= sf_id %>
-            <% else %>
-              <%= link_to user.school.name, instance_url + "/" + sf_id, target: '_blank' %>
-            <% end %>
+    <% sfdc_instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+
+    <div class="table-responsive">
+      <table id="search-results-list">
+        <caption class="sr-only">Search results for &ldquo;<%= query %>&rdquo;</caption>
+        <thead>
+          <tr>
+            <th class="expand" scope="col"><span class="sr-only">Toggle row details</span></th>
+            <th scope="col">ID</th>
+            <th scope="col">Email</th>
+            <th scope="col">External ID</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Role</th>
+            <th scope="col">Faculty Status</th>
+            <th scope="col">School Type</th>
+            <th scope="col">School</th>
+            <th scope="col">Salesforce</th>
+            <th scope="col"><span class="sr-only">Security log</span></th>
+            <th scope="col"><span class="sr-only">Log in as user</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% items.each do |user| %>
+            <% zebra = cycle('odd', 'even') %>
+            <% details_id = "user-details-#{user.id}" %>
+            <% emails = user.contact_infos.select(&:email?) %>
+            <% primary_email = emails.find(&:verified?) || emails.min_by(&:created_at) %>
+            <tr class="<%= zebra %>">
+              <td>
+                <button type="button"
+                        class="expand"
+                        aria-expanded="false"
+                        aria-controls="<%= details_id %>"
+                        aria-label="Show details for user #<%= user.id %>"
+                        data-label-show="Show details for user #<%= user.id %>"
+                        data-label-hide="Hide details for user #<%= user.id %>">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+              </td>
+              <td><%= link_to user.id, edit_admin_user_path(user), target: '_blank' %></td>
+              <td>
+                <% if primary_email %>
+                  <span class="user-email <%= primary_email.verified? ? 'confirmed' : 'unconfirmed' %>">
+                    <%= link_to primary_email.value, "mailto:#{primary_email.value}", class: 'user-email__address' %>
+                    <span class="user-email__badge">
+                      <i class="fa <%= primary_email.verified? ? 'fa-check-circle' : 'fa-exclamation-circle' %>" aria-hidden="true"></i>
+                      <%= primary_email.verified? ? 'Confirmed' : 'Not confirmed' %>
+                    </span>
+                  </span>
+                <% else %>
+                  <span class="text-muted">&mdash;</span>
+                <% end %>
+              </td>
+              <td class="external-id"><%= user.external_ids.map(&:external_id).join(', ').presence || '---' %></td>
+              <td><%= user.first_name || '---' %></td>
+              <td><%= user.last_name || '---' %></td>
+              <td><%= user.role.humanize %></td>
+              <td><%= user.faculty_status.humanize %></td>
+              <td><%= user.school_type.humanize %></td>
+              <td>
+                <% if user.school %>
+                  <% sf_id = user.school.salesforce_id %>
+                  <% if sfdc_instance_url.nil? %>
+                    <%= sf_id %>
+                  <% else %>
+                    <%= link_to user.school.name, sfdc_instance_url + "/" + sf_id, target: '_blank' %>
+                  <% end %>
+                <% end %>
+              </td>
+              <td>
+                <% if !user.salesforce_contact_id.nil? %>
+                  <% sf_id = user.salesforce_contact_id %>
+                  <% sf_type = 'Contact' %>
+                <% elsif !user.salesforce_lead_id.nil? %>
+                  <% sf_id = user.salesforce_lead_id%>
+                  <% sf_type = 'Lead' %>
+                <% end %>
+
+                <% if !sf_id.nil? %>
+                  <% if sfdc_instance_url.nil? %>
+                    <%= sf_id %>
+                  <% else %>
+                    <%= link_to sf_type, sfdc_instance_url + "/" + sf_id, target: '_blank' %>
+                  <% end %>
+                <% end %>
+              </td>
+              <td>
+                <%= link_to admin_security_log_path(search: { query: "user_id:#{user.id}" }),
+                            target: '_blank',
+                            rel: 'noopener',
+                            title: "Security log for user ##{user.id}",
+                            aria: { label: "Security log for user ##{user.id}" } do %>
+                  <i class="fa fa-history" aria-hidden="true"></i>
+                <% end %>
+              </td>
+              <td>
+                <%= link_to become_admin_user_path(user),
+                            method: :post,
+                            title: "Log in as user ##{user.id}",
+                            aria: { label: "Log in as user ##{user.id}" },
+                            data: {confirm: "Log in as user #{user.id}, #{user.full_name || '(no name)'}?"} do %>
+                  <i class="fa fa-key" aria-hidden="true"></i>
+                <% end %>
+              </td>
+            </tr>
+            <tr class="<%= zebra %> details" id="<%= details_id %>">
+              <td></td>
+              <td colspan="11">
+                <div>
+                  <div style="float:right">
+                    <span class="created"><i>Created:</i> <%= user.created_at.in_time_zone('Central Time (US & Canada)') %></span>
+                    <br/>
+                    <span class="updated"><i>Updated:</i> <%= user.updated_at.in_time_zone('Central Time (US & Canada)') %></span>
+                  </div>
+
+                  <% if user.is_administrator %>
+                    <span class="admin">Administrator</span> |
+                  <% end %>
+
+                  <% if user.is_test? %>
+                    <span class="test">Test User</span> |
+                  <% end %>
+
+                  <span class="uuid">
+                    <i>UUID:</i> <%= user.uuid %>
+                  </span>
+
+                  <% if user.self_reported_school.present? %>
+                    | <span class="school">
+                      <i>Self-reported school:</i> <%= user.self_reported_school %>
+                    </span>
+                  <% end %>
+
+                  <% user.contact_infos.each do |contact_info| %>
+                    <div class="email">
+                      <%= link_to contact_info.value, "mailto:#{contact_info.value}" %>
+                      (<%= contact_info.verified ? "confirmed" : "NOT confirmed" %>)
+                    </div>
+                  <% end %>
+
+                </div>
+              </td>
+              <td></td>
+            </tr>
           <% end %>
-        </td>
-        <td>
-          <% if !user.salesforce_contact_id.nil? %>
-            <% sf_id = user.salesforce_contact_id %>
-            <% sf_type = 'Contact' %>
-          <% elsif !user.salesforce_lead_id.nil? %>
-            <% sf_id = user.salesforce_lead_id%>
-            <% sf_type = 'Lead' %>
-          <% end %>
+        </tbody>
+      </table>
+    </div>
 
-          <% if !sf_id.nil? %>
-            <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
-            <% if instance_url.nil? %>
-              <%= sf_id %>
-            <% else %>
-              <%= link_to sf_type, instance_url + "/" + sf_id, target: '_blank' %>
-            <% end %>
-          <% end %>
-        </td>
-        <td><%= link_to admin_security_log_path(search: { query: "user_id:#{user.id}" }) do %><i class="fa fa-history"></i><% end %></td>
-        <td>
-          <%= link_to become_admin_user_path(user),
-                      method: :post,
-                      data: {confirm: "Log in as user #{user.id}, #{user.full_name || '(no name)'}?"} do %>
-            <i class="fa fa-key" aria-hidden="false"></i>
-          <% end %>
-        </td>
-      </tr>
-      <tr class="<%= zebra %> details">
-        <td></td>
-        <td colspan=9>
-          <div>
-            <div style="float:right">
-              <span class="created"><i>Created:</i> <%= user.created_at.in_time_zone('Central Time (US & Canada)') %></span>
-              <br/>
-              <span class="updated"><i>Updated:</i> <%= user.updated_at.in_time_zone('Central Time (US & Canada)') %></span>
-            </div>
+    <%= render partial: 'new_search_pagination' %>
 
-            <% if user.is_administrator %>
-              <span class="admin">Administrator</span> |
-            <% end %>
-
-            <% if user.is_test? %>
-              <span class="test">Test User</span> |
-            <% end %>
-
-            <span class="uuid">
-              <i>UUID:</i> <%= user.uuid %>
-            </span>
-
-            <% if user.self_reported_school.present? %>
-              | <span class="school">
-                <i>Self-reported school:</i> <%= user.self_reported_school %>
-              </span>
-            <% end %>
-
-            <% user.contact_infos.each do |contact_info| %>
-              <div class="email">
-                <%= link_to contact_info.value, "mailto:#{contact_info.value}" %>
-                (<%= contact_info.verified ? "confirmed" : "NOT confirmed" %>)
-              </div>
-            <% end %>
-
-          </div>
-        </td>
-        <td></td>
-      </tr>
-    <% end %>
-
-</table>
-
-<%= render partial: 'new_search_pagination' %>
+  <% end %>
 
 <% end %>
 
 <% content_for :javascript do %>
   <script type="text/javascript">
     $('.expand').click(function(e) {
-      $(this).parent().parent().next('tr').toggle();
-      $(this).find("i").toggleClass("fa-plus");
-      $(this).find("i").toggleClass("fa-minus");
       e.preventDefault();
+      var $btn = $(this);
+      $btn.closest('tr').next('tr').toggle();
+      var wasExpanded = $btn.attr('aria-expanded') === 'true';
+      $btn.attr('aria-expanded', (!wasExpanded).toString());
+      $btn.attr('aria-label', wasExpanded ? $btn.data('label-show') : $btn.data('label-hide'));
+      $btn.find('i').toggleClass('fa-plus fa-minus');
+    });
+
+    $('#user-search-help-toggle').click(function(e) {
+      e.preventDefault();
+      var $btn = $(this);
+      var $panel = $('#' + $btn.attr('aria-controls'));
+      var wasExpanded = $btn.attr('aria-expanded') === 'true';
+      $btn.attr('aria-expanded', (!wasExpanded).toString());
+      $panel.prop('hidden', wasExpanded);
+    });
+
+    $('#user-search-empty-help-link').click(function(e) {
+      e.preventDefault();
+      var $toggle = $('#user-search-help-toggle');
+      if ($toggle.attr('aria-expanded') !== 'true') {
+        $toggle.trigger('click');
+      }
+      $toggle.get(0).scrollIntoView({block: 'center'});
+    });
+
+    $('.user-search-quick-filter').click(function(e) {
+      e.preventDefault();
+      var $terms = $('#user_search_terms');
+      var term = $(this).data('term');
+      var current = $terms.val();
+      $terms.val(current ? (current.replace(/\s+$/, '') + ' ' + term) : term);
+      $terms.trigger('focus');
     });
   </script>
 

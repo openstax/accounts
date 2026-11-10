@@ -1,6 +1,7 @@
 class CreateAdoptions < ActiveRecord::Migration[6.1]
+  # if_not_exists: databases that ran this as version 20260915200003 already have it.
   def change
-    create_table :adoptions do |t|
+    create_table :adoptions, if_not_exists: true do |t|
       t.string :salesforce_id, null: false
       t.string :adoption_number
       t.string :salesforce_name
@@ -33,12 +34,14 @@ class CreateAdoptions < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    add_index :adoptions, :salesforce_id, unique: true
-    add_index :adoptions, [:salesforce_contact_id, :school_year], name: 'index_adoptions_on_sf_contact_and_school_year'
-    add_index :adoptions, [:salesforce_account_id, :school_year], name: 'index_adoptions_on_sf_account_and_school_year'
-    add_index :adoptions, :salesforce_account_id
-    add_index :adoptions, :salesforce_contact_id
-    add_index :adoptions, :salesforce_opportunity_id
-    add_index :adoptions, :salesforce_book_id
+    add_index :adoptions, :salesforce_id, unique: true, if_not_exists: true
+    add_index :adoptions, [:salesforce_contact_id, :school_year],
+              name: 'index_adoptions_on_sf_contact_and_school_year', if_not_exists: true
+    add_index :adoptions, [:salesforce_account_id, :school_year],
+              name: 'index_adoptions_on_sf_account_and_school_year', if_not_exists: true
+    add_index :adoptions, :salesforce_account_id, if_not_exists: true
+    add_index :adoptions, :salesforce_contact_id, if_not_exists: true
+    add_index :adoptions, :salesforce_opportunity_id, if_not_exists: true
+    add_index :adoptions, :salesforce_book_id, if_not_exists: true
   end
 end

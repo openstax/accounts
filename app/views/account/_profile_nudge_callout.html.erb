@@ -1,0 +1,35 @@
+<div class="account-callout account-callout--pending" id="profile-nudge-callout">
+  <div class="account-callout__text">
+    <p class="account-callout__eyebrow account-callout__eyebrow--alert">Finish signing up</p>
+    <h3><%= t(:"profile_nudge_banner.heading") %></h3>
+    <p><%= t(:"profile_nudge_banner.body") %></p>
+  </div>
+  <div class="account-callout__actions">
+    <%=
+      link_to(
+        t(:"profile_nudge_banner.finish_button"),
+        educator_profile_form_path,
+        class: 'account-callout__button account-callout__button--primary js-profile-nudge-finish',
+        data: {
+          'ga-category': 'Profile Nudge',
+          'ga-action': 'Click',
+          'ga-label': 'Finish setting up'
+        }
+      )
+    %>
+    <%=
+      button_to(
+        t(:"profile_nudge_banner.dismiss_button"),
+        dismiss_profile_nudge_path,
+        method: :post,
+        class: 'account-callout__button account-callout__button--ghost',
+        form_class: 'account-callout__button-form',
+        data: {
+          'ga-category': 'Profile Nudge',
+          'ga-action': 'Click',
+          'ga-label': 'Dismiss'
+        }
+      )
+    %>
+  </div>
+</div>

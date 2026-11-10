@@ -1643,7 +1643,8 @@ p {
   margin-bottom: 0.85rem;
 }
 
-.account-callout__lms-dismiss-form {
+.account-callout__lms-dismiss-form,
+.account-callout__button-form {
   margin: 0;
 }
 
@@ -2354,14 +2355,14 @@ body:not(.os-app) #application-footer {
   gap: 0.65rem;
 }
 
-.account-profile__value--name {
+.account-profile__value--editable {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.4rem;
 }
 
-.account-profile__name-row {
+.account-profile__edit-row {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
@@ -2376,12 +2377,12 @@ body:not(.os-app) #application-footer {
   cursor: default;
 }
 
-.account-profile__value--name .editable-container.editable-inline {
+.account-profile__value--editable .editable-container.editable-inline {
   width: 100%;
   margin-top: 0.35rem;
 }
 
-.account-profile__value--name .editable-input input,
+.account-profile__value--editable .editable-input input,
 .email-entry__value .editable-input input {
   width: 100%;
   border: 1px solid #E0E0E0;
@@ -2393,14 +2394,21 @@ body:not(.os-app) #application-footer {
   box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
 }
 
-.account-profile__value--name .editable-input input:focus {
+.account-profile__value--editable .editable-input input:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(2, 106, 161, 0.15);
 }
 
-.account-profile__value--name .editable-input > div {
+.account-profile__value--editable .editable-input > div {
   margin-bottom: 0.8rem;
+}
+
+/* x-editable shrink-wraps its input, which squeezed the school suggestions list
+   down to the width of the typed text */
+.account-profile__value--editable .editable-input .school-autocomplete {
+  width: 22em;
+  max-width: 100%;
 }
 
 .account-security__email-list .editable-input input {

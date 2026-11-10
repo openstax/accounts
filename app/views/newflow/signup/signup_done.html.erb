@@ -30,6 +30,24 @@
     if is_educator_profile && current_user.how_many_students.present?
       "Your #{current_user.how_many_students} students will now have access to free OpenStax materials."
     end
+
+  # Social signup always creates a student -- there is no educator social
+  # flow -- so this is the only way back into it for an instructor who used
+  # it. Everyone else chose their role on the welcome page.
+  alternatives = if current_user.student? && current_user.identity.nil?
+    {
+      heading: I18n.t(:"login_signup_form.alternatives_heading_educator"),
+      actions: [
+        {
+          label: I18n.t(:"login_signup_form.switch_role_educator"),
+          description: I18n.t(:"login_signup_form.switch_role_educator_description"),
+          path: switch_signup_role_path,
+          method: :post,
+          ga_label: 'switch-to-educator'
+        }
+      ]
+    }
+  end
 %>
 
 <%=
@@ -40,21 +58,7 @@
     image: image,
     badge: badge,
     primary_cta: primary_cta,
-    impact_copy: impact_copy
+    impact_copy: impact_copy,
+    alternatives: alternatives
   )
 %>
-
-<% if current_user.student? %>
-  <%= render partial: 'newflow/signup_alternatives', locals: {
-        heading: I18n.t(:"login_signup_form.alternatives_heading"),
-        actions: [
-          {
-            label: I18n.t(:"login_signup_form.switch_role_educator"),
-            description: I18n.t(:"login_signup_form.switch_role_educator_description"),
-            path: switch_signup_role_path,
-            method: :post,
-            ga_label: 'switch-to-educator'
-          }
-        ]
-      } %>
-<% end %>

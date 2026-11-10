@@ -123,6 +123,17 @@ class SecurityLog < ApplicationRecord
     updated_salesforce_lead_after_role_switch
     no_salesforce_lead_to_update
     sheerid_webhook_ignored_after_role_switch
+    faculty_status_advanced
+    faculty_status_downgrade_refused
+    sheerid_webhook_expired
+    sheerid_webhook_error
+    sheerid_webhook_pending
+    incomplete_signup_lead_created
+    profile_nudge_redirected
+    profile_nudge_banner_shown
+    salesforce_lead_status_synced
+    faculty_status_repaired
+    salesforce_record_unlinked
     educator_used_current_email_for_sheerid
     self_learner_signed_up
     self_learner_sign_up_failed
@@ -141,7 +152,7 @@ class SecurityLog < ApplicationRecord
 
   before_destroy { raise ActiveRecord::ReadOnlyRecord }
 
-  scope :preloaded, ->{ preload(:user, :application) }
+  scope :preloaded, ->{ preload(:application, user: :email_addresses) }
 
   default_scope { order(arel_table[:created_at].desc) }
 

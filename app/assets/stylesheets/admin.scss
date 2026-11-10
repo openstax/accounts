@@ -2,6 +2,10 @@
 @import "common_colors";
 @import "admin_navbar";
 @import "font-awesome";
+@import "school_autocomplete";
+@import "admin_security_log";
+@import "admin_user_details";
+@import "admin_user_search";
 
 .underlined-spaced-row {
   border-bottom: 1px solid gray;
@@ -13,15 +17,6 @@ nav.navbar.production {
   border-bottom: 2px solid red;
 }
 
-
-body.admin {
-  .user-search-help {
-    float: right;
-    margin-top: -16px;
-    font-size: 10px;
-    margin-bottom: 10px;
-  }
-}
 
 #search-results-list {
   width: 100%;
@@ -37,10 +32,6 @@ body.admin {
 
   th.expand {
     width: 40px;
-  }
-
-  a.expand {
-    padding-left: 8px;
   }
 
   tr {
@@ -122,4 +113,72 @@ body.admin {
 
 
 
+}
+
+.sheerid-verification {
+  &__summary .label {
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  code {
+    color: #555;
+    background: #f5f5f5;
+  }
+
+  &__toggle {
+    display: list-item;
+    padding: 2px 0;
+    color: #337ab7;
+    cursor: pointer;
+
+    &:hover {
+      color: #23527c;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #337ab7;
+      outline-offset: 2px;
+    }
+  }
+
+  table {
+    width: auto;
+    min-width: 50%;
+    margin: 4px 0 8px;
+  }
+
+  &__details th {
+    color: #666;
+    font-weight: 600;
+    white-space: nowrap;
+    padding-right: 24px;
+  }
+
+  &__heading {
+    margin: 12px 0 4px;
+    font-weight: bold;
+  }
+
+  &__activity {
+    font-size: 12px;
+
+    td {
+      vertical-align: top;
+    }
+  }
+
+  &__when {
+    color: #777;
+    white-space: nowrap;
+  }
+
+  &__data {
+    color: #555;
+  }
+
+  &__pair {
+    display: inline-block;
+    margin-right: 12px;
+  }
 }

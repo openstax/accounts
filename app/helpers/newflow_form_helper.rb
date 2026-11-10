@@ -38,7 +38,8 @@ module NewflowFormHelper
                    described: nil,
                    required: false,
                    list: nil,
-                   html_attrs: {})
+                   html_attrs: {},
+                   maxlength: nil)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -78,6 +79,7 @@ module NewflowFormHelper
                       data: data(only: only, except: except),
                       autofocus: autofocus,
                       list: list,
+                      maxlength: maxlength,
                       readonly: readonly,
                       onkeyup: onkeyup,
                       onkeydown: onkeydown,
