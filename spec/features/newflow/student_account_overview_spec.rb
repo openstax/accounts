@@ -73,9 +73,10 @@ feature 'student account overview', js: true do
     fill_in('instructor-course', with: 'BIOL 101')
 
     click_button('Submit instructor information')
-    wait_for_animations
-    wait_for_ajax
 
+    # The form POSTs back to the page it is on, so the path alone can't tell
+    # whether the save has landed; the flash only appears once it has.
+    expect(page).to have_content("Thanks — we've added your instructor.")
     expect(page).to have_current_path(account_overview_path)
 
     connection = InstructorConnection.find_by(student: student, instructor_name: 'Marcus Delgado')

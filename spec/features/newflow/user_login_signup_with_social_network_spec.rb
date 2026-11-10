@@ -161,6 +161,11 @@ feature 'User logs in or signs up with a social network', js: true do
             have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email_value)))
           )
           click_on('Finish')
+          # Wait for the signup-done page to unload, or 'Log out' is found on it
+          # and goes stale mid-click.
+          expect(page).to have_no_content(
+            strip_html(t(:"login_signup_form.youre_done_description", email_address: email_value))
+          )
           first(:link_or_button, 'Log out').click
         end
       end

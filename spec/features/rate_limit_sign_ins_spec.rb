@@ -28,6 +28,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
         reset_password(password: '1234abcd')
+        expect(page).to have_current_path(account_overview_path)
 
         first(:link_or_button, (t :"legacy.users.edit.sign_out")).click
         wait_for_log_in_form
@@ -84,6 +85,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
         reset_password(password: '1234abcd')
+        expect(page).to have_current_path(account_overview_path)
 
         first(:link_or_button, (t :"legacy.users.edit.sign_out")).click
         wait_for_log_in_form
