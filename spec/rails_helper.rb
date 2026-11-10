@@ -147,6 +147,15 @@ RSpec.configure do |config|
   config.before(:suite) do
     WebMock.disable_net_connect!(allow_localhost: true) if defined?(WebMock)
   end
+
+  # Educator step 4 asks the CMS for its book list. Where WebMock is loaded, the
+  # blocked request raises NetConnectNotAllowedError, which is an Exception rather
+  # than a StandardError, so FetchBookData's rescue misses it and the page 500s.
+  %i[feature controller].each do |spec_type|
+    config.before(:each, type: spec_type) do
+      allow_any_instance_of(FetchBookData).to receive(:cms_fetch).and_return(nil)
+    end
+  end
   config.include ActiveJob::TestHelper
 
   # Whitelist the capybara host (which can change)
