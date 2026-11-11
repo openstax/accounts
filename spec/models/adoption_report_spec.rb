@@ -152,6 +152,17 @@ RSpec.describe AdoptionReport, type: :model do
 
       expect(described_class.pushable).to be_empty
     end
+
+    it 'sends a considering book again once it becomes "using", even with nothing else changed' do
+      report = build_report(status: 'considering', source: 'books_status', salesforce_book_name: 'Biology',
+                            how_using: described_class::HOW_USING_OPTIONS.first, salesforce_pushed_at: 1.day.ago)
+      report.save!
+
+      report.update!(status: 'using', source: 'books_modal')
+
+      expect(report.reload.salesforce_pushed_at).to be_nil
+      expect(described_class.pushable).to include(report)
+    end
   end
 
   describe 'local book-status answers' do

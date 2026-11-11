@@ -36,6 +36,13 @@ RSpec.describe PendingImpact do
     expect(described_class.new(user).reports.map(&:book_title)).to eq(['College Physics 2e'])
   end
 
+  it 'leaves out reports a reviewer rejected, since they will never count' do
+    report!(biology, students: 5000).update_columns(review_status: 'rejected')
+    report!(physics, students: 45)
+
+    expect(described_class.new(user).reports.map(&:book_title)).to eq(['College Physics 2e'])
+  end
+
   it 'ignores not-using answers' do
     report!(biology, students: 120, status: 'not_using')
 

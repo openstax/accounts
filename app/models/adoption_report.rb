@@ -31,6 +31,9 @@ class AdoptionReport < ApplicationRecord
   validates :salesforce_book_name, uniqueness: { scope: [:user_id, :school_year] }, allow_nil: true
   validates :book_title, uniqueness: { scope: [:user_id, :school_year] }, if: -> { salesforce_book_name.nil? }
 
+  # A considering answer is stamped once the interest signal is sent; becoming "using" is a new
+  # thing to send (an adoption), so the stamp must not survive the change.
+  before_save :unstamp_new_adoption
   before_save :apply_review_hold
 
   scope :unpushed, -> { where(salesforce_pushed_at: nil) }
@@ -70,6 +73,10 @@ class AdoptionReport < ApplicationRecord
   end
 
   private
+
+  def unstamp_new_adoption
+    self.salesforce_pushed_at = nil if will_save_change_to_status? && status == 'using'
+  end
 
   # Runs on every save so the modal, the check-in and any other writer are covered. A reviewer's
   # decision stands until the student count changes; reports already sent to Salesforce are left alone.

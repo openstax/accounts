@@ -13,7 +13,8 @@ class PendingImpact
   end
 
   def reports
-    @reports ||= @user.adoption_reports.using.where(school_year: school_year).order(:book_title)
+    @reports ||= @user.adoption_reports.using.where(school_year: school_year)
+                      .where("review_status IS NULL OR review_status <> 'rejected'").order(:book_title)
                       .reject { |report| confirmed?(report) }
   end
 
