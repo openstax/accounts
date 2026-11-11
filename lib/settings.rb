@@ -156,6 +156,7 @@ module Settings
       field :push_incomplete_signup_leads_enabled, type: :boolean, default: false
       field :minimum_recaptcha_score, type: :float, default: 0.2
       field :push_adoption_reports_enabled, type: :boolean, default: false
+      field :adoption_review_student_threshold, type: :integer, default: 1000
     end
 
     mattr_accessor :store

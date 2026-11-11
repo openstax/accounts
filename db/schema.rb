@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_11_11_000002) do
+ActiveRecord::Schema.define(version: 2026_11_11_000003) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -33,7 +33,12 @@ ActiveRecord::Schema.define(version: 2026_11_11_000002) do
     t.string "how_using"
     t.string "salesforce_book_name"
     t.string "surface"
+    t.string "review_status"
+    t.datetime "reviewed_at"
+    t.bigint "reviewed_by_id"
     t.index ["book_id"], name: "index_adoption_reports_on_book_id"
+    t.index ["review_status"], name: "index_adoption_reports_on_needs_review", where: "((review_status)::text = 'needs_review'::text)"
+    t.index ["reviewed_by_id"], name: "index_adoption_reports_on_reviewed_by_id"
     t.index ["salesforce_pushed_at"], name: "index_adoption_reports_on_salesforce_pushed_at"
     t.index ["user_id", "book_title", "school_year"], name: "index_adoption_reports_on_user_title_year_legacy", unique: true, where: "(salesforce_book_name IS NULL)"
     t.index ["user_id", "salesforce_book_name", "school_year"], name: "index_adoption_reports_on_user_sf_book_year", unique: true, where: "(salesforce_book_name IS NOT NULL)"
@@ -605,6 +610,7 @@ ActiveRecord::Schema.define(version: 2026_11_11_000002) do
 
   add_foreign_key "adoption_reports", "books"
   add_foreign_key "adoption_reports", "users"
+  add_foreign_key "adoption_reports", "users", column: "reviewed_by_id"
   add_foreign_key "adoptions", "schools"
   add_foreign_key "adoptions", "users"
   add_foreign_key "external_ids", "users"

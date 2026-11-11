@@ -82,6 +82,33 @@ RSpec.describe AccountController, type: :controller do
     expect(response.body).not_to include('Report an adoption to get there')
   end
 
+  describe 'a report held for review on the impact page' do
+    def report_for(title, students)
+      AdoptionReport.create!(user: user, book_title: title, salesforce_book_name: title, school_year: SchoolYear.current,
+                             source: 'books_modal', status: 'using', students: students)
+    end
+
+    it 'tells the instructor we are checking it, only on that row, with no alarm in the wording' do
+      report_for('College Physics', 4000)
+      report_for('Biology 2e', 40)
+
+      get :impact
+
+      expect(response.body.scan("We're checking this one").size + response.body.scan('We&#39;re checking this one').size).to eq 1
+      expect(response.body).to include('Pending, saved')
+      expect(response.body).not_to match(/suspicious|too (high|large)|fraud|verify your/i)
+    end
+
+    it 'goes back to the normal chip once approved' do
+      report_for('College Physics', 4000).update!(review_status: 'approved')
+
+      get :impact
+
+      expect(response.body).not_to include('checking this one')
+      expect(response.body).to include('Pending, saved')
+    end
+  end
+
   describe 'pending reports on the impact page' do
     before do
       Adoption.create!(salesforce_id: 'SF_PENDING_BASE', user: user, confirmation_type: 'OpenStax Confirmed Adoption',

@@ -356,6 +356,14 @@ Rails.application.routes.draw do
 
     resource :security_log, only: [:show]
 
+    resources :adoption_reviews, only: [:index] do
+      member do
+        post :approve
+        post :approve_with_count
+        post :reject
+      end
+    end
+
     delete :delete_contact_info, path: '/contact_infos/:id/verify',
                                  controller: :contact_infos, action: :destroy
     post :verify_contact_info, path: '/contact_infos/:id/verify',

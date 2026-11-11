@@ -262,4 +262,40 @@ RSpec.describe PushAdoptionReports do
       expect(Sentry).to have_received(:capture_exception).with(anything, extra: { user_id: bad.id })
     end
   end
+
+  context 'with a report held for review' do
+    let(:user) { create_user(salesforce_contact_id: '003A') }
+    let(:contact) { remote_record(id: '003A') }
+
+    before { allow(contact_remote).to receive(:find).with('003A').and_return(contact) }
+
+    it 'sends the normal report beside it and leaves the held one unpushed' do
+      normal = create_report(user, book_title: 'Biology 2e', salesforce_book_name: 'Biology', students: 40)
+      held = create_report(user, book_title: 'Physics', salesforce_book_name: 'Physics', students: 4000)
+      expect(held.review_status).to eq 'needs_review'
+
+      payload = payload_for(contact) { described_class.call(user: user) }
+
+      expect(payload['Books'].map { |book| book['name'] }).to eq ['Biology']
+      expect(normal.reload.salesforce_pushed_at).to be_present
+      expect(held.reload.salesforce_pushed_at).to be_nil
+    end
+
+    it 'sends nothing when every report is held' do
+      create_report(user, students: 4000)
+      expect(contact).not_to receive(:save)
+
+      described_class.call(user: user)
+    end
+
+    it 'sends a held report once a reviewer approves it' do
+      held = create_report(user, students: 4000)
+      held.update!(review_status: 'approved', reviewed_at: Time.current)
+
+      payload = payload_for(contact) { described_class.call(user: user) }
+
+      expect(payload['Books'].first['students']).to eq 4000
+      expect(held.reload.salesforce_pushed_at).to be_present
+    end
+  end
 end

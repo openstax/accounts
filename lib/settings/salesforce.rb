@@ -94,6 +94,14 @@ module Settings
         Settings::Db.store.push_adoption_reports_enabled = bool
       end
 
+      def adoption_review_student_threshold
+        Settings::Db.store.adoption_review_student_threshold
+      end
+
+      def adoption_review_student_threshold=(count)
+        Settings::Db.store.adoption_review_student_threshold = count
+      end
+
     end
 
   end

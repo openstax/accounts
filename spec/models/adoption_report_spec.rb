@@ -185,4 +185,95 @@ RSpec.describe AdoptionReport, type: :model do
       expect(report.school_year_start).to be_nil
     end
   end
+
+  describe 'review hold' do
+    def saved_report(overrides = {})
+      build_report({ salesforce_book_name: 'Bio', how_using: described_class::HOW_USING_OPTIONS.first }.merge(overrides)).tap(&:save!)
+    end
+
+    it 'defaults the threshold to 1000 students' do
+      expect(Settings::Salesforce.adoption_review_student_threshold).to eq 1000
+    end
+
+    it 'holds a using report over the threshold' do
+      expect(saved_report(students: 1001).review_status).to eq 'needs_review'
+    end
+
+    it 'does not hold a report at the threshold, over it for another status, or without a count' do
+      expect(saved_report(students: 1000).review_status).to be_nil
+      expect(saved_report(students: 5000, status: 'not_using', book_title: 'N', salesforce_book_name: 'N').review_status).to be_nil
+      expect(saved_report(students: nil, book_title: 'Z', salesforce_book_name: 'Z').review_status).to be_nil
+    end
+
+    it 'follows a changed threshold setting' do
+      allow(Settings::Salesforce).to receive(:adoption_review_student_threshold).and_return(100)
+      expect(saved_report(students: 101).review_status).to eq 'needs_review'
+    end
+
+    it 'clears the flag when the count is edited back down to the threshold' do
+      report = saved_report(students: 5000)
+      report.update!(students: 1000)
+      expect(report.review_status).to be_nil
+    end
+
+    it 'flags a report switched to using with a big count already saved' do
+      report = saved_report(students: 5000, status: 'considering', source: 'books_status')
+      expect(report.review_status).to be_nil
+      report.update!(status: 'using', source: 'books_modal')
+      expect(report.review_status).to eq 'needs_review'
+    end
+
+    it 'keeps an approval until the count changes' do
+      report = saved_report(students: 5000)
+      report.update!(review_status: 'approved', reviewed_at: Time.current, reviewed_by: user)
+
+      report.update!(how_using: described_class::HOW_USING_OPTIONS.second)
+      expect(report.review_status).to eq 'approved'
+      expect(report.reviewed_at).to be_present
+
+      report.update!(students: 6000)
+      expect(report.review_status).to eq 'needs_review'
+      expect(report.reviewed_at).to be_nil
+      expect(report.reviewed_by).to be_nil
+    end
+
+    it 'keeps a rejection until the count changes' do
+      report = saved_report(students: 5000)
+      report.update!(review_status: 'rejected', reviewed_at: Time.current, reviewed_by: user)
+
+      report.update!(school_year: '2026 - 27')
+      expect(report.review_status).to eq 'rejected'
+
+      report.update!(students: 400)
+      expect(report.review_status).to be_nil
+    end
+
+    it 'honors a reviewer approving with a lower count in the same save' do
+      report = saved_report(students: 5000)
+      report.update!(students: 800, review_status: 'approved', reviewed_at: Time.current, reviewed_by: user)
+      expect(report.review_status).to eq 'approved'
+    end
+
+    it 'leaves a report already pushed to Salesforce alone' do
+      report = saved_report(students: 40, salesforce_pushed_at: 1.day.ago)
+      report.update!(students: 9000)
+      expect(report.review_status).to be_nil
+    end
+
+    it 'excludes held and rejected reports from pushable but includes approved ones' do
+      held = saved_report(students: 5000, book_title: 'A', salesforce_book_name: 'A')
+      rejected = saved_report(students: 5000, book_title: 'B', salesforce_book_name: 'B')
+      rejected.update!(review_status: 'rejected')
+      approved = saved_report(students: 5000, book_title: 'C', salesforce_book_name: 'C')
+      approved.update!(review_status: 'approved')
+      normal = saved_report(students: 40, book_title: 'D', salesforce_book_name: 'D')
+
+      expect(held.review_status).to eq 'needs_review'
+      expect(described_class.pushable).to contain_exactly(approved, normal)
+    end
+
+    it 'rejects an unknown review status' do
+      expect(build_report(review_status: 'maybe')).not_to be_valid
+    end
+  end
 end

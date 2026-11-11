@@ -198,7 +198,11 @@
                       <td><%= report.students.present? ? number_with_delimiter(report.students) : '—' %></td>
                       <td>
                         <span class="account-chip">
-                          <%= report.salesforce_pushed_at? ? 'Pending, counts by tomorrow' : 'Pending, saved' %>
+                          <% if report.held_for_review? %>
+                            <%= t('impact_review_hold.chip') %>
+                          <% else %>
+                            <%= report.salesforce_pushed_at? ? 'Pending, counts by tomorrow' : 'Pending, saved' %>
+                          <% end %>
                         </span>
                       </td>
                     </tr>
