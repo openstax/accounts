@@ -38,7 +38,8 @@ module Account
 
           report.book = book
           report.status = 'using'
-          report.source = 'check_in'
+          # A row made in the report modal keeps its source, so it is still pushed.
+          report.source = 'check_in' if report.new_record?
           report.students = students if students.present?
           report.save!
         end

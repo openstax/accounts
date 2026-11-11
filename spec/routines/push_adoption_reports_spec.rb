@@ -178,6 +178,8 @@ RSpec.describe PushAdoptionReports do
   context 'with no Salesforce record' do
     let(:user) { create_user }
 
+    before { allow(Settings::Salesforce).to receive(:push_leads_enabled).and_return(true) }
+
     it 'creates the lead first, then writes it' do
       report = create_report(user)
       lead = remote_record(id: '00QNEW', is_converted: false, converted_contact_id: nil)
@@ -198,7 +200,17 @@ RSpec.describe PushAdoptionReports do
       described_class.call(user: user)
 
       expect(report.reload.salesforce_pushed_at).to be_nil
-      expect(Sentry).to have_received(:capture_message).with(anything, hash_including(extra: { user_id: user.id }))
+    end
+
+    it 'does not create a lead while lead pushes are switched off' do
+      allow(Settings::Salesforce).to receive(:push_leads_enabled).and_return(false)
+      report = create_report(user)
+      allow(Newflow::CreateOrUpdateSalesforceLead).to receive(:call)
+
+      described_class.call(user: user)
+
+      expect(Newflow::CreateOrUpdateSalesforceLead).not_to have_received(:call)
+      expect(report.reload.salesforce_pushed_at).to be_nil
     end
   end
 

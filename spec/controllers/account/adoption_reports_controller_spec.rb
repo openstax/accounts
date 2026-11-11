@@ -138,6 +138,17 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
         expect(AdoptionReport.last).to have_attributes(students: 25, how_using: AdoptionReport::HOW_USING_OPTIONS.last)
       end
 
+      it 'queues a pushed report to be sent again when its count or use changes' do
+        post :create, params: { books: [row(students: '10')] }
+        AdoptionReport.last.update!(salesforce_pushed_at: 1.day.ago)
+
+        post :create, params: { books: [row(students: '10')] }
+        expect(AdoptionReport.last.salesforce_pushed_at).to be_present
+
+        post :create, params: { books: [row(students: '30')] }
+        expect(AdoptionReport.last.salesforce_pushed_at).to be_nil
+      end
+
       it 'adopts a title-only row saved before abbreviations existed instead of duplicating it' do
         legacy = user.adoption_reports.create!(
           book_title: 'Introduction to Sociology 3e', school_year: '2025 - 26', source: 'check_in'

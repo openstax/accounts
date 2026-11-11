@@ -112,6 +112,17 @@ RSpec.describe Account::CheckInController, type: :controller do
       expect(report.students).to eq(42)
     end
 
+    it 'keeps the source of a report made in the report modal, so it is still pushed' do
+      modal_report = AdoptionReport.create!(
+        user: user, book_title: book.title, school_year: AdoptionReport.current_school_year_label,
+        source: 'books_modal', status: 'using'
+      )
+
+      post :confirm, params: { students: { "book_#{user_book.id}" => '42' } }
+
+      expect(modal_report.reload).to have_attributes(source: 'books_modal', students: 42)
+    end
+
     it 'marks the check-in complete and clears any dismissal state' do
       user.update!(check_in_dismissed_at: 10.days.ago, check_in_dismissal_count: 1)
 

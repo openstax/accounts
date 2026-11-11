@@ -89,6 +89,11 @@ module Account
       report.source = 'books_modal'
       report.book = Book.find_by(title: row[:book_title])
       report.students = row[:students] if row[:students].present?
+      # Salesforce updates the existing adoption for the same book and year, so a
+      # changed count or use is safe to send again.
+      if report.salesforce_pushed_at && (report.students_changed? || report.how_using_changed?)
+        report.salesforce_pushed_at = nil
+      end
       report.save
     end
   end

@@ -91,14 +91,15 @@ class PushAdoptionReports
       return resolve_target(user, create_lead: false)
     end
 
-    return unless create_lead
+    return unless create_lead && Settings::Salesforce.push_leads_enabled
 
     Newflow::CreateOrUpdateSalesforceLead.call(user: user)
     user.reload
     return resolve_target(user, create_lead: false) if user.salesforce_lead_id.present?
 
-    Sentry.capture_message('PushAdoptionReports: no Salesforce lead could be created',
-                           level: :warning, extra: { user_id: user.id })
+    # The lead routine reports its own failures and skips roles it never pushes
+    # (students, self_learner), so this is logged rather than sent to Sentry nightly.
+    log(:info, "skipping user_id=#{user.id}: no Salesforce lead")
     nil
   end
 
