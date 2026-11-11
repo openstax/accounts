@@ -7,8 +7,9 @@
 <% dismissed_assignable_callout = cookies[:dismissed_assignable_callout] == 'true' %>
 <% allow_callout_persistence = !current_user.is_administrator? %>
 <% is_verified_instructor = current_user.confirmed_faculty? %>
-<% pending_instructor = !is_verified_instructor && !current_user.incomplete_signup? && !current_user.rejected_faculty? %>
-<% incomplete_signup = current_user.incomplete_signup? %>
+<% staff = current_user.completed_non_teaching_profile? %>
+<% pending_instructor = !staff && !is_verified_instructor && !current_user.incomplete_signup? && !current_user.rejected_faculty? %>
+<% incomplete_signup = !staff && current_user.incomplete_signup? %>
 <% show_assignable_callout = school_supports_assignable && is_verified_instructor && !assignable_enabled && (!dismissed_assignable_callout || current_user.is_administrator?) %>
 
 <div class="account-layout">
@@ -71,7 +72,7 @@
                       class: 'account-callout__button account-callout__button--primary' %>
         </div>
       </div>
-    <% elsif current_user.profile_needs_enrichment? %>
+    <% elsif !staff && current_user.profile_needs_enrichment? %>
       <%# Non-blocking nudge for educators who used "Save and finish later" on
           step 4 and skipped optional teaching details (books, student count,
           school). Distinct from the callouts above: this user already has
@@ -112,7 +113,7 @@
         ) do %>
 
       <div class="account-shell__body account-overview">
-        <% role_label = current_user.role.present? ? current_user.role.titleize : 'Instructor' %>
+        <% role_label = staff ? current_user.staff_role_label : (current_user.role.present? ? current_user.role.titleize : 'Instructor') %>
         <% account_health =
              if pending_instructor
                'Verification needed'
@@ -137,7 +138,9 @@
           </div>
 
           <p class="account-overview__subtitle">
-            <% if school_name.present? %>
+            <% if school_name.present? && staff %>
+              Your account is linked to <strong><%= school_name %></strong>. Access your resources and account settings from here.
+            <% elsif school_name.present? %>
               You’re signed in as an instructor at <strong><%= school_name %></strong>. Access your teaching tools, resources, and account settings from here.
             <% else %>
               Access your teaching tools, resources, and account settings from here. Add your school to personalize your experience.
@@ -154,10 +157,12 @@
               <div class="account-profile__label">School</div>
               <div class="account-profile__value"><%= school_name.presence || 'Add your school' %></div>
             </div>
-            <div class="account-profile__field">
-              <div class="account-profile__label">Instructor status</div>
-              <div class="account-profile__value"><%= instructor_status %></div>
-            </div>
+            <% unless staff %>
+              <div class="account-profile__field">
+                <div class="account-profile__label">Instructor status</div>
+                <div class="account-profile__value"><%= instructor_status %></div>
+              </div>
+            <% end %>
             <div class="account-profile__field">
               <div class="account-profile__label">Account health</div>
               <div class="account-profile__value"><%= account_health %></div>

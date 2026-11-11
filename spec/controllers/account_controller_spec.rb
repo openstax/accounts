@@ -222,4 +222,131 @@ RSpec.describe AccountController, type: :controller do
       expect(response.body).to include('Profile')
     end
   end
+
+  describe 'nav items by role' do
+    def nav_labels
+      response.body.scan(%r{<nav class="account-shell__nav">.*?</nav>}m).first.scan(%r{>([^<]+)</a>}).flatten
+    end
+
+    {
+      instructor: ['Account overview', 'Profile', 'Security', 'My OpenStax Books', 'My OpenStax Impact', 'Support'],
+      student: ['Account overview', 'Profile', 'Security', 'Support'],
+      self_learner: ['Account overview', 'Profile', 'Security', 'My OpenStax Books', 'Support'],
+      librarian: ['Account overview', 'Profile', 'Security', 'My OpenStax Books', 'My OpenStax Impact', 'Support']
+    }.each do |role, labels|
+      it "shows #{labels.size} tabs for #{role}" do
+        controller.sign_in! FactoryBot.create(:user, :terms_agreed, role: role, is_profile_complete: role == :librarian)
+        get :overview
+        expect(nav_labels).to eq(labels)
+      end
+    end
+  end
+
+  describe 'lifelong learner account' do
+    let(:learner) { FactoryBot.create(:user, :terms_agreed, role: :self_learner, first_name: 'Lee') }
+
+    before { controller.sign_in! learner }
+
+    it 'renders a learner overview with saved books and links' do
+      book = Book.create!(book_uuid: SecureRandom.uuid, title: 'Astronomy 2e',
+                          html_url: 'https://openstax.org/details/books/astronomy-2e')
+      UserBook.create!(user: learner, book: book)
+
+      get :overview
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('Welcome, Lee')
+      expect(response.body).to include('Astronomy 2e')
+      expect(response.body).to include('https://openstax.org/subjects')
+      expect(response.body).to include(account_profile_path)
+      expect(response.body).to include(account_security_path)
+    end
+
+    it 'shows no instructor, verification, LMS or adoption content' do
+      get :overview
+
+      ['nstructor', 'erification', 'Verified', 'Finish signing up', 'LMS',
+       'Report usage', 'Self Learner', 'Impact'].each do |text|
+        expect(response.body).not_to include(text)
+      end
+    end
+
+    it 'redirects the impact page to the overview' do
+      get :impact
+      expect(response).to redirect_to(account_overview_path)
+    end
+
+    it 'still renders the books page' do
+      get :books
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'staff account' do
+    let(:staff) do
+      FactoryBot.create(:user, :terms_agreed, role: :librarian, other_role_name: 'Librarian',
+                                              faculty_status: :incomplete_signup, is_profile_complete: true,
+                                              first_name: 'Sam')
+    end
+
+    before { controller.sign_in! staff }
+
+    it 'omits the signup and verification callouts and instructor wording' do
+      get :overview
+
+      expect(response).to have_http_status(:ok)
+      ['Finish signing up', 'Complete your instructor profile', 'Complete instructor verification',
+       'Verified educator', 'Pending verification', 'Instructor status', 'signed in as an instructor',
+       'Finish telling us about your teaching'].each do |text|
+        expect(response.body).not_to include(text)
+      end
+    end
+
+    it 'shows the label they gave, falling back to the role' do
+      staff.update!(role: :administrator, other_role_name: 'Dean of students')
+      get :overview
+      expect(response.body).to include('Dean of students')
+
+      staff.update!(other_role_name: nil)
+      get :overview
+      expect(response.body).to include('Administrator')
+    end
+
+    it 'keeps usage reporting and the impact page' do
+      get :overview
+      expect(response.body).to include('Report usage')
+
+      get :impact
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'still shows the signup callout while the profile is incomplete' do
+      staff.update!(is_profile_complete: false)
+      get :overview
+      expect(response.body).to include('Finish signing up')
+    end
+  end
+
+  describe 'instructor who chose administrator at step 4' do
+    let(:instructor) do
+      FactoryBot.create(:user, :terms_agreed, role: :administrator, other_role_name: 'Dean',
+                                              faculty_status: :pending_sheerid, is_profile_complete: true)
+    end
+
+    before { controller.sign_in! instructor }
+
+    it 'still sees the verification callout and status' do
+      get :overview
+
+      expect(response.body).to include('Complete instructor verification')
+      expect(response.body).to include('Instructor status')
+      expect(response.body).to include('signed in as an instructor').or include('Access your teaching tools')
+    end
+
+    it 'sees the verified badge once confirmed' do
+      instructor.update!(faculty_status: :confirmed_faculty)
+      get :overview
+      expect(response.body).to include('Verified educator')
+    end
+  end
 end
