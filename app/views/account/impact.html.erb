@@ -250,7 +250,7 @@
             <h2>Reported by you</h2>
             <p>
               These are adoptions you told us about for <%= @current_school_year %>.
-              Once OpenStax confirms them, they'll move into your impact totals above.
+              Once we've sent a report to OpenStax, it shows up in your impact totals above the next day.
             </p>
           </div>
 
@@ -269,7 +269,11 @@
                     <tr>
                       <td><%= report.book_title %></td>
                       <td><%= report.students.present? ? number_with_delimiter(report.students) : '—' %></td>
-                      <td><span class="account-badge account-books__report-chip">Pending confirmation</span></td>
+                      <td>
+                        <span class="account-badge account-books__report-chip">
+                          <%= report.salesforce_pushed_at? ? 'Sent to OpenStax · in your totals by tomorrow' : 'Saved' %>
+                        </span>
+                      </td>
                     </tr>
                   <% end %>
                 </tbody>
