@@ -1,250 +1,98 @@
-.card-container {
+// Support page: two link cards in openstax.org's card style (white, soft
+// shadow, lifts on hover).
+.account-support__cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 24px;
+
+  @include width-up-to($os-phone-max) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
 }
 
-.card-link {
+.account-support__card {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  column-gap: 16px;
+  align-content: start;
+  min-width: 0;
+  padding: 24px;
+  background: var(--os-surface);
+  border-radius: var(--os-radius);
+  box-shadow: var(--os-shadow-card);
+  color: var(--os-text);
   text-decoration: none;
-  color: inherit;
-  display: block;
+  transition: box-shadow 200ms var(--os-ease-out), transform 200ms var(--os-ease-out);
+
+  @include width-up-to($os-phone-max) {
+    padding: 16px;
+  }
+
+  &:hover {
+    color: var(--os-text);
+    text-decoration: none;
+    box-shadow: var(--os-shadow-card-hover);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+
+  h2 {
+    grid-column: 2;
+    margin: 0 0 8px;
+    overflow-wrap: anywhere;
+  }
+
+  p {
+    grid-column: 2;
+    margin: 0 0 16px;
+    @include set-font(body-regular);
+    overflow-wrap: anywhere;
+  }
 }
 
-.card-link:visited {
-  color: inherit;
+.account-support__icon {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  font-size: 28px;
+  line-height: 30px;
+  color: var(--os-link);
 }
 
-.card {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--panel);
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
-  padding: 18px 18px 16px;
-  min-height: 140px;
-  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
-}
-
-.card--button {
-  cursor: default;
-}
-
-.card-action--button {
-  border: none;
-  background: none;
-  padding: 0;
-  font: inherit;
-  color: var(--accent);
-  cursor: pointer;
-}
-
-.card-action--button:hover {
+.account-support__action {
+  grid-column: 2;
+  color: var(--os-link);
+  font-weight: 700;
   text-decoration: underline;
 }
 
-.card h2 {
-  margin: 0 0 8px 0;
-  font-size: 18px;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  text-decoration: none;
+.account-support__card:hover .account-support__action {
+  color: var(--os-link-hover);
 }
 
-.card p {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.45;
-  color: var(--muted);
-  text-decoration: none;
-}
-
-.card-link:hover .card {
-  border-color: rgba(2, 106, 161, 0.35);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
-}
-
-.card-link:focus-visible {
-  outline: none;
-}
-
-.card-link:focus-visible .card {
-  box-shadow: 0 0 0 4px var(--accent-weak), var(--shadow-sm);
-  border-color: rgba(2, 106, 161, 0.6);
-}
-
-@media (max-width: 900px) {
-  .card-container {
-    grid-template-columns: 1fr;
+@media (prefers-reduced-motion: reduce) {
+  .account-support__card:hover {
+    transform: none;
   }
 }
 
-.account-layout .card a,
-.account-layout .card a:hover {
+// Global card-link rules underline every anchor inside .ox-card; the support
+// cards sit on the page background, so opt out of those and restate the colours.
+.account-layout .account-support__card,
+.account-layout .account-support__card:hover {
+  color: var(--os-text);
   text-decoration: none;
 }
 
-.account-layout .card-container {
-  grid-template-columns: repeat(2, minmax(260px, 1fr));
-  gap: 18px;
-  align-items: stretch;
-  justify-items: stretch;
-  max-width: 860px;
-  margin: 0;
+.account-layout .account-support__card .account-support__action {
+  color: var(--os-link);
+  text-decoration: underline;
 }
 
-.account-layout .card {
-  padding: 22px 22px 20px;
-  min-height: 170px;
-  position: relative;
-  display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
-  column-gap: 12px;
-  row-gap: 8px;
-  align-items: flex-start;
-}
-
-.account-layout .card-link,
-.account-layout .card-link * {
-  text-decoration: none !important;
-}
-
-.account-layout .card h2 {
-  font-size: 20px;
-  line-height: 1.2;
-  margin-bottom: 10px;
-  text-decoration: none !important;
-  grid-column: 2;
-}
-
-.account-layout .card p {
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--muted);
-  text-decoration: none !important;
-  grid-column: 2;
-}
-
-.account-layout .card-icon {
-  display: inline-flex;
-  align-items: flex-start;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  font-size: 22px;
-  color: var(--accent);
-  background: none;
-  box-shadow: none;
-  grid-row: 1 / span 3;
-  grid-column: 1;
-  margin: 0;
-}
-
-.account-layout .card-link:visited {
-  color: inherit;
-}
-
-.account-layout .card-link:hover .card::after,
-.account-layout .card-link:focus-visible .card::after {
-  opacity: 1;
-  color: rgba(2, 106, 161, 0.85);
-  transform: translateX(2px);
-}
-
-.account-layout .card-link:hover .card {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.10);
-  border-color: rgba(2, 106, 161, 0.45);
-}
-
-.account-layout .card-link:focus-visible .card {
-  box-shadow: 0 0 0 4px var(--accent-weak), 0 10px 26px rgba(15, 23, 42, 0.10);
-  border-color: rgba(2, 106, 161, 0.65);
-}
-
-@media (max-width: 900px) {
-  .account-layout .card-container {
-    grid-template-columns: 1fr;
-    max-width: 100%;
-  }
-}
-
-.account-layout .card-container {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.account-layout .card-container > * {
-  min-width: 0;
-}
-
-.account-layout .card-link {
-  display: block;
-  width: 100%;
-  min-width: 0;
-}
-
-.account-layout .card {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-.account-layout .card h2,
-.account-layout .card p {
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.account-layout .card-action {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 14px;
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--accent);
-  text-decoration: none !important;
-  grid-column: 2;
-}
-
-.account-layout .card-container {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  align-items: stretch;
-}
-
-@media (max-width: 980px) {
-  .account-layout .card-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-.account-layout .card-link {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  position: static !important;
-  transform: none !important;
-  margin: 0 !important;
-}
-
-.account-layout .card {
-  position: relative;
-  transform: none !important;
-  margin: 0 !important;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-.account-layout .card-container > * {
-  min-width: 0;
+.account-layout .account-support__card:hover .account-support__action {
+  color: var(--os-link-hover);
 }

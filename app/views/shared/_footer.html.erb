@@ -37,25 +37,27 @@
 
 <div class="os-rainbow-bar" aria-hidden="true"></div>
 <footer class="os-footer" role="contentinfo">
-  <div class="os-footer__inner">
-    <div class="os-footer__brand">
+  <div class="os-footer__top">
+    <div class="os-footer__inner">
       <%= link_to main_app.root_path, class: 'os-footer__brand-link', 'aria-label': 'OpenStax home' do %>
         <%= openstax_footer_logo %>
       <% end %>
+
+      <nav class="os-footer__links" aria-label="Footer navigation">
+        <%= link_to 'Terms of Use', terms_href, class: 'os-footer__link' %>
+        <%= link_to 'Privacy', privacy_href, class: 'os-footer__link' %>
+        <%= link_to 'Accessibility', 'https://openstax.org/accessibility-statement', class: 'os-footer__link', target: '_blank', rel: 'noopener noreferrer' %>
+        <%= link_to 'Contact Support', contact_href, class: 'os-footer__link', target: ('_blank' unless contact_href == '#'), rel: (contact_href == '#' ? nil : 'noopener noreferrer') %>
+      </nav>
     </div>
+  </div>
 
-    <nav class="os-footer__links" aria-label="Footer navigation">
-      <%= link_to 'Terms of Use', terms_href, class: 'os-footer__link' %>
-      <%= link_to 'Privacy', privacy_href, class: 'os-footer__link' %>
-      <%= link_to 'Accessibility', 'https://openstax.org/accessibility-statement', class: 'os-footer__link', target: '_blank', rel: 'noopener noreferrer' %>
-      <%= link_to 'Contact Support', contact_href, class: 'os-footer__link', target: ('_blank' unless contact_href == '#'), rel: (contact_href == '#' ? nil : 'noopener noreferrer') %>
-    </nav>
-
-    <div class="os-footer__legal">
+  <div class="os-footer__bottom">
+    <div class="os-footer__inner">
+      <span class="os-footer__copyright">&copy; <%= Time.current.year %> Rice University. All rights reserved.</span>
       <%= link_to 'https://www.rice.edu', class: 'os-footer__rice-link', target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Rice University' do %>
         <%= rice_mark %>
       <% end %>
-      <span class="os-footer__copyright">&copy; <%= Time.current.year %> Rice University. All rights reserved.</span>
     </div>
   </div>
 </footer>

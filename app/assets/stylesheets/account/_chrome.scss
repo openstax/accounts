@@ -1,123 +1,127 @@
+// Site chrome, after openstax.org: 74px white header with a hairline shadow,
+// plain bold nav links with a green bar on hover, and a two-band footer.
+:root {
+  --os-footer-top: #424242;
+  --os-footer-bottom: #3b3b3b;
+  --os-footer-text: #d5d5d5;
+}
+
+.os-rainbow-bar {
+  display: block;
+  width: 100%;
+  height: 10px;
+  background: var(--os-strips);
+}
+
 .os-app {
   min-height: 100vh;
-  background: #F5F5F5;
+  background: var(--os-page-bg);
   margin: 0;
 
-  
   .os-header {
-    background: #fff;
-    border-bottom: 1px solid #E0E0E0;
-    padding: 0.75rem 1.5rem;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    box-shadow: 0 8px 24px rgba(13, 40, 80, 0.08);
+    background: var(--os-surface);
+    box-shadow: var(--os-shadow-header);
+    padding: 0 16px;
     position: relative;
     z-index: 5;
-    line-height: 2.5rem;
   }
 
   .os-header__inner {
-    max-width: 1200px;
+    max-width: $os-content-max;
     margin: 0 auto;
+    min-height: 74px;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
+    gap: 16px;
   }
 
-  .os-header__brand {
+  .os-header__brand-block {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .os-header__brand,
+  .os-header__rice {
     display: inline-flex;
     align-items: center;
-    text-decoration: none;
   }
 
   .os-header__logo-img {
-    height: 30px;
+    height: 36px;
     width: auto;
+    display: block;
+  }
+
+  .os-header__divider {
+    width: 1px;
+    height: 36px;
+    background: var(--os-border);
+  }
+
+  .os-header__rice-img {
+    height: 40px;
+    width: auto;
+    display: block;
   }
 
   .os-header__logo-text {
-    text-transform: uppercase;
     font-weight: 700;
-    letter-spacing: 0.15rem;
-    color: #424242;
-    font-size: 1.25rem;
+    color: var(--os-text);
+    @include set-font(h4);
   }
 
-  .os-header__actions {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
+  .os-header__actions,
+  .os-header__nav {
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
+    min-width: 0;
+  }
 
-    #upper-corner-console {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.15rem;
-      margin-left: 0.5rem;
-      font-size: 0.75rem;
-      line-height: 1.3;
-      color: #6A6A6A;
+  // Dev/admin console from a gem: keep it compact and out of the layout flow.
+  .os-header__actions #upper-corner-console {
+    align-self: center;
+    flex: 0 1 auto;
+    max-width: 22rem;
+    max-height: 60px;
+    overflow: hidden;
+    @include set-font(helper-label);
+    color: var(--os-text-helper);
 
-      a {
-        color: #026AA1;
-        text-decoration: none;
-      }
+    a {
+      color: var(--os-link);
+    }
 
-      a:hover {
-        color: #014E78;
-        text-decoration: underline;
-      }
-
-      br {
-        // Text/links become anonymous flex items when this container is a
-        // flex box, so <br> can't force a line break the way it does in
-        // normal flow — column layout + gap already handles the stacking.
-        display: none;
-      }
+    a:hover {
+      color: var(--os-link-hover);
     }
   }
 
-  .os-header__cta {
-    display: inline-flex;
+  .os-header__link {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 0.3rem;
-    border: 1px solid transparent;
-    padding: 0.45rem 1.1rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    line-height: 1.2;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    color: var(--os-gray);
     text-decoration: none;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     white-space: nowrap;
-  }
+    @include set-font(h4);
+    transition: border-color 150ms var(--os-ease-out);
 
-  .os-header__cta:focus-visible {
-    outline: 2px solid #026AA1;
-    outline-offset: 2px;
-  }
+    &:hover,
+    &:focus-visible {
+      color: var(--os-gray);
+      text-decoration: none;
+      border-bottom-color: var(--os-green);
+    }
 
-  .os-header__cta--ghost {
-    background: #F5F5F5;
-    border-color: #E0E0E0;
-    color: #424242;
-  }
-
-  .os-header__cta--ghost:hover {
-    background: #E0E0E0;
-  }
-
-  .os-header__cta--primary {
-    background: #D4450C;
-    color: #fff;
-    border-color: #D4450C;
-    min-width: 90px;
-  }
-
-  .os-header__cta--primary:hover {
-    background: #A43509;
-    border-color: #A43509;
+    &:focus-visible {
+      box-shadow: var(--os-focus-ring);
+      outline: 2px solid transparent;
+    }
   }
 
   #application-container {
@@ -127,34 +131,41 @@
   }
 
   .os-main {
-    padding: 2rem 0 3rem;
+    padding: 32px 0 48px;
     flex: 1 1 auto;
   }
 
   .os-footer {
-    background: #424242;
-    color: #fff;
-    padding: 2.5rem 1.5rem;
+    color: var(--os-footer-text);
+    @include set-font(body-regular);
+  }
+
+  .os-footer__top {
+    background: var(--os-footer-top);
+    padding: 40px 16px;
+  }
+
+  .os-footer__bottom {
+    background: var(--os-footer-bottom);
+    padding: 25px 16px;
+    font-size: 12px;
+    line-height: 20px;
   }
 
   .os-footer__inner {
-    max-width: 1200px;
+    max-width: $os-content-max;
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 1.5rem;
+    gap: 24px;
   }
 
-  .os-footer__brand {
-    max-width: 300px;
-  }
-
-  .os-footer__brand-link {
+  .os-footer__brand-link,
+  .os-footer__rice-link {
     display: inline-flex;
     align-items: center;
-    margin-bottom: 0.35rem;
   }
 
   .os-footer__logo-img {
@@ -162,57 +173,47 @@
     width: auto;
   }
 
-  .os-footer__logo-img--dark {
+  .os-footer__logo-img--dark,
+  .os-footer__rice-img--dark {
     filter: grayscale(1) brightness(0) invert(1);
   }
 
-  .os-footer__logo-text {
+  .os-footer__logo-text,
+  .os-footer__rice-text {
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.2rem;
-  }
-
-  .os-footer__tagline {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #c4cad6;
+    color: var(--os-footer-text);
   }
 
   .os-footer__links {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.25rem;
-    font-weight: 600;
+    gap: 8px 40px;
   }
 
   .os-footer__link {
-    color: #ffffff;
+    color: var(--os-footer-text);
     text-decoration: none;
-  }
+    @include set-font(body-regular);
 
-  .os-footer__link:hover {
-    text-decoration: underline;
-  }
+    &:hover,
+    &:focus-visible {
+      color: var(--os-footer-text);
+      text-decoration: underline;
+    }
 
-  .os-footer__legal {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
+    &:focus-visible {
+      box-shadow: var(--os-focus-ring);
+      outline: 2px solid transparent;
+    }
   }
 
   .os-footer__rice-img {
-    height: 34px;
+    height: 40px;
     width: auto;
   }
 
-  .os-footer__rice-img--dark {
-    filter: grayscale(1) brightness(0) invert(1);
-  }
-
-  .os-footer__rice-text {
-    font-weight: 700;
-    letter-spacing: 0.25rem;
+  .os-footer__copyright {
+    color: var(--os-footer-text);
   }
 }
 
@@ -292,34 +293,47 @@ body:not(.os-app) #application-footer {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .os-app {
-    .os-header__inner,
+    .os-header {
+      padding: 0 16px;
+    }
+
+    .os-header__inner {
+      gap: 12px;
+    }
+
+    .os-header__divider,
+    .os-header__rice,
+    .os-header__actions #upper-corner-console {
+      display: none;
+    }
+
+    .os-header__logo-img {
+      height: 30px;
+    }
+
+    .os-header__actions,
+    .os-header__nav {
+      gap: 16px;
+    }
+
+    .os-header__link {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .os-footer__top {
+      padding: 20px 16px;
+    }
+
+    .os-footer__bottom {
+      padding: 15px 16px;
+    }
+
     .os-footer__inner {
       flex-direction: column;
       align-items: flex-start;
-    }
-
-    .os-header__actions {
-      width: 100%;
-      #upper-corner-console {
-        margin-left: 0;
-        flex-wrap: wrap;
-      }
-    }
-
-    .os-footer__legal {
-      align-items: flex-start;
-    }
-
-    body {
-      background-color: #fff;
-      color: var(--greyish-brown, #4a4a4a);
-
-      .content {
-        padding-left: 0;
-        padding-right: 0;
-      }
     }
   }
 }

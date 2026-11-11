@@ -1,10 +1,10 @@
-<nav class="account-shell__nav">
+<nav class="account-shell__nav" aria-label="My OpenStax">
   <ul>
     <% @account_nav_items.each do |item| %>
       <% path_helper = item[:path] %>
       <% active = @account_nav_current == item[:key] %>
       <li class="<%= active ? 'active' : '' %>">
-        <%= link_to item[:label], send(path_helper), class: (active ? 'active' : nil) %>
+        <%= link_to item[:label], send(path_helper), class: (active ? 'active' : nil), 'aria-current': (active ? 'page' : nil) %>
       </li>
     <% end %>
   </ul>

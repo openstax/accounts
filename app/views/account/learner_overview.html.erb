@@ -1,46 +1,38 @@
 <div class="account-layout">
   <%= render 'account/navigation' %>
   <div class="account-layout__content">
-    <%= render(
-          'shared/account_layout_shell',
-          locals: {
-            title: 'Your OpenStax Account',
-            description: 'Your saved books and account settings, all in one place.'
-          }
-        ) do %>
-      <div class="account-shell__body account-student-overview">
-        <header class="account-overview__header">
-          <h1 class="account-overview__title">
-            Welcome<% if current_user.first_name.present? %>, <%= current_user.first_name %><% end %>
-          </h1>
-          <p class="account-overview__subtitle">
-            OpenStax textbooks are free for everyone. Save the ones you are reading and pick up where you left off on any device.
-          </p>
-        </header>
+    <header class="account-overview__header">
+      <h1 class="account-overview__title">
+        Welcome<% if current_user.first_name.present? %>, <%= current_user.first_name %><% end %>
+      </h1>
+      <p class="account-overview__subtitle">
+        OpenStax textbooks are free for everyone. Save the ones you are reading and pick up where you left off on any device.
+      </p>
+    </header>
 
+    <%= render('shared/account_layout_shell') do %>
+      <div class="account-shell__body account-student-overview">
         <%= render 'account/saved_books_section' %>
 
-        <section class="account-profile__section account-overview__section" aria-label="Find books and manage your account">
+        <section class="account-overview__section" aria-labelledby="keep-exploring-heading">
           <div class="account-shell__section-header">
-            <h2>Keep exploring</h2>
+            <h2 id="keep-exploring-heading">Keep exploring</h2>
             <p>Find your next book or update your account details.</p>
           </div>
-          <div class="account-profile__section-card">
-            <div class="account-profile__field">
-              <div class="account-profile__label">Find a book</div>
-              <div class="account-profile__value">
-                <a class="account-overview__inline-link" href="https://openstax.org/subjects" target="_blank" rel="noopener">Browse subjects on openstax.org</a>
-              </div>
+          <dl class="account-facts">
+            <div class="account-facts__item">
+              <dt>Find a book</dt>
+              <dd><a href="https://openstax.org/subjects" target="_blank" rel="noopener">Browse subjects on openstax.org</a></dd>
             </div>
-            <div class="account-profile__field">
-              <div class="account-profile__label">Your details</div>
-              <div class="account-profile__value">
-                <%= link_to 'Profile', account_profile_path, class: 'account-overview__inline-link' %>
+            <div class="account-facts__item">
+              <dt>Your details</dt>
+              <dd>
+                <%= link_to 'Profile', account_profile_path %>
                 and
-                <%= link_to 'Security', account_security_path, class: 'account-overview__inline-link' %>
-              </div>
+                <%= link_to 'Security', account_security_path %>
+              </dd>
             </div>
-          </div>
+          </dl>
         </section>
       </div>
     <% end %>

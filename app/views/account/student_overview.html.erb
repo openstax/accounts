@@ -1,29 +1,23 @@
 <div class="account-layout">
   <%= render 'account/navigation' %>
   <div class="account-layout__content">
-    <%= render(
-          'shared/account_layout_shell',
-          locals: {
-            title: 'Your OpenStax Account',
-            description: 'Your saved books and instructor connections, all in one place.'
-          }
-        ) do %>
-      <div class="account-shell__body account-student-overview">
-        <header class="account-overview__header">
-          <h1 class="account-overview__title">
-            Welcome back<% if current_user.first_name.present? %>, <%= current_user.first_name %><% end %>
-          </h1>
-          <div class="account-overview__badges">
-            <span class="account-badge account-badge--student">Student</span>
-            <% if current_user.school&.name.present? %>
-              <span class="account-badge account-badge--verified">&#10003; School verified</span>
-            <% end %>
-          </div>
-        </header>
+    <header class="account-overview__header">
+      <h1 class="account-overview__title">
+        Welcome back<% if current_user.first_name.present? %>, <%= current_user.first_name %><% end %>
+      </h1>
+      <div class="account-overview__badges">
+        <span class="account-badge account-badge--student">Student</span>
+        <% if current_user.school&.name.present? %>
+          <span class="account-badge account-badge--verified">&#10003; School verified</span>
+        <% end %>
+      </div>
+    </header>
 
+    <%= render('shared/account_layout_shell') do %>
+      <div class="account-shell__body account-student-overview">
         <%= render 'account/saved_books_section' %>
 
-        <section class="account-student-overview__connect-card" aria-labelledby="instructor-connect-heading">
+        <section class="account-student-overview__connect" aria-labelledby="instructor-connect-heading">
           <h2 id="instructor-connect-heading">Tell us who teaches your class <span class="account-student-overview__optional">(optional)</span></h2>
           <p>This helps OpenStax understand which courses use our books. It does not message your instructor, connect your accounts, or change your saved books.</p>
 
@@ -60,8 +54,8 @@
           <% end %>
         </section>
 
-        <div class="account-student-overview__not-listed-panel" id="instructor-not-listed-panel">
-          <h3>Can't find your instructor?</h3>
+        <section class="account-student-overview__not-listed-panel" id="instructor-not-listed-panel" aria-labelledby="instructor-not-listed-heading">
+          <h2 id="instructor-not-listed-heading">Can't find your instructor?</h2>
           <p>Enter the information you know below. Required fields are marked.</p>
 
           <%= form_with url: account_instructor_connections_path, method: :post, local: true,
@@ -96,7 +90,7 @@
             </div>
             <button type="submit" class="account-student-overview__submit">Submit instructor information</button>
           <% end %>
-        </div>
+        </section>
       </div>
     <% end %>
   </div>

@@ -1,482 +1,448 @@
-.account-overview {
-  padding: 6px 4px 2px;
+// Account overview (instructor, staff, student, learner) and the annual
+// check-in card. Type, colour and component values follow the contract in
+// _tokens.scss; rem is 10px, so everything here is written in px.
+
+@mixin os-button($variant: primary, $height: 40px) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: $height;
+  padding: 0 30px;
+  border-radius: var(--os-radius);
+  box-shadow: var(--os-shadow-button);
+  font-size: 16px;
+  line-height: 25px;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 150ms var(--os-ease-out), border-color 150ms var(--os-ease-out);
+
+  @if $variant == primary {
+    background: var(--os-primary);
+    border: 0;
+    color: #fff;
+    font-weight: 700;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--os-primary-hover);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    &:active {
+      background: var(--os-primary-active);
+    }
+  } @else {
+    background: var(--os-surface);
+    border: 1px solid var(--os-border);
+    color: var(--os-text);
+    font-weight: 400;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--os-hover-bg);
+      color: var(--os-text);
+      text-decoration: none;
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+}
+
+@mixin os-field($height: 40px) {
+  box-sizing: border-box;
+  height: $height;
+  padding: 0 15px;
+  border: 1px solid var(--os-border);
+  border-radius: 0;
+  background: var(--os-surface);
+  color: var(--os-text);
+  font-size: 16px;
+  line-height: 25px;
+
+  &:focus {
+    border-color: var(--os-focus-border);
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+}
+
+@mixin os-text-action {
+  color: var(--os-link);
+  font-weight: 700;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--os-link-hover);
+    text-decoration: underline;
+  }
 }
 
 .account-overview__header {
-  margin-bottom: 14px;
+  margin: 0;
 }
 
-.account-overview__title {
-  font-size: 28px;
-  line-height: 1.15;
-  margin: 0 0 8px 0;
-  letter-spacing: -0.02em;
+.account-layout .account-overview__title {
+  margin: 0 0 10px;
 }
 
 .account-overview__subtitle {
-  margin: 0;
-  color: #6A6A6A;
-  font-size: 15px;
-  line-height: 1.5;
+  margin: 12px 0 0;
   max-width: 72ch;
+  color: var(--os-text);
+  @include set-font(body-regular);
+}
+
+.account-overview__inline-link,
+.account-overview__status-link {
+  @include os-text-action;
 }
 
 .account-overview__inline-link {
   margin-left: 6px;
-  font-weight: 600;
-}
-
-.account-overview__section {
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid #E0E0E0;
-}
-
-.account-overview__section:first-of-type {
-  padding-top: 0;
-  border-top: none;
-}
-
-.account-overview__section-title {
-  margin: 0 0 12px 0;
-  font-size: 16px;
-  font-weight: 700;
-  color: #424242;
-}
-
-.account-overview__action-desc {
-  font-size: 14px;
-  line-height: 1.45;
-  color: #6A6A6A;
-  margin: 0 0 0.5rem 0;
-}
-
-.account-overview__field-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;
-  font-weight: 650;
-  color: #026AA1;
-  text-decoration: none;
-}
-
-.account-overview__field-cta:hover {
-  text-decoration: underline;
-}
-
-.account-overview__summary-card {
-  margin-top: 1.25rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-}
-
-.account-overview__summary-card .account-profile__field {
-  margin: 0;
-}
-
-.account-overview__quick-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-}
-
-.account-overview__quick-card {
-  border: 1px solid rgba(15, 53, 84, 0.12);
-  border-radius: 14px;
-  background: #fff;
-  padding: 1rem 1.1rem 1.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  min-height: 180px;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
-}
-
-.account-overview__quick-card h3 {
-  margin: 0;
-  font-size: 1.05rem;
-  color: #424242;
-}
-
-.account-overview__quick-card p {
-  margin: 0;
-  color: #6A6A6A;
-  font-size: 0.95rem;
-  flex: 1 1 auto;
-}
-
-.account-overview__quick-card--primary {
-  background: linear-gradient(150deg, rgba(2, 106, 161, 0.08), rgba(255, 255, 255, 0.95));
-}
-
-.account-overview__quick-card--ghost {
-  background: rgba(248, 250, 252, 0.8);
-  border-style: dashed;
-}
-
-.account-overview__quick-link {
-  font-weight: 650;
-  color: #026AA1;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.account-overview__quick-link:hover {
-  text-decoration: underline;
-}
-
-.account-overview__status {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.status-chip {
-  border: 1px solid #E0E0E0;
-  border-radius: 12px;
-  background: #F5F5F5;
-  padding: 10px 12px;
-  min-width: 0;
-}
-
-.status-chip__label {
-  display: block;
-  font-size: 12px;
-  color: #6A6A6A;
-  margin-bottom: 4px;
-}
-
-.status-chip__value {
-  display: block;
-  font-size: 13px;
-  font-weight: 650;
-  color: #424242;
-  overflow-wrap: anywhere;
-}
-
-.account-overview__hint {
-  margin: 10px 0 0 0;
-  color: #6A6A6A;
-  font-size: 13px;
-}
-
-.account-overview__status-line {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.account-overview__status-light {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #10b981;
-  flex-shrink: 0;
 }
 
 .account-overview__status-link {
   display: inline-flex;
-  margin-top: 0.4rem;
-  font-weight: 600;
-  color: var(--accent, #026AA1);
-  text-decoration: none;
   align-items: center;
   gap: 4px;
 }
 
-.account-overview__status-link:hover {
-  text-decoration: underline;
-}
-
 .account-overview__external-icon {
-  font-size: 0.9em;
   line-height: 1;
 }
 
-.account-overview__hint--compact {
-  margin-top: 8px;
+.account-shell__body.account-overview {
+  gap: 0;
+}
+
+.account-overview__section + .account-overview__section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--os-border);
 }
 
 .account-overview__note {
-  margin: 0.75rem 0 0 0;
-  color: var(--muted, #6A6A6A);
-  font-size: 15px;
+  margin: 16px 0 0;
+  color: var(--os-text-helper);
+  @include set-font(helper-label);
 }
 
-.account-completeness {
-  background: #fff;
-  border-radius: var(--radius, 8px);
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 2rem;
+/* Role / school / status as a definition list */
+.account-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px 24px;
+  margin: 0;
 }
 
+.account-facts__item {
+  min-width: 0;
+  margin: 0;
+}
+
+.account-facts dt {
+  margin: 0 0 2px;
+  color: var(--os-text-helper);
+  @include set-font(helper-label);
+  font-weight: 400;
+}
+
+.account-facts dd {
+  margin: 0;
+  color: var(--os-text);
+  @include set-font(body-regular);
+  font-weight: 700;
+  letter-spacing: normal;
+  overflow-wrap: anywhere;
+}
+
+.account-facts dd a {
+  font-weight: 400;
+}
+
+/* Quick actions: a divided list, so no row is ever orphaned */
+.account-actions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.account-actions__item {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--os-border);
+}
+
+.account-actions__item:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.account-actions__icon {
+  font-size: 22px;
+  text-align: center;
+  color: var(--os-link);
+}
+
+.account-layout .account-actions__text h3 {
+  margin: 0 0 2px;
+}
+
+.account-actions__text p {
+  margin: 0;
+  color: var(--os-text-helper);
+  @include set-font(helper-label);
+}
+
+.account-actions__cta {
+  @include os-text-action;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 2px;
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+}
+
+@include width-up-to($os-phone-max) {
+  .account-actions__item {
+    grid-template-columns: 32px minmax(0, 1fr);
+    row-gap: 8px;
+  }
+
+  .account-actions__cta {
+    grid-column: 2;
+    justify-self: start;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* Profile completeness: a group inside the card, not a card of its own */
 .account-completeness__header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 1rem;
-  margin-bottom: 0.6rem;
+  gap: 16px;
+  margin-bottom: 8px;
 }
 
 .account-completeness__title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--accent, #026AA1);
+  color: var(--os-text);
+  @include set-font(h4);
 }
 
 .account-completeness__hint {
-  font-size: 0.8rem;
-  color: var(--muted, #6A6A6A);
+  color: var(--os-text-helper);
+  @include set-font(helper-label);
   white-space: nowrap;
 }
 
 .account-completeness__bar {
   height: 8px;
-  background: #F0F2F5;
+  margin-bottom: 16px;
+  background: var(--os-border);
   border-radius: 999px;
   overflow: hidden;
-  margin-bottom: 0.85rem;
 }
 
 .account-completeness__bar-fill {
   height: 100%;
-  background: #538E1D;
+  background: var(--os-green);
   border-radius: 999px;
-  transition: width 200ms ease;
+  transition: width 200ms var(--os-ease-out);
 }
 
 .account-completeness__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .account-completeness__chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border-radius: 999px;
-  padding: 0.3rem 0.85rem;
+  gap: 4px;
+  min-height: 28px;
+  padding: 2px 10px;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
   text-decoration: none !important;
 }
 
 .account-completeness__chip--done {
-  color: #2E6A17;
-  background: rgba(83, 142, 29, 0.12);
+  color: var(--os-success-text);
+  background: var(--os-success-bg);
 }
 
 .account-completeness__chip--todo {
-  color: var(--accent, #026AA1);
-  background: #fff;
-  border: 1px dashed rgba(2, 106, 161, 0.4);
+  color: var(--os-link);
+  background: var(--os-surface);
+  border: 1px solid var(--os-border);
 }
 
 .account-completeness__chip--todo:hover,
-.account-completeness__chip--todo:focus {
-  border-color: var(--accent, #026AA1);
-  background: rgba(2, 106, 161, 0.06);
+.account-completeness__chip--todo:focus-visible {
+  background: var(--os-hover-bg);
+  color: var(--os-link-hover);
 }
 
-.account-overview__status-banner {
+/* Status badges under the greeting */
+.account-overview__badges {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  color: #424242;
-}
-
-.account-overview__status-banner a {
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.account-overview__status-banner a:hover {
-  text-decoration: underline;
-}
-
-.account-overview__status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #10b981;
-  display: inline-flex;
-}
-
-.account-overview__settings-links {
-  display: flex;
+  gap: 8px;
   flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 8px;
+  margin: 0;
 }
 
-.account-overview__settings-links a {
-  font-weight: 600;
-  text-decoration: none;
+.account-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  background: var(--os-info-bg);
+  color: var(--os-text);
 }
 
-.account-overview__settings-links a:hover {
-  text-decoration: underline;
+.account-badge--verified {
+  background: var(--os-success-bg);
+  color: var(--os-success-text);
 }
 
-@media (max-width: 900px) {
-  .account-overview__tools-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .account-overview__status {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 520px) {
-  .account-overview__status {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* Callouts: info style, flat */
 .account-callout {
   position: relative;
-  border: 1px solid rgba(2, 106, 161, 0.2);
-  border-radius: var(--radius);
-  background: #f5f9ff;
-  padding: 1.75rem 2rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1.5rem;
-  box-shadow: 0 25px 45px rgba(15, 23, 42, 0.1);
-  overflow: hidden;
-  margin-bottom: 3rem;
-}
+  gap: 16px 24px;
+  align-items: start;
+  padding: 24px;
+  background: var(--os-info-bg);
+  border: 1px solid var(--os-info-border);
+  border-radius: var(--os-radius);
+  color: var(--os-text);
 
-.account-callout::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+  @include width-up-to($os-phone-max) {
+    padding: 16px;
+  }
 }
 
 .account-callout__text {
-  position: relative;
-  z-index: 1;
+  min-width: 0;
 }
 
-.account-callout__eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.78rem;
-  color: var(--accent);
-  margin: 0 0 0.4rem 0;
+.account-callout__eyebrow,
+.account-check-in__eyebrow {
+  margin: 0 0 4px;
+  color: var(--os-gray);
+  font-size: 14px;
+  line-height: 20px;
   font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.account-callout__text h3 {
-  margin: 0 0 0.65rem 0;
-  font-size: 1.45rem;
-  color: var(--ink);
+.account-layout .account-callout__title {
+  margin: 0 0 8px;
+  @include set-font(h4);
 }
 
 .account-callout__text p {
-  margin: 0 0 0.75rem 0;
-  color: var(--muted);
-  line-height: 1.45;
+  margin: 0 0 8px;
+  color: var(--os-text);
+  @include set-font(body-regular);
+}
+
+.account-callout__text p:last-child {
+  margin-bottom: 0;
+}
+
+.account-callout__text .account-callout__eyebrow {
+  margin-bottom: 4px;
+  color: var(--os-gray);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .account-callout__actions {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  align-items: flex-start;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
   position: relative;
-  z-index: 1;
-  margin-top: 34px;
 }
 
 .account-callout__button {
-  border-radius: 0.3rem;
-  font-weight: 600;
-  padding: 0.7rem 1.6rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: box-shadow 120ms ease, background 120ms ease;
-  text-decoration: none !important;
-  min-width: 200px;
+  @include os-button(secondary);
+  min-width: 0;
 }
 
 .ox-card .account-callout__button--primary,
 .account-callout__button--primary {
-  background: var(--accent);
-  color: #fff;
-  border: 1px solid var(--accent);
+  @include os-button(primary);
 }
 
 .account-callout__button--ghost {
-  background: transparent;
-  color: var(--accent);
-  border: 1px solid rgba(2, 106, 161, 0.35);
-}
-
-.account-callout__button:hover,
-.account-callout__button:focus {
-  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.12);
-  text-decoration: none;
-}
-
-.account-callout__button--ghost:hover,
-.account-callout__button--ghost:focus {
-  border-color: var(--accent);
+  @include os-button(secondary);
 }
 
 .account-callout__dismiss {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  border: none;
-  background: transparent;
-  font-size: 1.1rem;
-  color: var(--muted);
-  cursor: pointer;
-  width: 28px;
-  height: 28px;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--os-radius);
+  background: transparent;
+  color: var(--os-text);
+  font-size: 22px;
+  cursor: pointer;
 }
 
-.account-callout__dismiss:hover,
-.account-callout__dismiss:focus {
-  color: var(--ink);
+.account-callout__dismiss:hover {
+  background: var(--os-hover-bg);
 }
 
 .account-callout--assignable {
-  border-color: rgba(2, 106, 161, 0.2);
+  padding-right: 56px;
 }
 
-.account-callout--pending {
-  border-color: rgba(217, 90, 41, 0.35);
-  background: #fff5f0;
-}
-
-.account-callout--pending::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: transparent;
-  pointer-events: none;
-}
-
-.account-callout--pending .account-callout__button--primary {
-  background: #D4450C;
-  border-color: #D4450C;
+.account-callout__button-form,
+.account-callout__lms-dismiss-form,
+.account-callout__lms-pill-form {
+  margin: 0;
 }
 
 .account-callout--lms {
@@ -487,211 +453,138 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 0.85rem;
-}
-
-.account-callout__lms-dismiss-form,
-.account-callout__button-form {
-  margin: 0;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .account-callout__lms-dismiss {
-  background: none;
-  border: none;
-  color: var(--accent, #026AA1);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
+  @include os-text-action;
   padding: 0;
-}
-
-.account-callout__lms-dismiss:hover,
-.account-callout__lms-dismiss:focus {
-  text-decoration: underline;
+  border: 0;
+  background: none;
+  font-size: 16px;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
 .account-callout__lms-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
-  position: relative;
-  z-index: 1;
-}
-
-.account-callout__lms-pill-form {
-  margin: 0;
+  gap: 12px;
 }
 
 .account-callout__lms-pill {
-  background: #fff;
-  border: 1px solid rgba(15, 23, 42, 0.2);
-  border-radius: 999px;
-  padding: 0.5rem 1.1rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--ink, #1a1a1a);
-  cursor: pointer;
-  transition: border-color 120ms ease, color 120ms ease;
-}
-
-.account-callout__lms-pill:hover,
-.account-callout__lms-pill:focus {
-  border-color: var(--accent, #026AA1);
-  color: var(--accent, #026AA1);
+  @include os-button(secondary);
+  padding: 0 20px;
 }
 
 .account-callout--lms-confirmed {
-  border: 1px solid #C7DFB0;
-  background: #F2F8EC;
-  border-radius: var(--radius, 12px);
-  padding: 1rem 1.5rem;
-  color: #2E6A17;
-  margin-bottom: 3rem;
+  display: block;
+  background: var(--os-success-bg);
+  border-color: var(--os-success-bg);
+  color: var(--os-success-text);
+
+  p {
+    margin: 0;
+    color: var(--os-success-text);
+    @include set-font(body-regular);
+  }
 }
 
-.account-callout--lms-confirmed p {
-  margin: 0;
-}
-
-@media (max-width: 900px) {
+@include width-up-to(900px) {
   .account-callout {
-    grid-template-columns: 1fr;
-  }
-
-  .account-callout__actions {
-    flex-direction: row;
-    flex-wrap: wrap;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-.account-callout__eyebrow--alert {
-  color: #C22032;
-}
-
-/* Status badges under the overview greeting (accounts redesign) */
-.account-overview__badges {
-  display: flex;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-  margin: 0.6rem 0 0.2rem;
-}
-
-.account-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  border-radius: 999px;
-  padding: 0.4rem 1.4rem;
-  font-size: 1.3rem;
-  font-weight: 700;
-}
-
-.account-badge--verified {
-  background: #F5FFEC;
-  color: #204B00;
-}
-
-.account-badge--school {
-  background: #D6DCEA;
-  color: #002E6D;
-}
-
-/* Inline annual check-in card on the instructor overview */
+/* Annual check-in: one card, books are groups divided by hairlines */
 .account-callout--check-in {
   display: block;
-  background: #FFFFFF;
-  border-color: #E0E0E0;
-  box-shadow: none;
-  color: var(--ink);
+  background: var(--os-surface);
+  border: 0;
+  box-shadow: var(--os-shadow-card);
 }
 
-.account-check-in__eyebrow {
-  margin: 0 0 0.4rem;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #026AA1;
-}
-
-.account-check-in__heading {
-  margin: 0 0 0.6rem;
-  font-size: 2.2rem;
-  line-height: 1.3;
+.account-layout .account-check-in__heading {
+  @include scale-set-font(h4, h3);
+  margin: 0 0 8px;
 }
 
 .account-check-in__body {
-  margin: 0 0 1.6rem;
-  font-size: 1.5rem;
-  line-height: 1.5;
-  color: var(--muted);
+  margin: 0 0 16px;
+  color: var(--os-text);
+  @include set-font(body-regular);
 }
 
 .account-check-in__streak {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  background: #F5F5F5;
-  border-radius: 8px;
-  padding: 1rem 1.4rem;
-  margin-bottom: 1.6rem;
+  gap: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--os-border);
 }
 
 .account-check-in__streak-circles {
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .account-check-in__streak-circle {
-  width: 28px;
-  height: 28px;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 14px;
+  line-height: 20px;
   font-weight: 700;
-  box-sizing: border-box;
 }
 
 .account-check-in__streak-circle--done {
-  background: #424242;
-  color: #FFFFFF;
+  background: var(--os-text);
+  color: #fff;
 }
 
 .account-check-in__streak-circle--pending {
-  border: 1px dashed #6A6A6A;
-  color: #6A6A6A;
+  border: 1px dashed var(--os-text-helper);
+  color: var(--os-text-helper);
 }
 
 .account-check-in__streak-message {
   margin: 0;
-  font-size: 1.5rem;
-  color: var(--ink);
+  color: var(--os-text);
+  @include set-font(body-regular);
 }
 
 .account-check-in__row {
   min-width: 0;
-  margin: 0 0 1.2rem;
-  padding: 1.4rem 1.6rem;
-  border: 1px solid #E0E0E0;
-  border-radius: 8px;
-  background: #F5F5F5;
+  margin: 0;
+  padding: 16px 0;
+  border: 0;
+  border-top: 1px solid var(--os-border);
+  background: none;
+}
+
+.account-check-in__row:first-of-type {
+  border-top: 0;
+}
+
+.account-check-in__streak + form .account-check-in__row:first-of-type {
+  border-top: 0;
 }
 
 .account-check-in__book {
   float: left;
   width: 100%;
-  margin: 0 0 0.8rem;
+  margin: 0 0 8px;
   padding: 0;
   border: 0;
-  font-size: 1.6rem;
-  font-weight: 700;
-  line-height: 1.4;
-  color: var(--ink);
+  color: var(--os-text);
+  @include set-font(h4);
 }
 
 .account-check-in__choices,
@@ -699,63 +592,63 @@
   clear: both;
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem 2rem;
+  gap: 8px 24px;
 }
 
 .account-check-in__choices {
-  margin-bottom: 1rem;
+  margin-bottom: 12px;
+}
+
+.account-check-in__details {
+  gap: 16px 24px;
 }
 
 .account-check-in__choice {
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
-  min-height: 3.2rem;
+  gap: 8px;
+  min-height: 40px;
   margin: 0;
-  font-size: 1.5rem;
+  color: var(--os-text);
+  font-size: 16px;
+  line-height: 25px;
   font-weight: 400;
-  color: var(--ink);
   cursor: pointer;
 }
 
 .account-check-in__choice input[type="radio"] {
-  width: 2rem;
-  height: 2rem;
+  width: 20px;
+  height: 20px;
   margin: 0;
-  accent-color: #D4450C;
+  accent-color: var(--os-link);
 }
 
 .account-check-in__field {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 4px;
   min-width: 0;
 }
 
 .account-check-in__field--grow {
-  flex: 1 1 28rem;
+  flex: 1 1 280px;
 }
 
 .account-check-in__field label {
   margin: 0;
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--muted);
+  color: var(--os-text);
+  font-size: 16px;
+  line-height: 25px;
+  font-weight: 700;
 }
 
 .account-check-in__field input[type="number"],
 .account-check-in__field select {
-  min-height: 4rem;
-  padding: 0.6rem 1rem;
-  border: 1px solid #E0E0E0;
-  border-radius: 6px;
-  background: #FFFFFF;
-  font-size: 1.5rem;
-  color: var(--ink);
+  @include os-field(40px);
 }
 
 .account-check-in__field input[type="number"] {
-  width: 12rem;
+  width: 120px;
 }
 
 .account-check-in__field select {
@@ -763,83 +656,72 @@
 }
 
 .account-check-in__school {
-  margin: 1.6rem 0 0;
-  font-size: 1.5rem;
-  color: var(--ink);
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--os-border);
+  color: var(--os-text);
+  @include set-font(body-regular);
 }
 
 .account-check-in__school-label {
-  color: var(--muted);
+  color: var(--os-text-helper);
 }
 
 .account-check-in__link {
-  color: #026AA1;
-  font-weight: 600;
-  text-decoration: underline;
+  @include os-text-action;
 }
 
 .account-check-in__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1.6rem;
-}
-
-.account-check-in__button {
-  min-height: 4.4rem;
-  padding: 0.8rem 2.4rem;
-  border: 1px solid transparent;
-  border-radius: 0.3rem;
-  font-size: 1.5rem;
-  font-weight: 600;
-  cursor: pointer;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .account-check-in__button--primary {
-  background: #D4450C;
-  border-color: #D4450C;
-  color: #FFFFFF;
-}
-
-.account-check-in__button--primary:hover {
-  background: #A43509;
-  border-color: #A43509;
+  @include os-button(primary);
 }
 
 .account-check-in__button--secondary {
-  background: #FFFFFF;
-  border-color: #E0E0E0;
-  color: #026AA1;
+  @include os-button(secondary);
 }
 
-.account-check-in__button--secondary:hover {
-  border-color: #026AA1;
-}
-
-@media (max-width: 520px) {
+@include width-up-to($os-phone-max) {
   .account-check-in__actions {
     flex-direction: column;
   }
 
-  .account-check-in__button {
+  .account-check-in__button--primary,
+  .account-check-in__button--secondary {
     width: 100%;
+    min-height: 44px;
   }
 
   .account-check-in__field input[type="number"] {
     width: 100%;
   }
+
+  .account-check-in__streak {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
 }
 
-.account-student-overview {
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-  max-width: 76rem;
+/* Student and learner overview */
+.account-shell__body.account-student-overview {
+  gap: 0;
+}
+
+.account-student-overview > section + section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--os-border);
 }
 
 .account-badge--student {
-  background: #D6ECFB;
-  color: #002E6D;
+  background: var(--os-info-bg);
+  color: var(--os-text);
 }
 
 .account-student-overview__book-grid {
@@ -847,17 +729,18 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
 }
 
 .account-student-overview__book-card {
-  border: 1px solid #E0E0E0;
-  border-radius: 0.4rem;
-  padding: 1rem;
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   align-items: center;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius);
 }
 
 .account-student-overview__book-cover {
@@ -867,46 +750,55 @@
 }
 
 .account-student-overview__book-title {
+  margin: 0 0 4px;
+  color: var(--os-text);
+  @include set-font(body-regular);
   font-weight: 700;
-  color: #002E6D;
-  margin: 0 0 0.4rem 0;
+  letter-spacing: normal;
+  overflow-wrap: anywhere;
 }
 
 .account-student-overview__book-actions {
   display: flex;
-  gap: 0.9rem;
-  font-size: 0.95rem;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  @include set-font(helper-label);
 }
 
-.account-student-overview__connect-card {
-  background: #ffffff;
-  border: 1px solid #D4450C;
-  border-radius: 0.6rem;
-  padding: 1.5rem;
+.account-student-overview__optional {
+  color: var(--os-text-helper);
+  font-weight: 400;
+  letter-spacing: normal;
 }
 
-.account-student-overview__connect-card h2 {
-  color: #002E6D;
-  margin: 0 0 0.2rem 0;
-}
-
-.account-student-overview__connect-card > p {
-  color: #6A6A6A;
-  margin: 0 0 1rem 0;
+.account-student-overview__connect > p,
+.account-student-overview__not-listed-panel > p {
+  margin: 0 0 16px;
+  color: var(--os-text);
+  @include set-font(body-regular);
 }
 
 .account-student-overview__autocomplete {
   position: relative;
-  max-width: 30rem;
+  max-width: 400px;
+
+  label {
+    display: block;
+    margin: 0 0 4px;
+    color: var(--os-text);
+    font-size: 16px;
+    line-height: 25px;
+    font-weight: 700;
+  }
 }
 
-.account-student-overview__autocomplete input[type="text"] {
+.account-layout .ox-card.account-shell .account-student-overview__autocomplete input[type="text"],
+.account-layout .ox-card.account-shell .account-student-overview__field input[type="text"],
+.account-layout .ox-card.account-shell .account-student-overview__field input[type="email"],
+.account-layout .ox-card.account-shell .account-student-overview__field select {
+  @include os-field(40px);
   width: 100%;
-  box-sizing: border-box;
-  padding: 0.7rem 0.8rem;
-  border: 1px solid #cfd5df;
-  border-radius: 0.3rem;
-  font-size: 1rem;
+  max-width: none;
 }
 
 .account-student-overview__autocomplete-results {
@@ -918,16 +810,16 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  background: #ffffff;
-  border: 1px solid #E0E0E0;
-  border-radius: 0.4rem;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  background: var(--os-surface);
+  border: 1px solid var(--os-border);
+  border-radius: 0;
+  box-shadow: var(--os-shadow-card);
   overflow: hidden;
 }
 
 .account-student-overview__autocomplete-results li {
-  padding: 0.7rem 0.9rem;
-  border-bottom: 1px solid #E0E0E0;
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--os-border);
   cursor: pointer;
 }
 
@@ -937,33 +829,33 @@
 
 .account-student-overview__autocomplete-results li.active,
 .account-student-overview__autocomplete-results li:hover {
-  background: #F7FCFF;
+  background: var(--os-hover-bg);
 }
 
 .account-student-overview__autocomplete-school {
-  color: #6A6A6A;
+  color: var(--os-text-helper);
 }
 
 .account-student-overview__autocomplete-not-listed {
   font-weight: 700;
-  color: #026AA1;
+  color: var(--os-link);
 }
 
 .account-student-overview__connect-status {
-  min-height: 1.2rem;
-  margin: 0.6rem 0 0;
-  font-size: 0.9rem;
-  color: #204B00;
+  min-height: 20px;
+  margin: 8px 0 0;
+  color: var(--os-success-text);
+  @include set-font(helper-label);
 }
 
 .account-student-overview__connections {
-  margin-top: 1.25rem;
+  margin-top: 16px;
 }
 
 .account-student-overview__connections-label {
+  margin: 0 0 4px;
+  color: var(--os-text);
   font-weight: 700;
-  color: #424242;
-  margin: 0 0 0.4rem 0;
 }
 
 .account-student-overview__connections ul {
@@ -972,79 +864,61 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 8px;
 }
 
 .account-student-overview__unverified-chip {
-  background: #F1F1F1;
-  color: #6A6A6A;
-  font-size: 0.95rem;
-  padding: 0.2rem 0.8rem;
-  margin-left: 0.5rem;
-}
-
-.account-student-overview__not-listed-panel {
-  background: #EAF6FD;
-  border: 1px solid #CBE3F2;
-  border-radius: 0.6rem;
-  padding: 1.5rem;
-}
-
-.account-student-overview__not-listed-panel h3 {
-  color: #002E6D;
-  margin: 0 0 0.2rem 0;
-}
-
-.account-student-overview__not-listed-panel > p {
-  color: #6A6A6A;
-  margin: 0 0 1rem 0;
+  margin-left: 8px;
 }
 
 .account-student-overview__not-listed-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 0.9rem;
-  max-width: 40rem;
+  gap: 16px;
+  max-width: 640px;
 }
 
 .account-student-overview__field {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 4px;
+  min-width: 0;
 }
 
 .account-student-overview__field label {
+  margin: 0;
+  color: var(--os-text);
+  font-size: 16px;
+  line-height: 25px;
   font-weight: 700;
-  color: #002E6D;
-  font-size: 0.95rem;
 }
 
 .account-student-overview__field label span {
   font-weight: 400;
-  color: #6A6A6A;
-}
-
-.account-student-overview__field input,
-.account-student-overview__field select {
-  padding: 0.6rem 0.7rem;
-  border: 1px solid #cfd5df;
-  border-radius: 0.3rem;
-  font-size: 1rem;
-  background: #ffffff;
+  color: var(--os-text-helper);
 }
 
 .account-student-overview__submit {
-  margin-top: 1rem;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 0.3rem;
-  padding: 0.65rem 1.4rem;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
+  @include os-button(primary);
+  margin-top: 16px;
 }
 
-.account-student-overview__submit:hover {
-  background: #015a87;
+@include width-up-to($os-phone-max) {
+  .account-student-overview__submit {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+// profile_security's card-link rules recolour anchors inside the shell card.
+.account-layout .account-shell__body a.account-actions__cta,
+.account-layout .account-shell__body a.account-overview__status-link,
+.account-layout .account-shell__body .account-overview__note a,
+.account-layout .account-shell__body .account-facts dd a {
+  color: var(--os-link);
+}
+
+.account-layout .account-shell__body a.account-actions__cta:hover,
+.account-layout .account-shell__body a.account-overview__status-link:hover {
+  color: var(--os-link-hover);
 }
