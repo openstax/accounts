@@ -20,7 +20,7 @@ module ImpactHelper
 
   def impact_lead_sentence(has_adoptions:, stats:)
     unless has_adoptions
-      return 'You haven’t reported any adoptions for this period yet. Reporting helps keep your OpenStax story current and highlights the students you support.'
+      return 'Once you report, your lifetime summary shows the students you reach and your estimated savings over time. Reports also help OpenStax secure the funding for new free titles.'
     end
 
     years = stats[:years].to_i
@@ -43,7 +43,9 @@ module ImpactHelper
     else
       students = number_with_delimiter(stats[:students].to_i)
       safe_join([
-        "Over #{period_text}, your reported adoptions have supported ",
+        'Over ',
+        period_text,
+        ', your reported adoptions have supported ',
         content_tag(:strong, students),
         ' students.'
       ])
@@ -56,13 +58,13 @@ module ImpactHelper
     books = stats[:books].to_i
 
     if years >= 3
-      'You’ve kept your adoption story current across multiple academic years — thank you.'
+      'You’ve kept your adoption story current across multiple academic years. Thank you.'
     elsif students >= 300
       'You’ve supported hundreds of students through your reported adoptions.'
     elsif books >= 3
-      'Your reported adoptions span multiple titles — that visibility matters.'
+      'Your reported adoptions span multiple titles, and that visibility matters.'
     else
-      "Every reported adoption helps reflect real classroom use and support OpenStax's mission."
+      'Every reported adoption shows how OpenStax books are used in real classrooms.'
     end
   end
 
@@ -70,56 +72,6 @@ module ImpactHelper
     return impact_currency_brief(value) if format == 'currency'
 
     number_with_delimiter(value.to_i)
-  end
-
-  def formatted_currency_compact(value)
-    impact_currency_brief(value)
-  end
-
-  def milestone_chips(stats)
-    chips = []
-    years = stats[:years].to_i
-    students = stats[:students].to_i
-    savings = stats[:savings].to_f
-    books = stats[:books].to_i
-
-    chips << 'First year reported' if years == 1 && students.positive?
-    chips << '3+ years reported' if years >= 3
-    chips << '100+ students supported' if students >= 100
-    chips << '500+ students supported' if students >= 500
-    chips << '$10K+ estimated student savings' if savings >= 10_000
-    chips << 'Multiple books reported' if books >= 3
-
-    chips.compact.uniq.first(3)
-  end
-
-  def impact_summary_sentence(view_mode, stats, current_school_year)
-    if view_mode == 'current'
-      if stats[:students].to_i.positive?
-        books = stats[:books].to_i
-        books_label = books == 1 ? 'book' : 'books'
-        students = number_with_delimiter(stats[:students].to_i)
-        "This year, you reported #{students} students supported across #{books} #{books_label}."
-      else
-        "Add this year’s adoptions to keep your #{current_school_year} impact up to date."
-      end
-    else
-      students = number_with_delimiter(stats[:students].to_i)
-      savings = formatted_currency_compact(stats[:savings])
-      "Over time, you reported #{students} students supported and about #{savings} in estimated student savings."
-    end
-  end
-
-  def impact_moment_line(view_mode, has_adoptions, stats, current_school_year)
-    if view_mode == 'current'
-      if has_adoptions
-        "Thanks for sharing your #{current_school_year} adoptions—your updates help us champion your students."
-      else
-        'When you report this year’s adoptions, we can highlight your impact and support you faster.'
-      end
-    else
-      'Thanks for keeping your adoption story current across multiple academic years.'
-    end
   end
 
   def milestone_progress_percent(current, target)
@@ -133,6 +85,44 @@ module ImpactHelper
       "Last reported #{timestamp.strftime('%b %-d, %Y')}"
     else
       'Report this year to get started'
+    end
+  end
+
+  def impact_pending_badge(count, singular, plural = singular.pluralize)
+    return if count.to_i <= 0
+
+    noun = count == 1 ? singular : plural
+    number = number_with_delimiter(count)
+
+    content_tag(:span, class: 'impact-strip__pending') do
+      safe_join([
+        content_tag(:span, "+#{number} pending", 'aria-hidden': 'true'),
+        content_tag(:span, "Plus #{number} #{noun} pending confirmation, not yet in the total.", class: 'sr-only')
+      ])
+    end
+  end
+
+  # The second, contextual ask under the stats: { heading:, body:, button: }.
+  # It leans on things a bigger number can't improve: years of reporting, saved books
+  # still unreported this year, and keeping the current term up to date.
+  def impact_next_prompt(streak_years:, saved_total:, saved_reported:, current_year_reported:)
+    reason = 'Every report helps fund new free titles.'
+
+    if !current_year_reported
+      body = streak_years.positive? ? "Thank you for #{pluralize(streak_years, 'year')} of reporting. #{reason}" : "It takes about a minute. #{reason}"
+      { heading: 'Report this term’s classes to keep your impact current', body: body, button: 'Report an adoption' }
+    elsif saved_total > saved_reported
+      { heading: "You’ve reported #{saved_reported} of your #{saved_total} saved books this year",
+        body: "Teaching with the others this term? Add them here. #{reason}",
+        button: 'Count my students' }
+    elsif streak_years.positive?
+      { heading: "Year #{streak_years + 1} with OpenStax. Thank you for sticking with us.",
+        body: "Teaching with another book this term? Add it here. #{reason}",
+        button: 'Count my students' }
+    else
+      { heading: 'Teaching with another book this term?',
+        body: "Add it so your impact stays complete. #{reason}",
+        button: 'Count my students' }
     end
   end
 end

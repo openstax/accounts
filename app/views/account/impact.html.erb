@@ -6,45 +6,52 @@
           title: @account_shell_title
         ) do %>
       <% current_view = @view == 'current' %>
-      <% preview_current_year = current_view && !@current_year_has_adoptions %>
+      <% pending = @pending_impact %>
+      <% current_year_reported = @current_year_has_adoptions || pending.any? %>
+      <% preview_current_year = current_view && !current_year_reported %>
       <% preview_lifetime = !current_view && !@lifetime_adoptions.any? %>
       <% badge_subtext = impact_badge_subtext(@badge_last_reported_at) %>
       <% panel_heading =
            if current_view
-             @current_year_has_adoptions ? "Thank you for reporting your adoption impact for #{@current_school_year}!" : "Share your adoption impact for #{@current_school_year}"
+             current_year_reported ? "Thank you for reporting your adoption impact for #{@current_school_year}!" : "Share your adoption impact for #{@current_school_year}"
            else
              'Your OpenStax impact over time'
            end %>
       <% panel_copy =
            if current_view
-             'A quick report helps us reflect your student reach and makes it easier for our team to support instructors where they need it most.'
+             if current_year_reported
+               'Reports like yours show funders that free books reach real students.'
+             else
+               'Once you report, this page shows the students you reach, your estimated savings and the milestones you have reached. Every report also helps fund new free titles.'
+             end
            else
              impact_lead_sentence(has_adoptions: @active_has_adoptions, stats: @active_stats)
            end %>
 
       <% microcopy =
            if preview_current_year
-             @milestones.present? ? "Report your #{@current_school_year} adoptions. It only takes a minute." : 'Report your first adoption. It only takes a minute.'
+             'It takes about a minute, and you can add several books at once.'
            elsif preview_lifetime
-             'Report an adoption to unlock your lifetime summary.'
+             'Your lifetime summary starts with your first report.'
            else
              'Takes about a minute. You can include multiple books.'
            end %>
       <% locked = preview_current_year || preview_lifetime %>
       <% strip_items = [] %>
       <% if current_view %>
-        <% strip_items << { label: 'Adoptions reported', value: @active_adoptions.count, format: 'integer' } %>
+        <% strip_items << { label: 'Adoptions reported', value: @active_adoptions.count, format: 'integer', pending: impact_pending_badge(pending.books, 'book') } %>
       <% else %>
         <% strip_items << { label: 'Years reported', value: @active_stats[:years].to_i, format: 'integer' } %>
         <% strip_items << { label: 'Books reported', value: @active_stats[:books].to_i, format: 'integer' } %>
       <% end %>
-      <% strip_items << { label: 'Students supported', value: @active_stats[:students].to_i, format: 'integer' } %>
+      <% strip_items << { label: 'Students supported', value: @active_stats[:students].to_i, format: 'integer',
+                         pending: (current_view ? impact_pending_badge(pending.students, 'student') : nil) } %>
       <% strip_items << { label: 'Estimated student savings', value: @active_stats[:savings].to_f, format: 'currency' } %>
 
       <section class="account-impact__hero">
         <div class="account-impact__hero-text">
           <h2>Celebrate your impact</h2>
-          <p>Your adoption reports help us recognize your teaching, understand student reach, and keep your OpenStax story current.</p>
+          <p>See the students you reach with OpenStax books. Your reports also help us secure the funding that keeps these books free.</p>
         </div>
         <nav class="impact-toggle" aria-label="Impact view">
           <%= link_to 'Current year',
@@ -73,7 +80,7 @@
         </div>
 
         <div class="account-impact__journey">
-          <% if current_view && !locked %>
+          <% if current_view && @current_year_has_adoptions %>
             <p class="impact-uptodate">
               <span class="account-chip account-chip--success">You're up to date.</span>
               <%= badge_subtext %>
@@ -92,6 +99,7 @@
                         data-countup-format="<%= item[:format] %>"><%= impact_countup_value(item[:value], item[:format]) %></span>
                 <% end %>
                 <span class="impact-strip__label"><%= item[:label] %></span>
+                <%= item[:pending] %>
               </li>
             <% end %>
           </ul>
@@ -110,7 +118,7 @@
               <% if next_milestone %>
                 Next milestone: <%= next_milestone.label %>
               <% else %>
-                You’ve reached every milestone — thank you!
+                You’ve reached every milestone. Thank you.
               <% end %>
             </h3>
             <% if next_milestone %>
@@ -139,14 +147,26 @@
               <li class="impact-milestone-tile impact-milestone-tile--locked">
                 <div class="impact-milestone-tile__icon" aria-hidden="true"><%= number_with_delimiter(next_milestone.value) %></div>
                 <div class="impact-milestone-tile__label"><%= next_milestone.label %></div>
-                <div class="impact-milestone-tile__meta">Not reached yet</div>
+                <div class="impact-milestone-tile__meta">Grows with your confirmed adoptions</div>
               </li>
             <% end %>
           </ul>
         </section>
       <% end %>
 
-      <% show_details = current_view ? @current_year_has_adoptions : @lifetime_adoptions.any? %>
+      <% if @lifetime_adoptions.any? || pending.any? %>
+        <% prompt = impact_next_prompt(streak_years: @check_in_streak_years, saved_total: @saved_books_total,
+                                    saved_reported: @saved_books_reported, current_year_reported: current_year_reported) %>
+        <section class="impact-next-prompt" aria-labelledby="impact-next-prompt-title">
+          <div class="impact-next-prompt__text">
+            <h3 id="impact-next-prompt-title"><%= prompt[:heading] %></h3>
+            <p><%= prompt[:body] %></p>
+          </div>
+          <%= link_to prompt[:button], '#', class: 'account-impact__cta', data: { report_adoption_trigger: true } %>
+        </section>
+      <% end %>
+
+      <% show_details =current_view ? @current_year_has_adoptions : @lifetime_adoptions.any? %>
       <% if show_details %>
       <section class="account-impact__details">
         <div class="account-shell__section-header">
@@ -168,8 +188,8 @@
           <div class="account-shell__section-header">
             <h2>Reported by you</h2>
             <p>
-              These are adoptions you told us about for <%= @current_school_year %>.
-              Once we've sent a report to OpenStax, it shows up in your impact totals above the next day.
+              These are the classes you told us about for <%= @current_school_year %>.
+              They count in your totals once we confirm them, usually by the next day.
             </p>
           </div>
 
@@ -189,8 +209,8 @@
                       <td><%= report.book_title %></td>
                       <td><%= report.students.present? ? number_with_delimiter(report.students) : '—' %></td>
                       <td>
-                        <span class="account-chip account-chip--success">
-                          <%= report.salesforce_pushed_at? ? 'Sent to OpenStax · in your totals by tomorrow' : 'Saved' %>
+                        <span class="account-chip">
+                          <%= report.salesforce_pushed_at? ? 'Pending, counts by tomorrow' : 'Pending, saved' %>
                         </span>
                       </td>
                     </tr>

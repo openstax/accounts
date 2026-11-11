@@ -58,7 +58,7 @@ feature 'report an adoption modal', js: true do
 
     expect {
       click_button('Submit report')
-      expect(page).to have_content("Thanks — your report helps us measure OpenStax's impact.", wait: 5)
+      expect(page).to have_content('Thank you. You added 2 books', wait: 5)
     }.to change { AdoptionReport.count }.by(2)
   end
 
@@ -75,11 +75,42 @@ feature 'report an adoption modal', js: true do
     expect(page).to have_select('books[0][how_using]', selected: AdoptionReport::HOW_USING_OPTIONS[1])
 
     click_button('Submit report')
-    expect(page).to have_content("Thanks — your report helps us measure OpenStax's impact.", wait: 5)
+    expect(page).to have_content('Thank you. You added 1 book', wait: 5)
 
     expect(AdoptionReport.last).to have_attributes(
       salesforce_book_name: 'Biology', book_title: 'Biology 2e',
       how_using: AdoptionReport::HOW_USING_OPTIONS[1], surface: 'overview'
     )
+  end
+
+  scenario 'preselects the book named by data-report-adoption-book, and clears it for a trigger without one' do
+    Adoption.create!(salesforce_id: 'a0A002', user: instructor, salesforce_book_id: 'a0BBIO',
+                     how_using: AdoptionReport::HOW_USING_OPTIONS[2])
+    newflow_log_in_user('instructor@openstax.org', 'password')
+
+    visit(account_overview_path)
+    wait_for_animations
+    page.execute_script(<<~JS)
+      var plain = document.querySelector('[data-report-adoption-trigger]');
+      var withBook = plain.cloneNode(true);
+      withBook.setAttribute('data-report-adoption-book', 'Biology');
+      withBook.id = 'trigger-with-book';
+      plain.parentNode.insertBefore(withBook, plain);
+    JS
+
+    find('#trigger-with-book').click
+    expect(page).to have_css('#reportAdoptionModal.in', wait: 5)
+    wait_for_animations
+    expect(page).to have_select('books[0][name]', selected: 'Biology 2e')
+    expect(page).to have_select('books[0][how_using]', selected: AdoptionReport::HOW_USING_OPTIONS[2])
+    expect(page).to have_css('[data-report-adoption-summary-subtext]', text: 'Across 1 books')
+
+    find('#reportAdoptionModal button.close').click
+    expect(page).to have_no_css('#reportAdoptionModal.in', wait: 5)
+
+    find('[data-report-adoption-trigger]:not(#trigger-with-book)', match: :first).click
+    expect(page).to have_css('#reportAdoptionModal.in', wait: 5)
+    wait_for_animations
+    expect(page).to have_select('books[0][name]', selected: 'Select a book')
   end
 end

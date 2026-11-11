@@ -1,7 +1,11 @@
 (function() {
+  // Set by the trigger that opened the modal, applied once the reset in show.bs.modal has run.
+  var preselectedBook = '';
+
   function showReportAdoptionModal(event) {
     event.preventDefault();
     var $modal = $('#reportAdoptionModal');
+    preselectedBook = event.currentTarget.getAttribute('data-report-adoption-book') || '';
 
     if ($modal.length) {
       $modal.modal('show');
@@ -211,6 +215,12 @@
     resetBookRows();
     renumberRows();
     updateSummaryMetrics();
+
+    if (preselectedBook) {
+      // The change event runs the how-using prefill and the summary update.
+      $('[data-report-adoption-row]').first().find('select[name$="[name]"]').val(preselectedBook).trigger('change');
+    }
+    preselectedBook = '';
   });
 
   // initialize on load

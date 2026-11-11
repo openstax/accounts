@@ -18,8 +18,7 @@ module Account
       PushAdoptionReports.perform_later(user: current_user) if results.any?
 
       if results.all?
-        redirect_to return_path,
-                    notice: "Thanks — your report helps us measure OpenStax's impact."
+        redirect_to return_path, notice: thanks_message(rows)
       else
         # Static text only — flash notices/alerts are rendered html_safe by
         # the layout, so no user-typed row data belongs in here.
@@ -29,6 +28,19 @@ module Account
     end
 
     private
+
+    # Integers and fixed strings only: flashes render html_safe. Only this school
+    # year's rows show up as pending on the Impact tab (see PendingImpact).
+    def thanks_message(rows)
+      current = rows.select { |row| row[:school_year] == SchoolYear.current }
+      return 'Thank you. Your report is saved and will count in your totals once we confirm it, usually by tomorrow.' if current.empty?
+
+      books = helpers.pluralize(current.size, 'book')
+      students = current.sum { |row| row[:students].to_i }
+      added = students.positive? ? "#{books} and #{helpers.pluralize(students, 'student')}" : books
+
+      "Thank you. You added #{added} to your impact. This shows now as pending, and joins your totals once we confirm it, usually by tomorrow."
+    end
 
     # Skip fully blank rows (the modal always submits at least one row, plus
     # any the user added); a row only counts once it has a book and year.

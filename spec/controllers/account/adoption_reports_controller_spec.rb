@@ -50,6 +50,25 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
         expect(flash[:notice]).to be_present
       end
 
+      it 'thanks the instructor with the books and students added, shown as pending' do
+        year = SchoolYear.current
+        post :create, params: { books: [row(school_year: year, students: '120'),
+                                        row(name: 'College Physics', school_year: year, students: '45')] }
+
+        expect(flash[:notice]).to eq(
+          'Thank you. You added 2 books and 165 students to your impact. ' \
+          'This shows now as pending, and joins your totals once we confirm it, usually by tomorrow.'
+        )
+      end
+
+      it 'does not call a report for another school year pending' do
+        post :create, params: { books: [row(school_year: '2020 - 21')] }
+
+        expect(flash[:notice]).to eq(
+          'Thank you. Your report is saved and will count in your totals once we confirm it, usually by tomorrow.'
+        )
+      end
+
       it 'accepts the indexed hash submitted by the browser form and returns to its source page' do
         expect {
           post :create, params: {

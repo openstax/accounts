@@ -76,7 +76,43 @@ RSpec.describe AccountController, type: :controller do
 
     expect(response.body).to include('Next milestone')
     expect(response.body).to include('First adoption')
-    expect(response.body).to include('Report your')
+    expect(response.body).to include('Report this term’s classes to keep your impact current')
+    expect(response.body).to include('Grows with your confirmed adoptions')
+    expect(response.body).not_to include('students from your')
+    expect(response.body).not_to include('Report an adoption to get there')
+  end
+
+  describe 'pending reports on the impact page' do
+    before do
+      Adoption.create!(salesforce_id: 'SF_PENDING_BASE', user: user, confirmation_type: 'OpenStax Confirmed Adoption',
+                       rollover_status: false, school_year: SchoolYear.current, students: 415, salesforce_book_id: nil)
+      AdoptionReport.create!(user: user, book_title: 'College Physics', salesforce_book_name: 'College Physics',
+                             school_year: SchoolYear.current, source: 'books_modal', status: 'using', students: 120)
+    end
+
+    it 'labels pending students apart from the confirmed total and for screen readers' do
+      get :impact
+
+      expect(response.body).to include('+120 pending')
+      expect(response.body).to include('Plus 120 students pending confirmation, not yet in the total.')
+      expect(response.body).not_to include('to your 500-student milestone')
+    end
+
+    it 'compares books reported this year with saved books' do
+      UserBook.create!(user: user, book: Book.create!(book_uuid: SecureRandom.uuid, title: 'College Physics'))
+      UserBook.create!(user: user, book: Book.create!(book_uuid: SecureRandom.uuid, title: 'Biology 2e'))
+
+      get :impact
+
+      expect(response.body).to include('You’ve reported 1 of your 2 saved books this year')
+    end
+  end
+
+  it 'asks for a first report in the locked state without a contextual second prompt' do
+    get :impact
+
+    expect(response.body).to include('Once you report, this page shows the students you reach')
+    expect(response.body).not_to include('impact-next-prompt')
   end
 
   it 'omits the milestone ladder when the user has never had an adoption' do

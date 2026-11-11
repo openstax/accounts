@@ -286,6 +286,14 @@
   color: var(--os-text-helper);
 }
 
+.report-adoption__hint {
+  @include set-font(helper-label);
+  display: block;
+  margin-top: 4px;
+  font-weight: normal;
+  color: var(--os-text-helper);
+}
+
 .report-adoption__footer {
   display: flex;
   justify-content: space-between;

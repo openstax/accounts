@@ -146,6 +146,51 @@
     color: var(--os-text-helper);
   }
 
+  .impact-strip__pending {
+    @include set-font(helper-label);
+    align-self: flex-start;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: var(--os-info-bg);
+    color: var(--os-text);
+  }
+
+  .impact-next-prompt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 24px;
+    margin-top: 24px;
+    padding: 24px 0;
+    border-top: 1px solid var(--os-border);
+
+    h3 {
+      @include set-font(h4);
+      margin: 0 0 4px;
+      color: var(--os-text);
+    }
+
+    p {
+      @include set-font(body-regular);
+      margin: 0;
+      color: var(--os-text-helper);
+    }
+
+    @include width-up-to($phone-max) {
+      .account-impact__cta {
+        width: 100%;
+        min-height: 44px;
+      }
+    }
+  }
+
+  .impact-next-prompt__text {
+    flex: 2 1 320px;
+    min-width: 0;
+  }
+
   .impact-strip--locked .impact-strip__value {
     color: var(--os-text-helper);
   }

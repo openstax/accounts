@@ -96,10 +96,15 @@ class AccountController < Newflow::BaseController
 
     # User-reported signals, distinct from the Salesforce-confirmed adoptions above —
     # shown separately since they're pending confirmation.
-    @self_reported_adoptions = current_user.adoption_reports
-                                            .using
-                                            .where(school_year: @current_school_year)
-                                            .order(:book_title)
+    @pending_impact = PendingImpact.new(current_user, school_year: @current_school_year)
+    @self_reported_adoptions = @pending_impact.reports
+    @check_in_streak_years = current_user.check_in_streak_years
+
+    saved_titles = current_user.user_books.includes(:book).filter_map { |user_book| user_book.book&.title }.uniq
+    reported_titles = (@pending_impact.reports.map(&:book_title) +
+                       @current_year_adoptions.map { |adoption| adoption.book&.title }).compact
+    @saved_books_total = saved_titles.size
+    @saved_books_reported = (saved_titles & reported_titles).size
 
     render_account_page :impact,
                         title: 'My OpenStax Impact'
