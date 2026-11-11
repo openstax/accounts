@@ -25,9 +25,9 @@ module Newflow
       fill_in 'signup_password', with: password
       submit_signup_form
 
+      expect(page).to have_current_path(staff_email_verification_form_path)
       perform_enqueued_jobs
 
-      expect(page).to have_current_path(staff_email_verification_form_path)
       open_email(email_value)
       capture_email!(address: email_value)
       expect(current_email).to be_truthy
