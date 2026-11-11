@@ -2,7 +2,7 @@
 # might be teaching with. The fall card prefills from last school year; the
 # spring card (SPRING_WINDOW) prefills from this school year's own reports.
 class AnnualCheckIn
-  Row = Struct.new(:key, :title, :abbreviation, :students, :how_using, keyword_init: true)
+  Row = Struct.new(:key, :title, :abbreviation, :students, :how_using, :status, keyword_init: true)
 
   CONFIRMED_ADOPTION = 'OpenStax Confirmed Adoption'.freeze
 
@@ -55,7 +55,8 @@ class AnnualCheckIn
         title: title,
         abbreviation: abbreviation,
         students: last_year[:students],
-        how_using: last_year[:how_using] || catalog_how_using[abbreviation] || AdoptionReport::HOW_USING_OPTIONS.first
+        how_using: last_year[:how_using] || catalog_how_using[abbreviation] || AdoptionReport::HOW_USING_OPTIONS.first,
+        status: last_year[:status]
       )
     end
   end
@@ -114,12 +115,15 @@ class AnnualCheckIn
     candidates.except(*answered_locally)
   end
 
+  # In spring, this year's books are already answered "using", so that answer is preselected;
+  # an unchanged count is not sent again. Fall rows start unanswered on purpose.
   def merge_year(candidates, school_year, using_only: false)
+    current = ('using' if using_only)
     reports = user.adoption_reports.where(school_year: school_year).order(:id)
     reports = reports.using if using_only
     reports.each do |report|
       merge(candidates, report.book_title, abbreviation: report.salesforce_book_name,
-                                           students: report.students, how_using: report.how_using)
+                                           students: report.students, how_using: report.how_using, status: current)
     end
 
     adoptions_for(school_year).each do |adoption|
@@ -127,7 +131,7 @@ class AnnualCheckIn
       next if title.blank?
 
       how_using = adoption.how_using if AdoptionReport::HOW_USING_OPTIONS.include?(adoption.how_using)
-      merge(candidates, title, students: adoption.students, how_using: how_using)
+      merge(candidates, title, students: adoption.students, how_using: how_using, status: current)
     end
   end
 

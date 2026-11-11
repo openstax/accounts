@@ -34,7 +34,8 @@
               <input type="radio"
                      id="check-in-<%= row.key %>-<%= status %>"
                      name="rows[<%= row.key %>][status]"
-                     value="<%= status %>">
+                     value="<%= status %>"
+                     <%= 'checked' if row.status == status %>>
               <span><%= t("annual_check_in.#{label_key}") %></span>
             </label>
           <% end %>

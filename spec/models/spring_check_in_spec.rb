@@ -170,6 +170,16 @@ describe 'Spring check-in', type: :model do
       expect(check_in.rows.find { |row| row.title == 'Chemistry 2e' }.students).to be_nil
     end
 
+    it 'preselects "using" only for books already reported in use this year' do
+      save_book!(user, 'Biology 2e')
+      save_book!(user, 'Chemistry 2e')
+      report!(user, 'Biology 2e', students: 40)
+      report!(user, 'Old Book', year: '2024 - 25', students: 10)
+
+      expect(check_in.rows.to_h { |row| [row.title, row.status] }).to eq('Biology 2e' => 'using', 'Chemistry 2e' => nil)
+      expect(AnnualCheckIn.new(user, term: :fall).rows.map(&:status)).to all(be_nil)
+    end
+
     it 'leaves out saved books answered considering, browsing or not using this year' do
       %w[considering browsing not_using].each_with_index do |status, index|
         title = "Book #{index}"
