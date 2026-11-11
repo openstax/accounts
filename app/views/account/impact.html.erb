@@ -3,7 +3,7 @@
   <div class="account-layout__content">
     <%= render(
           'shared/account_layout_shell',
-          locals: { title: @account_shell_title, description: @account_shell_description }
+          title: @account_shell_title
         ) do %>
       <% current_view = @view == 'current' %>
       <% preview_current_year = current_view && !@current_year_has_adoptions %>

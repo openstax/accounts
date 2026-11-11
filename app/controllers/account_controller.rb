@@ -29,7 +29,7 @@ class AccountController < Newflow::BaseController
       check_in = AnnualCheckIn.new(current_user) if current_user.annual_check_in_due?
       @annual_check_in = check_in if check_in&.rows&.any?
 
-      render_account_page :overview, title: 'Account overview', description: 'View a summary of your OpenStax account.'
+      render_account_page :overview, title: 'Account overview'
     end
   end
 
@@ -40,11 +40,11 @@ class AccountController < Newflow::BaseController
       (adoption.school_year.presence || adoption.school_year_label) == current_year
     end
     @last_adoption_reported_at = last_reported_at_for(adoptions)
-    render_account_page :profile, title: 'Profile', description: 'Manage your personal details and preferences.'
+    render_account_page :profile, title: 'Profile'
   end
 
   def security
-    render_account_page :security, title: 'Security', description: 'Review sign-in methods and security settings.'
+    render_account_page :security, title: 'Security'
   end
 
   def books
@@ -66,8 +66,7 @@ class AccountController < Newflow::BaseController
                                               .index_by(&:book_title)
 
     render_account_page :books,
-                        title: 'My OpenStax Books',
-                        description: 'Bookmark OpenStax titles so they are always in reach.'
+                        title: 'My OpenStax Books'
   end
 
   def impact
@@ -103,12 +102,11 @@ class AccountController < Newflow::BaseController
                                             .order(:book_title)
 
     render_account_page :impact,
-                        title: 'My OpenStax Impact',
-                        description: 'Monitor how OpenStax supports your students.'
+                        title: 'My OpenStax Impact'
   end
 
   def support
-    render_account_page :support, title: 'Support', description: 'Get help from the OpenStax team.'
+    render_account_page :support, title: 'Support'
   end
 
   private
@@ -129,7 +127,6 @@ class AccountController < Newflow::BaseController
 
     render_account_page :overview,
                         title: 'Your OpenStax Account',
-                        description: 'Your saved books and instructor connections, all in one place.',
                         view: 'student_overview'
   end
 
@@ -138,7 +135,6 @@ class AccountController < Newflow::BaseController
 
     render_account_page :overview,
                         title: 'Your OpenStax Account',
-                        description: 'Your saved books and account settings, all in one place.',
                         view: 'learner_overview'
   end
 
@@ -147,12 +143,11 @@ class AccountController < Newflow::BaseController
     books: 'Books', impact: 'Impact', support: 'Support'
   }.freeze
 
-  def render_account_page(current_key, title:, description:, view: current_key)
+  def render_account_page(current_key, title:, view: current_key)
     @page_title = "#{PAGE_TITLES.fetch(current_key)} - My OpenStax"
     @account_nav_items = account_nav_items_for(current_user)
     @account_nav_current = current_key
     @account_shell_title = title
-    @account_shell_description = description
     @framed = false
     @using_os = current_user.using_openstax
     render "account/#{view}"

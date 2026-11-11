@@ -3,10 +3,7 @@
   <div class="account-layout__content">
     <%= render(
           'shared/account_layout_shell',
-          locals: {
-            title: 'My OpenStax Books',
-            description: 'Your personal library of OpenStax titles and teaching tools.'
-          }
+          title: @account_shell_title
         ) do %>
       <div class="account-books" data-saved-book-ids="<%= @saved_books.map { |saved| saved.book&.book_uuid }.compact.to_json %>">
         <section class="account-profile__section">

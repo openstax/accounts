@@ -33,7 +33,7 @@
   <div class="account-layout__content">
     <%= render(
           'shared/account_layout_shell',
-          locals: { title: @account_shell_title, description: @account_shell_description }
+          title: @account_shell_title
         ) do %>
       <%= render 'account/profile_account_details' %>
     <% end %>

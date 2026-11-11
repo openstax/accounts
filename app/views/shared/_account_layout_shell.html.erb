@@ -1,19 +1,7 @@
-<%
-  shell_title = local_assigns[:title]
-  shell_description = local_assigns[:description]
-%>
-
 <%= ox_card(classes: "account-shell") do %>
-  <% if shell_title.present? || shell_description.present? %>
-    <div class="profile-title account-shell__header">
-      <% if shell_title.present? %>
-        <h1 class="title"><%= shell_title %></h1>
-      <% end %>
-    </div>
-
-    <% if shell_description.present? %>
-      <p class="account-shell__description"><%= shell_description %></p>
-    <% end %>
+  <%# The tab nav and each section's heading already say where you are, so the page's h1 is for screen readers. %>
+  <% if local_assigns[:title].present? %>
+    <h1 class="sr-only"><%= title %></h1>
   <% end %>
 
   <div class="account-shell__body">
