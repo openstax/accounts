@@ -1,203 +1,221 @@
 require 'rails_helper'
-require 'webmock/rspec'
 
 RSpec.describe PushAdoptionReports do
-  let(:posting_url) { 'https://forms.example.com/adoption' }
+  let(:contact_remote) { OpenStax::Salesforce::Remote::Contact }
+  let(:lead_remote) { OpenStax::Salesforce::Remote::Lead }
+  let(:sf_client) { double('sfdc_client') }
+  let(:pending_flag) { false }
 
-  def create_reporting_user(role: 'instructor', **attrs)
-    user = FactoryBot.create(:user, :terms_agreed, role: role, **attrs)
-    FactoryBot.create(:email_address, :verified, user: user)
-    user
+  def create_user(**attrs)
+    FactoryBot.create(:user, :terms_agreed, role: 'instructor', **attrs)
   end
 
   def create_report(user, overrides = {})
     AdoptionReport.create!({
       user: user,
-      book_title: 'Intro to Sociology',
+      book_title: 'Biology 2e',
+      salesforce_book_name: 'Biology',
       school_year: '2026 - 27',
       status: 'using',
-      source: 'books_modal'
+      source: 'books_modal',
+      how_using: AdoptionReport::HOW_USING_OPTIONS.first,
+      surface: 'books',
+      students: 40
     }.merge(overrides))
   end
 
-  before { stub_sentry }
-
-  context 'when disabled' do
-    it 'no-ops and leaves reports unpushed when the setting is disabled' do
-      allow(Settings::Salesforce).to receive(:push_adoption_reports_enabled).and_return(false)
-      allow(Settings::Salesforce).to receive(:adoption_form_posting_url).and_return(posting_url)
-
-      user = create_reporting_user
-      report = create_report(user)
-
-      described_class.call(user: user)
-
-      expect(WebMock).not_to have_requested(:post, posting_url)
-      expect(report.reload.salesforce_pushed_at).to be_nil
-    end
-
-    it 'no-ops and leaves reports unpushed when the URL is blank' do
-      allow(Settings::Salesforce).to receive(:push_adoption_reports_enabled).and_return(true)
-      allow(Settings::Salesforce).to receive(:adoption_form_posting_url).and_return('')
-
-      user = create_reporting_user
-      report = create_report(user)
-
-      described_class.call(user: user)
-
-      expect(report.reload.salesforce_pushed_at).to be_nil
-    end
+  def remote_record(id: 'SF001', **extra)
+    record = double('remote record', id: id, **extra)
+    allow(record).to receive(:adoption_json=)
+    allow(record).to receive(:tracking_parameters=)
+    allow(record).to receive(:save).and_return(true)
+    record
   end
 
-  context 'when enabled' do
-    before do
-      allow(Settings::Salesforce).to receive(:push_adoption_reports_enabled).and_return(true)
-      allow(Settings::Salesforce).to receive(:adoption_form_posting_url).and_return(posting_url)
+  def payload_for(record)
+    sent = nil
+    allow(record).to receive(:adoption_json=) { |json| sent = json }
+    yield
+    JSON.parse(sent)
+  end
+
+  before do
+    stub_sentry
+    allow(Settings::Salesforce).to receive(:push_adoption_reports_enabled).and_return(true)
+    allow(contact_remote).to receive(:sfdc_client).and_return(sf_client)
+    allow(sf_client).to receive(:query) { [{ 'Adoption_JSON_Pending__c' => pending_flag }] }
+  end
+
+  it 'does nothing when the kill switch is off' do
+    allow(Settings::Salesforce).to receive(:push_adoption_reports_enabled).and_return(false)
+    user = create_user(salesforce_contact_id: '003A')
+    report = create_report(user)
+    expect(contact_remote).not_to receive(:find)
+
+    described_class.call(user: user)
+
+    expect(report.reload.salesforce_pushed_at).to be_nil
+  end
+
+  context 'with a Contact' do
+    let(:user) { create_user(salesforce_contact_id: '003A') }
+    let(:contact) { remote_record(id: '003A') }
+
+    before { allow(contact_remote).to receive(:find).with('003A').and_return(contact) }
+
+    it 'writes the two fields, marks reports pushed and logs it' do
+      report = create_report(user)
+      expect(contact).to receive(:adoption_json=).with(a_string_including('"Books"'))
+      expect(contact).to receive(:tracking_parameters=)
+      expect(contact).to receive(:save).and_return(true)
+
+      expect { described_class.call(user: user) }
+        .to change { SecurityLog.where(user: user, event_type: SecurityLog.event_types[:adoption_reports_pushed_to_salesforce]).count }.by(1)
+
+      expect(report.reload.salesforce_pushed_at).to be_present
     end
 
-    it 'marks reports pushed and posts the expected form fields on a 2xx response' do
-      user = create_reporting_user(
-        role: 'instructor',
-        first_name: 'Ada',
-        last_name: 'Lovelace',
-        salesforce_contact_id: '003ABC'
-      )
-      report1 = create_report(user, book_title: 'Intro to Sociology', school_year: '2026 - 27', students: 42)
-      report2 = create_report(user, book_title: 'College Physics', school_year: '2025 - 26', students: nil)
+    it 'sends one payload with every unpushed report, with the abbreviation, integer baseYear and howUsing' do
+      create_report(user)
+      create_report(user, book_title: 'Calculus Volume 1', salesforce_book_name: 'Calculus Volume 1',
+                          school_year: '2025 - 26', students: nil,
+                          how_using: AdoptionReport::HOW_USING_OPTIONS.last)
 
-      stub = stub_request(:post, posting_url).to_return(status: 200)
+      payload = payload_for(contact) { described_class.call(user: user) }
+
+      expect(payload['Books']).to contain_exactly(
+        { 'name' => 'Biology', 'students' => 40, 'howUsing' => AdoptionReport::HOW_USING_OPTIONS.first,
+          'language' => 'English', 'baseYear' => 2026 },
+        { 'name' => 'Calculus Volume 1', 'students' => nil, 'howUsing' => AdoptionReport::HOW_USING_OPTIONS.last,
+          'language' => 'English', 'baseYear' => 2025 }
+      )
+    end
+
+    it 'moves a [Spanish] suffix into language' do
+      create_report(user, book_title: 'Biología 2e', salesforce_book_name: 'Biology [Spanish]')
+
+      payload = payload_for(contact) { described_class.call(user: user) }
+
+      expect(payload['Books'].first).to include('name' => 'Biology', 'language' => 'Spanish')
+    end
+
+    it 'tags the origin with the surface the report was made on' do
+      create_report(user, surface: 'impact')
+      sent = nil
+      allow(contact).to receive(:tracking_parameters=) { |value| sent = value }
 
       described_class.call(user: user)
 
-      expect(report1.reload.salesforce_pushed_at).to be_present
-      expect(report2.reload.salesforce_pushed_at).to be_present
-
-      expect(stub.with { |req|
-        body = Rack::Utils.parse_nested_query(req.body)
-
-        expect(body['first_name']).to eq('Ada')
-        expect(body['last_name']).to eq('Lovelace')
-        expect(body['email']).to eq(user.email_addresses.verified.first.value)
-        expect(body['school']).to eq(user.most_accurate_school_name)
-        expect(body['salesforce_contact_id']).to eq('003ABC')
-        expect(body['role']).to eq('Instructor')
-        expect(body['position']).to eq('Faculty')
-        expect(body['lead_source']).to eq('Adoption Form')
-        expect(body['process_adoptions']).to eq('true')
-        expect(body['subject_interest']).to eq('Intro to Sociology; College Physics')
-
-        adoption_json = JSON.parse(body['adoption_json'])
-        expect(adoption_json['Books']).to contain_exactly(
-          {
-            'name' => 'Intro to Sociology',
-            'students' => 42,
-            'howUsing' => 'As the core textbook for my course',
-            'language' => 'English',
-            'baseYear' => 2026
-          },
-          {
-            'name' => 'College Physics',
-            'students' => nil,
-            'howUsing' => 'As the core textbook for my course',
-            'language' => 'English',
-            'baseYear' => 2025
-          }
-        )
-
-        true
-      }).to have_been_made.once
+      expect(sent).to eq("#{Rails.application.secrets.openstax_url}/accounts/i/account/impact?related=MyOpenStax")
     end
 
-    it 'maps each role to its Salesforce position' do
-      {
-        'instructor' => 'Faculty',
-        'administrator' => 'Administrator',
-        'librarian' => 'Librarian',
-        'designer' => 'Instructional Designer',
-        'adjunct' => 'Adjunct Faculty',
-        'homeschool' => 'Home School Teacher',
-        'student' => 'Other',
-        'researcher' => 'Other'
-      }.each do |role, expected_position|
-        user = create_reporting_user(role: role)
-        create_report(user)
-        email = user.email_addresses.verified.first.value
+    context 'when a previous payload is still pending' do
+      let(:pending_flag) { true }
 
-        # Matched on email + position (rather than asserting inside a `.with`
-        # block, or on position alone) so each iteration's stub only matches
-        # its own request — 'student' and 'researcher' both map to 'Other',
-        # so position alone isn't unique across iterations.
-        stub_request(:post, posting_url)
-          .with(body: hash_including('position' => expected_position, 'email' => email))
-          .to_return(status: 200)
+      it 'skips the user and leaves the reports unpushed' do
+        report = create_report(user)
+        expect(contact).not_to receive(:save)
 
         described_class.call(user: user)
 
-        expect(WebMock).to have_requested(:post, posting_url)
-          .with(body: hash_including('position' => expected_position, 'email' => email)).once
+        expect(report.reload.salesforce_pushed_at).to be_nil
       end
     end
 
-    it 'leaves reports unpushed when the response is not 2xx' do
-      user = create_reporting_user
+    it 'leaves reports unpushed and reports to Sentry with only the user id when the save fails' do
       report = create_report(user)
-
-      stub_request(:post, posting_url).to_return(status: 500)
+      allow(contact).to receive(:save).and_return(false)
 
       described_class.call(user: user)
 
       expect(report.reload.salesforce_pushed_at).to be_nil
+      expect(Sentry).to have_received(:capture_message)
+        .with(anything, hash_including(extra: { user_id: user.id, target: 'Contact' }))
     end
 
-    it 'excludes not_using reports from the push' do
-      user = create_reporting_user
-      using_report = create_report(user, book_title: 'Using Book', status: 'using')
-      not_using_report = create_report(user, book_title: 'Not Using Book', status: 'not_using')
-
-      stub = stub_request(:post, posting_url).to_return(status: 200)
+    it 'does not send check-in reports or reports without a Salesforce book name' do
+      checkin = create_report(user, source: 'check_in', surface: 'check_in')
+      legacy = create_report(user, book_title: 'Old Title', salesforce_book_name: nil, how_using: nil, surface: nil)
+      expect(contact).not_to receive(:save)
 
       described_class.call(user: user)
 
-      expect(using_report.reload.salesforce_pushed_at).to be_present
-      expect(not_using_report.reload.salesforce_pushed_at).to be_nil
-      expect(stub.with { |req|
-        body = Rack::Utils.parse_nested_query(req.body)
-        expect(body['subject_interest']).to eq('Using Book')
-        true
-      }).to have_been_made.once
+      expect([checkin, legacy].map { |r| r.reload.salesforce_pushed_at }).to all(be_nil)
     end
+  end
 
-    it 'skips users with no verified email, leaving their reports unpushed' do
-      user = FactoryBot.create(:user, :terms_agreed, role: 'instructor')
+  context 'with only a Lead' do
+    let(:user) { create_user(salesforce_lead_id: '00QA') }
+    let(:lead) { remote_record(id: '00QA', is_converted: false, converted_contact_id: nil) }
+
+    it 'writes the Lead without a pending check' do
       report = create_report(user)
+      allow(lead_remote).to receive(:find).with('00QA').and_return(lead)
+      expect(sf_client).not_to receive(:query)
+      expect(lead).to receive(:save).and_return(true)
 
       described_class.call(user: user)
 
-      expect(WebMock).not_to have_requested(:post, posting_url)
-      expect(report.reload.salesforce_pushed_at).to be_nil
+      expect(report.reload.salesforce_pushed_at).to be_present
     end
 
-    it "isolates one user's failure from the rest of a sweep" do
-      failing_user = create_reporting_user
-      failing_report = create_report(failing_user, book_title: 'Failing Book')
-      failing_email = failing_user.email_addresses.verified.first.value
+    it 'follows a converted Lead to its Contact' do
+      report = create_report(user)
+      converted = remote_record(id: '00QA', is_converted: true, converted_contact_id: '003B')
+      contact = remote_record(id: '003B')
+      allow(lead_remote).to receive(:find).with('00QA').and_return(converted)
+      allow(contact_remote).to receive(:find).with('003B').and_return(contact)
+      expect(converted).not_to receive(:save)
+      expect(contact).to receive(:save).and_return(true)
 
-      ok_user = create_reporting_user
-      ok_report = create_report(ok_user, book_title: 'OK Book')
-      ok_email = ok_user.email_addresses.verified.first.value
+      described_class.call(user: user)
 
-      stub_request(:post, posting_url)
-        .with { |req| Rack::Utils.parse_nested_query(req.body)['email'] == failing_email }
-        .to_raise(Faraday::ConnectionFailed.new('boom'))
+      expect(user.reload.salesforce_contact_id).to eq('003B')
+      expect(report.reload.salesforce_pushed_at).to be_present
+    end
+  end
 
-      stub_request(:post, posting_url)
-        .with { |req| Rack::Utils.parse_nested_query(req.body)['email'] == ok_email }
-        .to_return(status: 200)
+  context 'with no Salesforce record' do
+    let(:user) { create_user }
+
+    it 'creates the lead first, then writes it' do
+      report = create_report(user)
+      lead = remote_record(id: '00QNEW', is_converted: false, converted_contact_id: nil)
+      allow(Newflow::CreateOrUpdateSalesforceLead).to receive(:call) { |user:| user.update!(salesforce_lead_id: '00QNEW') }
+      allow(lead_remote).to receive(:find).with('00QNEW').and_return(lead)
+      expect(lead).to receive(:save).and_return(true)
+
+      described_class.call(user: user)
+
+      expect(Newflow::CreateOrUpdateSalesforceLead).to have_received(:call).with(user: user)
+      expect(report.reload.salesforce_pushed_at).to be_present
+    end
+
+    it 'leaves the reports unpushed when no lead could be created' do
+      report = create_report(user)
+      allow(Newflow::CreateOrUpdateSalesforceLead).to receive(:call)
+
+      described_class.call(user: user)
+
+      expect(report.reload.salesforce_pushed_at).to be_nil
+      expect(Sentry).to have_received(:capture_message).with(anything, hash_including(extra: { user_id: user.id }))
+    end
+  end
+
+  describe 'sweeping all users' do
+    it "keeps going when one user's push raises" do
+      bad = create_user(salesforce_contact_id: '003BAD')
+      good = create_user(salesforce_contact_id: '003GOOD')
+      bad_report = create_report(bad)
+      good_report = create_report(good)
+      allow(contact_remote).to receive(:find).with('003BAD').and_raise(StandardError, 'boom')
+      allow(contact_remote).to receive(:find).with('003GOOD').and_return(remote_record(id: '003GOOD'))
 
       described_class.call_for_all_unpushed
 
-      expect(failing_report.reload.salesforce_pushed_at).to be_nil
-      expect(ok_report.reload.salesforce_pushed_at).to be_present
+      expect(bad_report.reload.salesforce_pushed_at).to be_nil
+      expect(good_report.reload.salesforce_pushed_at).to be_present
+      expect(Sentry).to have_received(:capture_exception).with(anything, extra: { user_id: bad.id })
     end
   end
 end

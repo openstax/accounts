@@ -94,14 +94,6 @@ module Settings
         Settings::Db.store.push_adoption_reports_enabled = bool
       end
 
-      def adoption_form_posting_url
-        Settings::Db.store.adoption_form_posting_url
-      end
-
-      def adoption_form_posting_url=(url)
-        Settings::Db.store.adoption_form_posting_url = url
-      end
-
     end
 
   end

@@ -1,8 +1,8 @@
-# Pushes a user's locally-collected AdoptionReports (from the "Report an
-# adoption" modal / annual check-in) to Salesforce by reusing the same public
-# adoption-form handler os-webview posts to. Salesforce-side automation keyed
-# on process_adoptions=true turns the payload into Opportunity/Adoption__c
-# records, so from here we just have to speak the form's language.
+# Pushes a user's "Report an adoption" submissions to Salesforce by writing
+# AdoptionsJSON__c and Tracking_Parameters__c on their Contact (or Lead, while
+# they are pending verification). Salesforce picks the payload up about five
+# minutes later and creates the Opportunity and Adoption__c; Salesforce::AdoptionSync
+# imports that adoption nightly, so it reaches the Impact tab the next day.
 #
 # Call with a specific user to push just their reports (e.g. right after they
 # save one), or with no user to sweep every user who has unpushed reports
@@ -11,28 +11,12 @@ class PushAdoptionReports
 
   lev_routine transaction: :no_transaction, active_job_enqueue_options: { queue: :salesforce }
 
-  # Faraday POST is made per-user, outside of any DB transaction, so a slow or
-  # failing request for one user can't hold a transaction open or roll back
-  # another user's already-recorded push.
-  HTTP_TIMEOUT = 10 # seconds, for both open and read
+  CONTACT_TARGET = 'Contact'.freeze
+  LEAD_TARGET = 'Lead'.freeze
+  DEFAULT_SURFACE = 'books'.freeze
+  BRACKETED_SUFFIX = /\s*\[([^\]]*)\]\s*\z/
 
-  # lead_source is a fixed string for now; the DATA team may later want a
-  # dedicated value (e.g. "My OpenStax") to distinguish reports pushed from
-  # in-product forms from the public openstax.org adoption form.
-  LEAD_SOURCE = 'Adoption Form'
-
-  DEFAULT_HOW_USING = 'As the core textbook for my course'
-
-  POSITION_BY_ROLE = {
-    'instructor' => 'Faculty',
-    'administrator' => 'Administrator',
-    'librarian' => 'Librarian',
-    'designer' => 'Instructional Designer',
-    'adjunct' => 'Adjunct Faculty',
-    'homeschool' => 'Home School Teacher'
-  }.freeze
-
-  private_constant(:HTTP_TIMEOUT, :LEAD_SOURCE, :DEFAULT_HOW_USING, :POSITION_BY_ROLE)
+  private_constant(:CONTACT_TARGET, :LEAD_TARGET, :DEFAULT_SURFACE, :BRACKETED_SUFFIX)
 
   def self.call_for_all_unpushed
     call(user: nil)
@@ -40,127 +24,113 @@ class PushAdoptionReports
 
   protected #################
 
-  # user: nil sweeps every user with unpushed reports; a specific user pushes
-  # only that user's unpushed reports.
   def exec(user: nil)
     status.set_job_name(self.class.name)
     status.set_job_args(user: user&.to_global_id.to_s)
 
-    unless enabled?
-      log(:info, 'disabled or unconfigured (push_adoption_reports_enabled / adoption_form_posting_url); skipping')
+    unless Settings::Salesforce.push_adoption_reports_enabled
+      log(:info, 'disabled (push_adoption_reports_enabled); skipping')
       outputs.pushed_user_count = 0
       return
     end
 
     users = user ? [user] : users_with_unpushed_reports
-    pushed_user_count = 0
-
-    users.each do |a_user|
-      pushed_user_count += 1 if push_for_user(a_user)
-    end
-
-    outputs.pushed_user_count = pushed_user_count
+    outputs.pushed_user_count = users.count { |a_user| push_for_user(a_user) }
   end
 
   private #################
 
-  def enabled?
-    Settings::Salesforce.push_adoption_reports_enabled &&
-      Settings::Salesforce.adoption_form_posting_url.present?
-  end
-
   def users_with_unpushed_reports
-    # AdoptionReports with status 'not_using' are deliberately excluded here
-    # (and below, via the .using scope) — the form handler has no vocabulary
-    # for removals, so those stay local only.
-    User.where(id: AdoptionReport.unpushed.using.select(:user_id).distinct)
+    User.where(id: AdoptionReport.pushable.select(:user_id).distinct)
   end
 
-  # One POST per user, batching all of that user's unpushed reports into a
-  # single adoption_json payload, matching how the web form itself batches
-  # multiple books/years in one submission. Any failure for this user
-  # (network error, non-2xx, etc.) is caught and logged so it doesn't stop
-  # the rest of a sweep; the reports are simply left unpushed for next time.
+  # One payload per user, holding all of that user's unpushed reports. Any
+  # failure is reported and swallowed so it can't stop a sweep; the reports
+  # stay unpushed for the next run.
   def push_for_user(user)
-    reports = user.adoption_reports.unpushed.using.to_a
+    reports = user.adoption_reports.pushable.order(:id).to_a
     return false if reports.empty?
 
-    email = verified_email_for(user)
-    name_present = user.full_name.present?
+    record, target = resolve_target(user)
+    return false unless record
 
-    if email.blank? || !name_present
-      log(:warn, "skipping user_id=#{user.id}: missing verified email or name (#{reports.size} unpushed reports)")
+    if target == CONTACT_TARGET && adoption_json_pending?(record.id)
+      log(:info, "skipping user_id=#{user.id}: previous payload still pending in Salesforce")
       return false
     end
 
-    response = post_reports(user: user, email: email, reports: reports)
+    record.adoption_json = adoption_json_for(reports)
+    record.tracking_parameters = tracking_parameters_for(reports)
 
-    if response && (200..299).cover?(response.status)
-      mark_pushed(reports)
-      true
-    else
-      log(:warn, "non-2xx response for user_id=#{user.id} status=#{response&.status}")
-      false
+    unless record.save
+      Sentry.capture_message('PushAdoptionReports: Salesforce save failed',
+                             level: :warning, extra: { user_id: user.id, target: target })
+      return false
     end
-  rescue Faraday::Error => e
-    log(:warn, "Faraday error pushing adoption reports for user_id=#{user.id}: #{e.class}")
-    Sentry.capture_exception(e, extra: { user_id: user.id })
-    false
-  rescue StandardError => e
-    log(:warn, "unexpected error pushing adoption reports for user_id=#{user.id}: #{e.class}")
-    Sentry.capture_exception(e, extra: { user_id: user.id })
-    false
-  end
 
-  def verified_email_for(user)
-    user.email_addresses.verified.first&.value
-  end
-
-  def mark_pushed(reports)
     AdoptionReport.where(id: reports.map(&:id)).update_all(salesforce_pushed_at: Time.zone.now)
+    SecurityLog.create!(user: user, event_type: :adoption_reports_pushed_to_salesforce,
+                        event_data: { target: target, report_count: reports.size })
+    true
+  rescue StandardError => e
+    log(:warn, "error pushing adoption reports for user_id=#{user.id}: #{e.class}")
+    Sentry.capture_exception(e, extra: { user_id: user.id })
+    false
   end
 
-  def post_reports(user:, email:, reports:)
-    form = {
-      first_name: user.first_name,
-      last_name: user.last_name,
-      email: email,
-      school: user.most_accurate_school_name,
-      role: 'Instructor',
-      position: position_for(user),
-      lead_source: LEAD_SOURCE,
-      process_adoptions: 'true',
-      subject_interest: reports.map(&:book_title).join('; '),
-      adoption_json: adoption_json_for(reports)
-    }
-    form[:salesforce_contact_id] = user.salesforce_contact_id if user.salesforce_contact_id.present?
+  # Contact first (confirmed instructors always have one), then Lead, then a new
+  # lead through the signup routine. Returns [remote record, target name] or nil.
+  def resolve_target(user, create_lead: true)
+    return [OpenStax::Salesforce::Remote::Contact.find(user.salesforce_contact_id), CONTACT_TARGET] if user.salesforce_contact_id.present?
 
-    connection.post(Settings::Salesforce.adoption_form_posting_url, form)
+    if user.salesforce_lead_id.present?
+      lead = OpenStax::Salesforce::Remote::Lead.find(user.salesforce_lead_id)
+      return [lead, LEAD_TARGET] unless lead.is_converted && lead.converted_contact_id.present?
+
+      user.update!(salesforce_contact_id: lead.converted_contact_id)
+      return resolve_target(user, create_lead: false)
+    end
+
+    return unless create_lead
+
+    Newflow::CreateOrUpdateSalesforceLead.call(user: user)
+    user.reload
+    return resolve_target(user, create_lead: false) if user.salesforce_lead_id.present?
+
+    Sentry.capture_message('PushAdoptionReports: no Salesforce lead could be created',
+                           level: :warning, extra: { user_id: user.id })
+    nil
   end
 
-  def position_for(user)
-    POSITION_BY_ROLE.fetch(user.role.to_s, 'Other')
+  # A second payload arriving while the first is still being processed can be lost.
+  def adoption_json_pending?(contact_id)
+    soql = "SELECT Adoption_JSON_Pending__c FROM Contact WHERE Id = '#{contact_id.to_s.gsub(/['\\]/) { |c| "\\#{c}" }}'"
+    row = OpenStax::Salesforce::Remote::Contact.sfdc_client.query(soql).first
+    ActiveModel::Type::Boolean.new.cast(row && row['Adoption_JSON_Pending__c']) == true
   end
 
   def adoption_json_for(reports)
-    books = reports.map do |report|
-      {
-        name: report.book_title,
-        students: report.students,
-        howUsing: DEFAULT_HOW_USING,
-        language: 'English',
-        baseYear: report.school_year_start
-      }
-    end
-
-    { 'Books' => books }.to_json
+    { 'Books' => reports.map { |report| book_json_for(report) } }.to_json
   end
 
-  def connection
-    @connection ||= Faraday.new(request: { open_timeout: HTTP_TIMEOUT, timeout: HTTP_TIMEOUT }) do |f|
-      f.request :url_encoded
-      f.adapter Faraday.default_adapter
-    end
+  # Salesforce matches name against Book__c, so it is the CMS salesforce_abbreviation.
+  # Spanish editions carry a " [Spanish]" suffix that belongs in language instead.
+  def book_json_for(report)
+    name = report.salesforce_book_name
+    {
+      name: name.sub(BRACKETED_SUFFIX, ''),
+      students: report.students,
+      howUsing: report.how_using || AdoptionReport::HOW_USING_OPTIONS.first,
+      language: name[BRACKETED_SUFFIX, 1].presence || 'English',
+      baseYear: report.school_year_start
+    }
+  end
+
+  # Salesforce's Create_Adoptions flow copies this onto the new Adoption__c, so it
+  # names the page of the most recent report in the payload.
+  def tracking_parameters_for(reports)
+    surface = reports.max_by(&:updated_at).surface.presence || DEFAULT_SURFACE
+    "#{Rails.application.secrets.openstax_url}/accounts/i/account/#{surface}?related=MyOpenStax"
   end
 
   def log(level, message)
