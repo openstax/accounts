@@ -12,6 +12,7 @@ feature 'annual instructor check-in', js: true do
 
   scenario 'an eligible instructor is gated on account pages, confirms, and lands back with a report created' do
     newflow_log_in_user('instructor@openstax.org', 'password')
+    wait_for_successful_log_in
 
     visit(account_overview_path)
     wait_for_animations
@@ -45,6 +46,7 @@ feature 'annual instructor check-in', js: true do
 
   scenario 'an instructor can snooze the check-in and pick up where they left off' do
     newflow_log_in_user('instructor@openstax.org', 'password')
+    wait_for_successful_log_in
 
     visit(account_profile_path)
     wait_for_animations
