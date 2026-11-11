@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe User, '#annual_check_in_due? / #check_in_required?', type: :model do
+describe User, '#annual_check_in_due?', type: :model do
   # Freeze inside a school year (school year "2025 - 26" starts 2025-08-01)
   # so date-math edge cases (school-year start, 1-year-old accounts, the
   # 7-day snooze) are deterministic regardless of when the suite runs.
@@ -107,64 +107,55 @@ describe User, '#annual_check_in_due? / #check_in_required?', type: :model do
     end
 
     it 'is false while snoozed (dismissed within the last 7 days)' do
-      user = instructor(check_in_dismissed_at: 3.days.ago, check_in_dismissal_count: 1)
+      user = instructor(check_in_dismissed_at: 3.days.ago)
       give_adoption_signal!(user)
 
       expect(user.annual_check_in_due?).to be false
     end
 
-    it 'is true again once the snooze window (7 days) has passed' do
-      user = instructor(check_in_dismissed_at: 10.days.ago, check_in_dismissal_count: 1)
+    it 'snoozes again no matter how many times it was dismissed before' do
+      user = instructor(check_in_dismissed_at: 3.days.ago, check_in_dismissal_count: 9)
       give_adoption_signal!(user)
+
+      expect(user.annual_check_in_due?).to be false
+    end
+
+    it 'is false with a current-school-year "using" report (reporting counts as checking in)' do
+      user = instructor
+      AdoptionReport.create!(user: user, book_title: 'Bio 101', school_year: '2025 - 26', source: 'books_modal')
+
+      expect(user.annual_check_in_due?).to be false
+    end
+
+    it 'stays true with only a current-year "not using" report' do
+      user = instructor
+      AdoptionReport.create!(user: user, book_title: 'Bio 101', school_year: '2025 - 26', source: 'check_in',
+                             status: 'not_using')
 
       expect(user.annual_check_in_due?).to be true
     end
-  end
 
-  describe '#effective_check_in_dismissal_count' do
-    it 'is 0 when never dismissed' do
+    it 'is false with a current-year confirmed adoption' do
       user = instructor
-      expect(user.effective_check_in_dismissal_count).to eq 0
+      Adoption.create!(salesforce_id: 'SF2', user: user, school_year: '2025 - 26',
+                       confirmation_type: 'OpenStax Confirmed Adoption', rollover_status: false)
+
+      expect(user.annual_check_in_due?).to be false
     end
 
-    it 'is the stored count when dismissed within the current school year' do
-      user = instructor(check_in_dismissed_at: school_year_start + 1.day, check_in_dismissal_count: 2)
-      expect(user.effective_check_in_dismissal_count).to eq 2
+    it 'stays true with only a last-year adoption' do
+      user = instructor
+      Adoption.create!(salesforce_id: 'SF3', user: user, school_year: '2024 - 25',
+                       confirmation_type: 'OpenStax Confirmed Adoption', rollover_status: false)
+
+      expect(user.annual_check_in_due?).to be true
     end
 
-    it 'resets to 0 when the last dismissal predates the current school year' do
-      user = instructor(check_in_dismissed_at: school_year_start - 1.day, check_in_dismissal_count: 2)
-      expect(user.effective_check_in_dismissal_count).to eq 0
-    end
-  end
-
-  describe '#check_in_required?' do
-    it 'is false below the dismissal limit' do
-      user = instructor(check_in_dismissed_at: 10.days.ago, check_in_dismissal_count: 1)
+    it 'is true again once the snooze window (7 days) has passed' do
+      user = instructor(check_in_dismissed_at: 10.days.ago)
       give_adoption_signal!(user)
 
-      expect(user.check_in_required?).to be false
-    end
-
-    it 'is true at the dismissal limit, once the snooze window has passed' do
-      user = instructor(check_in_dismissed_at: 10.days.ago, check_in_dismissal_count: 2)
-      give_adoption_signal!(user)
-
-      expect(user.check_in_required?).to be true
-    end
-
-    it 'is false at the dismissal limit while still within the snooze window' do
-      user = instructor(check_in_dismissed_at: 3.days.ago, check_in_dismissal_count: 2)
-      give_adoption_signal!(user)
-
-      expect(user.check_in_required?).to be false
-    end
-
-    it 'is false when the dismissal count reset for a new school year' do
-      user = instructor(check_in_dismissed_at: school_year_start - 1.day, check_in_dismissal_count: 2)
-      give_adoption_signal!(user)
-
-      expect(user.check_in_required?).to be false
+      expect(user.annual_check_in_due?).to be true
     end
   end
 

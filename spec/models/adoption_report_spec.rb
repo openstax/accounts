@@ -132,6 +132,28 @@ RSpec.describe AdoptionReport, type: :model do
     end
   end
 
+  describe '.pushable' do
+    def create_report!(overrides = {})
+      build_report({ salesforce_book_name: 'Bio', how_using: described_class::HOW_USING_OPTIONS.first }.merge(overrides)).tap(&:save!)
+    end
+
+    it 'includes complete modal and check-in rows' do
+      modal = create_report!(book_title: 'A', salesforce_book_name: 'A')
+      check_in = create_report!(book_title: 'B', salesforce_book_name: 'B', source: 'check_in')
+
+      expect(described_class.pushable).to contain_exactly(modal, check_in)
+    end
+
+    it 'excludes check-in rows missing a book name or a use, not-using rows and pushed rows' do
+      create_report!(book_title: 'A', salesforce_book_name: nil, source: 'check_in')
+      create_report!(book_title: 'B', salesforce_book_name: 'B', source: 'check_in', how_using: nil)
+      create_report!(book_title: 'C', salesforce_book_name: 'C', source: 'check_in', status: 'not_using')
+      create_report!(book_title: 'D', salesforce_book_name: 'D', source: 'check_in', salesforce_pushed_at: Time.current)
+
+      expect(described_class.pushable).to be_empty
+    end
+  end
+
   describe '#school_year_start' do
     it 'parses the leading 4-digit year out of a "YYYY - YY" label' do
       report = build_report(school_year: '2026 - 27')

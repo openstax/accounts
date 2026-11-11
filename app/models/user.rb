@@ -578,24 +578,18 @@ class User < ApplicationRecord
   ######################
 
   CHECK_IN_SNOOZE_PERIOD = 7.days
-  CHECK_IN_DISMISSAL_LIMIT = 2
 
-  # Accounts-only interstitial: is this instructor-like user due for their
-  # annual "still accurate?" check-in. Never applies to students/unknown-role
-  # users, brand-new accounts, or users with no adoption signal to confirm.
+  # Whether the overview shows the inline annual check-in card. Never blocks
+  # anything: it only decides if the card renders.
   def annual_check_in_due?
     return false unless check_in_eligible_role?
     return false unless created_at.present? && created_at < 1.year.ago
     return false unless has_check_in_adoption_signal?
     return false if check_in_completed_at.present? && check_in_completed_at >= annual_check_in_school_year_start
     return false if check_in_snoozed?
+    return false if reported_using_this_school_year?
 
     true
-  end
-
-  # Design: dismissable twice, then the check-in becomes a hard gate.
-  def check_in_required?
-    annual_check_in_due? && effective_check_in_dismissal_count >= CHECK_IN_DISMISSAL_LIMIT
   end
 
   def check_in_eligible_role?
@@ -606,21 +600,21 @@ class User < ApplicationRecord
     user_books.exists? || adoptions.exists? || adoption_reports.exists?
   end
 
-  # Dismissal counts (and the ability to snooze again) reset when a new
-  # school year starts, so a dismissal from a prior year never counts
-  # toward the current year's 2-dismissal limit.
-  def effective_check_in_dismissal_count
-    return 0 if check_in_dismissed_at.blank? || check_in_dismissed_at < annual_check_in_school_year_start
-
-    check_in_dismissal_count
-  end
-
   def check_in_snoozed?
     check_in_dismissed_at.present? && check_in_dismissed_at >= CHECK_IN_SNOOZE_PERIOD.ago
   end
 
   def annual_check_in_school_year_start
     Time.zone.local(SchoolYear.base_year_for(Time.zone.today), 8, 1)
+  end
+
+  # Reporting through the adoption modal counts as checking in.
+  def reported_using_this_school_year?
+    year = SchoolYear.current
+    return true if adoption_reports.using.exists?(school_year: year)
+
+    adoptions.where(confirmation_type: 'OpenStax Confirmed Adoption', rollover_status: false)
+             .any? { |adoption| (adoption.school_year.presence || adoption.school_year_label) == year }
   end
 
   # Consecutive prior school years with at least one reported adoption

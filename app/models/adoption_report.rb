@@ -27,8 +27,13 @@ class AdoptionReport < ApplicationRecord
 
   scope :unpushed, -> { where(salesforce_pushed_at: nil) }
   scope :using, -> { where(status: 'using') }
-  # Check-in rows stay local: Salesforce turns a pushed report into a confirmed adoption with no review.
-  scope :pushable, -> { unpushed.using.where(source: 'books_modal').where.not(salesforce_book_name: nil) }
+  # Salesforce turns a pushed report into a confirmed adoption with no review, so only rows with an
+  # explicit per-book answer go: the modal's, or a check-in "using" answer that has a use chosen.
+  scope :pushable, lambda {
+    unpushed.using.where.not(salesforce_book_name: nil).where(
+      "source = 'books_modal' OR (source = 'check_in' AND how_using IS NOT NULL)"
+    )
+  }
 
   def self.current_school_year_label
     today = Time.zone.today

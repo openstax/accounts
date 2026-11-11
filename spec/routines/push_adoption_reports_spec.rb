@@ -133,14 +133,24 @@ RSpec.describe PushAdoptionReports do
         .with(anything, hash_including(extra: { user_id: user.id, target: 'Contact' }))
     end
 
-    it 'does not send check-in reports or reports without a Salesforce book name' do
+    it 'sends a complete check-in report' do
       checkin = create_report(user, source: 'check_in', surface: 'check_in')
+
+      described_class.call(user: user)
+
+      expect(checkin.reload.salesforce_pushed_at).to be_present
+    end
+
+    it 'does not send incomplete check-in reports, not-using reports or reports without a Salesforce book name' do
+      no_use = create_report(user, source: 'check_in', surface: 'check_in', how_using: nil)
+      not_using = create_report(user, book_title: 'Chem', salesforce_book_name: 'Chem', status: 'not_using',
+                                      source: 'check_in', surface: 'check_in')
       legacy = create_report(user, book_title: 'Old Title', salesforce_book_name: nil, how_using: nil, surface: nil)
       expect(contact).not_to receive(:save)
 
       described_class.call(user: user)
 
-      expect([checkin, legacy].map { |r| r.reload.salesforce_pushed_at }).to all(be_nil)
+      expect([no_use, not_using, legacy].map { |r| r.reload.salesforce_pushed_at }).to all(be_nil)
     end
   end
 
