@@ -381,6 +381,21 @@ class User < ApplicationRecord
       sheerid_expired? || sheerid_error?
   end
 
+  TEACHING_ROLES = %w[instructor adjunct student self_learner].freeze
+
+  # Finished the "I support instruction" signup. There is no stored staff flag:
+  # staff keep faculty_status at incomplete_signup, while an educator who picked
+  # administrator or other at step 4 moves into a SheerID or faculty state.
+  def completed_non_teaching_profile?
+    is_profile_complete? &&
+      TEACHING_ROLES.exclude?(role) &&
+      (incomplete_signup? || no_faculty_info?)
+  end
+
+  def staff_role_label
+    other_role_name.presence || role.to_s.humanize
+  end
+
   # Got a SheerID outcome (any) but never finished step 4.
   def needs_profile_nudge?
     !student? && is_newflow && !is_profile_complete &&

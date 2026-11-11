@@ -621,4 +621,31 @@ describe User, type: :model do
       end
     end
   end
+  describe '#completed_non_teaching_profile?' do
+    def build_user(**attrs)
+      FactoryBot.build(:user, is_profile_complete: true, faculty_status: :incomplete_signup, **attrs)
+    end
+
+    it 'is true for a staff role with a finished profile and no verification' do
+      expect(build_user(role: :librarian)).to be_completed_non_teaching_profile
+      expect(build_user(role: :other, faculty_status: :no_faculty_info)).to be_completed_non_teaching_profile
+    end
+
+    it 'is false when the profile is unfinished' do
+      expect(build_user(role: :librarian, is_profile_complete: false)).not_to be_completed_non_teaching_profile
+    end
+
+    it 'is false for teaching roles and learners' do
+      %i[instructor adjunct student self_learner].each do |role|
+        expect(build_user(role: role)).not_to be_completed_non_teaching_profile
+      end
+    end
+
+    it 'is false once SheerID or faculty verification has moved the status' do
+      %i[pending_sheerid rejected_by_sheerid sheerid_expired sheerid_error pending_faculty
+         confirmed_faculty rejected_faculty].each do |status|
+        expect(build_user(role: :administrator, faculty_status: status)).not_to be_completed_non_teaching_profile
+      end
+    end
+  end
 end
