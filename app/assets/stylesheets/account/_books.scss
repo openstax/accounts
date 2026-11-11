@@ -438,7 +438,7 @@
 
 .book-status__choices {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 6px;
 }
 
@@ -454,8 +454,8 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  width: 100%;
   min-height: 36px;
-  min-width: 24px;
   margin: 0;
   padding: 4px 10px;
   line-height: 1.3;
