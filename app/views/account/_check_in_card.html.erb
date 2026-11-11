@@ -1,10 +1,10 @@
 <% streak_lead, streak_rest = check_in.streak_copy %>
-<section class="account-callout account-callout--check-in" id="annual-check-in" aria-labelledby="annual-check-in-heading">
-  <p class="account-check-in__eyebrow"><%= t('annual_check_in.eyebrow') %></p>
+<section class="account-callout account-callout--check-in" data-check-in-term="<%= check_in.term %>" id="annual-check-in" aria-labelledby="annual-check-in-heading">
+  <p class="account-check-in__eyebrow"><%= check_in.copy(:eyebrow) %></p>
   <h2 class="account-check-in__heading" id="annual-check-in-heading">
-    <%= t('annual_check_in.heading', school_year: check_in.school_year_label) %>
+    <%= check_in.copy(:heading) %>
   </h2>
-  <p class="account-check-in__body"><%= t('annual_check_in.body') %> <%= t('annual_check_in.reason') %></p>
+  <p class="account-check-in__body"><%= check_in.copy(:body) %> <%= check_in.copy(:reason) %></p>
 
   <% if check_in.streak_years.positive? %>
     <div class="account-check-in__streak">
@@ -42,12 +42,16 @@
 
         <div class="account-check-in__details">
           <div class="account-check-in__field">
-            <label for="check-in-<%= row.key %>-students"><%= t('annual_check_in.students_label') %></label>
+            <label for="check-in-<%= row.key %>-students"><%= check_in.copy(:students_label) %></label>
+            <% if check_in.spring? %>
+              <span class="account-check-in__hint" id="check-in-<%= row.key %>-students-hint"><%= check_in.copy(:students_hint) %></span>
+            <% end %>
             <input type="number"
                    min="0"
                    inputmode="numeric"
                    id="check-in-<%= row.key %>-students"
                    name="rows[<%= row.key %>][students]"
+                   <%= %(aria-describedby="check-in-#{row.key}-students-hint").html_safe if check_in.spring? %>
                    value="<%= row.students %>">
           </div>
           <div class="account-check-in__field account-check-in__field--grow">

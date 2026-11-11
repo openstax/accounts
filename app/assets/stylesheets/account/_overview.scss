@@ -642,6 +642,12 @@
   font-weight: 700;
 }
 
+.account-check-in__hint {
+  color: var(--os-text-helper);
+  font-size: 14px;
+  line-height: 20px;
+}
+
 .account-check-in__field input[type="number"],
 .account-check-in__field select {
   @include os-field(40px);
