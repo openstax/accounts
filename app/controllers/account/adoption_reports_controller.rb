@@ -48,6 +48,7 @@ module Account
                                status: answer, source: 'books_status', surface: 'books', book: book)
 
       if report.save
+        PushBookInterest.perform_later(user: current_user) if answer == 'considering'
         redirect_to account_books_path, notice: t('book_status.saved', school_year: SchoolYear.current)
       else
         redirect_to account_books_path, alert: t('book_status.failed')

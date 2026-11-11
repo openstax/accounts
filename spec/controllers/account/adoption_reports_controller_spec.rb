@@ -226,6 +226,24 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
       end
     end
 
+    it 'enqueues the book interest push for a considering answer' do
+      expect(PushBookInterest).to receive(:perform_later).with(user: user)
+
+      post :book_status, params: { id: saved_book.id, status: 'considering' }
+    end
+
+    it 'does not enqueue the book interest push for just looking' do
+      expect(PushBookInterest).not_to receive(:perform_later)
+
+      post :book_status, params: { id: saved_book.id, status: 'browsing' }
+    end
+
+    it 'does not enqueue the book interest push when the answer is refused' do
+      expect(PushBookInterest).not_to receive(:perform_later)
+
+      post :book_status, params: { id: saved_book.id, status: 'using' }
+    end
+
     it 'changes an earlier answer on the same row' do
       post :book_status, params: { id: saved_book.id, status: 'considering' }
 

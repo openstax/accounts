@@ -30,6 +30,10 @@ namespace :cron do
       PushAdoptionReports.call_for_all_unpushed
     end
 
+    cron_step('PushBookInterest.call_for_all_unpushed') do
+      PushBookInterest.call_for_all_unpushed
+    end
+
     Rails.logger.debug 'Finished daily cron'
   end
 end
