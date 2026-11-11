@@ -4,7 +4,7 @@
   <h2 class="account-check-in__heading" id="annual-check-in-heading">
     <%= t('annual_check_in.heading', school_year: check_in.school_year_label) %>
   </h2>
-  <p class="account-check-in__body"><%= t('annual_check_in.body') %></p>
+  <p class="account-check-in__body"><%= t('annual_check_in.body') %> <%= t('annual_check_in.reason') %></p>
 
   <% if check_in.streak_years.positive? %>
     <div class="account-check-in__streak">
@@ -18,6 +18,8 @@
         <strong><%= streak_lead %></strong> <%= streak_rest %>
       </p>
     </div>
+  <% elsif check_in.grace_copy %>
+    <p class="account-check-in__grace"><%= check_in.grace_copy %></p>
   <% end %>
 
   <%= form_with url: account_check_in_confirm_path, method: :post, local: true, id: 'annual-check-in-form' do %>

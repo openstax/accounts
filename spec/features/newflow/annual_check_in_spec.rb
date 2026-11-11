@@ -43,7 +43,7 @@ feature 'annual instructor check-in', js: true do
       click_button('Confirm')
     end
 
-    expect(page).to have_content(I18n.t('annual_check_in.confirmed_flash'))
+    expect(page).to have_content('Thank you. You counted 1 book and 75 students')
     expect(page).to have_current_path(account_overview_path)
     expect(page).to have_no_css('#annual-check-in')
 
