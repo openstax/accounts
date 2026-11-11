@@ -385,3 +385,36 @@
     animation-duration: 0.01ms;
   }
 }
+
+.account-books__report-action {
+  @include set-font(helper-label);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--os-link);
+  font-weight: 700;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+  border-radius: 2px;
+
+  &:hover {
+    color: var(--os-link-hover);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+}
+
+.account-books__save-nudge-action {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--os-link);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}

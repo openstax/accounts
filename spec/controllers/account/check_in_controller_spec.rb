@@ -59,7 +59,27 @@ RSpec.describe Account::CheckInController, type: :controller do
       )
       expect(user.reload.check_in_completed_at).to be_present
       expect(response).to redirect_to(account_overview_path)
+      expect(flash[:notice]).to eq(
+        "Thank you. You counted 1 book and 42 students for #{current_year}. " \
+        'They will show in your impact once we confirm them, usually by tomorrow.'
+      )
+    end
+
+    it 'keeps the short thanks when every answer is not using' do
+      post :confirm, params: { rows: answer('College Physics', status: 'not_using') }
+
       expect(flash[:notice]).to eq(I18n.t('annual_check_in.confirmed_flash'))
+    end
+
+    it 'counts books and students across rows, and drops the student count when none was given' do
+      rows = answer('Introduction to Sociology 3e', status: 'using', students: '42', how_using: how_using)
+                .merge(answer('College Physics', status: 'using', students: '8', how_using: how_using))
+      post :confirm, params: { rows: rows }
+      expect(flash[:notice]).to start_with('Thank you. You counted 2 books and 50 students for')
+
+      AdoptionReport.delete_all
+      post :confirm, params: { rows: answer('College Physics', status: 'using', students: '', how_using: how_using) }
+      expect(flash[:notice]).to start_with("Thank you. You counted 1 book for #{current_year}.")
     end
 
     it 'creates nothing for unanswered rows' do

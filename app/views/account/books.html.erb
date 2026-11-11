@@ -53,6 +53,15 @@
                         Reported for <%= report.school_year %>
                       </span>
                     <% end %>
+                    <% abbreviation = @report_abbreviation_by_title[book.title] %>
+                    <% if abbreviation.present? && !@adoption_reports_by_title[book.title] %>
+                      <button type="button"
+                              class="account-books__report-action"
+                              data-report-adoption-trigger="true"
+                              data-report-adoption-book="<%= abbreviation %>">
+                        <%= t('books_report_nudge.action') %>
+                      </button>
+                    <% end %>
                   </div>
                   <div class="account-books__saved-actions">
                     <% if book_link.present? %>

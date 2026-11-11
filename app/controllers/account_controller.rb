@@ -28,6 +28,7 @@ class AccountController < Newflow::BaseController
       @show_profile_nudge_banner = show_profile_nudge_banner?
       check_in = AnnualCheckIn.new(current_user) if current_user.annual_check_in_due?
       @annual_check_in = check_in if check_in&.rows&.any?
+      @overview_impact = OverviewImpact.new(current_user)
 
       render_account_page :overview, title: 'Account overview'
     end
@@ -64,6 +65,13 @@ class AccountController < Newflow::BaseController
                                               .using
                                               .where(school_year: SchoolYear.current)
                                               .index_by(&:book_title)
+
+    @can_report_adoptions = !current_user.student? && !current_user.self_learner?
+    @report_abbreviation_by_title = if @can_report_adoptions
+                                      AdoptionBookCatalog.books.to_h { |book| [book.title, book.salesforce_abbreviation] }
+                                    else
+                                      {}
+                                    end
 
     render_account_page :books,
                         title: 'My OpenStax Books'

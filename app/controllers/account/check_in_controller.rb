@@ -30,9 +30,10 @@ module Account
         return
       end
 
-      PushAdoptionReports.perform_later(user: current_user) if saved.include?('using')
+      using = saved.select { |report| report.status == 'using' }
+      PushAdoptionReports.perform_later(user: current_user) if using.any?
 
-      redirect_to account_overview_path, notice: t('annual_check_in.confirmed_flash')
+      redirect_to account_overview_path, notice: confirmed_notice(using)
     end
 
     def dismiss
@@ -43,6 +44,22 @@ module Account
 
     private
 
+    # Integers and fixed strings only: flashes render html_safe.
+    def confirmed_notice(using)
+      return t('annual_check_in.confirmed_flash') if using.empty?
+
+      books = t('annual_check_in.flash_books', count: using.size)
+      students = using.sum { |report| report.students.to_i }
+      school_year = SchoolYear.current
+
+      if students.positive?
+        t('annual_check_in.confirmed_using_flash', books: books, school_year: school_year,
+                                                   students: t('annual_check_in.flash_students', count: students))
+      else
+        t('annual_check_in.confirmed_using_books_only_flash', books: books, school_year: school_year)
+      end
+    end
+
     # Anything that isn't a whole number >= 0 is ignored rather than failing
     # save! (and the whole check-in) on a hand-crafted POST.
     def student_count(raw)
@@ -50,7 +67,7 @@ module Account
       count if count && count >= 0
     end
 
-    # Returns the saved status. An existing row keeps its source: a row made in
+    # Returns the saved report. An existing row keeps its source: a row made in
     # the report modal must stay pushable, and a check-in must not relabel it.
     def save_report(row, status, answer)
       scope = current_user.adoption_reports.where(school_year: SchoolYear.current)
@@ -82,7 +99,7 @@ module Account
       end
 
       report.save!
-      status
+      report
     end
   end
 end

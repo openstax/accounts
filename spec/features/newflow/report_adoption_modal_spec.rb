@@ -19,7 +19,7 @@ feature 'report an adoption modal', js: true do
   end
 
   def open_modal
-    find('[data-report-adoption-trigger]').click
+    first('[data-report-adoption-trigger]', minimum: 1).click
     expect(page).to have_css('#reportAdoptionModal.in', wait: 5)
     wait_for_animations
   end

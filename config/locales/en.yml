@@ -1087,7 +1087,8 @@ en:
   annual_check_in:
     eyebrow: Annual check-in
     heading: Are you teaching with these books in %{school_year}?
-    body: Tell us which ones you're using this year. It takes a minute, and it helps us show the difference these books make.
+    body: Tell us which ones you're using this year. It takes about a minute.
+    reason: Every report helps fund new free titles.
     using_label: Using this year
     not_using_label: Not using
     students_label: Students
@@ -1098,10 +1099,40 @@ en:
     confirm_button: Confirm
     dismiss_button: Remind me later
     confirmed_flash: Thanks, your check-in is saved.
+    confirmed_using_flash: "Thank you. You counted %{books} and %{students} for %{school_year}. They will show in your impact once we confirm them, usually by tomorrow."
+    confirmed_using_books_only_flash: "Thank you. You counted %{books} for %{school_year}. They will show in your impact once we confirm them, usually by tomorrow."
+    flash_books:
+      one: "%{count} book"
+      other: "%{count} books"
+    flash_students:
+      one: "%{count} student"
+      other: "%{count} students"
     dismissed_flash: No problem. We'll ask again in a week.
     nothing_answered: Choose "Using this year" or "Not using" for at least one book, or select "Remind me later."
     streak:
-      singular_lead: One year reported.
-      singular_rest: Confirm below to make it two.
-      plural_lead: "%{count_word} years reported in a row."
-      plural_rest: "Confirm below to make it %{next_word}."
+      lead: "Year %{year} with OpenStax."
+      rest: Thank you for sticking with us.
+      grace: Missed a year? Pick up where you left off.
+
+  overview_impact:
+    title: Your impact
+    students: Students reached
+    savings: Estimated student savings
+    years: Years with OpenStax
+    books_reported: "%{reported} of your %{saved} saved books reported for %{school_year}"
+    pending_students_books: "+%{students} from %{books}, pending. They count once we confirm them, usually by tomorrow."
+    pending_books: "+%{books}, pending. They count once we confirm them, usually by tomorrow."
+    reason: Reports like yours are how we show funders that free books reach real students.
+    report_button: Report an adoption
+    full_impact: See your full impact
+    empty_title: Your impact starts here
+    empty_body: Report the books you teach with and you will see how many students you reach, and what they save.
+    empty_reason: Your report helps us secure the funding that keeps OpenStax free. It takes about a minute.
+    quick_action_title: Count your students
+    quick_action_body: Add the books you teach with this term. It takes about a minute.
+    quick_action_cta: Count my students →
+
+  books_report_nudge:
+    action: Using this in a course this term? Count your students
+    saved: Teaching with it this term?
+    saved_action: Count your students

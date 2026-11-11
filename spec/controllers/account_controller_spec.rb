@@ -120,6 +120,139 @@ RSpec.describe AccountController, type: :controller do
     end
   end
 
+  describe 'the "Your impact" card on Overview' do
+    before do
+      allow_any_instance_of(FetchBookData).to receive(:books_by_subject).and_return([
+        { subject_name: 'Science', books: [{ title: 'College Physics', salesforce_abbreviation: 'Physics' }] }
+      ])
+    end
+
+    def confirmed_adoption(students:, savings: nil, base_year: SchoolYear.base_year_for(Time.zone.today) - 1)
+      Adoption.create!(salesforce_id: SecureRandom.hex(9), user: user, confirmation_type: 'OpenStax Confirmed Adoption', rollover_status: false,
+                       students: students, savings: savings, base_year: base_year,
+                       school_year: SchoolYear.label_for(base_year))
+    end
+
+    it 'invites a first report when there is nothing yet, with the reason and the trigger' do
+      get :overview
+
+      expect(response.body).to include('id="overview-impact"')
+      expect(response.body).to include('Your impact starts here')
+      expect(response.body).to include('secure the funding that keeps OpenStax free')
+      expect(response.body).to include('data-report-adoption-trigger')
+      expect(response.body).not_to include('account-impact-card__stats')
+    end
+
+    it 'shows lifetime numbers, saved books reported this year, the reason and a link to the Impact tab' do
+      confirmed_adoption(students: 415, savings: 41_500)
+      UserBook.create!(user: user, book: Book.create!(book_uuid: SecureRandom.uuid, title: 'College Physics'))
+      UserBook.create!(user: user, book: Book.create!(book_uuid: SecureRandom.uuid, title: 'Biology 2e'))
+      AdoptionReport.create!(user: user, book_title: 'Biology 2e', status: 'using', source: 'books_modal',
+                             school_year: SchoolYear.current)
+
+      get :overview
+
+      expect(response.body).to include('Students reached')
+      expect(response.body).to include('415')
+      expect(response.body).to include('$41,500')
+      expect(response.body).to include('Years with OpenStax')
+      expect(response.body).to include("1 of your 2 saved books reported for #{SchoolYear.current}")
+      expect(response.body).not_to include('milestone')
+      expect(response.body).to include('show funders that free books reach real students')
+      expect(response.body).to include(%(href="#{account_impact_path}"))
+      expect(response.body).not_to include('Your impact starts here')
+    end
+
+    it 'shows reports Salesforce has not confirmed yet as pending, without moving the confirmed totals' do
+      confirmed_adoption(students: 415)
+      AdoptionReport.create!(user: user, book_title: 'College Physics', salesforce_book_name: 'Physics',
+                             school_year: SchoolYear.current, status: 'using', students: 120,
+                             how_using: AdoptionReport::HOW_USING_OPTIONS.first, source: 'books_modal')
+
+      get :overview
+
+      expect(response.body).to include('+120 students from 1 book, pending.')
+      expect(response.body).to include('415')
+      expect(response.body).not_to include('milestone')
+    end
+
+    it 'sits after the check-in card' do
+      user.update_column(:created_at, 2.years.ago)
+      UserBook.create!(user: user, book: Book.create!(book_uuid: SecureRandom.uuid, title: 'College Physics'))
+
+      get :overview
+
+      expect(response.body.index('id="annual-check-in"')).to be < response.body.index('id="overview-impact"')
+    end
+
+    it 'words the quick action differently from the card' do
+      get :overview
+
+      expect(response.body).to include('Count your students')
+      expect(response.body).to include('Count my students')
+    end
+  end
+
+  describe 'the check-in streak copy' do
+    let(:book) { Book.create!(book_uuid: SecureRandom.uuid, title: 'College Physics') }
+
+    before do
+      user.update_column(:created_at, 3.years.ago)
+      UserBook.create!(user: user, book: book)
+    end
+
+    def report_for(offset)
+      AdoptionReport.create!(user: user, book_title: 'College Physics', status: 'using', source: 'books_modal',
+                             school_year: SchoolYear.label_for(SchoolYear.base_year_for(Time.zone.today) - offset))
+    end
+
+    it 'celebrates the year being confirmed and carries one reason line' do
+      report_for(1)
+      report_for(2)
+
+      get :overview
+
+      expect(response.body).to include('Year 3 with OpenStax.')
+      expect(response.body).to include('Thank you for sticking with us.')
+      expect(response.body).to include('Every report helps fund new free titles.')
+    end
+
+    it 'offers a grace line, not a threat, after a missed year' do
+      report_for(3)
+
+      get :overview
+
+      expect(response.body).to include('Missed a year? Pick up where you left off.')
+      expect(response.body).not_to include('Year 1 with OpenStax')
+    end
+  end
+
+  describe 'the Books tab' do
+    before do
+      allow_any_instance_of(FetchBookData).to receive(:books_by_subject).and_return([
+        { subject_name: 'Science', books: [
+          { title: 'College Physics', salesforce_abbreviation: 'Physics' },
+          { title: 'Biology 2e', salesforce_abbreviation: 'Bio 2e' }
+        ] }
+      ])
+      ['College Physics', 'Biology 2e', 'Mystery Book'].each do |title|
+        UserBook.create!(user: user, book: Book.create!(book_uuid: SecureRandom.uuid, title: title))
+      end
+      AdoptionReport.create!(user: user, book_title: 'Biology 2e', status: 'using', source: 'books_modal',
+                             school_year: SchoolYear.current)
+    end
+
+    it 'offers a preselecting trigger only for catalog books without a report this year' do
+      get :books
+
+      expect(response.body).to include('data-report-adoption-book="Physics"')
+      expect(response.body).not_to include('data-report-adoption-book="Bio 2e"')
+      expect(response.body.scan('data-report-adoption-book=').size).to eq(1)
+      expect(response.body).to include('Using this in a course this term? Count your students')
+      expect(response.body).to include('id="reportAdoptionModal"')
+    end
+  end
+
   describe 'the LMS question card on Overview' do
     it 'shows the card for a user who has neither answered nor dismissed it' do
       get :overview

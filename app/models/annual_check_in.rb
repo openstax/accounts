@@ -3,7 +3,6 @@
 class AnnualCheckIn
   Row = Struct.new(:key, :title, :abbreviation, :students, :how_using, keyword_init: true)
 
-  NUMBER_WORDS = %w[zero one two three four five six seven eight nine ten].freeze
   CONFIRMED_ADOPTION = 'OpenStax Confirmed Adoption'.freeze
 
   attr_reader :user
@@ -38,18 +37,18 @@ class AnnualCheckIn
     SchoolYear.short_label_for(SchoolYear.base_year_for(Time.zone.today))
   end
 
-  # [lead, rest], or [nil, nil] with no prior streak.
+  # [lead, rest], or [nil, nil] with no prior streak. Counts the year being confirmed.
   def streak_copy
     return [nil, nil] if streak_years <= 0
 
-    if streak_years == 1
-      [I18n.t('annual_check_in.streak.singular_lead'), I18n.t('annual_check_in.streak.singular_rest')]
-    else
-      [
-        I18n.t('annual_check_in.streak.plural_lead', count_word: number_word(streak_years).capitalize),
-        I18n.t('annual_check_in.streak.plural_rest', next_word: number_word(streak_years + 1))
-      ]
-    end
+    [I18n.t('annual_check_in.streak.lead', year: streak_years + 1), I18n.t('annual_check_in.streak.rest')]
+  end
+
+  # Offered instead of a streak to someone who reported before but skipped last year.
+  def grace_copy
+    return unless streak_years.zero? && user.adoption_reports.where.not(school_year: SchoolYear.current).exists?
+
+    I18n.t('annual_check_in.streak.grace')
   end
 
   private
@@ -98,9 +97,5 @@ class AnnualCheckIn
 
   def catalog_how_using
     @catalog_how_using ||= AdoptionBookCatalog.how_using_by_book_for(user)
-  end
-
-  def number_word(count)
-    NUMBER_WORDS[count] || count.to_s
   end
 end
