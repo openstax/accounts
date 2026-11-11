@@ -61,7 +61,7 @@ class BackfillStudentInitialBooks
     SecurityLog.where(user_id: user_ids, event_type: :student_signed_up)
                .reorder(:created_at)
                .pluck(:user_id, :event_data)
-               .each_with_object({}) { |(user_id, data), map| map[user_id] ||= data&.[]('redirect') }
+               .each_with_object({}) { |(user_id, data), map| map[user_id] = data&.[]('redirect') unless map.key?(user_id) }
   end
 
   def process_chunk(book_ids_by_student_id)
