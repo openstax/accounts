@@ -1,151 +1,177 @@
+// "Report an adoption" dialog, in openstax.org's dialog style: white, 4px radius,
+// 540px wide, grey title bar. rem is 10px here, so sizes come from the type scale.
 .report-adoption-modal {
-  font-size: 1rem;
-}
+  @include set-font(body-regular);
+  color: var(--os-text);
 
-.report-adoption-modal .modal-dialog {
-  max-width: 960px;
-  width: 100%;
-  margin: 1.5rem auto;
-}
+  .modal-dialog {
+    max-width: 540px;
+    width: auto;
+    margin: 20px auto;
 
-.report-adoption-modal .modal-content {
-  border-radius: 18px;
-  border: 1px solid #E0E0E0;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
-}
+    @include width-up-to($phone-max) {
+      margin: 10px;
+    }
+  }
 
-.report-adoption-modal .modal-header {
-  border-bottom: 1px solid #E0E0E0;
-  padding: 1.75rem 1.75rem 1.25rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-}
+  .modal-content {
+    border: 0;
+    border-radius: 4px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
 
-.report-adoption-modal .modal-header:before, 
-.report-adoption-modal .modal-header:after {
-  display: none;
-  content: " ";
-}
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    min-height: 50px;
+    padding: 15px 17px;
+    background: var(--os-page-bg);
+    border-bottom: 0;
 
-.report-adoption-modal .modal-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-  color: #424242;
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+
+  .modal-title {
+    @include set-font(h4);
+    margin: 0;
+    color: var(--os-text);
+  }
+
+  .modal-body {
+    padding: 20px 17px 24px;
+  }
+
+  .close {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    margin: -6px -8px 0 0;
+    padding: 0;
+    float: none;
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: normal;
+    color: var(--os-text);
+    opacity: 1;
+    text-shadow: none;
+    background: transparent;
+    border: 0;
+
+    &:hover {
+      color: var(--os-text-helper);
+    }
+
+    &:focus-visible {
+      outline: 2px solid transparent;
+      box-shadow: var(--os-focus-ring);
+    }
+  }
 }
 
 .report-adoption__header-helper {
-  font-size: 0.95rem;
-  color: #6A6A6A;
-  margin: 0;
-}
-
-.report-adoption-modal .modal-body {
-  padding: 2rem;
+  @include set-font(helper-label);
+  margin: 4px 0 0;
+  color: var(--os-text-helper);
 }
 
 .report-adoption__callout {
-  background: #F7FCFF;
-  border: 1px solid #E0E0E0;
-  border-radius: 12px;
-  padding: 0.85rem 1.1rem 0.85rem 2.7rem;
-  font-size: 0.95rem;
-  color: #424242;
-  margin-bottom: 1.5rem;
-  position: relative;
-}
-
-.report-adoption__callout::before {
-  content: "i";
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1.35rem;
-  height: 1.35rem;
-  border-radius: 50%;
-  background: #026AA1;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 0.85rem;
+  @include set-font(helper-label);
+  background: var(--os-info-bg);
+  border: 1px solid var(--os-info-border);
+  border-radius: 0;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  color: var(--os-text);
 }
 
 .report-adoption__books {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 20px;
 }
 
 .report-adoption__row {
-  border: 1px solid #E0E0E0;
-  border-radius: 12px;
-  padding: 1rem 1.25rem 1.25rem;
-  background: #fff;
+  padding: 16px 0 20px;
+  border-top: 1px solid var(--os-border);
+  animation: report-row-in 220ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .report-adoption__row-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 0.75rem;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
 .report-adoption__row-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #424242;
+  @include set-font(h4);
+  color: var(--os-text);
 }
 
 .report-adoption__row-grid {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
-  column-gap: 1rem;
-  row-gap: 1rem;
-  align-items: flex-start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+
+  @include width-up-to($phone-max) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
+.report-adoption__field--book,
 .report-adoption__field--how-using {
   grid-column: 1 / -1;
 }
 
 .report-adoption__field label {
+  @include set-font(body-regular);
   display: block;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  color: #6A6A6A;
-  font-size: 0.85rem;
+  margin: 0;
+  font-weight: bold;
+  color: var(--os-text);
 }
 
+// Controls sit inside their labels (rows are cloned from a <template>, so
+// for/id pairs would duplicate); undo the label's bold on them.
 .report-adoption__field select,
 .report-adoption__field input {
-  /* controls are nested inside their labels for a11y; undo inherited label styling */
-  font-weight: 400;
-  color: #424242;
-  margin-top: 0.25rem;
+  @include set-font(body-regular);
+  display: block;
   width: 100%;
-  min-height: 44px;
-  border-radius: 8px;
-  border: 1px solid #E0E0E0;
-  font-size: 0.95rem;
-  padding: 0 0.75rem;
+  height: 50px;
+  margin-top: 4px;
+  padding: 0 15px;
+  border: 1px solid var(--os-border);
+  border-radius: 0;
+  background-color: var(--os-surface);
+  color: var(--os-text);
+  font-weight: normal;
+  box-shadow: none;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  background-color: #fff;
+
+  &:focus {
+    border-color: var(--os-focus-border);
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
 }
 
 .report-adoption__field select {
   appearance: none;
   -webkit-appearance: none;
+  padding-right: 40px;
   background-image:
-    linear-gradient(45deg, transparent 50%, #9A9A9B 50%),
-    linear-gradient(135deg, #9A9A9B 50%, transparent 50%);
+    unquote("linear-gradient(45deg, transparent 50%, var(--os-gray) 50%)"),
+    unquote("linear-gradient(135deg, var(--os-gray) 50%, transparent 50%)");
   background-position:
     calc(100% - 20px) calc(50% - 2px),
     calc(100% - 14px) calc(50% - 2px);
@@ -153,37 +179,28 @@
   background-repeat: no-repeat;
 }
 
-.report-adoption__field select:focus,
-.report-adoption__field input:focus {
-  border-color: #026AA1;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(2, 106, 161, 0.2);
-}
-
-.report-adoption__field select option {
-  color: #424242;
-  font-weight: 500;
-  padding: 0.4rem 0.6rem;
-  background: #fff;
-}
-
-.report-adoption__field select option:hover,
-.report-adoption__field select option:focus {
-  background: rgba(2, 106, 161, 0.12);
-}
-
-.report-adoption__row-header .account-books__remove-btn {
-  background: none;
-  border: none;
+.report-adoption__text-action {
+  @include set-font(helper-label);
   padding: 0;
-  color: #9A9A9B;
-  font-size: 0.85rem;
+  border: 0;
+  background: none;
+  color: var(--os-link);
+  font-weight: bold;
   text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--os-link-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid transparent;
+    box-shadow: var(--os-focus-ring);
+  }
 }
 
-.report-adoption__row-header .account-books__remove-btn:hover,
-.report-adoption__row-header .account-books__remove-btn:focus {
-  color: #C22032;
+.report-adoption__add-book {
+  @include set-font(body-regular);
 }
 
 .report-adoption__remove-row.is-hidden {
@@ -191,160 +208,133 @@
 }
 
 .report-adoption__info-icon {
+  @include set-font(helper-label);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  border: 1px solid rgba(15, 53, 84, 0.35);
-  font-size: 0.8rem;
-  margin-left: 0.35rem;
-  color: #424242;
+  border: 1px solid var(--os-gray);
+  margin-left: 6px;
+  color: var(--os-text);
+  font-weight: bold;
   cursor: help;
   position: relative;
-  background: #fff;
-}
+  background: var(--os-surface);
 
-.report-adoption__info-icon::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: #424242;
-  color: #fff;
-  padding: 0.35rem 0.6rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  line-height: 1.2;
-  min-width: 180px;
-  text-align: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 120ms ease;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.2);
-  z-index: 5;
-}
+  &:focus-visible {
+    outline: 2px solid transparent;
+    box-shadow: var(--os-focus-ring);
+  }
 
-.report-adoption__info-icon::before {
-  content: "";
-  position: absolute;
-  bottom: calc(100% + 2px);
-  left: 50%;
-  transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: #424242;
-  opacity: 0;
-  transition: opacity 120ms ease;
-  pointer-events: none;
-  z-index: 5;
-}
+  &::after {
+    @include set-font(helper-label);
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: -8px;
+    background: var(--os-text);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-weight: normal;
+    width: 240px;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms ease-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 5;
+  }
 
-.report-adoption__info-icon:hover::after,
-.report-adoption__info-icon:focus::after,
-.report-adoption__info-icon:hover::before,
-.report-adoption__info-icon:focus::before {
-  opacity: 1;
+  &:hover::after,
+  &:focus::after {
+    opacity: 1;
+  }
 }
 
 .report-adoption__summary {
-  border: 1px solid #E0E0E0;
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background: #fff;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 2px;
+  padding: 16px 0;
+  border-top: 1px solid var(--os-border);
 }
 
 .report-adoption__summary-label {
-  font-size: 0.85rem;
-  color: #6A6A6A;
+  @include set-font(helper-label);
+  font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
+  color: var(--os-gray);
 }
 
 .report-adoption__summary-value {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #424242;
+  @include scale-set-font(h4, h3);
+  color: var(--os-text);
 }
 
 .report-adoption__summary-subtext {
-  font-size: 0.95rem;
-  color: #6A6A6A;
+  @include set-font(helper-label);
+  color: var(--os-text-helper);
 }
 
 .report-adoption__helper-text {
-  color: #6A6A6A;
-  font-size: 0.88rem;
+  @include set-font(helper-label);
   margin: 0;
+  color: var(--os-text-helper);
 }
 
 .report-adoption__footer {
-  border-top: 1px solid #E0E0E0;
-  background: #F5F5F5;
-  padding: 1rem 1.25rem;
-  margin: 0 -1.25rem -1.25rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 16px;
   flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--os-border);
+
+  @include width-up-to($phone-max) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .report-adoption__footer-left {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .report-adoption__submit {
+  @include set-font(body-regular);
   min-width: 200px;
-  min-height: 44px;
-  padding: 0.65rem 1.5rem;
-  border: 1px solid #D4450C;
-  border-radius: 0.35rem;
-  background: #D4450C;
+  height: 50px;
+  padding: 0 30px;
+  border: 0;
+  border-radius: var(--os-radius);
+  background: var(--os-primary);
+  box-shadow: var(--os-shadow-button);
   color: #fff;
-  font-weight: 600;
+  font-weight: bold;
   cursor: pointer;
 
   &:hover,
   &:focus {
-    background: #A43509;
-    border-color: #A43509;
+    background: var(--os-primary-hover);
     color: #fff;
   }
-}
 
-@media (max-width: 768px) {
-  .report-adoption-modal .modal-body {
-    padding: 1.25rem;
-  }
-
-  .report-adoption__row-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .report-adoption__footer {
-    flex-direction: column;
-    align-items: stretch;
-    margin: 0;
-    padding: 1rem;
+  &:active {
+    background: var(--os-primary-active);
   }
 }
 
-/* New adoption rows settle in rather than popping (also plays once on modal open) */
 @keyframes report-row-in {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: none; }
-}
-
-.report-adoption__row {
-  animation: report-row-in 220ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,11 +1,11 @@
 <div class="account-impact__section-card" id="impact-history">
   <% if adoptions.any? %>
-    <div class="account-impact__table-wrapper">
+    <div class="account-impact__table-wrapper" role="region" aria-label="<%= local_assigns.fetch(:table_label, 'Reported adoptions') %>" tabindex="0">
       <table class="account-impact__table">
         <thead>
           <tr>
             <th>Book</th>
-            <th>School Year</th>
+            <th>School year</th>
             <th>Students</th>
           </tr>
         </thead>
@@ -34,12 +34,6 @@
     <div class="account-impact__empty">
       <h3><%= local_assigns.fetch(:empty_title, default_title) %></h3>
       <p><%= local_assigns.fetch(:empty_body, default_body) %></p>
-      <div class="account-impact__cta-group">
-        <%= link_to 'Report an adoption',
-                    '#',
-                    class: 'account-impact__cta',
-                    data: { report_adoption_trigger: true } %>
-      </div>
     </div>
   <% end %>
 </div>
