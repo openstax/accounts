@@ -302,7 +302,7 @@ RSpec.describe AccountController, type: :controller do
       get :overview
 
       ['nstructor', 'erification', 'Verified', 'Finish signing up', 'LMS',
-       'Report usage', 'Self Learner', 'Impact'].each do |text|
+       'Report an adoption', 'Self Learner', 'Impact'].each do |text|
         expect(response.body).not_to include(text)
       end
     end
@@ -350,7 +350,7 @@ RSpec.describe AccountController, type: :controller do
 
     it 'keeps usage reporting and the impact page' do
       get :overview
-      expect(response.body).to include('Report usage')
+      expect(response.body).to include('Report an adoption')
 
       get :impact
       expect(response).to have_http_status(:ok)
