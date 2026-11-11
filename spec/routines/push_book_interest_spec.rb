@@ -173,6 +173,154 @@ RSpec.describe PushBookInterest do
     end
   end
 
+  describe 'edits as deltas' do
+    context 'with a Contact' do
+      let(:user) { create_user(salesforce_contact_id: '003A', which_books: 'Biology') }
+      let(:contact) { remote_record(subject_interest: 'Astronomy;Biology') }
+
+      before { allow(contact_remote).to receive(:find).with('003A').and_return(contact) }
+
+      it "adds and removes against the current value, keeping other sources' books" do
+        expect(contact).to receive(:subject_interest=).with('Astronomy;Psychology')
+
+        described_class.call(user: user, add: ['Psychology'], remove: ['Biology'])
+
+        expect(user.reload.which_books).to eq('Astronomy;Psychology')
+      end
+
+      it 'mirrors the Salesforce value into which_books, other sources included' do
+        described_class.call(user: user, add: ['Psychology'])
+
+        expect(user.reload.which_books).to eq('Astronomy;Biology;Psychology')
+      end
+
+      it 'does not save when nothing changes, but still mirrors the value' do
+        expect(contact).not_to receive(:save)
+
+        described_class.call(user: user, add: ['Biology'], remove: ['Chemistry'])
+
+        expect(user.reload.which_books).to eq('Astronomy;Biology')
+      end
+
+      it 'removes a book that is in both lists' do
+        expect(contact).to receive(:subject_interest=).with('Astronomy')
+
+        described_class.call(user: user, add: ['Biology'], remove: ['Biology'])
+      end
+
+      it 'does not tag the source on a removal' do
+        expect(contact).not_to receive(:tracking_parameters=)
+
+        described_class.call(user: user, remove: ['Biology'])
+      end
+
+      it 'empties the field when the last book is removed' do
+        allow(contact).to receive(:subject_interest).and_return('Biology')
+        expect(contact).to receive(:subject_interest=).with('')
+
+        described_class.call(user: user, remove: ['Biology'])
+
+        expect(user.reload.which_books).to be_nil
+      end
+
+      it 'marks a removed book\'s unsent considering answer sent instead of adding it back' do
+        report = create_report(user)
+        expect(contact).to receive(:subject_interest=).with('Astronomy')
+
+        described_class.call(user: user, remove: ['Biology'])
+
+        expect(report.reload.salesforce_pushed_at).to be_present
+      end
+
+      it 'keeps the rest of an edit when Salesforce refuses one value' do
+        attempt = nil
+        allow(contact).to receive(:subject_interest=) { |value| attempt = value }
+        allow(contact).to receive(:save) { !attempt.split(';').include?('Bogus') }
+
+        described_class.call(user: user, add: %w[Bogus Psychology], remove: ['Biology'])
+
+        expect(user.reload.which_books).to eq('Astronomy;Psychology')
+        expect(Sentry).to have_received(:capture_message)
+          .with(/save failed/, hash_including(extra: hash_including(refused: ['Bogus'])))
+      end
+
+      it 'leaves which_books at the Salesforce value when the only change is refused' do
+        allow(contact).to receive(:save).and_return(false)
+
+        described_class.call(user: user, add: ['Bogus'])
+
+        expect(user.reload.which_books).to eq('Astronomy;Biology')
+        expect(Sentry).to have_received(:capture_message)
+      end
+    end
+
+    context 'with a Lead' do
+      let(:user) { create_user(salesforce_lead_id: '00QA') }
+      let(:lead) { remote_record(subject_interest: 'Biology', is_converted: false, converted_contact_id: nil) }
+
+      it 'applies the delta to the Lead' do
+        allow(lead_remote).to receive(:find).with('00QA').and_return(lead)
+        expect(lead).to receive(:subject_interest=).with('Psychology')
+
+        described_class.call(user: user, add: ['Psychology'], remove: ['Biology'])
+
+        expect(user.reload.which_books).to eq('Psychology')
+      end
+    end
+
+    context 'with a converted Lead' do
+      let(:user) { create_user(salesforce_lead_id: '00QA') }
+      let(:lead) { remote_record(subject_interest: 'Biology', is_converted: true, converted_contact_id: '003B') }
+      let(:contact) { remote_record(subject_interest: 'Biology;Astronomy') }
+
+      it 'applies the delta to the Contact it became' do
+        allow(lead_remote).to receive(:find).with('00QA').and_return(lead)
+        allow(contact_remote).to receive(:find).with('003B').and_return(contact)
+        expect(contact).to receive(:subject_interest=).with('Astronomy;Psychology')
+        expect(lead).not_to receive(:save)
+
+        described_class.call(user: user, add: ['Psychology'], remove: ['Biology'])
+
+        expect(user.reload.salesforce_contact_id).to eq('003B')
+        expect(user.which_books).to eq('Astronomy;Psychology')
+      end
+    end
+
+    context 'with no Salesforce record' do
+      it 'only updates which_books' do
+        user = create_user(which_books: 'Biology;Astronomy')
+        expect(contact_remote).not_to receive(:find)
+        expect(lead_remote).not_to receive(:find)
+
+        described_class.call(user: user, add: ['Psychology'], remove: ['Biology'])
+
+        expect(user.reload.which_books).to eq('Astronomy;Psychology')
+      end
+    end
+
+    context 'with the kill switch off' do
+      before { allow(Settings::Salesforce).to receive(:push_book_interest_enabled).and_return(false) }
+
+      it 'only updates which_books and never calls Salesforce' do
+        user = create_user(salesforce_contact_id: '003A', which_books: 'Biology')
+        expect(contact_remote).not_to receive(:find)
+
+        described_class.call(user: user, add: ['Psychology'], remove: ['Biology'])
+
+        expect(user.reload.which_books).to eq('Psychology')
+      end
+    end
+
+    it 'reports an error to Sentry without raising' do
+      user = create_user(salesforce_contact_id: '003A')
+      allow(contact_remote).to receive(:find).and_raise(RuntimeError, 'boom')
+
+      expect { described_class.call(user: user, add: ['Psychology']) }.not_to raise_error
+
+      expect(Sentry).to have_received(:capture_exception)
+    end
+  end
+
   describe '.call_for_all_unpushed' do
     it 'pushes every user with unsent considering answers and no one else' do
       with_answer = create_user(salesforce_contact_id: '003A')

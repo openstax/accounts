@@ -1160,6 +1160,21 @@ en:
   books_report_nudge:
     saved: "Saved. Let us know below if you're teaching with it, considering it, or just looking."
 
+  book_interest:
+    heading: Books you're interested in
+    intro: These are the books you've told OpenStax you're interested in. Keep the list current so we know what matters to you.
+    empty: You haven't added any books yet. Choose one below to start your list.
+    add_label: Add a book
+    add_placeholder: Choose a book
+    add_button: Add to my list
+    remove: Remove
+    from_list: from your interests
+    added: "Added %{title} to your interests."
+    removed: "Removed %{title} from your interests."
+    already: "%{title} is already in your interests."
+    unknown_book: We couldn't find that book. Please choose one from the list.
+    not_listed: That book isn't on your list.
+    not_available: Book interests are for instructors and staff.
   book_status:
     label: This term
     group_name: "Where are you with %{title} this term?"

@@ -20,6 +20,9 @@ Rails.application.routes.draw do
     post '/books/saved', to: 'account/saved_books#create', as: :account_saved_books
     delete '/books/saved/:id', to: 'account/saved_books#destroy', as: :account_saved_book
 
+    post '/books/interests', to: 'account/book_interests#create', as: :account_book_interests
+    delete '/books/interests', to: 'account/book_interests#destroy'
+
     post '/adoption-reports', to: 'account/adoption_reports#create', as: :account_adoption_reports
     post '/books/saved/:id/status', to: 'account/adoption_reports#book_status', as: :account_saved_book_status
 

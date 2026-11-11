@@ -88,6 +88,48 @@
           <% end %>
         </section>
 
+        <% if @can_report_adoptions %>
+          <section class="account-profile__section book-interests" id="book-interests" aria-labelledby="book-interests-heading">
+            <div class="account-shell__section-header">
+              <h2 id="book-interests-heading"><%= t('book_interest.heading') %></h2>
+              <p><%= t('book_interest.intro') %></p>
+            </div>
+
+            <% if @interest_books.any? %>
+              <ul class="book-interests__list">
+                <% @interest_books.each do |entry| %>
+                  <li class="book-interests__item">
+                    <span class="book-interests__title"><%= entry[:title] %></span>
+                    <%= button_to account_book_interests_path, method: :delete,
+                                  params: { abbreviation: entry[:abbreviation] },
+                                  form: { class: 'book-interests__form' },
+                                  class: 'book-interests__remove' do %><%= t('book_interest.remove') %><span class="sr-only"> <%= entry[:title] %> <%= t('book_interest.from_list') %></span><% end %>
+                  </li>
+                <% end %>
+              </ul>
+            <% else %>
+              <p class="account-books__empty"><%= t('book_interest.empty') %></p>
+            <% end %>
+
+            <% if @interest_addable.any? %>
+              <%= form_with url: account_book_interests_path, method: :post, local: true, class: 'book-interests__add' do %>
+                <label for="book-interest-add"><%= t('book_interest.add_label') %></label>
+                <div class="book-interests__add-row">
+                  <div class="book-interests__select">
+                    <select id="book-interest-add" name="abbreviation" required>
+                      <option value=""><%= t('book_interest.add_placeholder') %></option>
+                      <% @interest_addable.each do |book| %>
+                        <option value="<%= book.salesforce_abbreviation %>"><%= book.title %></option>
+                      <% end %>
+                    </select>
+                  </div>
+                  <button type="submit" class="book-interests__add-btn"><%= t('book_interest.add_button') %></button>
+                </div>
+              <% end %>
+            <% end %>
+          </section>
+        <% end %>
+
         <section class="account-profile__section">
           <div class="account-shell__section-header">
             <h2>Search the catalog</h2>

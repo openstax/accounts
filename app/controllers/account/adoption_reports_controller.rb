@@ -48,7 +48,7 @@ module Account
                                status: answer, source: 'books_status', surface: 'books', book: book)
 
       if report.save
-        PushBookInterest.perform_later(user: current_user) if answer == 'considering'
+        add_to_interests(abbreviation) if answer == 'considering' && abbreviation.present?
         redirect_to account_books_path, notice: t('book_status.saved', school_year: SchoolYear.current)
       else
         redirect_to account_books_path, alert: t('book_status.failed')
@@ -56,6 +56,12 @@ module Account
     end
 
     private
+
+    # The list shows the book right after the redirect; Salesforce catches up in the background.
+    def add_to_interests(abbreviation)
+      BookInterest.update_user!(current_user, add: [abbreviation])
+      PushBookInterest.perform_later(user: current_user, add: [abbreviation])
+    end
 
     def find_report(school_year, title, abbreviation)
       scope = current_user.adoption_reports.where(school_year: school_year)

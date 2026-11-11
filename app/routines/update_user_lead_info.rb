@@ -69,7 +69,7 @@ class UpdateUserLeadInfo
 
   def lead_batch_query(since:, after_id: nil)
     query = OpenStax::Salesforce::Remote::Lead
-            .select(:id, :accounts_uuid, :verification_status)
+            .select(:id, :accounts_uuid, :verification_status, :subject_interest)
             .where('Accounts_UUID__c != null')
             .where('IsConverted = false')
             .where("LastModifiedDate >= #{since.utc.iso8601}")
@@ -122,13 +122,26 @@ class UpdateUserLeadInfo
   def update_user_from_lead(user, lead)
     id_changed = update_salesforce_lead_id!(user, lead)
     fv_status_changed = update_faculty_status!(user, lead)
+    books_changed = update_book_interest!(user, lead)
 
     # advance_faculty_status! persists via update! only when it actually moves
     # the record; a refused move or a same-rank no-op leaves a pending
     # salesforce_lead_id change unsaved.
     user.save! if user.changed?
 
-    { updated: id_changed || fv_status_changed, fv_status_changed: fv_status_changed }
+    { updated: id_changed || fv_status_changed || books_changed, fv_status_changed: fv_status_changed }
+  end
+
+  # The Contact is the source once there is one (the Contact sync owns which_books),
+  # and a blank Lead value never clears a list the user already has.
+  def update_book_interest!(user, lead)
+    return false if user.salesforce_contact_id.present?
+
+    books = BookInterest.join(lead.subject_interest)
+    return false if books.blank? || books == user.which_books
+
+    user.which_books = books
+    true
   end
 
   def update_salesforce_lead_id!(user, lead)

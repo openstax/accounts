@@ -69,11 +69,9 @@ class AccountController < Newflow::BaseController
                                         .pluck(:book_title, :status).to_h
 
     @can_report_adoptions = !current_user.student? && !current_user.self_learner?
-    @report_abbreviation_by_title = if @can_report_adoptions
-                                      AdoptionBookCatalog.books.to_h { |book| [book.title, book.salesforce_abbreviation] }
-                                    else
-                                      {}
-                                    end
+    catalog = @can_report_adoptions ? AdoptionBookCatalog.books : []
+    @report_abbreviation_by_title = catalog.to_h { |book| [book.title, book.salesforce_abbreviation] }
+    assign_book_interests(catalog) if @can_report_adoptions
 
     render_account_page :books,
                         title: 'My OpenStax Books'
@@ -181,6 +179,14 @@ class AccountController < Newflow::BaseController
              end
 
     NAV_ITEMS.reject { |item| hidden.include?(item[:key]) }
+  end
+
+  def assign_book_interests(catalog)
+    titles = catalog.to_h { |book| [book.salesforce_abbreviation, book.title] }
+    listed = BookInterest.parse(current_user.which_books)
+    @interest_books = listed.map { |abbreviation| { abbreviation: abbreviation, title: titles[abbreviation] || abbreviation } }
+                            .sort_by { |entry| entry[:title].downcase }
+    @interest_addable = catalog.reject { |book| listed.include?(book.salesforce_abbreviation) }
   end
 
   def books_from_db(exclude_ids: [])

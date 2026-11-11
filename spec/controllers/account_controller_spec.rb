@@ -350,6 +350,75 @@ RSpec.describe AccountController, type: :controller do
     end
   end
 
+  describe 'the "Books you\'re interested in" section' do
+    before do
+      allow_any_instance_of(FetchBookData).to receive(:books_by_subject).and_return([
+        { subject_name: 'Science', books: [
+          { title: 'Biology 2e', salesforce_abbreviation: 'Biology' },
+          { title: 'College Physics', salesforce_abbreviation: 'College Physics' },
+          { title: 'Astronomy 2e', salesforce_abbreviation: 'Astronomy' }
+        ] }
+      ])
+    end
+
+    it 'lists each book by catalog title with a Remove control that names it' do
+      user.update!(which_books: 'Biology;College Physics')
+
+      get :books
+
+      expect(response.body).to include("Books you're interested in").or include('Books you&#39;re interested in')
+      expect(response.body).to include('Biology 2e')
+      expect(response.body).to include('Remove<span class="sr-only"> Biology 2e from your interests</span>')
+      expect(response.body).to include('Remove<span class="sr-only"> College Physics from your interests</span>')
+      expect(response.body).to include('name="abbreviation" value="Biology"')
+    end
+
+    it 'falls back to the raw value for a book the catalog does not know' do
+      user.update!(which_books: 'Retired Title')
+
+      get :books
+
+      expect(response.body).to include('Retired Title')
+    end
+
+    it 'offers only the books not already listed' do
+      user.update!(which_books: 'Biology')
+
+      get :books
+
+      select = response.body[/<select id="book-interest-add".*?<\/select>/m]
+      expect(select).to include('value="Astronomy"').and include('value="College Physics"')
+      expect(select).not_to include('value="Biology"')
+    end
+
+    it 'shows a friendly empty state with the add control' do
+      get :books
+
+      expect(response.body).to include(CGI.escapeHTML("You haven't added any books yet."))
+      expect(response.body).to include('book-interest-add')
+      expect(response.body).not_to include('book-interests__list')
+    end
+
+    it 'escapes titles' do
+      user.update!(which_books: '<b>x</b>')
+
+      get :books
+
+      expect(response.body).not_to include('<b>x</b>')
+      expect(response.body).to include('&lt;b&gt;x&lt;/b&gt;')
+    end
+
+    it 'is not shown to students or lifelong learners' do
+      %i[student self_learner].each do |role|
+        user.update!(role: role, which_books: 'Biology')
+
+        get :books
+
+        expect(response.body).not_to include('book-interests')
+      end
+    end
+  end
+
   describe 'the LMS question card on Overview' do
     it 'shows the card for a user who has neither answered nor dismissed it' do
       get :overview

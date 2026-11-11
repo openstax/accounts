@@ -226,10 +226,27 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
       end
     end
 
-    it 'enqueues the book interest push for a considering answer' do
-      expect(PushBookInterest).to receive(:perform_later).with(user: user)
+    it 'enqueues the book interest push as an add for a considering answer' do
+      expect(PushBookInterest).to receive(:perform_later).with(user: user, add: ['Sociology'])
 
       post :book_status, params: { id: saved_book.id, status: 'considering' }
+    end
+
+    it 'lists the book in the interests right away' do
+      allow(PushBookInterest).to receive(:perform_later)
+      user.update!(which_books: 'Astronomy')
+
+      post :book_status, params: { id: saved_book.id, status: 'considering' }
+
+      expect(user.reload.which_books).to eq('Astronomy;Sociology')
+    end
+
+    it 'leaves the interests alone for just looking' do
+      user.update!(which_books: 'Astronomy')
+
+      post :book_status, params: { id: saved_book.id, status: 'browsing' }
+
+      expect(user.reload.which_books).to eq('Astronomy')
     end
 
     it 'does not enqueue the book interest push for just looking' do

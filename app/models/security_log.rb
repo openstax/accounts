@@ -148,6 +148,7 @@ class SecurityLog < ApplicationRecord
     adoption_report_approved
     adoption_report_count_changed_and_approved
     adoption_report_rejected
+    book_interest_changed
   ]
 
   json_serialize :event_data, Hash

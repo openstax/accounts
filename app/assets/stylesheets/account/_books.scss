@@ -516,3 +516,134 @@
     margin-top: 4px;
   }
 }
+
+// ---- Books you're interested in ------------------------------------------
+
+.book-interests__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--os-border);
+}
+
+.book-interests__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--os-border);
+}
+
+.book-interests__title {
+  @include set-font(body-regular);
+  color: var(--os-text);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.book-interests__item form.book-interests__form {
+  flex: none;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.book-interests__remove,
+.book-interests__add-btn {
+  @include set-font(body-regular);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin: 0;
+  padding: 0 20px;
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius);
+  background: var(--os-surface);
+  color: var(--os-text);
+  font-weight: normal;
+  line-height: normal;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--os-hover-bg);
+  }
+
+  &:focus-visible {
+    border-color: var(--os-focus-border);
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+
+  @include width-up-to($phone-max) {
+    min-height: 44px;
+  }
+}
+
+.book-interests .book-interests__add {
+  width: auto;
+  margin: 24px 0 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+
+  label {
+    @include set-font(body-regular);
+    display: block;
+    font-weight: bold;
+    color: var(--os-text);
+    margin-bottom: 4px;
+  }
+}
+
+// Global form rules (margin-top on buttons, 50px selects) outrank a single class.
+.book-interests .book-interests__add .book-interests__add-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+
+  // The wrapper keeps the select from being the button's previous sibling: `.ox-card select + *`
+  // adds a 30px top margin to whatever follows a select.
+  .book-interests__select {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 40rem;
+  }
+
+  select {
+    @include set-font(body-regular);
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    padding: 0 15px;
+    border: 1px solid var(--os-border);
+    border-radius: 0;
+    background: var(--os-surface);
+    color: var(--os-text);
+
+    &:focus {
+      border-color: var(--os-focus-border);
+      box-shadow: var(--os-focus-ring);
+      outline: 2px solid transparent;
+    }
+  }
+
+  @include width-up-to($phone-max) {
+    flex-direction: column;
+    align-items: stretch;
+
+    .book-interests__select {
+      max-width: none;
+    }
+
+    select {
+      height: 44px;
+    }
+  }
+}
