@@ -112,6 +112,15 @@ RSpec.describe Account::CheckInController, type: :controller do
       expect(report.students).to eq(42)
     end
 
+    it 'ignores a student count that is not a whole number instead of failing the check-in' do
+      %w[abc -3 4.5].each do |bad|
+        post :confirm, params: { students: { "book_#{user_book.id}" => bad } }
+
+        expect(response).to have_http_status(:redirect)
+        expect(AdoptionReport.last.students).to be_nil
+      end
+    end
+
     it 'keeps the source of a report made in the report modal, so it is still pushed' do
       modal_report = AdoptionReport.create!(
         user: user, book_title: book.title, school_year: AdoptionReport.current_school_year_label,

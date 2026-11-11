@@ -73,7 +73,6 @@ module ProfileHelper
   end
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
-    verify_link = is_verified ? '' : ""
     unconfirmed_link =
       if is_verified || id.blank?
         ''
@@ -119,7 +118,7 @@ module ProfileHelper
         <div class="email-entry editable-click #{'verified' if is_verified}" data-id="#{id}">
           <div class="email-entry__header">
             <div class="email-entry__value">
-              <span class="value">#{value}</span>
+              <span class="value">#{ERB::Util.html_escape(value)}</span>
               #{unconfirmed_link}
             </div>
               #{toggle_content}

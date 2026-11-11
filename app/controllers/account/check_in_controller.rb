@@ -34,13 +34,13 @@ module Account
           # Keys are prefixed ("book_<id>"), not bare numeric strings -- a bare
           # numeric key (e.g. "8") crashes JsonAndStringParameterFilter, which
           # tries `JSON.parse` on every nested param key before filtering logs.
-          students = students_by_user_book_id[check_in_student_field_key(user_book.id)].presence
+          students = student_count(students_by_user_book_id[check_in_student_field_key(user_book.id)])
 
           report.book = book
           report.status = 'using'
           # A row made in the report modal keeps its source, so it is still pushed.
           report.source = 'check_in' if report.new_record?
-          report.students = students if students.present?
+          report.students = students unless students.nil?
           report.save!
         end
 
@@ -72,6 +72,13 @@ module Account
     private
 
     NUMBER_WORDS = %w[zero one two three four five six seven eight nine ten].freeze
+
+    # Anything that isn't a whole number >= 0 is ignored rather than failing
+    # save! (and the whole check-in) on a hand-crafted POST.
+    def student_count(raw)
+      count = Integer(raw.to_s.strip, 10, exception: false)
+      count if count && count >= 0
+    end
 
     # Returns [lead, rest] strings for the streak banner, or [nil, nil] when
     # there's no prior streak to show (the view omits the banner entirely).
