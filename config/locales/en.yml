@@ -1099,8 +1099,8 @@ en:
     confirm_button: Confirm
     dismiss_button: Remind me later
     confirmed_flash: Thanks, your check-in is saved.
-    confirmed_using_flash: "Thank you. You counted %{books} and %{students} for %{school_year}. They will show in your impact once we confirm them, usually by tomorrow."
-    confirmed_using_books_only_flash: "Thank you. You counted %{books} for %{school_year}. They will show in your impact once we confirm them, usually by tomorrow."
+    confirmed_using_flash: "Thank you. You counted %{books} and %{students} for %{school_year}. They will show in your impact once we confirm them."
+    confirmed_using_books_only_flash: "Thank you. You counted %{books} for %{school_year}. They will show in your impact once we confirm them."
     flash_books:
       one: "%{count} book"
       other: "%{count} books"
@@ -1120,8 +1120,8 @@ en:
     savings: Estimated student savings
     years: Years with OpenStax
     books_reported: "%{reported} of your %{saved} saved books reported for %{school_year}"
-    pending_students_books: "+%{students} from %{books}, pending. They count once we confirm them, usually by tomorrow."
-    pending_books: "+%{books}, pending. They count once we confirm them, usually by tomorrow."
+    pending_students_books: "+%{students} from %{books}, pending. They count once we confirm them."
+    pending_books: "+%{books}, pending. They count once we confirm them."
     reason: Reports like yours are how we show funders that free books reach real students.
     report_button: Report an adoption
     full_impact: See your full impact

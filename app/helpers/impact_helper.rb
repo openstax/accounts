@@ -74,12 +74,6 @@ module ImpactHelper
     number_with_delimiter(value.to_i)
   end
 
-  def milestone_progress_percent(current, target)
-    return 0 if target.to_f.zero?
-
-    [((current.to_f / target) * 100).round, 100].min
-  end
-
   def impact_badge_subtext(timestamp)
     if timestamp.present?
       "Last reported #{timestamp.strftime('%b %-d, %Y')}"

@@ -31,8 +31,7 @@ class OverviewImpact
   end
 
   def reported_saved_books_count
-    @reported_saved_books_count ||= user.adoption_reports.using.where(school_year: SchoolYear.current)
-                                        .where(book_title: saved_titles).distinct.count(:book_title)
+    @reported_saved_books_count ||= (saved_titles & user.titles_reported_for(school_year)).size
   end
 
   def school_year

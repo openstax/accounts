@@ -33,6 +33,27 @@
   }
 }
 
+// A second ask on the same page; the page's main CTA keeps the only orange button.
+.account-impact__cta--secondary {
+  &,
+  &:visited,
+  &:focus {
+    background: var(--os-surface);
+    border: 1px solid var(--os-border);
+    color: var(--os-text);
+    font-weight: normal;
+  }
+
+  &:hover {
+    background: var(--os-hover-bg);
+    color: var(--os-text);
+  }
+
+  &:active {
+    background: var(--os-hover-bg);
+  }
+}
+
 .account-impact__microcopy {
   @include set-font(helper-label);
   margin: 0;

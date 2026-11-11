@@ -115,25 +115,9 @@
         <section class="impact-milestones" aria-labelledby="impact-milestones-title">
           <div class="impact-milestones__header">
             <h3 class="impact-milestones__title" id="impact-milestones-title">
-              <% if next_milestone %>
-                Next milestone: <%= next_milestone.label %>
-              <% else %>
-                You’ve reached every milestone. Thank you.
-              <% end %>
+              <%= next_milestone ? 'Milestones' : 'You’ve reached every milestone. Thank you.' %>
             </h3>
-            <% if next_milestone %>
-              <div class="impact-milestones__count">
-                <%= number_with_delimiter(@milestones[:students]) %> of <%= number_with_delimiter(next_milestone.value) %>
-              </div>
-            <% end %>
           </div>
-
-          <% if next_milestone %>
-            <div class="impact-milestones__bar" aria-hidden="true">
-              <div class="impact-milestones__bar-fill"
-                   style="width: <%= milestone_progress_percent(@milestones[:students], next_milestone.value) %>%;"></div>
-            </div>
-          <% end %>
 
           <ul class="impact-milestones__grid">
             <% @milestones[:earned].each do |milestone| %>
@@ -162,7 +146,7 @@
             <h3 id="impact-next-prompt-title"><%= prompt[:heading] %></h3>
             <p><%= prompt[:body] %></p>
           </div>
-          <%= link_to prompt[:button], '#', class: 'account-impact__cta', data: { report_adoption_trigger: true } %>
+          <%= link_to prompt[:button], '#', class: 'account-impact__cta account-impact__cta--secondary', data: { report_adoption_trigger: true } %>
         </section>
       <% end %>
 
@@ -189,7 +173,7 @@
             <h2>Reported by you</h2>
             <p>
               These are the classes you told us about for <%= @current_school_year %>.
-              They count in your totals once we confirm them, usually by the next day.
+              They count in your totals once we confirm them.
             </p>
           </div>
 

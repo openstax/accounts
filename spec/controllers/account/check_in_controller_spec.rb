@@ -61,7 +61,7 @@ RSpec.describe Account::CheckInController, type: :controller do
       expect(response).to redirect_to(account_overview_path)
       expect(flash[:notice]).to eq(
         "Thank you. You counted 1 book and 42 students for #{current_year}. " \
-        'They will show in your impact once we confirm them, usually by tomorrow.'
+        'They will show in your impact once we confirm them.'
       )
     end
 

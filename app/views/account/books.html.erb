@@ -48,13 +48,13 @@
                     <% if book.assignable_book? %>
                       <span class="account-chip">Available in Assignable</span>
                     <% end %>
-                    <% if (report = @adoption_reports_by_title[book.title]) %>
+                    <% if @reported_titles.include?(book.title) %>
                       <span class="account-chip account-chip--success">
-                        Reported for <%= report.school_year %>
+                        Reported for <%= @reported_school_year %>
                       </span>
                     <% end %>
                     <% abbreviation = @report_abbreviation_by_title[book.title] %>
-                    <% if abbreviation.present? && !@adoption_reports_by_title[book.title] %>
+                    <% if abbreviation.present? && !@reported_titles.include?(book.title) %>
                       <button type="button"
                               class="account-books__report-action"
                               data-report-adoption-trigger="true"

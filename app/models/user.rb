@@ -617,6 +617,18 @@ class User < ApplicationRecord
              .any? { |adoption| (adoption.school_year.presence || adoption.school_year_label) == year }
   end
 
+  # Titles reported as "using" for a school year, whether the report is still pending or
+  # Salesforce has confirmed the adoption. The overview, Books and Impact tabs all count from
+  # this, so they never disagree about which saved books are reported.
+  def titles_reported_for(school_year)
+    pending = adoption_reports.using.where(school_year: school_year).pluck(:book_title)
+    confirmed = adoptions.includes(:book)
+                         .where(confirmation_type: 'OpenStax Confirmed Adoption', rollover_status: false)
+                         .select { |adoption| (adoption.school_year.presence || adoption.school_year_label) == school_year }
+                         .filter_map { |adoption| adoption.book&.title }
+    (pending + confirmed).uniq
+  end
+
   # Consecutive prior school years with at least one reported adoption
   # (AdoptionReport, from either the check-in or the books-page modal),
   # counted backward starting the year immediately before the current/

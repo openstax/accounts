@@ -33,13 +33,13 @@ module Account
     # year's rows show up as pending on the Impact tab (see PendingImpact).
     def thanks_message(rows)
       current = rows.select { |row| row[:school_year] == SchoolYear.current }
-      return 'Thank you. Your report is saved and will count in your totals once we confirm it, usually by tomorrow.' if current.empty?
+      return 'Thank you. Your report is saved and will count in your totals once we confirm it.' if current.empty?
 
       books = helpers.pluralize(current.size, 'book')
       students = current.sum { |row| row[:students].to_i }
       added = students.positive? ? "#{books} and #{helpers.pluralize(students, 'student')}" : books
 
-      "Thank you. You added #{added} to your impact. This shows now as pending, and joins your totals once we confirm it, usually by tomorrow."
+      "Thank you. You added #{added} to your impact. This shows now as pending, and joins your totals once we confirm it."
     end
 
     # Skip fully blank rows (the modal always submits at least one row, plus

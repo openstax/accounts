@@ -57,7 +57,7 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
 
         expect(flash[:notice]).to eq(
           'Thank you. You added 2 books and 165 students to your impact. ' \
-          'This shows now as pending, and joins your totals once we confirm it, usually by tomorrow.'
+          'This shows now as pending, and joins your totals once we confirm it.'
         )
       end
 
@@ -65,7 +65,7 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
         post :create, params: { books: [row(school_year: '2020 - 21')] }
 
         expect(flash[:notice]).to eq(
-          'Thank you. Your report is saved and will count in your totals once we confirm it, usually by tomorrow.'
+          'Thank you. Your report is saved and will count in your totals once we confirm it.'
         )
       end
 

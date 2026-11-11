@@ -74,7 +74,7 @@ RSpec.describe AccountController, type: :controller do
 
     get :impact
 
-    expect(response.body).to include('Next milestone')
+    expect(response.body).to include('Milestones')
     expect(response.body).to include('First adoption')
     expect(response.body).to include('Report this term’s classes to keep your impact current')
     expect(response.body).to include('Grows with your confirmed adoptions')

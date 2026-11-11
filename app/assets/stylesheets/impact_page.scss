@@ -225,27 +225,6 @@
     color: var(--os-text);
   }
 
-  .impact-milestones__count {
-    @include set-font(helper-label);
-    color: var(--os-text-helper);
-    white-space: nowrap;
-  }
-
-  .impact-milestones__bar {
-    height: 8px;
-    background: var(--os-page-bg);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-
-  .impact-milestones__bar-fill {
-    height: 100%;
-    background: var(--os-green);
-    border-radius: 4px;
-    transition: width 200ms ease-out;
-  }
-
   .impact-milestones__grid {
     list-style: none;
     margin: 0;
