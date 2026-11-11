@@ -69,6 +69,8 @@ class AccountController < Newflow::BaseController
                                         .pluck(:book_title, :status).to_h
 
     @can_report_adoptions = !current_user.student? && !current_user.self_learner?
+    # Edits only stick once they reach Salesforce; with the push off, the next sync would undo them.
+    @show_book_interests = @can_report_adoptions && Settings::Salesforce.push_book_interest_enabled
     catalog = @can_report_adoptions ? AdoptionBookCatalog.books : []
     @report_abbreviation_by_title = catalog.to_h { |book| [book.title, book.salesforce_abbreviation] }
     assign_book_interests(catalog) if @can_report_adoptions

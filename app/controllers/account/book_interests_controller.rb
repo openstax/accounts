@@ -53,7 +53,8 @@ module Account
     end
 
     def require_instructor
-      return unless current_user.student? || current_user.self_learner?
+      return unless current_user.student? || current_user.self_learner? ||
+                    !Settings::Salesforce.push_book_interest_enabled
 
       redirect_to back_to_list, alert: t('book_interest.not_available')
     end

@@ -48,7 +48,8 @@ module Account
                                status: answer, source: 'books_status', surface: 'books', book: book)
 
       if report.save
-        add_to_interests(abbreviation) if answer == 'considering' && abbreviation.present?
+        add_to_interests(abbreviation) if answer == 'considering' && abbreviation.present? &&
+                                          Settings::Salesforce.push_book_interest_enabled
         redirect_to account_books_path, notice: t('book_status.saved', school_year: SchoolYear.current)
       else
         redirect_to account_books_path, alert: t('book_status.failed')

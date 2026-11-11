@@ -352,6 +352,7 @@ RSpec.describe AccountController, type: :controller do
 
   describe 'the "Books you\'re interested in" section' do
     before do
+      allow(Settings::Salesforce).to receive(:push_book_interest_enabled).and_return(true)
       allow_any_instance_of(FetchBookData).to receive(:books_by_subject).and_return([
         { subject_name: 'Science', books: [
           { title: 'Biology 2e', salesforce_abbreviation: 'Biology' },
@@ -359,6 +360,15 @@ RSpec.describe AccountController, type: :controller do
           { title: 'Astronomy 2e', salesforce_abbreviation: 'Astronomy' }
         ] }
       ])
+    end
+
+    it 'is hidden while the Salesforce push is off' do
+      allow(Settings::Salesforce).to receive(:push_book_interest_enabled).and_return(false)
+      user.update!(which_books: 'Biology')
+
+      get :books
+
+      expect(response.body).not_to include('id="book-interests"')
     end
 
     it 'lists each book by catalog title with a Remove control that names it' do

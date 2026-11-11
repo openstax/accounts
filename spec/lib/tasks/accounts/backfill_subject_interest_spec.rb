@@ -47,10 +47,10 @@ describe 'accounts:backfill_subject_interest' do
     expect(contact_and_lead_user.reload.which_books).to eq('Physics')
   end
 
-  it 'lets a blank Contact clear the list but never a blank Lead' do
+  it 'never lets a blank Contact or Lead clear the list' do
     subject.invoke
 
-    expect(blank_contact_user.reload.which_books).to be_nil
+    expect(blank_contact_user.reload.which_books).to eq('Biology')
     expect(blank_lead_user.reload.which_books).to eq('Biology')
   end
 
@@ -64,9 +64,8 @@ describe 'accounts:backfill_subject_interest' do
   it 'writes nothing on a dry run' do
     ENV['DRY_RUN'] = 'true'
 
-    expect { subject.invoke }.to output(/DRY RUN.*:updated=>4/m).to_stdout
+    expect { subject.invoke }.to output(/DRY RUN.*:updated=>3/m).to_stdout
 
     expect(contact_user.reload.which_books).to be_nil
-    expect(blank_contact_user.reload.which_books).to eq('Biology')
   end
 end

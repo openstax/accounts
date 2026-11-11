@@ -206,9 +206,13 @@ class UpdateUserContactInfo
           "Unknown faculty_verified field: '#{faculty_verified}' on contact #{sf_contact.id}"
   end
 
-  # Salesforce owns the list and which_books mirrors it, so a blank value clears it.
+  # which_books mirrors Salesforce, except that a blank value never clears it: Contacts made
+  # before the signup answers reached Salesforce would otherwise wipe them, and a blank list
+  # brings back the profile nudge (User#profile_needs_enrichment?). Clearing the last book
+  # from the Books tab goes through PushBookInterest, which writes the result directly.
   def update_book_interest!(user, sf_contact)
-    user.which_books = BookInterest.join(sf_contact.subject_interest).presence
+    books = BookInterest.join(sf_contact.subject_interest)
+    user.which_books = books if books.present?
   end
 
   def update_school_info!(user, sf_contact, schools_by_salesforce_id)

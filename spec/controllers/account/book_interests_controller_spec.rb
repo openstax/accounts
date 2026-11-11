@@ -14,6 +14,7 @@ RSpec.describe Account::BookInterestsController, type: :controller do
       ] }
     ])
     allow(PushBookInterest).to receive(:perform_later)
+    allow(Settings::Salesforce).to receive(:push_book_interest_enabled).and_return(true)
   end
 
   context 'when not signed in' do
@@ -30,6 +31,16 @@ RSpec.describe Account::BookInterestsController, type: :controller do
     before do
       allow(controller).to receive(:newflow_authenticate_user!).and_return(true)
       allow(controller).to receive(:current_user).and_return(user)
+    end
+
+    it 'refuses edits while the Salesforce push is off, since the next sync would undo them' do
+      allow(Settings::Salesforce).to receive(:push_book_interest_enabled).and_return(false)
+      expect(PushBookInterest).not_to receive(:perform_later)
+
+      post :create, params: { abbreviation: 'College Physics' }
+
+      expect(response).to redirect_to(list_path)
+      expect(user.reload.which_books).to eq('Biology')
     end
 
     describe '#create' do

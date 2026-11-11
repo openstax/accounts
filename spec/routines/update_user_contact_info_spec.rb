@@ -546,13 +546,13 @@ describe UpdateUserContactInfo, type: :routine do
       expect(user.reload.which_books).to eq('Astronomy')
     end
 
-    it 'clears which_books when the Contact has none' do
+    it 'keeps which_books when the Contact has none, so signup answers and the profile nudge survive' do
       user = FactoryBot.create :user, uuid: 'books-003', which_books: 'Biology'
       stub_salesforce_contacts([contact_with_interest(user, nil)])
 
       described_class.call
 
-      expect(user.reload.which_books).to be_nil
+      expect(user.reload.which_books).to eq('Biology')
     end
 
     it 'asks Salesforce for the field' do

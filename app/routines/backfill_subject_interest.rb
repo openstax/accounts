@@ -1,9 +1,9 @@
 # One-time (rerunnable) backfill of users.which_books from Salesforce's
 # Subject_Interest__c, so existing values show up on the Books tab without
 # waiting for a Contact or Lead to change. Applies the same rules as the syncs
-# (UpdateUserContactInfo / UpdateUserLeadInfo): a Contact is the source and a
-# blank one clears the list; a Lead only fills in or changes a non-blank value
-# and is ignored once the user has a Contact. Converted Leads are skipped; the
+# (UpdateUserContactInfo / UpdateUserLeadInfo): a Contact is the source, a Lead
+# counts only while the user has no Contact, and a blank value never clears the
+# list (see UpdateUserContactInfo#update_book_interest!). Converted Leads are skipped; the
 # Contact sync reaches their Contact. See lib/tasks/accounts/backfill_subject_interest.rake.
 class BackfillSubjectInterest
   BATCH_SIZE = 200
@@ -52,7 +52,7 @@ class BackfillSubjectInterest
     return @stats.lead_skipped += 1 if lead && record.is_converted
 
     books = BookInterest.join(record.subject_interest)
-    return @stats.unchanged += 1 if (lead && books.blank?) || books == user.which_books.to_s
+    return @stats.unchanged += 1 if books.blank? || books == user.which_books.to_s
 
     BookInterest.set_user!(user, books) unless @dry_run
     @stats.updated += 1

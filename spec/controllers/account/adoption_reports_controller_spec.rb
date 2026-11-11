@@ -227,12 +227,14 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
     end
 
     it 'enqueues the book interest push as an add for a considering answer' do
+      allow(Settings::Salesforce).to receive(:push_book_interest_enabled).and_return(true)
       expect(PushBookInterest).to receive(:perform_later).with(user: user, add: ['Sociology'])
 
       post :book_status, params: { id: saved_book.id, status: 'considering' }
     end
 
     it 'lists the book in the interests right away' do
+      allow(Settings::Salesforce).to receive(:push_book_interest_enabled).and_return(true)
       allow(PushBookInterest).to receive(:perform_later)
       user.update!(which_books: 'Astronomy')
 
