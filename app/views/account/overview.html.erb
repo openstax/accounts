@@ -12,15 +12,64 @@
 <% incomplete_signup = !staff && current_user.incomplete_signup? %>
 <% show_assignable_callout = school_supports_assignable && is_verified_instructor && !assignable_enabled && (!dismissed_assignable_callout || current_user.is_administrator?) %>
 
+<% school_name = current_user&.school&.name.presence || current_user&.self_reported_school.presence %>
+<% faculty_status = current_user&.faculty_status.to_s %>
+<% instructor_status =
+    case faculty_status
+    when 'confirmed_faculty' then 'Verified'
+    when 'pending_faculty', 'pending_sheerid' then 'Pending verification'
+    when 'rejected_faculty', 'rejected_by_sheerid' then 'Not verified'
+    when 'incomplete_signup' then 'Incomplete signup'
+    when 'no_faculty_info', '' then 'Not verified'
+    else faculty_status.titleize
+    end %>
+<% role_label = staff ? current_user.staff_role_label : (current_user.role.present? ? current_user.role.titleize : 'Instructor') %>
+<% account_health =
+     if pending_instructor
+       'Verification needed'
+     elsif incomplete_signup
+       'Finish signup'
+     else
+       'All set'
+     end %>
+<% completeness = account_completeness_summary(current_user) %>
+
 <div class="account-layout">
   <%= render 'account/navigation' %>
   <div class="account-layout__content">
+    <header class="account-overview__header">
+      <h1 class="account-overview__title">
+        Welcome back<% if current_user&.first_name.present? %>, <%= current_user.first_name %><% end %>
+      </h1>
+
+      <div class="account-overview__badges">
+        <% if is_verified_instructor %>
+          <span class="account-badge account-badge--verified">Verified educator</span>
+        <% end %>
+        <% if current_user.school&.name.present? %>
+          <span class="account-badge account-badge--school"><%= current_user.school.name %></span>
+        <% end %>
+      </div>
+
+      <p class="account-overview__subtitle">
+        <% if school_name.present? && staff %>
+          Your account is linked to <strong><%= school_name %></strong>. Access your resources and account settings from here.
+        <% elsif school_name.present? %>
+          You’re signed in as an instructor at <strong><%= school_name %></strong>. Access your teaching tools, resources, and account settings from here.
+        <% else %>
+          Access your teaching tools, resources, and account settings from here. Add your school to personalize your experience.
+          <a class="account-overview__inline-link" href="<%= account_profile_path %>">Update profile</a>
+        <% end %>
+      </p>
+    </header>
+
     <%= render 'account/check_in_card', check_in: @annual_check_in if @annual_check_in %>
+
     <% if show_assignable_callout %>
       <div class="account-callout account-callout--assignable" id="assignable-callout">
         <div class="account-callout__text">
           <p class="account-callout__eyebrow">OpenStax Assignable</p>
-          <h3>Assignable is available at <%= current_user.school&.name || 'your institution' %></h3>
+          <h2 class="account-callout__title">Assignable is available at <%= current_user.school&.name || 'your institution' %></h2>
           <p>
             Good news — <%= current_user.school&.name || 'your institution' %> supports OpenStax Assignable.
             Use Assignable to give your students auto-graded practice and keep grades synced, all within your learning management system (LMS).
@@ -28,8 +77,8 @@
           <p>You can choose whether and when to use it — support is available if you’d like help getting started.</p>
         </div>
         <div class="account-callout__actions">
-          <%= link_to 'Learn more', 'https://openstax.org/assignable', class: 'account-callout__button account-callout__button--ghost', target: '_blank', rel: 'noopener' %>
           <%= link_to 'Set up Assignable', 'https://openstax.org/assignable/setup', class: 'account-callout__button account-callout__button--primary', target: '_blank', rel: 'noopener' %>
+          <%= link_to 'Learn more', 'https://openstax.org/assignable', class: 'account-callout__button account-callout__button--ghost', target: '_blank', rel: 'noopener' %>
         </div>
         <button type="button"
                 class="account-callout__dismiss js-dismiss-callout"
@@ -44,10 +93,10 @@
     <% if @show_profile_nudge_banner %>
       <%= render 'account/profile_nudge_callout' %>
     <% elsif pending_instructor %>
-      <div class="account-callout account-callout--pending" id="verification-callout">
+      <div class="account-callout" id="verification-callout">
         <div class="account-callout__text">
-          <p class="account-callout__eyebrow account-callout__eyebrow--alert">Action required</p>
-          <h3>Complete instructor verification</h3>
+          <p class="account-callout__eyebrow">Action required</p>
+          <h2 class="account-callout__title">Complete instructor verification</h2>
           <p>Verifying your instructor status unlocks instructor-only resources, downloadable assets, and Assignable tools.</p>
           <p>Finish verification today to keep your educator access active.</p>
         </div>
@@ -60,10 +109,10 @@
         </div>
       </div>
     <% elsif incomplete_signup %>
-      <div class="account-callout account-callout--pending" id="complete-signup-callout">
+      <div class="account-callout" id="complete-signup-callout">
         <div class="account-callout__text">
-          <p class="account-callout__eyebrow account-callout__eyebrow--alert">Finish signing up</p>
-          <h3>Complete your instructor profile</h3>
+          <p class="account-callout__eyebrow">Finish signing up</p>
+          <h2 class="account-callout__title">Complete your instructor profile</h2>
           <p>We still need a bit more information to activate your instructor access.</p>
           <p>Finish the signup flow to verify your teaching role and unlock instructor-only resources.</p>
         </div>
@@ -79,10 +128,10 @@
           school). Distinct from the callouts above: this user already has
           instructor access -- we're just inviting them to finish enriching
           their profile so we can point them to the right resources. %>
-      <div class="account-callout account-callout--pending" id="enrich-profile-callout">
+      <div class="account-callout" id="enrich-profile-callout">
         <div class="account-callout__text">
           <p class="account-callout__eyebrow">A couple more details</p>
-          <h3>Finish telling us about your teaching</h3>
+          <h2 class="account-callout__title">Finish telling us about your teaching</h2>
           <p>You skipped a few questions when you signed up -- add them so we can point you to the right book resources.</p>
         </div>
         <div class="account-callout__actions">
@@ -93,90 +142,68 @@
       </div>
     <% end %>
 
-    <% school_name = current_user&.school&.name.presence || current_user&.self_reported_school.presence %>
-    <% faculty_status = current_user&.faculty_status.to_s %>
-    <% instructor_status =
-        case faculty_status
-        when 'confirmed_faculty' then 'Verified'
-        when 'pending_faculty', 'pending_sheerid' then 'Pending verification'
-        when 'rejected_faculty', 'rejected_by_sheerid' then 'Not verified'
-        when 'incomplete_signup' then 'Incomplete signup'
-        when 'no_faculty_info', '' then 'Not verified'
-        else faculty_status.titleize
-        end %>
-
-    <%= render(
-          'shared/account_layout_shell',
-          locals: {
-            title: 'Your OpenStax Account',
-            description: 'This is your home base for managing OpenStax teaching tools, resources, and account access.'
-          }
-        ) do %>
-
-      <div class="account-shell__body account-overview">
-        <% role_label = staff ? current_user.staff_role_label : (current_user.role.present? ? current_user.role.titleize : 'Instructor') %>
-        <% account_health =
-             if pending_instructor
-               'Verification needed'
-             elsif incomplete_signup
-               'Finish signup'
-             else
-               'All set'
-             end %>
-
-        <header class="account-overview__header">
-          <h1 class="account-overview__title">
-            Welcome back<% if current_user&.first_name.present? %>, <%= current_user.first_name %><% end %>
-          </h1>
-
-          <div class="account-overview__badges">
-            <% if is_verified_instructor %>
-              <span class="account-badge account-badge--verified">Verified educator</span>
-            <% end %>
-            <% if current_user.school&.name.present? %>
-              <span class="account-badge account-badge--school"><%= current_user.school.name %></span>
-            <% end %>
+    <% if flash[:lms_answered_label] %>
+      <div id="lms-question-card" class="account-callout account-callout--lms-confirmed">
+        <p><strong>Thanks!</strong> We'll surface the <%= flash[:lms_answered_label] %> setup guide under LMS / Assignable setup below.</p>
+      </div>
+    <% elsif @show_lms_card %>
+      <div id="lms-question-card" class="account-callout account-callout--lms">
+        <div class="account-callout__lms-header">
+          <div class="account-callout__text">
+            <p class="account-callout__eyebrow">One quick question</p>
+            <h2 class="account-callout__title">Do you use a learning management system (LMS)?</h2>
+            <p>We'll point you to the right Assignable setup guide.</p>
           </div>
+          <%= button_to 'Not now', account_lms_answer_dismiss_path,
+                        method: :post,
+                        class: 'account-callout__lms-dismiss',
+                        form_class: 'account-callout__lms-dismiss-form' %>
+        </div>
+        <div class="account-callout__lms-pills">
+          <% User::LMS_OPTIONS.each do |value, label| %>
+            <%= button_to label, account_lms_answer_path,
+                          method: :post,
+                          params: { lms_used: value },
+                          class: 'account-callout__lms-pill',
+                          form_class: 'account-callout__lms-pill-form' %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
 
-          <p class="account-overview__subtitle">
-            <% if school_name.present? && staff %>
-              Your account is linked to <strong><%= school_name %></strong>. Access your resources and account settings from here.
-            <% elsif school_name.present? %>
-              You’re signed in as an instructor at <strong><%= school_name %></strong>. Access your teaching tools, resources, and account settings from here.
-            <% else %>
-              Access your teaching tools, resources, and account settings from here. Add your school to personalize your experience.
-              <a class="account-overview__inline-link" href="<%= account_profile_path %>">Update profile</a>
-            <% end %>
-          </p>
-
-          <div class="account-profile__section-card account-overview__summary-card">
-            <div class="account-profile__field">
-              <div class="account-profile__label">Role</div>
-              <div class="account-profile__value"><%= role_label %></div>
+    <%= render('shared/account_layout_shell') do %>
+      <div class="account-shell__body account-overview">
+        <section class="account-overview__section" aria-labelledby="account-details-heading">
+          <div class="account-shell__section-header">
+            <h2 id="account-details-heading">Account details</h2>
+          </div>
+          <dl class="account-facts">
+            <div class="account-facts__item">
+              <dt>Role</dt>
+              <dd><%= role_label %></dd>
             </div>
-            <div class="account-profile__field">
-              <div class="account-profile__label">School</div>
-              <div class="account-profile__value"><%= school_name.presence || 'Add your school' %></div>
+            <div class="account-facts__item">
+              <dt>School</dt>
+              <dd><%= school_name.presence || 'Add your school' %></dd>
             </div>
             <% unless staff %>
-              <div class="account-profile__field">
-                <div class="account-profile__label">Instructor status</div>
-                <div class="account-profile__value"><%= instructor_status %></div>
+              <div class="account-facts__item">
+                <dt>Instructor status</dt>
+                <dd><%= instructor_status %></dd>
               </div>
             <% end %>
-            <div class="account-profile__field">
-              <div class="account-profile__label">Account health</div>
-              <div class="account-profile__value"><%= account_health %></div>
+            <div class="account-facts__item">
+              <dt>Account health</dt>
+              <dd><%= account_health %></dd>
             </div>
-          </div>
-          <p class="account-overview__note account-overview__note--inline">
+          </dl>
+          <p class="account-overview__note">
             Need changes? Manage details in
             <a href="<%= account_profile_path %>">Profile</a> and <a href="<%= account_security_path %>">Security</a>.
           </p>
-        </header>
+        </section>
 
-        <% completeness = account_completeness_summary(current_user) %>
-        <section class="account-completeness" aria-label="Profile completeness">
+        <section class="account-completeness account-overview__section" aria-label="Profile completeness">
           <div class="account-completeness__header">
             <div class="account-completeness__title">Your profile is <%= completeness[:percent] %>% complete</div>
             <div class="account-completeness__hint">
@@ -202,42 +229,12 @@
           </div>
         </section>
 
-        <% if flash[:lms_answered_label] %>
-          <div id="lms-question-card" class="account-callout account-callout--lms-confirmed">
-            <p><strong>Thanks!</strong> We'll surface the <%= flash[:lms_answered_label] %> setup guide under LMS / Assignable setup below.</p>
-          </div>
-        <% elsif @show_lms_card %>
-          <div id="lms-question-card" class="account-callout account-callout--pending account-callout--lms">
-            <div class="account-callout__lms-header">
-              <div class="account-callout__text">
-                <p class="account-callout__eyebrow account-callout__eyebrow--alert">One quick question</p>
-                <h3>Do you use a learning management system (LMS)?</h3>
-                <p>We'll point you to the right Assignable setup guide.</p>
-              </div>
-              <%= button_to 'Not now', account_lms_answer_dismiss_path,
-                            method: :post,
-                            class: 'account-callout__lms-dismiss',
-                            form_class: 'account-callout__lms-dismiss-form' %>
-            </div>
-            <div class="account-callout__lms-pills">
-              <% User::LMS_OPTIONS.each do |value, label| %>
-                <%= button_to label, account_lms_answer_path,
-                              method: :post,
-                              params: { lms_used: value },
-                              class: 'account-callout__lms-pill',
-                              form_class: 'account-callout__lms-pill-form' %>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
-
-        <section class="account-profile__section account-overview__section" aria-label="Primary actions">
+        <section class="account-overview__section" aria-labelledby="quick-actions-heading">
           <div class="account-shell__section-header">
-            <h2>Quick actions</h2>
+            <h2 id="quick-actions-heading">Quick actions</h2>
             <p>Jump straight to the tools you use most often.</p>
           </div>
-        
-          
+
           <% quick_actions = [
                { icon: 'fa fa-pencil', title: 'Report usage', body: "Share how you're using OpenStax this term.", button: true, cta: 'Report usage →' },
                { icon: 'fa fa-plug', title: 'LMS / Assignable setup', body: 'Connect Assignable tools to Canvas, Blackboard, and more.', href: 'https://openstax.org/assignable/setup', cta: 'View setup guide →', external: true },
@@ -246,57 +243,44 @@
                { icon: 'fa fa-envelope', title: 'Keep in touch', body: 'Get OpenStax updates about new books, webinars, and instructor opportunities.', href: 'https://openstax.org/newsletters', cta: 'Subscribe →', external: true }
              ] %>
 
-          <div class="resource-cards account-overview__quick-cards">
-            <div class="card-container">
-              <% quick_actions.each do |action| %>
+          <ul class="account-actions">
+            <% quick_actions.each do |action| %>
+              <li class="account-actions__item">
+                <span class="account-actions__icon <%= action[:icon] %>" aria-hidden="true"></span>
+                <div class="account-actions__text">
+                  <h3><%= action[:title] %></h3>
+                  <p><%= action[:body] %></p>
+                </div>
                 <% if action[:button] %>
-                  <div class="card card--button">
-                    <span class="card-icon <%= action[:icon] %>" aria-hidden="true"></span>
-                    <h2><%= action[:title] %></h2>
-                    <p><%= action[:body] %></p>
-                    <button type="button"
-                            class="card-action card-action--button"
-                            data-report-adoption-trigger="true">
-                      <%= action[:cta] %>
-                    </button>
-                  </div>
+                  <button type="button"
+                          class="account-actions__cta"
+                          data-report-adoption-trigger="true">
+                    <%= action[:cta] %>
+                  </button>
                 <% else %>
-                  <a class="card-link"
+                  <a class="account-actions__cta"
                      href="<%= action[:href] %>"
                      <%= action[:external] ? 'target="_blank" rel="noopener"' : '' %>>
-                    <div class="card">
-                      <span class="card-icon <%= action[:icon] %>" aria-hidden="true"></span>
-                      <h2><%= action[:title] %></h2>
-                      <p><%= action[:body] %></p>
-                      <span class="card-action"><%= action[:cta] %></span>
-                    </div>
+                    <%= action[:cta] %>
                   </a>
                 <% end %>
-              <% end %>
-            </div>
-          </div>
+              </li>
+            <% end %>
+          </ul>
         </section>
 
-
-        <section class="account-profile__section account-overview__section" aria-label="OpenStax status">
+        <section class="account-overview__section" aria-labelledby="status-heading">
           <div class="account-shell__section-header">
-            <h2>OpenStax status</h2>
+            <h2 id="status-heading">OpenStax status</h2>
             <p>Current health of OpenStax services.</p>
           </div>
-          <div class="account-profile__section-card">
-            <div class="account-profile__field">
-              <div class="account-profile__label">Systems</div>
-              <div class="account-profile__value">
-                <%# no live status check here — link out rather than assert a state %>
-                <a class="account-overview__status-link"
-                   href="https://status.openstax.org"
-                   target="_blank"
-                   rel="noopener">
-                  Check current service status <span class="account-overview__external-icon" aria-hidden="true">→</span>
-                </a>
-              </div>
-            </div>
-          </div>
+          <%# no live status check here — link out rather than assert a state %>
+          <a class="account-overview__status-link"
+             href="https://status.openstax.org"
+             target="_blank"
+             rel="noopener">
+            Check current service status <span class="account-overview__external-icon" aria-hidden="true">→</span>
+          </a>
         </section>
       </div>
     <% end %>

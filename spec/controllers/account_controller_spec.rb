@@ -261,7 +261,7 @@ RSpec.describe AccountController, type: :controller do
 
   describe 'nav items by role' do
     def nav_labels
-      response.body.scan(%r{<nav class="account-shell__nav">.*?</nav>}m).first.scan(%r{>([^<]+)</a>}).flatten
+      response.body.scan(%r{<nav class="account-shell__nav"[^>]*>.*?</nav>}m).first.scan(%r{>([^<]+)</a>}).flatten
     end
 
     {

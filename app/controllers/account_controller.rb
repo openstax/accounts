@@ -142,7 +142,13 @@ class AccountController < Newflow::BaseController
                         view: 'learner_overview'
   end
 
+  PAGE_TITLES = {
+    overview: 'Account overview', profile: 'Profile', security: 'Security',
+    books: 'Books', impact: 'Impact', support: 'Support'
+  }.freeze
+
   def render_account_page(current_key, title:, description:, view: current_key)
+    @page_title = "#{PAGE_TITLES.fetch(current_key)} - My OpenStax"
     @account_nav_items = account_nav_items_for(current_user)
     @account_nav_current = current_key
     @account_shell_title = title
