@@ -102,6 +102,14 @@ module Settings
         Settings::Db.store.adoption_review_student_threshold = count
       end
 
+      def push_book_interest_enabled
+        Settings::Db.store.push_book_interest_enabled
+      end
+
+      def push_book_interest_enabled=(bool)
+        Settings::Db.store.push_book_interest_enabled = bool
+      end
+
     end
 
   end
