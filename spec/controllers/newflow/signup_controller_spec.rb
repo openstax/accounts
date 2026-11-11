@@ -44,7 +44,7 @@ module Newflow
       end
     end
     describe 'POST #switch_role' do
-      before { allow(UpdateExistingSalesforceLead).to receive(:perform_later) }
+      before { allow(RemoveSalesforceLeadAfterRoleSwitch).to receive(:perform_later) }
 
       it 'sends an educator who has not verified their email back to the student PIN screen' do
         user = FactoryBot.create(

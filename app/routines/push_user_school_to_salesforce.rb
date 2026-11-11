@@ -121,7 +121,7 @@ class PushUserSchoolToSalesforce
 
   # Looked up by the stored id only: this branch is already gated on it being
   # present, and reconciling a stale or missing id belongs to
-  # UpdateExistingSalesforceLead, not here -- a nil result is nothing to do.
+  # RemoveSalesforceLeadAfterRoleSwitch, not here -- a nil result is nothing to do.
   def set_lead_school(user)
     lead = OpenStax::Salesforce::Remote::Lead.find(user.salesforce_lead_id)
     return true if lead.nil?

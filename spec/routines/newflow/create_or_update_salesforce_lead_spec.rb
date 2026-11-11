@@ -79,6 +79,20 @@ module Newflow
         expect(lead.verification_status).to eq(User::REJECTED_FACULTY)
       end
 
+      # A SheerID push queued before a switch to student can run after the switch
+      # deleted the lead; it must not recreate it.
+      it 'never creates a lead for a student who has none' do
+        student = FactoryBot.create(:user, role: User::STUDENT_ROLE, faculty_status: User::REJECTED_FACULTY)
+        allow(OpenStax::Salesforce::Remote::Lead).to receive(:find_by).and_return(nil)
+        expect(OpenStax::Salesforce::Remote::Lead).not_to receive(:new)
+
+        result = described_class.call(user: student)
+
+        expect(result.outputs.lead_saved).to eq(false)
+        expect(student.reload.salesforce_lead_id).to be_nil
+        expect(SecurityLog.where(event_type: :not_creating_salesforce_lead_for_student).count).to eq(1)
+      end
+
       it 'is never stamped with a faculty status it did not have' do
         student = FactoryBot.create(
           :user, role: User::STUDENT_ROLE, faculty_status: User::NO_FACULTY_INFO,

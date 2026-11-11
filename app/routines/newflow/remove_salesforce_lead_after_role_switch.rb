@@ -1,16 +1,20 @@
 module Newflow
-  class UpdateExistingSalesforceLead
+  class RemoveSalesforceLeadAfterRoleSwitch
 
     lev_routine active_job_enqueue_options: { queue: :salesforce }
 
     uses_routine CreateOrUpdateSalesforceLead
 
+    SALESFORCE_ID = /\A[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?\z/
+    private_constant :SALESFORCE_ID
+
     protected #################
 
-    # Used when a user changes role mid-signup. The lead is kept rather than deleted --
-    # it is the only record of how often people pick the wrong role and who they are --
-    # but one is never created here: a user who never reached SheerID has nothing in
-    # Salesforce to correct, and students aren't leads in their own right.
+    # Used when an educator switches to student mid-signup. Students aren't leads, so
+    # the lead this signup created is deleted; the user_switched_signup_role security
+    # log already records the switch. A lead that existed before the signup (adopted by
+    # uuid or email) or has converted carries history this signup didn't write, so it
+    # is relabelled Student instead. A lead is never created here.
     #
     # In development and test, `perform_later` runs inline inside SwitchSignupRole's
     # transaction, so Salesforce failures must be swallowed there or the role change
@@ -35,6 +39,32 @@ module Newflow
         return
       end
 
+      created_by_signup = created_by_this_signup?(lead, user)
+      if created_by_signup == :unknown
+        raise_retryable_failure!('lead created date lookup failed', user) if retry_on_failure?
+        return
+      end
+
+      created_by_signup ? delete_lead(user, lead) : relabel_lead(user, lead)
+    end
+
+    private ###################
+
+    def delete_lead(user, lead)
+      lead.destroy
+    rescue StandardError => e
+      report(user, 'lead delete failed', e)
+      raise_retryable_failure!('lead delete failed', user) if retry_on_failure?
+    else
+      user.update(salesforce_lead_id: nil)
+      SecurityLog.create!(
+        user: user,
+        event_type: :deleted_salesforce_lead_after_role_switch,
+        event_data: { lead_id: lead.id.to_s }
+      )
+    end
+
+    def relabel_lead(user, lead)
       # Hand the id to CreateOrUpdateSalesforceLead so it re-finds this same lead
       # rather than searching again and risking a different match.
       user.update(salesforce_lead_id: lead.id) unless user.salesforce_lead_id == lead.id
@@ -54,13 +84,29 @@ module Newflow
       outputs.lead_id = lead.id.to_s
     end
 
-    private ###################
-
+    # A converted lead is followed to its Contact, which reports contact_saved and
+    # leaves lead_saved false.
     def push_lead(user)
-      run(CreateOrUpdateSalesforceLead, user: user).outputs.lead_saved
+      pushed = run(CreateOrUpdateSalesforceLead, user: user).outputs
+      pushed.lead_saved || pushed.contact_saved
     rescue StandardError => e
       report(user, 'lead update failed', e)
       false
+    end
+
+    # LeadSource can't tell who made a lead: CreateOrUpdateSalesforceLead stamps
+    # Account Creation on every lead it touches, adopted ones included. A lead created
+    # after this account was is one this signup made. The gem's Lead doesn't map
+    # CreatedDate, so it is read directly.
+    def created_by_this_signup?(lead, user)
+      return false if lead.is_converted || !lead.id.to_s.match?(SALESFORCE_ID)
+
+      soql = "SELECT CreatedDate FROM Lead WHERE Id = '#{lead.id}'"
+      record = ActiveForce.sfdc_client.query(soql).first
+      record.present? && Time.zone.parse(record['CreatedDate']) >= user.created_at
+    rescue StandardError => e
+      report(user, 'lead created date lookup failed', e)
+      :unknown
     end
 
     # Mirrors the lookup order in CreateOrUpdateSalesforceLead, which can find and

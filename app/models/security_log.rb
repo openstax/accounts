@@ -134,6 +134,8 @@ class SecurityLog < ApplicationRecord
     salesforce_lead_status_synced
     faculty_status_repaired
     salesforce_record_unlinked
+    deleted_salesforce_lead_after_role_switch
+    not_creating_salesforce_lead_for_student
   ]
 
   json_serialize :event_data, Hash
