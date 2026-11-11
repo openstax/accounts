@@ -9,19 +9,9 @@
     [label, label]
   end
 
-  book_scope = Book.all
-  book_scope = book_scope.where(book_state: %w[live deprecated]) if Book.column_names.include?('book_state')
-
-  saved_book_ids =
-    if defined?(current_user) && current_user.present?
-      UserBook.where(user_id: current_user.id).pluck(:book_id)
-    else
-      []
-    end
-
-  saved_books = book_scope.where(id: saved_book_ids).order(title: :asc)
-  other_books = book_scope.where.not(id: saved_book_ids).order(title: :asc)
-  book_options = (saved_books + other_books).map { |book| [book.title, book.title] }
+  book_options = AdoptionBookCatalog.books.map { |book| [book.title, book.salesforce_abbreviation] }
+  how_using_prefill =
+    defined?(current_user) && current_user.present? ? AdoptionBookCatalog.how_using_by_book_for(current_user) : {}
 
   book_row_markup = capture do
 %>
@@ -82,6 +72,20 @@
                  data-report-adoption-students />
         </label>
       </div>
+
+      <div class="report-adoption__field report-adoption__field--how-using">
+        <label>
+          How are you using it?
+          <select name="books[__INDEX__][how_using]"
+                  required
+                  class="form-control"
+                  data-report-adoption-how-using>
+            <% AdoptionReport::HOW_USING_OPTIONS.each do |option| %>
+              <option value="<%= option %>"><%= option %></option>
+            <% end %>
+          </select>
+        </label>
+      </div>
     </div>
   </div>
 <% end %>
@@ -113,7 +117,8 @@
                       method: :post,
                       id: 'report-adoption-form',
                       class: 'report-adoption__form',
-                      data: { current_school_year: current_school_year_label } do %>
+                      data: { current_school_year: current_school_year_label,
+                              how_using_prefill: how_using_prefill.to_json } do %>
 
           <%= hidden_field_tag :return_to, request.fullpath %>
 
@@ -142,7 +147,7 @@
             </div>
 
             <%= submit_tag 'Submit report',
-                           class: 'ox-button ox-button--solid' %>
+                           class: 'report-adoption__submit' %>
           </div>
         <% end %>
       </div>

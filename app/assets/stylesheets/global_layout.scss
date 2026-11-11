@@ -2809,7 +2809,7 @@ body:not(.os-app) #application-footer {
 .account-books__submit,
 .account-impact__cta,
 .account-callout__button,
-.report-adoption-modal .ox-button {
+.report-adoption__submit {
   transition: background 150ms var(--os-ease-out),
               box-shadow 150ms var(--os-ease-out),
               transform 150ms var(--os-ease-out);
@@ -2825,7 +2825,7 @@ body:not(.os-app) #application-footer {
 .account-books__submit:active,
 .account-impact__cta:active,
 .account-callout__button:active,
-.report-adoption-modal .ox-button:active:not(:disabled) {
+.report-adoption__submit:active:not(:disabled) {
   transform: translateY(0) scale(0.98);
   box-shadow: none;
 }

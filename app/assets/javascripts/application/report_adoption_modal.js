@@ -26,6 +26,7 @@
     var $row = $(templateHtml);
     $row.find('select').val('');
     $row.find('input[type="number"]').val('');
+    resetHowUsing($row);
     $('[data-report-adoption-books]').append($row);
     applyDefaultSchoolYear($row);
     renumberRows();
@@ -46,6 +47,7 @@
     if ($rows.length <= 1) {
       $row.find('select').val('');
       $row.find('input[type="number"]').val('');
+      resetHowUsing($row);
       updateSummaryMetrics();
       return;
     }
@@ -78,10 +80,30 @@
     $rows = $container.find('[data-report-adoption-row]');
     $rows.find('select').val('');
     $rows.find('input[type="number"]').val('');
+    $rows.each(function(_, row) { resetHowUsing($(row)); });
     applyDefaultSchoolYear($rows.first());
     renumberRows();
     updateRemoveButtons();
     updateSummaryMetrics();
+  }
+
+  function resetHowUsing($row) {
+    var $howUsing = $row.find('[data-report-adoption-how-using]');
+    $howUsing.prop('selectedIndex', 0).removeData('touched');
+  }
+
+  // Prefill what the user said about this book last time, until they pick a value themselves.
+  function prefillHowUsing(event) {
+    var $row = $(event.currentTarget).closest('[data-report-adoption-row]');
+    var $howUsing = $row.find('[data-report-adoption-how-using]');
+    var prefill = $('#report-adoption-form').data('how-using-prefill') || {};
+    var value = prefill[event.currentTarget.value];
+
+    if ($howUsing.data('touched') || !value) {
+      return;
+    }
+
+    $howUsing.val(value);
   }
 
   function getCurrentSchoolYear() {
@@ -171,6 +193,10 @@
 
   $(document).on('input', '[data-report-adoption-students]', updateSummaryMetrics);
   $(document).on('change', '[data-report-adoption-row] select[name$="[name]"]', updateSummaryMetrics);
+  $(document).on('change', '[data-report-adoption-row] select[name$="[name]"]', prefillHowUsing);
+  $(document).on('change', '[data-report-adoption-how-using]', function() {
+    $(this).data('touched', true);
+  });
 
   // Submission is a plain form POST handled by Account::AdoptionReportsController;
   // the browser follows the redirect back to the page that opened the modal.

@@ -110,6 +110,10 @@
   align-items: flex-start;
 }
 
+.report-adoption__field--how-using {
+  grid-column: 1 / -1;
+}
+
 .report-adoption__field label {
   display: block;
   font-weight: 600;
@@ -297,8 +301,23 @@
   gap: 0.4rem;
 }
 
-.report-adoption__footer .ox-button {
+.report-adoption__submit {
   min-width: 200px;
+  min-height: 44px;
+  padding: 0.65rem 1.5rem;
+  border: 1px solid #D4450C;
+  border-radius: 0.35rem;
+  background: #D4450C;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background: #A43509;
+    border-color: #A43509;
+    color: #fff;
+  }
 }
 
 @media (max-width: 768px) {

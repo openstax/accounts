@@ -2,13 +2,27 @@ require 'rails_helper'
 
 RSpec.describe Account::AdoptionReportsController, type: :controller do
   let(:user) { FactoryBot.create(:user, :terms_agreed) }
+  let(:how_using) { AdoptionReport::HOW_USING_OPTIONS.first }
+
+  before do
+    allow_any_instance_of(FetchBookData).to receive(:books_by_subject).and_return([
+      { subject_name: 'Social Sciences', books: [
+        { title: 'Introduction to Sociology 3e', salesforce_abbreviation: 'Sociology', cover_url: nil }
+      ] },
+      { subject_name: 'Science', books: [
+        { title: 'College Physics', salesforce_abbreviation: 'College Physics', cover_url: nil }
+      ] }
+    ])
+  end
+
+  def row(overrides = {})
+    { name: 'Sociology', school_year: '2025 - 26', how_using: how_using, students: '10' }.merge(overrides)
+  end
 
   describe '#create' do
     context 'when not signed in' do
       it 'redirects to login instead of creating a report' do
-        expect {
-          post :create, params: { books: [{ name: 'Test Book', school_year: '2025 - 26', students: '10' }] }
-        }.not_to change { AdoptionReport.count }
+        expect { post :create, params: { books: [row] } }.not_to change { AdoptionReport.count }
 
         expect(response).to redirect_to(newflow_login_path)
       end
@@ -20,25 +34,18 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
         allow(controller).to receive(:current_user).and_return(user)
       end
 
-      it 'creates an adoption report for each valid row' do
+      it 'creates a report per valid row, storing the CMS title and the Salesforce abbreviation' do
         expect(PushAdoptionReports).to receive(:perform_later).with(user: user)
 
         expect {
-          post :create, params: {
-            books: [
-              { name: 'Intro to Sociology', school_year: '2025 - 26', students: '120' },
-              { name: 'College Physics', school_year: '2025 - 26', students: '45' }
-            ]
-          }
+          post :create, params: { books: [row(students: '120'), row(name: 'College Physics', students: '45')] }
         }.to change { AdoptionReport.count }.by(2)
 
-        report = AdoptionReport.find_by(book_title: 'Intro to Sociology')
-        expect(report.user).to eq(user)
-        expect(report.school_year).to eq('2025 - 26')
-        expect(report.students).to eq(120)
-        expect(report.status).to eq('using')
-        expect(report.source).to eq('books_modal')
-
+        report = AdoptionReport.find_by(salesforce_book_name: 'Sociology')
+        expect(report).to have_attributes(
+          user: user, book_title: 'Introduction to Sociology 3e', school_year: '2025 - 26', students: 120,
+          status: 'using', source: 'books_modal', how_using: how_using, surface: 'books'
+        )
         expect(response).to redirect_to(account_books_path)
         expect(flash[:notice]).to be_present
       end
@@ -47,103 +54,109 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
         expect {
           post :create, params: {
             return_to: account_impact_path(view: 'current'),
-            books: {
-              '0' => { name: 'Intro to Sociology', school_year: '2025 - 26', students: '120' },
-              '1' => { name: 'College Physics', school_year: '2025 - 26', students: '45' }
-            }
+            books: { '0' => row(students: '120'), '1' => row(name: 'College Physics', students: '45') }
           }
         }.to change { AdoptionReport.count }.by(2)
 
         expect(response).to redirect_to(account_impact_path(view: 'current'))
+        expect(AdoptionReport.pluck(:surface).uniq).to eq(['impact'])
+      end
+
+      { overview: :account_overview_path, books: :account_books_path,
+        impact: :account_impact_path, check_in: :account_check_in_path }.each do |surface, helper|
+        it "records #{surface} as the surface when returning to that page" do
+          path = public_send(helper)
+          post :create, params: { return_to: path, books: [row] }
+
+          expect(AdoptionReport.last.surface).to eq(surface.to_s)
+          expect(response).to redirect_to(path)
+        end
       end
 
       it 'does not redirect to an untrusted return path' do
-        post :create, params: {
-          return_to: '//example.com',
-          books: [{ name: 'Intro to Sociology', school_year: '2025 - 26', students: '10' }]
-        }
+        post :create, params: { return_to: '//example.com', books: [row] }
 
         expect(response).to redirect_to(account_books_path)
+        expect(AdoptionReport.last.surface).to eq('books')
+      end
+
+      it 'skips a book the CMS list does not know' do
+        expect {
+          post :create, params: { books: [row, row(name: 'Not A Real Book')] }
+        }.to change { AdoptionReport.count }.by(1)
+
+        expect(response).to redirect_to(account_books_path)
+        expect(flash[:notice]).to be_present
+      end
+
+      it 'skips a row whose how_using is not one of the four Salesforce values' do
+        expect {
+          post :create, params: { books: [row(how_using: 'Because I felt like it'), row(how_using: '')] }
+        }.not_to change { AdoptionReport.count }
+
+        expect(flash[:alert]).to be_present
       end
 
       it "flashes a partial-failure notice and still enqueues the push when some rows can't be saved" do
         expect(PushAdoptionReports).to receive(:perform_later).with(user: user)
 
         expect {
-          post :create, params: {
-            books: [
-              { name: 'Intro to Sociology', school_year: '2025 - 26', students: '120' },
-              { name: 'Bad Row', school_year: '2025 - 26', students: '-5' }
-            ]
-          }
+          post :create, params: { books: [row, row(name: 'College Physics', students: '-5')] }
         }.to change { AdoptionReport.count }.by(1)
 
-        expect(response).to redirect_to(account_books_path)
         expect(flash[:alert]).to be_present
         expect(flash[:notice]).to be_blank
       end
 
-      it "does not enqueue the push when no rows can be saved" do
+      it 'does not enqueue the push when no rows can be saved' do
         expect(PushAdoptionReports).not_to receive(:perform_later)
 
         expect {
-          post :create, params: {
-            books: [{ name: 'Bad Row', school_year: '2025 - 26', students: '-5' }]
-          }
+          post :create, params: { books: [row(students: '-5')] }
         }.not_to change { AdoptionReport.count }
 
-        expect(response).to redirect_to(account_books_path)
         expect(flash[:alert]).to be_present
       end
 
       it 'links the report to an existing Book by title when one matches' do
-        book = Book.create!(book_uuid: SecureRandom.uuid, title: 'Intro to Sociology')
+        book = Book.create!(book_uuid: SecureRandom.uuid, title: 'Introduction to Sociology 3e')
 
-        post :create, params: {
-          books: [{ name: 'Intro to Sociology', school_year: '2025 - 26', students: '10' }]
-        }
+        post :create, params: { books: [row] }
 
         expect(AdoptionReport.last.book).to eq(book)
       end
 
-      it 'leaves book nil when no catalog Book matches the title' do
-        post :create, params: {
-          books: [{ name: 'Some Unknown Title', school_year: '2025 - 26', students: '10' }]
-        }
-
-        expect(AdoptionReport.last.book).to be_nil
-      end
-
-      it 'upserts instead of duplicating when the same book/year is submitted again' do
-        post :create, params: {
-          books: [{ name: 'Intro to Sociology', school_year: '2025 - 26', students: '10' }]
-        }
+      it 'upserts on user, abbreviation and school year' do
+        post :create, params: { books: [row(students: '10')] }
 
         expect {
           post :create, params: {
-            books: [{ name: 'Intro to Sociology', school_year: '2025 - 26', students: '25' }]
+            books: [row(students: '25', how_using: AdoptionReport::HOW_USING_OPTIONS.last)]
           }
         }.not_to change { AdoptionReport.count }
 
-        expect(AdoptionReport.last.students).to eq(25)
+        expect(AdoptionReport.last).to have_attributes(students: 25, how_using: AdoptionReport::HOW_USING_OPTIONS.last)
+      end
+
+      it 'adopts a title-only row saved before abbreviations existed instead of duplicating it' do
+        legacy = user.adoption_reports.create!(
+          book_title: 'Introduction to Sociology 3e', school_year: '2025 - 26', source: 'check_in'
+        )
+
+        expect { post :create, params: { books: [row] } }.not_to change { AdoptionReport.count }
+
+        expect(legacy.reload).to have_attributes(salesforce_book_name: 'Sociology', source: 'books_modal')
       end
 
       it 'skips fully blank rows' do
         expect {
-          post :create, params: {
-            books: [
-              { name: '', school_year: '', students: '' },
-              { name: 'Intro to Sociology', school_year: '2025 - 26', students: '10' }
-            ]
-          }
+          post :create, params: { books: [{ name: '', school_year: '', students: '' }, row] }
         }.to change { AdoptionReport.count }.by(1)
       end
 
       it 'rejects a submission with no valid rows and redirects with an error' do
         expect {
-          post :create, params: {
-            books: [{ name: '', school_year: '', students: '' }]
-          }
+          post :create, params: { books: [{ name: '', school_year: '', students: '' }] }
         }.not_to change { AdoptionReport.count }
 
         expect(response).to redirect_to(account_books_path)
@@ -151,11 +164,8 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
       end
 
       it 'rejects a submission missing the books param entirely' do
-        expect {
-          post :create, params: {}
-        }.not_to change { AdoptionReport.count }
+        expect { post :create, params: {} }.not_to change { AdoptionReport.count }
 
-        expect(response).to redirect_to(account_books_path)
         expect(flash[:alert]).to be_present
       end
     end
