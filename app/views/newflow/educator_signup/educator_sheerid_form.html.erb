@@ -11,6 +11,7 @@
           current_step: "#{I18n.t(:"login_signup_form.step_counter", current_step: 3, total_steps: 4)} · #{I18n.t(:"login_signup_form.sheerid_verification_step_phase")}",
           classes: 'signup-page') do %>
 
+        <div class="educator-sheerid-intro">
         <p class="content control-group sheerid-verification-description">
           <%= I18n.t(:"login_signup_form.sheerid_verification_page_description") %>
         </p>
@@ -64,6 +65,7 @@
             %>
           </div>
         <% end %>
+        </div>
 
         <%= render partial: 'newflow/signup_alternatives', locals: {
               heading: I18n.t(:"login_signup_form.alternatives_heading"),
