@@ -28,6 +28,12 @@ describe OtherController, type: :controller do
           get(:profile_newflow)
           expect(response).to redirect_to(educator_sheerid_form_path)
         end
+
+        it 'sends a lifelong learner to the account overview, never into the educator steps' do
+          user.update!(role: :self_learner)
+          get(:profile_newflow)
+          expect(response).to redirect_to(account_overview_path)
+        end
       end
 
       context 'when profile is not complete and not SheerID eligible/skipped' do

@@ -41,7 +41,7 @@ class OtherController < Newflow::BaseController
   # profile-nudge banner below unreachable. From then on this page renders
   # normally and the banner does the reminding instead.
   def ensure_complete_educator_signup
-    return if current_user.student?
+    return if current_user.student? || current_user.self_learner?
 
     if decorated_user.incomplete_step_3?
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification. Redirecting.')
