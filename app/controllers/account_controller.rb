@@ -26,7 +26,8 @@ class AccountController < Newflow::BaseController
       @show_lms_card = !current_user.lms_answered? &&
                        (current_user.lms_question_pending? || params[:show_lms].present?)
       @show_profile_nudge_banner = show_profile_nudge_banner?
-      check_in = AnnualCheckIn.new(current_user) if current_user.annual_check_in_due?
+      check_in_term = current_user.check_in_term
+      check_in = AnnualCheckIn.new(current_user, term: check_in_term) if check_in_term
       @annual_check_in = check_in if check_in&.rows&.any?
       @overview_impact = OverviewImpact.new(current_user)
 
