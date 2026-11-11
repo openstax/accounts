@@ -21,6 +21,8 @@ class AccountController < Newflow::BaseController
   def overview
     if current_user.student?
       render_student_overview
+    elsif current_user.self_learner?
+      render_learner_overview
     else
       # Shown once until answered/dismissed; the completeness meter's "+ Answer
       # LMS question" chip can force it back open with ?show_lms=1.
@@ -70,6 +72,8 @@ class AccountController < Newflow::BaseController
   end
 
   def impact
+    return redirect_to(account_overview_path) if current_user.self_learner?
+
     requested_view = params[:view].presence || params[:scope]
     @view = requested_view.in?(%w[current lifetime]) ? requested_view : 'current'
     @current_school_year = SchoolYear.current
@@ -130,6 +134,15 @@ class AccountController < Newflow::BaseController
                         view: 'student_overview'
   end
 
+  def render_learner_overview
+    @saved_books = current_user.user_books.includes(:book).order(created_at: :desc)
+
+    render_account_page :overview,
+                        title: 'Your OpenStax Account',
+                        description: 'Your saved books and account settings, all in one place.',
+                        view: 'learner_overview'
+  end
+
   def render_account_page(current_key, title:, description:, view: current_key)
     @account_nav_items = account_nav_items_for(current_user)
     @account_nav_current = current_key
@@ -144,11 +157,16 @@ class AccountController < Newflow::BaseController
   # impact to report — those tabs are instructor-only. The pages themselves
   # stay reachable by URL; this only trims the nav.
   STUDENT_HIDDEN_NAV_KEYS = %i[books impact].freeze
+  # Learners keep their books tab but have no adoptions to report.
+  LEARNER_HIDDEN_NAV_KEYS = %i[impact].freeze
 
   def account_nav_items_for(user)
-    return NAV_ITEMS unless user.student?
+    hidden = if user.student? then STUDENT_HIDDEN_NAV_KEYS
+             elsif user.self_learner? then LEARNER_HIDDEN_NAV_KEYS
+             else return NAV_ITEMS
+             end
 
-    NAV_ITEMS.reject { |item| STUDENT_HIDDEN_NAV_KEYS.include?(item[:key]) }
+    NAV_ITEMS.reject { |item| hidden.include?(item[:key]) }
   end
 
   def books_from_db(exclude_ids: [])
