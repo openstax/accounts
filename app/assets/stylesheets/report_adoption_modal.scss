@@ -77,7 +77,7 @@
 .report-adoption__header-helper {
   @include set-font(helper-label);
   margin: 4px 0 0;
-  color: var(--os-text-helper);
+  color: var(--os-text); // helper grey is 4.4:1 on the grey title bar
 }
 
 .report-adoption__callout {

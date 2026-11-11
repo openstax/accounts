@@ -9,7 +9,8 @@ $os-content-max: 1200px;
 
 :root {
   --os-text: #{text-color(normal)};
-  --os-text-helper: #{text-color(helper)};
+  // pattern-library's helper grey (#6f6f6f) is 4.4:1 on the page grey; this passes on both.
+  --os-text-helper: #6A6A6A;
   --os-gray: #{os-color(gray)};
   --os-link: #{text-color(link)};
   --os-link-hover: #{text-color(link-hover)};
@@ -27,8 +28,10 @@ $os-content-max: 1200px;
 
   --os-info-bg: #{ui-color(success-bg)};
   --os-info-border: #{ui-color(success-border)};
-  --os-error: #{ui-color(error-fg)};
-  --os-error-bg: #{ui-color(error-bg)};
+  // The OpenStax palette has no red, so errors are orange on a warm tint (see CLAUDE.md,
+  // "Brand: fonts, palette, alert contrast"). Orange text fails on the tint: keep copy --os-text.
+  --os-error: #{ui-color(primary)};
+  --os-error-bg: #FFF5F0;
   --os-success-bg: #EAF5E2;
   --os-success-text: #2E5E0F;
 

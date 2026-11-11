@@ -226,12 +226,26 @@ way. `'HelveticaNeue'` (no space) and `'Neue Helvetica W01'` are dead names that
 no installed font; they were both live in this repo and silently fell through to
 different fallbacks, so headings and body copy could render in different faces on the
 same page. Use `$os_font_family` / `$os_heading_font_family` from `common.scss` where the
-file imports it — `global_layout.scss` has no `@import`s and needs the literal. H1/H2
+file imports it; the `account/` partials use the literal. H1/H2
 carry `letter-spacing: -0.03em`.
+
+**Account and signup styles are built on openstax.org's own design system.** The
+`pattern-library` gem is pinned to the version os-webview (openstax.org) uses; bump them
+together, or the two sites drift apart in orange, link blue and focus ring. `global_layout.scss`
+(loaded by both the `application` and `newflow` layouts) is one partial per surface under
+`app/assets/stylesheets/account/`, starting with `_tokens.scss`, which exposes the library
+as `--os-*` custom properties. `_interaction.scss` stays last: its focus ring and motion
+rules must win over the surfaces. **The root font size is 10px** (Bootstrap 3 and
+pattern-library both set 62.5%), so `1.6rem` is 16px. Most of this branch's first-pass SCSS was
+written as if `1rem` were 16px and rendered at 7.5-10px; size text with the pattern-library
+`set-font` / `scale-set-font` mixins (body 16/25, nothing under 14px except footer fine print)
+rather than raw rems.
 
 Colors come from the 7-hue x 4-shade brand palette: buttons `#D4450C`, links `#026AA1`,
 body text `#424242`, muted `#6A6A6A`. **The palette has no red** — don't reintroduce
-`#c22032` or Bootstrap's `#f2dede`/`#d9edf7`/`#31708f` alert colors.
+`#c22032` or Bootstrap's `#f2dede`/`#d9edf7`/`#31708f` alert colors. pattern-library itself
+still ships `#c22032` as its error color and `#6f6f6f` as helper grey (4.4:1 on the `#f1f1f1`
+page, a fail), so `_tokens.scss` overrides both.
 
 Error and info banners are the one place this fights accessibility, so the pattern is
 deliberate: the tint and border carry the color signal and **the copy sits at body
@@ -267,7 +281,7 @@ into copy — they go stale and are owned elsewhere.
 - **Every Ruby workflow runs on `ubuntu-24.04`, not `ubuntu-latest`.** `ubuntu-latest` became Ubuntu 26.04 in October 2026, and `ruby/setup-ruby` has no Ruby 3.1 build for it, so every job failed at "Set up Ruby". Unpin only after the Ruby upgrade, and pin any new workflow that installs Ruby.
 
 ### Parallel test runs
-`config/database.yml` honors `OXA_DEV_DB`/`OXA_TEST_DB`. Concurrent rspec runs (multiple worktrees/agents) MUST each use a unique `OXA_TEST_DB=ox_accounts_test_<name>` (`rake db:create db:schema:load` first) — sharing the default test DB causes deadlocks and can corrupt `db/schema.rb` via out-of-sync `db:migrate` dumps. Feature specs disable Chrome's password manager in `spec/rails_helper.rb` (`CHROME_TEST_PREFS`); without it, the second login in a shared browser session silently loses its password field.
+`config/database.yml` honors `OXA_DEV_DB`/`OXA_TEST_DB`. Concurrent rspec runs (multiple worktrees/agents) MUST each use a unique `OXA_TEST_DB=ox_accounts_test_<name>` (`rake db:create db:schema:load` first) — sharing the default test DB causes deadlocks and can corrupt `db/schema.rb` via out-of-sync `db:migrate` dumps. Feature specs disable Chrome's password manager in `spec/rails_helper.rb` (`CHROME_TEST_PREFS`); without it, the second login in a shared browser session silently loses its password field. Feature specs also bind Capybara's server to one fixed port (`PORT`, default 2999), so concurrent runs in different worktrees must each set a unique `PORT` too, or each browser lands on whichever worktree's server holds the port and screenshots and results come from the wrong code.
 
 ### Migration timestamps on long-lived branches
 CI's `migrations` job builds the database from the base branch's schema, and `ActiveRecord::Schema.define(version:)` calls `assume_migrated_upto_version`, which marks every migration older than that version as already applied. A long-lived branch whose migrations predate main's current schema version will have them silently skipped rather than run — check a branch's migration timestamps against main's `db/schema.rb` `version:` before merging, and renumber forward if they're behind. Renumbering re-runs the migration anywhere it already ran under the old version (a branch deployed to dev), so give every statement `if_not_exists: true` and the re-run is a no-op there. The account-redesign migrations (`20261110000001`–`08`) are written that way; databases that ran them earlier also keep their old `20260915200001`–`08` rows in `schema_migrations`, which `db:migrate:status` lists as `NO FILE` and which are harmless.
