@@ -51,7 +51,6 @@
           <div class="account-check-in__field account-check-in__field--grow">
             <label for="check-in-<%= row.key %>-how-using"><%= t('annual_check_in.how_using_label') %></label>
             <select id="check-in-<%= row.key %>-how-using" name="rows[<%= row.key %>][how_using]">
-              <option value=""><%= t('annual_check_in.how_using_prompt') %></option>
               <%= options_for_select(AdoptionReport::HOW_USING_OPTIONS, row.how_using) %>
             </select>
           </div>

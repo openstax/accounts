@@ -107,10 +107,14 @@ RSpec.describe Account::CheckInController, type: :controller do
       end
     end
 
-    it 'ignores a how_using outside the Salesforce picklist' do
-      post :confirm, params: { rows: answer('College Physics', status: 'using', how_using: 'Because') }
+    it 'uses the primary-textbook value for a using row with a missing or invalid use, so it can be pushed' do
+      ['', 'Because'].each do |bad|
+        AdoptionReport.where(book_title: 'College Physics').delete_all
+        post :confirm, params: { rows: answer('College Physics', status: 'using', how_using: bad) }
 
-      expect(AdoptionReport.find_by!(book_title: 'College Physics').how_using).to be_nil
+        expect(AdoptionReport.find_by!(book_title: 'College Physics').how_using)
+          .to eq(AdoptionReport::HOW_USING_OPTIONS.first)
+      end
     end
 
     it 'keeps the source of an existing modal row and updates it in place' do
@@ -186,7 +190,7 @@ RSpec.describe Account::CheckInController, type: :controller do
 
       expect(rows.map(&:title)).to match_array(['Introduction to Sociology 3e', 'College Physics', 'Chemistry 2e'])
       expect(rows.find { |row| row.title == 'College Physics' }).to have_attributes(students: 75, how_using: how_using)
-      expect(rows.find { |row| row.title == 'Chemistry 2e' }).to have_attributes(students: 20, how_using: nil)
+      expect(rows.find { |row| row.title == 'Chemistry 2e' }).to have_attributes(students: 20, how_using: AdoptionReport::HOW_USING_OPTIONS.first)
     end
   end
 end

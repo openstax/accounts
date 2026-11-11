@@ -1092,7 +1092,6 @@ en:
     not_using_label: Not using
     students_label: Students
     how_using_label: How are you using it?
-    how_using_prompt: Choose one
     school_label: School
     no_school: No school added yet
     change: Change

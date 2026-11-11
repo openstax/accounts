@@ -25,7 +25,7 @@ class AnnualCheckIn
         title: title,
         abbreviation: abbreviation,
         students: last_year[:students],
-        how_using: last_year[:how_using] || catalog_how_using[abbreviation]
+        how_using: last_year[:how_using] || catalog_how_using[abbreviation] || AdoptionReport::HOW_USING_OPTIONS.first
       )
     end
   end

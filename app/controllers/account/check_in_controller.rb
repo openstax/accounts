@@ -67,7 +67,13 @@ module Account
         students = student_count(answer['students'])
         report.students = students unless students.nil?
         how_using = answer['how_using'].to_s
-        report.how_using = how_using if AdoptionReport::HOW_USING_OPTIONS.include?(how_using)
+        if AdoptionReport::HOW_USING_OPTIONS.include?(how_using)
+          report.how_using = how_using
+        elsif report.how_using.blank?
+          # A "using" row without a use would never be pushed (how_using is a
+          # restricted picklist in Salesforce), so it defaults to primary textbook.
+          report.how_using = AdoptionReport::HOW_USING_OPTIONS.first
+        end
       end
 
       # Salesforce updates the adoption for the same book and year, so a changed count or use is safe to resend.
