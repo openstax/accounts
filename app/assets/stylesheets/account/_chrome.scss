@@ -1,0 +1,325 @@
+.os-app {
+  min-height: 100vh;
+  background: #F5F5F5;
+  margin: 0;
+
+  
+  .os-header {
+    background: #fff;
+    border-bottom: 1px solid #E0E0E0;
+    padding: 0.75rem 1.5rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    box-shadow: 0 8px 24px rgba(13, 40, 80, 0.08);
+    position: relative;
+    z-index: 5;
+    line-height: 2.5rem;
+  }
+
+  .os-header__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .os-header__brand {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .os-header__logo-img {
+    height: 30px;
+    width: auto;
+  }
+
+  .os-header__logo-text {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.15rem;
+    color: #424242;
+    font-size: 1.25rem;
+  }
+
+  .os-header__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    #upper-corner-console {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.15rem;
+      margin-left: 0.5rem;
+      font-size: 0.75rem;
+      line-height: 1.3;
+      color: #6A6A6A;
+
+      a {
+        color: #026AA1;
+        text-decoration: none;
+      }
+
+      a:hover {
+        color: #014E78;
+        text-decoration: underline;
+      }
+
+      br {
+        // Text/links become anonymous flex items when this container is a
+        // flex box, so <br> can't force a line break the way it does in
+        // normal flow — column layout + gap already handles the stacking.
+        display: none;
+      }
+    }
+  }
+
+  .os-header__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.3rem;
+    border: 1px solid transparent;
+    padding: 0.45rem 1.1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .os-header__cta:focus-visible {
+    outline: 2px solid #026AA1;
+    outline-offset: 2px;
+  }
+
+  .os-header__cta--ghost {
+    background: #F5F5F5;
+    border-color: #E0E0E0;
+    color: #424242;
+  }
+
+  .os-header__cta--ghost:hover {
+    background: #E0E0E0;
+  }
+
+  .os-header__cta--primary {
+    background: #D4450C;
+    color: #fff;
+    border-color: #D4450C;
+    min-width: 90px;
+  }
+
+  .os-header__cta--primary:hover {
+    background: #A43509;
+    border-color: #A43509;
+  }
+
+  #application-container {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .os-main {
+    padding: 2rem 0 3rem;
+    flex: 1 1 auto;
+  }
+
+  .os-footer {
+    background: #424242;
+    color: #fff;
+    padding: 2.5rem 1.5rem;
+  }
+
+  .os-footer__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .os-footer__brand {
+    max-width: 300px;
+  }
+
+  .os-footer__brand-link {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 0.35rem;
+  }
+
+  .os-footer__logo-img {
+    height: 32px;
+    width: auto;
+  }
+
+  .os-footer__logo-img--dark {
+    filter: grayscale(1) brightness(0) invert(1);
+  }
+
+  .os-footer__logo-text {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+  }
+
+  .os-footer__tagline {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #c4cad6;
+  }
+
+  .os-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-weight: 600;
+  }
+
+  .os-footer__link {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .os-footer__link:hover {
+    text-decoration: underline;
+  }
+
+  .os-footer__legal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  .os-footer__rice-img {
+    height: 34px;
+    width: auto;
+  }
+
+  .os-footer__rice-img--dark {
+    filter: grayscale(1) brightness(0) invert(1);
+  }
+
+  .os-footer__rice-text {
+    font-weight: 700;
+    letter-spacing: 0.25rem;
+  }
+}
+
+body:not(.os-app) #application-header {
+  background: #fff;
+  border-bottom: 1px solid #E0E0E0;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 8px 24px rgba(13, 40, 80, 0.08);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  #top-nav-logo {
+    height: 30px;
+    width: 160px;
+
+    a {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background: image-url("openstax-logo.svg") no-repeat center center;
+      background-size: contain;
+    }
+  }
+}
+
+body:not(.os-app) #application-footer {
+  background: #424242;
+  color: #fff;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+
+  #footer-rice-logo-image {
+    max-height: 34px;
+  }
+
+  a {
+    color: #fff;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.main-menu {
+  box-shadow: none;
+  box-sizing: border-box;
+  padding: 2rem 0 0 2rem;
+
+  .logo {
+    padding: 0;
+
+    @media (max-width: 768px) {
+      margin: auto;
+    }
+  }
+}
+
+#newflow-footer {
+  text-align: center;
+
+  #footer-rice-logo-image {
+    max-height: 3.7rem;
+    margin-bottom: 1.2rem;
+  }
+
+  #newflow-footer--copyright {
+    font-size: 1rem;
+
+    a {
+      color: #424242;
+      text-decoration: none;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .os-app {
+    .os-header__inner,
+    .os-footer__inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .os-header__actions {
+      width: 100%;
+      #upper-corner-console {
+        margin-left: 0;
+        flex-wrap: wrap;
+      }
+    }
+
+    .os-footer__legal {
+      align-items: flex-start;
+    }
+
+    body {
+      background-color: #fff;
+      color: var(--greyish-brown, #4a4a4a);
+
+      .content {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+  }
+}

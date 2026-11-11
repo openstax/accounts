@@ -1,0 +1,259 @@
+.account-impact__section {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #E0E0E0;
+}
+
+.account-impact__section:first-of-type {
+  padding-top: 0;
+  border-top: none;
+}
+
+.account-impact__intro {
+  color: #6A6A6A;
+  margin-top: 0.25rem;
+}
+
+.account-impact__section-card {
+  border: 1px solid #d7e3f7;
+  border-radius: 18px;
+  background: #F5F5F5;
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+}
+
+.account-impact__table-wrapper {
+  overflow-x: auto;
+}
+
+.account-impact__table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 320px;
+}
+
+.account-impact__table th,
+.account-impact__table td {
+  text-align: left;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #d7e3f7;
+  font-size: 0.95rem;
+  color: #424242;
+}
+
+.account-impact__table th {
+  font-weight: 700;
+  color: #026AA1;
+  background: rgba(2, 106, 161, 0.08);
+}
+
+.account-impact__table td:first-child {
+  font-weight: 600;
+}
+
+.account-impact__current {
+  margin-bottom: 1.75rem;
+}
+
+.account-impact__section-card--current {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.account-impact__table-wrapper--current {
+  margin-top: 0.75rem;
+}
+
+.account-impact__table--current th,
+.account-impact__table--current td {
+  border-bottom: none;
+}
+
+.account-impact__table-book {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-impact__table-book-title {
+  font-weight: 600;
+}
+
+.account-impact__table-book-note {
+  font-size: 0.85rem;
+  color: #6A6A6A;
+}
+
+.account-impact__table-action {
+  text-align: right;
+}
+
+.account-impact__cta-row {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.account-impact__cta--secondary {
+  background: #fff;
+  color: #026AA1;
+  border: 1px solid rgba(2, 106, 161, 0.5);
+}
+
+.account-impact__cta--secondary:hover {
+  filter: brightness(0.98);
+}
+
+.account-impact__empty-year {
+  border: 1px dashed #bfcbe2;
+  border-radius: 16px;
+  padding: 1.5rem;
+  background: #fff;
+}
+
+.account-impact__cta-group--stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.account-impact__microcopy {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: #6A6A6A;
+}
+
+.account-impact__pride {
+  border: 1px solid #E0E0E0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff 0%, #f6f7fb 100%);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.account-impact__pride-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.account-impact__pride-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: #6A6A6A;
+  margin: 0;
+}
+
+.account-impact__pride-year {
+  margin: 0.15rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #424242;
+}
+
+.account-impact__pride-copy {
+  margin: 0;
+  color: #6A6A6A;
+  max-width: 360px;
+  font-size: 0.95rem;
+}
+
+.account-impact__pride-metrics {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.account-impact__pride-metric {
+  padding: 1rem;
+  border: 1px solid #E0E0E0;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.account-impact__pride-label {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6A6A6A;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.account-impact__pride-value {
+  margin: 0.35rem 0 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #002E6D;
+}
+
+.account-impact__empty,
+.account-impact__note {
+  text-align: center;
+  padding: 2rem;
+}
+
+.account-impact__empty h3 {
+  margin-bottom: 0.75rem;
+  color: #424242;
+}
+
+.account-impact__cta {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.35rem;
+  font-weight: 600;
+  background: #D4450C;
+  color: #fff;
+  border: none;
+  text-decoration: none;
+  transition: filter 120ms ease;
+}
+
+.account-impact__cta:visited,
+.account-impact__cta:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+.account-impact__cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.account-impact__cta--ghost {
+  background: #fff;
+  color: #026AA1;
+  border: 1px solid rgba(2, 106, 161, 0.4);
+}
+
+.account-impact__cta--ghost:visited,
+.account-impact__cta--ghost:focus {
+  color: #026AA1;
+  text-decoration: none;
+}
+
+.account-impact__cta--ghost:hover,
+.account-impact__cta--ghost:focus-visible {
+  color: #026AA1;
+  background: rgba(2, 106, 161, 0.08);
+}
+
+.account-impact__cta:hover,
+.account-impact__cta:focus-visible {
+  color: #fff;
+  filter: brightness(1.05);
+  text-decoration: none;
+  outline: none;
+}

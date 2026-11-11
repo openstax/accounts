@@ -1,0 +1,14 @@
+.os-app,
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  @include set-font(body-regular);
+  color: var(--os-text);
+}
+
+h1, h2 {
+  letter-spacing: -0.03em;
+}
+
+p {
+  letter-spacing: normal;
+}

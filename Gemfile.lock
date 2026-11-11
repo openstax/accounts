@@ -27,10 +27,10 @@ GIT
 
 GIT
   remote: https://github.com/openstax/pattern-library.git
-  revision: c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840
-  ref: c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840
+  revision: 606a5245a749102b707525aaee442951caca09aa
+  ref: 606a5245a749102b707525aaee442951caca09aa
   specs:
-    pattern-library (1.1.18)
+    pattern-library (1.3.0)
 
 GEM
   remote: https://rubygems.org/
