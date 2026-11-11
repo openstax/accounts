@@ -659,6 +659,15 @@ en:
       minimum_recaptcha_score:
         name: Minimum reCAPTCHA score allowed to register a new account
         help_block: Humans should score closer to 1, bots should score closer to 0
+      disable_recaptcha:
+        name: 'Disable reCAPTCHA?'
+        help_block: 'If checked, reCAPTCHA verification is turned off'
+      push_adoption_reports_enabled:
+        name: 'Push adoption reports to Salesforce?'
+        help_block: 'If checked (and SF configured), instructors'' "using" adoption reports are written to their Contact or Lead (AdoptionsJSON__c) and become OpenStax Confirmed Adoptions'
+      push_book_interest_enabled:
+        name: 'Push "Considering it" books to Salesforce?'
+        help_block: 'If checked (and SF configured), books instructors mark "Considering it" are merged into Subject_Interest__c on their Contact or Lead'
       adoption_review_student_threshold:
         name: Adoption report review threshold (students)
         help_block: A "using" adoption report with more students than this for one book in one school year is held for staff review at /admin/adoption_reviews instead of being pushed to Salesforce.
