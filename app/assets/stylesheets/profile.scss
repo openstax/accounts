@@ -17,6 +17,8 @@ $font-path: '/accounts/fonts';
     }
 }
 
+// Legacy profile page (legacy/users/edit); the account tabs are styled in
+// account/_profile_security.scss.
 #profile .ox-card {
   .alert { margin: 10px; }
 
@@ -41,12 +43,11 @@ $font-path: '/accounts/fonts';
   .category {
     text-align: right;
     font-weight: bold;
-    color: lighten($os_gray, 30%);
+    color: var(--os-text-helper);
 
     @media(max-width: 767px) {
       text-align: left;
       margin-bottom: 15px;
-      color: $os_gray;
 
       br.wide {
         display: none;
@@ -68,25 +69,21 @@ $font-path: '/accounts/fonts';
   .info .mod-holder {
     width: 45px;
     display: inline-block;
-    margin-left:15px;
+    margin-left: 15px;
   }
 
   .info .mod {
-    color: #9A9A9B;
+    color: var(--os-link);
     display: inline;
     padding: 0.3rem;
   }
 
   a.mod {
-    color: gray !important;
+    color: var(--os-link) !important;
     &:hover {
-      color: black !important;
+      color: var(--os-link-hover) !important;
     }
     text-decoration: none;
-  }
-
-  .dim {
-    color: lighten(black, 60%);
   }
 
   .authentication {
@@ -99,7 +96,7 @@ $font-path: '/accounts/fonts';
       left: -3px;
     }
     .fa-stack-1x,  .fa-stack-2x {
-      color: var(--accent, $os_link_color);
+      color: var(--os-link);
     }
     .mod {
       text-decoration: none !important;
@@ -150,7 +147,7 @@ $font-path: '/accounts/fonts';
     .email-entry__toggle {
       border: none;
       background: transparent;
-      color: #026AA1;
+      color: var(--os-link);
       padding: 0;
       display: inline-flex;
       align-items: center;
@@ -158,29 +155,12 @@ $font-path: '/accounts/fonts';
       cursor: pointer;
     }
 
-    .editable-input input {
-      width: 100%;
-      border: 1px solid #E0E0E0;
-      border-radius: 0.3rem;
-      padding: 0.75rem 0.9rem;
-      background: #fff;
-      font-size: 1rem;
-      color: $os_dark;
-      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
-    }
-
-    .editable-input input:focus {
-      outline: none;
-      border-color: #026AA1;
-      box-shadow: 0 0 0 2px rgba(2, 126, 181, 0.2);
-    }
-
     .email-entry__controls {
       display: none;
       overflow: hidden;
       margin-left: 20px;
       margin-top: 4px;
-      font-size: 13px;
+      font-size: 14px;
       div {
         margin-top: 4px;
       }
@@ -196,18 +176,17 @@ $font-path: '/accounts/fonts';
         button {
           appearance: none;
           padding: 0.3rem 0.6rem;
-          font-size: 13px;
+          font-size: 14px;
           margin-left: 0;
           border: 0;
-          color: lighten(black, 30%);
+          color: var(--os-link);
           background-color: transparent;
           font-weight: 600;
+          text-decoration: underline;
         }
 
-        button:hover,
-        button:focus {
-          color: #C22032;
-          outline: none;
+        button:hover {
+          color: var(--os-link-hover);
         }
       }
     }
@@ -221,27 +200,24 @@ $font-path: '/accounts/fonts';
       display: flex;
       align-items: center;
       gap: 1rem;
-      color: lighten(black, 40%);
+      color: var(--os-text-helper);
 
       .resend-confirmation__form {
         margin: 0;
       }
 
       button {
-        border: 1px solid rgba(11, 106, 162, 0.35);
-        border-radius: 0.3rem;
-        background: #fff;
-        color: $os_link_color;
+        border: 1px solid var(--os-border);
+        border-radius: var(--os-radius);
+        background: var(--os-surface);
+        color: var(--os-text);
         padding: 0.5rem 1.2rem;
-        font-weight: 600;
-        font-size: 13px;
+        font-size: 14px;
         cursor: pointer;
       }
 
-      button:hover,
-      button:focus {
-        border-color: $os_link_color;
-        outline: none;
+      button:hover {
+        background: var(--os-hover-bg);
       }
     }
     &.new {
@@ -252,8 +228,8 @@ $font-path: '/accounts/fonts';
 
   #add-an-email {
     background-color: transparent;
-    border: thin solid gray;
-    border-radius: 0.3rem;
+    border: 1px solid var(--os-border);
+    border-radius: var(--os-radius);
     margin-top: 10px;
     display: block;
   }
@@ -261,7 +237,6 @@ $font-path: '/accounts/fonts';
   #add-an-email-editable {
     padding-bottom: 1rem;
   }
-
 
   .editable-input {
     > div:first-child {
@@ -340,5 +315,8 @@ $font-path: '/accounts/fonts';
       }
     }
   }
+}
 
+#email-template {
+  display: none;
 }

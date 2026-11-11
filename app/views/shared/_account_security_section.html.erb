@@ -67,7 +67,7 @@
             <% if @framed %>
               <%= link_to 'Add other sign-in options on the security page →',
                           account_security_path,
-                          class: 'account-profile__security-link account-profile__security-link--secondary' %>
+                          class: 'account-profile__security-link' %>
             <% else %>
               <details class="account-security__other-providers">
                 <summary><%= I18n.t(:"student_profile.enable_other_sign_in_options") %></summary>
