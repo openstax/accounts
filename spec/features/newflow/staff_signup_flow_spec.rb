@@ -37,8 +37,7 @@ module Newflow
       wait_for_ajax
       wait_for_animations
       click_on(I18n.t(:"login_signup_form.confirm_my_account_button"))
-      wait_for_ajax
-      wait_for_animations
+      expect(page).to have_current_path(staff_details_form_path)
     end
 
     context 'happy path' do
