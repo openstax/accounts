@@ -21,17 +21,11 @@
                 <% book = saved_book.book %>
                 <% next unless book %>
                 <% book_link = book.html_url.presence || book.webview_rex_link %>
-                <% assignable_class = book.assignable_book? ? '' : 'account-books__saved-media--placeholder' %>
                 <li class="account-books__saved-card" data-book-remove data-confirm-state="default">
-                  <div class="account-books__saved-media <%= assignable_class %>">
-                    <% if book.assignable_book? %>
-                      <span class="account-books__badge">Available in Assignable</span>
-                    <% else %>
-                      <span class="account-books__badge account-books__badge--placeholder" aria-hidden="true"></span>
-                    <% end %>
+                  <div class="account-books__saved-media">
                     <div class="account-books__saved-cover-wrap">
                       <% if book.cover_url.present? %>
-                        <% cover_img = image_tag(book.cover_url, alt: "#{book.title} cover", class: 'account-books__cover account-books__cover--saved') %>
+                        <% cover_img = image_tag(book.cover_url, alt: "#{book.title} cover", width: 170, height: 170, loading: 'lazy', class: 'account-books__cover account-books__cover--saved') %>
                         <% if book_link.present? %>
                           <%= link_to book_link, target: '_blank', rel: 'noopener', class: 'account-books__saved-cover-link' do %>
                             <%= cover_img %>
@@ -54,8 +48,11 @@
                     <% else %>
                       <p class="account-books__saved-title"><%= book.title %></p>
                     <% end %>
+                    <% if book.assignable_book? %>
+                      <span class="account-chip">Available in Assignable</span>
+                    <% end %>
                     <% if (report = @adoption_reports_by_title[book.title]) %>
-                      <span class="account-badge account-books__report-chip">
+                      <span class="account-chip account-chip--success">
                         Reported for <%= report.school_year %>
                       </span>
                     <% end %>
@@ -221,10 +218,10 @@
           var titleRaw = book.title || 'OpenStax book';
           var title = escapeHTML(titleRaw);
           var subtitle = book.assignable_book
-            ? '<span class="account-books__badge">Available in Assignable</span>'
-            : '<span class="account-books__badge account-books__badge--placeholder" aria-hidden="true"></span>';
+            ? '<span class="account-chip">Available in Assignable</span>'
+            : '';
           var coverContent = book.cover_url
-            ? '<img src="' + escapeHTML(book.cover_url) + '" alt="' + title + ' cover" class="account-books__cover">'
+            ? '<img src="' + escapeHTML(book.cover_url) + '" alt="' + title + ' cover" width="60" height="60" loading="lazy" class="account-books__cover">'
             : '<div class="account-books__cover account-books__cover--placeholder" aria-hidden="true">OS</div>';
           var titleContent = '<p class="account-books__saved-title">' + title + '</p>';
           var isAlreadySaved = savedBookIds.indexOf(book.book_uuid) !== -1;

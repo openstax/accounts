@@ -1,73 +1,331 @@
-.account-books__placeholder {
-  border: 2px dashed #E0E0E0;
-  border-radius: 16px;
-  padding: 2rem;
-  background: #F5F5F5;
-  text-align: center;
-  color: #6A6A6A;
+// Books tab. rem is 10px here, so sizes come from the pattern-library scale.
+// The keyframes used below (accountBooks*) live in _shell.scss.
+
+.account-chip {
+  @include set-font(helper-label);
+  display: inline-block;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--os-info-bg);
+  color: var(--os-text);
 }
 
-.account-books__placeholder h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.2rem;
-  color: #424242;
+.account-chip--success {
+  background: var(--os-success-bg);
+  color: var(--os-success-text);
 }
 
-.account-books__placeholder p {
-  margin: 0.35rem 0;
-  font-size: 0.95rem;
+.account-books {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.account-books__note,
+.account-books__empty,
+.account-books__search-empty {
+  @include set-font(body-regular);
+  color: var(--os-text-helper);
+  margin: 0;
 }
 
 .account-books__note {
-  color: #6A6A6A;
-  margin-top: 1rem;
+  margin-top: 16px;
 }
 
-.account-books__helper {
-  color: #6A6A6A;
-  margin: 0 0 1.25rem 0;
+.account-books__note a {
+  color: var(--os-link);
+  font-weight: bold;
+  text-decoration: underline;
 }
+
+.account-books__note a:hover {
+  color: var(--os-link-hover);
+}
+
+// ---- Saved books: a grid that fills the card ----------------------------
+
+.account-books__saved-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px 20px;
+  position: relative;
+
+  @include width-up-to($phone-max) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 12px;
+  }
+}
+
+.account-books__saved-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--os-surface);
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius);
+  overflow: hidden;
+  transition: border-color 150ms ease-out;
+
+  &:hover {
+    border-color: var(--os-gray);
+  }
+}
+
+.account-books__saved-media {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-books__saved-cover-wrap {
+  background: var(--os-page-bg);
+  width: 100%;
+}
+
+.account-books__saved-cover-link {
+  display: block;
+  text-decoration: none;
+}
+
+.account-books__cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--os-page-bg);
+}
+
+.account-books__cover--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  font-weight: bold;
+  color: var(--os-text-helper);
+}
+
+.account-books__saved-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 12px 0;
+  flex-grow: 1;
+}
+
+.account-books__saved-title {
+  @include set-font(h4);
+  margin: 0;
+  color: var(--os-text);
+  overflow-wrap: anywhere;
+}
+
+.account-books__saved-title--link {
+  color: var(--os-link);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--os-link-hover);
+    text-decoration: underline;
+  }
+}
+
+.account-books__saved-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  margin-top: auto;
+}
+
+// ---- Buttons -------------------------------------------------------------
+
+.account-books__view-link,
+.account-books__remove-btn--confirm,
+.account-books__submit {
+  @include set-font(body-regular);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 20px;
+  border-radius: var(--os-radius);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.account-books__view-link {
+  background: var(--os-surface);
+  border: 1px solid var(--os-border);
+  color: var(--os-text);
+  font-weight: normal;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--os-hover-bg);
+    color: var(--os-text);
+    text-decoration: none;
+  }
+}
+
+.account-books__view-link--full {
+  width: 100%;
+}
+
+.account-books__remove-btn--confirm,
+.account-books__submit {
+  background: var(--os-primary);
+  border: 0;
+  color: #fff;
+  font-weight: bold;
+  box-shadow: var(--os-shadow-button);
+
+  &:hover {
+    background: var(--os-primary-hover);
+    color: #fff;
+  }
+
+  &:active {
+    background: var(--os-primary-active);
+  }
+}
+
+.account-books__remove-btn--confirm {
+  width: 100%;
+}
+
+.account-books__submit--disabled,
+.account-books__submit:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.account-books__remove-actions {
+  display: flex;
+  justify-content: center;
+
+  form {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+.account-books__remove-btn--prompt {
+  @include set-font(helper-label);
+  min-height: 32px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--os-link);
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--os-link-hover);
+    background: transparent;
+  }
+}
+
+// .ox-card input[type=submit] (50px line-height, inline-block) is more
+// specific than a single class, so the confirm button is styled at its level.
+.account-books .account-books__remove-actions input[type="submit"] {
+  display: none;
+  width: 100%;
+  min-height: 40px;
+  margin: 0;
+  padding: 0 20px;
+  line-height: normal;
+  background: var(--os-primary);
+  color: #fff;
+}
+
+.account-books .account-books__saved-card[data-confirm-state="prompt"] {
+  .account-books__remove-btn--prompt {
+    display: none;
+  }
+
+  .account-books__remove-actions input[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+// ---- Catalog search ------------------------------------------------------
 
 .account-books__search-card {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .account-books__search-input label {
-  font-weight: 600;
-  color: #424242;
-  margin-bottom: 0.35rem;
+  @include set-font(body-regular);
   display: block;
+  font-weight: bold;
+  color: var(--os-text);
+  margin-bottom: 4px;
 }
 
 .account-books__search-input input {
+  @include set-font(body-regular);
   width: 100%;
-  padding: 0.65rem 0.8rem;
-  border-radius: 0.3rem;
-  border: 1px solid #cfd5df;
-  font-size: 1rem;
+  height: 40px;
+  padding: 0 15px;
+  border: 1px solid var(--os-border);
+  border-radius: 0;
+  background: var(--os-surface);
+  color: var(--os-text);
+
+  &:focus {
+    border-color: var(--os-focus-border);
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
 }
 
 .account-books__search-results {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  max-height: 360px;
+  max-height: 440px;
   overflow-y: auto;
-  padding-right: 0.5rem;
-  border-top: 1px solid #E0E0E0;
+  border-top: 1px solid var(--os-border);
 }
 
 .account-books__search-result {
-  border: none;
-  border-bottom: 1px solid #E0E0E0;
-  padding: 0.75rem 0.25rem;
-  background: transparent;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.75rem;
+  gap: 16px;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--os-border);
+
+  .account-books__saved-title {
+    @include set-font(body-regular);
+    font-weight: bold;
+    overflow-wrap: break-word;
+  }
+
+  .account-books__cover {
+    width: 60px;
+    flex: none;
+  }
+}
+
+@include width-up-to($phone-max) {
+  .account-books__search-result {
+    flex-wrap: wrap;
+  }
+
+  .account-books__search-result .account-books__saved-meta {
+    flex-basis: 100%;
+  }
 }
 
 .account-books__search-result--saving {
@@ -75,45 +333,41 @@
   pointer-events: none;
 }
 
-.account-books__search-empty {
-  margin: 0;
-  color: #6A6A6A;
+.account-books__saved-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.account-books__badge {
+  @include set-font(helper-label);
+  display: inline-block;
+  color: var(--os-text-helper);
 }
 
 .account-books__quick-add {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  font-size: 1rem;
+  gap: 8px;
+  flex: none;
+  margin: 0;
 }
 
-.account-books__submit--ghost {
-  background: transparent;
-  border: 1px solid rgba(2, 106, 161, 0.35);
-  color: #026AA1;
-  border-radius: 999px;
-  padding: 0.45rem 1.1rem;
-}
-
-.account-books__submit--ghost:hover {
-  background: rgba(2, 106, 161, 0.08);
-}
-
-.account-books__submit--disabled {
-  background: #E0E0E0;
-  border-color: #d1d5db;
-  color: #9ca3af;
-  cursor: not-allowed;
-  pointer-events: none;
+.account-books__quick-add {
+  position: relative;
 }
 
 .account-books__quick-add .account-books__submit--status {
-  margin-left: 0.6rem;
-  font-size: 0.9rem;
-  color: #538E1D;
-  font-weight: 600;
+  @include set-font(helper-label);
+  position: absolute;
+  right: 0;
+  white-space: nowrap;
+  color: var(--os-success-text);
+  font-weight: bold;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 200ms ease;
 }
 
 .account-books__quick-add--status-visible .account-books__submit--status {
@@ -125,362 +379,9 @@
   pointer-events: none;
 }
 
-.account-books {
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-}
-
-.account-books__saved-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  position: relative;
-}
-
-.account-books__saved-card {
-  border: 1px solid #E0E0E0;
-  border-radius: 0.4rem;
-  background: #ffffff;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: transform 120ms ease, box-shadow 120ms ease;
-  width: 120px;
-}
-
-.account-books__saved-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
-}
-
-.account-books__saved-card--removing {
-  animation: accountBooksCardCollapse 0.35s forwards;
-}
-
-.account-books__saved-list--pulse {
-  animation: accountBooksSavedPulse 0.7s ease;
-}
-
-.account-books__saved-media {
-  padding: 0.2rem 0.9rem 0;
-  display: flex;
-  border-radius: 0.3rem;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.4rem;
-}
-
-.account-books__saved-media--placeholder {
-  background: #ffffff;
-}
-
-.account-books__saved-meta {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  min-width: 0;
-}
-
-.account-books__cover {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 0.3rem;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.1);
-  background: #F5F5F5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: #424242;
-}
-
-.account-books__cover--placeholder {
-  border: 1px dashed rgba(15, 53, 84, 0.3);
-}
-
-.account-books__cover--saved {
-  width: 120px;
-  height: 120px;
-  border-radius: 0rem;
-  box-shadow: none;
-}
-
-.account-books__saved-meta .account-books__cover {
-  width: 60px;
-  height: 60px;
-  border-radius: 0.2rem;
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
-}
-
-.account-books__saved-cover-wrap {
-  background: #102a43;
-  min-height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-.account-books__saved-cover-link {
-  display: inline-flex;
-  text-decoration: none;
-}
-
-.account-books__saved-cover-wrap .account-books__cover--placeholder {
-  width: 120px;
-  height: 120px;
-}
-
-.account-books__saved-body {
-  padding: 1rem 1.1rem 0.25rem;
-  flex-grow: 1;
-}
-
-.account-books__saved-title {
-  margin: 0;
-  font-weight: 700;
-  color: #424242;
-  font-size: 1.05rem;
-}
-
-.account-books__saved-title--link {
-  color: var(--accent, #026AA1);
-  text-decoration: none;
-}
-
-.account-books__saved-title--link:hover,
-.account-books__saved-title--link:focus-visible {
-  text-decoration: none;
-}
-
-.account-books__badge {
-  display: block;
-  align-items: center;
-  gap: 0.25rem;
-  text-align: center;
-  color: #026AA1;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-top: 0;
-  min-height: 10px;
-  width: 100%;
-}
-
-.account-books__search-result .account-books__badge {
-  text-align: left;
-}
-
-.account-books__badge--placeholder {
-  color: transparent;
-  box-shadow: none;
-}
-
-.account-books__saved-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 0.75rem 1.1rem 1.1rem;
-  margin-top: auto;
-}
-
-.account-books__remove-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.3rem;
-  padding: 0.45rem 1.1rem;
-  font-weight: 600;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  border: 1px solid #E0E0E0;
-  background: #F5F5F5;
-  color: #424242;
-  width: auto;
-  line-height: normal;
-}
-
-.account-books__remove-btn--prompt {
-  border: none;
-  background: transparent;
-  color: #6A6A6A;
-  padding: 0.25rem 0.5rem;
-  font-weight: 400;
-  text-decoration: none;
-  box-shadow: none;
-}
-
-.account-books__remove-btn--confirm {
-  background: #D4450C;
-  color: #fff;
-  border-color: #D4450C;
-  width: auto;
-  line-height: normal;
-}
-
-.account-books__remove-actions input[type="submit"] {
-  display: none;
-  width: auto;
-  line-height: normal;
-  margin-right: 0;
-  border-radius: 0.3rem;
-  background: #D4450C;
-  color: #ffffff;
-  padding: 0.45rem 1.1rem;
-  border: none;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.account-books__remove-actions button {
-  border-color: transparent;
-  background: transparent;
-  color: #6A6A6A;
-}
-
-.account-books__view-link--full {
-  width: 100%;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
-  font-size: 1rem;
-}
-
-.account-books__view-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 1.25rem;
-  border-radius: 0.3rem;
-  border: 1px solid #E0E0E0;
-  background: #F5F5F5;
-  color: #424242;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
-}
-
-.account-books__view-link:hover,
-.account-books__view-link:focus-visible {
-  text-decoration: none;
-  background: #edf2fb;
-  border-color: #026AA1;
-  color: #026AA1;
-}
-
-.account-books__remove-btn--confirm:hover {
-  filter: brightness(1.05);
-}
-
-.account-books__remove-actions {
-  display: flex;
-  gap: 0.6rem;
-  align-items: center;
-  justify-content: center;
-}
-
-.account-books__remove-btn--prompt:hover,
-.account-books__remove-btn--prompt:focus-visible {
-  color: #026AA1;
-  text-decoration: underline;
-  background: transparent;
-}
-
-.account-books__remove-actions [data-remove-confirm] {
-  display: none;
-}
-
-.account-books__saved-card[data-confirm-state="prompt"] .account-books__remove-btn--prompt {
-  display: none;
-}
-
-.account-books__saved-card[data-confirm-state="prompt"] .account-books__remove-actions [data-remove-confirm] {
-  display: inline;
-}
-
-.account-books__empty {
-  margin: 0;
-  color: #6A6A6A;
-}
-
-.account-books__add-card select {
-  width: 100%;
-  padding: 0.6rem;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-}
-
-.account-books__form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: flex-end;
-}
-
-.account-books__form-control {
-  flex: 1 1 280px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.account-books__submit,
-.accounts-books__remove-btn.account-books__remove-btn--confirm {
-  border-radius: 0.3rem;
-  background: #D4450C;
-  color: #ffffff;
-  padding: 0.65rem 1.5rem;
-  border: none;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.account-books__submit:hover {
-  filter: brightness(1.05);
-}
-
-.account-books__submit--disabled {
-  border-color: #E0E0E0;
-  background: #F5F5F5;
-  color: #424242;
-}
-
-.account-books__tool-cta,
-.account-books__tool-cta--ghost {
-  white-space: nowrap;
-}
-
-.account-books__saved-list {
-  justify-content: flex-start;
-}
-
-@media (max-width: 1100px) {
-  .account-books__saved-card {
-    width: 120px;
+@media (prefers-reduced-motion: reduce) {
+  .account-books__saved-card--removing,
+  .account-books__search-result--saving {
+    animation-duration: 0.01ms;
   }
-}
-
-@media (max-width: 600px) {
-  .account-books__saved-list {
-    flex-direction: row;
-  }
-
-  .account-books__saved-card {
-    width: 120px;
-  }
-}
-
-.account-books__report-chip {
-  margin-top: 0.4rem;
-  padding: 0.3rem 1rem;
-  font-size: 1.1rem;
-  background: #F5FFEC;
-  color: #204B00;
 }
