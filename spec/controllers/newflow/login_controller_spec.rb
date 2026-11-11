@@ -287,5 +287,38 @@ module Newflow
         expect(response).to redirect_to("/")
       end
     end
+
+    describe 'POST #login as a lifelong learner' do
+      let(:params) { { login_form: { email: 'learner@example.com', password: 'password' } } }
+      let!(:learner) do
+        user = create_newflow_user('learner@example.com', 'password', nil, nil, 'self_learner')
+        user.update!(is_profile_complete: false, sheerid_verification_id: nil, is_sheerid_unviable: false)
+        user
+      end
+
+      it 'never routes into the educator funnel' do
+        post('login', params: params)
+
+        expect(response).not_to redirect_to(educator_sheerid_form_path)
+        expect(response).not_to redirect_to(educator_profile_form_path)
+      end
+
+      it 'takes the normal landing students take' do
+        allow_any_instance_of(described_class).to receive(:did_user_sign_recent_privacy_notice?).and_return(true)
+
+        post('login', params: params)
+
+        expect(response).to have_http_status(:redirect)
+        expect(response.location).not_to include('/i/signup/educator')
+      end
+
+      it 'resumes email verification on the learner form when unverified' do
+        learner.update!(state: User::UNVERIFIED)
+
+        post('login', params: params)
+
+        expect(response).to redirect_to(learner_email_verification_form_path)
+      end
+    end
   end
 end

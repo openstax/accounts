@@ -154,6 +154,30 @@ module Newflow
           expect(result.errors).to have_offending_input(:password)
         end
       end
+
+      context 'when the address belongs to an abandoned unverified signup' do
+        let(:email) { Faker::Internet.email }
+
+        before do
+          abandoned = FactoryBot.create(:user, state: User::UNVERIFIED, is_newflow: true, role: 'self_learner')
+          FactoryBot.create(:email_address, user: abandoned, value: email, verified: false)
+        end
+
+        let(:result) do
+          described_class.call(
+            params: { signup: { email: email.upcase, password: Faker::Internet.password(min_length: 8) } }
+          )
+        end
+
+        it 'reports the friendly "already used" error rather than a raw validation message' do
+          expect(result.errors.first.message).to eq(I18n.t(:"login_signup_form.email_address_taken"))
+          expect(result.errors).to have_offending_input(:email)
+        end
+
+        it 'does not create another user' do
+          expect { result }.not_to change { User.count }
+        end
+      end
     end
   end
 end
