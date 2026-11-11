@@ -79,7 +79,7 @@ module Newflow
 
     def next_step_after_role_switch(user)
       if unverified_user.present?
-        user.student? ? student_email_verification_form_path : educator_email_verification_form_path
+        email_verification_form_path_for(user)
       elsif user.student?
         signup_done_path
       else

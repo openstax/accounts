@@ -22,11 +22,7 @@ module Newflow
           if user.unverified?
             save_unverified_user(user.id)
 
-            if user.student?
-              redirect_to(student_email_verification_form_path)
-            else
-              redirect_to(educator_email_verification_form_path)
-            end
+            redirect_to(email_verification_form_path_for(user))
 
             return
           end
@@ -45,7 +41,7 @@ module Newflow
             redirect_to_educator_profile_nudge
           # A user already nudged once gets a normal landing plus the banner on
           # the profile page, not another forced redirect to step 4.
-          elsif current_user.student? || !current_user.is_newflow? ||
+          elsif current_user.student? || current_user.self_learner? || !current_user.is_newflow? ||
                 (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login')) ||
                 current_user.needs_profile_nudge?
             did_user_sign_recent_privacy_notice? ? redirect_back : redirect_to_sign_privacy_notice

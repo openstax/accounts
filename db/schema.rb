@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_11_11_000001) do
+ActiveRecord::Schema.define(version: 2026_11_11_000002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -585,7 +585,7 @@ ActiveRecord::Schema.define(version: 2026_11_11_000001) do
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
-    t.index ["created_at"], name: "index_users_stalled_educator_signups", where: "((salesforce_lead_id IS NULL) AND (salesforce_contact_id IS NULL) AND (role <> 1) AND ((state)::text = 'activated'::text))"
+    t.index ["created_at"], name: "index_users_stalled_educator_signups", where: "((salesforce_lead_id IS NULL) AND (salesforce_contact_id IS NULL) AND (role <> 1) AND (role <> 10) AND ((state)::text = 'activated'::text))"
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
     t.index ["id"], name: "index_users_unlinked_students_with_school", where: "((role = 1) AND (school_id IS NOT NULL) AND (salesforce_student_pushed_at IS NULL))"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
