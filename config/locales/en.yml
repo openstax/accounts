@@ -1086,22 +1086,21 @@ en:
 
   annual_check_in:
     eyebrow: Annual check-in
-    headline: Welcome back, %{name} — still accurate?
-    default_name: friend
-    body: >-
-      It's been a year. A quick check keeps your instructor access current and our impact
-      numbers honest.
+    heading: Are you teaching with these books in %{school_year}?
+    body: Tell us which ones you're using this year. It takes a minute, and it helps us show the difference these books make.
+    using_label: Using this year
+    not_using_label: Not using
+    students_label: Students
+    how_using_label: How are you using it?
+    how_using_prompt: Choose one
     school_label: School
     no_school: No school added yet
-    books_label: Books you're using
-    no_books: No books saved yet
-    students_label: Students this year
-    students_hint: "%{count} last year — update?"
     change: Change
-    confirm_button: Confirm — everything's right
-    dismiss_button: Remind me next week
-    confirmed_flash: Thanks — you're all set for the year.
-    dismiss_refused: You've already snoozed this twice — please confirm or update your details to continue.
+    confirm_button: Confirm
+    dismiss_button: Remind me later
+    confirmed_flash: Thanks, your check-in is saved.
+    dismissed_flash: No problem. We'll ask again in a week.
+    nothing_answered: Choose "Using this year" or "Not using" for at least one book, or select "Remind me later."
     streak:
       singular_lead: One year reported.
       singular_rest: Confirm below to make it two.

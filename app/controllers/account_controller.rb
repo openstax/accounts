@@ -1,10 +1,7 @@
 require 'bigdecimal'
 
 class AccountController < Newflow::BaseController
-  include AnnualCheckInGate
-
   before_action :newflow_authenticate_user!
-  before_action :redirect_to_check_in_if_due
   before_action :prevent_caching
 
   layout 'application'
@@ -29,6 +26,8 @@ class AccountController < Newflow::BaseController
       @show_lms_card = !current_user.lms_answered? &&
                        (current_user.lms_question_pending? || params[:show_lms].present?)
       @show_profile_nudge_banner = show_profile_nudge_banner?
+      check_in = AnnualCheckIn.new(current_user) if current_user.annual_check_in_due?
+      @annual_check_in = check_in if check_in&.rows&.any?
 
       render_account_page :overview, title: 'Account overview', description: 'View a summary of your OpenStax account.'
     end

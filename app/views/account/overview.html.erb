@@ -15,6 +15,7 @@
 <div class="account-layout">
   <%= render 'account/navigation' %>
   <div class="account-layout__content">
+    <%= render 'account/check_in_card', check_in: @annual_check_in if @annual_check_in %>
     <% if show_assignable_callout %>
       <div class="account-callout account-callout--assignable" id="assignable-callout">
         <div class="account-callout__text">

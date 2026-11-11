@@ -84,6 +84,42 @@ RSpec.describe AccountController, type: :controller do
     expect(response.body).not_to include('Next milestone')
   end
 
+  describe 'the annual check-in card on Overview' do
+    let(:book) { Book.create!(book_uuid: SecureRandom.uuid, title: 'College Physics') }
+
+    before do
+      user.update_column(:created_at, 2.years.ago)
+      UserBook.create!(user: user, book: book)
+    end
+
+    it 'renders for a due instructor with prefilled rows and never redirects other pages' do
+      last_year = SchoolYear.label_for(SchoolYear.base_year_for(Time.zone.today) - 1)
+      AdoptionReport.create!(user: user, book_title: 'College Physics', school_year: last_year,
+                             source: 'books_modal', students: 75)
+
+      get :overview
+
+      expect(response.body).to include('id="annual-check-in"')
+      expect(response.body).to include('Are you teaching with these books in')
+      expect(response.body).to include('value="75"')
+      expect(response.body).to include('Remind me later')
+      expect(response.body).not_to include('checked')
+
+      %i[profile books security impact support].each do |page|
+        get page
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    it 'is absent once snoozed' do
+      user.update!(check_in_dismissed_at: 1.day.ago)
+
+      get :overview
+
+      expect(response.body).not_to include('id="annual-check-in"')
+    end
+  end
+
   describe 'the LMS question card on Overview' do
     it 'shows the card for a user who has neither answered nor dismissed it' do
       get :overview

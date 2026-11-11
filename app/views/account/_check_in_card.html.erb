@@ -1,0 +1,81 @@
+<% streak_lead, streak_rest = check_in.streak_copy %>
+<section class="account-callout account-callout--check-in" id="annual-check-in" aria-labelledby="annual-check-in-heading">
+  <p class="account-check-in__eyebrow"><%= t('annual_check_in.eyebrow') %></p>
+  <h2 class="account-check-in__heading" id="annual-check-in-heading">
+    <%= t('annual_check_in.heading', school_year: check_in.school_year_label) %>
+  </h2>
+  <p class="account-check-in__body"><%= t('annual_check_in.body') %></p>
+
+  <% if check_in.streak_years.positive? %>
+    <div class="account-check-in__streak">
+      <div class="account-check-in__streak-circles">
+        <% check_in.streak_years.times do %>
+          <span class="account-check-in__streak-circle account-check-in__streak-circle--done" aria-hidden="true">&#10003;</span>
+        <% end %>
+        <span class="account-check-in__streak-circle account-check-in__streak-circle--pending" aria-hidden="true"><%= check_in.streak_pending_year_label %></span>
+      </div>
+      <p class="account-check-in__streak-message">
+        <strong><%= streak_lead %></strong> <%= streak_rest %>
+      </p>
+    </div>
+  <% end %>
+
+  <%= form_with url: account_check_in_confirm_path, method: :post, local: true, id: 'annual-check-in-form' do %>
+    <% check_in.rows.each do |row| %>
+      <fieldset class="account-check-in__row">
+        <legend class="account-check-in__book"><%= row.title %></legend>
+        <input type="hidden" name="rows[<%= row.key %>][title]" value="<%= row.title %>">
+
+        <div class="account-check-in__choices">
+          <% [['using', 'using_label'], ['not_using', 'not_using_label']].each do |status, label_key| %>
+            <label class="account-check-in__choice" for="check-in-<%= row.key %>-<%= status %>">
+              <input type="radio"
+                     id="check-in-<%= row.key %>-<%= status %>"
+                     name="rows[<%= row.key %>][status]"
+                     value="<%= status %>">
+              <span><%= t("annual_check_in.#{label_key}") %></span>
+            </label>
+          <% end %>
+        </div>
+
+        <div class="account-check-in__details">
+          <div class="account-check-in__field">
+            <label for="check-in-<%= row.key %>-students"><%= t('annual_check_in.students_label') %></label>
+            <input type="number"
+                   min="0"
+                   inputmode="numeric"
+                   id="check-in-<%= row.key %>-students"
+                   name="rows[<%= row.key %>][students]"
+                   value="<%= row.students %>">
+          </div>
+          <div class="account-check-in__field account-check-in__field--grow">
+            <label for="check-in-<%= row.key %>-how-using"><%= t('annual_check_in.how_using_label') %></label>
+            <select id="check-in-<%= row.key %>-how-using" name="rows[<%= row.key %>][how_using]">
+              <option value=""><%= t('annual_check_in.how_using_prompt') %></option>
+              <%= options_for_select(AdoptionReport::HOW_USING_OPTIONS, row.how_using) %>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+    <% end %>
+
+    <p class="account-check-in__school">
+      <span class="account-check-in__school-label"><%= t('annual_check_in.school_label') %>:</span>
+      <%= current_user.school&.name.presence || t('annual_check_in.no_school') %>
+      &middot;
+      <%= link_to t('annual_check_in.change'), account_profile_path, class: 'account-check-in__link' %>
+    </p>
+
+    <div class="account-check-in__actions">
+      <button type="submit" class="account-check-in__button account-check-in__button--primary">
+        <%= t('annual_check_in.confirm_button') %>
+      </button>
+      <button type="submit"
+              formaction="<%= account_check_in_dismiss_path %>"
+              formnovalidate
+              class="account-check-in__button account-check-in__button--secondary">
+        <%= t('annual_check_in.dismiss_button') %>
+      </button>
+    </div>
+  <% end %>
+</section>

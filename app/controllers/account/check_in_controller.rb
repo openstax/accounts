@@ -1,77 +1,47 @@
 module Account
-  # The annual instructor check-in interstitial. Deliberately does NOT
-  # extend the gate it's built to satisfy -- this controller is the
-  # destination the gate redirects to, so it must skip its own before_action
-  # or a signed-in, due-for-check-in user could never reach it.
+  # Handles the inline annual check-in card on the account overview. Nothing
+  # here blocks navigation; the card renders only while the check-in is due.
   class CheckInController < AccountController
-    skip_before_action :redirect_to_check_in_if_due
-
     def show
-      @school_name = current_user.school&.name
-      @book_rows = check_in_book_rows
-      @show_dismiss = !current_user.check_in_required?
-      @streak_years = current_user.check_in_streak_years
-      @streak_pending_year_label = SchoolYear.short_label_for(SchoolYear.base_year_for(Time.zone.today))
-      @streak_lead, @streak_rest = check_in_streak_copy(@streak_years)
-
-      render_account_page :check_in, title: 'Annual check-in', description: nil
+      redirect_to account_overview_path(anchor: 'annual-check-in')
     end
 
     def confirm
-      current_school_year = AdoptionReport.current_school_year_label
-      students_by_user_book_id = params.fetch(:students, {}).to_unsafe_h
+      check_in = AnnualCheckIn.new(current_user)
+      answers = params.fetch(:rows, {}).to_unsafe_h
+      saved = []
 
       ActiveRecord::Base.transaction do
-        current_user.user_books.includes(:book).find_each do |user_book|
-          book = user_book.book
-          next if book.nil?
+        check_in.rows.each do |row|
+          answer = answers[row.key]
+          next unless answer.is_a?(Hash) && answer['title'] == row.title
 
-          report = current_user.adoption_reports.find_or_initialize_by(
-            book_title: book.title,
-            school_year: current_school_year
-          )
+          status = answer['status'].to_s
+          next unless AdoptionReport::VALID_STATUSES.include?(status)
 
-          # Keys are prefixed ("book_<id>"), not bare numeric strings -- a bare
-          # numeric key (e.g. "8") crashes JsonAndStringParameterFilter, which
-          # tries `JSON.parse` on every nested param key before filtering logs.
-          students = student_count(students_by_user_book_id[check_in_student_field_key(user_book.id)])
-
-          report.book = book
-          report.status = 'using'
-          # A row made in the report modal keeps its source, so it is still pushed.
-          report.source = 'check_in' if report.new_record?
-          report.students = students unless students.nil?
-          report.save!
+          saved << save_report(row, status, answer)
         end
 
-        current_user.update!(
-          check_in_completed_at: Time.current,
-          check_in_dismissed_at: nil,
-          check_in_dismissal_count: 0
-        )
+        current_user.update!(check_in_completed_at: Time.current, check_in_dismissed_at: nil) if saved.any?
       end
 
-      flash[:notice] = t('annual_check_in.confirmed_flash')
-      redirect_to_check_in_destination(default: account_overview_path)
-    end
-
-    def dismiss
-      if current_user.effective_check_in_dismissal_count >= User::CHECK_IN_DISMISSAL_LIMIT
-        redirect_to(account_check_in_path, alert: t('annual_check_in.dismiss_refused'))
+      if saved.empty?
+        redirect_to account_overview_path(anchor: 'annual-check-in'), alert: t('annual_check_in.nothing_answered')
         return
       end
 
-      current_user.update!(
-        check_in_dismissed_at: Time.current,
-        check_in_dismissal_count: current_user.effective_check_in_dismissal_count + 1
-      )
+      PushAdoptionReports.perform_later(user: current_user) if saved.include?('using')
 
-      redirect_to_check_in_destination(default: account_overview_path)
+      redirect_to account_overview_path, notice: t('annual_check_in.confirmed_flash')
+    end
+
+    def dismiss
+      current_user.update!(check_in_dismissed_at: Time.current)
+
+      redirect_to account_overview_path, notice: t('annual_check_in.dismissed_flash')
     end
 
     private
-
-    NUMBER_WORDS = %w[zero one two three four five six seven eight nine ten].freeze
 
     # Anything that isn't a whole number >= 0 is ignored rather than failing
     # save! (and the whole check-in) on a hand-crafted POST.
@@ -80,55 +50,33 @@ module Account
       count if count && count >= 0
     end
 
-    # Returns [lead, rest] strings for the streak banner, or [nil, nil] when
-    # there's no prior streak to show (the view omits the banner entirely).
-    # One prior year gets singular copy without the "in a row" framing;
-    # two or more spells out both the current count and what confirming
-    # today would make it, e.g. "Two years reported in a row." / "Confirm
-    # below to make it three."
-    def check_in_streak_copy(streak_years)
-      return [nil, nil] if streak_years <= 0
+    # Returns the saved status. An existing row keeps its source: a row made in
+    # the report modal must stay pushable, and a check-in must not relabel it.
+    def save_report(row, status, answer)
+      scope = current_user.adoption_reports.where(school_year: SchoolYear.current)
+      report = (scope.find_by(salesforce_book_name: row.abbreviation) if row.abbreviation) ||
+               scope.find_by(book_title: row.title) ||
+               scope.new(source: 'check_in', surface: 'check_in')
 
-      if streak_years == 1
-        [
-          t('annual_check_in.streak.singular_lead'),
-          t('annual_check_in.streak.singular_rest')
-        ]
-      else
-        [
-          t('annual_check_in.streak.plural_lead', count_word: number_word(streak_years).capitalize),
-          t('annual_check_in.streak.plural_rest', next_word: number_word(streak_years + 1))
-        ]
+      report.book_title = row.title
+      report.book ||= Book.find_by(title: row.title)
+      report.salesforce_book_name ||= row.abbreviation
+      report.status = status
+
+      if status == 'using'
+        students = student_count(answer['students'])
+        report.students = students unless students.nil?
+        how_using = answer['how_using'].to_s
+        report.how_using = how_using if AdoptionReport::HOW_USING_OPTIONS.include?(how_using)
       end
-    end
 
-    def number_word(count)
-      NUMBER_WORDS[count] || count.to_s
-    end
-
-    def check_in_book_rows
-      last_school_year = SchoolYear.label_for(SchoolYear.base_year_for(Time.zone.today) - 1)
-
-      current_user.user_books.includes(:book).order(:created_at).filter_map do |user_book|
-        book = user_book.book
-        next if book.nil?
-
-        last_year_report = current_user.adoption_reports.find_by(
-          book_title: book.title,
-          school_year: last_school_year
-        )
-
-        {
-          user_book_id: user_book.id,
-          field_key: check_in_student_field_key(user_book.id),
-          title: book.title,
-          last_year_students: last_year_report&.students
-        }
+      # Salesforce updates the adoption for the same book and year, so a changed count or use is safe to resend.
+      if report.salesforce_pushed_at && (report.students_changed? || report.how_using_changed?)
+        report.salesforce_pushed_at = nil
       end
-    end
 
-    def check_in_student_field_key(user_book_id)
-      "book_#{user_book_id}"
+      report.save!
+      status
     end
   end
 end
