@@ -5,7 +5,7 @@ describe User, '#annual_check_in_due?', type: :model do
   # so date-math edge cases (school-year start, 1-year-old accounts, the
   # 7-day snooze) are deterministic regardless of when the suite runs.
   around do |example|
-    Timecop.freeze(Time.zone.local(2026, 3, 1, 12, 0, 0)) { example.run }
+    Timecop.freeze(Time.zone.local(2025, 11, 15, 12, 0, 0)) { example.run }
   end
 
   let(:school_year_start) { Time.zone.local(2025, 8, 1) }
@@ -80,7 +80,8 @@ describe User, '#annual_check_in_due?', type: :model do
 
     it 'is true when the signal comes from an Adoption instead of a UserBook' do
       user = instructor
-      Adoption.create!(salesforce_id: 'SF1', user: user, confirmation_type: 'x', rollover_status: false)
+      Adoption.create!(salesforce_id: 'SF1', user: user, salesforce_name: 'Biology 2e', school_year: '2024 - 25',
+                       confirmation_type: 'OpenStax Confirmed Adoption', rollover_status: false)
 
       expect(user.annual_check_in_due?).to be true
     end
@@ -129,6 +130,7 @@ describe User, '#annual_check_in_due?', type: :model do
 
     it 'stays true with only a current-year "not using" report' do
       user = instructor
+      give_adoption_signal!(user)
       AdoptionReport.create!(user: user, book_title: 'Bio 101', school_year: '2025 - 26', source: 'check_in',
                              status: 'not_using')
 
@@ -145,7 +147,7 @@ describe User, '#annual_check_in_due?', type: :model do
 
     it 'stays true with only a last-year adoption' do
       user = instructor
-      Adoption.create!(salesforce_id: 'SF3', user: user, school_year: '2024 - 25',
+      Adoption.create!(salesforce_id: 'SF3', user: user, school_year: '2024 - 25', salesforce_name: 'Biology 2e',
                        confirmation_type: 'OpenStax Confirmed Adoption', rollover_status: false)
 
       expect(user.annual_check_in_due?).to be true
@@ -160,7 +162,7 @@ describe User, '#annual_check_in_due?', type: :model do
   end
 
   describe '#check_in_streak_years' do
-    # Frozen "now" is 2026-03-01, inside school year "2025 - 26", so the
+    # Frozen "now" is 2025-11-15, inside school year "2025 - 26", so the
     # pending/current year is 2025 and the immediately-prior completed
     # year is 2024 - 25.
     def report_for!(user, school_year)

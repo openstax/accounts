@@ -579,17 +579,29 @@ class User < ApplicationRecord
 
   CHECK_IN_SNOOZE_PERIOD = 7.days
 
-  # Whether the overview shows the inline annual check-in card. Never blocks
+  # Whether the overview shows the inline check-in card. Never blocks
   # anything: it only decides if the card renders.
   def annual_check_in_due?
-    return false unless check_in_eligible_role?
-    return false unless created_at.present? && created_at < 1.year.ago
-    return false unless has_check_in_adoption_signal?
-    return false if check_in_completed_at.present? && check_in_completed_at >= annual_check_in_school_year_start
-    return false if check_in_snoozed?
-    return false if reported_using_this_school_year?
+    return false if check_in_term.nil?
 
-    true
+    AnnualCheckIn.new(self, term: check_in_term).rows.any?
+  end
+
+  # :spring inside AnnualCheckIn::SPRING_WINDOW, :fall otherwise, or nil when no card is due.
+  # Fall asks only those with no "using" report or confirmed adoption this school year. Spring
+  # asks them too, plus those who reported in the fall, until they confirm a check-in after the
+  # window opened.
+  def check_in_term
+    return unless check_in_eligible_role?
+    return unless created_at.present? && created_at < 1.year.ago
+    return unless has_check_in_adoption_signal?
+    return if check_in_snoozed?
+
+    term = AnnualCheckIn.term_on(Time.zone.today)
+    return if check_in_completed_at.present? && check_in_completed_at >= check_in_cycle_start(term)
+    return if term == :fall && reported_using_this_school_year?
+
+    term
   end
 
   def check_in_eligible_role?
@@ -606,6 +618,10 @@ class User < ApplicationRecord
 
   def annual_check_in_school_year_start
     Time.zone.local(SchoolYear.base_year_for(Time.zone.today), 8, 1)
+  end
+
+  def check_in_cycle_start(term)
+    term == :spring ? AnnualCheckIn.spring_window_start : annual_check_in_school_year_start
   end
 
   # Reporting through the adoption modal counts as checking in.

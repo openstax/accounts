@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Account::CheckInController, type: :controller do
+  include ActiveSupport::Testing::TimeHelpers
+
+  let(:today) { Time.zone.local(2025, 11, 15, 12) }
+
+  around { |example| travel_to(today) { example.run } }
+
   let(:user) do
     FactoryBot.create(:user, :terms_agreed, role: User::INSTRUCTOR_ROLE, created_at: 2.years.ago)
   end
@@ -229,6 +235,47 @@ RSpec.describe Account::CheckInController, type: :controller do
       expect(rows.map(&:title)).to match_array(['Introduction to Sociology 3e', 'College Physics', 'Chemistry 2e'])
       expect(rows.find { |row| row.title == 'College Physics' }).to have_attributes(students: 75, how_using: how_using)
       expect(rows.find { |row| row.title == 'Chemistry 2e' }).to have_attributes(students: 20, how_using: AdoptionReport::HOW_USING_OPTIONS.first)
+    end
+  end
+
+  describe 'in the spring window' do
+    let(:today) { Time.zone.local(2026, 2, 10, 12) }
+
+    it 'thanks with spring wording and counts the school year total' do
+      rows = answer('Introduction to Sociology 3e', status: 'using', students: '42', how_using: how_using)
+                 .merge(answer('College Physics', status: 'using', students: '8', how_using: how_using))
+
+      post :confirm, params: { rows: rows }
+
+      expect(flash[:notice]).to eq(
+        'Thank you. You counted 2 books and 50 students for 2025 - 26, fall and spring together. ' \
+        'They will show in your impact once we confirm them.'
+      )
+    end
+
+    it 'uses the spring short thanks when every answer is not using' do
+      post :confirm, params: { rows: answer('College Physics', status: 'not_using') }
+
+      expect(flash[:notice]).to eq('Thanks, your spring check-in is saved.')
+    end
+
+    it 'ends the spring card by stamping the completion, and updates the fall report in place' do
+      report = AdoptionReport.create!(user: user, book_title: 'College Physics', school_year: current_year,
+                                      source: 'check_in', status: 'using', students: 30, how_using: how_using,
+                                      salesforce_pushed_at: 1.month.ago)
+
+      expect { post :confirm, params: { rows: answer('College Physics', status: 'using', students: '55', how_using: how_using) } }
+        .not_to change { AdoptionReport.count }
+
+      expect(report.reload).to have_attributes(students: 55, salesforce_pushed_at: nil)
+      expect(user.reload.check_in_term).to be_nil
+      expect(user.annual_check_in_due?).to be false
+    end
+
+    it 'keeps the snooze message the same' do
+      post :dismiss
+
+      expect(flash[:notice]).to eq(I18n.t('annual_check_in.dismissed_flash'))
     end
   end
 end

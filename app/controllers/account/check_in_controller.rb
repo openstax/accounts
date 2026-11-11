@@ -1,5 +1,5 @@
 module Account
-  # Handles the inline annual check-in card on the account overview. Nothing
+  # Handles the inline fall and spring check-in card on the account overview. Nothing
   # here blocks navigation; the card renders only while the check-in is due.
   class CheckInController < AccountController
     def show
@@ -33,7 +33,7 @@ module Account
       using = saved.select { |report| report.status == 'using' }
       PushAdoptionReports.perform_later(user: current_user) if using.any?
 
-      redirect_to account_overview_path, notice: confirmed_notice(using)
+      redirect_to account_overview_path, notice: confirmed_notice(check_in, using)
     end
 
     def dismiss
@@ -45,18 +45,17 @@ module Account
     private
 
     # Integers and fixed strings only: flashes render html_safe.
-    def confirmed_notice(using)
-      return t('annual_check_in.confirmed_flash') if using.empty?
+    def confirmed_notice(check_in, using)
+      return check_in.copy(:confirmed_flash) if using.empty?
 
       books = t('annual_check_in.flash_books', count: using.size)
       students = using.sum { |report| report.students.to_i }
-      school_year = SchoolYear.current
 
       if students.positive?
-        t('annual_check_in.confirmed_using_flash', books: books, school_year: school_year,
-                                                   students: t('annual_check_in.flash_students', count: students))
+        check_in.copy(:confirmed_using_flash, books: books,
+                                              students: t('annual_check_in.flash_students', count: students))
       else
-        t('annual_check_in.confirmed_using_books_only_flash', books: books, school_year: school_year)
+        check_in.copy(:confirmed_using_books_only_flash, books: books)
       end
     end
 
