@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_11_10_000008) do
+ActiveRecord::Schema.define(version: 2026_11_11_000001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -30,9 +30,13 @@ ActiveRecord::Schema.define(version: 2026_11_10_000008) do
     t.string "salesforce_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "how_using"
+    t.string "salesforce_book_name"
+    t.string "surface"
     t.index ["book_id"], name: "index_adoption_reports_on_book_id"
     t.index ["salesforce_pushed_at"], name: "index_adoption_reports_on_salesforce_pushed_at"
-    t.index ["user_id", "book_title", "school_year"], name: "index_adoption_reports_on_user_book_year", unique: true
+    t.index ["user_id", "book_title", "school_year"], name: "index_adoption_reports_on_user_title_year_legacy", unique: true, where: "(salesforce_book_name IS NULL)"
+    t.index ["user_id", "salesforce_book_name", "school_year"], name: "index_adoption_reports_on_user_sf_book_year", unique: true, where: "(salesforce_book_name IS NOT NULL)"
     t.index ["user_id"], name: "index_adoption_reports_on_user_id"
   end
 

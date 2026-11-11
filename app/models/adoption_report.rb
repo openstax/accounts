@@ -4,6 +4,14 @@
 class AdoptionReport < ApplicationRecord
   VALID_STATUSES = %w[using not_using].freeze
   VALID_SOURCES = %w[books_modal check_in].freeze
+  VALID_SURFACES = %w[overview books impact check_in].freeze
+  # Salesforce's restricted picklist How_Using__c: any other value makes the adoption create fault.
+  HOW_USING_OPTIONS = [
+    'As the core textbook for my course',
+    'As an optional/recommended textbook for my course',
+    'To teach, tutor, or support students outside of a course setting',
+    'For my own knowledge or other work'
+  ].freeze
 
   belongs_to :user
   belongs_to :book, optional: true
@@ -12,10 +20,15 @@ class AdoptionReport < ApplicationRecord
   validates :status, inclusion: { in: VALID_STATUSES }
   validates :source, inclusion: { in: VALID_SOURCES }
   validates :students, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
-  validates :book_title, uniqueness: { scope: [:user_id, :school_year] }
+  validates :how_using, inclusion: { in: HOW_USING_OPTIONS }, allow_nil: true
+  validates :surface, inclusion: { in: VALID_SURFACES }, allow_nil: true
+  validates :salesforce_book_name, uniqueness: { scope: [:user_id, :school_year] }, allow_nil: true
+  validates :book_title, uniqueness: { scope: [:user_id, :school_year] }, if: -> { salesforce_book_name.nil? }
 
   scope :unpushed, -> { where(salesforce_pushed_at: nil) }
   scope :using, -> { where(status: 'using') }
+  # Check-in rows stay local: Salesforce turns a pushed report into a confirmed adoption with no review.
+  scope :pushable, -> { unpushed.using.where(source: 'books_modal').where.not(salesforce_book_name: nil) }
 
   def self.current_school_year_label
     today = Time.zone.today

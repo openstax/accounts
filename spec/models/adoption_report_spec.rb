@@ -44,6 +44,24 @@ RSpec.describe AdoptionReport, type: :model do
       expect(report.errors[:source]).to be_present
     end
 
+    it 'only accepts the four Salesforce how_using values, or nil' do
+      expect(build_report(how_using: nil)).to be_valid
+      expect(build_report(how_using: AdoptionReport::HOW_USING_OPTIONS.last)).to be_valid
+      expect(build_report(how_using: 'Sort of')).not_to be_valid
+    end
+
+    it 'only accepts known surfaces, or nil' do
+      expect(build_report(surface: nil)).to be_valid
+      expect(build_report(surface: 'impact')).to be_valid
+      expect(build_report(surface: 'footer')).not_to be_valid
+    end
+
+    it 'is unique per user, Salesforce book name and school year' do
+      build_report(salesforce_book_name: 'Biology', book_title: 'Biology 2e').save!
+      dup = build_report(salesforce_book_name: 'Biology', book_title: 'Biology for AP')
+      expect(dup).not_to be_valid
+    end
+
     it 'requires students to be a non-negative integer when present' do
       report = build_report(students: -1)
       expect(report).not_to be_valid

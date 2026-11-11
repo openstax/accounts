@@ -144,6 +144,7 @@ class SecurityLog < ApplicationRecord
     staff_sign_up_failed
     staff_verified_email
     staff_verify_email_failed
+    adoption_reports_pushed_to_salesforce
   ]
 
   json_serialize :event_data, Hash
