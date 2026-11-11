@@ -14,9 +14,9 @@
     padding: 0;
     list-style: none;
     background: #fff;
-    border: 1px solid #E0E0E0;
-    border-radius: 2px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--os-border, #d5d5d5);
+    border-radius: 0;
+    box-shadow: var(--os-shadow-card, 0 2px 6px rgba(0, 0, 0, 0.2));
     max-height: 19em;
     overflow-y: auto;
     text-align: left;
@@ -34,7 +34,7 @@
       cursor: pointer;
 
       &.active {
-        background-color: #F5F5F5;
+        background-color: var(--os-hover-bg, #f1f1f1);
       }
 
       .school-autocomplete-name {
@@ -43,15 +43,15 @@
       }
 
       .school-autocomplete-location {
-        color: #6f6f6f;
-        font-size: 0.85em;
+        color: var(--os-text-helper, #6f6f6f);
+        font-size: 14px;
         white-space: nowrap;
       }
 
       &.school-autocomplete-use-as-entered {
-        border-top: 1px solid #e5e5e5;
+        border-top: 1px solid var(--os-border, #d5d5d5);
         font-style: italic;
-        color: #424242;
+        color: var(--os-text, #424242);
       }
     }
   }
