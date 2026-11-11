@@ -91,6 +91,28 @@ RSpec.describe PushAdoptionReports do
       )
     end
 
+    it 'never sends considering or just looking answers, and writes nothing when they are all there is' do
+      considering = create_report(user, status: 'considering', source: 'books_status')
+      browsing = create_report(user, status: 'browsing', source: 'books_status', book_title: 'Calculus Volume 1',
+                                      salesforce_book_name: 'Calculus Volume 1')
+      expect(contact).not_to receive(:save)
+
+      described_class.call(user: user)
+      described_class.call_for_all_unpushed
+
+      expect([considering, browsing].map { |report| report.reload.salesforce_pushed_at }).to all(be_nil)
+    end
+
+    it 'sends only the using report when a considering answer sits beside it' do
+      create_report(user)
+      create_report(user, status: 'considering', source: 'books_status', book_title: 'Calculus Volume 1',
+                          salesforce_book_name: 'Calculus Volume 1')
+
+      payload = payload_for(contact) { described_class.call(user: user) }
+
+      expect(payload['Books'].map { |book| book['name'] }).to eq(['Biology'])
+    end
+
     it 'moves a [Spanish] suffix into language' do
       create_report(user, book_title: 'Biología 2e', salesforce_book_name: 'Biology [Spanish]')
 

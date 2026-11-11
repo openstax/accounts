@@ -17,7 +17,7 @@ module Account
           next unless answer.is_a?(Hash) && answer['title'] == row.title
 
           status = answer['status'].to_s
-          next unless AdoptionReport::VALID_STATUSES.include?(status)
+          next unless %w[using not_using].include?(status)
 
           saved << save_report(row, status, answer)
         end

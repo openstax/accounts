@@ -53,6 +53,12 @@ class AnnualCheckIn
 
   private
 
+  # Books already marked considering or just looking this year are left out of the check-in.
+  def answered_locally
+    @answered_locally ||= user.adoption_reports.where(school_year: school_year_label, status: %w[considering browsing])
+                              .pluck(:book_title).to_set
+  end
+
   def last_school_year
     SchoolYear.label_for(SchoolYear.base_year_for(Time.zone.today) - 1)
   end
@@ -77,7 +83,7 @@ class AnnualCheckIn
       merge(candidates, title, students: adoption.students, how_using: how_using)
     end
 
-    candidates
+    candidates.except(*answered_locally)
   end
 
   # A report beats an adoption, field by field.

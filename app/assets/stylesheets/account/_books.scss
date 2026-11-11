@@ -408,13 +408,111 @@
   }
 }
 
-.account-books__save-nudge-action {
+// ---- Where I am with a saved book (this school year) ---------------------
+
+.book-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.book-status__group {
+  margin: 0;
   padding: 0;
   border: 0;
-  background: none;
-  color: var(--os-link);
-  font: inherit;
-  font-weight: 700;
-  text-decoration: underline;
+  min-width: 0;
+  width: 100%;
+}
+
+.book-status__legend {
+  @include set-font(helper-label);
+  float: none;
+  width: auto;
+  padding: 0;
+  margin: 0 0 4px;
+  font-weight: bold;
+  color: var(--os-text-helper);
+}
+
+.book-status__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.book-status__form {
+  display: contents;
+  margin: 0;
+}
+
+// Same weight for all three answers: secondary buttons, the chosen one shown with a border and tint.
+.account-books .book-status__choice {
+  @include set-font(helper-label);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 36px;
+  min-width: 24px;
+  margin: 0;
+  padding: 4px 10px;
+  line-height: 1.3;
+  background: var(--os-surface);
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius);
+  color: var(--os-text);
+  font-weight: normal;
+  text-decoration: none;
   cursor: pointer;
+
+  &:hover {
+    background: var(--os-hover-bg);
+  }
+
+  &[aria-pressed="true"] {
+    background: var(--os-info-bg);
+    border-color: var(--os-text);
+    font-weight: bold;
+  }
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+
+  @include width-up-to($phone-max) {
+    min-height: 44px;
+    padding: 4px 12px;
+  }
+}
+
+.book-status__change {
+  width: 100%;
+
+  summary {
+    @include set-font(helper-label);
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    color: var(--os-link);
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+    border-radius: 2px;
+
+    @include width-up-to($phone-max) {
+      min-height: 44px;
+    }
+
+    &:focus-visible {
+      box-shadow: var(--os-focus-ring);
+      outline: 2px solid transparent;
+    }
+  }
+
+  .book-status__group {
+    margin-top: 4px;
+  }
 }

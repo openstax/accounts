@@ -154,6 +154,26 @@ RSpec.describe AdoptionReport, type: :model do
     end
   end
 
+  describe 'local book-status answers' do
+    it 'accepts considering and browsing from the Books tab' do
+      %w[considering browsing].each_with_index do |status, index|
+        report = build_report(status: status, source: 'books_status', book_title: "Book #{index}", salesforce_book_name: "B#{index}")
+        expect(report).to be_valid
+      end
+    end
+
+    it 'never makes them pushable, even with a book name and a use' do
+      %w[considering browsing].each do |status|
+        %w[books_status books_modal check_in].each do |source|
+          build_report(status: status, source: source, book_title: "#{status}-#{source}", salesforce_book_name: "#{status}-#{source}",
+                       how_using: described_class::HOW_USING_OPTIONS.first).save!
+        end
+      end
+
+      expect(described_class.pushable).to be_empty
+    end
+  end
+
   describe '#school_year_start' do
     it 'parses the leading 4-digit year out of a "YYYY - YY" label' do
       report = build_report(school_year: '2026 - 27')

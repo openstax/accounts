@@ -27,7 +27,40 @@ module Account
       end
     end
 
+    LOCAL_STATUSES = %w[considering browsing].freeze
+
+    # "Considering it" and "Just looking" from a saved book's card. These are local answers: they
+    # never reach Salesforce, and an existing "using" report is never downgraded from here.
+    def book_status
+      answer = params[:status].to_s
+      book = current_user.user_books.includes(:book).find_by(id: params[:id])&.book
+
+      if book.nil? || !LOCAL_STATUSES.include?(answer) || current_user.student? || current_user.self_learner?
+        redirect_to account_books_path, alert: t('book_status.failed')
+        return
+      end
+
+      abbreviation = AdoptionBookCatalog.books.find { |entry| entry.title == book.title }&.salesforce_abbreviation
+      report = find_report(SchoolYear.current, book.title, abbreviation) || current_user.adoption_reports.new
+      return redirect_to(account_books_path, notice: t('book_status.saved', school_year: SchoolYear.current)) if report.persisted? && report.status == 'using'
+
+      report.assign_attributes(book_title: book.title, salesforce_book_name: abbreviation, school_year: SchoolYear.current,
+                               status: answer, source: 'books_status', surface: 'books', book: book)
+
+      if report.save
+        redirect_to account_books_path, notice: t('book_status.saved', school_year: SchoolYear.current)
+      else
+        redirect_to account_books_path, alert: t('book_status.failed')
+      end
+    end
+
     private
+
+    def find_report(school_year, title, abbreviation)
+      scope = current_user.adoption_reports.where(school_year: school_year)
+      (scope.find_by(salesforce_book_name: abbreviation) if abbreviation) ||
+        scope.find_by(book_title: title, salesforce_book_name: nil)
+    end
 
     # Integers and fixed strings only: flashes render html_safe. Only this school
     # year's rows show up as pending on the Impact tab (see PendingImpact).
@@ -87,11 +120,10 @@ module Account
     end
 
     def upsert_adoption_report(row)
-      scope = current_user.adoption_reports.where(school_year: row[:school_year])
       # A check-in row saved before salesforce_book_name existed is adopted rather than duplicated.
-      report = scope.find_by(salesforce_book_name: row[:salesforce_book_name]) ||
-               scope.find_by(book_title: row[:book_title], salesforce_book_name: nil) ||
-               scope.new
+      # An earlier considering or just looking answer is turned into this using report.
+      report = find_report(row[:school_year], row[:book_title], row[:salesforce_book_name]) ||
+               current_user.adoption_reports.new(school_year: row[:school_year])
 
       report.book_title = row[:book_title]
       report.salesforce_book_name = row[:salesforce_book_name]

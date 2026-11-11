@@ -200,4 +200,74 @@ RSpec.describe Account::AdoptionReportsController, type: :controller do
       end
     end
   end
+
+  describe '#book_status' do
+    let(:user) { FactoryBot.create(:user, :terms_agreed, role: :instructor) }
+    let(:saved_book) { UserBook.create!(user: user, book: Book.create!(book_uuid: SecureRandom.uuid, title: 'Introduction to Sociology 3e')) }
+    let(:other_book) { UserBook.create!(user: user, book: Book.create!(book_uuid: SecureRandom.uuid, title: 'Mystery Book')) }
+
+    before do
+      allow(controller).to receive(:newflow_authenticate_user!).and_return(true)
+      allow(controller).to receive(:current_user).and_return(user)
+    end
+
+    %w[considering browsing].each do |answer|
+      it "saves #{answer} as a local answer for this school year, never pushed" do
+        expect(PushAdoptionReports).not_to receive(:perform_later)
+
+        expect { post :book_status, params: { id: saved_book.id, status: answer } }.to change { AdoptionReport.count }.by(1)
+
+        expect(AdoptionReport.last).to have_attributes(
+          user: user, status: answer, source: 'books_status', surface: 'books', school_year: SchoolYear.current,
+          book_title: 'Introduction to Sociology 3e', salesforce_book_name: 'Sociology', salesforce_pushed_at: nil
+        )
+        expect(response).to redirect_to(account_books_path)
+        expect(AdoptionReport.pushable).to be_empty
+      end
+    end
+
+    it 'changes an earlier answer on the same row' do
+      post :book_status, params: { id: saved_book.id, status: 'considering' }
+
+      expect { post :book_status, params: { id: saved_book.id, status: 'browsing' } }.not_to change { AdoptionReport.count }
+
+      expect(AdoptionReport.last.status).to eq('browsing')
+    end
+
+    it 'saves a book that is not in the catalog by title' do
+      post :book_status, params: { id: other_book.id, status: 'browsing' }
+      post :book_status, params: { id: other_book.id, status: 'considering' }
+
+      expect(AdoptionReport.where(book_title: 'Mystery Book').pluck(:status, :salesforce_book_name)).to eq([['considering', nil]])
+    end
+
+    it 'never downgrades a using report' do
+      AdoptionReport.create!(user: user, book_title: 'Introduction to Sociology 3e', salesforce_book_name: 'Sociology',
+                             school_year: SchoolYear.current, status: 'using', source: 'books_modal', how_using: how_using)
+
+      post :book_status, params: { id: saved_book.id, status: 'browsing' }
+
+      expect(AdoptionReport.last.status).to eq('using')
+    end
+
+    it 'refuses an unknown status and another user\'s saved book' do
+      stranger_book = UserBook.create!(user: FactoryBot.create(:user), book: Book.create!(book_uuid: SecureRandom.uuid, title: 'Theirs'))
+
+      expect { post :book_status, params: { id: saved_book.id, status: 'using' } }.not_to change { AdoptionReport.count }
+      expect { post :book_status, params: { id: stranger_book.id, status: 'browsing' } }.not_to change { AdoptionReport.count }
+      expect(flash[:alert]).to eq("We couldn't save that answer. Please try again.")
+    end
+
+    it 'turns a considering answer into a pushable using report when the modal is submitted' do
+      post :book_status, params: { id: saved_book.id, status: 'considering' }
+      expect(AdoptionReport.pushable).to be_empty
+
+      expect {
+        post :create, params: { books: [{ name: 'Sociology', school_year: SchoolYear.current, how_using: how_using, students: '30' }] }
+      }.not_to change { AdoptionReport.count }
+
+      expect(AdoptionReport.last).to have_attributes(status: 'using', source: 'books_modal', students: 30)
+      expect(AdoptionReport.pushable.count).to eq(1)
+    end
+  end
 end

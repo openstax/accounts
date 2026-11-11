@@ -3,20 +3,22 @@ require 'rails_helper'
 RSpec.describe ImpactHelper, type: :helper do
   def prompt(overrides = {})
     helper.impact_next_prompt(
-      **{ streak_years: 0, saved_total: 0, saved_reported: 0, current_year_reported: true }.merge(overrides)
+      **{ streak_years: 0, saved_total: 0, saved_answered: 0, current_year_reported: true }.merge(overrides)
     )
   end
 
   describe '#impact_next_prompt' do
-    it 'compares reported and saved books when some saved books are unreported' do
-      result = prompt(saved_total: 3, saved_reported: 2)
+    it 'compares answered and saved books, and points to the Books tab instead of the modal' do
+      result = prompt(saved_total: 3, saved_answered: 2)
 
-      expect(result[:heading]).to eq('You’ve reported 2 of your 3 saved books this year')
-      expect(result[:button]).to eq('Count my students')
+      expect(result[:heading]).to eq('You’ve told us about 2 of your 3 saved books this year')
+      expect(result[:body]).to start_with('Tell us where you are with the others.')
+      expect(result[:button]).to eq('Go to my books')
+      expect(result[:path]).to eq(account_books_path)
     end
 
     it 'celebrates years with OpenStax when this year is covered' do
-      expect(prompt(streak_years: 2, saved_total: 1, saved_reported: 1)[:heading])
+      expect(prompt(streak_years: 2, saved_total: 1, saved_answered: 1)[:heading])
         .to eq('Year 3 with OpenStax. Thank you for sticking with us.')
     end
 

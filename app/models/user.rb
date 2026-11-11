@@ -629,6 +629,14 @@ class User < ApplicationRecord
     (pending + confirmed).uniq
   end
 
+  # Titles with any answer for a school year (using, not using, considering, just looking) plus
+  # confirmed adoptions. The progress lines count these, so a saved book someone is only
+  # browsing never reads as unfinished.
+  def titles_answered_for(school_year)
+    answered = adoption_reports.where(school_year: school_year).pluck(:book_title)
+    (answered + titles_reported_for(school_year)).uniq
+  end
+
   # Consecutive prior school years with at least one reported adoption
   # (AdoptionReport, from either the check-in or the books-page modal),
   # counted backward starting the year immediately before the current/

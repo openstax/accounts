@@ -197,6 +197,24 @@ RSpec.describe Account::CheckInController, type: :controller do
   end
 
   describe 'rows prefill' do
+    it 'leaves out books already marked considering or just looking this year, even when reported last year' do
+      AdoptionReport.create!(user: user, book_title: 'College Physics', salesforce_book_name: 'College Physics',
+                             school_year: last_year, source: 'books_modal', how_using: how_using)
+      AdoptionReport.create!(user: user, book_title: 'College Physics', school_year: current_year,
+                             source: 'books_status', status: 'considering')
+      AdoptionReport.create!(user: user, book_title: 'Introduction to Sociology 3e', school_year: current_year,
+                             source: 'books_status', status: 'browsing')
+
+      expect(AnnualCheckIn.new(user).rows).to be_empty
+    end
+
+    it 'keeps a not-teaching answer in the rows' do
+      AdoptionReport.create!(user: user, book_title: 'College Physics', school_year: current_year,
+                             source: 'check_in', status: 'not_using')
+
+      expect(AnnualCheckIn.new(user).rows.map(&:title)).to include('College Physics')
+    end
+
     it 'comes from last year\'s report, then confirmed adoption, deduped by title' do
       AdoptionReport.create!(
         user: user, book_title: 'College Physics', salesforce_book_name: 'College Physics',

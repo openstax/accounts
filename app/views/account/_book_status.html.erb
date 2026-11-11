@@ -1,0 +1,38 @@
+<%# Where an instructor is with one saved book this school year. Only "Teaching with it" needs JS
+    (it opens the report modal); the other two are plain form submits. %>
+<% labels = { 'considering' => t('book_status.considering'), 'browsing' => t('book_status.browsing'),
+              'not_using' => t('book_status.not_using') } %>
+
+<% choice = capture do %>
+  <fieldset class="book-status__group" aria-label="<%= t('book_status.group_name', title: book.title) %>">
+    <legend class="book-status__legend"><%= t('book_status.label') %></legend>
+    <div class="book-status__choices">
+      <% if abbreviation.present? %>
+        <button type="button"
+                class="book-status__choice"
+                aria-pressed="false"
+                data-report-adoption-trigger="true"
+                data-report-adoption-book="<%= abbreviation %>">
+          <%= t('book_status.teaching') %>
+        </button>
+      <% end %>
+      <% %w[considering browsing].each do |answer| %>
+        <%= button_to account_saved_book_status_path(saved_book), params: { status: answer },
+                      form: { class: 'book-status__form' }, class: 'book-status__choice',
+                      aria: { pressed: (status == answer).to_s } do %><%= labels[answer] %><% end %>
+      <% end %>
+    </div>
+  </fieldset>
+<% end %>
+
+<div class="book-status">
+  <% if status.present? %>
+    <span class="account-chip"><%= labels[status] %></span>
+    <details class="book-status__change">
+      <summary><%= t('book_status.change') %><span class="sr-only"> <%= t('book_status.group_name', title: book.title) %></span></summary>
+      <%= choice %>
+    </details>
+  <% else %>
+    <%= choice %>
+  <% end %>
+</div>

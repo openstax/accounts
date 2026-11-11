@@ -98,17 +98,17 @@ module ImpactHelper
 
   # The second, contextual ask under the stats: { heading:, body:, button: }.
   # It leans on things a bigger number can't improve: years of reporting, saved books
-  # still unreported this year, and keeping the current term up to date.
-  def impact_next_prompt(streak_years:, saved_total:, saved_reported:, current_year_reported:)
+  # not yet answered this year, and keeping the current term up to date.
+  def impact_next_prompt(streak_years:, saved_total:, saved_answered:, current_year_reported:)
     reason = 'Every report helps fund new free titles.'
 
     if !current_year_reported
       body = streak_years.positive? ? "Thank you for #{pluralize(streak_years, 'year')} of reporting. #{reason}" : "It takes about a minute. #{reason}"
       { heading: 'Report this term’s classes to keep your impact current', body: body, button: 'Report an adoption' }
-    elsif saved_total > saved_reported
-      { heading: "You’ve reported #{saved_reported} of your #{saved_total} saved books this year",
-        body: "Teaching with the others this term? Add them here. #{reason}",
-        button: 'Count my students' }
+    elsif saved_total > saved_answered
+      { heading: "You’ve told us about #{saved_answered} of your #{saved_total} saved books this year",
+        body: "Tell us where you are with the others. #{reason}",
+        button: 'Go to my books', path: account_books_path }
     elsif streak_years.positive?
       { heading: "Year #{streak_years + 1} with OpenStax. Thank you for sticking with us.",
         body: "Teaching with another book this term? Add it here. #{reason}",

@@ -28,7 +28,7 @@
     <% end %>
     <% if impact.saved_books_count.positive? %>
       <p class="account-impact-card__progress">
-        <%= t('overview_impact.books_reported', reported: impact.reported_saved_books_count,
+        <%= t('overview_impact.books_answered', answered: impact.answered_saved_books_count,
                                                 saved: impact.saved_books_count, school_year: impact.school_year) %>
       </p>
     <% end %>

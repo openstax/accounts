@@ -1119,7 +1119,7 @@ en:
     students: Students reached
     savings: Estimated student savings
     years: Years with OpenStax
-    books_reported: "%{reported} of your %{saved} saved books reported for %{school_year}"
+    books_answered: "You've told us about %{answered} of your %{saved} saved books for %{school_year}"
     pending_students_books: "+%{students} from %{books}, pending. They count once we confirm them."
     pending_books: "+%{books}, pending. They count once we confirm them."
     reason: Reports like yours are how we show funders that free books reach real students.
@@ -1133,6 +1133,15 @@ en:
     quick_action_cta: Count my students →
 
   books_report_nudge:
-    action: Using this in a course this term? Count your students
-    saved: Teaching with it this term?
-    saved_action: Count your students
+    saved: "Saved. Let us know below if you're teaching with it, considering it, or just looking."
+
+  book_status:
+    label: This term
+    group_name: "Where are you with %{title} this term?"
+    teaching: Teaching with it
+    considering: Considering it
+    browsing: Just looking
+    not_using: Not teaching with it this year
+    change: Change
+    saved: "Thanks. We've saved your answer for %{school_year}."
+    failed: We couldn't save that answer. Please try again.

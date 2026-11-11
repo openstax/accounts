@@ -104,7 +104,7 @@ RSpec.describe AccountController, type: :controller do
 
       get :impact
 
-      expect(response.body).to include('You’ve reported 1 of your 2 saved books this year')
+      expect(response.body).to include('You’ve told us about 1 of your 2 saved books this year')
     end
   end
 
@@ -192,7 +192,7 @@ RSpec.describe AccountController, type: :controller do
       expect(response.body).to include('415')
       expect(response.body).to include('$41,500')
       expect(response.body).to include('Years with OpenStax')
-      expect(response.body).to include("1 of your 2 saved books reported for #{SchoolYear.current}")
+      expect(response.body).to include(CGI.escapeHTML("You've told us about 1 of your 2 saved books for #{SchoolYear.current}"))
       expect(response.body).not_to include('milestone')
       expect(response.body).to include('show funders that free books reach real students')
       expect(response.body).to include(%(href="#{account_impact_path}"))
@@ -284,8 +284,42 @@ RSpec.describe AccountController, type: :controller do
       expect(response.body).to include('data-report-adoption-book="Physics"')
       expect(response.body).not_to include('data-report-adoption-book="Bio 2e"')
       expect(response.body.scan('data-report-adoption-book=').size).to eq(1)
-      expect(response.body).to include('Using this in a course this term? Count your students')
       expect(response.body).to include('id="reportAdoptionModal"')
+    end
+
+    it 'gives each unanswered book a three-way choice, and Mystery Book only the two local ones' do
+      get :books
+
+      expect(response.body).to include('Where are you with College Physics this term?')
+      expect(response.body).to include('Where are you with Mystery Book this term?')
+      expect(response.body.scan('Teaching with it').size).to eq(1)
+      expect(response.body.scan(/>\s*Considering it\s*</).size).to eq(2)
+      expect(response.body.scan(/>\s*Just looking\s*</).size).to eq(2)
+      expect(response.body).not_to include('Where are you with Biology 2e this term?')
+      expect(response.body).to include('Reported for')
+    end
+
+    it 'shows a quiet chip and a Change control for a considering, browsing or not-using answer' do
+      { 'College Physics' => 'considering', 'Mystery Book' => 'browsing' }.each do |title, status|
+        AdoptionReport.create!(user: user, book_title: title, status: status, source: 'books_status',
+                               school_year: SchoolYear.current)
+      end
+
+      get :books
+
+      expect(response.body).to include('account-chip">Considering it<')
+      expect(response.body).to include('account-chip">Just looking<')
+      expect(response.body.scan('book-status__change').size).to eq(2)
+      expect(response.body).to include('aria-pressed="true"')
+    end
+
+    it 'words a not-using check-in answer as not teaching with it this year' do
+      AdoptionReport.create!(user: user, book_title: 'College Physics', status: 'not_using', source: 'check_in',
+                             school_year: SchoolYear.current)
+
+      get :books
+
+      expect(response.body).to include('Not teaching with it this year')
     end
   end
 

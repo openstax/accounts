@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     delete '/books/saved/:id', to: 'account/saved_books#destroy', as: :account_saved_book
 
     post '/adoption-reports', to: 'account/adoption_reports#create', as: :account_adoption_reports
+    post '/books/saved/:id/status', to: 'account/adoption_reports#book_status', as: :account_saved_book_status
 
     get '/instructors', to: 'account/instructors#index', as: :account_instructors_search
     post '/instructor-connections', to: 'account/instructor_connections#create', as: :account_instructor_connections

@@ -46,13 +46,12 @@ RSpec.describe Account::SavedBooksController, type: :controller do
         ])
       end
 
-      it 'adds a polite nudge that opens the report modal with the book preselected, and escapes the title' do
+      it 'adds a neutral pointer to the card, with no modal trigger, and escapes the title' do
         post :create, params: { book_uuid: 'abc-123' }
 
-        expect(flash[:notice]).to include('Teaching with it this term?')
-        expect(flash[:notice]).to include('aria-live="polite"')
-        expect(flash[:notice]).to include('data-report-adoption-trigger="true"')
-        expect(flash[:notice]).to include('data-report-adoption-book="Test Abbr"')
+        expect(flash[:notice]).to include("Saved. Let us know below if you're teaching with it, considering it, or just looking.".sub("'", '&#39;'))
+        expect(flash[:notice]).not_to include('data-report-adoption')
+        expect(flash[:notice]).not_to include('<button')
         expect(flash[:notice]).to include('Test &lt;b&gt;Book&lt;/b&gt; was saved to your profile.')
       end
     end

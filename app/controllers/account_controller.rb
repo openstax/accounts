@@ -63,6 +63,9 @@ class AccountController < Newflow::BaseController
 
     @reported_school_year = SchoolYear.current
     @reported_titles = current_user.titles_reported_for(@reported_school_year).to_set
+    @book_status_by_title = current_user.adoption_reports.where(school_year: @reported_school_year,
+                                                                status: %w[considering browsing not_using])
+                                        .pluck(:book_title, :status).to_h
 
     @can_report_adoptions = !current_user.student? && !current_user.self_learner?
     @report_abbreviation_by_title = if @can_report_adoptions
@@ -107,9 +110,9 @@ class AccountController < Newflow::BaseController
     @check_in_streak_years = current_user.check_in_streak_years
 
     saved_titles = current_user.user_books.includes(:book).filter_map { |user_book| user_book.book&.title }.uniq
-    reported_titles = current_user.titles_reported_for(@current_school_year)
+    answered_titles = current_user.titles_answered_for(@current_school_year)
     @saved_books_total = saved_titles.size
-    @saved_books_reported = (saved_titles & reported_titles).size
+    @saved_books_answered = (saved_titles & answered_titles).size
 
     render_account_page :impact,
                         title: 'My OpenStax Impact'

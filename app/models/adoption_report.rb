@@ -2,8 +2,9 @@
 # check-in). Distinct from Adoption, which mirrors Salesforce-confirmed
 # adoptions: reports are owned by Accounts and pushed to Salesforce later.
 class AdoptionReport < ApplicationRecord
-  VALID_STATUSES = %w[using not_using].freeze
-  VALID_SOURCES = %w[books_modal check_in].freeze
+  # considering and browsing are local answers from the Books tab; only using is ever pushed.
+  VALID_STATUSES = %w[using not_using considering browsing].freeze
+  VALID_SOURCES = %w[books_modal check_in books_status].freeze
   VALID_SURFACES = %w[overview books impact check_in].freeze
   # Salesforce's restricted picklist How_Using__c: any other value makes the adoption create fault.
   HOW_USING_OPTIONS = [

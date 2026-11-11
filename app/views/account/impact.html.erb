@@ -140,13 +140,17 @@
 
       <% if @lifetime_adoptions.any? || pending.any? %>
         <% prompt = impact_next_prompt(streak_years: @check_in_streak_years, saved_total: @saved_books_total,
-                                    saved_reported: @saved_books_reported, current_year_reported: current_year_reported) %>
+                                    saved_answered: @saved_books_answered, current_year_reported: current_year_reported) %>
         <section class="impact-next-prompt" aria-labelledby="impact-next-prompt-title">
           <div class="impact-next-prompt__text">
             <h3 id="impact-next-prompt-title"><%= prompt[:heading] %></h3>
             <p><%= prompt[:body] %></p>
           </div>
-          <%= link_to prompt[:button], '#', class: 'account-impact__cta account-impact__cta--secondary', data: { report_adoption_trigger: true } %>
+          <% if prompt[:path] %>
+            <%= link_to prompt[:button], prompt[:path], class: 'account-impact__cta account-impact__cta--secondary' %>
+          <% else %>
+            <%= link_to prompt[:button], '#', class: 'account-impact__cta account-impact__cta--secondary', data: { report_adoption_trigger: true } %>
+          <% end %>
         </section>
       <% end %>
 
