@@ -1,0 +1,51 @@
+<% if @show_profile_nudge_banner %>
+  <%= render 'account/profile_nudge_callout' %>
+<% elsif status.pending_instructor? %>
+  <div class="account-callout" id="verification-callout">
+    <div class="account-callout__text">
+      <p class="account-callout__eyebrow">Action required</p>
+      <h2 class="account-callout__title">Complete instructor verification</h2>
+      <p>Verifying your instructor status unlocks instructor-only resources, downloadable assets, and Assignable tools.</p>
+      <p>Finish verification today to keep your educator access active.</p>
+    </div>
+    <div class="account-callout__actions">
+      <%= link_to 'Verify now',
+                  'https://help.openstax.org/s/article/Requesting-Instructor-only-access-to-the-resources-on-openstax-org',
+                  class: 'account-callout__button account-callout__button--primary',
+                  target: '_blank',
+                  rel: 'noopener' %>
+    </div>
+  </div>
+<% elsif status.incomplete_signup? %>
+  <div class="account-callout" id="complete-signup-callout">
+    <div class="account-callout__text">
+      <p class="account-callout__eyebrow">Finish signing up</p>
+      <h2 class="account-callout__title">Complete your instructor profile</h2>
+      <p>We still need a bit more information to activate your instructor access.</p>
+      <p>Finish the signup flow to verify your teaching role and unlock instructor-only resources.</p>
+    </div>
+    <div class="account-callout__actions">
+      <%= link_to 'Complete signup',
+                  newflow_signup_path,
+                  class: 'account-callout__button account-callout__button--primary' %>
+    </div>
+  </div>
+<% elsif !status.staff? && current_user.profile_needs_enrichment? %>
+  <%# Non-blocking nudge for educators who used "Save and finish later" on
+      step 4 and skipped optional teaching details (books, student count,
+      school). Distinct from the callouts above: this user already has
+      instructor access -- we're just inviting them to finish enriching
+      their profile so we can point them to the right resources. %>
+  <div class="account-callout" id="enrich-profile-callout">
+    <div class="account-callout__text">
+      <p class="account-callout__eyebrow">A couple more details</p>
+      <h2 class="account-callout__title">Finish telling us about your teaching</h2>
+      <p>You skipped a few questions when you signed up -- add them so we can point you to the right book resources.</p>
+    </div>
+    <div class="account-callout__actions">
+      <%= link_to 'Finish your profile',
+                  educator_profile_form_path,
+                  class: 'account-callout__button account-callout__button--primary' %>
+    </div>
+  </div>
+<% end %>

@@ -6,62 +6,15 @@
 <% assignable_enabled = current_user.external_ids.exists? %>
 <% dismissed_assignable_callout = cookies[:dismissed_assignable_callout] == 'true' %>
 <% allow_callout_persistence = !current_user.is_administrator? %>
-<% is_verified_instructor = current_user.confirmed_faculty? %>
-<% staff = current_user.completed_non_teaching_profile? %>
-<% pending_instructor = !staff && !is_verified_instructor && !current_user.incomplete_signup? && !current_user.rejected_faculty? %>
-<% incomplete_signup = !staff && current_user.incomplete_signup? %>
-<% show_assignable_callout = school_supports_assignable && is_verified_instructor && !assignable_enabled && (!dismissed_assignable_callout || current_user.is_administrator?) %>
+<% status = OverviewStatus.new(current_user) %>
+<% show_assignable_callout = school_supports_assignable && status.verified_instructor? && !assignable_enabled && (!dismissed_assignable_callout || current_user.is_administrator?) %>
 
-<% school_name = current_user&.school&.name.presence || current_user&.self_reported_school.presence %>
-<% faculty_status = current_user&.faculty_status.to_s %>
-<% instructor_status =
-    case faculty_status
-    when 'confirmed_faculty' then 'Verified'
-    when 'pending_faculty', 'pending_sheerid' then 'Pending verification'
-    when 'rejected_faculty', 'rejected_by_sheerid' then 'Not verified'
-    when 'incomplete_signup' then 'Incomplete signup'
-    when 'no_faculty_info', '' then 'Not verified'
-    else faculty_status.titleize
-    end %>
-<% role_label = staff ? current_user.staff_role_label : (current_user.role.present? ? current_user.role.titleize : 'Instructor') %>
-<% account_health =
-     if pending_instructor
-       'Verification needed'
-     elsif incomplete_signup
-       'Finish signup'
-     else
-       'All set'
-     end %>
 <% completeness = account_completeness_summary(current_user) %>
 
 <div class="account-layout">
   <%= render 'account/navigation' %>
   <div class="account-layout__content">
-    <header class="account-overview__header">
-      <h1 class="account-overview__title">
-        Welcome back<% if current_user&.first_name.present? %>, <%= current_user.first_name %><% end %>
-      </h1>
-
-      <div class="account-overview__badges">
-        <% if is_verified_instructor %>
-          <span class="account-badge account-badge--verified">Verified educator</span>
-        <% end %>
-        <% if current_user.school&.name.present? %>
-          <span class="account-badge account-badge--school"><%= current_user.school.name %></span>
-        <% end %>
-      </div>
-
-      <p class="account-overview__subtitle">
-        <% if school_name.present? && staff %>
-          Your account is linked to <strong><%= school_name %></strong>. Access your resources and account settings from here.
-        <% elsif school_name.present? %>
-          You’re signed in as an instructor at <strong><%= school_name %></strong>. Access your teaching tools, resources, and account settings from here.
-        <% else %>
-          Access your teaching tools, resources, and account settings from here. Add your school to personalize your experience.
-          <a class="account-overview__inline-link" href="<%= account_profile_path %>">Update profile</a>
-        <% end %>
-      </p>
-    </header>
+    <%= render 'account/overview_header', status: status %>
 
     <%= render 'account/check_in_card', check_in: @annual_check_in if @annual_check_in %>
 
@@ -92,57 +45,7 @@
       </div>
     <% end %>
 
-    <% if @show_profile_nudge_banner %>
-      <%= render 'account/profile_nudge_callout' %>
-    <% elsif pending_instructor %>
-      <div class="account-callout" id="verification-callout">
-        <div class="account-callout__text">
-          <p class="account-callout__eyebrow">Action required</p>
-          <h2 class="account-callout__title">Complete instructor verification</h2>
-          <p>Verifying your instructor status unlocks instructor-only resources, downloadable assets, and Assignable tools.</p>
-          <p>Finish verification today to keep your educator access active.</p>
-        </div>
-        <div class="account-callout__actions">
-          <%= link_to 'Verify now',
-                      'https://help.openstax.org/s/article/Requesting-Instructor-only-access-to-the-resources-on-openstax-org',
-                      class: 'account-callout__button account-callout__button--primary',
-                      target: '_blank',
-                      rel: 'noopener' %>
-        </div>
-      </div>
-    <% elsif incomplete_signup %>
-      <div class="account-callout" id="complete-signup-callout">
-        <div class="account-callout__text">
-          <p class="account-callout__eyebrow">Finish signing up</p>
-          <h2 class="account-callout__title">Complete your instructor profile</h2>
-          <p>We still need a bit more information to activate your instructor access.</p>
-          <p>Finish the signup flow to verify your teaching role and unlock instructor-only resources.</p>
-        </div>
-        <div class="account-callout__actions">
-          <%= link_to 'Complete signup',
-                      newflow_signup_path,
-                      class: 'account-callout__button account-callout__button--primary' %>
-        </div>
-      </div>
-    <% elsif !staff && current_user.profile_needs_enrichment? %>
-      <%# Non-blocking nudge for educators who used "Save and finish later" on
-          step 4 and skipped optional teaching details (books, student count,
-          school). Distinct from the callouts above: this user already has
-          instructor access -- we're just inviting them to finish enriching
-          their profile so we can point them to the right resources. %>
-      <div class="account-callout" id="enrich-profile-callout">
-        <div class="account-callout__text">
-          <p class="account-callout__eyebrow">A couple more details</p>
-          <h2 class="account-callout__title">Finish telling us about your teaching</h2>
-          <p>You skipped a few questions when you signed up -- add them so we can point you to the right book resources.</p>
-        </div>
-        <div class="account-callout__actions">
-          <%= link_to 'Finish your profile',
-                      educator_profile_form_path,
-                      class: 'account-callout__button account-callout__button--primary' %>
-        </div>
-      </div>
-    <% end %>
+    <%= render 'account/overview_status_callout', status: status %>
 
     <% if flash[:lms_answered_label] %>
       <div id="lms-question-card" class="account-callout account-callout--lms-confirmed">
@@ -182,21 +85,21 @@
           <dl class="account-facts">
             <div class="account-facts__item">
               <dt>Role</dt>
-              <dd><%= role_label %></dd>
+              <dd><%= status.role_label %></dd>
             </div>
             <div class="account-facts__item">
               <dt>School</dt>
-              <dd><%= school_name.presence || 'Add your school' %></dd>
+              <dd><%= status.school_name || 'Add your school' %></dd>
             </div>
-            <% unless staff %>
+            <% unless status.staff? %>
               <div class="account-facts__item">
                 <dt>Instructor status</dt>
-                <dd><%= instructor_status %></dd>
+                <dd><%= status.instructor_status_label %></dd>
               </div>
             <% end %>
             <div class="account-facts__item">
               <dt>Account health</dt>
-              <dd><%= account_health %></dd>
+              <dd><%= status.account_health %></dd>
             </div>
           </dl>
           <p class="account-overview__note">
