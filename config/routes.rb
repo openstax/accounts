@@ -33,6 +33,8 @@ Rails.application.routes.draw do
     get 'i/check_your_email', action: :check_your_email, as: :check_your_email
   end
 
+  post 'i/ses/events', to: 'ses_events#create', as: :ses_events
+
   scope controller: 'newflow/student_signup' do
     get 'i/signup/student', action: :student_signup_form, as: :newflow_signup_student
     post 'i/signup/student', action: :student_signup, as: :newflow_signup_post

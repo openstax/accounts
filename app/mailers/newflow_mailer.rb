@@ -1,6 +1,8 @@
 class NewflowMailer < ApplicationMailer
   include Rails.application.routes.url_helpers
 
+  self.delivery_job = TrackedMailDeliveryJob
+
   def create_password_email(user:, email:)
     @user = user
     mail to: email, subject: 'Set up a password for your OpenStax account'
@@ -15,7 +17,8 @@ class NewflowMailer < ApplicationMailer
          subject: "Reset your OpenStax password"
   end
 
-  def signup_email_confirmation(email_address:, show_pin: true)
+  def signup_email_confirmation(email_address:, show_pin: true, email_delivery_id: nil)
+    publish_ses_events_for(EmailDelivery.find_by(id: email_delivery_id)) if email_delivery_id
     @should_show_pin = show_pin != false &&
                        ConfirmByPin.sequential_failure_for(email_address).attempts_remaining?
     @email_value = email_address.value

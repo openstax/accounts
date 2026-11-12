@@ -1,0 +1,27 @@
+<% stats = EmailDelivery.signup_confirmation_stats %>
+<div class="email-delivery-stats">
+  <strong>All PIN emails, last 7 days:</strong>
+  <% if stats[:total].zero? %>
+    <span class="text-muted">none sent</span>
+  <% else %>
+    <span class="email-delivery-stats__item"><%= number_with_delimiter(stats[:total]) %> sent</span>
+    <% if EmailDelivery.event_tracking_enabled? %>
+      <span class="email-delivery-stats__item"><strong><%= stats[:delivered_percent] %>%</strong> delivered</span>
+      <% if stats[:median_seconds_to_deliver] %>
+        <span class="email-delivery-stats__item">
+          typically arrives in <%= email_delivery_duration(stats[:median_seconds_to_deliver]) %>
+          (9 in 10 within <%= email_delivery_duration(stats[:p90_seconds_to_deliver]) %>)
+        </span>
+      <% end %>
+    <% end %>
+    <span class="email-delivery-stats__item"><%= stats[:problem_percent] %>% failed, bounced or marked spam</span>
+    <% if stats[:counts]['queued'].to_i.positive? %>
+      <span class="email-delivery-stats__item"><%= stats[:counts]['queued'] %> still waiting to send</span>
+    <% end %>
+  <% end %>
+  <% unless EmailDelivery.event_tracking_enabled? %>
+    <div class="text-muted">
+      SES event tracking is not configured here, so statuses stop at "Sent" and delivery isn't measured.
+    </div>
+  <% end %>
+</div>
