@@ -24,6 +24,37 @@ describe SequentialFailure, type: :model do
     expect(sf.reload.length).to eq 4
   end
 
+  it "creates the row on the first increment" do
+    sf = SequentialFailure.confirm_by_pin.new(reference: 'fresh')
+    sf.increment!
+    expect(sf).to be_persisted
+    expect(SequentialFailure.confirm_by_pin.find_by!(reference: 'fresh').length).to eq 1
+  end
+
+  it "counts against the stored row, not a stale in-memory copy" do
+    sf = SequentialFailure.confirm_by_pin.create!(reference: 'blah', length: 3)
+    stale = SequentialFailure.find(sf.id)
+    sf.increment!
+    stale.increment!
+    expect(stale.length).to eq 5
+    expect(sf.reload.length).to eq 5
+  end
+
+  it "does not collide when two unsaved copies of a new row both increment" do
+    a = SequentialFailure.confirm_by_pin.new(reference: 'race')
+    b = SequentialFailure.confirm_by_pin.find_or_initialize_by(reference: 'race')
+    a.increment!
+    expect { b.increment! }.not_to raise_error
+    expect(a.reload.length).to eq 2
+  end
+
+  it "can be reset after an increment" do
+    sf = SequentialFailure.confirm_by_pin.new(reference: 'fresh')
+    sf.increment!
+    expect { sf.reset! }.not_to change(SequentialFailure, :count)
+    expect(sf.reload.length).to eq 0
+  end
+
   it "returns attempts remaining" do
     sf = SequentialFailure.confirm_by_pin.create!(reference: 'blah', length: 3)
     sf.num_failures_allowed = 4

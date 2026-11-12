@@ -65,6 +65,12 @@ describe SendResetPasswordEmail, type: :handler do
       perform_enqueued_jobs
     end
 
+    it 'enqueues the verification email at the signup-confirmation priority' do
+      described_class.handle(caller: AnonymousUser.instance, params: params)
+
+      expect(enqueued_jobs.last['priority']).to eq Newflow::SendSignupConfirmationEmail::PRIORITY
+    end
+
     it 'does not send a password reset email' do
       expect_any_instance_of(NewflowMailer).not_to receive(:reset_password_email)
       described_class.handle(caller: AnonymousUser.instance, params: params)

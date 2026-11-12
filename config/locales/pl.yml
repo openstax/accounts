@@ -62,10 +62,16 @@ pl:
     change_signup_email_form_page_description: >-
       Zmień adres e-mail poniżej, wyślemy na niego PIN.
       Do zalogowania się potrzebny Ci będzie właśnie ten adres e-mail
-    didnt_receive_email: Wiadomość nie dotarła? Zarejestruj się %{sign_up_with_different_email_link}.
+    signup_email_resent: >-
+      Wysłaliśmy kolejną wiadomość na adres <b>%{email}</b>. Zawiera ten sam PIN,
+      więc możesz użyć tej, która dotrze pierwsza.
+    signup_email_resent_too_soon: Wiadomość została właśnie wysłana. Odczekaj minutę, zanim poprosisz o kolejną.
+    signup_email_changed: Wysłaliśmy nowy PIN na adres <b>%{email}</b>.
+    signup_email_resend_limit_reached: >-
+      W ciągu ostatniej godziny wysłaliśmy już kilka wiadomości. Sprawdź folder
+      spam lub napisz do support@openstax.org.
+    signup_email_already_confirmed: Ten adres e-mail został już potwierdzony.
     all_fields_required: '* Wszystkie pola są wymagane'
-    sign_up_with_different_email: podając inny adres e-mail
-    check_your_updated_email: Sprawdź nowy adres e-mail
     havent_received_message: Still haven't received an email? %{contact_us}
     contact_us: Skontaktuj się z nami
     welcome_page_header: Witamy! Dołącz do OpenStax jako
@@ -177,8 +183,6 @@ pl:
       Wprowadź poniżej otrzymany kod PIN.
       Po potwierdzeniu adresu e-mail musisz dokończyć
       pozostałe kroki weryfikacji statusu instruktora.
-    educator_email_verification_help_msg: Widzisz literówkę w swoim adresie e-mail? %{edit_it_here}. Wiadomość nie dotarła? %{contact_us_link}.
-    edit_it_here: Edytuj go tutaj
 
   student_profile:
     enable_other_sign_in_options: Zezwól na inne opcje logowania

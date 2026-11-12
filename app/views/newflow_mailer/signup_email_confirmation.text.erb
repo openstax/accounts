@@ -1,0 +1,18 @@
+Welcome to OpenStax!
+
+<% if @should_show_pin -%>
+Your PIN is: <%= @confirmation_pin %>
+
+Enter it on the signup page, or confirm your email address with this link:
+<% else -%>
+Confirm your email address with this link:
+<% end -%>
+<%= @confirmation_url %>
+
+If you need any assistance, please reach out to us at support@openstax.org.
+
+If you did not sign up for OpenStax with the email <%= @email_value %>, please disregard this message.
+
+OpenStax, Rice University
+6100 Main St. MS-375, Houston, Texas 77005
+https://openstax.org

@@ -1,9 +1,8 @@
 module Newflow
   module StudentSignup
     class VerifyEmailByPin < VerifyUserEmailByPin
-      lev_handler
-      uses_routine ConfirmByPin
-      uses_routine ActivateStudent
+      # Confirming and activating are each idempotent, so resubmitting repairs a failed activation.
+      lev_handler transaction: :no_transaction
 
       paramify :confirm do
         attribute :pin, type: String
@@ -23,7 +22,7 @@ module Newflow
       private #################
 
       def activate_user(claiming_user)
-        run(ActivateStudent, user: claiming_user)
+        transfer_errors_from(ActivateStudent.call(user: claiming_user).errors, { type: :verbatim }, true)
       end
 
     end
