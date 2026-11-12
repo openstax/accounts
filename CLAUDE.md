@@ -221,15 +221,15 @@ The 2026 redesign (Claude Design project "Accounts Redesign") reshaped signup + 
 - `SecurityLog.event_type` and `users.role` are **positional integer enums** — only ever append new values at the end. Appending "near the related ones" is the tempting mistake and it is silent: inserting four `staff_*` values beside the `educator_*` block once shifted 44 already-deployed values by four, which would have re-labelled every existing `security_logs` row from that index up. When merging a long-lived branch, diff the enum against the merge base and confirm the shared prefix is byte-identical before trusting it.
 
 ### Brand: fonts, palette, alert contrast
-The brand font is Helvetica Neue and **no webfont is loaded anywhere** — there is no
-`@font-face`, no Google Fonts link, nothing. So the only stack that works is
-`'Helvetica Neue', Helvetica, Arial, sans-serif`, and it must be spelled exactly that
-way. `'HelveticaNeue'` (no space) and `'Neue Helvetica W01'` are dead names that match
-no installed font; they were both live in this repo and silently fell through to
-different fallbacks, so headings and body copy could render in different faces on the
-same page. Use `$os_font_family` / `$os_heading_font_family` from `common.scss` where the
-file imports it; the `account/` partials use the literal. H1/H2
-carry `letter-spacing: -0.03em`.
+The brand face is openstax.org's: `'Neue Helvetica W01'`, self-hosted under
+`public/accounts/fonts` (regular, medium, bold) and declared twice with the same sources:
+pattern-library's `fonts.scss` in the newflow bundle, and `account/_base.scss` for every
+page. `local('Helvetica Neue')` comes first, as on openstax.org, so Macs use the system
+face and everyone else gets the webfont instead of Arial. Set type with `var(--os-font)`;
+`_base.scss` makes headings and form controls `inherit`, because Bootstrap and the legacy
+card name a font on them. `global_layout.scss` opens with the Fonts.com tracking
+`@import`, which the licence for the self-hosted files requires. H1/H2 carry
+`letter-spacing: -0.03em`.
 
 **Account and signup styles are built on openstax.org's own design system.** The
 `pattern-library` gem is pinned to the version os-webview (openstax.org) uses; bump them
@@ -242,6 +242,24 @@ pattern-library both set 62.5%), so `1.6rem` is 16px. Most of this branch's firs
 written as if `1rem` were 16px and rendered at 7.5-10px; size text with the pattern-library
 `set-font` / `scale-set-font` mixins (body 16/25, nothing under 14px except footer fine print)
 rather than raw rems.
+
+**Chrome and controls match openstax.org.** `shared/_header` and `shared/_footer` use the
+stacked logos openstax.org's top nav uses (`openstax-logo-stacked.svg`, `rice-logo-stacked.svg`,
+`rice-logo-white.png`, copied from `openstax.org/dist/images`) and its footer layout (mission
+line, Help and Policies columns); openstax.org has no colour-strip bars, so neither do we.
+`account/_controls.scss` draws every select (`.os-app select:not([multiple])`: chevron, hover,
+focus ring) in both layouts, and radios and checkboxes only under the application layout,
+since newflow draws its own on the label and the two collide. Surfaces set control size and
+spacing, not material. Motion uses the `--os-dur*` / `--os-ease-out` tokens; hover and press
+move by `var(--os-lift)`, which `prefers-reduced-motion` sets to 0, and keyframe entrances sit
+under `@media (prefers-reduced-motion: no-preference)` rather than a global duration kill.
+
+**The account shell is not an `.ox-card`.** `ox_card(..., legacy: false)` renders the helper's
+flash handling without the class, because `controls/_card.scss` styles every input, select,
+submit and heading inside an `.ox-card` (grey 1px borders, 5px padding, an arrowless select,
+`select + *` margins) and those rules leaked into every account page. The application layout
+also wraps pages in Bootstrap's `.container` (fixed widths per breakpoint) and `.row`
+(-15px margins); `_chrome.scss` neutralises both under `.os-app`.
 
 Colors come from the 7-hue x 4-shade brand palette: buttons `#D4450C`, links `#026AA1`,
 body text `#424242`, muted `#6A6A6A`. **The palette has no red** — don't reintroduce
