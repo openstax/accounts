@@ -95,6 +95,44 @@ describe Api::V1::UserRepresenter, type: :representer do
     end
   end
 
+  context 'Assignable at the user\'s school' do
+    let(:private_hash) { representer.to_hash(user_options: { include_private_data: true }) }
+
+    before { user.school = school }
+
+    it 'is not there normally' do
+      expect(representer.to_hash).not_to have_key('assignable_school_integrated')
+      expect(representer.to_hash).not_to have_key('assignable_school_integration_possible')
+    end
+
+    it 'reads assignable_school_integrated from the school\'s own integration, not its contacts' do
+      school.update!(assignable_integrated: true, has_assignable_contacts: false)
+
+      expect(private_hash['assignable_school_integrated']).to eq true
+      expect(private_hash['assignable_school_integration_possible']).to eq false
+    end
+
+    it 'ignores has_assignable_contacts' do
+      school.update!(assignable_integrated: false, has_assignable_contacts: true)
+
+      expect(private_hash['assignable_school_integrated']).to eq false
+    end
+
+    it 'reports a district or system integration as possible' do
+      school.update!(assignable_integration_possible: true)
+
+      expect(private_hash['assignable_school_integrated']).to eq false
+      expect(private_hash['assignable_school_integration_possible']).to eq true
+    end
+
+    it 'is left out when the user has no school' do
+      user.school = nil
+
+      expect(private_hash).not_to have_key('assignable_school_integrated')
+      expect(private_hash).not_to have_key('assignable_school_integration_possible')
+    end
+  end
+
   context 'school_type' do
     before { user.school_type = :home_school }
 

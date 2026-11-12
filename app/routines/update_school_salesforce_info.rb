@@ -15,7 +15,9 @@ class UpdateSchoolSalesforceInfo
     is_kip: :is_kip,
     is_child_of_kip: :is_child_of_kip,
     sheerid_school_name: :sheerid_school_name,
-    has_assignable_contacts: :has_assignable_contacts
+    has_assignable_contacts: :has_assignable_contacts,
+    assignable_integrated: :assignable_integrated,
+    assignable_integration_possible: :assignable_integration_possible
   }
 
   def self.call

@@ -50,6 +50,28 @@ describe UpdateSchoolSalesforceInfo, type: :routine do
       expect_school_attributes_match school.reload, changed_school
     end
 
+    it 'caches the Assignable integration flags' do
+      integrated_school = school.dup.tap { |s| s.assign_attributes(assignable_integrated: true) }
+      stub_schools integrated_school
+
+      described_class.call
+
+      expect(school.reload).to have_attributes(
+        assignable_integrated: true, assignable_integration_possible: false
+      )
+
+      possible_school = school.dup.tap do |s|
+        s.assign_attributes(assignable_integrated: false, assignable_integration_possible: true)
+      end
+      stub_schools possible_school
+
+      described_class.call
+
+      expect(school.reload).to have_attributes(
+        assignable_integrated: false, assignable_integration_possible: true
+      )
+    end
+
     it 'does not update existing Schools if the Salesforce data did not change' do
       unchanged_school = school.dup
 

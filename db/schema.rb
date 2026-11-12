@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_09_26_000300) do
+ActiveRecord::Schema.define(version: 2026_11_12_000000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -339,6 +339,8 @@ ActiveRecord::Schema.define(version: 2026_09_26_000300) do
     t.datetime "updated_at", null: false
     t.string "country", default: "United States", null: false
     t.boolean "has_assignable_contacts"
+    t.boolean "assignable_integrated", default: false, null: false
+    t.boolean "assignable_integration_possible", default: false, null: false
     t.index ["name", "city", "state"], name: "index_schools_on_name_and_city_and_state", opclass: :gist_trgm_ops, using: :gist
     t.index ["salesforce_id"], name: "index_schools_on_salesforce_id", unique: true
     t.index ["sheerid_school_name"], name: "index_schools_on_sheerid_school_name"

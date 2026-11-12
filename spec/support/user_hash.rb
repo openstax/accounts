@@ -48,7 +48,8 @@ def user_matcher(user, include_private_data: false)
         Api::V1::ExternalIdRepresenter.new(external_id).to_hash.symbolize_keys
       end
     )
-    base_hash[:assignable_school_integrated] = user.school.has_assignable_contacts
+    base_hash[:assignable_school_integrated] = user.school.assignable_integrated
+    base_hash[:assignable_school_integration_possible] = user.school.assignable_integration_possible
     base_hash[:assignable_user] = user.external_ids.any?
   end
 
