@@ -1,7 +1,7 @@
 class NewflowUi.EducatorComplete
 
   constructor: ->
-    _.bindAll(@, 'onSchoolNameChange', 'onSchoolSelected', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onTotalNumStudentsChange', 'onSubmit', 'onFinishLater', 'attachBookUsedEvents')
+    _.bindAll(@, 'onSchoolNameChange', 'onSchoolNameBlur', 'onSchoolSelected', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onTotalNumStudentsChange', 'onSubmit', 'onFinishLater', 'attachBookUsedEvents')
     @form = $('.signup-page.completed-step')
 
     # fields locators
@@ -54,6 +54,7 @@ class NewflowUi.EducatorComplete
 
     # event listeners
     @school_name_input.on('input', @onSchoolNameChange)
+    @school_name_input.on('blur', @onSchoolNameBlur)
     @form.on('school-autocomplete:selected', '.school-autocomplete', @onSchoolSelected)
 
     @completed_role_radio.change(@onRoleChange)
@@ -168,6 +169,12 @@ class NewflowUi.EducatorComplete
     rawForm = @continue.closest('form')[0]
     rawForm?.submit()
 
+  # The same test as checkSchoolNameValid without touching the error message,
+  # for code that runs before the user has had a chance to answer.
+  schoolNameFilled: () ->
+    return true if document.getElementsByClassName('school-name-visible')[0] == undefined
+    !!@school_name_input.val()
+
   checkSchoolNameValid: () ->
     return true if document.getElementsByClassName('school-name-visible')[0] == undefined
 
@@ -275,6 +282,11 @@ class NewflowUi.EducatorComplete
     @please_fill_out_school.hide()
     @onRoleChange()
 
+  # Ask for the school only once the field has been left empty. The short wait
+  # lets a click on an autocomplete suggestion fill the field first.
+  onSchoolNameBlur: ->
+    setTimeout((=> @checkSchoolNameValid()), 200)
+
   # Fired by school_autocomplete.js when a suggestion is picked (school
   # present) or the field is cleared/edited/left as free text (school null).
   # Only real, matched schools can be K-12, so grade band only shows then.
@@ -294,7 +306,7 @@ class NewflowUi.EducatorComplete
   onRoleChange: ->
     @please_select_role.hide()
 
-    if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_instructor').is(':checked') && @checkSchoolNameValid() )
+    if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_instructor').is(':checked') && @schoolNameFilled() )
       @how_using.show()
 
       @showBookUsedFields()
@@ -305,7 +317,7 @@ class NewflowUi.EducatorComplete
       @form.find('.students-using-book .newflow-mustdo-alert').hide()
 
       @onHowUsingChange()
-    else if (@findOrLogNotFound($(document), '#signup_educator_specific_role_researcher').is(':checked') && @checkSchoolNameValid())
+    else if (@findOrLogNotFound($(document), '#signup_educator_specific_role_researcher').is(':checked') && @schoolNameFilled())
       @how_using.show()
 
       @other_specify.hide()
@@ -316,7 +328,7 @@ class NewflowUi.EducatorComplete
       @hideTotalNumStudents()
 
       @onHowUsingChange()
-    else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_administrator').is(':checked') && @checkSchoolNameValid())
+    else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_administrator').is(':checked') && @schoolNameFilled())
       @how_using.show()
 
       @other_specify.hide()
@@ -350,13 +362,13 @@ class NewflowUi.EducatorComplete
 
     @updateTotalNumStudentsLabel()
 
-    if @checkSchoolNameValid()
+    if @schoolNameFilled()
       @continue.prop('disabled', false)
 
   onOtherChange: ->
     @please_fill_out_other.hide()
 
-    if @checkSchoolNameValid() && @checkOtherValid()
+    if @schoolNameFilled() && @checkOtherValid()
       @continue.prop('disabled', false)
 
   onHowUsingChange: ->

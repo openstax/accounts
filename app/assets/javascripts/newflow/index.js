@@ -6,6 +6,7 @@
 //= require ./newflow_ui
 //= require ./school_autocomplete
 //= require ./pin_code_boxes
+//= require ./step_progress
 //= require ./educator_signup_email_validations
 //= require ./educator_complete_dynamic
 //= require ./staff_signup
