@@ -49,7 +49,7 @@ RSpec.describe Account::SavedBooksController, type: :controller do
       it 'adds a neutral pointer to the card, with no modal trigger, and escapes the title' do
         post :create, params: { book_uuid: 'abc-123' }
 
-        expect(flash[:notice]).to include("Saved. Let us know below if you're teaching with it, considering it, or just looking.".sub("'", '&#39;'))
+        expect(flash[:notice]).to include('Saved. Let us know below if you&#39;re teaching with it, considering it, or just looking.')
         expect(flash[:notice]).not_to include('data-report-adoption')
         expect(flash[:notice]).not_to include('<button')
         expect(flash[:notice]).to include('Test &lt;b&gt;Book&lt;/b&gt; was saved to your profile.')
