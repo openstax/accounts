@@ -27,18 +27,43 @@
 
   .impact-toggle__item {
     @include set-font(body-large);
+    position: relative;
     padding: 8px 24px 3px;
     border-bottom: 4px solid transparent;
     margin-bottom: -1px;
     color: var(--os-text);
     font-weight: normal;
     text-decoration: none;
+    transition: background-color var(--os-dur) var(--os-ease-out);
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -4px;
+      height: 4px;
+      background: var(--os-green);
+      transform: scaleX(0);
+      transition: transform var(--os-dur) var(--os-ease-out);
+    }
 
     &:hover,
     &.is-active {
-      border-bottom-color: var(--os-green);
       color: var(--os-text);
       text-decoration: none;
+    }
+
+    &:hover {
+      background: var(--os-hover-bg);
+    }
+
+    &:hover::after {
+      transform: scaleX(1);
+    }
+
+    &.is-active {
+      border-bottom-color: var(--os-green);
     }
 
     &:focus-visible {

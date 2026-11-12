@@ -23,7 +23,6 @@
   box-shadow: var(--os-shadow-card);
   color: var(--os-text);
   text-decoration: none;
-  transition: box-shadow 200ms var(--os-ease-out), transform 200ms var(--os-ease-out);
 
   @include width-up-to($os-phone-max) {
     padding: 16px;
@@ -32,8 +31,6 @@
   &:hover {
     color: var(--os-text);
     text-decoration: none;
-    box-shadow: var(--os-shadow-card-hover);
-    transform: translateY(-2px);
   }
 
   &:focus-visible {
@@ -74,12 +71,6 @@
   color: var(--os-link-hover);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .account-support__card:hover {
-    transform: none;
-  }
-}
-
 // The support cards are whole-card links: no underline, body-coloured text.
 .account-layout .account-support__card,
 .account-layout .account-support__card:hover {
@@ -106,12 +97,11 @@
 
   a {
     @include os-text-action;
-    display: inline-flex;
-    align-items: center;
+    display: inline-block;
     min-height: 24px;
 
     @include width-up-to($os-phone-max) {
-      min-height: 44px;
+      padding: 9px 0;
     }
   }
 }

@@ -85,6 +85,7 @@
 }
 
 .account-shell__nav a {
+  position: relative;
   display: flex;
   align-items: center;
   min-height: 44px;
@@ -95,13 +96,30 @@
   @include set-font(body-regular);
   font-weight: 400;
   letter-spacing: normal;
-  transition: background-color 150ms var(--os-ease-out), border-color 150ms var(--os-ease-out);
+  transition: background-color var(--os-dur) var(--os-ease-out);
+}
+
+// The green bar grows in from the middle on hover; the current page keeps it full.
+.account-shell__nav a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -5px;
+  width: 5px;
+  background: var(--os-green);
+  transform: scaleY(0);
+  transition: transform var(--os-dur) var(--os-ease-out);
 }
 
 .account-shell__nav a:hover {
   background: var(--os-hover-bg);
   color: var(--os-text);
   text-decoration: none;
+}
+
+.account-shell__nav a:hover::before {
+  transform: scaleY(1);
 }
 
 .account-shell__nav a:focus-visible {
@@ -132,6 +150,11 @@
 
   h1, h2, h3 {
     color: var(--os-text);
+  }
+
+  // Emails, school names and book titles are user data: they wrap rather than widen the card.
+  dd, p, li, td, h2, h3 {
+    overflow-wrap: anywhere;
   }
 
   h2 {
@@ -198,7 +221,7 @@
   background-color: var(--os-primary);
   border-color: var(--os-primary);
   color: #fff;
-  transition: background-color 150ms var(--os-ease-out), border-color 150ms var(--os-ease-out);
+  transition: background-color var(--os-dur-fast) var(--os-ease-out), border-color var(--os-dur-fast) var(--os-ease-out);
 }
 
 .btn-primary:hover,
@@ -277,8 +300,27 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     padding: 0 16px;
+    scroll-snap-type: x proximity;
+    scroll-padding: 0 16px;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+  }
+
+  // Fade the clipped edge so the row reads as scrollable; the script sets these
+  // from the scroll position, so with no script there is no fade and nothing hides.
+  .account-shell__nav[data-more-end] ul {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+  }
+
+  .account-shell__nav[data-more-start] ul {
+    -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 48px), transparent);
+    mask-image: linear-gradient(to left, #000 calc(100% - 48px), transparent);
+  }
+
+  .account-shell__nav[data-more-start][data-more-end] ul {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 48px, #000 calc(100% - 48px), transparent);
   }
 
   .account-shell__nav ul::-webkit-scrollbar {
@@ -287,6 +329,7 @@
 
   .account-shell__nav li {
     flex: 0 0 auto;
+    scroll-snap-align: start;
   }
 
   .account-shell__nav a {
@@ -296,6 +339,20 @@
     border-left: 0;
     border-bottom: 4px solid transparent;
     margin-bottom: -1px;
+  }
+
+  .account-shell__nav a::before {
+    top: auto;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 4px;
+    transform: scaleX(0);
+  }
+
+  .account-shell__nav a:hover::before {
+    transform: scaleX(1);
   }
 
   .account-shell__nav a:focus-visible {

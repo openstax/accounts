@@ -14,7 +14,7 @@
         <% next unless book %>
         <% book_link = book.html_url.presence || book.webview_rex_link %>
         <li class="account-student-overview__book-card">
-          <div class="account-books__cover account-student-overview__book-cover <%= 'account-books__cover--placeholder' unless book.cover_url.present? %>">
+          <div class="account-student-overview__book-cover <%= 'account-student-overview__book-cover--placeholder' unless book.cover_url.present? %>">
             <% if book.cover_url.present? %>
               <%= image_tag book.cover_url, alt: "#{book.title} cover" %>
             <% else %>

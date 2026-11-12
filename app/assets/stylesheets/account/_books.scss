@@ -45,40 +45,39 @@
 }
 
 // ---- Saved books: a grid that fills the card ----------------------------
+// The catalog's card art is a square detail crop of the cover (400x400 SVG), so the
+// cover shows whole at its own ratio as a thumbnail; the card reads as a row.
 
 .account-books__saved-list {
   list-style: none;
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 24px 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
   position: relative;
 
   @include width-up-to($phone-max) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 12px;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 .account-books__saved-card {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  column-gap: 16px;
   min-width: 0;
+  padding: 16px;
   background: var(--os-surface);
   border: 1px solid var(--os-border);
   border-radius: var(--os-radius);
-  overflow: hidden;
-  transition: border-color 150ms ease-out;
-
-  &:hover {
-    border-color: var(--os-gray);
-  }
 }
 
 .account-books__saved-media {
-  display: flex;
-  flex-direction: column;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: start;
 }
 
 .account-books__saved-cover-wrap {
@@ -95,6 +94,7 @@
   display: block;
   width: 100%;
   height: auto;
+  object-fit: contain;
   background: var(--os-page-bg);
 }
 
@@ -108,12 +108,12 @@
 }
 
 .account-books__saved-body {
+  grid-column: 2;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  padding: 12px 12px 0;
-  flex-grow: 1;
+  min-width: 0;
 }
 
 .account-books__saved-title {
@@ -134,11 +134,12 @@
 }
 
 .account-books__saved-actions {
+  grid-column: 2;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px;
-  margin-top: auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 12px;
 }
 
 // ---- Buttons -------------------------------------------------------------
@@ -172,8 +173,9 @@
   }
 }
 
-.account-books__view-link--full {
-  width: 100%;
+.account-books__saved-actions .account-books__view-link {
+  min-height: 36px;
+  padding: 0 16px;
 }
 
 .account-books__remove-btn--confirm,
@@ -195,7 +197,7 @@
 }
 
 .account-books__remove-btn--confirm {
-  width: 100%;
+  min-height: 36px;
 }
 
 .account-books__submit--disabled,
@@ -207,17 +209,16 @@
 
 .account-books__remove-actions {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 
   form {
-    width: 100%;
     margin: 0;
   }
 }
 
 .account-books__remove-btn--prompt {
   @include set-font(helper-label);
-  min-height: 32px;
+  min-height: 36px;
   padding: 0 8px;
   border: 0;
   background: transparent;
@@ -234,8 +235,7 @@
 
 .account-books .account-books__remove-actions input[type="submit"] {
   display: none;
-  width: 100%;
-  min-height: 40px;
+  min-height: 36px;
   margin: 0;
   padding: 0 20px;
   line-height: normal;
@@ -271,15 +271,22 @@
   margin-bottom: 4px;
 }
 
-.account-books__search-input input {
+.account-books .account-books__search-input input {
   @include set-font(body-regular);
+  box-sizing: border-box;
   width: 100%;
   height: 40px;
+  margin: 0;
   padding: 0 15px;
   border: 1px solid var(--os-border);
   border-radius: 0;
   background: var(--os-surface);
+  box-shadow: none;
   color: var(--os-text);
+
+  &:hover {
+    border-color: var(--os-border-strong);
+  }
 
   &:focus {
     border-color: var(--os-focus-border);
@@ -436,43 +443,62 @@
 
 .book-status__choices {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.book-status__form {
-  display: contents;
+// button_to renders a form per choice; the global form box rules must not size it.
+.account-books .book-status__choices .book-status__form {
+  display: block;
+  flex: 1 1 auto;
+  width: auto;
+  max-width: none;
   margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
 }
 
-// Same weight for all three answers: secondary buttons, the chosen one shown with a border and tint.
+.account-books .book-status__choices > .book-status__choice {
+  flex: 1 1 auto;
+}
+
+// The picked answer is tinted, outlined and carries a check.
 .account-books .book-status__choice {
   @include set-font(helper-label);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   box-sizing: border-box;
   width: 100%;
   min-height: 36px;
   margin: 0;
-  padding: 4px 10px;
-  line-height: 1.3;
+  padding: 4px 12px;
   background: var(--os-surface);
   border: 1px solid var(--os-border);
   border-radius: var(--os-radius);
+  box-shadow: none;
   color: var(--os-text);
   font-weight: normal;
   text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
 
   &:hover {
     background: var(--os-hover-bg);
+    border-color: var(--os-border-strong);
   }
 
   &[aria-pressed="true"] {
     background: var(--os-info-bg);
     border-color: var(--os-text);
     font-weight: bold;
+
+    &::before {
+      content: "\2713";
+    }
   }
 
   &:focus-visible {

@@ -27,10 +27,19 @@
       </dl>
     <% end %>
     <% if impact.saved_books_count.positive? %>
-      <p class="account-impact-card__progress">
+      <p class="account-impact-card__progress" id="overview-impact-progress">
         <%= t('overview_impact.books_answered', answered: impact.answered_saved_books_count,
                                                 saved: impact.saved_books_count, school_year: impact.school_year) %>
       </p>
+      <% answered = [impact.answered_saved_books_count, impact.saved_books_count].min %>
+      <div class="account-impact-card__meter"
+           role="progressbar"
+           aria-labelledby="overview-impact-progress"
+           aria-valuemin="0"
+           aria-valuemax="<%= impact.saved_books_count %>"
+           aria-valuenow="<%= answered %>">
+        <span class="account-impact-card__meter-fill" style="--meter-fill: <%= (answered.to_f / impact.saved_books_count).round(4) %>;"></span>
+      </div>
     <% end %>
     <% if pending.any? %>
       <% books = t('annual_check_in.flash_books', count: pending.books) %>

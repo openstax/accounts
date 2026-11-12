@@ -103,6 +103,10 @@
   margin-left: 6px;
 }
 
+.account-shell__section-header--split .account-overview__inline-link {
+  margin-left: 0;
+}
+
 .account-shell__body.account-overview {
   gap: 0;
 }
@@ -829,14 +833,15 @@ span.account-term-books__title {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
 }
 
 .account-student-overview__book-card {
-  display: flex;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
   gap: 16px;
-  align-items: center;
+  align-items: start;
   min-width: 0;
   padding: 16px;
   border: 1px solid var(--os-border);
@@ -844,13 +849,32 @@ span.account-term-books__title {
 }
 
 .account-student-overview__book-cover {
-  width: 52px;
-  height: 70px;
-  flex-shrink: 0;
+  width: 72px;
+  background: var(--os-page-bg);
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+.account-student-overview__book-cover--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  font-weight: bold;
+  color: var(--os-text-helper);
+}
+
+.account-student-overview__book-body {
+  min-width: 0;
 }
 
 .account-student-overview__book-title {
-  margin: 0 0 4px;
+  margin: 0 0 8px;
   color: var(--os-text);
   @include set-font(body-regular);
   font-weight: 700;
@@ -863,6 +887,13 @@ span.account-term-books__title {
   flex-wrap: wrap;
   gap: 4px 16px;
   @include set-font(helper-label);
+
+  a {
+    @include os-text-action;
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+  }
 }
 
 .account-student-overview__optional {
