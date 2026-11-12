@@ -25,7 +25,7 @@ RSpec.describe AccountController, type: :controller do
     get :overview
 
     expect(response.body).to include('account-badge--verified')
-    expect(response.body).to include('Verified educator')
+    expect(response.body).to include('Verified instructor')
     expect(response.body).to include('Rice University')
   end
 
@@ -513,7 +513,7 @@ RSpec.describe AccountController, type: :controller do
       get :overview
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include('Welcome back, Jordan')
+      expect(response.body).to include('Welcome to OpenStax, Jordan')
       expect(response.body).to include('Tell us who teaches your class')
       expect(response.body).to include('account-badge--student')
       expect(response.body).not_to include('Verified educator')
@@ -600,7 +600,7 @@ RSpec.describe AccountController, type: :controller do
       get :overview
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include('Welcome, Lee')
+      expect(response.body).to include('Welcome to OpenStax, Lee')
       expect(response.body).to include('Astronomy 2e')
       expect(response.body).to include('https://openstax.org/subjects')
       expect(response.body).to include(account_profile_path)
@@ -683,15 +683,109 @@ RSpec.describe AccountController, type: :controller do
     it 'still sees the verification callout and status' do
       get :overview
 
-      expect(response.body).to include('Complete instructor verification')
+      expect(response.body).to include('Your verification is in progress')
       expect(response.body).to include('Instructor status')
-      expect(response.body).to include('signed in as an instructor').or include('Access your teaching tools')
+      expect(response.body).to include('Verification pending')
     end
 
     it 'sees the verified badge once confirmed' do
       instructor.update!(faculty_status: :confirmed_faculty)
       get :overview
-      expect(response.body).to include('Verified educator')
+      expect(response.body).to include('Verified instructor')
+    end
+  end
+
+  describe 'overview status by account state' do
+    let(:email) { user.email_addresses.last&.value }
+
+    def body_text
+      Nokogiri::HTML(response.body).css('.account-overview__header, .account-callout').text.squish
+    end
+
+    def overview_as(**attrs)
+      user.update!(attrs)
+      get :overview
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'welcomes a brand new account and does not say all set' do
+      user.update_columns(created_at: Time.current, last_signed_in_at: nil, last_seen_at: nil)
+      overview_as(faculty_status: :incomplete_signup, is_profile_complete: false, first_name: 'Rita')
+
+      expect(body_text).to include('Welcome to OpenStax, Rita')
+      expect(body_text).not_to include('Welcome back')
+      expect(body_text).to include('Finish signing up')
+      expect(response.body).to include('id="complete-signup-callout"')
+      expect(response.body).not_to include('All set')
+    end
+
+    it 'welcomes back a returning verified instructor with no callout' do
+      user.update_columns(created_at: 90.days.ago)
+      overview_as(faculty_status: :confirmed_faculty, is_profile_complete: true, which_books: 'Biology 2e',
+                  how_many_students: 20, self_reported_school: 'Rice University')
+
+      expect(body_text).to include('Welcome back, Rita')
+      expect(body_text).to include('Verified instructor')
+      expect(response.body).not_to include('class="account-callout"')
+    end
+
+    it 'tells a pending CS user what the signup screen told them, with no verify button' do
+      overview_as(faculty_status: :pending_faculty, is_educator_pending_cs_verification: true,
+                  is_profile_complete: true)
+
+      expect(body_text).to include('Verification pending')
+      expect(body_text).to include("We're processing your request")
+      expect(body_text).to include('3-4 business days')
+      expect(body_text).not_to include('Verify now')
+      expect(response.body).to include(account_support_path)
+      expect(response.body).not_to include('account-badge--verified')
+    end
+
+    it 'shows SheerID progress without asking for anything' do
+      overview_as(faculty_status: :pending_sheerid, is_profile_complete: true)
+
+      expect(body_text).to include('Your verification is in progress')
+      expect(response.body).not_to include('account-callout__button--primary')
+    end
+
+    it 'offers Verify another way after a SheerID rejection before step 4' do
+      overview_as(faculty_status: :rejected_by_sheerid, is_profile_complete: false)
+
+      expect(body_text).to include('Verify another way')
+      expect(response.body).to include(educator_cs_verification_form_path)
+    end
+
+    it 'sends an incomplete signup to the SheerID step' do
+      overview_as(faculty_status: :incomplete_signup, is_profile_complete: false)
+
+      expect(response.body).to include(educator_sheerid_form_path)
+      expect(body_text).to include('Finish signing up')
+      expect(body_text).not_to include('Verified')
+    end
+
+    it 'treats a rejected user respectfully and points to help' do
+      overview_as(faculty_status: :rejected_faculty, is_profile_complete: true)
+
+      expect(body_text).to include("We couldn't confirm your instructor status")
+      expect(body_text).to include('Instructor access not active')
+      expect(response.body).to include(OverviewStatus::REJECTED_HELP_URL)
+      expect(response.body).not_to include('account-badge--verified')
+    end
+
+    it 'shows staff their role and no instructor verification wording' do
+      overview_as(role: :librarian, other_role_name: 'Librarian', faculty_status: :incomplete_signup,
+                  is_profile_complete: true)
+
+      expect(body_text).to include('Librarian')
+      expect(body_text).not_to match(/verif|instructor/i)
+      expect(response.body).not_to include('class="account-callout"')
+    end
+
+    it 'drops the comma when there is no first name' do
+      user.update_columns(created_at: 90.days.ago, first_name: '')
+      overview_as(faculty_status: :confirmed_faculty, is_profile_complete: true)
+
+      expect(Nokogiri::HTML(response.body).at_css('h1.account-overview__title').text.squish).to eq('Welcome back')
     end
   end
 end
