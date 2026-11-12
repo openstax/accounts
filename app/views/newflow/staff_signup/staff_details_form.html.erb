@@ -38,11 +38,12 @@
             <fieldset class="question staff-role-fieldset">
               <legend class="field-label"><%= I18n.t(:"staff_details_form.describe_role") %></legend>
               <div class="radio-control-group">
-                <div class="role newflow-mustdo-alert">
+                <% submitted_role = params.dig(:signup, :staff_role) %>
+                <%# The radios have no inline error of their own, so after a failed submit this is it. %>
+                <div class="role newflow-mustdo-alert <%= 'is-active' if @handler_result.present? && submitted_role.blank? %>">
                   <%= I18n.t(:"staff_details_form.select_option") %>
                 </div>
 
-                <% submitted_role = params.dig(:signup, :staff_role) %>
                 <% staff_roles.each do |(value, label)| %>
                   <label>
                     <%=

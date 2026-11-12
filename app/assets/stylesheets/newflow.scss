@@ -2774,10 +2774,15 @@ body.newflow-layout {
     margin: 0 0 0.5rem;
   }
 
-  // The staff questions have no client-side validation: these messages would
-  // only ever sit there, in orange, before anyone has answered anything.
-  .staff-details-page .newflow-mustdo-alert {
+  // The staff questions have no client-side validation, so these messages would
+  // sit there in orange before anyone answered. The text fields show their own
+  // server errors inline; the role message shows only after a submit without one.
+  .staff-details-page .newflow-mustdo-alert:not(.is-active) {
     display: none;
+  }
+
+  .staff-details-page .newflow-mustdo-alert.is-active {
+    display: block;
   }
 
   // Form fields sit in grid rows: spacing comes from the grid, not from margins.
