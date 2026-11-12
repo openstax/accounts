@@ -96,3 +96,23 @@
 .account-layout .account-support__card:hover .account-support__action {
   color: var(--os-link-hover);
 }
+
+.account-support__more {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  margin: 24px 0 0;
+  padding: 0;
+
+  a {
+    @include os-text-action;
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+
+    @include width-up-to($os-phone-max) {
+      min-height: 44px;
+    }
+  }
+}

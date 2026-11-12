@@ -256,6 +256,184 @@ RSpec.describe AccountController, type: :controller do
     end
   end
 
+  describe 'the overview layout' do
+    let(:year) { SchoolYear.current }
+
+    before do
+      allow_any_instance_of(FetchBookData).to receive(:books_by_subject).and_return([
+        { subject_name: 'Science', books: [{ title: 'College Physics', salesforce_abbreviation: 'Physics' }] }
+      ])
+    end
+
+    def save_book(title, created_at: Time.current)
+      book = Book.create!(book_uuid: SecureRandom.uuid, title: title)
+      UserBook.create!(user: user, book: book, created_at: created_at)
+    end
+
+    def answer(title, status)
+      AdoptionReport.create!(user: user, book_title: title, school_year: year, status: status, source: 'books_status')
+    end
+
+    def section(html)
+      html[/<section class="account-term-books".*?<\/section>/m].to_s
+    end
+
+    it 'orders the page: status, books this term, impact, LMS question, quick actions' do
+      user.update!(faculty_status: :pending_sheerid, is_profile_complete: true)
+      save_book('College Physics')
+
+      get :overview
+
+      ids = ['id="verification-callout"', 'id="overview-books"', 'id="overview-impact"',
+             'id="lms-question-card"', 'id="quick-actions-heading"'].map { |marker| response.body.index(marker) }
+      expect(ids).to all(be_present)
+      expect(ids).to eq(ids.sort)
+    end
+
+    it 'lists each answer for this school year' do
+      save_book('Reported Book', created_at: 1.minute.ago)
+      save_book('Considering Book', created_at: 2.minutes.ago)
+      save_book('Browsing Book', created_at: 3.minutes.ago)
+      save_book('Not Using Book', created_at: 4.minutes.ago)
+      answer('Reported Book', 'using')
+      answer('Considering Book', 'considering')
+      answer('Browsing Book', 'browsing')
+      answer('Not Using Book', 'not_using')
+
+      get :overview
+
+      html = section(response.body)
+      expect(html).to include('Your books this term')
+      expect(html).to include("Reported for #{year}")
+      expect(html).to include('Considering it')
+      expect(html).to include('Just looking')
+      expect(html).to include('Not teaching with it this year')
+      expect(html).not_to include('Tell us where you are with it')
+      expect(html.scan('account-term-books__item').size).to eq(4)
+      expect(html).to include('Manage your books')
+    end
+
+    it 'counts a confirmed adoption as reported' do
+      book = Book.create!(book_uuid: SecureRandom.uuid, title: 'College Physics', salesforce_book_id: 'a0Book000001')
+      UserBook.create!(user: user, book: book)
+      Adoption.create!(salesforce_id: SecureRandom.hex(9), user: user, salesforce_book_id: 'a0Book000001',
+                       confirmation_type: 'OpenStax Confirmed Adoption', rollover_status: false,
+                       students: 10, school_year: year, base_year: SchoolYear.base_year_for(Time.zone.today))
+
+      get :overview
+
+      expect(section(response.body)).to include("Reported for #{year}")
+    end
+
+    it 'offers a plain link when a book has no answer, and no modal trigger' do
+      save_book('College Physics')
+
+      get :overview
+
+      html = section(response.body)
+      expect(html).to include('Tell us where you are with it')
+      expect(html).to include(%(href="#{account_books_path}"))
+      expect(html).not_to include('data-report-adoption-trigger')
+    end
+
+    it 'shows the four newest books and a count link when there are more' do
+      5.times { |i| save_book("Book #{i}", created_at: i.minutes.ago) }
+
+      get :overview
+
+      html = section(response.body)
+      expect(html.scan('account-term-books__item').size).to eq(4)
+      expect(html).to include('Book 0', 'Book 3')
+      expect(html).not_to include('Book 4')
+      expect(html).to include('See all your books (5)')
+      expect(html).not_to include('Manage your books')
+    end
+
+    it 'sizes and lazy-loads covers' do
+      book = Book.create!(book_uuid: SecureRandom.uuid, title: 'College Physics', cover_url: 'https://example.com/c.png')
+      UserBook.create!(user: user, book: book)
+
+      get :overview
+
+      img = section(response.body)[/<img[^>]*>/]
+      expect(img).to include('width="48"', 'height="48"', 'loading="lazy"')
+    end
+
+    it 'invites saving books when there are none' do
+      get :overview
+
+      html = section(response.body)
+      expect(html).to include('Save the books you use or are thinking about')
+      expect(html).to include('Save books')
+      expect(html).not_to include('account-term-books__item')
+    end
+
+    it 'is replaced by the check-in card while a check-in is due' do
+      user.update_column(:created_at, 2.years.ago)
+      save_book('College Physics')
+
+      get :overview
+
+      expect(response.body).to include('id="annual-check-in"')
+      expect(response.body).not_to include('id="overview-books"')
+    end
+
+    it 'drops the account table, the status section and the newsletter action' do
+      get :overview
+
+      ['Account details', 'Account health', 'Manage details in', 'OpenStax status', 'Keep in touch',
+       'status.openstax.org', 'openstax.org/newsletters', 'account-facts'].each do |text|
+        expect(response.body).not_to include(text)
+      end
+      expect(response.body).to include('Quick actions')
+      expect(response.body.scan('account-actions__item').size).to eq(4)
+    end
+
+    it 'puts the status and newsletter links on the Support page' do
+      get :support
+
+      expect(response.body).to include('Check whether OpenStax services are running')
+      expect(response.body).to include('href="https://status.openstax.org"')
+      expect(response.body).to include('Get OpenStax news and updates')
+      expect(response.body).to include('href="https://openstax.org/newsletters"')
+    end
+
+    describe 'profile completeness' do
+      it 'shows a strip while the profile is incomplete, without repeating prompts the page already makes' do
+        user.update!(school: nil, self_reported_school: nil)
+
+        get :overview
+
+        html = response.body
+        expect(html).to include('account-profile-strip')
+        expect(html).to include('Your profile is')
+        expect(html).to include('Add your school')
+        expect(html).not_to include('Save a book')
+        expect(html).not_to include('Report a book you use')
+        expect(html).not_to include('Answer the LMS question')
+      end
+
+      it 'is left out when everything still to do is already asked for elsewhere on the page' do
+        user.update!(school: FactoryBot.create(:school))
+
+        get :overview
+
+        expect(response.body).not_to include('account-profile-strip')
+      end
+
+      it 'is hidden at 100%' do
+        user.update!(school: FactoryBot.create(:school), lms_used: 'canvas')
+        save_book('College Physics')
+        answer('College Physics', 'using')
+
+        get :overview
+
+        expect(response.body).not_to include('account-profile-strip')
+        expect(response.body).not_to include('Your profile is')
+      end
+    end
+  end
+
   describe 'the check-in streak copy' do
     let(:book) { Book.create!(book_uuid: SecureRandom.uuid, title: 'College Physics') }
 
@@ -460,13 +638,12 @@ RSpec.describe AccountController, type: :controller do
       expect(response.body).to include('Do you use a learning management system (LMS)?')
     end
 
-    it 'shows the completeness chip for LMS as done once answered' do
+    it 'drops the LMS item from the completeness strip once answered' do
       user.update!(lms_used: 'moodle')
 
       get :overview
 
-      expect(response.body).to include('account-completeness__chip--done')
-      expect(response.body).to include('Answer LMS question')
+      expect(response.body).not_to include('Answer the LMS question')
     end
   end
 
@@ -647,14 +824,11 @@ RSpec.describe AccountController, type: :controller do
       end
     end
 
-    it 'shows the label they gave, falling back to the role' do
-      staff.update!(role: :administrator, other_role_name: 'Dean of students')
+    it 'shows the books-this-term section in neutral wording' do
       get :overview
-      expect(response.body).to include('Dean of students')
 
-      staff.update!(other_role_name: nil)
-      get :overview
-      expect(response.body).to include('Administrator')
+      expect(response.body).to include('Your books this term')
+      expect(response.body).to include('Save the books you use or are thinking about')
     end
 
     it 'keeps usage reporting and the impact page' do
@@ -684,7 +858,6 @@ RSpec.describe AccountController, type: :controller do
       get :overview
 
       expect(response.body).to include('Complete instructor verification')
-      expect(response.body).to include('Instructor status')
       expect(response.body).to include('signed in as an instructor').or include('Access your teaching tools')
     end
 

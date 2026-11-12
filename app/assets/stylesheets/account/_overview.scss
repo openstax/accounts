@@ -98,23 +98,9 @@
   @include set-font(body-regular);
 }
 
-.account-overview__inline-link,
-.account-overview__status-link {
-  @include os-text-action;
-}
-
 .account-overview__inline-link {
+  @include os-text-action;
   margin-left: 6px;
-}
-
-.account-overview__status-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.account-overview__external-icon {
-  line-height: 1;
 }
 
 .account-shell__body.account-overview {
@@ -125,12 +111,6 @@
   margin-top: 24px;
   padding-top: 24px;
   border-top: 1px solid var(--os-border);
-}
-
-.account-overview__note {
-  margin: 16px 0 0;
-  color: var(--os-text-helper);
-  @include set-font(helper-label);
 }
 
 /* Role / school / status as a definition list */
@@ -235,75 +215,178 @@
   }
 }
 
-/* Profile completeness: a group inside the card, not a card of its own */
-.account-completeness__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
-  margin-bottom: 8px;
+/* Profile completeness: a strip above Quick actions, only while incomplete */
+.account-profile-strip {
+  margin: 0 0 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--os-border);
 }
 
-.account-completeness__title {
+.account-profile-strip__title {
+  margin: 0 0 8px;
   color: var(--os-text);
   @include set-font(h4);
 }
 
-.account-completeness__hint {
-  color: var(--os-text-helper);
-  @include set-font(helper-label);
-  white-space: nowrap;
-}
-
-.account-completeness__bar {
+.account-profile-strip__bar {
   height: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   background: var(--os-border);
   border-radius: 999px;
   overflow: hidden;
 }
 
-.account-completeness__bar-fill {
+.account-profile-strip__bar-fill {
   height: 100%;
   background: var(--os-green);
   border-radius: 999px;
-  transition: width 200ms var(--os-ease-out);
 }
 
-.account-completeness__chips {
+.account-profile-strip__list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 4px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  @include set-font(helper-label);
+  color: var(--os-text-helper);
 }
 
-.account-completeness__chip {
+.account-profile-strip__link {
+  @include os-text-action;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  min-height: 28px;
-  padding: 2px 10px;
-  border-radius: 3px;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 700;
-  text-decoration: none !important;
+  min-height: 24px;
+  border-radius: 2px;
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+
+  @include width-up-to($os-phone-max) {
+    min-height: 44px;
+  }
 }
 
-.account-completeness__chip--done {
-  color: var(--os-success-text);
-  background: var(--os-success-bg);
-}
-
-.account-completeness__chip--todo {
-  color: var(--os-link);
+/* Overview "Your books this term" card */
+.account-term-books {
+  margin-top: 24px;
+  padding: 24px;
   background: var(--os-surface);
-  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius);
+  box-shadow: var(--os-shadow-card);
+  color: var(--os-text);
+
+  @include width-up-to($os-phone-max) {
+    padding: 16px;
+  }
 }
 
-.account-completeness__chip--todo:hover,
-.account-completeness__chip--todo:focus-visible {
-  background: var(--os-hover-bg);
-  color: var(--os-link-hover);
+.account-layout .account-term-books__heading {
+  @include scale-set-font(h4, h3);
+  margin: 0 0 8px;
+}
+
+.account-term-books__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.account-term-books__item {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--os-border);
+
+  &:first-child {
+    border-top: 0;
+  }
+}
+
+.account-term-books__cover {
+  display: block;
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.account-term-books__cover--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--os-info-bg);
+  color: var(--os-text);
+  font-weight: 700;
+  @include set-font(helper-label);
+}
+
+.account-term-books__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  min-width: 0;
+}
+
+.account-term-books__title {
+  @include os-text-action;
+  flex: 1 1 14rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.account-term-books__ask,
+.account-term-books__more {
+  @include os-text-action;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 2px;
+  @include set-font(helper-label);
+  font-weight: 700;
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+
+  @include width-up-to($os-phone-max) {
+    min-height: 44px;
+  }
+}
+
+span.account-term-books__title {
+  color: var(--os-text);
+  text-decoration: none;
+}
+
+.account-term-books__more {
+  @include set-font(body-regular);
+  font-weight: 700;
+}
+
+.account-term-books__footer {
+  margin: 8px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--os-border);
+}
+
+.account-term-books__empty {
+  margin: 0;
+  @include set-font(body-regular);
+  color: var(--os-text-helper);
+}
+
+.account-term-books__title:focus-visible {
+  box-shadow: var(--os-focus-ring);
+  outline: 2px solid transparent;
 }
 
 /* Status badges under the greeting */
@@ -918,14 +1001,13 @@
 
 // profile_security's card-link rules recolour anchors inside the shell card.
 .account-layout .account-shell__body a.account-actions__cta,
-.account-layout .account-shell__body a.account-overview__status-link,
-.account-layout .account-shell__body .account-overview__note a,
-.account-layout .account-shell__body .account-facts dd a {
+.account-layout .account-shell__body .account-facts dd a,
+.account-layout .account-shell__body a.account-profile-strip__link {
   color: var(--os-link);
 }
 
 .account-layout .account-shell__body a.account-actions__cta:hover,
-.account-layout .account-shell__body a.account-overview__status-link:hover {
+.account-layout .account-shell__body a.account-profile-strip__link:hover {
   color: var(--os-link-hover);
 }
 

@@ -10,13 +10,24 @@
 <% show_assignable_callout = school_supports_assignable && status.verified_instructor? && !assignable_enabled && (!dismissed_assignable_callout || current_user.is_administrator?) %>
 
 <% completeness = account_completeness_summary(current_user) %>
+<%# Things the page already asks for in full are left out of the completeness strip. %>
+<% strip_skip = [] %>
+<% strip_skip << :adoption if @overview_impact %>
+<% strip_skip << :books if @term_books %>
+<% strip_skip << :lms if @show_lms_card %>
 
 <div class="account-layout">
   <%= render 'account/navigation' %>
   <div class="account-layout__content">
     <%= render 'account/overview_header', status: status %>
 
-    <%= render 'account/check_in_card', check_in: @annual_check_in if @annual_check_in %>
+    <%= render 'account/overview_status_callout', status: status %>
+
+    <% if @annual_check_in %>
+      <%= render 'account/check_in_card', check_in: @annual_check_in %>
+    <% elsif @term_books %>
+      <%= render 'account/overview_books_this_term', books: @term_books, total: @term_books_total, school_year: @term_school_year %>
+    <% end %>
 
     <%= render 'account/overview_impact_card', impact: @overview_impact if @overview_impact %>
 
@@ -44,8 +55,6 @@
         </button>
       </div>
     <% end %>
-
-    <%= render 'account/overview_status_callout', status: status %>
 
     <% if flash[:lms_answered_label] %>
       <div id="lms-question-card" class="account-callout account-callout--lms-confirmed">
@@ -78,61 +87,7 @@
 
     <%= render('shared/account_layout_shell') do %>
       <div class="account-shell__body account-overview">
-        <section class="account-overview__section" aria-labelledby="account-details-heading">
-          <div class="account-shell__section-header">
-            <h2 id="account-details-heading">Account details</h2>
-          </div>
-          <dl class="account-facts">
-            <div class="account-facts__item">
-              <dt>Role</dt>
-              <dd><%= status.role_label %></dd>
-            </div>
-            <div class="account-facts__item">
-              <dt>School</dt>
-              <dd><%= status.school_name || 'Add your school' %></dd>
-            </div>
-            <% unless status.staff? %>
-              <div class="account-facts__item">
-                <dt>Instructor status</dt>
-                <dd><%= status.instructor_status_label %></dd>
-              </div>
-            <% end %>
-            <div class="account-facts__item">
-              <dt>Account health</dt>
-              <dd><%= status.account_health %></dd>
-            </div>
-          </dl>
-          <p class="account-overview__note">
-            Need changes? Manage details in
-            <a href="<%= account_profile_path %>">Profile</a> and <a href="<%= account_security_path %>">Security</a>.
-          </p>
-        </section>
-
-        <section class="account-completeness account-overview__section" aria-label="Profile completeness">
-          <div class="account-completeness__header">
-            <div class="account-completeness__title">Your profile is <%= completeness[:percent] %>% complete</div>
-            <div class="account-completeness__hint">
-              <% remaining = completeness[:total_count] - completeness[:done_count] %>
-              <%= remaining.zero? ? 'All set' : pluralize(remaining, 'item') + ' left' %>
-            </div>
-          </div>
-          <div class="account-completeness__bar">
-            <div class="account-completeness__bar-fill" style="width: <%= completeness[:percent] %>%;"></div>
-          </div>
-          <div class="account-completeness__chips">
-            <% completeness[:items].each do |item| %>
-              <% if item[:done] %>
-                <span class="account-completeness__chip account-completeness__chip--done">
-                  <span aria-hidden="true">&check;</span> <%= item[:label] %>
-                </span>
-              <% else %>
-                <%= link_to account_completeness_chip_href(item[:key]), class: 'account-completeness__chip account-completeness__chip--todo' do %>
-                  + <%= item[:label] %>
-                <% end %>
-              <% end %>
-            <% end %>
-          </div>
-        </section>
+        <%= render 'account/overview_profile_strip', completeness: completeness, skip: strip_skip %>
 
         <section class="account-overview__section" aria-labelledby="quick-actions-heading">
           <div class="account-shell__section-header">
@@ -144,8 +99,7 @@
                { icon: 'fa fa-pencil', title: t('overview_impact.quick_action_title'), body: t('overview_impact.quick_action_body'), button: true, cta: t('overview_impact.quick_action_cta') },
                { icon: 'fa fa-plug', title: 'LMS / Assignable setup', body: 'Connect Assignable tools to Canvas, Blackboard, and more.', href: 'https://openstax.org/assignable/setup', cta: 'View setup guide →', external: true },
                { icon: 'fa fa-book', title: 'Find a book', body: 'Browse OpenStax textbooks and matching instructor resources.', href: 'https://openstax.org/subjects', cta: 'Browse subjects →', external: true },
-               { icon: 'fa fa-life-ring', title: 'Get help', body: 'Search FAQs, file a ticket, or email our support team.', href: account_support_path, cta: 'Go to support →' },
-               { icon: 'fa fa-envelope', title: 'Keep in touch', body: 'Get OpenStax updates about new books, webinars, and instructor opportunities.', href: 'https://openstax.org/newsletters', cta: 'Subscribe →', external: true }
+               { icon: 'fa fa-life-ring', title: 'Get help', body: 'Search FAQs, file a ticket, or email our support team.', href: account_support_path, cta: 'Go to support →' }
              ] %>
 
           <ul class="account-actions">
@@ -172,20 +126,6 @@
               </li>
             <% end %>
           </ul>
-        </section>
-
-        <section class="account-overview__section" aria-labelledby="status-heading">
-          <div class="account-shell__section-header">
-            <h2 id="status-heading">OpenStax status</h2>
-            <p>Current health of OpenStax services.</p>
-          </div>
-          <%# no live status check here — link out rather than assert a state %>
-          <a class="account-overview__status-link"
-             href="https://status.openstax.org"
-             target="_blank"
-             rel="noopener">
-            Check current service status <span class="account-overview__external-icon" aria-hidden="true">→</span>
-          </a>
         </section>
       </div>
     <% end %>

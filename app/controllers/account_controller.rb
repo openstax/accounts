@@ -30,6 +30,8 @@ class AccountController < Newflow::BaseController
       check_in = AnnualCheckIn.new(current_user, term: check_in_term) if check_in_term
       @annual_check_in = check_in if check_in&.rows&.any?
       @overview_impact = OverviewImpact.new(current_user)
+      assign_term_books unless @annual_check_in
+      assign_term_books unless @annual_check_in
 
       render_account_page :overview, title: 'Account overview'
     end
@@ -181,6 +183,23 @@ class AccountController < Newflow::BaseController
              end
 
     NAV_ITEMS.reject { |item| hidden.include?(item[:key]) }
+  end
+
+  TERM_BOOKS_LIMIT = 4
+
+  # The newest saved books with this school year's answer for each: a count, the book rows
+  # and two answer queries, however many books are saved.
+  def assign_term_books
+    @term_school_year = SchoolYear.current
+    saved = current_user.user_books.joins(:book).includes(:book).order(created_at: :desc)
+    @term_books_total = saved.count
+    reported = current_user.titles_reported_for(@term_school_year).to_set
+    statuses = current_user.adoption_reports.where(school_year: @term_school_year)
+                           .pluck(:book_title, :status).to_h
+    @term_books = saved.limit(TERM_BOOKS_LIMIT).map do |saved_book|
+      title = saved_book.book.title
+      { book: saved_book.book, answer: reported.include?(title) ? 'reported' : statuses[title] }
+    end
   end
 
   def assign_book_interests(catalog)

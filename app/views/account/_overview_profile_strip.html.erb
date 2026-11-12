@@ -1,0 +1,17 @@
+<%# Only while the profile is incomplete. Items the page already asks for in full (the books
+    section, the open LMS question) are left out so nothing is said twice. %>
+<% remaining = completeness[:items].reject { |item| item[:done] || skip.include?(item[:key]) } %>
+<% if completeness[:percent] < 100 && remaining.any? %>
+  <section class="account-profile-strip" aria-label="Profile completeness">
+    <p class="account-profile-strip__title"><%= t('overview_profile_strip.title', percent: completeness[:percent]) %></p>
+    <div class="account-profile-strip__bar" aria-hidden="true">
+      <div class="account-profile-strip__bar-fill" style="width: <%= completeness[:percent] %>%;"></div>
+    </div>
+    <ul class="account-profile-strip__list">
+      <li class="account-profile-strip__lead"><%= t('overview_profile_strip.remaining') %></li>
+      <% remaining.each do |item| %>
+        <li><%= link_to t("overview_profile_strip.items.#{item[:key]}"),account_completeness_chip_href(item[:key]), class: 'account-profile-strip__link' %></li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>

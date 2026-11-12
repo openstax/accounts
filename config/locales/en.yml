@@ -1175,6 +1175,26 @@ en:
     unknown_book: We couldn't find that book. Please choose one from the list.
     not_listed: That book isn't on your list.
     not_available: Book interests are for instructors and staff.
+  overview_books:
+    heading: Your books this term
+    reported: "Reported for %{school_year}"
+    no_answer: Tell us where you are with it
+    no_answer_for: "for %{title}"
+    see_all: "See all your books (%{count})"
+    manage: Manage your books
+    empty: Save the books you use or are thinking about, and they'll be here when you need them.
+    empty_link: Save books
+  overview_profile_strip:
+    title: "Your profile is %{percent}% complete"
+    remaining: "Still to do:"
+    items:
+      school: Add your school
+      books: Save a book
+      adoption: Report a book you use
+      lms: Answer the LMS question
+  support_links:
+    status: Check whether OpenStax services are running
+    news: Get OpenStax news and updates
   book_status:
     label: This term
     group_name: "Where are you with %{title} this term?"
