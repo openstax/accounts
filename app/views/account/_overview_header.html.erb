@@ -1,25 +1,16 @@
 <header class="account-overview__header">
-  <h1 class="account-overview__title">
-    Welcome back<% if current_user&.first_name.present? %>, <%= current_user.first_name %><% end %>
-  </h1>
+  <h1 class="account-overview__title"><%= status.greeting %></h1>
 
   <div class="account-overview__badges">
-    <% if status.verified_instructor? %>
-      <span class="account-badge account-badge--verified">Verified educator</span>
-    <% end %>
-    <% if current_user.school&.name.present? %>
-      <span class="account-badge account-badge--school"><%= current_user.school.name %></span>
+    <% status.badges.each do |badge| %>
+      <span class="account-badge account-badge--<%= badge.tone %>"><%= badge.label %></span>
     <% end %>
   </div>
 
   <p class="account-overview__subtitle">
-    <% if status.school_name.present? && status.staff? %>
-      Your account is linked to <strong><%= status.school_name %></strong>. Access your resources and account settings from here.
-    <% elsif status.school_name.present? %>
-      You’re signed in as an instructor at <strong><%= status.school_name %></strong>. Access your teaching tools, resources, and account settings from here.
-    <% else %>
-      Access your teaching tools, resources, and account settings from here. Add your school to personalize your experience.
-      <a class="account-overview__inline-link" href="<%= account_profile_path %>">Update profile</a>
+    <%= status.subtitle %>
+    <% if status.add_school_link? %>
+      <a class="account-overview__inline-link" href="<%= account_profile_path %>">Add your school</a>
     <% end %>
   </p>
 </header>

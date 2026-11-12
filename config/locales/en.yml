@@ -150,9 +150,73 @@ en:
     school_name_must_be_entered: Please enter school name
     num_learners_supported_must_be_entered: Please enter a ballpark number, or 0 if not applicable
 
+  overview_status:
+    greeting:
+      new_with_name: Welcome to OpenStax, %{name}
+      new: Welcome to OpenStax
+      returning_with_name: Welcome back, %{name}
+      returning: Welcome back
+    badge:
+      verified: Verified instructor
+      pending: Verification pending
+      finish: Finish signing up
+      not_active: Instructor access not active
+    subtitle:
+      verified_school: You're an instructor at <strong>%{school}</strong>. Your instructor resources and account settings are here.
+      verified: Your instructor resources and account settings are here.
+      pending: We're reviewing your request for instructor access. Books and student resources are ready to use in the meantime.
+      checking: We're checking your instructor details. Books and student resources are ready to use in the meantime.
+      incomplete: Finish signing up to request instructor access. Books and student resources are ready to use in the meantime.
+      needs_another_way: We couldn't finish checking your instructor details yet. Books and student resources are ready to use in the meantime.
+      rejected: Books and student resources are free to use. Instructor resources aren't turned on for this account.
+      staff_school: Your account is linked to <strong>%{school}</strong>. Manage your resources and account settings here.
+      staff: Manage your resources and account settings here.
+    callout:
+      continue: Continue
+      contact_support: Contact support
+      finish_eyebrow: Finish signing up
+      in_the_meantime: In the meantime, you can access all books and resources except those that require instructor verification.
+      pending_review:
+        eyebrow: Instructor verification
+        title: We're processing your request
+        body_with_email: >-
+          We will verify your instructor status within 3-4 business days.
+          Updates on your verification status will be sent to <b>%{email}</b>.
+        body: We will verify your instructor status within 3-4 business days.
+      checking:
+        eyebrow: Instructor verification
+        title: Your verification is in progress
+        body: We're still checking your details. This page will show your new status when the check finishes.
+      another_way:
+        eyebrow: Instructor verification
+        title: Let's try another way to verify you
+      needs_support:
+        eyebrow: Instructor verification
+        title: We couldn't finish verifying you
+        body_rejected: We couldn't confirm your instructor status automatically. If you think that's a mistake, our support team can take another look.
+        body_unfinished: Your verification didn't finish. Our support team can take a look and verify you by hand.
+      start_verification:
+        title: Confirm you teach to get instructor resources
+      finish_profile:
+        title: Tell us about your teaching
+        body: One last step. A few questions about your courses and books help us point you to the right resources.
+        title_staff: Tell us about your work
+        body_staff: One last step. A few questions about your role help us point you to the right resources.
+      rejected:
+        eyebrow: Instructor access
+        title: We couldn't confirm your instructor status
+        body: Books and student resources are still free to use. If you think we got this wrong, our support team can take another look.
+        button: Get help with your request
+      enrich:
+        eyebrow: A couple more details
+        title: Add a few teaching details
+        body: You skipped some questions when you signed up. Answer them and we can point you to the right book resources.
+        button: Add details
+
   profile_nudge_banner:
     heading: Finish setting up your instructor account
-    body: You verified your instructor status -- just a couple more questions and you're done.
+    body: You're verified. A couple more questions and your instructor account is set up.
+    body_unverified: A couple more questions and your signup is done.
     finish_button: Finish setting up
     dismiss_button: Dismiss
 

@@ -29,7 +29,7 @@ feature 'student account overview', js: true do
     wait_for_ajax
 
     expect(page).to have_current_path(account_overview_path)
-    expect(page).to have_content('Welcome back, Jordan')
+    expect(page).to have_content('Welcome to OpenStax, Jordan')
     expect(page).to have_content('Student')
     expect(page).to have_content('School verified')
     expect(page).to have_content('Biology 2e')

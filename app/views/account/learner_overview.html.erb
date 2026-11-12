@@ -2,9 +2,7 @@
   <%= render 'account/navigation' %>
   <div class="account-layout__content">
     <header class="account-overview__header">
-      <h1 class="account-overview__title">
-        Welcome<% if current_user.first_name.present? %>, <%= current_user.first_name %><% end %>
-      </h1>
+      <h1 class="account-overview__title"><%= OverviewStatus.new(current_user).greeting %></h1>
       <p class="account-overview__subtitle">
         OpenStax textbooks are free for everyone. Save the ones you are reading and pick up where you left off on any device.
       </p>

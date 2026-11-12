@@ -415,6 +415,17 @@ span.account-term-books__title {
   color: var(--os-success-text);
 }
 
+.account-badge--pending,
+.account-badge--info,
+.account-badge--school {
+  background: var(--os-info-bg);
+  color: var(--os-text);
+}
+
+.account-callout__link {
+  @include os-text-action;
+}
+
 /* Callouts: info style, flat */
 .account-callout {
   position: relative;
