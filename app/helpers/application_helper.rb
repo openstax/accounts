@@ -180,10 +180,12 @@ module ApplicationHelper
     error.message = yield
   end
 
-  def ox_card(classes: "", heading: "", banners: nil, &block)
+  # legacy: false drops the .ox-card class, whose form rules (controls/_card.scss)
+  # would otherwise restyle every input and select in the account pages.
+  def ox_card(classes: "", heading: "", banners: nil, legacy: true, &block)
     @hide_layout_errors = true
 
-    content_tag :div, class: "ox-card #{classes}" do
+    content_tag :div, class: [("ox-card" if legacy), classes].compact.join(' ').strip do
 
       danger_alerts = if flash[:alert].present?
         content_tag :div, class: "top-level-alerts danger" do

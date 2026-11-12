@@ -1,4 +1,4 @@
-.ox-card .profile-title {
+.account-shell .profile-title {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: baseline;
@@ -115,7 +115,7 @@
   border-left-color: var(--os-green);
 }
 
-.ox-card.account-shell {
+.account-shell {
   display: block;
   margin: 0;
   padding: 24px;
@@ -185,12 +185,12 @@
 /* Hard stop: nothing may push the card wider than its column */
 .account-layout,
 .account-layout__content,
-.ox-card.account-shell,
+.account-shell,
 .account-shell__body {
   min-width: 0;
 }
 
-.account-layout__content .ox-card.account-shell {
+.account-layout__content .account-shell {
   overflow: hidden;
 }
 

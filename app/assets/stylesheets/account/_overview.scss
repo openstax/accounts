@@ -498,7 +498,7 @@ span.account-term-books__title {
   min-width: 0;
 }
 
-.ox-card .account-callout__button--primary,
+.account-shell .account-callout__button--primary,
 .account-callout__button--primary {
   @include os-button(primary);
 }
@@ -892,10 +892,10 @@ span.account-term-books__title {
   }
 }
 
-.account-layout .ox-card.account-shell .account-student-overview__autocomplete input[type="text"],
-.account-layout .ox-card.account-shell .account-student-overview__field input[type="text"],
-.account-layout .ox-card.account-shell .account-student-overview__field input[type="email"],
-.account-layout .ox-card.account-shell .account-student-overview__field select {
+.account-layout .account-shell .account-student-overview__autocomplete input[type="text"],
+.account-layout .account-shell .account-student-overview__field input[type="text"],
+.account-layout .account-shell .account-student-overview__field input[type="email"],
+.account-layout .account-shell .account-student-overview__field select {
   @include os-field(40px);
   width: 100%;
   max-width: none;

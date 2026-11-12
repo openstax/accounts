@@ -1,8 +1,49 @@
+// The faces openstax.org loads (pattern-library fonts.scss), self-hosted under
+// public/accounts/fonts. local() first, as openstax.org does.
+@font-face {
+  font-family: 'Neue Helvetica W01';
+  font-display: swap;
+  src: local('Helvetica Neue'),
+       url('/accounts/fonts/3dac71eb-afa7-4c80-97f0-599202772905.woff2') format('woff2'),
+       url('/accounts/fonts/34e0e4c0-c294-49bb-9a8e-1b2cafd54e32.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Neue Helvetica W01';
+  font-display: swap;
+  src: url('/accounts/fonts/5b1fbd62-45dc-4433-a7df-a2b24a146411.woff2') format('woff2'),
+       url('/accounts/fonts/050b1948-f226-4d20-a65a-15d8ed031222.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Neue Helvetica W01';
+  font-display: swap;
+  src: local('Helvetica Neue Bold'),
+       url('/accounts/fonts/531c5a28-5575-4f58-96d4-a80f7b702d7b.woff2') format('woff2'),
+       url('/accounts/fonts/439c5962-f9fe-4eaf-a1f6-f41d42edba75.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
 .os-app,
 body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: var(--os-font);
   @include set-font(body-regular);
   color: var(--os-text);
+}
+
+// Bootstrap and the legacy card name a font on headings and controls; both
+// should follow the page.
+.os-app {
+  h1, h2, h3, h4, h5, h6,
+  .h1, .h2, .h3, .h4, .h5, .h6,
+  button, input, select, textarea, optgroup {
+    font-family: inherit;
+  }
 }
 
 h1, h2 {

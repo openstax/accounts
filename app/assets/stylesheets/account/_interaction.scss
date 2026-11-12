@@ -1,12 +1,7 @@
 /* ---------------------------------------------------------------------------
-   Motion layer — state feedback only (product register: 150–250ms, ease-out).
-   Everything here has a prefers-reduced-motion fallback at the bottom.
+   Motion layer: state feedback. Hover and press move by var(--os-lift), which
+   reduced motion sets to 0; entrances only run under no-preference.
 --------------------------------------------------------------------------- */
-
-:root {
-  --os-ease-out: cubic-bezier(0.25, 1, 0.5, 1);   /* quart */
-  --os-ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
-}
 
 /* Keyboard focus: the ring openstax.org uses, on every interactive element */
 .account-layout a:focus-visible,
@@ -33,7 +28,7 @@
 .account-impact__cta:hover,
 .account-callout__button:hover,
 .account-check-in__button:hover {
-  transform: translateY(-1px);
+  transform: translateY(calc(var(--os-lift) / 2));
 }
 
 .account-books__submit:active,
@@ -51,29 +46,19 @@
   to   { opacity: 1; transform: none; }
 }
 
-.account-security__email-list .email-entry.is-open .email-entry__controls {
-  animation: account-controls-in 200ms var(--os-ease-out);
-}
-
 /* Flash messages: settle in instead of popping */
 @keyframes account-flash-in {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: none; }
 }
 
-.errors .alert,
-.errors .notice {
-  animation: account-flash-in 250ms var(--os-ease-out-quint);
-}
+@media (prefers-reduced-motion: no-preference) {
+  .account-security__email-list .email-entry.is-open .email-entry__controls {
+    animation: account-controls-in var(--os-dur) var(--os-ease-out);
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .account-layout *,
   .errors .alert,
-  .errors .notice,
-  .account-security__email-list .email-entry__controls {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  .errors .notice {
+    animation: account-flash-in 250ms var(--os-ease-out-quint);
   }
 }
-

@@ -8,6 +8,10 @@ $os-phone-max: 600px;
 $os-content-max: 1200px;
 
 :root {
+  // openstax.org's face: the system Helvetica Neue where installed, else the
+  // self-hosted webfont declared in _base.scss.
+  --os-font: 'Neue Helvetica W01', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
   --os-text: #{text-color(normal)};
   // pattern-library's helper grey (#6f6f6f) is 4.4:1 on the page grey; this passes on both.
   --os-text-helper: #6A6A6A;
@@ -20,6 +24,9 @@ $os-content-max: 1200px;
   --os-page-bg: #{ui-color(page-bg)};
   --os-surface: #{ui-color(white)};
   --os-border: #{ui-color(form-border)};
+  // Hover border for fields, and the ring of a radio or checkbox (4.9:1 on white).
+  --os-border-strong: #959595;
+  --os-control-border: #6F6F6F;
   --os-hover-bg: #{ui-color(default-hover)};
 
   --os-primary: #{ui-color(primary)};
@@ -48,6 +55,16 @@ $os-content-max: 1200px;
   --os-strips: linear-gradient(to right,
     #F47641 0 37%, #00246A 37% 53%, #C22032 53% 63%, #F4D019 63% 84%, #0DC0DC 84% 100%);
 
+  // Motion: fast feedback, routine state changes, and the rare larger move.
+  // Under reduced motion --os-lift drops to 0 so hover and press keep their
+  // colour and shadow change but nothing moves.
+  --os-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --os-ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --os-dur-fast: 120ms;
+  --os-dur: 200ms;
+  --os-dur-slow: 320ms;
+  --os-lift: -2px;
+
   // Older names the account surfaces were written against.
   --ink: var(--os-text);
   --muted: var(--os-text-helper);
@@ -60,4 +77,10 @@ $os-content-max: 1200px;
   --radius-sm: var(--os-radius);
   --accent: var(--os-link);
   --accent-weak: rgba(2, 106, 161, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --os-lift: 0px;
+  }
 }

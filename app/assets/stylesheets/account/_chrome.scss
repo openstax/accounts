@@ -1,16 +1,10 @@
-// Site chrome, after openstax.org: 74px white header with a hairline shadow,
-// plain bold nav links with a green bar on hover, and a two-band footer.
+// Site chrome, after openstax.org: a 74px white header with a hairline shadow,
+// the stacked OpenStax and Rice logos, plain bold nav links with a green bar on
+// hover, and a two-band footer led by the mission line.
 :root {
   --os-footer-top: #424242;
   --os-footer-bottom: #3b3b3b;
   --os-footer-text: #d5d5d5;
-}
-
-.os-rainbow-bar {
-  display: block;
-  width: 100%;
-  height: 10px;
-  background: var(--os-strips);
 }
 
 .os-app {
@@ -19,7 +13,7 @@
   margin: 0;
 
   .os-header {
-    background: var(--os-surface);
+    background: rgba(255, 255, 255, 0.98);
     box-shadow: var(--os-shadow-header);
     padding: 0 16px;
     position: relative;
@@ -39,7 +33,7 @@
   .os-header__brand-block {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     min-width: 0;
   }
 
@@ -47,12 +41,14 @@
   .os-header__rice {
     display: inline-flex;
     align-items: center;
+    border-radius: 2px;
   }
 
-  .os-header__logo-img {
-    height: 36px;
-    width: auto;
+  .os-header__logo-img,
+  .os-header__rice-img {
     display: block;
+    height: 50px;
+    width: auto;
   }
 
   .os-header__divider {
@@ -61,23 +57,11 @@
     background: var(--os-border);
   }
 
-  .os-header__rice-img {
-    height: 40px;
-    width: auto;
-    display: block;
-  }
-
-  .os-header__logo-text {
-    font-weight: 700;
-    color: var(--os-text);
-    @include set-font(h4);
-  }
-
   .os-header__actions,
   .os-header__nav {
     display: flex;
     align-items: stretch;
-    gap: 20px;
+    gap: 24px;
     min-width: 0;
   }
 
@@ -101,21 +85,35 @@
   }
 
   .os-header__link {
+    position: relative;
     display: flex;
     align-items: center;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
     color: var(--os-gray);
     text-decoration: none;
     white-space: nowrap;
     @include set-font(h4);
-    transition: border-color 150ms var(--os-ease-out);
+
+    // The green bar grows from the centre, as openstax.org's nav bar appears on hover.
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 5px;
+      background: var(--os-green);
+      transform: scaleX(0);
+      transition: transform var(--os-dur) var(--os-ease-out);
+    }
 
     &:hover,
     &:focus-visible {
       color: var(--os-gray);
       text-decoration: none;
-      border-bottom-color: var(--os-green);
+
+      &::after {
+        transform: scaleX(1);
+      }
     }
 
     &:focus-visible {
@@ -124,10 +122,25 @@
     }
   }
 
-  #application-container {
+  // Bootstrap's .container has fixed widths per breakpoint and .row pulls its
+  // content 15px outside it; the account pages size themselves.
+  #application-container.container {
+    width: auto;
+    max-width: none;
     min-height: calc(100vh - 160px);
+    padding: 0;
     display: flex;
     flex-direction: column;
+  }
+
+  #application-body.row {
+    margin-left: 0;
+    margin-right: 0;
+
+    > [class*="col-"] {
+      padding-left: 0;
+      padding-right: 0;
+    }
   }
 
   .os-main {
@@ -138,11 +151,23 @@
   .os-footer {
     color: var(--os-footer-text);
     @include set-font(body-regular);
+
+    p {
+      margin: 0;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 5px;
+    }
   }
 
   .os-footer__top {
     background: var(--os-footer-top);
-    padding: 40px 16px;
+    padding: 70px 16px 60px;
   }
 
   .os-footer__bottom {
@@ -155,50 +180,56 @@
   .os-footer__inner {
     max-width: $os-content-max;
     margin: 0 auto;
+  }
+
+  .os-footer__inner--top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 40px 80px;
+  }
+
+  .os-footer__inner--bottom {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
+    gap: 16px 24px;
   }
 
-  .os-footer__brand-link,
-  .os-footer__rice-link {
-    display: inline-flex;
-    align-items: center;
+  .os-footer__mission {
+    max-width: 48rem;
+    display: grid;
+    gap: 20px;
+    @include set-font(body-large);
   }
 
-  .os-footer__logo-img {
-    height: 32px;
-    width: auto;
+  .os-footer__headline {
+    @include set-font(h3);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--os-footer-text);
   }
 
-  .os-footer__logo-img--dark,
-  .os-footer__rice-img--dark {
-    filter: grayscale(1) brightness(0) invert(1);
+  .os-footer__columns {
+    display: flex;
+    gap: 40px 80px;
   }
 
-  .os-footer__logo-text,
-  .os-footer__rice-text {
+  .os-footer__column-title {
+    @include set-font(h4);
     font-weight: 700;
     color: var(--os-footer-text);
+    margin: 0 0 5px;
   }
 
-  .os-footer__links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 40px;
-  }
-
-  .os-footer__link {
+  .os-footer__link,
+  .os-footer__inline-link {
     color: var(--os-footer-text);
-    text-decoration: none;
-    @include set-font(body-regular);
+    border-radius: 2px;
 
     &:hover,
     &:focus-visible {
-      color: var(--os-footer-text);
-      text-decoration: underline;
+      color: #fff;
     }
 
     &:focus-visible {
@@ -207,7 +238,25 @@
     }
   }
 
+  .os-footer__link {
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+
+  .os-footer__inline-link {
+    text-decoration: underline;
+  }
+
+  .os-footer__rice-link {
+    display: inline-flex;
+  }
+
   .os-footer__rice-img {
+    display: block;
     height: 40px;
     width: auto;
   }
@@ -293,24 +342,41 @@ body:not(.os-app) #application-footer {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 960px) {
   .os-app {
-    .os-header {
-      padding: 0 16px;
+    .os-footer__inner--top {
+      grid-template-columns: minmax(0, 1fr);
     }
 
+    .os-footer__top {
+      padding: 40px 16px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .os-app {
     .os-header__inner {
+      min-height: 64px;
       gap: 12px;
     }
 
-    .os-header__divider,
-    .os-header__rice,
-    .os-header__actions #upper-corner-console {
-      display: none;
+    .os-header__brand-block {
+      gap: 8px;
     }
 
-    .os-header__logo-img {
-      height: 30px;
+    .os-header__logo-img,
+    .os-header__rice-img {
+      height: 40px;
+    }
+
+    .os-header__divider {
+      height: 28px;
+    }
+
+    .os-header__actions #upper-corner-console,
+    .os-header__link-prefix {
+      display: none;
     }
 
     .os-header__actions,
@@ -319,21 +385,29 @@ body:not(.os-app) #application-footer {
     }
 
     .os-header__link {
-      font-size: 16px;
-      line-height: 20px;
+      @include set-font(body-regular);
+      font-weight: 700;
     }
 
     .os-footer__top {
-      padding: 20px 16px;
+      padding: 30px 16px;
+    }
+
+    .os-footer__headline {
+      @include set-font(h4);
+      font-weight: 700;
+    }
+
+    .os-footer__mission {
+      @include set-font(body-regular);
+    }
+
+    .os-footer__columns {
+      gap: 32px;
     }
 
     .os-footer__bottom {
       padding: 15px 16px;
-    }
-
-    .os-footer__inner {
-      flex-direction: column;
-      align-items: flex-start;
     }
   }
 }

@@ -80,8 +80,7 @@
   }
 }
 
-// Global card-link rules underline every anchor inside .ox-card; the support
-// cards sit on the page background, so opt out of those and restate the colours.
+// The support cards are whole-card links: no underline, body-coloured text.
 .account-layout .account-support__card,
 .account-layout .account-support__card:hover {
   color: var(--os-text);

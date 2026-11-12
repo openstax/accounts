@@ -1,44 +1,27 @@
-<% header_logo =
-     begin
-       image_tag 'openstax-logo.svg', alt: 'OpenStax', class: 'os-header__logo-img'
-     rescue Sprockets::Rails::Helper::AssetNotFound
-       content_tag(:span, 'openstax', class: 'os-header__logo-text')
-     end
-%>
-<% header_rice =
-     begin
-       image_tag 'rice_logo.svg', alt: 'Rice University', class: 'os-header__rice-img'
-     rescue Sprockets::Rails::Helper::AssetNotFound
-       nil
-     end
-%>
 <% upper_corner_console = nil %>
 <% if respond_to?(:signed_in?) && signed_in? %>
   <% upper_corner_console = render(partial: 'shared/upper_corner_console').presence %>
 <% end %>
 
-<div class="os-rainbow-bar" aria-hidden="true"></div>
 <header class="os-header" role="banner">
   <div class="os-header__inner">
     <div class="os-header__brand-block">
       <%= link_to main_app.root_path, class: 'os-header__brand', 'aria-label': 'OpenStax home' do %>
-        <%= header_logo %>
+        <%= image_tag 'openstax-logo-stacked.svg', alt: '', class: 'os-header__logo-img', width: 66, height: 50 %>
       <% end %>
-      <% if header_rice %>
-        <span class="os-header__divider" aria-hidden="true"></span>
-        <%= link_to 'https://www.rice.edu', class: 'os-header__rice', target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Rice University' do %>
-          <%= header_rice %>
-        <% end %>
+      <span class="os-header__divider" aria-hidden="true"></span>
+      <%= link_to 'https://www.rice.edu', class: 'os-header__rice', target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Rice University' do %>
+        <%= image_tag 'rice-logo-stacked.svg', alt: '', class: 'os-header__rice-img', width: 87, height: 50 %>
       <% end %>
     </div>
 
     <div class="os-header__actions">
       <%= upper_corner_console if upper_corner_console.present? %>
       <nav class="os-header__nav" aria-label="Site">
-      <%= link_to 'Go to OpenStax.org', 'https://www.openstax.org', class: 'os-header__link', target: '_blank', rel: 'noopener noreferrer' %>
-      <% if respond_to?(:signed_in?) && signed_in? && main_app.respond_to?(:logout_path) %>
-        <%= link_to 'Log out', main_app.logout_path, class: 'os-header__link' %>
-      <% end %>
+        <a class="os-header__link" href="https://openstax.org" target="_blank" rel="noopener noreferrer"><span><span class="os-header__link-prefix">Go to </span>OpenStax.org</span></a>
+        <% if respond_to?(:signed_in?) && signed_in? && main_app.respond_to?(:logout_path) %>
+          <%= link_to 'Log out', main_app.logout_path, class: 'os-header__link' %>
+        <% end %>
       </nav>
     </div>
   </div>

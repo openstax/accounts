@@ -232,8 +232,6 @@
   }
 }
 
-// .ox-card input[type=submit] (50px line-height, inline-block) is more
-// specific than a single class, so the confirm button is styled at its level.
 .account-books .account-books__remove-actions input[type="submit"] {
   display: none;
   width: 100%;
@@ -608,8 +606,6 @@
   gap: 12px;
   align-items: flex-start;
 
-  // The wrapper keeps the select from being the button's previous sibling: `.ox-card select + *`
-  // adds a 30px top margin to whatever follows a select.
   .book-interests__select {
     flex: 1 1 auto;
     min-width: 0;
