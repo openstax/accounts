@@ -13,7 +13,7 @@
       <% badge_subtext = impact_badge_subtext(@badge_last_reported_at) %>
       <% panel_heading =
            if current_view
-             current_year_reported ? "Thank you for reporting your adoption impact for #{@current_school_year}!" : "Share your adoption impact for #{@current_school_year}"
+             current_year_reported ? "Thanks for telling us how you use OpenStax in #{@current_school_year}" : "Tell us how you use OpenStax in #{@current_school_year}"
            else
              'Your OpenStax impact over time'
            end %>
@@ -39,7 +39,7 @@
       <% locked = preview_current_year || preview_lifetime %>
       <% strip_items = [] %>
       <% if current_view %>
-        <% strip_items << { label: 'Adoptions reported', value: @active_adoptions.count, format: 'integer', pending: impact_pending_badge(pending.books, 'book') } %>
+        <% strip_items << { label: 'Books reported', value: @active_adoptions.count, format: 'integer', pending: impact_pending_badge(pending.books, 'book') } %>
       <% else %>
         <% strip_items << { label: 'Years reported', value: @active_stats[:years].to_i, format: 'integer' } %>
         <% strip_items << { label: 'Books reported', value: @active_stats[:books].to_i, format: 'integer' } %>
@@ -72,7 +72,7 @@
           <p><%= panel_copy %></p>
         </div>
         <div class="account-impact__panel-actions">
-          <%= link_to 'Report an adoption',
+          <%= link_to 'Report a book you use',
                       '#',
                       class: 'account-impact__cta',
                       data: { report_adoption_trigger: true } %>
@@ -88,7 +88,7 @@
           <% end %>
 
           <ul class="impact-strip <%= 'impact-strip--locked' if locked %>"
-              <% if locked %>aria-label="Totals appear here once you report an adoption."<% end %>>
+              <% if locked %>aria-label="Totals appear here once you report a book you use."<% end %>>
             <% strip_items.each do |item| %>
               <li class="impact-strip__item">
                 <% if locked %>
@@ -131,7 +131,7 @@
               <li class="impact-milestone-tile impact-milestone-tile--locked">
                 <div class="impact-milestone-tile__icon" aria-hidden="true"><%= number_with_delimiter(next_milestone.value) %></div>
                 <div class="impact-milestone-tile__label"><%= next_milestone.label %></div>
-                <div class="impact-milestone-tile__meta">Grows with your confirmed adoptions</div>
+                <div class="impact-milestone-tile__meta">Grows with the books you’ve reported</div>
               </li>
             <% end %>
           </ul>
@@ -158,16 +158,16 @@
       <% if show_details %>
       <section class="account-impact__details">
         <div class="account-shell__section-header">
-          <h2><%= current_view ? "Your reported adoptions for #{@current_school_year}" : 'All reported adoptions' %></h2>
-          <p><%= current_view ? 'Report your adoptions to keep this year’s impact up to date.' : 'Browse every adoption you’ve shared over time.' %></p>
+          <h2><%= current_view ? "Books you use in #{@current_school_year}" : 'All the books you’ve reported' %></h2>
+          <p><%= current_view ? 'Report the books you use to keep this year’s impact up to date.' : 'Browse every book you’ve shared over time.' %></p>
         </div>
 
         <%= render 'account/impact_table',
                    adoptions: @active_adoptions,
-                   empty_title: 'No adoptions reported yet',
+                   empty_title: 'You haven’t told us about any books yet',
                    empty_body: current_view ?
-                                "Report your adoptions for #{@current_school_year} to keep your impact up to date." :
-                                'Report an adoption to start building your OpenStax impact history.' %>
+                                "Report the books you use in #{@current_school_year} to keep your impact up to date." :
+                                'Report a book you use to start building your OpenStax impact history.' %>
       </section>
       <% end %>
 
@@ -182,7 +182,7 @@
           </div>
 
           <div class="account-impact__section-card">
-            <div class="account-impact__table-wrapper" role="region" aria-label="Adoptions you reported" tabindex="0">
+            <div class="account-impact__table-wrapper" role="region" aria-label="Books you reported" tabindex="0">
               <table class="account-impact__table">
                 <thead>
                   <tr>

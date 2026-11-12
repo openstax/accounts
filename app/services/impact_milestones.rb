@@ -69,7 +69,7 @@ class ImpactMilestones
   end
 
   def earned_milestones
-    first = Milestone.new(key: :first_adoption, label: 'First adoption', year: @first_year)
+    first = Milestone.new(key: :first_adoption, label: 'First book reported', year: @first_year)
 
     highest_students = highest_earned(STUDENT_THRESHOLDS, @student_crossing_year, :students) do |threshold|
       "#{delimited(threshold)} students"

@@ -7,7 +7,7 @@ module Account
 
       if rows.blank?
         redirect_to return_path,
-                    alert: 'Please select at least one book and school year to report an adoption.'
+                    alert: 'Please select at least one book and school year to tell us about a book you use.'
         return
       end
 

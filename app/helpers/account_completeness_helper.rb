@@ -5,7 +5,7 @@ module AccountCompletenessHelper
   ACCOUNT_COMPLETENESS_ITEMS = [
     { key: :school, label: 'School added' },
     { key: :books, label: 'Books added' },
-    { key: :adoption, label: 'Adoption reported' },
+    { key: :adoption, label: 'Book reported' },
     { key: :lms, label: 'Answer LMS question' }
   ].freeze
 

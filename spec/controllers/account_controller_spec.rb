@@ -75,11 +75,11 @@ RSpec.describe AccountController, type: :controller do
     get :impact
 
     expect(response.body).to include('Milestones')
-    expect(response.body).to include('First adoption')
+    expect(response.body).to include('First book reported')
     expect(response.body).to include('Report this term’s classes to keep your impact current')
-    expect(response.body).to include('Grows with your confirmed adoptions')
+    expect(response.body).to include('Grows with the books you’ve reported')
     expect(response.body).not_to include('students from your')
-    expect(response.body).not_to include('Report an adoption to get there')
+    expect(response.body).not_to include('Report a book you use to get there')
   end
 
   describe 'a report held for review on the impact page' do
@@ -409,7 +409,7 @@ RSpec.describe AccountController, type: :controller do
         expect(html).to include('Your profile is')
         expect(html).to include('Add your school')
         expect(html).not_to include('Save a book')
-        expect(html).not_to include('Report a book you use')
+        expect(Nokogiri::HTML(html).css('.account-profile-strip').text).not_to include('Report a book you use')
         expect(html).not_to include('Answer the LMS question')
       end
 
@@ -784,11 +784,11 @@ RSpec.describe AccountController, type: :controller do
       expect(response.body).to include(account_security_path)
     end
 
-    it 'shows no instructor, verification, LMS or adoption content' do
+    it 'shows no instructor, verification, LMS or book-reporting content' do
       get :overview
 
       ['nstructor', 'erification', 'Verified', 'Finish signing up', 'LMS',
-       'Report an adoption', 'Self Learner', 'Impact'].each do |text|
+       'Report a book you use', 'Self Learner', 'Impact'].each do |text|
         expect(response.body).not_to include(text)
       end
     end
@@ -833,7 +833,7 @@ RSpec.describe AccountController, type: :controller do
 
     it 'keeps usage reporting and the impact page' do
       get :overview
-      expect(response.body).to include('Report an adoption')
+      expect(response.body).to include('Report a book you use')
 
       get :impact
       expect(response).to have_http_status(:ok)

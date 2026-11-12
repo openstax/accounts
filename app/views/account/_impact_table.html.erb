@@ -1,6 +1,6 @@
 <div class="account-impact__section-card" id="impact-history">
   <% if adoptions.any? %>
-    <div class="account-impact__table-wrapper" role="region" aria-label="<%= local_assigns.fetch(:table_label, 'Reported adoptions') %>" tabindex="0">
+    <div class="account-impact__table-wrapper" role="region" aria-label="<%= local_assigns.fetch(:table_label, 'Books you reported') %>" tabindex="0">
       <table class="account-impact__table">
         <thead>
           <tr>
@@ -29,8 +29,8 @@
       </table>
     </div>
   <% else %>
-    <% default_title = 'No adoptions found' %>
-    <% default_body = 'Report an adoption so we can display your impact here.' %>
+    <% default_title = 'You haven’t told us about any books yet' %>
+    <% default_body = 'Report a book you use so we can show your impact here.' %>
     <div class="account-impact__empty">
       <h3><%= local_assigns.fetch(:empty_title, default_title) %></h3>
       <p><%= local_assigns.fetch(:empty_body, default_body) %></p>

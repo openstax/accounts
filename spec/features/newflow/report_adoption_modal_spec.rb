@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'report an adoption modal', js: true do
+feature 'report a book you use modal', js: true do
   let!(:biology) do
     Book.create!(book_uuid: SecureRandom.uuid, title: 'Biology 2e', salesforce_name: 'Biology', salesforce_book_id: 'a0BBIO')
   end

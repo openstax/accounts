@@ -36,7 +36,7 @@ module ImpactHelper
       safe_join([
         'Over ',
         period_text,
-        ', your reported adoptions represent an estimated ',
+        ', the books you’ve reported represent an estimated ',
         content_tag(:strong, formatted),
         ' in student savings.'
       ])
@@ -45,7 +45,7 @@ module ImpactHelper
       safe_join([
         'Over ',
         period_text,
-        ', your reported adoptions have supported ',
+        ', the books you’ve reported have supported ',
         content_tag(:strong, students),
         ' students.'
       ])
@@ -58,13 +58,13 @@ module ImpactHelper
     books = stats[:books].to_i
 
     if years >= 3
-      'You’ve kept your adoption story current across multiple academic years. Thank you.'
+      'You’ve kept your reports current across multiple academic years. Thank you.'
     elsif students >= 300
-      'You’ve supported hundreds of students through your reported adoptions.'
+      'You’ve supported hundreds of students through the books you’ve reported.'
     elsif books >= 3
-      'Your reported adoptions span multiple titles, and that visibility matters.'
+      'The books you’ve reported span multiple titles, and that visibility matters.'
     else
-      'Every reported adoption shows how OpenStax books are used in real classrooms.'
+      'Every book you report shows how OpenStax books are used in real classrooms.'
     end
   end
 
@@ -104,7 +104,7 @@ module ImpactHelper
 
     if !current_year_reported
       body = streak_years.positive? ? "Thank you for #{pluralize(streak_years, 'year')} of reporting. #{reason}" : "It takes about a minute. #{reason}"
-      { heading: 'Report this term’s classes to keep your impact current', body: body, button: 'Report an adoption' }
+      { heading: 'Report this term’s classes to keep your impact current', body: body, button: 'Report a book you use' }
     elsif saved_total > saved_answered
       { heading: "You’ve told us about #{saved_answered} of your #{saved_total} saved books this year",
         body: "Tell us where you are with the others. #{reason}",

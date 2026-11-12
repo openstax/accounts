@@ -56,10 +56,10 @@
     </div>
 
     <div class="account-profile__field">
-      <div class="account-profile__label">Adoption status</div>
+      <div class="account-profile__label">Books you use</div>
       <div class="account-profile__value">
         <% if @last_adoption_reported_at.blank? %>
-          No adoptions reported
+          You haven’t told us about any books yet
         <% elsif @current_year_has_confirmed_adoption %>
           Up to date (last reported <%= @last_adoption_reported_at.strftime("%B %-d, %Y") %>)
         <% else %>

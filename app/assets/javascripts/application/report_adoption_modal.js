@@ -182,7 +182,7 @@
     $rows.each(function(index, row) {
       var $label = $(row).find('[data-report-adoption-row-label]');
       if ($label.length) {
-        $label.text('Adoption ' + (index + 1));
+        $label.text('Book ' + (index + 1));
       }
 
       $(row).find('[name]').each(function(_, field) {

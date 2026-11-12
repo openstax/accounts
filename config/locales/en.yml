@@ -127,8 +127,8 @@ en:
   staff_details_form:
     header: Tell us about your work
     subheader: >-
-      Staff and administrators often make the adoption decisions instructors
-      rely on — these questions are written for your role, not a classroom.
+      Staff and administrators often make the decisions about which books
+      instructors use. These questions are written for your role, not a classroom.
     describe_role: What's your role?
     role_department_chair: Department chair
     role_librarian: Librarian
@@ -351,8 +351,8 @@ en:
       Teaching with OpenStax, or thinking about it. Unlocks answer keys,
       slides, and instructor resources.
     join_as_staff_description: >-
-      Librarians, administrators, and instructional staff who support
-      adoption but don't teach a course themselves.
+      Librarians, administrators, and instructional staff who help choose and
+      use OpenStax books but don't teach a course themselves.
     send_me_instructions: Send me instructions
     return: Return
     login_unsuccessful: Login unsuccessful
@@ -1209,7 +1209,7 @@ en:
     pending_students_books: "+%{students} from %{books}, pending. They count once we confirm them."
     pending_books: "+%{books}, pending. They count once we confirm them."
     reason: Reports like yours are how we show funders that free books reach real students.
-    report_button: Report an adoption
+    report_button: Report a book you use
     full_impact: See your full impact
     empty_title: Your impact starts here
     empty_body: Report the books you teach with and you will see how many students you reach, and what they save.
