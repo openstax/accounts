@@ -9,3 +9,29 @@
     <% end %>
   </ul>
 </nav>
+
+<% content_for :javascript do %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var nav = document.querySelector('.account-shell__nav');
+      var list = nav && nav.querySelector('ul');
+      if (!list) { return; }
+
+      var update = function() {
+        var max = list.scrollWidth - list.clientWidth;
+        nav.toggleAttribute('data-more-start', list.scrollLeft > 4);
+        nav.toggleAttribute('data-more-end', max > 4 && list.scrollLeft < max - 4);
+      };
+
+      var current = list.querySelector('a[aria-current="page"]');
+      if (current && list.scrollWidth > list.clientWidth) {
+        var offset = current.getBoundingClientRect().left - list.getBoundingClientRect().left + list.scrollLeft;
+        list.scrollLeft = Math.max(0, offset - (list.clientWidth - current.offsetWidth) / 2);
+      }
+
+      list.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    });
+  </script>
+<% end %>

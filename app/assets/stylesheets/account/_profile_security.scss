@@ -236,7 +236,12 @@
     text-align: left;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 150ms ease-out;
+    transition: opacity var(--os-dur) var(--os-ease-out);
+
+    // 26rem from the icon runs past the card's right edge on a phone and widens its scroll area.
+    @include width-up-to($os-phone-max) {
+      width: 20rem;
+    }
   }
 
   &:hover::after,

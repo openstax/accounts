@@ -114,13 +114,13 @@
                   <button type="button"
                           class="account-actions__cta"
                           data-report-adoption-trigger="true">
-                    <%= action[:cta] %>
+                    <%= action[:cta].delete_suffix(' →') %><% if action[:cta].end_with?(' →') %> <span class="arrow" aria-hidden="true">→</span><% end %>
                   </button>
                 <% else %>
                   <a class="account-actions__cta"
                      href="<%= action[:href] %>"
                      <%= action[:external] ? 'target="_blank" rel="noopener"' : '' %>>
-                    <%= action[:cta] %>
+                    <%= action[:cta].delete_suffix(' →') %><% if action[:cta].end_with?(' →') %> <span class="arrow" aria-hidden="true">→</span><% end %>
                   </a>
                 <% end %>
               </li>
