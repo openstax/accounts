@@ -26,7 +26,6 @@
           id: 'signup-page',
           header: educator_copy(:complete_page_header),
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 4, total_steps: 4),
-          progress_bar: 1.0,
           classes: 'signup-page completed-step') do %>
 
         <%= render partial: 'newflow/signup_alternatives', locals: {
@@ -60,7 +59,7 @@
       CLAUDE.md, "View gotcha"), placement is free. NB: never put literal
       ERB delimiters inside this comment -- a percent-gt sequence ends it.
     %>
-    <p class="profile-subtitle"><%= educator_copy(:profile_subtitle) %></p>
+    <p class="content profile-subtitle"><%= educator_copy(:profile_subtitle) %></p>
 
     <%#
       Static mission stat rather than a per-book adoption count: the design
@@ -69,7 +68,7 @@
       to show a fabricated number. Swap in a verified, sourced figure (e.g.
       from openstax-data) if/when one is wired up.
     %>
-    <div class="profile-social-proof">
+    <div class="content profile-social-proof">
       <%= educator_copy(:social_proof).html_safe %>
     </div>
         <div class="content required-fields-notice">
@@ -367,8 +366,9 @@
           <%= f.hidden_field :finish_later, value: 'false' %>
 
           <%=
-            f.submit(
+            f.button(
               educator_copy(:finish_button),
+              type: 'submit',
               id: 'signup_form_submit_button',
               class: 'primary',
               data: {

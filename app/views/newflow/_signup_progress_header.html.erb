@@ -1,8 +1,11 @@
 <%#
-  Shared "back link + step counter + thin progress bar + h1" header used by the
+  Shared "back link + step counter + progress bar + h1" header used by the
   redesigned signup step-1 screens (student, educator) and the verify-email
   screens. Rendered from *inside* the form so it appears above the existing
   role/social/field sections in document order.
+
+  The bar is a track the width of the card, filled to progress_percent; on load
+  the fill grows from the previous step's fraction (see .step-progress).
 
   Locals:
     step_text:        required. Rendered text, e.g. "Step 1 of 2".
@@ -14,17 +17,21 @@
 <% back_path = local_assigns[:back_path]
    back_label = local_assigns[:back_label]
    header_text = local_assigns[:header_text]
+   total_steps = step_text.to_s[/\d+\D+(\d+)/, 1].to_f
+   step_from = if progress_percent.to_f.positive? && total_steps.positive?
+                 [(progress_percent.to_f - 100.0 / total_steps) / progress_percent.to_f, 0].max.round(4)
+               else
+                 1
+               end
 %>
 <div class="signup-progress-header">
   <% if back_path.present? %>
     <%= link_to back_path, class: 'signup-progress-header__back' do %><i class="fa fa-arrow-left" aria-hidden="true"></i> <%= back_label %><% end %>
-  <% else %>
-    <span></span>
   <% end %>
   <span class="signup-progress-header__step"><%= step_text %></span>
 </div>
-<div class="signup-progress-bar" role="presentation">
-  <div class="signup-progress-bar__fill" style="width: <%= progress_percent %>%;"></div>
+<div class="step-progress step-progress--form" aria-hidden="true">
+  <div class="step-progress__fill" style="width: <%= progress_percent %>%; --step-from: <%= step_from %>;"></div>
 </div>
 <% if header_text.present? %>
   <h1 class="signup-progress-header__h1"><%= header_text %></h1>
