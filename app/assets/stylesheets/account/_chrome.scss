@@ -1,0 +1,413 @@
+// Site chrome, after openstax.org: a 74px white header with a hairline shadow,
+// the stacked OpenStax and Rice logos, plain bold nav links with a green bar on
+// hover, and a two-band footer led by the mission line.
+:root {
+  --os-footer-top: #424242;
+  --os-footer-bottom: #3b3b3b;
+  --os-footer-text: #d5d5d5;
+}
+
+.os-app {
+  min-height: 100vh;
+  background: var(--os-page-bg);
+  margin: 0;
+
+  .os-header {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: var(--os-shadow-header);
+    padding: 0 16px;
+    position: relative;
+    z-index: 5;
+  }
+
+  .os-header__inner {
+    max-width: $os-content-max;
+    margin: 0 auto;
+    min-height: 74px;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .os-header__brand-block {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .os-header__brand,
+  .os-header__rice {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 2px;
+  }
+
+  .os-header__logo-img,
+  .os-header__rice-img {
+    display: block;
+    height: 50px;
+    width: auto;
+  }
+
+  .os-header__divider {
+    width: 1px;
+    height: 36px;
+    background: var(--os-border);
+  }
+
+  .os-header__actions,
+  .os-header__nav {
+    display: flex;
+    align-items: stretch;
+    gap: 24px;
+    min-width: 0;
+  }
+
+  // Dev/admin console from a gem: keep it compact and out of the layout flow.
+  .os-header__actions #upper-corner-console {
+    align-self: center;
+    flex: 0 1 auto;
+    max-width: 22rem;
+    max-height: 60px;
+    overflow: hidden;
+    @include set-font(helper-label);
+    color: var(--os-text-helper);
+
+    a {
+      color: var(--os-link);
+    }
+
+    a:hover {
+      color: var(--os-link-hover);
+    }
+  }
+
+  .os-header__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: var(--os-gray);
+    text-decoration: none;
+    white-space: nowrap;
+    @include set-font(h4);
+
+    // The green bar grows from the centre, as openstax.org's nav bar appears on hover.
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 5px;
+      background: var(--os-green);
+      transform: scaleX(0);
+      transition: transform var(--os-dur) var(--os-ease-out);
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: var(--os-gray);
+      text-decoration: none;
+
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+
+    &:focus-visible {
+      box-shadow: var(--os-focus-ring);
+      outline: 2px solid transparent;
+    }
+  }
+
+  // Bootstrap's .container has fixed widths per breakpoint and .row pulls its
+  // content 15px outside it; the account pages size themselves.
+  #application-container.container {
+    width: auto;
+    max-width: none;
+    min-height: calc(100vh - 160px);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #application-body.row {
+    margin-left: 0;
+    margin-right: 0;
+
+    > [class*="col-"] {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .os-main {
+    padding: 32px 0 48px;
+    flex: 1 1 auto;
+  }
+
+  .os-footer {
+    color: var(--os-footer-text);
+    @include set-font(body-regular);
+
+    p {
+      margin: 0;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 5px;
+    }
+  }
+
+  .os-footer__top {
+    background: var(--os-footer-top);
+    padding: 70px 16px 60px;
+  }
+
+  .os-footer__bottom {
+    background: var(--os-footer-bottom);
+    padding: 25px 16px;
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  .os-footer__inner {
+    max-width: $os-content-max;
+    margin: 0 auto;
+  }
+
+  .os-footer__inner--top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 40px 80px;
+  }
+
+  .os-footer__inner--bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 24px;
+  }
+
+  .os-footer__mission {
+    max-width: 48rem;
+    display: grid;
+    gap: 20px;
+    @include set-font(body-large);
+  }
+
+  .os-footer__headline {
+    @include set-font(h3);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--os-footer-text);
+  }
+
+  .os-footer__columns {
+    display: flex;
+    gap: 40px 80px;
+  }
+
+  .os-footer__column-title {
+    @include set-font(h4);
+    font-weight: 700;
+    color: var(--os-footer-text);
+    margin: 0 0 5px;
+  }
+
+  .os-footer__link,
+  .os-footer__inline-link {
+    color: var(--os-footer-text);
+    border-radius: 2px;
+
+    &:hover,
+    &:focus-visible {
+      color: #fff;
+    }
+
+    &:focus-visible {
+      box-shadow: var(--os-focus-ring);
+      outline: 2px solid transparent;
+    }
+  }
+
+  .os-footer__link {
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+
+  .os-footer__inline-link {
+    text-decoration: underline;
+  }
+
+  .os-footer__rice-link {
+    display: inline-flex;
+  }
+
+  .os-footer__rice-img {
+    display: block;
+    height: 40px;
+    width: auto;
+  }
+
+  .os-footer__copyright {
+    color: var(--os-footer-text);
+  }
+}
+
+body:not(.os-app) #application-header {
+  background: #fff;
+  border-bottom: 1px solid #E0E0E0;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 8px 24px rgba(13, 40, 80, 0.08);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  #top-nav-logo {
+    height: 30px;
+    width: 160px;
+
+    a {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background: image-url("openstax-logo.svg") no-repeat center center;
+      background-size: contain;
+    }
+  }
+}
+
+body:not(.os-app) #application-footer {
+  background: #424242;
+  color: #fff;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+
+  #footer-rice-logo-image {
+    max-height: 34px;
+  }
+
+  a {
+    color: #fff;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.main-menu {
+  box-shadow: none;
+  box-sizing: border-box;
+  padding: 2rem 0 0 2rem;
+
+  .logo {
+    padding: 0;
+
+    @media (max-width: 768px) {
+      margin: auto;
+    }
+  }
+}
+
+#newflow-footer {
+  text-align: center;
+
+  #footer-rice-logo-image {
+    max-height: 3.7rem;
+    margin-bottom: 1.2rem;
+  }
+
+  #newflow-footer--copyright {
+    font-size: 1rem;
+
+    a {
+      color: #424242;
+      text-decoration: none;
+    }
+  }
+}
+
+@media (max-width: 960px) {
+  .os-app {
+    .os-footer__inner--top {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .os-footer__top {
+      padding: 40px 16px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .os-app {
+    .os-header__inner {
+      min-height: 64px;
+      gap: 12px;
+    }
+
+    .os-header__brand-block {
+      gap: 8px;
+    }
+
+    .os-header__logo-img,
+    .os-header__rice-img {
+      height: 40px;
+    }
+
+    .os-header__divider {
+      height: 28px;
+    }
+
+    .os-header__actions #upper-corner-console,
+    .os-header__link-prefix {
+      display: none;
+    }
+
+    .os-header__actions,
+    .os-header__nav {
+      gap: 16px;
+    }
+
+    .os-header__link {
+      @include set-font(body-regular);
+      font-weight: 700;
+    }
+
+    .os-footer__top {
+      padding: 30px 16px;
+    }
+
+    .os-footer__headline {
+      @include set-font(h4);
+      font-weight: 700;
+    }
+
+    .os-footer__mission {
+      @include set-font(body-regular);
+    }
+
+    .os-footer__columns {
+      gap: 32px;
+    }
+
+    .os-footer__bottom {
+      padding: 15px 16px;
+    }
+  }
+}

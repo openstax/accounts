@@ -1,0 +1,90 @@
+<% @page_header = 'Adoption Reviews' %>
+
+<p>
+  A "using" report over <strong><%= number_with_delimiter(Settings::Salesforce.adoption_review_student_threshold) %></strong>
+  students for one book in one school year is held here instead of going to Salesforce.
+  Approved reports are sent with the next push; rejected ones stay in Accounts. The threshold is
+  editable under <a href="/admin/settings">Settings</a>.
+</p>
+
+<ul class="nav nav-tabs" style="margin-bottom: 1.5rem;">
+  <% Admin::AdoptionReviewsController::FILTERS.each do |key, label| %>
+    <li class="<%= 'active' if key == @filter %>">
+      <%= link_to admin_adoption_reviews_path(filter: key) do %>
+        <%= label %> <span class="badge"><%= @counts.fetch(key, 0) %></span>
+      <% end %>
+    </li>
+  <% end %>
+  <li class="pull-right">
+    <%= link_to 'Download CSV', admin_adoption_reviews_path(filter: @filter, format: :csv), class: 'btn btn-default btn-sm' %>
+  </li>
+</ul>
+
+<% if flash[:notice] %><div class="alert alert-success"><%= flash[:notice] %></div><% end %>
+<% if flash[:alert] %><div class="alert alert-danger"><%= flash[:alert] %></div><% end %>
+
+<% if @reports.empty? %>
+  <p class="text-muted">Nothing here.</p>
+<% else %>
+  <div class="table-responsive">
+    <table class="table table-striped table-condensed" id="adoption-reviews">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>School</th>
+          <th>Book</th>
+          <th>Year</th>
+          <th class="text-right">Students</th>
+          <th>How using</th>
+          <th>Source</th>
+          <th>When</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @reports.each do |report| %>
+          <tr id="adoption_report_<%= report.id %>">
+            <td>
+              <%= link_to report.user.name, edit_admin_user_path(report.user) %><br>
+              <small class="text-muted"><%= report.user.best_email_address_for_salesforce %></small>
+            </td>
+            <td><%= school_name_for(report.user) %></td>
+            <td><%= report.book_title %></td>
+            <td><%= report.school_year %></td>
+            <td class="text-right"><strong><%= number_with_delimiter(report.students) %></strong></td>
+            <td><%= report.how_using %></td>
+            <td><%= [report.source, report.surface].compact.join(' / ') %></td>
+            <td>
+              <%= l(report.created_at, format: :short) %>
+              <% if report.reviewed_at %>
+                <br><small class="text-muted">Reviewed <%= l(report.reviewed_at, format: :short) %>
+                <% if report.reviewed_by %>by <%= report.reviewed_by.username %><% end %></small>
+              <% end %>
+            </td>
+            <td style="white-space: nowrap;">
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <% unless report.review_status == 'approved' %>
+                  <%= button_to 'Approve', approve_admin_adoption_review_path(report, filter: @filter),
+                                class: 'btn btn-success btn-xs', form: { style: 'display: inline;' } %>
+                <% end %>
+                <% unless report.review_status == 'rejected' %>
+                  <%= button_to 'Reject', reject_admin_adoption_review_path(report, filter: @filter),
+                                class: 'btn btn-danger btn-xs', form: { style: 'display: inline;' },
+                                data: { confirm: 'Reject this report? It will never be sent to Salesforce.' } %>
+                <% end %>
+                <%= form_with url: approve_with_count_admin_adoption_review_path(report, filter: @filter),
+                              method: :post, local: true, html: { style: 'display: inline-flex; gap: 4px;' } do |f| %>
+                  <%= f.number_field :students, value: report.students, min: 0, step: 1,
+                                     'aria-label' => "New student count for #{report.book_title}",
+                                     class: 'form-control input-sm', style: 'width: 90px;' %>
+                  <%= f.submit 'Change count and approve', class: 'btn btn-default btn-xs' %>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <%= will_paginate @reports %>
+<% end %>

@@ -1,0 +1,38 @@
+<div class="account-layout">
+  <%= render 'account/navigation' %>
+  <div class="account-layout__content">
+    <header class="account-overview__header">
+      <h1 class="account-overview__title"><%= OverviewStatus.new(current_user).greeting %></h1>
+      <p class="account-overview__subtitle">
+        OpenStax textbooks are free for everyone. Save the ones you are reading and pick up where you left off on any device.
+      </p>
+    </header>
+
+    <%= render('shared/account_layout_shell') do %>
+      <div class="account-shell__body account-student-overview">
+        <%= render 'account/saved_books_section' %>
+
+        <section class="account-overview__section" aria-labelledby="keep-exploring-heading">
+          <div class="account-shell__section-header">
+            <h2 id="keep-exploring-heading">Keep exploring</h2>
+            <p>Find your next book or update your account details.</p>
+          </div>
+          <dl class="account-facts">
+            <div class="account-facts__item">
+              <dt>Find a book</dt>
+              <dd><a href="https://openstax.org/subjects" target="_blank" rel="noopener">Browse subjects on openstax.org</a></dd>
+            </div>
+            <div class="account-facts__item">
+              <dt>Your details</dt>
+              <dd>
+                <%= link_to 'Profile', account_profile_path %>
+                and
+                <%= link_to 'Security', account_security_path %>
+              </dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+    <% end %>
+  </div>
+</div>

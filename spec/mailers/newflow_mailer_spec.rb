@@ -52,7 +52,7 @@ module Newflow
 
           expect(mail.subject).to eq("[OpenStax] Your OpenStax account PIN has arrived: #{pin}")
           expect(mail.body.encoded).to include("<a href=\"#{confirm_url}\"")
-          expect(mail.body.encoded).to include("use your pin: <b id='pin'>#{pin}</b>")
+          expect(mail.body.encoded).to include("use your PIN: <b id='pin'>#{pin}</b>")
         end
       end
 
@@ -62,7 +62,7 @@ module Newflow
 
           expect(mail.subject).to eq("[OpenStax] Your OpenStax account PIN has arrived: #{pin}")
           expect(mail.body.encoded).to include("<a href=\"#{confirm_url}\"")
-          expect(mail.body.encoded).to include("use your pin: <b id='pin'>#{pin}</b>")
+          expect(mail.body.encoded).to include("use your PIN: <b id='pin'>#{pin}</b>")
         end
       end
 
@@ -72,7 +72,7 @@ module Newflow
 
           expect(mail.subject).to eq("[OpenStax] Confirm your email address")
           expect(mail.body.encoded).to include("<a href=\"#{confirm_url}\"")
-          expect(mail.body.encoded).not_to include("use your pin: <b id='pin'>#{pin}</b>")
+          expect(mail.body.encoded).not_to include("use your PIN: <b id='pin'>#{pin}</b>")
         end
       end
     end

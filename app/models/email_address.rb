@@ -1,6 +1,18 @@
 class EmailAddress < ContactInfo
   include EmailAddressValidations
 
+  # Same heuristic as the client-side IS_EDU check in
+  # educator_signup_email_validations.js.coffee, extended to also
+  # recognize .org (many school/nonprofit domains use it) per the
+  # SheerID school-email gate design. This is a guidance heuristic,
+  # not a hard validation - plenty of legitimate school emails don't
+  # match it, and it is never used to reject an email address.
+  SCHOOL_DOMAIN_REGEX = /\.(edu|org)\s*\z/i
+
+  def self.looks_like_school_email?(value)
+    SCHOOL_DOMAIN_REGEX.match?(value.to_s)
+  end
+
   WHITELIST = [
     # popular email providers globally
     'gmail.com', 'outlook.com', 'yahoo.com', 'icloud.com', 'hotmail.com', 'aol.com',

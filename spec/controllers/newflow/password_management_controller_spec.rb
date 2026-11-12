@@ -96,6 +96,19 @@ module Newflow
             end
           end
 
+          context 'and the account is a lifelong learner' do
+            let!(:unverified_user) do
+              user = FactoryBot.create(:user, state: User::UNVERIFIED, is_newflow: true, role: 'self_learner')
+              FactoryBot.create(:email_address, user: user, value: 'unverified@openstax.org', verified: false)
+              user
+            end
+
+            it 'redirects to the learner email verification form' do
+              post('send_reset_password_email', params: params)
+              expect(response).to redirect_to(learner_email_verification_form_path)
+            end
+          end
+
           context 'and a second, unrelated address is unverified' do
             before do
               FactoryBot.create(:email_address, user: unverified_user, value: 'other@openstax.org', verified: false)

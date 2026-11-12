@@ -134,6 +134,21 @@ class SecurityLog < ApplicationRecord
     salesforce_lead_status_synced
     faculty_status_repaired
     salesforce_record_unlinked
+    educator_used_current_email_for_sheerid
+    self_learner_signed_up
+    self_learner_sign_up_failed
+    self_learner_verified_email
+    self_learner_verify_email_failed
+    self_learner_social_sign_up
+    staff_began_signup
+    staff_sign_up_failed
+    staff_verified_email
+    staff_verify_email_failed
+    adoption_reports_pushed_to_salesforce
+    adoption_report_approved
+    adoption_report_count_changed_and_approved
+    adoption_report_rejected
+    book_interest_changed
   ]
 
   json_serialize :event_data, Hash

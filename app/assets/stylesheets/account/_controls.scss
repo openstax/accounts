@@ -1,0 +1,148 @@
+// Form controls drawn the openstax.org way. Surfaces set size and spacing; this
+// sets the material: the select chevron, radio and checkbox marks, hover and
+// focus. Selects follow it in both layouts (body.os-app); radios and checkboxes
+// only in the application layout, because newflow draws its own on the label.
+$os-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%235e6162' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+$os-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5.2l3.3 3.3L11 1.5' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+.os-app {
+  ::selection {
+    background: rgba(2, 106, 161, 0.2);
+  }
+
+  input,
+  textarea {
+    caret-color: var(--os-link);
+  }
+
+  a {
+    text-underline-offset: 0.15em;
+  }
+
+  select:not([multiple]) {
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--os-surface) $os-chevron no-repeat right 16px center / 12px 8px;
+    border: 1px solid var(--os-border);
+    border-radius: 0;
+    padding-right: 44px;
+    color: var(--os-text);
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: border-color var(--os-dur-fast) var(--os-ease-out),
+                box-shadow var(--os-dur-fast) var(--os-ease-out);
+
+    &::-ms-expand {
+      display: none;
+    }
+
+    &:hover {
+      border-color: var(--os-border-strong);
+    }
+
+    &:focus,
+    &:focus-visible {
+      border-color: var(--os-focus-border);
+      box-shadow: var(--os-focus-ring);
+      outline: 2px solid transparent;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &:not(.newflow-layout) {
+    input[type="radio"],
+    input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      position: relative;
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      padding: 0;
+      border: 1px solid var(--os-control-border);
+      background: var(--os-surface);
+      vertical-align: -4px;
+      cursor: pointer;
+      transition: border-color var(--os-dur-fast) var(--os-ease-out),
+                  background-color var(--os-dur-fast) var(--os-ease-out),
+                  box-shadow var(--os-dur-fast) var(--os-ease-out);
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        transform: scale(0);
+        transition: transform var(--os-dur) var(--os-ease-out);
+      }
+
+      &:checked::before {
+        transform: scale(1);
+      }
+
+      &:hover:not(:disabled) {
+        border-color: var(--os-link);
+      }
+
+      &:focus-visible {
+        box-shadow: var(--os-focus-ring);
+        outline: 2px solid transparent;
+      }
+
+      &:disabled {
+        background: var(--os-hover-bg);
+        border-color: var(--os-border);
+        cursor: not-allowed;
+      }
+    }
+
+    input[type="radio"] {
+      border-radius: 50%;
+
+      &::before {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--os-link);
+      }
+
+      &:checked {
+        border-color: var(--os-link);
+      }
+    }
+
+    input[type="checkbox"] {
+      border-radius: 3px;
+
+      &::before {
+        width: 12px;
+        height: 10px;
+        background: $os-check no-repeat center / contain;
+      }
+
+      &:checked {
+        background-color: var(--os-link);
+        border-color: var(--os-link);
+      }
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .os-app:not(.newflow-layout) {
+    input[type="radio"],
+    input[type="checkbox"] {
+      appearance: auto;
+      -webkit-appearance: auto;
+
+      &::before {
+        content: none;
+      }
+    }
+  }
+}

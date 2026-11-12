@@ -1,0 +1,107 @@
+// Support page: two link cards in openstax.org's card style (white, soft
+// shadow, lifts on hover).
+.account-support__cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+
+  @include width-up-to($os-phone-max) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
+.account-support__card {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  column-gap: 16px;
+  align-content: start;
+  min-width: 0;
+  padding: 24px;
+  background: var(--os-surface);
+  border-radius: var(--os-radius);
+  box-shadow: var(--os-shadow-card);
+  color: var(--os-text);
+  text-decoration: none;
+
+  @include width-up-to($os-phone-max) {
+    padding: 16px;
+  }
+
+  &:hover {
+    color: var(--os-text);
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+
+  h2 {
+    grid-column: 2;
+    margin: 0 0 8px;
+    overflow-wrap: anywhere;
+  }
+
+  p {
+    grid-column: 2;
+    margin: 0 0 16px;
+    @include set-font(body-regular);
+    overflow-wrap: anywhere;
+  }
+}
+
+.account-support__icon {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  font-size: 28px;
+  line-height: 30px;
+  color: var(--os-link);
+}
+
+.account-support__action {
+  grid-column: 2;
+  color: var(--os-link);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.account-support__card:hover .account-support__action {
+  color: var(--os-link-hover);
+}
+
+// The support cards are whole-card links: no underline, body-coloured text.
+.account-layout .account-support__card,
+.account-layout .account-support__card:hover {
+  color: var(--os-text);
+  text-decoration: none;
+}
+
+.account-layout .account-support__card .account-support__action {
+  color: var(--os-link);
+  text-decoration: underline;
+}
+
+.account-layout .account-support__card:hover .account-support__action {
+  color: var(--os-link-hover);
+}
+
+.account-support__more {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  margin: 24px 0 0;
+  padding: 0;
+
+  a {
+    @include os-text-action;
+    display: inline-block;
+    min-height: 24px;
+
+    @include width-up-to($os-phone-max) {
+      padding: 9px 0;
+    }
+  }
+}

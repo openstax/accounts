@@ -1,0 +1,16 @@
+<header class="account-overview__header">
+  <h1 class="account-overview__title"><%= status.greeting %></h1>
+
+  <div class="account-overview__badges">
+    <% status.badges.each do |badge| %>
+      <span class="account-badge account-badge--<%= badge.tone %>"><%= badge.label %></span>
+    <% end %>
+  </div>
+
+  <p class="account-overview__subtitle">
+    <%= status.subtitle %>
+    <% if status.add_school_link? %>
+      <a class="account-overview__inline-link" href="<%= account_profile_path %>">Add your school</a>
+    <% end %>
+  </p>
+</header>

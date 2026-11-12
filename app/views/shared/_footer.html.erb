@@ -1,0 +1,44 @@
+<% external = { target: '_blank', rel: 'noopener noreferrer' } %>
+
+<footer class="os-footer" role="contentinfo">
+  <div class="os-footer__top">
+    <div class="os-footer__inner os-footer__inner--top">
+      <div class="os-footer__mission">
+        <p class="os-footer__headline">OpenStax&rsquo;s mission is to make an amazing education accessible for all.</p>
+        <p>
+          OpenStax is part of Rice University, which is a 501(c)(3) nonprofit.
+          <%= link_to 'Give today', 'https://openstax.org/give', class: 'os-footer__inline-link', **external %>
+          and help us reach more students.
+        </p>
+      </div>
+
+      <nav class="os-footer__columns" aria-label="Footer">
+        <div class="os-footer__column">
+          <h2 class="os-footer__column-title">Help</h2>
+          <ul>
+            <li><%= link_to 'Contact us', 'https://openstax.org/contact', class: 'os-footer__link', **external %></li>
+            <li><%= link_to 'Support center', main_app.salesforce_knowledge_base_url, class: 'os-footer__link', **external %></li>
+            <li><%= link_to 'FAQ', 'https://openstax.org/faq', class: 'os-footer__link', **external %></li>
+          </ul>
+        </div>
+        <div class="os-footer__column">
+          <h2 class="os-footer__column-title">Policies</h2>
+          <ul>
+            <li><%= link_to 'Accessibility statement', 'https://openstax.org/accessibility-statement', class: 'os-footer__link', **external %></li>
+            <li><%= link_to 'Terms of use', main_app.terms_path, class: 'os-footer__link' %></li>
+            <li><%= link_to 'Privacy notice', 'https://openstax.org/privacy', class: 'os-footer__link', **external %></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <div class="os-footer__bottom">
+    <div class="os-footer__inner os-footer__inner--bottom">
+      <p class="os-footer__copyright">&copy; <%= Time.current.year %> Rice University. All rights reserved.</p>
+      <%= link_to 'https://www.rice.edu', class: 'os-footer__rice-link', 'aria-label': 'Rice University', **external do %>
+        <%= image_tag 'rice-logo-white.png', alt: '', class: 'os-footer__rice-img', width: 85, height: 40 %>
+      <% end %>
+    </div>
+  </div>
+</footer>

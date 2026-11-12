@@ -1,0 +1,187 @@
+/* ---------------------------------------------------------------------------
+   Motion layer: state feedback. Hover and press move by var(--os-lift), which
+   reduced motion sets to 0; entrances only run under no-preference.
+--------------------------------------------------------------------------- */
+
+/* Keyboard focus: the ring openstax.org uses, on every interactive element */
+.account-layout a:focus-visible,
+.account-layout button:focus-visible,
+.account-layout input:focus-visible,
+.account-layout select:focus-visible,
+.account-layout [tabindex]:focus-visible {
+  box-shadow: var(--os-focus-ring);
+  outline: 2px solid transparent;
+}
+
+/* Buttons: one hover and press for every primary and secondary action. Hover lifts
+   half a step and raises the shadow; press settles back. */
+:root {
+  --os-shadow-button-hover: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
+body .account-books__submit,
+body .account-books__view-link,
+body .account-books__remove-btn--confirm,
+body .book-status__choice,
+body .book-interests__remove,
+body .book-interests__add-btn,
+body .account-impact__cta,
+body .account-impact-card__button,
+body .account-callout__button--primary,
+body .account-callout__button--ghost,
+body .account-callout__lms-pill,
+body .account-check-in__button--primary,
+body .account-check-in__button--secondary,
+body .account-student-overview__submit,
+body .report-adoption__submit {
+  transition: background-color var(--os-dur-fast) var(--os-ease-out),
+              border-color var(--os-dur-fast) var(--os-ease-out),
+              box-shadow var(--os-dur-fast) var(--os-ease-out),
+              transform var(--os-dur-fast) var(--os-ease-out);
+}
+
+body .account-books__submit:hover:not(:disabled),
+body .account-books__view-link:hover,
+body .account-books__remove-btn--confirm:hover,
+body .book-interests__remove:hover,
+body .book-interests__add-btn:hover,
+body .account-impact__cta:hover,
+body .account-impact-card__button:hover,
+body .account-callout__button--primary:hover,
+body .account-callout__button--ghost:hover,
+body .account-callout__lms-pill:hover,
+body .account-check-in__button--primary:hover,
+body .account-check-in__button--secondary:hover,
+body .account-student-overview__submit:hover,
+body .report-adoption__submit:hover:not(:disabled) {
+  transform: translateY(calc(var(--os-lift) / 2));
+  box-shadow: var(--os-shadow-button-hover);
+}
+
+body .account-books__submit:active:not(:disabled),
+body .account-books__view-link:active,
+body .account-books__remove-btn--confirm:active,
+body .book-interests__remove:active,
+body .book-interests__add-btn:active,
+body .account-impact__cta:active,
+body .account-impact-card__button:active,
+body .account-callout__button--primary:active,
+body .account-callout__button--ghost:active,
+body .account-callout__lms-pill:active,
+body .account-check-in__button--primary:active,
+body .account-check-in__button--secondary:active,
+body .account-student-overview__submit:active,
+body .report-adoption__submit:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--os-shadow-button);
+}
+
+/* "Considering it" and its siblings are choices, not actions: tint, never lift */
+body .book-status__choice:hover,
+body .book-status__choice:active {
+  transform: none;
+  box-shadow: none;
+}
+
+/* LMS answers: a blue edge and light tint on hover, deeper tint while pressed */
+body .account-callout__lms-pill:hover {
+  border-color: var(--os-link);
+  background: var(--os-info-bg);
+}
+
+body .account-callout__lms-pill:active {
+  background: var(--os-info-border);
+}
+
+/* Cards that are links, or hold their own links, rise on hover (pointer devices only) */
+.account-support__card,
+.account-books__saved-card,
+.account-student-overview__book-card {
+  transition: box-shadow var(--os-dur) var(--os-ease-out),
+              border-color var(--os-dur) var(--os-ease-out),
+              transform var(--os-dur) var(--os-ease-out);
+}
+
+@media (hover: hover) {
+  .account-support__card:hover,
+  .account-books__saved-card:hover,
+  .account-student-overview__book-card:hover {
+    transform: translateY(var(--os-lift));
+    box-shadow: var(--os-shadow-card-hover);
+  }
+
+  .account-books__saved-card:hover,
+  .account-student-overview__book-card:hover {
+    border-color: var(--os-border-strong);
+  }
+}
+
+/* A trailing arrow leans into the click */
+.account-support__action .arrow,
+.account-support__more .arrow,
+.account-actions__cta .arrow {
+  display: inline-block;
+  transition: transform var(--os-dur) var(--os-ease-out);
+}
+
+@media (hover: hover) {
+  .account-support__card:hover .arrow,
+  .account-support__more a:hover .arrow,
+  .account-actions__cta:hover .arrow {
+    transform: translateX(3px);
+  }
+}
+
+/* Overview impact card: the progress meter fills once on load. Content is visible
+   at its value by default; the entrance only plays when motion is welcome. */
+.account-impact-card__meter {
+  height: 6px;
+  margin: -4px 0 16px;
+  max-width: 72ch;
+  border-radius: 3px;
+  background: #E5E5E5;
+  overflow: hidden;
+}
+
+.account-impact-card__meter-fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--os-green);
+  transform: scaleX(var(--meter-fill, 0));
+  transform-origin: left center;
+}
+
+@keyframes account-meter-fill {
+  from { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .account-impact-card__meter-fill {
+    animation: account-meter-fill 600ms var(--os-ease-out) 150ms backwards;
+  }
+}
+
+/* Email-entry controls: brief settle when a row expands (display flips none->grid,
+   so a keyframe fires on show; nothing is visibility-gated on the animation) */
+@keyframes account-controls-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Flash messages: settle in instead of popping */
+@keyframes account-flash-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .account-security__email-list .email-entry.is-open .email-entry__controls {
+    animation: account-controls-in var(--os-dur) var(--os-ease-out);
+  }
+
+  .errors .alert,
+  .errors .notice {
+    animation: account-flash-in 250ms var(--os-ease-out-quint);
+  }
+}

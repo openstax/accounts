@@ -38,6 +38,7 @@ module NewflowFormHelper
                    described: nil,
                    required: false,
                    list: nil,
+                   html_attrs: {},
                    maxlength: nil)
       return if excluded?(except: except, only: only)
 
@@ -65,7 +66,8 @@ module NewflowFormHelper
                       disabled: disabled,
                       'aria-required': required,
                       'aria-errormessage': errors_div.present? ? "errors-for-#{name}" : nil,
-                      'aria-invalid': errors_div.present? ? true : nil
+                      'aria-invalid': errors_div.present? ? true : nil,
+                      **html_attrs
         )
       else
         input = (
@@ -82,10 +84,11 @@ module NewflowFormHelper
                       onkeyup: onkeyup,
                       onkeydown: onkeydown,
                       disabled: disabled,
-                      'aria-described-by': described,
+                      'aria-describedby': described,
                       'aria-required': required,
                       'aria-errormessage': errors_div.present? ? "errors-for-#{name}" : nil,
-                      'aria-invalid': errors_div.present? ? true : nil
+                      'aria-invalid': errors_div.present? ? true : nil,
+                      **html_attrs
         )
       end
       "#{input}\n#{errors_div}".html_safe

@@ -37,7 +37,7 @@ nav.navbar.production {
   tr {
     &.even {
       td {
-        background-color: #eee;
+        background-color: #F5F5F5;
       }
     }
 
@@ -60,7 +60,7 @@ nav.navbar.production {
   }
 
   .user-search-item {
-    border: 1px solid #ccc;
+    border: 1px solid #E0E0E0;
     margin-bottom: 10px;
     padding: 0px;
   }
@@ -75,14 +75,14 @@ nav.navbar.production {
 #new-search-results-pagination {
   clear: both;
   margin: 20px 0;
-  color: #aaa;
+  color: #9A9A9B;
   .count {
     float: right;
   }
   .pages {
     float: right;
     .btn {
-      color: #aaa;
+      color: #9A9A9B;
       &.hover {
         color: black;
       }
@@ -101,8 +101,8 @@ nav.navbar.production {
   }
 
   .entry {
-    border: 1px solid #ddd;
-    background-color: #eee;
+    border: 1px solid #E0E0E0;
+    background-color: #F5F5F5;
     margin: 10px 0px;
     padding: 8px;
 

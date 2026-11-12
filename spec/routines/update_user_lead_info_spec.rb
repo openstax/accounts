@@ -3,11 +3,12 @@ require 'rails_helper'
 describe UpdateUserLeadInfo, type: :routine do
   include ActiveSupport::Testing::TimeHelpers
 
-  def create_sf_lead(uuid:, verification_status:, lead_id: 'SF_LEAD_001')
+  def create_sf_lead(uuid:, verification_status:, lead_id: 'SF_LEAD_001', subject_interest: nil)
     OpenStax::Salesforce::Remote::Lead.new(
       id: lead_id,
       accounts_uuid: uuid,
-      verification_status: verification_status
+      verification_status: verification_status,
+      subject_interest: subject_interest
     )
   end
 
@@ -268,4 +269,53 @@ describe UpdateUserLeadInfo, type: :routine do
       )
     end
   end
+  describe 'book interest (Subject_Interest__c)' do
+    def user_with(books, **attrs)
+      FactoryBot.create(:user, role: User::INSTRUCTOR_ROLE, faculty_status: User::INCOMPLETE_SIGNUP,
+                               which_books: books, **attrs)
+    end
+
+    def sync(user, subject_interest)
+      stub_salesforce_leads([create_sf_lead(uuid: user.uuid, verification_status: 'incomplete_signup',
+                                            subject_interest: subject_interest)])
+      described_class.call
+    end
+
+    it 'stores the normalized value in which_books' do
+      user = user_with(nil)
+
+      sync(user, 'Biology; College Physics;;Biology')
+
+      expect(user.reload.which_books).to eq('Biology;College Physics')
+    end
+
+    it 'does not overwrite a non-blank which_books with a blank Lead value' do
+      user = user_with('Biology')
+
+      sync(user, nil)
+
+      expect(user.reload.which_books).to eq('Biology')
+    end
+
+    it 'updates a non-blank which_books from a non-blank Lead value' do
+      user = user_with('Biology')
+
+      sync(user, 'Astronomy')
+
+      expect(user.reload.which_books).to eq('Astronomy')
+    end
+
+    it 'leaves which_books to the Contact sync once the user has a Contact' do
+      user = user_with('Biology', salesforce_contact_id: '003A')
+
+      sync(user, 'Astronomy')
+
+      expect(user.reload.which_books).to eq('Biology')
+    end
+
+    it 'asks Salesforce for the field' do
+      expect(described_class.new.lead_batch_query(since: 1.day.ago).to_s).to include('Subject_Interest__c')
+    end
+  end
+
 end

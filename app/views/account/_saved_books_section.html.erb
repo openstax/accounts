@@ -1,0 +1,41 @@
+<section class="account-student-overview__card" aria-label="Saved books">
+  <div class="account-shell__section-header account-shell__section-header--split">
+    <div>
+      <h2>Saved books</h2>
+      <p>Save a book to jump back in from any device — your notes and highlights come with it.</p>
+    </div>
+    <%= link_to 'Browse the library', account_books_path, class: 'account-overview__inline-link' %>
+  </div>
+
+  <% if @saved_books.any? %>
+    <ul class="account-student-overview__book-grid">
+      <% @saved_books.each do |saved_book| %>
+        <% book = saved_book.book %>
+        <% next unless book %>
+        <% book_link = book.html_url.presence || book.webview_rex_link %>
+        <li class="account-student-overview__book-card">
+          <div class="account-student-overview__book-cover <%= 'account-student-overview__book-cover--placeholder' unless book.cover_url.present? %>">
+            <% if book.cover_url.present? %>
+              <%= image_tag book.cover_url, alt: "#{book.title} cover" %>
+            <% else %>
+              OS
+            <% end %>
+          </div>
+          <div class="account-student-overview__book-body">
+            <p class="account-student-overview__book-title"><%= book.title %></p>
+            <div class="account-student-overview__book-actions">
+              <% if book_link.present? %>
+                <%= link_to 'Read online', book_link, target: '_blank', rel: 'noopener' %>
+              <% end %>
+              <%= link_to 'Manage', account_books_path %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="account-books__empty">
+      You haven't saved any books yet. <%= link_to 'Browse the library', account_books_path %> to add one.
+    </p>
+  <% end %>
+</section>

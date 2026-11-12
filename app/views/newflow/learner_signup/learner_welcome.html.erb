@@ -1,0 +1,79 @@
+<%
+    @page_title = 'Welcome'
+
+    # NOTE: the search box and subject links point at the general openstax.org
+    # catalog rather than fabricated deep-link slugs/params -- os-webview owns
+    # the actual search/subjects routes, so this should be revisited once
+    # those exact URLs are confirmed with that team.
+    greeting = @first_name.present? ? ", #{@first_name}" : ""
+%>
+
+<div class="learner-home">
+    <div class="learner-home__intro">
+        <div class="learner-home__eyebrow"><%= I18n.t(:"login_signup_form.learner_welcome_header") %></div>
+        <h1 class="learner-home__title">
+            <%= I18n.t(:"login_signup_form.learner_welcome_title", first_name: greeting) %>
+        </h1>
+        <p class="learner-home__subheader"><%= I18n.t(:"login_signup_form.learner_welcome_subheader") %></p>
+    </div>
+
+    <div class="learner-home__card">
+        <div class="learner-home__card-title"><%= I18n.t(:"login_signup_form.learner_find_something_title") %></div>
+        <p class="learner-home__card-desc"><%= I18n.t(:"login_signup_form.learner_find_something_subheader") %></p>
+
+        <%= form_tag('https://openstax.org/search', method: :get, class: 'learner-home__search-form') do %>
+            <%= text_field_tag :q, nil,
+                        class: 'learner-home__search',
+                        placeholder: I18n.t(:"login_signup_form.learner_search_placeholder") %>
+        <% end %>
+
+        <div class="learner-home__tags">
+            <% %w[Science Math].each do |subject| %>
+                <%= link_to subject, 'https://openstax.org/subjects', class: 'learner-home__tag' %>
+            <% end %>
+            <%= link_to 'Social sciences', 'https://openstax.org/subjects', class: 'learner-home__tag' %>
+            <%= link_to 'Humanities', 'https://openstax.org/subjects', class: 'learner-home__tag' %>
+            <%= link_to 'Business', 'https://openstax.org/subjects', class: 'learner-home__tag' %>
+        </div>
+    </div>
+
+    <div class="learner-home__popular">
+        <div class="learner-home__section-title"><%= I18n.t(:"login_signup_form.learner_popular_title") %></div>
+        <div class="learner-home__books">
+            <a href="https://openstax.org/details/books/astronomy-2e" class="learner-home__book learner-home__book--astronomy">
+                <div class="learner-home__book-cover"></div>
+                <div class="learner-home__book-title">Astronomy 2e</div>
+                <span class="learner-home__book-link"><%= I18n.t(:"login_signup_form.learner_start_reading") %></span>
+            </a>
+            <a href="https://openstax.org/details/books/psychology-2e" class="learner-home__book learner-home__book--psychology">
+                <div class="learner-home__book-cover"></div>
+                <div class="learner-home__book-title">Psychology 2e</div>
+                <span class="learner-home__book-link"><%= I18n.t(:"login_signup_form.learner_start_reading") %></span>
+            </a>
+            <a href="https://openstax.org/details/books/us-history" class="learner-home__book learner-home__book--history">
+                <div class="learner-home__book-cover"></div>
+                <div class="learner-home__book-title">U.S. History</div>
+                <span class="learner-home__book-link"><%= I18n.t(:"login_signup_form.learner_start_reading") %></span>
+            </a>
+        </div>
+    </div>
+
+    <div class="learner-home__glance">
+        <div class="learner-home__section-title"><%= I18n.t(:"login_signup_form.learner_account_glance_title") %></div>
+        <div class="learner-home__glance-grid">
+            <div>
+                <div class="learner-home__glance-item-title"><%= I18n.t(:"login_signup_form.learner_save_books_title") %></div>
+                <div class="learner-home__glance-item-desc"><%= I18n.t(:"login_signup_form.learner_save_books_desc") %></div>
+            </div>
+            <div>
+                <div class="learner-home__glance-item-title"><%= I18n.t(:"login_signup_form.learner_notes_highlights_title") %></div>
+                <div class="learner-home__glance-item-desc"><%= I18n.t(:"login_signup_form.learner_notes_highlights_desc") %></div>
+            </div>
+            <div>
+                <div class="learner-home__glance-item-title"><%= I18n.t(:"login_signup_form.learner_pick_up_anywhere_title") %></div>
+                <div class="learner-home__glance-item-desc"><%= I18n.t(:"login_signup_form.learner_pick_up_anywhere_desc") %></div>
+            </div>
+        </div>
+        <%= link_to I18n.t(:"login_signup_form.learner_go_to_account"), account_overview_path, class: 'learner-home__account-link' %>
+    </div>
+</div>

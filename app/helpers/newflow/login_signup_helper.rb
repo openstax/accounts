@@ -41,7 +41,10 @@ module Newflow
       url.query_values = url.query_values.merge(
         first_name: user.first_name,
         last_name: user.last_name,
-        email: user.email_addresses.first&.value
+        # Prefer a school-issued email (e.g. one just added via the
+        # school-email gate) over whatever email happens to be first,
+        # so SheerID is pre-filled with the address it can actually match.
+        email: user.best_email_address_for_salesforce
       )
       url.to_s
     end

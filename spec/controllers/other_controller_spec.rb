@@ -15,14 +15,9 @@ describe OtherController, type: :controller do
           user.update!(is_profile_complete: true)
         end
 
-          it 'renders 200 OK status' do
+        it 'redirects to account overview' do
           get(:profile_newflow)
-          expect(response.status).to eq(200)
-        end
-
-        it 'renders profile_newflow' do
-          get(:profile_newflow)
-          expect(response).to render_template(:profile_newflow)
+          expect(response).to redirect_to(account_overview_path)
         end
       end
 
@@ -32,6 +27,12 @@ describe OtherController, type: :controller do
         it 'redirects to step 3 — complete SheerID' do
           get(:profile_newflow)
           expect(response).to redirect_to(educator_sheerid_form_path)
+        end
+
+        it 'sends a lifelong learner to the account overview, never into the educator steps' do
+          user.update!(role: :self_learner)
+          get(:profile_newflow)
+          expect(response).to redirect_to(account_overview_path)
         end
       end
 
@@ -57,24 +58,9 @@ describe OtherController, type: :controller do
           )
         end
 
-        it 'renders the profile page instead of redirecting to step 4 again' do
+        it 'sends them to the account overview instead of to step 4 again' do
           get(:profile_newflow)
-          expect(response).to render_template(:profile_newflow)
-        end
-
-        it 'shows the profile-nudge banner and logs it once' do
-          get(:profile_newflow)
-          expect(assigns(:show_profile_nudge_banner)).to be(true)
-          expect(SecurityLog.where(user: user, event_type: :profile_nudge_banner_shown).count).to eq(1)
-
-          get(:profile_newflow)
-          expect(SecurityLog.where(user: user, event_type: :profile_nudge_banner_shown).count).to eq(1)
-        end
-
-        it 'does not show the banner once dismissed for the session' do
-          session[:profile_nudge_dismissed] = true
-          get(:profile_newflow)
-          expect(assigns(:show_profile_nudge_banner)).to be_falsey
+          expect(response).to redirect_to(account_overview_path)
         end
       end
     end
@@ -93,10 +79,10 @@ describe OtherController, type: :controller do
 
       before { mock_current_user(user) }
 
-      it 'sets the session flag and redirects back to the profile page' do
+      it 'sets the session flag and redirects back to the account overview' do
         post(:dismiss_profile_nudge)
         expect(session[:profile_nudge_dismissed]).to be(true)
-        expect(response).to redirect_to(profile_newflow_path)
+        expect(response).to redirect_to(account_overview_path)
       end
     end
 

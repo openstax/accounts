@@ -1,0 +1,15 @@
+<% content_for :head do %>
+  <%= javascript_include_tag "profile" %>
+<% end %>
+
+<div class="account-layout">
+  <%= render 'account/navigation' %>
+  <div class="account-layout__content">
+    <%= render(
+          'shared/account_layout_shell',
+          title: @account_shell_title
+        ) do %>
+      <%= render 'shared/account_security_section', account_shell: true %>
+    <% end %>
+  </div>
+</div>

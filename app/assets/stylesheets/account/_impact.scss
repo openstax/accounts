@@ -1,0 +1,125 @@
+// Impact tab, shared pieces: CTA, tables, empty state. rem is 10px here.
+
+.account-impact__cta {
+  @include set-font(body-regular);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 30px;
+  border: 0;
+  border-radius: var(--os-radius);
+  background: var(--os-primary);
+  box-shadow: var(--os-shadow-button);
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:visited,
+  &:focus {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  &:hover {
+    background: var(--os-primary-hover);
+    color: #fff;
+    text-decoration: none;
+  }
+
+  &:active {
+    background: var(--os-primary-active);
+  }
+}
+
+// A second ask on the same page; the page's main CTA keeps the only orange button.
+.account-impact__cta--secondary {
+  &,
+  &:visited,
+  &:focus {
+    background: var(--os-surface);
+    border: 1px solid var(--os-border);
+    color: var(--os-text);
+    font-weight: normal;
+  }
+
+  &:hover {
+    background: var(--os-hover-bg);
+    color: var(--os-text);
+  }
+
+  &:active {
+    background: var(--os-hover-bg);
+  }
+}
+
+.account-impact__microcopy {
+  @include set-font(helper-label);
+  margin: 0;
+  color: var(--os-text-helper);
+}
+
+.account-impact__section-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-impact__table-wrapper {
+  overflow-x: auto;
+
+  &:focus-visible {
+    outline: 2px solid transparent;
+    box-shadow: var(--os-focus-ring);
+  }
+}
+
+.account-impact__table {
+  @include set-font(helper-label);
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 320px;
+}
+
+.account-impact__table th,
+.account-impact__table td {
+  text-align: left;
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--os-border);
+  color: var(--os-text);
+  vertical-align: top;
+}
+
+.account-impact__table th {
+  font-weight: bold;
+  background: transparent;
+}
+
+.account-impact__table td:first-child {
+  font-weight: bold;
+}
+
+.account-impact__table td a {
+  color: var(--os-link);
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--os-link-hover);
+  }
+}
+
+.account-impact__empty {
+  padding: 24px 0;
+
+  h3 {
+    @include set-font(h4);
+    margin: 0 0 8px;
+    color: var(--os-text);
+  }
+
+  p {
+    @include set-font(body-regular);
+    margin: 0;
+    color: var(--os-text-helper);
+  }
+}

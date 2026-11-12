@@ -1,0 +1,671 @@
+// Books tab. rem is 10px here, so sizes come from the pattern-library scale.
+// The keyframes used below (accountBooks*) live in _shell.scss.
+
+.account-chip {
+  @include set-font(helper-label);
+  display: inline-block;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--os-info-bg);
+  color: var(--os-text);
+}
+
+.account-chip--success {
+  background: var(--os-success-bg);
+  color: var(--os-success-text);
+}
+
+.account-books {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.account-books__note,
+.account-books__empty,
+.account-books__search-empty {
+  @include set-font(body-regular);
+  color: var(--os-text-helper);
+  margin: 0;
+}
+
+.account-books__note {
+  margin-top: 16px;
+}
+
+.account-books__note a {
+  color: var(--os-link);
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.account-books__note a:hover {
+  color: var(--os-link-hover);
+}
+
+// ---- Saved books: a grid that fills the card ----------------------------
+// The catalog's card art is a square detail crop of the cover (400x400 SVG), so the
+// cover shows whole at its own ratio as a thumbnail; the card reads as a row.
+
+.account-books__saved-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  position: relative;
+
+  @include width-up-to($phone-max) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.account-books__saved-card {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  column-gap: 16px;
+  min-width: 0;
+  padding: 16px;
+  background: var(--os-surface);
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius);
+}
+
+.account-books__saved-media {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: start;
+}
+
+.account-books__saved-cover-wrap {
+  background: var(--os-page-bg);
+  width: 100%;
+}
+
+.account-books__saved-cover-link {
+  display: block;
+  text-decoration: none;
+}
+
+.account-books__cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: var(--os-page-bg);
+}
+
+.account-books__cover--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  font-weight: bold;
+  color: var(--os-text-helper);
+}
+
+.account-books__saved-body {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.account-books__saved-title {
+  @include set-font(h4);
+  margin: 0;
+  color: var(--os-text);
+  overflow-wrap: anywhere;
+}
+
+.account-books__saved-title--link {
+  color: var(--os-link);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--os-link-hover);
+    text-decoration: underline;
+  }
+}
+
+.account-books__saved-actions {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 12px;
+}
+
+// ---- Buttons -------------------------------------------------------------
+
+.account-books__view-link,
+.account-books__remove-btn--confirm,
+.account-books__submit {
+  @include set-font(body-regular);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 20px;
+  border-radius: var(--os-radius);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.account-books__view-link {
+  background: var(--os-surface);
+  border: 1px solid var(--os-border);
+  color: var(--os-text);
+  font-weight: normal;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--os-hover-bg);
+    color: var(--os-text);
+    text-decoration: none;
+  }
+}
+
+.account-books__saved-actions .account-books__view-link {
+  min-height: 36px;
+  padding: 0 16px;
+}
+
+.account-books__remove-btn--confirm,
+.account-books__submit {
+  background: var(--os-primary);
+  border: 0;
+  color: #fff;
+  font-weight: bold;
+  box-shadow: var(--os-shadow-button);
+
+  &:hover {
+    background: var(--os-primary-hover);
+    color: #fff;
+  }
+
+  &:active {
+    background: var(--os-primary-active);
+  }
+}
+
+.account-books__remove-btn--confirm {
+  min-height: 36px;
+}
+
+.account-books__submit--disabled,
+.account-books__submit:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.account-books__remove-actions {
+  display: flex;
+  justify-content: flex-start;
+
+  form {
+    margin: 0;
+  }
+}
+
+.account-books__remove-btn--prompt {
+  @include set-font(helper-label);
+  min-height: 36px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--os-link);
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--os-link-hover);
+    background: transparent;
+  }
+}
+
+.account-books .account-books__remove-actions input[type="submit"] {
+  display: none;
+  min-height: 36px;
+  margin: 0;
+  padding: 0 20px;
+  line-height: normal;
+  background: var(--os-primary);
+  color: #fff;
+}
+
+.account-books .account-books__saved-card[data-confirm-state="prompt"] {
+  .account-books__remove-btn--prompt {
+    display: none;
+  }
+
+  .account-books__remove-actions input[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+// ---- Catalog search ------------------------------------------------------
+
+.account-books__search-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.account-books__search-input label {
+  @include set-font(body-regular);
+  display: block;
+  font-weight: bold;
+  color: var(--os-text);
+  margin-bottom: 4px;
+}
+
+.account-books .account-books__search-input input {
+  @include set-font(body-regular);
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  margin: 0;
+  padding: 0 15px;
+  border: 1px solid var(--os-border);
+  border-radius: 0;
+  background: var(--os-surface);
+  box-shadow: none;
+  color: var(--os-text);
+
+  &:hover {
+    border-color: var(--os-border-strong);
+  }
+
+  &:focus {
+    border-color: var(--os-focus-border);
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+}
+
+.account-books__search-results {
+  display: flex;
+  flex-direction: column;
+  max-height: 440px;
+  overflow-y: auto;
+  border-top: 1px solid var(--os-border);
+}
+
+.account-books__search-result {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--os-border);
+
+  .account-books__saved-title {
+    @include set-font(body-regular);
+    font-weight: bold;
+    overflow-wrap: break-word;
+  }
+
+  .account-books__cover {
+    width: 60px;
+    flex: none;
+  }
+}
+
+@include width-up-to($phone-max) {
+  .account-books__search-result {
+    flex-wrap: wrap;
+  }
+
+  .account-books__search-result .account-books__saved-meta {
+    flex-basis: 100%;
+  }
+}
+
+.account-books__search-result--saving {
+  animation: accountBooksSearchSlide 0.85s forwards;
+  pointer-events: none;
+}
+
+.account-books__saved-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.account-books__badge {
+  @include set-font(helper-label);
+  display: inline-block;
+  color: var(--os-text-helper);
+}
+
+.account-books__quick-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  margin: 0;
+}
+
+.account-books__quick-add {
+  position: relative;
+}
+
+.account-books__quick-add .account-books__submit--status {
+  @include set-font(helper-label);
+  position: absolute;
+  right: 0;
+  white-space: nowrap;
+  color: var(--os-success-text);
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.account-books__quick-add--status-visible .account-books__submit--status {
+  opacity: 1;
+}
+
+.account-books__quick-add--status-visible button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-books__saved-card--removing,
+  .account-books__search-result--saving {
+    animation-duration: 0.01ms;
+  }
+}
+
+.account-books__report-action {
+  @include set-font(helper-label);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--os-link);
+  font-weight: 700;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+  border-radius: 2px;
+
+  &:hover {
+    color: var(--os-link-hover);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+}
+
+// ---- Where I am with a saved book (this school year) ---------------------
+
+.book-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.book-status__group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.book-status__legend {
+  @include set-font(helper-label);
+  float: none;
+  width: auto;
+  padding: 0;
+  margin: 0 0 4px;
+  font-weight: bold;
+  color: var(--os-text-helper);
+}
+
+.book-status__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+// button_to renders a form per choice; the global form box rules must not size it.
+.account-books .book-status__choices .book-status__form {
+  display: block;
+  flex: 1 1 auto;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.account-books .book-status__choices > .book-status__choice {
+  flex: 1 1 auto;
+}
+
+// The picked answer is tinted, outlined and carries a check.
+.account-books .book-status__choice {
+  @include set-font(helper-label);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 36px;
+  margin: 0;
+  padding: 4px 12px;
+  background: var(--os-surface);
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius);
+  box-shadow: none;
+  color: var(--os-text);
+  font-weight: normal;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--os-hover-bg);
+    border-color: var(--os-border-strong);
+  }
+
+  &[aria-pressed="true"] {
+    background: var(--os-info-bg);
+    border-color: var(--os-text);
+    font-weight: bold;
+
+    &::before {
+      content: "\2713";
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+
+  @include width-up-to($phone-max) {
+    min-height: 44px;
+    padding: 4px 12px;
+  }
+}
+
+.book-status__change {
+  width: 100%;
+
+  summary {
+    @include set-font(helper-label);
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    color: var(--os-link);
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+    border-radius: 2px;
+
+    @include width-up-to($phone-max) {
+      min-height: 44px;
+    }
+
+    &:focus-visible {
+      box-shadow: var(--os-focus-ring);
+      outline: 2px solid transparent;
+    }
+  }
+
+  .book-status__group {
+    margin-top: 4px;
+  }
+}
+
+// ---- Books you're interested in ------------------------------------------
+
+.book-interests__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--os-border);
+}
+
+.book-interests__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--os-border);
+}
+
+.book-interests__title {
+  @include set-font(body-regular);
+  color: var(--os-text);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.book-interests__item form.book-interests__form {
+  flex: none;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.book-interests__remove,
+.book-interests__add-btn {
+  @include set-font(body-regular);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin: 0;
+  padding: 0 20px;
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius);
+  background: var(--os-surface);
+  color: var(--os-text);
+  font-weight: normal;
+  line-height: normal;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--os-hover-bg);
+  }
+
+  &:focus-visible {
+    border-color: var(--os-focus-border);
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+
+  @include width-up-to($phone-max) {
+    min-height: 44px;
+  }
+}
+
+.book-interests .book-interests__add {
+  width: auto;
+  margin: 24px 0 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+
+  label {
+    @include set-font(body-regular);
+    display: block;
+    font-weight: bold;
+    color: var(--os-text);
+    margin-bottom: 4px;
+  }
+}
+
+// Global form rules (margin-top on buttons, 50px selects) outrank a single class.
+.book-interests .book-interests__add .book-interests__add-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+
+  .book-interests__select {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 40rem;
+  }
+
+  select {
+    @include set-font(body-regular);
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    padding: 0 15px;
+    border: 1px solid var(--os-border);
+    border-radius: 0;
+    background: var(--os-surface);
+    color: var(--os-text);
+
+    &:focus {
+      border-color: var(--os-focus-border);
+      box-shadow: var(--os-focus-ring);
+      outline: 2px solid transparent;
+    }
+  }
+
+  @include width-up-to($phone-max) {
+    flex-direction: column;
+    align-items: stretch;
+
+    .book-interests__select {
+      max-width: none;
+    }
+
+    select {
+      height: 44px;
+    }
+  }
+}

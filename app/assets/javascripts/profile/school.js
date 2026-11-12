@@ -69,7 +69,7 @@
       el.editable({
         value: attribs,
         success: function(response) {
-          $(this).find('.text-content')
+          $(this).closest('.account-profile__value--editable').find('.account-profile__text')
             .text(response.self_reported_school || OX.Profile.School.blankPrompt);
         }
       });

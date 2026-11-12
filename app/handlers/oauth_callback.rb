@@ -173,11 +173,23 @@ class OauthCallback
   end
 
   def create_student_user_instance
-    user = User.new(state: 'unverified', role: User::STUDENT_ROLE, is_newflow: true)
+    user = User.new(state: 'unverified', role: signup_role, is_newflow: true)
     user.full_name = oauth_data.name
 
     transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
     user
+  end
+
+  # The role a brand-new social signup should get. Defaults to student, the
+  # historical behavior for every "Continue with Google/Facebook" button in the
+  # app. The lifelong-learner signup screen is the one place that opts into a
+  # different role: it appends ?role=self_learner to the request-phase URL,
+  # which OmniAuth stashes in the session and hands back here as
+  # `omniauth.params` (see the `add` param usage in SessionsCreate for the same
+  # pattern already in use elsewhere in this codebase).
+  def signup_role
+    requested_role = request.env['omniauth.params'].try(:[], 'role')
+    requested_role == 'self_learner' ? User::SELF_LEARNER_ROLE : User::STUDENT_ROLE
   end
 
   def create_authentication(user, oauth_provider)

@@ -86,6 +86,30 @@ module Settings
         Settings::Db.store.push_incomplete_signup_leads_enabled = bool
       end
 
+      def push_adoption_reports_enabled
+        Settings::Db.store.push_adoption_reports_enabled
+      end
+
+      def push_adoption_reports_enabled=(bool)
+        Settings::Db.store.push_adoption_reports_enabled = bool
+      end
+
+      def adoption_review_student_threshold
+        Settings::Db.store.adoption_review_student_threshold
+      end
+
+      def adoption_review_student_threshold=(count)
+        Settings::Db.store.adoption_review_student_threshold = count
+      end
+
+      def push_book_interest_enabled
+        Settings::Db.store.push_book_interest_enabled
+      end
+
+      def push_book_interest_enabled=(bool)
+        Settings::Db.store.push_book_interest_enabled = bool
+      end
+
     end
 
   end

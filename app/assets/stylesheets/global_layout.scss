@@ -1,0 +1,19 @@
+// Shared by the application and newflow layouts: site chrome plus every
+// /i/account page. One partial per surface; order matters only for the last
+// one, whose focus ring and motion rules must win over the surfaces above.
+
+// The Fonts.com licence counts page views of the self-hosted Neue Helvetica
+// faces (account/base); openstax.org and the newflow bundle load the same file.
+@import url("https://fast.fonts.net/t/1.css?apiType=css&projectid=437b6557-ce99-4f35-97ff-64a93247731f");
+
+@import "account/tokens";
+@import "account/base";
+@import "account/controls";
+@import "account/chrome";
+@import "account/shell";
+@import "account/overview";
+@import "account/books";
+@import "account/impact";
+@import "account/profile_security";
+@import "account/support";
+@import "account/interaction";

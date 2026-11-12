@@ -92,7 +92,8 @@ class UpdateUserContactInfo
 
   def contact_batch_query(since:, after_id: nil)
     query = OpenStax::Salesforce::Remote::Contact
-            .select(:id, :email, :faculty_verified, :school_type, :adoption_status, :accounts_uuid)
+            .select(:id, :email, :faculty_verified, :school_type, :adoption_status, :accounts_uuid,
+                    :subject_interest)
             .where('Accounts_UUID__c != null')
             .where("LastModifiedDate >= #{since.utc.iso8601}")
     query = query.where('Id > ?', after_id) if after_id.present?
@@ -146,6 +147,7 @@ class UpdateUserContactInfo
     update_salesforce_contact_id!(user, sf_contact)
     fv_status_changed = update_faculty_status!(user, sf_contact)
     without_cached_school = update_school_info!(user, sf_contact, schools_by_salesforce_id)
+    update_book_interest!(user, sf_contact)
 
     updated = false
     updated = user.save! if user.changed?
@@ -202,6 +204,15 @@ class UpdateUserContactInfo
 
     raise UnknownFacultyVerifiedError,
           "Unknown faculty_verified field: '#{faculty_verified}' on contact #{sf_contact.id}"
+  end
+
+  # which_books mirrors Salesforce, except that a blank value never clears it: Contacts made
+  # before the signup answers reached Salesforce would otherwise wipe them, and a blank list
+  # brings back the profile nudge (User#profile_needs_enrichment?). Clearing the last book
+  # from the Books tab goes through PushBookInterest, which writes the result directly.
+  def update_book_interest!(user, sf_contact)
+    books = BookInterest.join(sf_contact.subject_interest)
+    user.which_books = books if books.present?
   end
 
   def update_school_info!(user, sf_contact, schools_by_salesforce_id)

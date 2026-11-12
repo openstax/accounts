@@ -1,0 +1,45 @@
+<section class="account-term-books" id="overview-books" aria-labelledby="overview-books-heading">
+  <h2 id="overview-books-heading" class="account-term-books__heading"><%= t('overview_books.heading') %></h2>
+
+  <% if books.any? %>
+    <ul class="account-term-books__list">
+      <% books.each do |entry| %>
+        <% book = entry[:book] %>
+        <% book_link = book.html_url.presence || book.webview_rex_link %>
+        <li class="account-term-books__item">
+          <% if book.cover_url.present? %>
+            <%= image_tag book.cover_url, alt: '', width: 48, height: 48, loading: 'lazy',
+                          class: 'account-term-books__cover' %>
+          <% else %>
+            <span class="account-term-books__cover account-term-books__cover--placeholder" aria-hidden="true">OS</span>
+          <% end %>
+          <div class="account-term-books__body">
+            <% if book_link.present? %>
+              <%= link_to book.title, book_link, target: '_blank', rel: 'noopener',
+                          class: 'account-term-books__title' %>
+            <% else %>
+              <span class="account-term-books__title"><%= book.title %></span>
+            <% end %>
+            <% case entry[:answer] %>
+            <% when 'reported' %>
+              <span class="account-chip account-chip--success"><%= t('overview_books.reported', school_year: school_year) %></span>
+            <% when 'considering', 'browsing', 'not_using' %>
+              <span class="account-chip"><%= t("book_status.#{entry[:answer]}") %></span>
+            <% else %>
+              <%= link_to account_books_path, class: 'account-term-books__ask' do %><%= t('overview_books.no_answer') %><span class="sr-only"> <%= t('overview_books.no_answer_for', title: book.title) %></span><% end %>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+    <p class="account-term-books__footer">
+      <%= link_to (total > books.size ? t('overview_books.see_all', count: total) : t('overview_books.manage')),
+                  account_books_path, class: 'account-term-books__more' %>
+    </p>
+  <% else %>
+    <p class="account-term-books__empty">
+      <%= t('overview_books.empty') %>
+      <%= link_to t('overview_books.empty_link'), account_books_path, class: 'account-term-books__more' %>
+    </p>
+  <% end %>
+</section>

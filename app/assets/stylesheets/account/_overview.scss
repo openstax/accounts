@@ -1,0 +1,1144 @@
+// Account overview (instructor, staff, student, learner) and the annual
+// check-in card. Type, colour and component values follow the contract in
+// _tokens.scss; rem is 10px, so everything here is written in px.
+
+@mixin os-button($variant: primary, $height: 40px) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: $height;
+  padding: 0 30px;
+  border-radius: var(--os-radius);
+  box-shadow: var(--os-shadow-button);
+  font-size: 16px;
+  line-height: 25px;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 150ms var(--os-ease-out), border-color 150ms var(--os-ease-out);
+
+  @if $variant == primary {
+    background: var(--os-primary);
+    border: 0;
+    color: #fff;
+    font-weight: 700;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--os-primary-hover);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    &:active {
+      background: var(--os-primary-active);
+    }
+  } @else {
+    background: var(--os-surface);
+    border: 1px solid var(--os-border);
+    color: var(--os-text);
+    font-weight: 400;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--os-hover-bg);
+      color: var(--os-text);
+      text-decoration: none;
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+}
+
+@mixin os-field($height: 40px) {
+  box-sizing: border-box;
+  height: $height;
+  padding: 0 15px;
+  border: 1px solid var(--os-border);
+  border-radius: 0;
+  background: var(--os-surface);
+  color: var(--os-text);
+  font-size: 16px;
+  line-height: 25px;
+
+  &:focus {
+    border-color: var(--os-focus-border);
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+}
+
+@mixin os-text-action {
+  color: var(--os-link);
+  font-weight: 700;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--os-link-hover);
+    text-decoration: underline;
+  }
+}
+
+.account-overview__header {
+  margin: 0;
+}
+
+.account-layout .account-overview__title {
+  margin: 0 0 10px;
+}
+
+.account-overview__subtitle {
+  margin: 12px 0 0;
+  max-width: 72ch;
+  color: var(--os-text);
+  @include set-font(body-regular);
+}
+
+.account-overview__inline-link {
+  @include os-text-action;
+  margin-left: 6px;
+}
+
+.account-shell__section-header--split .account-overview__inline-link {
+  margin-left: 0;
+}
+
+.account-shell__body.account-overview {
+  gap: 0;
+}
+
+.account-overview__section + .account-overview__section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--os-border);
+}
+
+/* Role / school / status as a definition list */
+.account-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px 24px;
+  margin: 0;
+}
+
+.account-facts__item {
+  min-width: 0;
+  margin: 0;
+}
+
+.account-facts dt {
+  margin: 0 0 2px;
+  color: var(--os-text-helper);
+  @include set-font(helper-label);
+  font-weight: 400;
+}
+
+.account-facts dd {
+  margin: 0;
+  color: var(--os-text);
+  @include set-font(body-regular);
+  font-weight: 700;
+  letter-spacing: normal;
+  overflow-wrap: anywhere;
+}
+
+.account-facts dd a {
+  font-weight: 400;
+}
+
+/* Quick actions: a divided list, so no row is ever orphaned */
+.account-actions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.account-actions__item {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--os-border);
+}
+
+.account-actions__item:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.account-actions__icon {
+  font-size: 22px;
+  text-align: center;
+  color: var(--os-link);
+}
+
+.account-layout .account-actions__text h3 {
+  margin: 0 0 2px;
+}
+
+.account-actions__text p {
+  margin: 0;
+  color: var(--os-text-helper);
+  @include set-font(helper-label);
+}
+
+.account-actions__cta {
+  @include os-text-action;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 2px;
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+}
+
+@include width-up-to($os-phone-max) {
+  .account-actions__item {
+    grid-template-columns: 32px minmax(0, 1fr);
+    row-gap: 8px;
+  }
+
+  .account-actions__cta {
+    grid-column: 2;
+    justify-self: start;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* Profile completeness: a strip above Quick actions, only while incomplete */
+.account-profile-strip {
+  margin: 0 0 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--os-border);
+}
+
+.account-profile-strip__title {
+  margin: 0 0 8px;
+  color: var(--os-text);
+  @include set-font(h4);
+}
+
+.account-profile-strip__bar {
+  height: 8px;
+  margin-bottom: 12px;
+  background: var(--os-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.account-profile-strip__bar-fill {
+  height: 100%;
+  background: var(--os-green);
+  border-radius: 999px;
+}
+
+.account-profile-strip__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  @include set-font(helper-label);
+  color: var(--os-text-helper);
+}
+
+.account-profile-strip__link {
+  @include os-text-action;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 2px;
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+
+  @include width-up-to($os-phone-max) {
+    min-height: 44px;
+  }
+}
+
+/* Overview "Your books this term" card */
+.account-term-books {
+  margin-top: 24px;
+  padding: 24px;
+  background: var(--os-surface);
+  border-radius: var(--os-radius);
+  box-shadow: var(--os-shadow-card);
+  color: var(--os-text);
+
+  @include width-up-to($os-phone-max) {
+    padding: 16px;
+  }
+}
+
+.account-layout .account-term-books__heading {
+  @include scale-set-font(h4, h3);
+  margin: 0 0 8px;
+}
+
+.account-term-books__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.account-term-books__item {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--os-border);
+
+  &:first-child {
+    border-top: 0;
+  }
+}
+
+.account-term-books__cover {
+  display: block;
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.account-term-books__cover--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--os-info-bg);
+  color: var(--os-text);
+  font-weight: 700;
+  @include set-font(helper-label);
+}
+
+.account-term-books__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  min-width: 0;
+}
+
+.account-term-books__title {
+  @include os-text-action;
+  flex: 1 1 14rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.account-term-books__ask,
+.account-term-books__more {
+  @include os-text-action;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 2px;
+  @include set-font(helper-label);
+  font-weight: 700;
+
+  &:focus-visible {
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+
+  @include width-up-to($os-phone-max) {
+    min-height: 44px;
+  }
+}
+
+span.account-term-books__title {
+  color: var(--os-text);
+  text-decoration: none;
+}
+
+.account-term-books__more {
+  @include set-font(body-regular);
+  font-weight: 700;
+}
+
+.account-term-books__footer {
+  margin: 8px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--os-border);
+}
+
+.account-term-books__empty {
+  margin: 0;
+  @include set-font(body-regular);
+  color: var(--os-text-helper);
+}
+
+.account-term-books__title:focus-visible {
+  box-shadow: var(--os-focus-ring);
+  outline: 2px solid transparent;
+}
+
+/* Status badges under the greeting */
+.account-overview__badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.account-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  background: var(--os-info-bg);
+  color: var(--os-text);
+}
+
+.account-badge--verified {
+  background: var(--os-success-bg);
+  color: var(--os-success-text);
+}
+
+.account-badge--pending,
+.account-badge--info,
+.account-badge--school {
+  background: var(--os-info-bg);
+  color: var(--os-text);
+}
+
+.account-callout__link {
+  @include os-text-action;
+}
+
+/* Callouts: info style, flat */
+.account-callout {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px 24px;
+  align-items: start;
+  padding: 24px;
+  background: var(--os-info-bg);
+  border: 1px solid var(--os-info-border);
+  border-radius: var(--os-radius);
+  color: var(--os-text);
+
+  @include width-up-to($os-phone-max) {
+    padding: 16px;
+  }
+}
+
+.account-callout__text {
+  min-width: 0;
+}
+
+.account-callout__eyebrow,
+.account-check-in__eyebrow {
+  margin: 0 0 4px;
+  color: var(--os-gray);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-layout .account-callout__title {
+  margin: 0 0 8px;
+  @include set-font(h4);
+}
+
+.account-callout__text p {
+  margin: 0 0 8px;
+  color: var(--os-text);
+  @include set-font(body-regular);
+}
+
+.account-callout__text p:last-child {
+  margin-bottom: 0;
+}
+
+.account-callout__text .account-callout__eyebrow {
+  margin-bottom: 4px;
+  color: var(--os-gray);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-callout__actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  position: relative;
+}
+
+.account-callout__button {
+  @include os-button(secondary);
+  min-width: 0;
+}
+
+.account-shell .account-callout__button--primary,
+.account-callout__button--primary {
+  @include os-button(primary);
+}
+
+.account-callout__button--ghost {
+  @include os-button(secondary);
+}
+
+.account-callout__dismiss {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--os-radius);
+  background: transparent;
+  color: var(--os-text);
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.account-callout__dismiss:hover {
+  background: var(--os-hover-bg);
+}
+
+.account-callout--assignable {
+  padding-right: 56px;
+}
+
+.account-callout__button-form,
+.account-callout__lms-dismiss-form,
+.account-callout__lms-pill-form {
+  margin: 0;
+}
+
+.account-callout--lms {
+  display: block;
+}
+
+.account-callout__lms-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.account-callout__lms-dismiss {
+  @include os-text-action;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 16px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.account-callout__lms-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.account-callout__lms-pill {
+  @include os-button(secondary);
+  padding: 0 20px;
+}
+
+.account-callout--lms-confirmed {
+  display: block;
+  background: var(--os-success-bg);
+  border-color: var(--os-success-bg);
+  color: var(--os-success-text);
+
+  p {
+    margin: 0;
+    color: var(--os-success-text);
+    @include set-font(body-regular);
+  }
+}
+
+@include width-up-to(900px) {
+  .account-callout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Annual check-in: one card, books are groups divided by hairlines */
+.account-callout--check-in {
+  display: block;
+  background: var(--os-surface);
+  border: 0;
+  box-shadow: var(--os-shadow-card);
+}
+
+.account-layout .account-check-in__heading {
+  @include scale-set-font(h4, h3);
+  margin: 0 0 8px;
+}
+
+.account-check-in__body {
+  margin: 0 0 16px;
+  color: var(--os-text);
+  @include set-font(body-regular);
+}
+
+.account-check-in__streak {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--os-border);
+}
+
+.account-check-in__streak-circles {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.account-check-in__streak-circle {
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+}
+
+.account-check-in__streak-circle--done {
+  background: var(--os-text);
+  color: #fff;
+}
+
+.account-check-in__streak-circle--pending {
+  border: 1px dashed var(--os-text-helper);
+  color: var(--os-text-helper);
+}
+
+.account-check-in__streak-message {
+  margin: 0;
+  color: var(--os-text);
+  @include set-font(body-regular);
+}
+
+.account-check-in__row {
+  min-width: 0;
+  margin: 0;
+  padding: 16px 0;
+  border: 0;
+  border-top: 1px solid var(--os-border);
+  background: none;
+}
+
+.account-check-in__row:first-of-type {
+  border-top: 0;
+}
+
+.account-check-in__streak + form .account-check-in__row:first-of-type {
+  border-top: 0;
+}
+
+.account-check-in__book {
+  float: left;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 0;
+  border: 0;
+  color: var(--os-text);
+  @include set-font(h4);
+}
+
+.account-check-in__choices,
+.account-check-in__details {
+  clear: both;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+
+.account-check-in__choices {
+  margin-bottom: 12px;
+}
+
+.account-check-in__details {
+  gap: 16px 24px;
+}
+
+.account-check-in__choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  margin: 0;
+  color: var(--os-text);
+  font-size: 16px;
+  line-height: 25px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.account-check-in__choice input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--os-link);
+}
+
+.account-check-in__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.account-check-in__field--grow {
+  flex: 1 1 280px;
+}
+
+.account-check-in__field label {
+  margin: 0;
+  color: var(--os-text);
+  font-size: 16px;
+  line-height: 25px;
+  font-weight: 700;
+}
+
+.account-check-in__hint {
+  color: var(--os-text-helper);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.account-check-in__field input[type="number"],
+.account-check-in__field select {
+  @include os-field(40px);
+}
+
+.account-check-in__field input[type="number"] {
+  width: 120px;
+}
+
+.account-check-in__field select {
+  width: 100%;
+}
+
+.account-check-in__school {
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--os-border);
+  color: var(--os-text);
+  @include set-font(body-regular);
+}
+
+.account-check-in__school-label {
+  color: var(--os-text-helper);
+}
+
+.account-check-in__link {
+  @include os-text-action;
+}
+
+.account-check-in__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.account-check-in__button--primary {
+  @include os-button(primary);
+}
+
+.account-check-in__button--secondary {
+  @include os-button(secondary);
+}
+
+@include width-up-to($os-phone-max) {
+  .account-check-in__actions {
+    flex-direction: column;
+  }
+
+  .account-check-in__button--primary,
+  .account-check-in__button--secondary {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .account-check-in__field input[type="number"] {
+    width: 100%;
+  }
+
+  .account-check-in__streak {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* Student and learner overview */
+.account-shell__body.account-student-overview {
+  gap: 0;
+}
+
+.account-student-overview > section + section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--os-border);
+}
+
+.account-badge--student {
+  background: var(--os-info-bg);
+  color: var(--os-text);
+}
+
+.account-student-overview__book-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.account-student-overview__book-card {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius);
+}
+
+.account-student-overview__book-cover {
+  width: 72px;
+  background: var(--os-page-bg);
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+.account-student-overview__book-cover--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  font-weight: bold;
+  color: var(--os-text-helper);
+}
+
+.account-student-overview__book-body {
+  min-width: 0;
+}
+
+.account-student-overview__book-title {
+  margin: 0 0 8px;
+  color: var(--os-text);
+  @include set-font(body-regular);
+  font-weight: 700;
+  letter-spacing: normal;
+  overflow-wrap: anywhere;
+}
+
+.account-student-overview__book-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  @include set-font(helper-label);
+
+  a {
+    @include os-text-action;
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+  }
+}
+
+.account-student-overview__optional {
+  color: var(--os-text-helper);
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+.account-student-overview__connect > p,
+.account-student-overview__not-listed-panel > p {
+  margin: 0 0 16px;
+  color: var(--os-text);
+  @include set-font(body-regular);
+}
+
+.account-student-overview__autocomplete {
+  position: relative;
+  max-width: 400px;
+
+  label {
+    display: block;
+    margin: 0 0 4px;
+    color: var(--os-text);
+    font-size: 16px;
+    line-height: 25px;
+    font-weight: 700;
+  }
+}
+
+.account-layout .account-shell .account-student-overview__autocomplete input[type="text"],
+.account-layout .account-shell .account-student-overview__field input[type="text"],
+.account-layout .account-shell .account-student-overview__field input[type="email"],
+.account-layout .account-shell .account-student-overview__field select {
+  @include os-field(40px);
+  width: 100%;
+  max-width: none;
+}
+
+.account-student-overview__autocomplete-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--os-surface);
+  border: 1px solid var(--os-border);
+  border-radius: 0;
+  box-shadow: var(--os-shadow-card);
+  overflow: hidden;
+}
+
+.account-student-overview__autocomplete-results li {
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--os-border);
+  cursor: pointer;
+}
+
+.account-student-overview__autocomplete-results li:last-child {
+  border-bottom: none;
+}
+
+.account-student-overview__autocomplete-results li.active,
+.account-student-overview__autocomplete-results li:hover {
+  background: var(--os-hover-bg);
+}
+
+.account-student-overview__autocomplete-school {
+  color: var(--os-text-helper);
+}
+
+.account-student-overview__autocomplete-not-listed {
+  font-weight: 700;
+  color: var(--os-link);
+}
+
+.account-student-overview__connect-status {
+  min-height: 20px;
+  margin: 8px 0 0;
+  color: var(--os-success-text);
+  @include set-font(helper-label);
+}
+
+.account-student-overview__connections {
+  margin-top: 16px;
+}
+
+.account-student-overview__connections-label {
+  margin: 0 0 4px;
+  color: var(--os-text);
+  font-weight: 700;
+}
+
+.account-student-overview__connections ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account-student-overview__unverified-chip {
+  margin-left: 8px;
+}
+
+.account-student-overview__not-listed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  max-width: 640px;
+}
+
+.account-student-overview__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.account-student-overview__field label {
+  margin: 0;
+  color: var(--os-text);
+  font-size: 16px;
+  line-height: 25px;
+  font-weight: 700;
+}
+
+.account-student-overview__field label span {
+  font-weight: 400;
+  color: var(--os-text-helper);
+}
+
+.account-student-overview__submit {
+  @include os-button(primary);
+  margin-top: 16px;
+}
+
+@include width-up-to($os-phone-max) {
+  .account-student-overview__submit {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+// profile_security's card-link rules recolour anchors inside the shell card.
+.account-layout .account-shell__body a.account-actions__cta,
+.account-layout .account-shell__body .account-facts dd a,
+.account-layout .account-shell__body a.account-profile-strip__link {
+  color: var(--os-link);
+}
+
+.account-layout .account-shell__body a.account-actions__cta:hover,
+.account-layout .account-shell__body a.account-profile-strip__link:hover {
+  color: var(--os-link-hover);
+}
+
+/* Overview "Your impact" card */
+.account-impact-card {
+  margin-top: 24px;
+  padding: 24px;
+  background: var(--os-surface);
+  border-radius: var(--os-radius);
+  box-shadow: var(--os-shadow-card);
+  color: var(--os-text);
+
+  @include width-up-to($os-phone-max) {
+    padding: 16px;
+  }
+}
+
+.account-layout .account-impact-card__heading {
+  @include scale-set-font(h4, h3);
+  margin: 0 0 12px;
+}
+
+.account-impact-card__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px 24px;
+  margin: 0 0 16px;
+}
+
+.account-impact-card__stat {
+  min-width: 0;
+  margin: 0;
+
+  dt {
+    margin: 0 0 2px;
+    color: var(--os-text-helper);
+    @include set-font(helper-label);
+    font-weight: 400;
+  }
+
+  dd {
+    margin: 0;
+    @include scale-set-font(h4, h3);
+    letter-spacing: normal;
+  }
+}
+
+.account-impact-card__progress,
+.account-impact-card__pending,
+.account-impact-card__body,
+.account-impact-card__reason {
+  margin: 0 0 12px;
+  max-width: 72ch;
+  @include set-font(body-regular);
+}
+
+.account-impact-card__progress {
+  font-weight: 700;
+}
+
+.account-impact-card__pending,
+.account-impact-card__reason {
+  color: var(--os-text-helper);
+}
+
+.account-impact-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  margin-top: 16px;
+}
+
+.account-impact-card__button {
+  @include os-button(primary);
+
+  @include width-up-to($os-phone-max) {
+    min-height: 44px;
+  }
+}
+
+.account-impact-card__link {
+  @include os-text-action;
+}
+
+.account-check-in__grace {
+  margin: 0 0 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--os-border);
+  color: var(--os-text);
+  @include set-font(body-regular);
+}

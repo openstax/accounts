@@ -1,0 +1,314 @@
+// Impact tab layout. Sections are separated by hairlines rather than nested
+// cards: the account shell is already the card.
+.impact-page {
+  .account-impact__hero {
+    margin-bottom: 8px;
+  }
+
+  .account-impact__hero-text h2 {
+    @include scale-set-font(h4, h3);
+    margin: 0 0 4px;
+    color: var(--os-text);
+  }
+
+  .account-impact__hero-text p {
+    @include set-font(body-regular);
+    margin: 0;
+    color: var(--os-text-helper);
+  }
+
+  // Tabs: openstax.org's pattern, a 1px baseline with a 4px green bar on the
+  // current and hovered tab.
+  .impact-toggle {
+    display: flex;
+    margin-top: 16px;
+    border-bottom: 1px solid var(--os-border);
+  }
+
+  .impact-toggle__item {
+    @include set-font(body-large);
+    position: relative;
+    padding: 8px 24px 3px;
+    border-bottom: 4px solid transparent;
+    margin-bottom: -1px;
+    color: var(--os-text);
+    font-weight: normal;
+    text-decoration: none;
+    transition: background-color var(--os-dur) var(--os-ease-out);
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -4px;
+      height: 4px;
+      background: var(--os-green);
+      transform: scaleX(0);
+      transition: transform var(--os-dur) var(--os-ease-out);
+    }
+
+    &:hover,
+    &.is-active {
+      color: var(--os-text);
+      text-decoration: none;
+    }
+
+    &:hover {
+      background: var(--os-hover-bg);
+    }
+
+    &:hover::after {
+      transform: scaleX(1);
+    }
+
+    &.is-active {
+      border-bottom-color: var(--os-green);
+    }
+
+    &:focus-visible {
+      outline: 2px solid transparent;
+      box-shadow: var(--os-focus-ring);
+    }
+
+    @include width-up-to($phone-max) {
+      flex: 1;
+      text-align: center;
+      padding: 8px 8px 3px;
+    }
+  }
+
+  .account-impact__panel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 16px 24px;
+    padding-top: 8px;
+  }
+
+  .account-impact__panel-summary {
+    flex: 2 1 320px;
+    min-width: 0;
+
+    h3 {
+      @include set-font(h4);
+      margin: 0 0 8px;
+      color: var(--os-text);
+    }
+
+    p {
+      @include set-font(body-regular);
+      margin: 0;
+    }
+  }
+
+  .account-impact__panel-actions {
+    flex: 1 1 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .account-impact__panel-summary .account-impact__panel-kicker {
+    @include set-font(helper-label);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--os-gray);
+    margin: 0 0 8px;
+  }
+
+  .account-impact__cta {
+    margin: 0;
+  }
+
+  .account-impact__journey {
+    flex: 1 1 100%;
+    padding-top: 24px;
+    border-top: 1px solid var(--os-border);
+  }
+
+  .impact-uptodate {
+    @include set-font(helper-label);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px;
+    color: var(--os-text-helper);
+  }
+
+  .impact-strip {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 24px;
+  }
+
+  .impact-strip__item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .impact-strip__value {
+    font-size: 4.8rem;
+    line-height: 1.1;
+    font-weight: bold;
+    color: var(--os-primary);
+
+    @include width-up-to($phone-max) {
+      font-size: 3.6rem;
+    }
+  }
+
+  .impact-strip__label {
+    @include set-font(helper-label);
+    color: var(--os-text-helper);
+  }
+
+  .impact-strip__pending {
+    @include set-font(helper-label);
+    align-self: flex-start;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: var(--os-info-bg);
+    color: var(--os-text);
+  }
+
+  .impact-next-prompt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 24px;
+    margin-top: 24px;
+    padding: 24px 0;
+    border-top: 1px solid var(--os-border);
+
+    h3 {
+      @include set-font(h4);
+      margin: 0 0 4px;
+      color: var(--os-text);
+    }
+
+    p {
+      @include set-font(body-regular);
+      margin: 0;
+      color: var(--os-text-helper);
+    }
+
+    @include width-up-to($phone-max) {
+      .account-impact__cta {
+        width: 100%;
+        min-height: 44px;
+      }
+    }
+  }
+
+  .impact-next-prompt__text {
+    flex: 2 1 320px;
+    min-width: 0;
+  }
+
+  .impact-strip--locked .impact-strip__value {
+    color: var(--os-text-helper);
+  }
+
+  .impact-milestone {
+    @include set-font(body-regular);
+    margin: 24px 0 0;
+    font-weight: bold;
+    color: var(--os-text);
+  }
+
+  .account-impact__details {
+    margin-top: 16px;
+  }
+
+  .impact-milestones {
+    padding-top: 24px;
+    border-top: 1px solid var(--os-border);
+  }
+
+  .impact-milestones__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .impact-milestones__title {
+    @include set-font(h4);
+    margin: 0;
+    color: var(--os-text);
+  }
+
+  .impact-milestones__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .impact-milestone-tile {
+    border: 1px solid var(--os-border);
+    border-radius: var(--os-radius);
+    padding: 12px;
+    text-align: center;
+  }
+
+  .impact-milestone-tile__icon {
+    @include set-font(helper-label);
+    width: 32px;
+    height: 32px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    overflow: hidden;
+  }
+
+  .impact-milestone-tile__label {
+    @include set-font(helper-label);
+    font-weight: bold;
+    color: var(--os-text);
+  }
+
+  .impact-milestone-tile__meta {
+    @include set-font(helper-label);
+    color: var(--os-text-helper);
+    margin-top: 2px;
+  }
+
+  .impact-milestone-tile--earned .impact-milestone-tile__icon {
+    background: var(--os-success-bg);
+    color: var(--os-success-text);
+  }
+
+  .impact-milestone-tile--locked {
+    border-style: dashed;
+
+    .impact-milestone-tile__icon {
+      background: var(--os-surface);
+      border: 1px solid var(--os-border);
+      color: var(--os-text);
+    }
+  }
+
+  @include width-up-to($phone-max) {
+    .impact-milestones__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}

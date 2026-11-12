@@ -1,0 +1,28 @@
+<% upper_corner_console = nil %>
+<% if respond_to?(:signed_in?) && signed_in? %>
+  <% upper_corner_console = render(partial: 'shared/upper_corner_console').presence %>
+<% end %>
+
+<header class="os-header" role="banner">
+  <div class="os-header__inner">
+    <div class="os-header__brand-block">
+      <%= link_to main_app.root_path, class: 'os-header__brand', 'aria-label': 'OpenStax home' do %>
+        <%= image_tag 'openstax-logo-stacked.svg', alt: '', class: 'os-header__logo-img', width: 66, height: 50 %>
+      <% end %>
+      <span class="os-header__divider" aria-hidden="true"></span>
+      <%= link_to 'https://www.rice.edu', class: 'os-header__rice', target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Rice University' do %>
+        <%= image_tag 'rice-logo-stacked.svg', alt: '', class: 'os-header__rice-img', width: 87, height: 50 %>
+      <% end %>
+    </div>
+
+    <div class="os-header__actions">
+      <%= upper_corner_console if upper_corner_console.present? %>
+      <nav class="os-header__nav" aria-label="Site">
+        <a class="os-header__link" href="https://openstax.org" target="_blank" rel="noopener noreferrer"><span><span class="os-header__link-prefix">Go to </span>OpenStax.org</span></a>
+        <% if respond_to?(:signed_in?) && signed_in? && main_app.respond_to?(:logout_path) %>
+          <%= link_to 'Log out', main_app.logout_path, class: 'os-header__link' %>
+        <% end %>
+      </nav>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,352 @@
+// "Report an adoption" dialog, in openstax.org's dialog style: white, 4px radius,
+// 540px wide, grey title bar. rem is 10px here, so sizes come from the type scale.
+.report-adoption-modal {
+  @include set-font(body-regular);
+  color: var(--os-text);
+
+  .modal-dialog {
+    max-width: 540px;
+    width: auto;
+    margin: 20px auto;
+
+    @include width-up-to($phone-max) {
+      margin: 10px;
+    }
+  }
+
+  .modal-content {
+    border: 0;
+    border-radius: 4px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    min-height: 50px;
+    padding: 15px 17px;
+    background: var(--os-page-bg);
+    border-bottom: 0;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+
+  .modal-title {
+    @include set-font(h4);
+    margin: 0;
+    color: var(--os-text);
+  }
+
+  .modal-body {
+    padding: 20px 17px 24px;
+  }
+
+  .close {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    margin: -6px -8px 0 0;
+    padding: 0;
+    float: none;
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: normal;
+    color: var(--os-text);
+    opacity: 1;
+    text-shadow: none;
+    background: transparent;
+    border: 0;
+
+    &:hover {
+      color: var(--os-text-helper);
+    }
+
+    &:focus-visible {
+      outline: 2px solid transparent;
+      box-shadow: var(--os-focus-ring);
+    }
+  }
+}
+
+.report-adoption__header-helper {
+  @include set-font(helper-label);
+  margin: 4px 0 0;
+  color: var(--os-text); // helper grey is 4.4:1 on the grey title bar
+}
+
+.report-adoption__callout {
+  @include set-font(helper-label);
+  background: var(--os-info-bg);
+  border: 1px solid var(--os-info-border);
+  border-radius: 0;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  color: var(--os-text);
+}
+
+.report-adoption__books {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.report-adoption__row {
+  padding: 16px 0 20px;
+  border-top: 1px solid var(--os-border);
+  animation: report-row-in 220ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.report-adoption__row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.report-adoption__row-title {
+  @include set-font(h4);
+  color: var(--os-text);
+}
+
+.report-adoption__row-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+
+  @include width-up-to($phone-max) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.report-adoption__field--book,
+.report-adoption__field--how-using {
+  grid-column: 1 / -1;
+}
+
+.report-adoption__field label {
+  @include set-font(body-regular);
+  display: block;
+  margin: 0;
+  font-weight: bold;
+  color: var(--os-text);
+}
+
+// Controls sit inside their labels (rows are cloned from a <template>, so
+// for/id pairs would duplicate); undo the label's bold on them.
+.report-adoption__field select,
+.report-adoption__field input {
+  @include set-font(body-regular);
+  display: block;
+  width: 100%;
+  height: 50px;
+  margin-top: 4px;
+  padding: 0 15px;
+  border: 1px solid var(--os-border);
+  border-radius: 0;
+  background-color: var(--os-surface);
+  color: var(--os-text);
+  font-weight: normal;
+  box-shadow: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
+  &:focus {
+    border-color: var(--os-focus-border);
+    box-shadow: var(--os-focus-ring);
+    outline: 2px solid transparent;
+  }
+}
+
+.report-adoption__field select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 40px;
+  background-image:
+    unquote("linear-gradient(45deg, transparent 50%, var(--os-gray) 50%)"),
+    unquote("linear-gradient(135deg, var(--os-gray) 50%, transparent 50%)");
+  background-position:
+    calc(100% - 20px) calc(50% - 2px),
+    calc(100% - 14px) calc(50% - 2px);
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.report-adoption__text-action {
+  @include set-font(helper-label);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--os-link);
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--os-link-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid transparent;
+    box-shadow: var(--os-focus-ring);
+  }
+}
+
+.report-adoption__add-book {
+  @include set-font(body-regular);
+}
+
+.report-adoption__remove-row.is-hidden {
+  visibility: hidden;
+}
+
+.report-adoption__info-icon {
+  @include set-font(helper-label);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--os-gray);
+  margin-left: 6px;
+  color: var(--os-text);
+  font-weight: bold;
+  cursor: help;
+  position: relative;
+  background: var(--os-surface);
+
+  &:focus-visible {
+    outline: 2px solid transparent;
+    box-shadow: var(--os-focus-ring);
+  }
+
+  &::after {
+    @include set-font(helper-label);
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: -8px;
+    background: var(--os-text);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-weight: normal;
+    width: 240px;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms ease-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 5;
+  }
+
+  &:hover::after,
+  &:focus::after {
+    opacity: 1;
+  }
+}
+
+.report-adoption__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 0;
+  border-top: 1px solid var(--os-border);
+}
+
+.report-adoption__summary-label {
+  @include set-font(helper-label);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--os-gray);
+}
+
+.report-adoption__summary-value {
+  @include scale-set-font(h4, h3);
+  color: var(--os-text);
+}
+
+.report-adoption__summary-subtext {
+  @include set-font(helper-label);
+  color: var(--os-text-helper);
+}
+
+.report-adoption__helper-text {
+  @include set-font(helper-label);
+  margin: 0;
+  color: var(--os-text-helper);
+}
+
+.report-adoption__hint {
+  @include set-font(helper-label);
+  display: block;
+  margin-top: 4px;
+  font-weight: normal;
+  color: var(--os-text-helper);
+}
+
+.report-adoption__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--os-border);
+
+  @include width-up-to($phone-max) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.report-adoption__footer-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.report-adoption__submit {
+  @include set-font(body-regular);
+  min-width: 200px;
+  height: 50px;
+  padding: 0 30px;
+  border: 0;
+  border-radius: var(--os-radius);
+  background: var(--os-primary);
+  box-shadow: var(--os-shadow-button);
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background: var(--os-primary-hover);
+    color: #fff;
+  }
+
+  &:active {
+    background: var(--os-primary-active);
+  }
+}
+
+@keyframes report-row-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .report-adoption__row {
+    animation-duration: 0.01ms;
+  }
+}

@@ -1,0 +1,153 @@
+<% content_for :head do %>
+  <%= javascript_include_tag 'newflow/profile_nudge_banner' if @show_profile_nudge_banner %>
+<% end %>
+
+<% school_supports_assignable = current_user.school&.has_assignable_contacts? %>
+<% assignable_enabled = current_user.external_ids.exists? %>
+<% dismissed_assignable_callout = cookies[:dismissed_assignable_callout] == 'true' %>
+<% allow_callout_persistence = !current_user.is_administrator? %>
+<% status = OverviewStatus.new(current_user) %>
+<% show_assignable_callout = school_supports_assignable && status.verified_instructor? && !assignable_enabled && (!dismissed_assignable_callout || current_user.is_administrator?) %>
+
+<% completeness = account_completeness_summary(current_user) %>
+<%# Things the page already asks for in full are left out of the completeness strip. %>
+<% strip_skip = [] %>
+<% strip_skip << :adoption if @overview_impact %>
+<% strip_skip << :books if @term_books %>
+<% strip_skip << :lms if @show_lms_card %>
+
+<div class="account-layout">
+  <%= render 'account/navigation' %>
+  <div class="account-layout__content">
+    <%= render 'account/overview_header', status: status %>
+
+    <%= render 'account/overview_status_callout', status: status %>
+
+    <% if @annual_check_in %>
+      <%= render 'account/check_in_card', check_in: @annual_check_in %>
+    <% elsif @term_books %>
+      <%= render 'account/overview_books_this_term', books: @term_books, total: @term_books_total, school_year: @term_school_year %>
+    <% end %>
+
+    <%= render 'account/overview_impact_card', impact: @overview_impact if @overview_impact %>
+
+    <% if show_assignable_callout %>
+      <div class="account-callout account-callout--assignable" id="assignable-callout">
+        <div class="account-callout__text">
+          <p class="account-callout__eyebrow">OpenStax Assignable</p>
+          <h2 class="account-callout__title">Assignable is available at <%= current_user.school&.name || 'your institution' %></h2>
+          <p>
+            Good news — <%= current_user.school&.name || 'your institution' %> supports OpenStax Assignable.
+            Use Assignable to give your students auto-graded practice and keep grades synced, all within your learning management system (LMS).
+          </p>
+          <p>You can choose whether and when to use it — support is available if you’d like help getting started.</p>
+        </div>
+        <div class="account-callout__actions">
+          <%= link_to 'Set up Assignable', 'https://openstax.org/assignable/setup', class: 'account-callout__button account-callout__button--primary', target: '_blank', rel: 'noopener' %>
+          <%= link_to 'Learn more', 'https://openstax.org/assignable', class: 'account-callout__button account-callout__button--ghost', target: '_blank', rel: 'noopener' %>
+        </div>
+        <button type="button"
+                class="account-callout__dismiss js-dismiss-callout"
+                aria-label="Dismiss Assignable message"
+                data-dismiss-target="assignable-callout"
+                data-persist-dismissal="<%= allow_callout_persistence %>">
+          &times;
+        </button>
+      </div>
+    <% end %>
+
+    <% if flash[:lms_answered_label] %>
+      <div id="lms-question-card" class="account-callout account-callout--lms-confirmed">
+        <p><strong>Thanks!</strong> We'll surface the <%= flash[:lms_answered_label] %> setup guide under LMS / Assignable setup below.</p>
+      </div>
+    <% elsif @show_lms_card %>
+      <div id="lms-question-card" class="account-callout account-callout--lms">
+        <div class="account-callout__lms-header">
+          <div class="account-callout__text">
+            <p class="account-callout__eyebrow">One quick question</p>
+            <h2 class="account-callout__title">Do you use a learning management system (LMS)?</h2>
+            <p>We'll point you to the right Assignable setup guide.</p>
+          </div>
+          <%= button_to 'Not now', account_lms_answer_dismiss_path,
+                        method: :post,
+                        class: 'account-callout__lms-dismiss',
+                        form_class: 'account-callout__lms-dismiss-form' %>
+        </div>
+        <div class="account-callout__lms-pills">
+          <% User::LMS_OPTIONS.each do |value, label| %>
+            <%= button_to label, account_lms_answer_path,
+                          method: :post,
+                          params: { lms_used: value },
+                          class: 'account-callout__lms-pill',
+                          form_class: 'account-callout__lms-pill-form' %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <%= render('shared/account_layout_shell') do %>
+      <div class="account-shell__body account-overview">
+        <%= render 'account/overview_profile_strip', completeness: completeness, skip: strip_skip %>
+
+        <section class="account-overview__section" aria-labelledby="quick-actions-heading">
+          <div class="account-shell__section-header">
+            <h2 id="quick-actions-heading">Quick actions</h2>
+            <p>Jump straight to the tools you use most often.</p>
+          </div>
+
+          <% quick_actions = [
+               { icon: 'fa fa-pencil', title: t('overview_impact.quick_action_title'), body: t('overview_impact.quick_action_body'), button: true, cta: t('overview_impact.quick_action_cta') },
+               { icon: 'fa fa-plug', title: 'LMS / Assignable setup', body: 'Connect Assignable tools to Canvas, Blackboard, and more.', href: 'https://openstax.org/assignable/setup', cta: 'View setup guide →', external: true },
+               { icon: 'fa fa-book', title: 'Find a book', body: 'Browse OpenStax textbooks and matching instructor resources.', href: 'https://openstax.org/subjects', cta: 'Browse subjects →', external: true },
+               { icon: 'fa fa-life-ring', title: 'Get help', body: 'Search FAQs, file a ticket, or email our support team.', href: account_support_path, cta: 'Go to support →' }
+             ] %>
+
+          <ul class="account-actions">
+            <% quick_actions.each do |action| %>
+              <li class="account-actions__item">
+                <span class="account-actions__icon <%= action[:icon] %>" aria-hidden="true"></span>
+                <div class="account-actions__text">
+                  <h3><%= action[:title] %></h3>
+                  <p><%= action[:body] %></p>
+                </div>
+                <% if action[:button] %>
+                  <button type="button"
+                          class="account-actions__cta"
+                          data-report-adoption-trigger="true">
+                    <%= action[:cta].delete_suffix(' →') %><% if action[:cta].end_with?(' →') %> <span class="arrow" aria-hidden="true">→</span><% end %>
+                  </button>
+                <% else %>
+                  <a class="account-actions__cta"
+                     href="<%= action[:href] %>"
+                     <%= action[:external] ? 'target="_blank" rel="noopener"' : '' %>>
+                    <%= action[:cta].delete_suffix(' →') %><% if action[:cta].end_with?(' →') %> <span class="arrow" aria-hidden="true">→</span><% end %>
+                  </a>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<% if show_assignable_callout %>
+  <% content_for :javascript do %>
+    <script>
+      document.addEventListener('click', function(event) {
+        var dismissButton = event.target.closest('.js-dismiss-callout');
+        if (!dismissButton) { return; }
+        var targetId = dismissButton.getAttribute('data-dismiss-target');
+        var target = document.getElementById(targetId);
+        if (target) { target.remove(); }
+        var persist = dismissButton.getAttribute('data-persist-dismissal') === 'true';
+        if (persist) {
+          var expiry = new Date();
+          expiry.setFullYear(expiry.getFullYear() + 1);
+          document.cookie = "dismissed_assignable_callout=true;path=/;expires=" + expiry.toUTCString();
+        }
+      });
+    </script>
+  <% end %>
+<% end %>

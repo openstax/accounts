@@ -1,0 +1,24 @@
+<% callout = status.callout(show_profile_nudge: @show_profile_nudge_banner) %>
+<% if callout&.nudge? %>
+  <%= render 'account/profile_nudge_callout', callout: callout %>
+<% elsif callout %>
+  <div class="account-callout" id="<%= callout.id %>">
+    <div class="account-callout__text">
+      <p class="account-callout__eyebrow"><%= callout.eyebrow %></p>
+      <h2 class="account-callout__title"><%= callout.title %></h2>
+      <% callout.paragraphs.each do |paragraph| %>
+        <p><%= paragraph %></p>
+      <% end %>
+    </div>
+    <div class="account-callout__actions">
+      <% if callout.primary %>
+        <%= link_to callout.primary.label, callout.primary.path,
+                    class: 'account-callout__button account-callout__button--primary',
+                    **(callout.primary.path.start_with?('http') ? { target: '_blank', rel: 'noopener' } : {}) %>
+      <% end %>
+      <% if callout.secondary %>
+        <%= link_to callout.secondary.label, callout.secondary.path, class: 'account-callout__link' %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

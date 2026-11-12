@@ -1,0 +1,39 @@
+<div class="account-impact__section-card" id="impact-history">
+  <% if adoptions.any? %>
+    <div class="account-impact__table-wrapper" role="region" aria-label="<%= local_assigns.fetch(:table_label, 'Books you reported') %>" tabindex="0">
+      <table class="account-impact__table">
+        <thead>
+          <tr>
+            <th>Book</th>
+            <th>School year</th>
+            <th>Students</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% adoptions.each do |adoption| %>
+            <% book_value = adoption.book&.title %>
+            <% book_link = adoption.book&.webview_rex_link.presence || adoption.book&.html_url.presence %>
+            <tr>
+              <td>
+                <% if book_value.present? && book_link.present? %>
+                  <%= link_to book_value, book_link, target: '_blank', rel: 'noopener' %>
+                <% else %>
+                  <%= book_value.present? ? book_value : '(Book not available)' %>
+                <% end %>
+              </td>
+              <td><%= adoption.school_year.presence || adoption.school_year_label || '—' %></td>
+              <td><%= adoption.students.present? ? number_with_delimiter(adoption.students) : '—' %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <% default_title = 'You haven’t told us about any books yet' %>
+    <% default_body = 'Report a book you use so we can show your impact here.' %>
+    <div class="account-impact__empty">
+      <h3><%= local_assigns.fetch(:empty_title, default_title) %></h3>
+      <p><%= local_assigns.fetch(:empty_body, default_body) %></p>
+    </div>
+  <% end %>
+</div>

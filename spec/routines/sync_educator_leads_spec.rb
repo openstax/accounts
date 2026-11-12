@@ -144,6 +144,21 @@ describe SyncEducatorLeads do
       expect(Newflow::CreateOrUpdateSalesforceLead).to have_received(:call).with(user: stalled_instructor)
       expect(Newflow::CreateOrUpdateSalesforceLead).not_to have_received(:call).with(user: newer_stalled)
     end
+
+    it 'skips an older self_learner so it cannot crowd an educator out of the batch' do
+      stub_const('SyncEducatorLeads::LEAD_BATCH_LIMIT', 1)
+      learner = FactoryBot.create(
+        :user, role: :self_learner, state: 'activated', is_newflow: true, salesforce_lead_id: nil,
+               salesforce_contact_id: nil, created_at: 60.hours.ago
+      )
+      stub_lead_creation(lead_saved: true)
+
+      described_class.call
+
+      expect(Newflow::CreateOrUpdateSalesforceLead).to have_received(:call).once
+      expect(Newflow::CreateOrUpdateSalesforceLead).to have_received(:call).with(user: stalled_instructor)
+      expect(Newflow::CreateOrUpdateSalesforceLead).not_to have_received(:call).with(user: learner)
+    end
   end
 
   describe 'the feature flag' do

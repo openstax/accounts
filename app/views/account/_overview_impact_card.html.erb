@@ -1,0 +1,65 @@
+<% pending = impact.pending %>
+<section class="account-impact-card" id="overview-impact" aria-labelledby="overview-impact-heading">
+  <% if impact.empty? %>
+    <h2 class="account-impact-card__heading" id="overview-impact-heading"><%= t('overview_impact.empty_title') %></h2>
+    <p class="account-impact-card__body"><%= t('overview_impact.empty_body') %></p>
+    <p class="account-impact-card__reason"><%= t('overview_impact.empty_reason') %></p>
+  <% else %>
+    <h2 class="account-impact-card__heading" id="overview-impact-heading"><%= t('overview_impact.title') %></h2>
+    <% if impact.any_confirmed? %>
+      <dl class="account-impact-card__stats">
+        <div class="account-impact-card__stat">
+          <dt><%= t('overview_impact.students') %></dt>
+          <dd><%= number_with_delimiter(impact.students) %></dd>
+        </div>
+        <% if impact.savings.positive? %>
+          <div class="account-impact-card__stat">
+            <dt><%= t('overview_impact.savings') %></dt>
+            <dd><%= number_to_currency(impact.savings, precision: 0) %></dd>
+          </div>
+        <% end %>
+        <% if impact.years.positive? %>
+          <div class="account-impact-card__stat">
+            <dt><%= t('overview_impact.years') %></dt>
+            <dd><%= impact.years %></dd>
+          </div>
+        <% end %>
+      </dl>
+    <% end %>
+    <% if impact.saved_books_count.positive? %>
+      <p class="account-impact-card__progress" id="overview-impact-progress">
+        <%= t('overview_impact.books_answered', answered: impact.answered_saved_books_count,
+                                                saved: impact.saved_books_count, school_year: impact.school_year) %>
+      </p>
+      <% answered = [impact.answered_saved_books_count, impact.saved_books_count].min %>
+      <div class="account-impact-card__meter"
+           role="progressbar"
+           aria-labelledby="overview-impact-progress"
+           aria-valuemin="0"
+           aria-valuemax="<%= impact.saved_books_count %>"
+           aria-valuenow="<%= answered %>">
+        <span class="account-impact-card__meter-fill" style="--meter-fill: <%= (answered.to_f / impact.saved_books_count).round(4) %>;"></span>
+      </div>
+    <% end %>
+    <% if pending.any? %>
+      <% books = t('annual_check_in.flash_books', count: pending.books) %>
+      <p class="account-impact-card__pending">
+        <% if pending.students.positive? %>
+          <%= t('overview_impact.pending_students_books', books: books,
+                                                          students: t('annual_check_in.flash_students', count: pending.students)) %>
+        <% else %>
+          <%= t('overview_impact.pending_books', books: books) %>
+        <% end %>
+      </p>
+    <% end %>
+    <p class="account-impact-card__reason"><%= t('overview_impact.reason') %></p>
+  <% end %>
+  <div class="account-impact-card__actions">
+    <button type="button" class="account-impact-card__button" data-report-adoption-trigger="true">
+      <%= t('overview_impact.report_button') %>
+    </button>
+    <% unless impact.empty? %>
+      <%= link_to t('overview_impact.full_impact'), account_impact_path, class: 'account-impact-card__link' %>
+    <% end %>
+  </div>
+</section>

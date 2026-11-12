@@ -1,27 +1,28 @@
 <%
-    page_header = I18n.t(
-        :"login_signup_form.confirmation_page_header",
-        first_name: @first_name
-    )
+    page_header = I18n.t(:"login_signup_form.check_your_email_header")
 
     current_step = I18n.t(
-        :"login_signup_form.step_counter",
+        :"login_signup_form.step_counter_with_label",
         current_step: 2,
-        total_steps: @total_steps
+        total_steps: @total_steps,
+        label: I18n.t(:"login_signup_form.step_label_verify_email")
     )
 
     form_description = I18n.t(
-        :"login_signup_form.educator_email_verification_form_decription",
-        email: @email
+        :"login_signup_form.verify_email_sub_description",
+        email: @email,
+        edit_link: link_to(
+            I18n.t(:"login_signup_form.verify_email_edit_link"), educator_change_signup_email_form_path
+        )
     ).html_safe
 
-    edit_it_here_link = link_to(
-        I18n.t(:"login_signup_form.edit_it_here"), educator_change_signup_email_form_path
+    resend_link = link_to(
+        I18n.t(:"login_signup_form.verify_email_resend_link"), educator_change_signup_email_form_path
     )
 
     help_message = I18n.t(
-        :"login_signup_form.educator_email_verification_help_msg",
-        edit_it_here: edit_it_here_link,
+        :"login_signup_form.verify_email_resend_footer_with_contact",
+        resend_link: resend_link,
         contact_us_link: contact_us_link
     ).html_safe
 %>
@@ -33,6 +34,7 @@
             header: page_header,
             current_step: current_step,
             form_description: form_description,
+            progress_percent: 50,
             help_message: help_message,
             submit_to_path: educator_verify_pin_path
         }

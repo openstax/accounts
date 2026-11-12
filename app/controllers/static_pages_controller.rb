@@ -13,6 +13,9 @@ class StaticPagesController < ApplicationController
   def copyright
   end
 
+  def account_shell_preview
+  end
+
   def home
     flash.keep # keep notices and errors through to the redirects below
 

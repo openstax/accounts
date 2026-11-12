@@ -18,6 +18,22 @@ namespace :cron do
       SyncEducatorLeads.call
     end
 
+    cron_step('BookCatalogSync.call') do
+      BookCatalogSync.call
+    end
+
+    cron_step('Salesforce::AdoptionSync.call') do
+      Salesforce::AdoptionSync.call
+    end
+
+    cron_step('PushAdoptionReports.call_for_all_unpushed') do
+      PushAdoptionReports.call_for_all_unpushed
+    end
+
+    cron_step('PushBookInterest.call_for_all_unpushed') do
+      PushBookInterest.call_for_all_unpushed
+    end
+
     Rails.logger.debug 'Finished daily cron'
   end
 end

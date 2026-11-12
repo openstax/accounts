@@ -23,6 +23,10 @@ class User < ApplicationRecord
     ADJUNCT_ROLE = :adjunct,
     HOMESCHOOL_ROLE = :homeschool,
     RESEARCHER_ROLE = :researcher,
+    # Self-directed learners with no course/school affiliation (the "lifelong
+    # learner" signup path). Must stay appended at the end of this array: role
+    # is an integer-backed enum, so inserting earlier would remap existing rows.
+    SELF_LEARNER_ROLE = :self_learner,
   ].freeze
 
   VALID_FACULTY_STATUSES = [
@@ -157,6 +161,17 @@ class User < ApplicationRecord
   has_many :member_groups, through: :group_members, source: :group
   has_many :oauth_applications, through: :member_groups
   has_many :security_logs
+  has_many :user_books, dependent: :destroy
+  # nullify, not destroy: Salesforce is the system of record for adoptions
+  has_many :adoptions, dependent: :nullify
+  # user-owned reports (not a Salesforce mirror), so destroy is correct here
+  has_many :adoption_reports, dependent: :destroy
+  # Unverified "who teaches your class?" claims the user made as a student
+  has_many :instructor_connections, class_name: 'InstructorConnection', foreign_key: :student_id,
+                                     inverse_of: :student, dependent: :destroy
+  # Claims where this user was matched as the (verified) instructor
+  has_many :instructor_connections_as_instructor, class_name: 'InstructorConnection', foreign_key: :instructor_id,
+                                                   inverse_of: :instructor, dependent: :nullify
   has_one :sheerid_verification, primary_key: :sheerid_verification_id, foreign_key: :verification_id
 
   delegate_to_routine :destroy
@@ -366,6 +381,21 @@ class User < ApplicationRecord
       sheerid_expired? || sheerid_error?
   end
 
+  TEACHING_ROLES = %w[instructor adjunct student self_learner].freeze
+
+  # Finished the "I support instruction" signup. There is no stored staff flag:
+  # staff keep faculty_status at incomplete_signup, while an educator who picked
+  # administrator or other at step 4 moves into a SheerID or faculty state.
+  def completed_non_teaching_profile?
+    is_profile_complete? &&
+      TEACHING_ROLES.exclude?(role) &&
+      (incomplete_signup? || no_faculty_info?)
+  end
+
+  def staff_role_label
+    other_role_name.presence || role.to_s.humanize
+  end
+
   # Got a SheerID outcome (any) but never finished step 4.
   def needs_profile_nudge?
     !student? && is_newflow && !is_profile_complete &&
@@ -392,6 +422,19 @@ class User < ApplicationRecord
     update!(attrs)
     SecurityLog.create!(user: self, event_type: :faculty_status_advanced, event_data: data)
     true
+  end
+
+  # True when signup finished (is_profile_complete) via "Save and finish
+  # later" (or any other path) but left step-4 profile questions blank.
+  # Distinct from incomplete_signup?/pending_faculty? -- this is a lighter,
+  # non-blocking nudge surfaced on the account Overview page rather than a
+  # gate on instructor access.
+  def profile_needs_enrichment?
+    return false unless is_profile_complete?
+
+    (which_books.blank? && !user_books.exists?) ||
+      (how_many_students.blank? && !adoptions.exists? && !adoption_reports.exists?) ||
+      (school.nil? && self_reported_school.blank?)
   end
 
   def name
@@ -481,7 +524,28 @@ class User < ApplicationRecord
   end
 
   def self.non_student_known_roles
-    known_roles - ['student']
+    # Self-learners have no course/school affiliation, so the instructor-style
+    # annual check-in (which assumes an adoption to reconfirm) never applies to them.
+    known_roles - ['student', 'self_learner']
+  end
+
+  # Name search over verified instructors only, for the student account
+  # page's "who teaches your class?" autocomplete. Mirrors School.search's
+  # substring + trigram-distance approach. Callers must only expose the
+  # display name + school from the result — never email or other PII.
+  def self.verified_instructors_matching(query, limit: 8)
+    q = query.to_s.strip
+    return none if q.length < 2
+
+    full_name = "(coalesce(first_name, '') || ' ' || coalesce(last_name, ''))"
+    distance = sanitize_sql(["? <-> #{full_name}", q])
+    substring = sanitize_sql(["#{full_name} ILIKE ?", "%#{sanitize_sql_like(q)}%"])
+    prefix = sanitize_sql(["#{full_name} ILIKE ?", "#{sanitize_sql_like(q)}%"])
+
+    instructor.confirmed_faculty
+              .where(Arel.sql("(#{substring}) OR (#{distance}) <= 0.5"))
+              .order(Arel.sql("(#{prefix}) DESC, (#{distance}) ASC, first_name ASC"))
+              .limit(limit)
   end
 
   def guessed_preferred_confirmed_email
@@ -507,6 +571,142 @@ class User < ApplicationRecord
 
   def generate_uuid
     self.uuid ||= SecureRandom.uuid
+  end
+
+  ######################
+  # Annual check-in    #
+  ######################
+
+  CHECK_IN_SNOOZE_PERIOD = 7.days
+
+  # Whether the overview shows the inline check-in card. Never blocks
+  # anything: it only decides if the card renders.
+  def annual_check_in_due?
+    return false if check_in_term.nil?
+
+    AnnualCheckIn.new(self, term: check_in_term).rows.any?
+  end
+
+  # :spring inside AnnualCheckIn::SPRING_WINDOW, :fall otherwise, or nil when no card is due.
+  # Fall asks only those with no "using" report or confirmed adoption this school year. Spring
+  # asks them too, plus those who reported in the fall, until they confirm a check-in after the
+  # window opened.
+  def check_in_term
+    return unless check_in_eligible_role?
+    return unless created_at.present? && created_at < 1.year.ago
+    return unless has_check_in_adoption_signal?
+    return if check_in_snoozed?
+
+    term = AnnualCheckIn.term_on(Time.zone.today)
+    return if check_in_completed_at.present? && check_in_completed_at >= check_in_cycle_start(term)
+    return if term == :fall && reported_using_this_school_year?
+
+    term
+  end
+
+  def check_in_eligible_role?
+    User.non_student_known_roles.include?(role)
+  end
+
+  def has_check_in_adoption_signal?
+    user_books.exists? || adoptions.exists? || adoption_reports.exists?
+  end
+
+  def check_in_snoozed?
+    check_in_dismissed_at.present? && check_in_dismissed_at >= CHECK_IN_SNOOZE_PERIOD.ago
+  end
+
+  def annual_check_in_school_year_start
+    Time.zone.local(SchoolYear.base_year_for(Time.zone.today), 8, 1)
+  end
+
+  def check_in_cycle_start(term)
+    term == :spring ? AnnualCheckIn.spring_window_start : annual_check_in_school_year_start
+  end
+
+  # Reporting through the adoption modal counts as checking in.
+  def reported_using_this_school_year?
+    year = SchoolYear.current
+    return true if adoption_reports.using.exists?(school_year: year)
+
+    adoptions.where(confirmation_type: 'OpenStax Confirmed Adoption', rollover_status: false)
+             .any? { |adoption| (adoption.school_year.presence || adoption.school_year_label) == year }
+  end
+
+  # Titles reported as "using" for a school year, whether the report is still pending or
+  # Salesforce has confirmed the adoption. The overview, Books and Impact tabs all count from
+  # this, so they never disagree about which saved books are reported.
+  def titles_reported_for(school_year)
+    pending = adoption_reports.using.where(school_year: school_year).pluck(:book_title)
+    confirmed = adoptions.includes(:book)
+                         .where(confirmation_type: 'OpenStax Confirmed Adoption', rollover_status: false)
+                         .select { |adoption| (adoption.school_year.presence || adoption.school_year_label) == school_year }
+                         .filter_map { |adoption| adoption.book&.title }
+    (pending + confirmed).uniq
+  end
+
+  # Titles with any answer for a school year (using, not using, considering, just looking) plus
+  # confirmed adoptions. The progress lines count these, so a saved book someone is only
+  # browsing never reads as unfinished.
+  def titles_answered_for(school_year)
+    answered = adoption_reports.where(school_year: school_year).pluck(:book_title)
+    (answered + titles_reported_for(school_year)).uniq
+  end
+
+  # Consecutive prior school years with at least one reported adoption
+  # (AdoptionReport, from either the check-in or the books-page modal),
+  # counted backward starting the year immediately before the current/
+  # pending one. Powers the streak banner: 0 omits it, 1 uses singular
+  # copy, 2+ uses "N years reported in a row."
+  def check_in_streak_years
+    reported_base_years = adoption_reports.distinct.pluck(:school_year).filter_map do |label|
+      SchoolYear.base_year_from_string(label)
+    end.to_set
+
+    streak = 0
+    base_year = SchoolYear.base_year_for(Time.zone.today) - 1
+
+    while reported_base_years.include?(base_year)
+      streak += 1
+      base_year -= 1
+    end
+
+    streak
+  end
+
+  ######################
+  # LMS question       #
+  ######################
+
+  # Self-reported answer to the Overview "do you use an LMS?" card.
+  # Values are stored as-is in `lms_used`; nil means unanswered.
+  LMS_OPTIONS = {
+    'canvas' => 'Canvas',
+    'blackboard' => 'Blackboard',
+    'moodle' => 'Moodle',
+    'd2l' => 'D2L',
+    'schoology' => 'Schoology',
+    'other' => 'Other',
+    'none' => 'No LMS'
+  }.freeze
+
+  validates :lms_used, inclusion: { in: LMS_OPTIONS.keys }, allow_nil: true
+
+  def lms_answered?
+    lms_used.present?
+  end
+
+  def lms_question_dismissed?
+    lms_prompt_dismissed_at.present?
+  end
+
+  # Card is shown once, until the instructor answers or dismisses it.
+  def lms_question_pending?
+    !lms_answered? && !lms_question_dismissed?
+  end
+
+  def lms_label
+    LMS_OPTIONS[lms_used]
   end
 
   protected

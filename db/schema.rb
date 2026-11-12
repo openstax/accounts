@@ -10,13 +10,82 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_09_26_000300) do
+ActiveRecord::Schema.define(version: 2026_11_11_000003) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "adoption_reports", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "book_id"
+    t.string "book_title", null: false
+    t.string "school_year", null: false
+    t.string "status", default: "using", null: false
+    t.integer "students"
+    t.string "source", default: "books_modal", null: false
+    t.datetime "salesforce_pushed_at"
+    t.string "salesforce_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "how_using"
+    t.string "salesforce_book_name"
+    t.string "surface"
+    t.string "review_status"
+    t.datetime "reviewed_at"
+    t.bigint "reviewed_by_id"
+    t.index ["book_id"], name: "index_adoption_reports_on_book_id"
+    t.index ["review_status"], name: "index_adoption_reports_on_needs_review", where: "((review_status)::text = 'needs_review'::text)"
+    t.index ["reviewed_by_id"], name: "index_adoption_reports_on_reviewed_by_id"
+    t.index ["salesforce_pushed_at"], name: "index_adoption_reports_on_salesforce_pushed_at"
+    t.index ["user_id", "book_title", "school_year"], name: "index_adoption_reports_on_user_title_year_legacy", unique: true, where: "(salesforce_book_name IS NULL)"
+    t.index ["user_id", "salesforce_book_name", "school_year"], name: "index_adoption_reports_on_user_sf_book_year", unique: true, where: "(salesforce_book_name IS NOT NULL)"
+    t.index ["user_id"], name: "index_adoption_reports_on_user_id"
+  end
+
+  create_table "adoptions", force: :cascade do |t|
+    t.string "salesforce_id", null: false
+    t.string "adoption_number"
+    t.string "salesforce_name"
+    t.string "adoption_type"
+    t.string "school_year"
+    t.integer "base_year"
+    t.string "terms_used"
+    t.string "how_using"
+    t.text "languages", default: [], array: true
+    t.integer "students"
+    t.date "class_start_date"
+    t.date "confirmation_date"
+    t.string "confirmation_type"
+    t.text "notes"
+    t.text "tracking_parameters"
+    t.string "assignable_adoption_status"
+    t.integer "assignable_assignments_created_count"
+    t.date "assignable_first_assignment_created_date"
+    t.date "assignable_most_recent_created_date"
+    t.string "salesforce_account_id"
+    t.string "salesforce_contact_id"
+    t.string "salesforce_opportunity_id"
+    t.boolean "rollover_status", default: false, null: false
+    t.integer "likely_to_adopt_score"
+    t.bigint "user_id"
+    t.bigint "school_id"
+    t.string "salesforce_book_id"
+    t.decimal "savings", precision: 14, scale: 2
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["salesforce_account_id", "school_year"], name: "index_adoptions_on_sf_account_and_school_year"
+    t.index ["salesforce_account_id"], name: "index_adoptions_on_salesforce_account_id"
+    t.index ["salesforce_book_id"], name: "index_adoptions_on_salesforce_book_id"
+    t.index ["salesforce_contact_id", "school_year"], name: "index_adoptions_on_sf_contact_and_school_year"
+    t.index ["salesforce_contact_id"], name: "index_adoptions_on_salesforce_contact_id"
+    t.index ["salesforce_id"], name: "index_adoptions_on_salesforce_id", unique: true
+    t.index ["salesforce_opportunity_id"], name: "index_adoptions_on_salesforce_opportunity_id"
+    t.index ["school_id"], name: "index_adoptions_on_school_id"
+    t.index ["user_id"], name: "index_adoptions_on_user_id"
+  end
 
   create_table "application_users", id: :serial, force: :cascade do |t|
     t.integer "application_id", null: false
@@ -106,6 +175,21 @@ ActiveRecord::Schema.define(version: 2026_09_26_000300) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
+  end
+
+  create_table "books", force: :cascade do |t|
+    t.string "book_uuid", null: false
+    t.string "title", null: false
+    t.string "cover_url"
+    t.string "salesforce_name"
+    t.boolean "assignable_book", default: false, null: false
+    t.string "webview_rex_link"
+    t.string "html_url"
+    t.string "salesforce_book_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["book_uuid"], name: "index_books_on_book_uuid", unique: true
+    t.index ["salesforce_book_id"], name: "index_books_on_salesforce_book_id", unique: true
   end
 
   create_table "contact_infos", id: :serial, force: :cascade do |t|
@@ -221,6 +305,25 @@ ActiveRecord::Schema.define(version: 2026_09_26_000300) do
     t.integer "user_id", null: false
     t.datetime "password_expires_at"
     t.index ["user_id"], name: "index_identities_on_user_id"
+  end
+
+  create_table "instructor_connections", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.bigint "instructor_id"
+    t.bigint "school_id"
+    t.string "instructor_name", null: false
+    t.string "school_name", null: false
+    t.string "course"
+    t.string "term"
+    t.string "instructor_email"
+    t.string "status", default: "unverified", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["instructor_id"], name: "index_instructor_connections_on_instructor_id"
+    t.index ["school_id"], name: "index_instructor_connections_on_school_id"
+    t.index ["status"], name: "index_instructor_connections_on_status"
+    t.index ["student_id", "instructor_id"], name: "index_instructor_connections_on_student_id_and_instructor_id"
+    t.index ["student_id"], name: "index_instructor_connections_on_student_id"
   end
 
   create_table "message_bodies", id: :serial, force: :cascade do |t|
@@ -395,6 +498,16 @@ ActiveRecord::Schema.define(version: 2026_09_26_000300) do
     t.index ["verification_id"], name: "index_sheerid_verifications_on_verification_id", unique: true
   end
 
+  create_table "user_books", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "book_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["book_id"], name: "index_user_books_on_book_id"
+    t.index ["user_id", "book_id"], name: "index_user_books_on_user_id_and_book_id", unique: true
+    t.index ["user_id"], name: "index_user_books_on_user_id"
+  end
+
   create_table "user_external_uuids", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "uuid", null: false
@@ -468,10 +581,16 @@ ActiveRecord::Schema.define(version: 2026_09_26_000300) do
     t.datetime "salesforce_contact_last_seen_pushed_at"
     t.datetime "profile_nudge_redirected_at"
     t.datetime "profile_completed_at"
+    t.datetime "check_in_completed_at"
+    t.datetime "check_in_dismissed_at"
+    t.integer "check_in_dismissal_count", default: 0, null: false
+    t.string "lms_used"
+    t.datetime "lms_prompt_dismissed_at"
+    t.string "grade_band"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
-    t.index ["created_at"], name: "index_users_stalled_educator_signups", where: "((salesforce_lead_id IS NULL) AND (salesforce_contact_id IS NULL) AND (role <> 1) AND ((state)::text = 'activated'::text))"
+    t.index ["created_at"], name: "index_users_stalled_educator_signups", where: "((salesforce_lead_id IS NULL) AND (salesforce_contact_id IS NULL) AND (role <> 1) AND (role <> 10) AND ((state)::text = 'activated'::text))"
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
     t.index ["id"], name: "index_users_unlinked_students_with_school", where: "((role = 1) AND (school_id IS NOT NULL) AND (salesforce_student_pushed_at IS NULL))"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
@@ -489,9 +608,19 @@ ActiveRecord::Schema.define(version: 2026_09_26_000300) do
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
+  add_foreign_key "adoption_reports", "books"
+  add_foreign_key "adoption_reports", "users"
+  add_foreign_key "adoption_reports", "users", column: "reviewed_by_id"
+  add_foreign_key "adoptions", "schools"
+  add_foreign_key "adoptions", "users"
   add_foreign_key "external_ids", "users"
+  add_foreign_key "instructor_connections", "schools"
+  add_foreign_key "instructor_connections", "users", column: "instructor_id"
+  add_foreign_key "instructor_connections", "users", column: "student_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "user_books", "books"
+  add_foreign_key "user_books", "users"
   add_foreign_key "users", "oauth_applications", column: "source_application_id"
   add_foreign_key "users", "schools"
 end

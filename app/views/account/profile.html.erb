@@ -1,0 +1,41 @@
+<% content_for :head do %>
+  <%= javascript_include_tag "profile" %>
+<% end %>
+
+<% content_for :javascript do %>
+  <script>
+    $.fn.editable.defaults.mode = 'inline';
+    $.fn.editable.defaults.send = "always";
+    $.fn.editable.defaults.ajaxOptions = {type: "PUT", dataType: "json"};
+    $.fn.editable.defaults.url = "<%= profile_path %>";
+    $.fn.editable.defaults.error = OX.Profile.editableError;
+
+    OX.Profile.Name.editable($('#name'), {
+      title: "<%= j current_user.title %>",
+      first_name: "<%= j current_user.first_name %>",
+      last_name: "<%= j current_user.last_name %>",
+      suffix: "<%= j current_user.suffix %>"
+    });
+
+    OX.Profile.School.schoolsPath = "<%= newflow_schools_path %>";
+    OX.Profile.School.useAsEnteredLabel = <%= t(:"school_autocomplete.use_as_entered_label").to_json.html_safe %>;
+    OX.Profile.School.placeholder = <%= t(:"legacy.users.edit.self_reported_school_placeholder").to_json.html_safe %>;
+    OX.Profile.School.blankPrompt = <%= t(:"legacy.users.edit.self_reported_school_blank").to_json.html_safe %>;
+    OX.Profile.School.editable($('#self-reported-school'), {
+      school_name: $('#self-reported-school').data('school-name'),
+      school_id: $('#self-reported-school').data('school-id')
+    });
+  </script>
+<% end %>
+
+<div class="account-layout">
+  <%= render 'account/navigation' %>
+  <div class="account-layout__content">
+    <%= render(
+          'shared/account_layout_shell',
+          title: @account_shell_title
+        ) do %>
+      <%= render 'account/profile_account_details' %>
+    <% end %>
+  </div>
+</div>

@@ -4,5 +4,5 @@
 # call (window.posthog may not have loaded, e.g. if the person has an ad
 # blocker or hasn't consented to analytics).
 $ ->
-  $('.profile-nudge-banner__finish').on 'click', ->
+  $('.js-profile-nudge-finish').on 'click', ->
     window.posthog?.capture('educator_profile_nudge_banner_clicked')

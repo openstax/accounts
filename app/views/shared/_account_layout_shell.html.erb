@@ -1,0 +1,10 @@
+<%= ox_card(classes: "account-shell", legacy: false) do %>
+  <%# The tab nav and each section's heading already say where you are, so the page's h1 is for screen readers. %>
+  <% if local_assigns[:title].present? %>
+    <h1 class="sr-only"><%= title %></h1>
+  <% end %>
+
+  <div class="account-shell__body">
+    <%= yield if block_given? %>
+  </div>
+<% end %>

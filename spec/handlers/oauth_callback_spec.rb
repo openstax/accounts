@@ -89,6 +89,42 @@ describe OauthCallback, type: :handler do
           change { EmailAddress.where(verified: true).count }.by(1)
         )
       end
+
+      it 'defaults the new user to the student role' do
+        result = described_class.call(request: request)
+        expect(result.outputs.user).to be_student
+      end
+    end
+  end
+
+  context 'lifelong-learner signup via social login' do
+    let(:oauth_user_info) {
+      { email: email, name: Faker::Name.name }
+    }
+
+    # The learner signup screen appends ?role=self_learner to the OmniAuth
+    # request-phase URL; OmniAuth stashes query params in the session and
+    # replays them here as `omniauth.params` (same mechanism SessionsCreate
+    # already relies on for its `add` param).
+    let(:request) {
+      MockOmniauthRequest.new 'googlenewflow', Faker::Internet.uuid, oauth_user_info, { 'role' => 'self_learner' }
+    }
+
+    it 'tags the new user as a self-learner, not a student' do
+      result = described_class.call(request: request)
+      expect(result.outputs.user).to be_self_learner
+      expect(result.outputs.user).not_to be_student
+    end
+
+    context 'when no role param is present (the ordinary student social button)' do
+      let(:request) {
+        MockOmniauthRequest.new 'googlenewflow', Faker::Internet.uuid, oauth_user_info
+      }
+
+      it 'still defaults to the student role' do
+        result = described_class.call(request: request)
+        expect(result.outputs.user).to be_student
+      end
     end
   end
 

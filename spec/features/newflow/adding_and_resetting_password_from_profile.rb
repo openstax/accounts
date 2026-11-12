@@ -94,7 +94,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
 
     expect_newflow_profile_page
 
-    click_link_or_button (t :"legacy.users.edit.sign_out")
+    first(:link_or_button, t(:"legacy.users.edit.sign_out")).click
     # Capybara's click does not wait for the sign-out navigation, so visiting
     # login_path first would still be authenticated and bounce to the profile.
     wait_for_log_in_form
@@ -109,13 +109,13 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     # try logging in with the new password
     fill_in('login_form_email', with: 'user')
     fill_in('login_form_password', with: 'newpassword')
-    find('[type=submit]').click
-    # Waiting on the URL rather than a node: logging in navigates twice (POST
-    # then redirect), and Chrome raises an unretryable "Node with given id does
-    # not belong to the document" for any node query made across that swap.
-    expect(page).to have_current_path(profile_newflow_path, wait: 10)
+    find('#login-submit-button').click
+    # Wait for the post-login redirect to the account overview to settle before
+    # querying the DOM — otherwise Capybara can hit an in-flight navigation and
+    # raise "Node with given id does not belong to the document".
+    expect(page).to have_current_path(account_overview_path, wait: 10)
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(@user.full_name)
+    expect(page).to have_content(@user.first_name)
   end
 
   def expect_reset_password_page(code = @login_token)

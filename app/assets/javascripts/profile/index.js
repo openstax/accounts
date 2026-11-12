@@ -18,3 +18,11 @@ $(document).ready(function(){
   });
   $('[data-toggle="tooltip"]').tooltip()
 });
+
+// x-editable's save and cancel buttons are icon-only; give them names.
+$(document).on('shown', '.editable', function(e, editable) {
+  var $form = editable && editable.container && editable.container.$form;
+  if (!$form) { return; }
+  $form.find('.editable-submit').attr('aria-label', 'Save');
+  $form.find('.editable-cancel').attr('aria-label', 'Cancel');
+});

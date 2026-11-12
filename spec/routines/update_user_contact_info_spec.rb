@@ -518,4 +518,47 @@ describe UpdateUserContactInfo, type: :routine do
       expect(page_user_three.reload.faculty_status).to eq('confirmed_faculty')
     end
   end
+
+  describe 'book interest (Subject_Interest__c)' do
+    before { stub_sentry }
+
+    def contact_with_interest(user, value)
+      create_sf_contact(uuid: user.uuid, faculty_verified: 'confirmed_faculty').tap do |contact|
+        contact.subject_interest = value
+      end
+    end
+
+    it 'stores the normalized value in which_books' do
+      user = FactoryBot.create :user, uuid: 'books-001', which_books: nil
+      stub_salesforce_contacts([contact_with_interest(user, ' Biology;;College Physics;Biology ')])
+
+      described_class.call
+
+      expect(user.reload.which_books).to eq('Biology;College Physics')
+    end
+
+    it 'replaces the old value, since Salesforce is the source' do
+      user = FactoryBot.create :user, uuid: 'books-002', which_books: 'Biology;Astronomy'
+      stub_salesforce_contacts([contact_with_interest(user, 'Astronomy')])
+
+      described_class.call
+
+      expect(user.reload.which_books).to eq('Astronomy')
+    end
+
+    it 'keeps which_books when the Contact has none, so signup answers and the profile nudge survive' do
+      user = FactoryBot.create :user, uuid: 'books-003', which_books: 'Biology'
+      stub_salesforce_contacts([contact_with_interest(user, nil)])
+
+      described_class.call
+
+      expect(user.reload.which_books).to eq('Biology')
+    end
+
+    it 'asks Salesforce for the field' do
+      query = described_class.new.contact_batch_query(since: 1.day.ago)
+
+      expect(query.to_s).to include('Subject_Interest__c')
+    end
+  end
 end

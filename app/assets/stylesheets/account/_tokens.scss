@@ -1,0 +1,86 @@
+// openstax.org's design language, from pattern-library (the version os-webview
+// uses). rem is 10px: Bootstrap 3 and pattern-library both set the root to 62.5%,
+// so 1.6rem is 16px. Surfaces use these tokens and the pattern-library mixins
+// (set-font, scale-set-font, wider-than, width-up-to) rather than raw values.
+@import "pattern-library/headers";
+
+$os-phone-max: 600px;
+$os-content-max: 1200px;
+
+:root {
+  // openstax.org's face: the system Helvetica Neue where installed, else the
+  // self-hosted webfont declared in _base.scss.
+  --os-font: 'Neue Helvetica W01', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  --os-text: #{text-color(normal)};
+  // pattern-library's helper grey (#6f6f6f) is 4.4:1 on the page grey; this passes on both.
+  --os-text-helper: #6A6A6A;
+  --os-gray: #{os-color(gray)};
+  --os-link: #{text-color(link)};
+  --os-link-hover: #{text-color(link-hover)};
+  --os-navy: #{os-color(blue)};
+  --os-green: #{os-color(green)};
+
+  --os-page-bg: #{ui-color(page-bg)};
+  --os-surface: #{ui-color(white)};
+  --os-border: #{ui-color(form-border)};
+  // Hover border for fields, and the ring of a radio or checkbox (4.9:1 on white).
+  --os-border-strong: #959595;
+  --os-control-border: #6F6F6F;
+  --os-hover-bg: #{ui-color(default-hover)};
+
+  --os-primary: #{ui-color(primary)};
+  --os-primary-hover: #{ui-color(primary-hover)};
+  --os-primary-active: #{ui-color(primary-active)};
+
+  --os-info-bg: #{ui-color(success-bg)};
+  --os-info-border: #{ui-color(success-border)};
+  // The OpenStax palette has no red, so errors are orange on a warm tint (see CLAUDE.md,
+  // "Brand: fonts, palette, alert contrast"). Orange text fails on the tint: keep copy --os-text.
+  --os-error: #{ui-color(primary)};
+  --os-error-bg: #FFF5F0;
+  --os-success-bg: #EAF5E2;
+  --os-success-text: #2E5E0F;
+
+  --os-focus-ring: 0 0 5px 3px rgba(0, 149, 197, 0.7);
+  --os-focus-border: #{ui-color(focus-outline)};
+
+  --os-radius: 5px;
+  --os-shadow-button: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --os-shadow-card: 0 2px 6px rgba(0, 0, 0, 0.2);
+  --os-shadow-card-hover: 0 8px 20px rgba(0, 0, 0, 0.2);
+  --os-shadow-header: 0 1px 3px 2px rgba(94, 97, 98, 0.1);
+
+  // The strips bar under openstax.org page heroes (strips.svg), as hard stops.
+  --os-strips: linear-gradient(to right,
+    #F47641 0 37%, #00246A 37% 53%, #C22032 53% 63%, #F4D019 63% 84%, #0DC0DC 84% 100%);
+
+  // Motion: fast feedback, routine state changes, and the rare larger move.
+  // Under reduced motion --os-lift drops to 0 so hover and press keep their
+  // colour and shadow change but nothing moves.
+  --os-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --os-ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --os-dur-fast: 120ms;
+  --os-dur: 200ms;
+  --os-dur-slow: 320ms;
+  --os-lift: -2px;
+
+  // Older names the account surfaces were written against.
+  --ink: var(--os-text);
+  --muted: var(--os-text-helper);
+  --bg: var(--os-page-bg);
+  --panel: var(--os-surface);
+  --border: var(--os-border);
+  --shadow: var(--os-shadow-card);
+  --shadow-sm: var(--os-shadow-card);
+  --radius: var(--os-radius);
+  --radius-sm: var(--os-radius);
+  --accent: var(--os-link);
+  --accent-weak: rgba(2, 106, 161, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --os-lift: 0px;
+  }
+}

@@ -34,13 +34,24 @@ en:
     use_as_entered_label: Use "{school}"
 
   educator_profile_form:
-    complete_page_header: Complete your profile
+    complete_page_header: Last step — about your teaching
+    profile_subtitle: Takes about a minute. This tells us which resources to unlock for you.
+    social_proof: >-
+      <strong>You're in good company.</strong> Thousands of instructors use free OpenStax
+      textbooks and resources every year.
     school_name: School name
-    describe_role: Which of the following best describes your role?
+    school_matched: "Matched — %{name}"
+    grade_levels: Which grade levels?
+    grade_band_elementary: Elementary (K–5)
+    grade_band_middle: Middle (6–8)
+    grade_band_high: High (9–12)
+    grade_band_multiple: Multiple / dual credit
+    describe_role: Which best describes you?
     instructor: Instructor
     researcher: Researcher
     administrator: Administrator
-    other: Other educational staff
+    other: Other staff
+    other_staff_routing_note: Choosing "Other staff" routes to questions written for your role.
     other_please_specify: Other (please specify)
     how_using: How are you using OpenStax?
     how_textbooks_chosen: How are textbooks chosen at your institution?
@@ -55,28 +66,30 @@ en:
     num_students_using_book_time_period: each semester?
     num_students_using_book_supplemental: Include sections taught by TAs that you oversee
     num_students_using_book_placeholder:  Number of students using this book per semester
-    num_students_future_recommending: "Approx. how many students would you teach each year with OpenStax?"
+    num_students_future_recommending: "About how many students could this reach in a year?"
     num_students_administrator: "What is your average annual class size?"
     num_students_other: "Approx. how many students does your institution serve annually?"
     num_students_total_placeholder: "Number of students"
     book_picker_search_placeholder: "Search for a book..."
-    book_picker_select_up_to: "Select up to 5"
+    book_picker_select_up_to: "Up to five."
     book_picker_select_up_to_titles: "Select titles you are using even if the edition number is different."
     include_ta_sections: "Include sections taught by TAs that you oversee"
     students_per_semester: "Students per semester"
     how_using_this_book: "How are you using this book?"
     subjects_of_interest: Subjects of interest
-    books_used: Which OpenStax book(s)?
-    books_of_interest: Which OpenStax book(s)?
-    using_primary_textbook: Using an OpenStax book as our primary textbook
-    using_recommending_openstax: Recommending the book -- my students buy a different one
-    using_future: Interested in using OpenStax in the future
+    books_used: Which book(s) are you using?
+    books_of_interest: Which book(s) are you interested in?
+    using_primary_textbook: Assigning it as the required text
+    using_recommending_openstax: "Recommending it — students choose their own materials"
+    using_future: Exploring it for future use
     chosen_by_instructor: Instructors choose textbooks for their courses
     chosen_by_committee: A committee chooses the textbook
     chosen_by_coordinator: Course/district coordinator choose the textbook
     select_option: Please select one of these options
     select_option_limit_5: A maximum of 5 books may be selected
     fill_out: Please enter a value for this field
+    finish_button: Finish — unlock instructor resources
+    finish_later_link: Save and finish later in your account
     school_name_must_be_entered: Please enter school name
     other_must_be_entered: Please enter other role name
     other_role_name_too_long: Please shorten your role to 128 characters or fewer
@@ -97,7 +110,7 @@ en:
       instructor: K-12 Teacher
       administrator: School or district administrator
       other: Other school staff
-      complete_page_header: Complete your teacher profile
+      complete_page_header: Last step — about your teaching
       school_name: School or district name
       describe_role: Which best describes your role at your school?
       how_textbooks_chosen: How are textbooks chosen at your school or district?
@@ -111,9 +124,99 @@ en:
       students_per_semester: Students per school year
       num_students_using_book_placeholder: Number of students using this book per school year
 
+  staff_details_form:
+    header: Tell us about your work
+    subheader: >-
+      Staff and administrators often make the decisions about which books
+      instructors use. These questions are written for your role, not a classroom.
+    describe_role: What's your role?
+    role_department_chair: Department chair
+    role_librarian: Librarian
+    role_curriculum_coordinator: Curriculum coordinator
+    role_lms_it_administrator: LMS / IT administrator
+    role_homeschool_educator: Homeschool educator
+    role_other: Other
+    other_please_specify: Other (please specify)
+    school_name: School or institution
+    school_matched_prefix: Matched
+    books_involved: Which OpenStax books does your work involve?
+    num_learners_supported: >-
+      On average, how many learners per year do you support with OpenStax materials?
+    num_learners_supported_helper: >-
+      A ballpark is fine — this helps us measure our impact.
+    num_learners_supported_placeholder: "e.g. 400"
+    select_option: Please select one of these options
+    other_must_be_entered: Please enter your role
+    school_name_must_be_entered: Please enter school name
+    num_learners_supported_must_be_entered: Please enter a ballpark number, or 0 if not applicable
+
+  overview_status:
+    greeting:
+      new_with_name: Welcome to OpenStax, %{name}
+      new: Welcome to OpenStax
+      returning_with_name: Welcome back, %{name}
+      returning: Welcome back
+    badge:
+      verified: Verified instructor
+      pending: Verification pending
+      finish: Finish signing up
+      not_active: Instructor access not active
+    subtitle:
+      verified_school: You're an instructor at <strong>%{school}</strong>. Your instructor resources and account settings are here.
+      verified: Your instructor resources and account settings are here.
+      pending: We're reviewing your request for instructor access. Books and student resources are ready to use in the meantime.
+      checking: We're checking your instructor details. Books and student resources are ready to use in the meantime.
+      incomplete: Finish signing up to request instructor access. Books and student resources are ready to use in the meantime.
+      needs_another_way: We couldn't finish checking your instructor details yet. Books and student resources are ready to use in the meantime.
+      rejected: Books and student resources are free to use. Instructor resources aren't turned on for this account.
+      staff_school: Your account is linked to <strong>%{school}</strong>. Manage your resources and account settings here.
+      staff: Manage your resources and account settings here.
+    callout:
+      continue: Continue
+      contact_support: Contact support
+      finish_eyebrow: Finish signing up
+      in_the_meantime: In the meantime, you can access all books and resources except those that require instructor verification.
+      pending_review:
+        eyebrow: Instructor verification
+        title: We're processing your request
+        body_with_email: >-
+          We will verify your instructor status within 3-4 business days.
+          Updates on your verification status will be sent to <b>%{email}</b>.
+        body: We will verify your instructor status within 3-4 business days.
+      checking:
+        eyebrow: Instructor verification
+        title: Your verification is in progress
+        body: We're still checking your details. This page will show your new status when the check finishes.
+      another_way:
+        eyebrow: Instructor verification
+        title: Let's try another way to verify you
+      needs_support:
+        eyebrow: Instructor verification
+        title: We couldn't finish verifying you
+        body_rejected: We couldn't confirm your instructor status automatically. If you think that's a mistake, our support team can take another look.
+        body_unfinished: Your verification didn't finish. Our support team can take a look and verify you by hand.
+      start_verification:
+        title: Confirm you teach to get instructor resources
+      finish_profile:
+        title: Tell us about your teaching
+        body: One last step. A few questions about your courses and books help us point you to the right resources.
+        title_staff: Tell us about your work
+        body_staff: One last step. A few questions about your role help us point you to the right resources.
+      rejected:
+        eyebrow: Instructor access
+        title: We couldn't confirm your instructor status
+        body: Books and student resources are still free to use. If you think we got this wrong, our support team can take another look.
+        button: Get help with your request
+      enrich:
+        eyebrow: A couple more details
+        title: Add a few teaching details
+        body: You skipped some questions when you signed up. Answer them and we can point you to the right book resources.
+        button: Add details
+
   profile_nudge_banner:
     heading: Finish setting up your instructor account
-    body: You verified your instructor status -- just a couple more questions and you're done.
+    body: You're verified. A couple more questions and your instructor account is set up.
+    body_unverified: A couple more questions and your signup is done.
     finish_button: Finish setting up
     dismiss_button: Dismiss
 
@@ -127,23 +230,68 @@ en:
     sign_up: Sign up
     student: Student
     educator: Educator / Researcher
+    staff: Staff & administrators
     step_counter: Step %{current_step} of %{total_steps}
     login_page_header: Log in to your OpenStax account
+    login_page_welcome_header: Welcome back
     login_with: 'Log in with:'
     signup_with: 'Sign up with:'
     signup_page_header: Set up your account
+    student_signup_page_header: Sign up — it's free, forever
+    educator_signup_page_header: Create your instructor account
+    educator_signup_social_proof: Join 50,000+ instructors who've saved students over $2 billion.
+    student_signup_footer_note: "Next: verify your email. That's it."
+    step_counter_with_label: Step %{current_step} of %{total_steps} · %{label}
+    step_label_account: Account
+    step_label_verify_email: Verify email
+    instructor_back_label: Instructor
+    or_sign_up_with_email: or sign up with email
+    school_email_label: School email
+    school_optional_suffix: (optional)
+    school_email_soft_helper: Use your <strong>school</strong> email (usually .edu or .org) — it's required to verify you as an educator in step 3.
+    check_your_email_header: Check your email
+    verify_email_sub_description: We sent a 6-digit code to <strong>%{email}</strong> — %{edit_link}
+    verify_email_edit_link: edit
+    verify_email_resend_footer: Didn't get it? %{resend_link} · Check your spam folder
+    verify_email_resend_footer_with_contact: Didn't get it? %{resend_link} · Check your spam folder · %{contact_us_link}
+    verify_email_resend_link: Resend code
     confirmation_page_header: Hi, %{first_name}! Confirm your email.
     change_signup_email_form_page_header: Change your email
     change_signup_email_form_page_description: >-
       Change your email below so we can send your PIN.
       You will need to use this updated email to log in.
+    sheerid_verification_page_header: Verify you're an educator
+    sheerid_verification_page_description: >-
+      Instructor resources include answer keys, so we confirm educator
+      status once. It usually only takes a minute.
+    sheerid_verification_step_phase: Verification
+    school_email_gate_title: We need your school email to verify you
+    school_email_gate_description_html: >-
+      You signed up with <strong>%{current_email}</strong>. Verification
+      checks your institution's records, so it needs an address at your
+      school (usually ending in <strong>.edu</strong> or <strong>.org</strong>).
+    school_email_gate_note: >-
+      We'll add it to your account and send a one-time code to confirm it's yours.
+    school_email_invalid: Please enter a valid email address.
+    use_current_email_anyway: Use my current email anyway
+    sheerid_manual_review_link: Can't verify right now? %{link}
+    sheerid_manual_review_link_text: Continue with manual review
     didnt_receive_email: Didn't receive an email? You can %{sign_up_with_different_email_link}.
     all_fields_required: '* All fields are required'
     sign_up_with_different_email: sign up with a different email
     check_your_updated_email: Check your updated email
     havent_received_message: Still haven't received an email? %{contact_us}
     contact_us: Contact us
-    welcome_page_header: Welcome! Join OpenStax as
+    welcome_page_header: Create your free account
+    welcome_page_subheader: >-
+      Everything on OpenStax is free. Tell us how you'll use it
+      so we can set things up right.
+    choose_role_divider: SELECT YOUR ROLE TO CONTINUE
+    join_as_educator_title: I'm an instructor
+    join_as_student_title: I'm a student
+    join_as_staff_title: I support instruction
+    already_have_account: Already have an account? %{log_in}
+    log_in: Log in
     email_placeholder: me@myemail.com
     phone_number_placeholder: '(555)555-5555'
     school_issued_email_placeholder: email@myschool.edu
@@ -165,6 +313,7 @@ en:
       If not, please enter your school email address.
     or_login_below: OR LOG IN BELOW
     or_sign_up_below: OR SIGN UP BELOW
+    or_divider: or
     send_me_newsletter: Send me OpenStax marketing emails
     agree_to_terms_of_use: I agree to the %{terms_of_use} and %{privacy_policy}
     youre_done: You're done, %{first_name}!
@@ -196,11 +345,14 @@ en:
       student: You're now signing up as a student.
       educator: You're now signing up as an educator.
     join_as_student_description: >-
-      Sign up for a <b>Student</b> account to create and save
-      notes and highlights in OpenStax study materials.
+      Using an OpenStax book for a course. Save notes and highlights
+      in your study materials. Two quick steps.
     join_as_educator_description: >-
-      Sign up for an <b>Educator</b> account to adopt a book and access locked
-      instructor content and free resources integrated with your book.
+      Teaching with OpenStax, or thinking about it. Unlocks answer keys,
+      slides, and instructor resources.
+    join_as_staff_description: >-
+      Librarians, administrators, and instructional staff who help choose and
+      use OpenStax books but don't teach a course themselves.
     send_me_instructions: Send me instructions
     return: Return
     login_unsuccessful: Login unsuccessful
@@ -239,7 +391,7 @@ en:
       You have made too many login attempts recently. Please
       reset your password or try again later.
     profile_newflow_page_header: My Account
-    how_you_log_in: How you log in
+    how_you_log_in: Log in method
     sign_in_option_already_used: >-
         That login option is already used by someone else. If that someone is
         you, remove it from your other account and try again.
@@ -271,6 +423,46 @@ en:
       the remaining steps to verify your instructor status.
     educator_email_verification_help_msg: See a typo in your email address? %{edit_it_here}. Didn't receive a message? %{contact_us_link}.
     edit_it_here: Edit it here
+
+    # Lifelong learner (self-learner) signup path
+    learner_escape_hatch: Just here to learn for yourself? %{skip_the_questions}
+    learner_skip_the_questions: Skip the questions →
+    learner_signup_page_header: Save your place — that's it
+    learner_signup_page_subheader: >-
+      An account keeps your books, notes, and highlights synced across devices.
+      No course, no forms.
+    learner_continue_with_google: Continue with Google
+    learner_continue_with_facebook: Continue with Facebook
+    learner_or_use_email: or use email
+    learner_create_account_button: Create account
+    learner_agrees_to_terms_html: >-
+      By continuing you agree to the %{terms_of_use} and %{privacy_policy}.
+    learner_email_verification_form_decription: >-
+      We emailed a code to <b>%{email}</b>.
+      Enter it below to continue.
+      You can also %{edit_your_email}
+    learner_welcome_header: Welcome to OpenStax
+    learner_welcome_title: You're all set%{first_name}
+    learner_welcome_subheader: >-
+      Everything here is free to read, forever. Save what you're learning and
+      pick up wherever you left off — on any device.
+    learner_find_something_title: What do you want to learn?
+    learner_find_something_subheader: Browse 70+ free books, or search for a topic.
+    learner_search_placeholder: Try "astronomy", "statistics", "U.S. history"…
+    learner_popular_title: Popular with self-learners
+    learner_start_reading: Start reading →
+    learner_account_glance_title: Your account, at a glance
+    learner_save_books_title: Save books
+    learner_save_books_desc: Keep a shelf of what you're reading.
+    learner_notes_highlights_title: Notes & highlights
+    learner_notes_highlights_desc: Mark up any book — synced everywhere.
+    learner_pick_up_anywhere_title: Pick up anywhere
+    learner_pick_up_anywhere_desc: Your place follows you across devices.
+    learner_go_to_account: Go to my account →
+
+    staff_email_verification_form_description: >-
+      We emailed a code to <b>%{email}</b>.
+      Enter it below — once we confirm your email, you'll tell us a bit about your work.
 
   student_profile:
     enable_other_sign_in_options: Enable other login options
@@ -532,8 +724,17 @@ en:
         name: Minimum reCAPTCHA score allowed to register a new account
         help_block: Humans should score closer to 1, bots should score closer to 0
       disable_recaptcha:
-        name: Disable reCAPTCHA
-        help_block: 'Disable reCAPTCHA verification for all users. WARNING: This bypasses bot protection and should only be used temporarily when the reCAPTCHA service is unavailable.'
+        name: 'Disable reCAPTCHA?'
+        help_block: 'If checked, reCAPTCHA verification is turned off'
+      push_adoption_reports_enabled:
+        name: 'Push adoption reports to Salesforce?'
+        help_block: 'If checked (and SF configured), instructors'' "using" adoption reports are written to their Contact or Lead (AdoptionsJSON__c) and become OpenStax Confirmed Adoptions'
+      push_book_interest_enabled:
+        name: 'Push "Considering it" books to Salesforce?'
+        help_block: 'If checked (and SF configured), books instructors mark "Considering it" are merged into Subject_Interest__c on their Contact or Lead'
+      adoption_review_student_threshold:
+        name: Adoption report review threshold (students)
+        help_block: A "using" adoption report with more students than this for one book in one school year is held for staff review at /admin/adoption_reviews instead of being pushed to Salesforce.
 
   layouts:
     application_footer:
@@ -958,3 +1159,113 @@ en:
         trouble_logging_in: Trouble logging in?
         reset_password: Click here to reset it
         add_password: Click here to add a password
+
+  annual_check_in:
+    eyebrow: Annual check-in
+    heading: Are you teaching with these books in %{school_year}?
+    body: Tell us which ones you're using this year. It takes about a minute.
+    reason: Every report helps fund new free titles.
+    using_label: Using this year
+    not_using_label: Not using
+    students_label: Students
+    how_using_label: How are you using it?
+    school_label: School
+    no_school: No school added yet
+    change: Change
+    confirm_button: Confirm
+    dismiss_button: Remind me later
+    confirmed_flash: Thanks, your check-in is saved.
+    confirmed_using_flash: "Thank you. You counted %{books} and %{students} for %{school_year}. They will show in your impact once we confirm them."
+    confirmed_using_books_only_flash: "Thank you. You counted %{books} for %{school_year}. They will show in your impact once we confirm them."
+    flash_books:
+      one: "%{count} book"
+      other: "%{count} books"
+    flash_students:
+      one: "%{count} student"
+      other: "%{count} students"
+    dismissed_flash: No problem. We'll ask again in a week.
+    spring:
+      eyebrow: Spring check-in
+      heading: New term. Still teaching with these books?
+      body: "Spring classes count toward %{school_year}. Update anything that changed; it takes about a minute."
+      reason: Your report helps us secure the funding that keeps OpenStax free.
+      students_label: Students this school year (fall and spring together)
+      students_hint: An estimate is fine.
+      confirmed_flash: Thanks, your spring check-in is saved.
+      confirmed_using_flash: "Thank you. You counted %{books} and %{students} for %{school_year}, fall and spring together. They will show in your impact once we confirm them."
+      confirmed_using_books_only_flash: "Thank you. You counted %{books} for %{school_year}. They will show in your impact once we confirm them."
+    nothing_answered: Choose "Using this year" or "Not using" for at least one book, or select "Remind me later."
+    streak:
+      lead: "Year %{year} with OpenStax."
+      rest: Thank you for sticking with us.
+      grace: Missed a year? Pick up where you left off.
+
+  overview_impact:
+    title: Your impact
+    students: Students reached
+    savings: Estimated student savings
+    years: Years with OpenStax
+    books_answered: "You've told us about %{answered} of your %{saved} saved books for %{school_year}"
+    pending_students_books: "+%{students} from %{books}, pending. They count once we confirm them."
+    pending_books: "+%{books}, pending. They count once we confirm them."
+    reason: Reports like yours are how we show funders that free books reach real students.
+    report_button: Report a book you use
+    full_impact: See your full impact
+    empty_title: Your impact starts here
+    empty_body: Report the books you teach with and you will see how many students you reach, and what they save.
+    empty_reason: Your report helps us secure the funding that keeps OpenStax free. It takes about a minute.
+    quick_action_title: Count your students
+    quick_action_body: Add the books you teach with this term. It takes about a minute.
+    quick_action_cta: Count my students →
+
+  impact_review_hold:
+    chip: "We're checking this one"
+
+  books_report_nudge:
+    saved: "Saved. Let us know below if you're teaching with it, considering it, or just looking."
+
+  book_interest:
+    heading: Books you're interested in
+    intro: These are the books you've told OpenStax you're interested in. Keep the list current so we know what matters to you.
+    empty: You haven't added any books yet. Choose one below to start your list.
+    add_label: Add a book
+    add_placeholder: Choose a book
+    add_button: Add to my list
+    remove: Remove
+    from_list: from your interests
+    added: "Added %{title} to your interests."
+    removed: "Removed %{title} from your interests."
+    already: "%{title} is already in your interests."
+    unknown_book: We couldn't find that book. Please choose one from the list.
+    not_listed: That book isn't on your list.
+    not_available: Book interests are for instructors and staff.
+  overview_books:
+    heading: Your books this term
+    reported: "Reported for %{school_year}"
+    no_answer: Tell us where you are with it
+    no_answer_for: "for %{title}"
+    see_all: "See all your books (%{count})"
+    manage: Manage your books
+    empty: Save the books you use or are thinking about, and they'll be here when you need them.
+    empty_link: Save books
+  overview_profile_strip:
+    title: "Your profile is %{percent}% complete"
+    remaining: "Still to do:"
+    items:
+      school: Add your school
+      books: Save a book
+      adoption: Report a book you use
+      lms: Answer the LMS question
+  support_links:
+    status: Check whether OpenStax services are running
+    news: Get OpenStax news and updates
+  book_status:
+    label: This term
+    group_name: "Where are you with %{title} this term?"
+    teaching: Teaching with it
+    considering: Considering it
+    browsing: Just looking
+    not_using: Not teaching with it this year
+    change: Change
+    saved: "Thanks. We've saved your answer for %{school_year}."
+    failed: We couldn't save that answer. Please try again.

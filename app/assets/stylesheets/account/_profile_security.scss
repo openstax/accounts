@@ -1,0 +1,667 @@
+// Profile and Security tabs. Rows are label/value pairs inside one flat group;
+// x-editable's inline form, the email list and the sign-in methods share the
+// same input, button and chip treatment. rem is 10px (see _tokens.scss).
+
+.account-profile__section {
+  margin-top: 3.2rem;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
+}
+
+.account-profile__section-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--os-surface);
+  border: 1px solid var(--os-border);
+  border-radius: var(--os-radius);
+  padding: 0 2.4rem;
+
+  @include width-up-to($os-phone-max) {
+    padding: 0 1.6rem;
+  }
+}
+
+.account-profile__field {
+  display: grid;
+  grid-template-columns: 22rem minmax(0, 1fr);
+  gap: 2.4rem;
+  padding: 1.6rem 0;
+  border-bottom: 1px solid var(--os-border);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  @include width-up-to($os-phone-max) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.4rem;
+  }
+}
+
+.account-profile__label {
+  @include set-font(helper-label);
+  font-weight: 700;
+  color: var(--os-text-helper);
+}
+
+.account-profile__value {
+  @include set-font(body-regular);
+  min-width: 0;
+  color: var(--os-text);
+  overflow-wrap: anywhere;
+
+  p {
+    margin: 0;
+  }
+}
+
+.account-profile__value--stacked,
+.account-profile__value--editable {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.account-profile__edit-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.6rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.account-profile__text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.account-profile__list {
+  list-style: none;
+  margin: 0 0 0.8rem;
+  padding: 0;
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.8rem;
+    padding: 0.2rem 0;
+  }
+}
+
+// Text actions: links styled as the contract's "text action", plus the pencil
+// buttons x-editable binds to (they keep their ids and data-* hooks).
+.account-profile__security-link,
+.account-profile__edit-button,
+.account-security__add-email,
+.account-security__other-providers summary,
+.account-security__delete-button,
+.account-security__email-list .email-entry__toggle,
+.account-security__auth-list .authentication .mod {
+  @include set-font(helper-label);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.8rem;
+  padding: 0 0.2rem;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--os-link);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--os-link-hover);
+    background: transparent;
+    text-decoration: underline;
+  }
+
+  @include width-up-to($os-phone-max) {
+    min-height: 4.4rem;
+  }
+}
+
+.account-profile__security-link,
+.account-security__add-email {
+  @include set-font(body-regular);
+  font-weight: 700;
+}
+
+.account-profile__security-link::after {
+  content: "\2192";
+  display: inline-block;
+  text-decoration: none;
+}
+
+.account-profile__edit-button {
+  .glyphicon {
+    font-size: 1.4rem;
+    top: 0;
+  }
+}
+
+.account-security__add-email {
+  width: fit-content;
+}
+
+.account-security__delete-button {
+  font-weight: 400;
+}
+
+// Focus ring on every interactive element in the two tabs. Declared at a
+// specificity that beats the shell-wide outline in _interaction.scss.
+.account-layout .account-shell__body {
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  input:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    box-shadow: var(--os-focus-ring);
+    border-radius: var(--os-radius);
+  }
+}
+
+// Chips
+.account-profile__chip,
+.account-security__email-list .unconfirmed-warning,
+.account-security__email-list .email-entry.verified .email-entry__value::after {
+  @include set-font(helper-label);
+  display: inline-block;
+  margin: 0;
+  padding: 0.2rem 0.8rem;
+  border-radius: 3px;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--os-text);
+  background: var(--os-info-bg);
+  white-space: nowrap;
+}
+
+.account-profile__chip--success,
+.account-security__email-list .email-entry.verified .email-entry__value::after {
+  background: var(--os-success-bg);
+  color: var(--os-success-text);
+}
+
+.account-security__email-list .email-entry.verified .email-entry__value::after {
+  content: "Verified";
+}
+
+.account-profile__status {
+  font-weight: 700;
+}
+
+// Help tooltip: reachable by hover and keyboard focus
+.account-profile__help {
+  @include set-font(helper-label);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  margin-left: 0.8rem;
+  border-radius: 50%;
+  background: var(--os-info-bg);
+  border: 1px solid var(--os-info-border);
+  color: var(--os-text);
+  font-weight: 700;
+  cursor: help;
+
+  &::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 0;
+    top: calc(100% + 0.8rem);
+    z-index: 5;
+    width: 26rem;
+    max-width: calc(100vw - 6.4rem);
+    padding: 0.8rem 1.2rem;
+    background: var(--os-text);
+    color: #fff;
+    border-radius: var(--os-radius);
+    box-shadow: var(--os-shadow-card);
+    font-weight: 400;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--os-dur) var(--os-ease-out);
+
+    // 26rem from the icon runs past the card's right edge on a phone and widens its scroll area.
+    @include width-up-to($os-phone-max) {
+      width: 20rem;
+    }
+  }
+
+  &:hover::after,
+  &:focus::after,
+  &:focus-visible::after {
+    opacity: 1;
+  }
+}
+
+// x-editable inline form
+.account-shell__body {
+  .editable-container.editable-inline {
+    display: block;
+    width: 100%;
+    max-width: 44rem;
+    margin-top: 0.4rem;
+  }
+
+  .editableform,
+  .editableform .control-group,
+  .editableform .form-group {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+
+  .editableform .control-group > div,
+  .editableform .form-group > div {
+    display: block;
+    width: 100%;
+    white-space: normal;
+  }
+
+  .editable-input {
+    display: block;
+    width: 100%;
+
+    > div {
+      margin-bottom: 0.8rem;
+    }
+
+    .school-autocomplete {
+      width: 100%;
+    }
+
+    input.form-control,
+    input[type="text"] {
+      @include set-font(body-regular);
+      display: block;
+      width: 100%;
+      height: 4rem;
+      padding: 0 1.5rem;
+      border: 1px solid var(--os-border);
+      border-radius: 0;
+      background: var(--os-surface);
+      color: var(--os-text);
+      box-shadow: none;
+      outline: 2px solid transparent;
+
+      &::placeholder {
+        color: var(--os-text-helper);
+        opacity: 1;
+      }
+
+      &:focus {
+        border-color: var(--os-focus-border);
+        box-shadow: var(--os-focus-ring);
+      }
+    }
+  }
+
+  .editable-buttons {
+    display: flex;
+    gap: 0.8rem;
+    margin: 0.4rem 0 0;
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 4rem;
+      height: 4rem;
+      margin: 0;
+      padding: 0;
+      border-radius: var(--os-radius);
+      font-size: 1.6rem;
+      line-height: 1;
+
+      @include width-up-to($os-phone-max) {
+        width: 4.4rem;
+        height: 4.4rem;
+      }
+    }
+
+    .btn-primary {
+      background: var(--os-primary);
+      border: 1px solid var(--os-primary);
+      color: #fff;
+      box-shadow: var(--os-shadow-button);
+
+      &:hover { background: var(--os-primary-hover); border-color: var(--os-primary-hover); }
+      &:active { background: var(--os-primary-active); border-color: var(--os-primary-active); }
+      &:disabled { opacity: 0.4; }
+    }
+
+    .btn-default {
+      background: var(--os-surface);
+      border: 1px solid var(--os-border);
+      color: var(--os-text);
+      box-shadow: none;
+
+      &:hover { background: var(--os-hover-bg); }
+    }
+  }
+
+  .editable-error-block {
+    @include set-font(helper-label);
+    display: block;
+    margin: 0.8rem 0 0;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid var(--os-error);
+    background: var(--os-error-bg);
+    color: var(--os-text);
+    font-style: normal;
+    font-weight: 400;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+
+    &:empty {
+      display: none;
+    }
+  }
+}
+
+// Email list
+#add-an-email-editable {
+  padding-bottom: 0;
+  width: 100%;
+}
+
+.account-security__value {
+  gap: 1.2rem;
+  width: 100%;
+}
+
+.account-security__email-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .email-entry {
+    margin: 0;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--os-border);
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  .email-entry__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem 1.6rem;
+    flex-wrap: wrap;
+  }
+
+  .email-entry__value {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.8rem;
+    min-width: 0;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+
+    .value {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .email-entry__toggle {
+    .glyphicon {
+      font-size: 1.4rem;
+      top: 0;
+    }
+
+    &::after {
+      content: "Manage";
+    }
+  }
+
+  .email-entry__controls {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+    margin: 1.2rem 0 0;
+    padding: 1.2rem 0 0;
+    border-top: 1px solid var(--os-border);
+    background: transparent;
+    font-size: inherit;
+    overflow: visible;
+
+    > div {
+      margin: 0;
+    }
+  }
+
+  .email-entry.is-open .email-entry__controls {
+    display: flex;
+  }
+
+  .resend-confirmation {
+    margin: 0;
+    gap: 1.6rem;
+    color: var(--os-text-helper);
+
+    button {
+      @include set-font(body-regular);
+      min-height: 4rem;
+      padding: 0 3rem;
+      border: 1px solid var(--os-border);
+      border-radius: var(--os-radius);
+      background: var(--os-surface);
+      color: var(--os-text);
+      font-weight: 400;
+      text-decoration: none;
+      box-shadow: none;
+      cursor: pointer;
+
+      &:hover { background: var(--os-hover-bg); }
+      &:disabled { opacity: 0.4; cursor: default; }
+    }
+  }
+
+  .resend-confirmation__form {
+    margin: 0;
+  }
+
+  .email-entry.verified .resend-confirmation {
+    display: none;
+  }
+
+  .delete {
+    margin: 0;
+  }
+
+  .searchable-toggle label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-weight: 400;
+    cursor: pointer;
+
+    input[type="checkbox"] {
+      width: 2rem;
+      height: 2rem;
+      margin: 0;
+      accent-color: var(--os-link);
+    }
+  }
+
+  .spinner {
+    color: var(--os-text-helper);
+  }
+}
+
+.account-profile__section-card .email-entry.new {
+  padding: 1.2rem 0 0;
+  border: 0;
+  background: transparent;
+}
+
+// Sign-in methods
+.account-security__auth-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .authentication {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.2rem;
+    margin: 0;
+    padding: 1.2rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--os-border);
+    border-radius: 0;
+    background: transparent;
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .icon {
+      color: var(--os-text);
+    }
+
+    .name {
+      @include set-font(body-regular);
+      width: auto;
+      min-width: 8rem;
+      font-weight: 700;
+    }
+
+    .fa-stack-1x,
+    .fa-stack-2x {
+      color: var(--os-text);
+    }
+
+    .mod-holder {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.6rem;
+      width: auto;
+      margin-left: auto;
+
+      > span {
+        margin-left: 0;
+      }
+    }
+
+    // The action links are icon-only glyphicons with an aria-label; show that
+    // label as the link text instead.
+    .mod {
+      font-family: inherit;
+      top: 0;
+      color: var(--os-link) !important;
+
+      &::before {
+        display: none;
+      }
+
+      &::after {
+        content: attr(aria-label);
+      }
+
+      &:hover {
+        color: var(--os-link-hover) !important;
+      }
+    }
+
+    &.editing .mod-holder {
+      display: none;
+    }
+  }
+
+  &.account-security__auth-list--other .delete--newflow,
+  &.account-security__auth-list--other .edit--newflow {
+    display: none;
+  }
+
+  // Enabled methods can be edited (password only) or removed, never added again.
+  &:not(.account-security__auth-list--other) .authentication {
+    .add--newflow,
+    .add {
+      display: none;
+    }
+
+    &:not([data-provider="identity"]) .edit--newflow,
+    &:not([data-provider="identity"]) .edit {
+      display: none;
+    }
+
+    &:only-child .delete--newflow,
+    &:only-child .delete {
+      display: none;
+    }
+  }
+}
+
+.account-security__other-providers {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+
+  summary {
+    width: fit-content;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::after {
+      content: "\2192";
+      display: inline-block;
+      text-decoration: none;
+    }
+  }
+
+  &[open] {
+    padding: 0;
+    border: 0;
+
+    summary {
+      margin-bottom: 1.2rem;
+    }
+
+    summary::after {
+      content: "\2193";
+    }
+  }
+
+  .authentication .mod-holder .delete,
+  .authentication .mod-holder .edit {
+    display: none;
+  }
+}
