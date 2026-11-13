@@ -225,29 +225,18 @@ end
 
 def expect_sheerid_iframe
   within_frame do
-    expect(page).to have_text(sheerid_iframe_page_title)
-    expect(page.find('#sid-country')[:value]).to have_text('United States', exact: false)
-    expect(page.find('#sid-teacher-school')[:value]).to be_blank
-    expect(page.find('#sid-first-name')[:value]).to have_text(first_name)
-    expect(page.find('#sid-last-name')[:value]).to have_text(last_name)
-    expect(page.find('#sid-email')[:value]).to have_text(email_value)
-    expect(page).to have_text('Can\'t find your country in the list? Click here.')
-    expect(page).to have_text('Can\'t find your school in the list? Click here.')
-    expect(page).to have_text(iframe_submit_button_text)
-
-    # fill_in('First name', with: 'APPROVED')
-    # fill_in('School name', with: 'Rice University')
-    # find('#downshift-0-item-0').click
-    # expect(page).to have_text('Rice University (Houston, TX)')
-    # expect(page).not_to have_text('Verification Limit Exceeded', exact: false)
-    # click_on('Verify my instructor status')
-    # click_on('Continue')
-    # expect(page).to have_current_path(educator_profile_form_path)
-
-    # find('#sid-teacher-school').click
-    # <div class="sid-organization-list__item sid-organization-list__item--highlighted" id="downshift-0-item-0" role="option" aria-selected="true" style="position: absolute; top: 0px; left: 0px; width: auto; height: 42px;">Rice University (Houston, TX)</div>
-    # downshift-0-item-0
-    # screenshot!
+    # Everything readable in this frame -- headings, button labels, the
+    # "can't find your school" hints, whether Country comes preselected -- is
+    # configured in SheerID's Program Builder, so asserting on it makes this
+    # spec fail whenever someone edits the program. Assert what is actually our
+    # contract: the form rendered, and our postMessage prefill reached it.
+    expect(page).to have_css('#sid-country')
+    # `disabled: :all` because whether the school field starts enabled depends on
+    # the program preselecting a country, which is a Program Builder setting.
+    expect(page).to have_field('sid-teacher-school', with: '', disabled: :all)
+    expect(page).to have_field('sid-first-name', with: first_name)
+    expect(page).to have_field('sid-last-name', with: last_name)
+    expect(page).to have_field('sid-email', with: email_value)
   end
 end
 

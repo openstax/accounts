@@ -145,8 +145,6 @@ module Settings
       field :educator_feature_flag, type: :boolean, default: true
       field :expected_start_semester_enabled, type: :boolean, default: false
       field :collect_student_count_all_paths, type: :boolean, default: false
-      field :sheer_id_base_url,
-            type: :string, default: 'https://offers.sheerid.com/openstax/staging/teacher/?env=dev'
       field :number_of_days_contacts_modified, type: :integer, default: 7
       # rails-settings-ui infers a field's form type from its default, and a nil
       # default breaks the whole "save all" form (ACCOUNTS-78T). Blank means unset.
