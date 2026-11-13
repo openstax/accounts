@@ -8,6 +8,7 @@ describe PushUserActivityToSalesforce, type: :routine do
     allow(Settings::Salesforce).to receive(:push_contact_logins_enabled) { false }
     allow(Settings::Salesforce).to receive(:push_last_seen_enabled) { false }
     allow_any_instance_of(described_class).to receive(:fetch_created_students).and_return([])
+    allow_any_instance_of(described_class).to receive(:sync_student_signup_dates)
   end
 
   context 'when the setting is disabled' do
@@ -197,16 +198,17 @@ describe PushUserActivityToSalesforce, type: :routine do
     context 'initial book resolution' do
       let(:book_remote) { OpenStax::Salesforce::Remote::Book }
 
-      # The real `where` returns an ActiveQuery, not an Array: it forwards only
+      # The real `all` returns an ActiveQuery, not an Array: it forwards only
       # each/map/inspect, so a plain Array stub hid a NoMethodError (ACCOUNTS-790).
+      # Resolution itself is covered in initial_book_resolver_spec.
       before do
         books = [
-          double(id: 'a0BTEST1', osc_url: 'https://openstax.org/details/books/chemistry-2e'),
-          double(id: 'a0BTEST2', osc_url: 'https://openstax.org/details/books/biology-2e')
+          double(id: 'a0BTEST1', name: 'Chemistry', osc_url: 'https://openstax.org/details/books/chemistry-2e'),
+          double(id: 'a0BTEST2', name: 'Biology', osc_url: 'https://openstax.org/details/books/biology-2e')
         ]
-        allow(book_remote).to receive(:where).with('OSC_URL__c != null').and_return(
-          instance_double(ActiveForce::ActiveQuery, to_a: books)
-        )
+        allow(book_remote).to receive(:all).and_return(instance_double(ActiveForce::ActiveQuery, to_a: books))
+        allow_any_instance_of(FetchBookData).to receive(:abbreviations_by_slug).and_return({})
+        allow(Sentry).to receive(:capture_message)
       end
 
       def expect_created_with_book_id(expected_book_id)
@@ -995,6 +997,133 @@ describe PushUserActivityToSalesforce, type: :routine do
 
         expect(linked_student.reload.salesforce_student_last_seen_pushed_at).to be_nil
       end
+    end
+  end
+
+  describe 'pass 5: signup date for linked students' do
+    let(:sfdc_client) { double('sfdc client') }
+    let(:sent) { [] }
+
+    before do
+      allow_any_instance_of(described_class).to receive(:sync_student_signup_dates).and_call_original
+      allow_any_instance_of(described_class).to receive(:link_and_create_students)
+      allow(remote).to receive(:sfdc_client).and_return(sfdc_client)
+      allow(sfdc_client).to receive(:batch) do |&block|
+        subrequests = double('subrequests')
+        allow(subrequests).to receive(:update) { |_object, payload| sent << payload }
+        block.call(subrequests)
+        Array.new(sent.size) { { 'statusCode' => 204 } }
+      end
+    end
+
+    def linked_student(**attrs)
+      FactoryBot.create :user, role: :student, salesforce_student_id: "a0SIGN#{SecureRandom.hex(5)}", **attrs
+    end
+
+    it 'sends created_at as a UTC date and stamps the value sent' do
+      student = linked_student(created_at: Time.utc(2026, 3, 4, 23, 30))
+
+      described_class.call
+
+      expect(sent).to eq [{ Id: student.salesforce_student_id, Signup_Date__c: '2026-03-04' }]
+      expect(student.reload.salesforce_student_signup_pushed_at).to be_within(1.second).of(Time.utc(2026, 3, 4, 23, 30))
+    end
+
+    it 'skips unlinked students, non-students and already-stamped students' do
+      FactoryBot.create :user, role: :student
+      FactoryBot.create :user, role: :instructor, salesforce_student_id: 'a0SIGNINSTR01'
+      linked_student(salesforce_student_signup_pushed_at: 1.day.ago)
+
+      expect(sfdc_client).not_to receive(:batch)
+
+      described_class.call
+    end
+
+    it 'does not send a student a second time' do
+      linked_student
+      described_class.call
+      sent.clear
+
+      described_class.call
+
+      expect(sent).to be_empty
+    end
+
+    it 'respects the per-run cap and sends the newest signups first' do
+      stub_const('PushUserActivityToSalesforce::SIGNUP_DATE_MAX_PER_RUN', 3)
+      stub_const('PushUserActivityToSalesforce::BATCH_SIZE', 2)
+      students = Array.new(5) { linked_student }
+
+      described_class.call
+
+      expect(sent.map { |payload| payload[:Id] }).to eq students.last(3).reverse.map(&:salesforce_student_id)
+      expect(students.first(2).map { |s| s.reload.salesforce_student_signup_pushed_at }).to all(be_nil)
+      expect(students.last(3).map { |s| s.reload.salesforce_student_signup_pushed_at }).to all(be_present)
+    end
+
+    it 'sends students linked earlier in the same run' do
+      student = FactoryBot.create :user, role: :student
+      allow_any_instance_of(described_class).to receive(:link_new_salesforce_students) do
+        student.update_columns(salesforce_student_id: 'a0SIGNLINKED1')
+      end
+
+      described_class.call
+
+      expect(sent.map { |payload| payload[:Id] }).to include('a0SIGNLINKED1')
+    end
+
+    it 'does nothing when push_students_enabled is off' do
+      linked_student
+      allow(Settings::Salesforce).to receive(:push_students_enabled) { false }
+      expect(sfdc_client).not_to receive(:batch)
+
+      described_class.call
+    end
+
+    it 'unlinks a student whose record is gone, clearing every student stamp' do
+      student = linked_student(salesforce_student_pushed_at: 1.day.ago)
+      allow(sfdc_client).to receive(:batch) do |&block|
+        subrequests = double('subrequests')
+        allow(subrequests).to receive(:update)
+        block.call(subrequests)
+        [Restforce::Mash.new('statusCode' => 404, 'result' => [{ 'errorCode' => 'ENTITY_IS_DELETED' }])]
+      end
+      expect(Sentry).not_to receive(:capture_message)
+
+      described_class.call
+
+      student.reload
+      expect(student.salesforce_student_id).to be_nil
+      expect(student.salesforce_student_signup_pushed_at).to be_nil
+      expect(SecurityLog.find_by!(user: student, event_type: :salesforce_record_unlinked).event_data)
+        .to include('pass' => 'student_signup')
+    end
+
+    it 'treats INVALID_FIELD as a failure: reports once, keeps the link, leaves the stamp NULL' do
+      students = Array.new(2) { linked_student }
+      allow(sfdc_client).to receive(:batch) do |&block|
+        subrequests = double('subrequests')
+        allow(subrequests).to receive(:update)
+        block.call(subrequests)
+        Array.new(2) do
+          Restforce::Mash.new(
+            'statusCode' => 400,
+            'result' => [{ 'errorCode' => 'INVALID_FIELD', 'message' => 'No such column Signup_Date__c' }]
+          )
+        end
+      end
+      expect(Sentry).to receive(:capture_message).once do |message, _options|
+        expect(message).to include('student signup dates', '2 users')
+      end
+
+      described_class.call
+
+      students.each do |student|
+        student.reload
+        expect(student.salesforce_student_id).to be_present
+        expect(student.salesforce_student_signup_pushed_at).to be_nil
+      end
+      expect(SecurityLog.where(event_type: :salesforce_record_unlinked)).to be_empty
     end
   end
 
