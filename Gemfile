@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '6.1.7.8'
+gem 'rails', '6.1.7.10'
 gem 'rails-i18n'
 
 # Psych 4 (included in Ruby 3.1) breaks Rails < 7
@@ -21,7 +21,9 @@ gem 'logger', '< 1.6'
 gem 'bootsnap', require: false
 
 # Threaded application server
-gem 'puma'
+# Pinned below puma 8 for now; that's a newer major bump than the current
+# security-patch pass covers and hasn't been vetted against config/puma.rb.
+gem 'puma', '~> 7.2'
 
 # Prevent server memory from growing until OOM
 gem 'puma_worker_killer'
@@ -106,6 +108,11 @@ gem 'smarter_csv'
 gem 'apipie-rails'
 gem 'maruku'
 gem 'rexml'
+
+# Transitive dep of actiontext/capybara/etc. Pinned explicitly: nokogiri >= 1.19.0
+# dropped Ruby 3.1 support, so 1.18.10 is the newest version installable here.
+# Bump to >= 1.19 once this app moves to Ruby >= 3.2.
+gem 'nokogiri', '~> 1.18.10'
 
 gem 'jbuilder'
 
