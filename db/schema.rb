@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_09_26_000300) do
+ActiveRecord::Schema.define(version: 2026_10_30_120000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -468,6 +468,8 @@ ActiveRecord::Schema.define(version: 2026_09_26_000300) do
     t.datetime "salesforce_contact_last_seen_pushed_at"
     t.datetime "profile_nudge_redirected_at"
     t.datetime "profile_completed_at"
+    t.string "salesforce_student_pushed_external_id"
+    t.string "salesforce_contact_pushed_external_id"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"

@@ -35,6 +35,14 @@ module Settings
         Settings::Db.store.push_salesforce_last_seen_enabled = bool
       end
 
+      def push_external_ids_enabled
+        Settings::Db.store.push_salesforce_external_ids_enabled
+      end
+
+      def push_external_ids_enabled=(bool)
+        Settings::Db.store.push_salesforce_external_ids_enabled = bool
+      end
+
       def user_info_error_emails_enabled
         Settings::Db.store.user_info_error_emails_enabled
       end

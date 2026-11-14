@@ -505,6 +505,51 @@ describe User, type: :model do
     end
   end
 
+  describe 'Salesforce Contact push stamps' do
+    let(:user) do
+      FactoryBot.create :user, salesforce_contact_id: '003OLDCONTACT',
+        salesforce_contact_login_pushed_at: 1.day.ago,
+        salesforce_contact_last_seen_pushed_at: 1.day.ago,
+        salesforce_contact_pushed_external_id: 'sent-to-old-contact'
+    end
+
+    it 'are cleared when any save points the user at a different Contact' do
+      user.update!(salesforce_contact_id: '003NEWCONTACT')
+
+      user.reload
+      User::SALESFORCE_CONTACT_PUSH_STAMPS.each { |column| expect(user.public_send(column)).to be_nil }
+    end
+
+    it 'are cleared when the Contact is removed' do
+      user.update!(salesforce_contact_id: nil)
+
+      expect(user.reload.salesforce_contact_pushed_external_id).to be_nil
+    end
+
+    it 'are kept by a save that leaves the Contact alone' do
+      user.update!(first_name: 'Renamed')
+
+      expect(user.reload.salesforce_contact_pushed_external_id).to eq 'sent-to-old-contact'
+    end
+  end
+
+  describe '#latest_external_id' do
+    let(:user) { FactoryBot.create :user }
+
+    it 'is the most recently created, with the higher id breaking a tie' do
+      instant = 1.day.ago
+      FactoryBot.create :external_id, user: user, created_at: 2.days.ago
+      FactoryBot.create :external_id, user: user, created_at: instant
+      tied_later = FactoryBot.create :external_id, user: user, created_at: instant
+
+      expect(user.reload.latest_external_id).to eq tied_later
+    end
+
+    it 'is nil without any external ids' do
+      expect(user.latest_external_id).to be_nil
+    end
+  end
+
   describe 'books_used_details' do
     context 'books_used_details validation' do
       it 'adds error when hash contains invalid keys' do
