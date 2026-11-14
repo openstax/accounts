@@ -136,6 +136,8 @@ class SecurityLog < ApplicationRecord
     salesforce_record_unlinked
     signup_email_resent
     signup_email_changed
+    deleted_salesforce_lead_after_role_switch
+    not_creating_salesforce_lead_for_student
   ]
 
   json_serialize :event_data, Hash

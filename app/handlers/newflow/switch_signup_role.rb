@@ -9,8 +9,7 @@ module Newflow
     # rejected_faculty rather than no_faculty_info: student role + rejected_faculty is
     # the established marker for "came through the educator funnel, isn't faculty" --
     # `UpdateUserLeadInfo` skips those switched students, and UpdateUserContactInfo
-    # won't downgrade it, so the marker survives both nightly syncs and stays
-    # countable in Salesforce.
+    # won't downgrade it, so the marker survives both nightly syncs.
     EDUCATOR_ARTIFACTS = {
       faculty_status: User::REJECTED_FACULTY,
       sheerid_verification_id: nil,
@@ -34,7 +33,7 @@ module Newflow
 
       fatal_error(code: :no_signup_in_progress) if user.nil?
 
-      update_salesforce_lead = false
+      remove_salesforce_lead = false
 
       user.with_lock do
         # They already passed verification; a stray click shouldn't undo that.
@@ -53,7 +52,7 @@ module Newflow
           user.update(role: User::INSTRUCTOR_ROLE, faculty_status: User::INCOMPLETE_SIGNUP)
         else
           user.update(EDUCATOR_ARTIFACTS.merge(role: User::STUDENT_ROLE))
-          update_salesforce_lead = true
+          remove_salesforce_lead = true
         end
 
         transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
@@ -67,7 +66,7 @@ module Newflow
         outputs.user = user
       end
 
-      UpdateExistingSalesforceLead.perform_later(user: user) if update_salesforce_lead
+      RemoveSalesforceLeadAfterRoleSwitch.perform_later(user: user) if remove_salesforce_lead
     end
   end
 end

@@ -88,6 +88,17 @@ module Newflow
         end
       end
 
+      # Students aren't leads. A push queued while the user was still an educator (the
+      # SheerID webhook) can run after they switch, and must not bring back the lead
+      # RemoveSalesforceLeadAfterRoleSwitch deleted.
+      if lead.nil? && user.student?
+        SecurityLog.create!(user: user, event_type: :not_creating_salesforce_lead_for_student)
+        outputs.lead = nil
+        outputs.lead_saved = false
+        outputs.user = user
+        return
+      end
+
       # Only create a new lead if none exists
       if lead.nil?
         lead = OpenStax::Salesforce::Remote::Lead.new(email: user.best_email_address_for_salesforce)
