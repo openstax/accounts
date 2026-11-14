@@ -44,6 +44,21 @@ module Newflow
           expect(email.verified).to be(true)
         end
       end
+
+      context 'when failure' do
+        before { disable_sfdc_client }
+
+        let(:user) { FactoryBot.create(:user, state: 'unverified') }
+        let(:email) { FactoryBot.create(:email_address, user: user) }
+
+        it 'counts each wrong PIN exactly once' do
+          2.times do
+            described_class.call(params: { confirm: { pin: 'nope' } }, email_address: email)
+          end
+
+          expect(ConfirmByPin.sequential_failure_for(email).length).to eq 2
+        end
+      end
     end
   end
 end
