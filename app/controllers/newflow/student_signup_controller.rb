@@ -4,8 +4,8 @@ module Newflow
         student_change_signup_email_form
         student_change_signup_email
         student_email_verification_form
-        student_email_verification_form_updated_email
         student_verify_email_by_pin
+        student_resend_signup_email
       ]
     )
 
@@ -49,7 +49,10 @@ module Newflow
           user: unverified_user,
           email_address: unverified_email_address,
           success: lambda {
-            redirect_to student_email_verification_form_updated_email_path
+            after_signup_email_change(
+              verification_form_path: student_email_verification_form_path,
+              resend_posthog_event: 'student_resent_signup_email'
+            )
           },
           failure: lambda {
             @email = unverified_email_address.value
@@ -64,10 +67,6 @@ module Newflow
 
     def student_email_verification_form
       @first_name = unverified_user.first_name
-      @email = unverified_email_address.value
-    end
-
-    def student_email_verification_form_updated_email
       @email = unverified_email_address.value
     end
 
@@ -87,8 +86,19 @@ module Newflow
           @first_name = unverified_user.first_name
           @email = unverified_email_address.value
           security_log(:student_verify_email_failed, email: @email)
+          log_posthog(unverified_user, 'student_verified_email_failed', {
+            role: unverified_user.role,
+            reason: pin_failure_reason(@handler_result.errors)
+          })
           render(:student_email_verification_form)
         }
+      )
+    end
+
+    def student_resend_signup_email
+      resend_signup_email(
+        verification_form_path: student_email_verification_form_path,
+        posthog_event: 'student_resent_signup_email'
       )
     end
   end

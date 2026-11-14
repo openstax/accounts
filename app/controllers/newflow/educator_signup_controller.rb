@@ -10,8 +10,8 @@ module Newflow
         educator_change_signup_email_form
         educator_change_signup_email
         educator_email_verification_form
-        educator_email_verification_form_updated_email
         educator_verify_email_by_pin
+        educator_resend_signup_email
       ]
     )
     before_action(:newflow_authenticate_user!, only: %i[
@@ -73,7 +73,10 @@ module Newflow
           user: unverified_user,
           email_address: unverified_email_address,
           success: lambda {
-            redirect_to(educator_email_verification_form_updated_email_path)
+            after_signup_email_change(
+              verification_form_path: educator_email_verification_form_path,
+              resend_posthog_event: 'educator_resent_signup_email'
+            )
           },
           failure: lambda {
             @email = unverified_email_address.value
@@ -89,11 +92,6 @@ module Newflow
     def educator_email_verification_form
       @total_steps = 4
       @first_name = unverified_user.first_name
-      @email = unverified_email_address.value
-    end
-
-    def educator_email_verification_form_updated_email
-      @total_steps = 4
       @email = unverified_email_address.value
     end
 
@@ -114,9 +112,19 @@ module Newflow
           @first_name = unverified_user.first_name
           @email = unverified_email_address.value
           security_log(:educator_verify_email_failed, email: @email)
-          log_posthog(unverified_user, 'educator_verified_email_failed', { role: unverified_user.role })
+          log_posthog(unverified_user, 'educator_verified_email_failed', {
+            role: unverified_user.role,
+            reason: pin_failure_reason(@handler_result.errors)
+          })
           render(:educator_email_verification_form)
         }
+      )
+    end
+
+    def educator_resend_signup_email
+      resend_signup_email(
+        verification_form_path: educator_email_verification_form_path,
+        posthog_event: 'educator_resent_signup_email'
       )
     end
 
