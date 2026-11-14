@@ -194,7 +194,14 @@ module Api::V1
              readable: true,
              writeable: false,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
-             getter: ->(*) { self.school&.has_assignable_contacts }
+             getter: ->(*) { self.school&.assignable_integrated }
+
+    property :assignable_school_integration_possible,
+             type: :boolean,
+             readable: true,
+             writeable: false,
+             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+             getter: ->(*) { self.school&.assignable_integration_possible }
 
     property :assignable_user,
              type: :boolean,

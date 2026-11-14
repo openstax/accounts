@@ -12,6 +12,7 @@ RSpec.describe OXPosthog, type: :lib do
       type: 'College/University (4)',
       location: 'Domestic',
       has_assignable_contacts: true,
+      assignable_integrated: true,
     )
   end
 
@@ -322,6 +323,8 @@ RSpec.describe OXPosthog, type: :lib do
           type: 'College/University (4)',
           location: 'Domestic',
           has_assignable_contacts: true,
+          assignable_integrated: true,
+          assignable_integration_possible: false,
         }
       )
     end

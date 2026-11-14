@@ -100,6 +100,8 @@ class OXPosthog
         type: school.type,
         location: school.location,
         has_assignable_contacts: school.has_assignable_contacts,
+        assignable_integrated: school.assignable_integrated,
+        assignable_integration_possible: school.assignable_integration_possible,
       }
     )
   rescue StandardError => e
