@@ -8,10 +8,12 @@ feature 'User updates password on profile screen', js: true do
     @user.update!(role: User::STUDENT_ROLE)
     visit '/'
     complete_newflow_log_in_screen('user', 'password')
+    wait_for_successful_log_in
   end
 
   scenario "changes existing" do
     visit profile_newflow_path
+    expect(page).to have_current_path(profile_newflow_path)
     find('[data-provider=identity] .edit--newflow').click
     expect(page).to have_current_path(/\/i\/(change_password_form|profile)/)
     # JS navigation may not have fired yet; navigate directly if still on profile

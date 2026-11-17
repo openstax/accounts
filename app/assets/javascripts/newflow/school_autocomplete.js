@@ -10,22 +10,35 @@
 (function() {
   'use strict';
 
-  var ENDPOINT = '/i/schools';
+  var DEFAULT_ENDPOINT = '/i/schools';
   var DEBOUNCE_MS = 300;
   var MIN_QUERY_LENGTH = 2;
+  var instanceCount = 0;
 
-  function attach(containerSelector) {
-    var container = document.querySelector(containerSelector);
+  // Takes a selector or the element: the profile page's inline editor builds
+  // its form on the fly, so it has no selector that singles it out.
+  function attach(containerOrSelector) {
+    var container = typeof containerOrSelector === 'string' ?
+      document.querySelector(containerOrSelector) : containerOrSelector;
     if (!container) { return; }
+
+    // A second attach on a live container silently doubles the listbox and every
+    // listener, and nothing in the markup contract stops a caller doing it --
+    // the profile editor calls attach() from an x-editable render(), which runs
+    // on every show.
+    if (container.getAttribute('data-school-autocomplete-attached')) { return; }
+    container.setAttribute('data-school-autocomplete-attached', 'true');
 
     var input = container.querySelector('input[type="text"]');
     var hiddenId = container.querySelector('input[type="hidden"]');
     var useAsEnteredLabel =
       container.getAttribute('data-use-as-entered-label') || 'Use "{school}"';
+    // Rails' path helper supplies it, so the Cloudfront /accounts prefix survives.
+    var endpoint = container.getAttribute('data-endpoint') || DEFAULT_ENDPOINT;
 
     var listbox = document.createElement('ul');
     listbox.className = 'school-autocomplete-results';
-    listbox.id = input.id + '-results';
+    listbox.id = (input.id || 'school-autocomplete-' + (++instanceCount)) + '-results';
     listbox.setAttribute('role', 'listbox');
     listbox.hidden = true;
     container.appendChild(listbox);
@@ -79,7 +92,7 @@
       if (state.abortController) { state.abortController.abort(); }
       state.abortController = new AbortController();
 
-      fetch(ENDPOINT + '?q=' + encodeURIComponent(query), {
+      fetch(endpoint + '?q=' + encodeURIComponent(query), {
         signal: state.abortController.signal
       })
         .then(function(response) { return response.ok ? response.json() : []; })

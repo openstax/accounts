@@ -39,11 +39,9 @@ Rails.application.routes.draw do
 
     get 'i/signup/student/email_verification_form', action: :student_email_verification_form, as: :student_email_verification_form
     post 'i/signup/student/change_signup_email', action: :student_change_signup_email, as: :student_change_signup_email
-    get 'i/signup/student/email_verification_form_updated_email',
-      action: :student_email_verification_form_updated_email,
-      as: :student_email_verification_form_updated_email
     get 'i/signup/student/change_signup_email_form', action: :student_change_signup_email_form, as: :student_change_signup_email_form
     post 'i/signup/student/verify_email_by_pin', action: :student_verify_email_by_pin, as: :student_verify_pin
+    post 'i/signup/student/resend_email', action: :student_resend_signup_email, as: :student_resend_signup_email
   end
 
   get 'i/schools', to: 'newflow/schools#index', as: :newflow_schools
@@ -57,10 +55,8 @@ Rails.application.routes.draw do
 
     # Step 2
     get 'i/signup/educator/email_verification_form', action: :educator_email_verification_form, as: :educator_email_verification_form
-    get 'i/signup/educator/email_verification_form_updated_email',
-      action: :educator_email_verification_form_updated_email,
-      as: :educator_email_verification_form_updated_email
     post 'i/signup/educator/verify_email_by_pin', action: :educator_verify_email_by_pin, as: :educator_verify_pin
+    post 'i/signup/educator/resend_email', action: :educator_resend_signup_email, as: :educator_resend_signup_email
 
     # Step 3
     get 'i/signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form

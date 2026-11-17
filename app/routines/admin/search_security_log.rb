@@ -7,12 +7,17 @@
 #   user:jps,richb       --> returns the security log for requests by the "jps" and "richb" users
 #   app:"OpenStax Tutor" --> returns the security log for requests by the OpenStax Tutor application
 #   ip:127.0.0.1         --> returns the security log for requests from 127.0.0.1
-#   type:admin           --> returns security logs related to admin privileges
+#   type:admin           --> returns security logs whose event type mentions "admin"
+#   type:user_updated    --> returns only user_updated logs (a full event name matches exactly)
 #   time:"this week"     --> returns security logs for this week
 #   admin                --> returns admin security logs, plus security logs for anyone named admin
 #
 # Query terms can be combined, e.g.: user:jps app:tutor
 # Spaces combine terms with AND; Commas combine terms with OR (same prefix only)
+#
+# The page's filter links build on the current query with .add_filter_term, which replaces any
+# existing term of the same keyword and keeps the rest; chips remove one term with
+# .remove_filter_term.
 #
 # There are currently two options to control query pagination:
 #
@@ -35,13 +40,18 @@ module Admin
                  as: :search,
                  translations: { outputs: { type: :verbatim } }
 
-    # Downcase and try to convert to an event_type integer
+    # A full name matches exactly so that clicking an entry's user_updated type doesn't
+    # also pull in user_updated_by_admin; anything shorter still matches by substring.
     def self.sanitize_event_types(event_type_strings)
-      event_type_strings.map do |event_type_string|
-        Integer(event_type) \
-          rescue SecurityLog.event_types.keys.select{ |key| key.include?(event_type_string) }
-                                             .map{ |key| SecurityLog.event_types[key] }
-      end.flatten
+      event_type_strings.flat_map do |event_type_string|
+        if (number = Integer(event_type_string, exception: false))
+          number
+        elsif SecurityLog.event_types.key?(event_type_string)
+          SecurityLog.event_types[event_type_string]
+        else
+          SecurityLog.event_types.select { |key, _| key.include?(event_type_string) }.values
+        end
+      end
     end
 
     # Attempt to transform string representations of times into time ranges
@@ -51,6 +61,64 @@ module Admin
           rescue nil
       end.compact
     end
+
+    KEYWORDS = %i[ id user_id user app ip type time any ].freeze
+
+    # Flat list of { keyword:, occurrence:, value: } filter terms, parsed with the same
+    # KeywordSearch grammar #exec uses. `occurrence` tells apart separate (AND'd) uses of one
+    # keyword; comma-separated (OR'd) values within one occurrence are split out. Negated
+    # terms are ignored because #exec's keyword blocks never see them.
+    def self.parse_filter_terms(query)
+      return [] if query.blank?
+
+      occurrences_by_keyword = Hash.new { |h, k| h[k] = [] }
+
+      KeywordSearch.search(query.to_s) do |with|
+        with.default_keyword :any
+        KEYWORDS.each do |keyword|
+          with.keyword(keyword) { |values| occurrences_by_keyword[keyword].concat(values) }
+        end
+      end
+
+      occurrences_by_keyword.flat_map do |keyword, occurrences|
+        occurrences.each_with_index.flat_map do |raw_value, occurrence|
+          raw_value.to_s.split(',').reject(&:blank?).map do |value|
+            { keyword: keyword, occurrence: occurrence, value: value }
+          end
+        end
+      end
+    rescue KeywordSearch::ParseError
+      []
+    end
+
+    # The query with one term removed. Values that shared a comma-separated OR group stay joined.
+    def self.remove_filter_term(query, keyword:, occurrence:, value:)
+      remaining = parse_filter_terms(query).reject do |term|
+        term[:keyword].to_s == keyword.to_s &&
+          term[:occurrence].to_s == occurrence.to_s &&
+          term[:value] == value
+      end
+
+      serialize_filter_terms(remaining)
+    end
+
+    # The query with `keyword` set to `value`. Every existing term for that keyword is replaced,
+    # because AND-ing two values of one keyword (two event types, two times) nearly always matches
+    # nothing; terms for other keywords and bare terms are kept in order.
+    def self.add_filter_term(query, keyword:, value:)
+      kept = parse_filter_terms(query).reject { |term| term[:keyword].to_s == keyword.to_s }
+      added = { keyword: keyword.to_sym, occurrence: 0, value: value.to_s }
+
+      serialize_filter_terms(kept + [added])
+    end
+
+    def self.serialize_filter_terms(terms)
+      terms.group_by { |term| [term[:keyword], term[:occurrence]] }.map do |(kw, _), grouped|
+        joined_value = grouped.map { |t| t[:value] }.join(',').delete('"')
+        kw == :any ? %("#{joined_value}") : %(#{kw}:"#{joined_value}")
+      end.join(' ')
+    end
+    private_class_method :serialize_filter_terms
 
     protected
 

@@ -189,7 +189,11 @@ module Newflow
         wait_for_animations
         click_on('commit')
         screenshot!
-        expect(page).to have_text(t(:"login_signup_form.check_your_updated_email"))
+        expect(page).to have_content(
+          ActionController::Base.helpers.strip_tags(
+            t(:"login_signup_form.signup_email_changed", email: new_email)
+          )
+        )
 
         perform_enqueued_jobs
 
@@ -203,7 +207,7 @@ module Newflow
         expect(confirmation_code_url).not_to eq(old_confirmation_code_url)
 
         screenshot!
-        expect(page).to have_current_path(student_email_verification_form_updated_email_path)
+        expect(page).to have_current_path(student_email_verification_form_path)
       end
     end
 

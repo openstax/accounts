@@ -7,10 +7,12 @@ FactoryBot.define do
     uuid {Faker::Alphanumeric.alphanumeric(number: 10, min_alpha: 3, min_numeric: 3)}
     role { User::STUDENT_ROLE }
     school { FactoryBot.build(:school) }
-    consent_preferences { JSON.generate({
-      accepted: ['necessary', 'analytics', 'functional'],
-      rejected: ['advertisement', 'performance']
-    }) }
+    consent_preferences do
+      {
+        accepted: ['necessary', 'analytics', 'functional'],
+        rejected: ['advertisement', 'performance']
+      }
+    end
 
     is_profile_complete { true }
 

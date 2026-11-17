@@ -36,6 +36,20 @@
 
   $("#search-results-list").html("<%= j(contents) %>");
   $('#search-results-list').prepend("<%= j(render 'admin/users/search_pagination') %>");
+  <%
+    see_all_results_link = link_to 'See all results on the full search page »',
+                                    search_admin_users_path(
+                                      search: {
+                                        terms: @handler_result.outputs[:query],
+                                        order_by: params.dig(:search, :order_by),
+                                        per_page: @handler_result.outputs[:per_page]
+                                      }
+                                    ),
+                                    target: '_blank',
+                                    rel: 'noopener',
+                                    class: 'see-all-results'
+  %>
+  $('#search-results-list').append("<%= j(see_all_results_link) %>");
   // reload the users table after clicking on the make admin link
   $('.make-admin').bind('ajax:complete', function() { $('.tab-pane.active form').submit(); });
 <% end %>

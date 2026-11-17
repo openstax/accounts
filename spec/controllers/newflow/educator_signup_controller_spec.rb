@@ -173,11 +173,13 @@ module Newflow
     end
 
     describe 'POST #educator_change_signup_email' do
+      let(:user) { create_newflow_user('original@openstax.org') }
+
       before do
-        user = create_newflow_user('original@openstax.org')
         user.update_attribute('state', 'unverified')
         user.email_addresses.first.update!(verified: false)
         allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user)
+        allow(OXPosthog).to receive(:log)
       end
 
       context 'success' do
@@ -189,10 +191,61 @@ module Newflow
           }
         }
 
-        it 'redirects to educator_email_verification_form_updated_email_path' do
-          user = User.last
-          post(:educator_change_signup_email, params: params)
-          expect(response).to redirect_to(educator_email_verification_form_updated_email_path)
+        it 'sends a new PIN and returns to the PIN screen' do
+          expect {
+            post(:educator_change_signup_email, params: params)
+          }.to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+          expect(response).to redirect_to(educator_email_verification_form_path)
+          expect(flash[:notice]).to eq I18n.t(
+            :"login_signup_form.signup_email_changed", email: 'newemail@openstax.org'
+          )
+          expect(SecurityLog.where(event_type: :signup_email_changed, user: user)).to exist
+        end
+      end
+
+      context 'when the same address is entered again' do
+        let(:params) { { change_signup_email: { email: 'Original@OpenStax.org' } } }
+
+        it 'resends it under the resend limits' do
+          user.email_addresses.update_all(confirmation_sent_at: nil)
+
+          expect {
+            post(:educator_change_signup_email, params: params)
+          }.to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+          expect(response).to redirect_to(educator_email_verification_form_path)
+          expect(SecurityLog.where(event_type: :signup_email_resent, user: user)).to exist
+        end
+
+        it 'asks the user to wait when the email was just sent' do
+          user.email_addresses.update_all(confirmation_sent_at: 10.seconds.ago)
+
+          expect {
+            post(:educator_change_signup_email, params: params)
+          }.not_to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+          expect(response).to redirect_to(educator_email_verification_form_path)
+          expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resent_too_soon")
+        end
+      end
+
+      context 'when the hourly email limit is used up' do
+        let(:params) { { change_signup_email: { email: 'newemail@openstax.org' } } }
+
+        before do
+          Newflow::ResendSignupEmail::HOURLY_LIMIT.times do
+            SecurityLog.create!(user: user, event_type: :signup_email_changed)
+          end
+        end
+
+        it 'keeps the address and shows the limit on the form' do
+          expect {
+            post(:educator_change_signup_email, params: params)
+          }.not_to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+          expect(response).to render_template(:educator_change_signup_email_form)
+          expect(user.email_addresses.first.reload.value).to eq 'original@openstax.org'
         end
       end
 
@@ -227,7 +280,7 @@ module Newflow
         it 'bypasses recaptcha verification and allows email change' do
           expect_any_instance_of(described_class).not_to receive(:verify_recaptcha)
           post(:educator_change_signup_email, params: params)
-          expect(response).to redirect_to(educator_email_verification_form_updated_email_path)
+          expect(response).to redirect_to(educator_email_verification_form_path)
         end
       end
     end
@@ -245,22 +298,114 @@ module Newflow
       end
     end
 
-    describe 'GET #educator_email_verification_form_updated_email' do
-      it 'renders OK' do
-        user = create_newflow_user('user@openstax.org')
-        user.update(state: User::UNVERIFIED)
-        user.email_addresses.first.update!(verified: false)
-        allow_any_instance_of(described_class).to receive(:unverified_user) { user }
-        get('educator_email_verification_form_updated_email')
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:educator_email_verification_form_updated_email)
+    describe 'the PIN screen escape hatches' do
+      render_views
+
+      let(:user) { FactoryBot.create(:user_with_emails, state: User::UNVERIFIED, emails_count: 1) }
+
+      before do
+        user.email_addresses.update_all(verified: false)
+        allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user)
       end
 
-      it 'redirects when there is no unverified_user present' do
-        get('educator_email_verification_form_updated_email')
-        expect(response.status).to eq(302)
+      it 'offers to resend the email and to change the address, outside the PIN form' do
+        get(:educator_email_verification_form)
+
+        page = Capybara.string(response.body)
+        expect(page).to have_css(
+          "form.signup-alternatives__form[action='#{educator_resend_signup_email_path}']"
+        )
+        expect(page).to have_link(href: educator_change_signup_email_form_path)
+        expect(page).not_to have_css("form[action='#{educator_verify_pin_path}'] form")
       end
     end
+
+    describe 'POST #educator_verify_email_by_pin' do
+      let(:user) { FactoryBot.create(:user_with_emails, state: User::UNVERIFIED, emails_count: 1) }
+
+      before do
+        user.email_addresses.update_all(verified: false)
+        allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user)
+        allow(OXPosthog).to receive(:log)
+      end
+
+      it 'tags a wrong PIN with an allowlisted reason and nothing else' do
+        post(:educator_verify_email_by_pin, params: { confirm: { pin: '000000x' } })
+
+        expect(response).to render_template(:educator_email_verification_form)
+        expect(OXPosthog).to have_received(:log).with(
+          user, 'educator_verified_email_failed', { role: user.role, reason: 'pin_not_correct' }
+        )
+      end
+
+      it 'tags a locked-out attempt as attempts_exhausted' do
+        email = user.email_addresses.first
+        ConfirmByPin.sequential_failure_for(email).update!(length: ConfirmByPin.max_pin_failures)
+
+        post(:educator_verify_email_by_pin, params: { confirm: { pin: email.confirmation_pin } })
+
+        expect(OXPosthog).to have_received(:log).with(
+          user, 'educator_verified_email_failed', hash_including(reason: 'attempts_exhausted')
+        )
+      end
+    end
+
+    describe 'POST #educator_resend_signup_email' do
+      let(:user) { FactoryBot.create(:user_with_emails, state: User::UNVERIFIED, emails_count: 1) }
+
+      before do
+        user.email_addresses.update_all(verified: false, confirmation_sent_at: nil)
+        allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user)
+        allow(OXPosthog).to receive(:log)
+      end
+
+      it 'resends the email and returns to the PIN screen' do
+        expect {
+          post(:educator_resend_signup_email)
+        }.to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+        expect(response).to redirect_to(educator_email_verification_form_path)
+        expect(flash[:notice]).to eq I18n.t(
+          :"login_signup_form.signup_email_resent",
+          email: ERB::Util.html_escape(user.email_addresses.first.value)
+        )
+        expect(OXPosthog).to have_received(:log).with(
+          user, 'educator_resent_signup_email', hash_including(role: user.role)
+        )
+        expect(SecurityLog.where(event_type: :signup_email_resent, user: user)).to exist
+      end
+
+      it 'asks the user to wait when the email was just sent' do
+        user.email_addresses.update_all(confirmation_sent_at: 10.seconds.ago)
+
+        expect {
+          post(:educator_resend_signup_email)
+        }.not_to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+        expect(response).to redirect_to(educator_email_verification_form_path)
+        expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resent_too_soon")
+      end
+
+      it 'tells the user when the hourly limit is reached' do
+        5.times { SecurityLog.create!(user: user, event_type: :signup_email_resent) }
+
+        expect {
+          post(:educator_resend_signup_email)
+        }.not_to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+        expect(response).to redirect_to(educator_email_verification_form_path)
+        expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resend_limit_reached")
+      end
+
+      it 'restarts signup when there is no signup in progress' do
+        allow_any_instance_of(described_class).to receive(:unverified_user).and_call_original
+
+        post(:educator_resend_signup_email)
+
+        expect(response).to redirect_to(newflow_signup_path)
+      end
+    end
+
 
     describe 'POST #sheerid_webhook' do
       let(:handler) { EducatorSignup::SheeridWebhook }

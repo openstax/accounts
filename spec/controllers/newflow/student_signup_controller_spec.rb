@@ -151,13 +151,30 @@ module Newflow
           }
         }
 
-        it 'redirects to student_email_verification_form_updated_email_path' do
+        it 'sends a new PIN and returns to the PIN screen' do
           user = User.last
           user.update_attribute('state', 'unverified')
           user.email_addresses.first.update!(verified: false)
           session[:unverified_user_id] = user.id
           post(:student_change_signup_email, params: params)
-          expect(response).to redirect_to(student_email_verification_form_updated_email_path)
+          expect(response).to redirect_to(student_email_verification_form_path)
+          expect(flash[:notice]).to eq I18n.t(
+            :"login_signup_form.signup_email_changed", email: 'newemail@openstax.org'
+          )
+        end
+
+        it 'resends under the resend limits when the same address is entered again' do
+          user = User.last
+          user.update_attribute('state', 'unverified')
+          user.email_addresses.first.update!(verified: false, confirmation_sent_at: 10.seconds.ago)
+          session[:unverified_user_id] = user.id
+
+          expect {
+            post(:student_change_signup_email, params: { change_signup_email: { email: 'original@openstax.org' } })
+          }.not_to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+          expect(response).to redirect_to(student_email_verification_form_path)
+          expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resent_too_soon")
         end
       end
 
@@ -199,7 +216,7 @@ module Newflow
           session[:unverified_user_id] = user.id
           expect_any_instance_of(described_class).not_to receive(:verify_recaptcha)
           post(:student_change_signup_email, params: params)
-          expect(response).to redirect_to(student_email_verification_form_updated_email_path)
+          expect(response).to redirect_to(student_email_verification_form_path)
         end
       end
     end
@@ -219,20 +236,75 @@ module Newflow
       end
     end
 
-    describe 'GET #student_email_verification_form_updated_email' do
-      it 'renders OK' do
-        user = create_newflow_user('user@openstax.org')
-        user.email_addresses.first.update!(verified: false)
-        allow_any_instance_of(described_class).to receive(:unverified_user) { user }
-        get('student_email_verification_form_updated_email')
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:student_email_verification_form_updated_email)
+    describe 'POST #student_resend_signup_email' do
+      let(:user) { FactoryBot.create(:user_with_emails, state: User::UNVERIFIED, emails_count: 1) }
+
+      before do
+        user.email_addresses.update_all(verified: false, confirmation_sent_at: nil)
+        allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user)
+        allow(OXPosthog).to receive(:log)
       end
 
-      it 'redirects when there is no unverified_user present' do
-        get('student_email_verification_form_updated_email')
-        expect(response.status).to eq(302)
+      it 'resends the email and returns to the PIN screen' do
+        expect {
+          post(:student_resend_signup_email)
+        }.to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+        expect(response).to redirect_to(student_email_verification_form_path)
+        expect(flash[:notice]).to eq I18n.t(
+          :"login_signup_form.signup_email_resent",
+          email: ERB::Util.html_escape(user.email_addresses.first.value)
+        )
+        expect(OXPosthog).to have_received(:log).with(
+          user, 'student_resent_signup_email', hash_including(role: user.role)
+        )
+      end
+
+      it 'asks the user to wait when the email was just sent' do
+        user.email_addresses.update_all(confirmation_sent_at: 10.seconds.ago)
+
+        expect {
+          post(:student_resend_signup_email)
+        }.not_to have_enqueued_mail(NewflowMailer, :signup_email_confirmation)
+
+        expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resent_too_soon")
+      end
+
+      it 'tells the user when the hourly limit is reached' do
+        5.times { SecurityLog.create!(user: user, event_type: :signup_email_resent) }
+
+        post(:student_resend_signup_email)
+
+        expect(flash[:alert]).to eq I18n.t(:"login_signup_form.signup_email_resend_limit_reached")
+      end
+
+      it 'escapes the address in the notice, since the layout renders flash as html_safe' do
+        user.email_addresses.update_all(value: 'a<b>@example.com')
+
+        post(:student_resend_signup_email)
+
+        expect(flash[:notice]).to include('a&lt;b&gt;@example.com')
       end
     end
+
+    describe 'POST #student_verify_email_by_pin' do
+      let(:user) { FactoryBot.create(:user_with_emails, state: User::UNVERIFIED, emails_count: 1) }
+
+      before do
+        user.email_addresses.update_all(verified: false)
+        allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user)
+        allow(OXPosthog).to receive(:log)
+      end
+
+      it 'captures the failure with an allowlisted reason' do
+        post(:student_verify_email_by_pin, params: { confirm: { pin: 'nope' } })
+
+        expect(response).to render_template(:student_email_verification_form)
+        expect(OXPosthog).to have_received(:log).with(
+          user, 'student_verified_email_failed', { role: user.role, reason: 'pin_not_correct' }
+        )
+      end
+    end
+
   end
 end

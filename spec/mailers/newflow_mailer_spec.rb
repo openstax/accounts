@@ -34,6 +34,16 @@ module Newflow
     end
 
     describe 'sends email confirmation' do
+      it 'has a plain-text alternative alongside the HTML, for spam filters and text-only clients' do
+        mail = NewflowMailer.signup_email_confirmation(email_address: email)
+
+        expect(mail.html_part.body.decoded).to include('Welcome to OpenStax!')
+        expect(mail.text_part.body.decoded).to include("Your PIN is: #{pin}")
+        expect(mail.text_part.body.decoded).to include(confirm_url)
+        expect(mail.text_part.body.decoded).to include(email.value)
+        expect(mail.attachments['openstax-logo.png']).to be_inline
+      end
+
       it 'has basic header and from info and greeting' do
         mail = NewflowMailer.signup_email_confirmation email_address: email
 
@@ -73,6 +83,8 @@ module Newflow
           expect(mail.subject).to eq("[OpenStax] Confirm your email address")
           expect(mail.body.encoded).to include("<a href=\"#{confirm_url}\"")
           expect(mail.body.encoded).not_to include("use your pin: <b id='pin'>#{pin}</b>")
+          expect(mail.text_part.body.decoded).not_to include(pin)
+          expect(mail.text_part.body.decoded).to include(confirm_url)
         end
       end
     end

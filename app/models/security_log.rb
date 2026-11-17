@@ -134,6 +134,8 @@ class SecurityLog < ApplicationRecord
     salesforce_lead_status_synced
     faculty_status_repaired
     salesforce_record_unlinked
+    signup_email_resent
+    signup_email_changed
   ]
 
   json_serialize :event_data, Hash
@@ -142,7 +144,7 @@ class SecurityLog < ApplicationRecord
 
   before_destroy { raise ActiveRecord::ReadOnlyRecord }
 
-  scope :preloaded, ->{ preload(:user, :application) }
+  scope :preloaded, ->{ preload(:application, user: :email_addresses) }
 
   default_scope { order(arel_table[:created_at].desc) }
 

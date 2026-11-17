@@ -56,6 +56,29 @@
                 </div>
 
             <% end %>
+
+            <%# Outside the PIN form: a button_to nested in it would be dropped.
+                A missing email is the most common way people get stuck here, so
+                this stays visible rather than collapsed. %>
+            <%= render partial: 'newflow/signup_alternatives', locals: {
+                  heading: I18n.t(:"login_signup_form.didnt_get_the_email"),
+                  actions: [
+                    {
+                      label: I18n.t(:"login_signup_form.resend_signup_email"),
+                      description: I18n.t(:"login_signup_form.resend_signup_email_description"),
+                      path: resend_path,
+                      method: :post,
+                      ga_label: 'resend-signup-email'
+                    },
+                    {
+                      label: I18n.t(:"login_signup_form.use_a_different_email"),
+                      description: I18n.t(:"login_signup_form.use_a_different_email_description"),
+                      path: change_email_path,
+                      method: :get,
+                      ga_label: 'change-signup-email'
+                    }
+                  ]
+                } %>
         <% end %>
     </div>
 </div>

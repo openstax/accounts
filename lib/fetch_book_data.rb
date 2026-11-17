@@ -7,15 +7,26 @@ class FetchBookData
   SUBJECTS_URL = "#{CMS_API_URL}v2/pages/subjects/"
   TIMEOUT = 5
   CACHE_DURATION = 1.day
+  # Part of both cache keys. Bump it when what these methods return changes for
+  # the same CMS data (as when the book-state filter changed), so a deploy does
+  # not serve the previous filter's results out of the shared cache for a day.
+  CACHE_VERSION = 2
+  # Same states as the book selector on openstax.org. An allowlist, so a book
+  # with no state or a state added later stays hidden until it is listed here.
+  # Deprecated books are older editions: left in, one that sorts ahead of its
+  # live edition wins the per-abbreviation de-duplication and the picker shows
+  # the old title and cover. See
+  # https://github.com/openstax/openstax-cms/blob/main/books/constants.py#L7
+  LISTED_BOOK_STATES = %w[live new_edition_available coming_soon].freeze
 
   def titles
-    @titles ||= Rails.cache.fetch('BookData.titles', expires_in: CACHE_DURATION) do
+    @titles ||= Rails.cache.fetch("BookData.titles.v#{CACHE_VERSION}", expires_in: CACHE_DURATION) do
       fetch_titles
     end
   end
 
   def books_by_subject
-    @books_by_subject ||= Rails.cache.fetch('BookData.books_by_subject', expires_in: CACHE_DURATION) do
+    @books_by_subject ||= Rails.cache.fetch("BookData.books_by_subject.v#{CACHE_VERSION}", expires_in: CACHE_DURATION) do
       fetch_books_by_subject
     end
   end
@@ -25,8 +36,7 @@ class FetchBookData
     return [] if results.blank?
 
     items = results.fetch('items', [])
-    # See https://github.com/openstax/openstax-cms/blob/main/books/constants.py#L7 for book states
-    books = items.reject { |i| %w[retired unlisted].include?(i['book_state']) }
+    books = items.select { |i| LISTED_BOOK_STATES.include?(i['book_state']) }
 
     books_with_subject = []
 
@@ -52,7 +62,7 @@ class FetchBookData
     return [] if results.blank?
 
     books = results.fetch('books', [])
-    books = books.reject { |b| %w[retired unlisted].include?(b['book_state']) }
+    books = books.select { |b| LISTED_BOOK_STATES.include?(b['book_state']) }
     books = books.select { |b| b['salesforce_abbreviation'].present? && b['title'].present? }
 
     subject_map = {}

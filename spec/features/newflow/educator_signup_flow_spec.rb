@@ -53,11 +53,10 @@ module Newflow
           click_on(I18n.t(:"login_signup_form.confirm_my_account_button"))
           wait_for_ajax
           wait_for_animations
-          expect(page).to_not have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
-          expect(EmailAddress.verified.count).to eq(1)
 
           # Step 3
           expect_sheerid_iframe
+          expect(EmailAddress.verified.count).to eq(1)
 
           # Step 4
           expect_educator_step_4_page
@@ -112,6 +111,43 @@ module Newflow
           visit(signup_done_path)
           expect(page).to have_current_path(signup_done_path)
         end
+      end
+    end
+
+    context 'when the PIN email does not arrive' do
+      it 'resends the same PIN from the PIN screen, and accepts it typed with a space' do
+        visit(newflow_signup_path)
+        click_on(I18n.t(:"login_signup_form.educator"))
+
+        fill_in 'signup_first_name', with: first_name
+        fill_in 'signup_last_name', with: last_name
+        fill_in 'signup_email', with: email_value
+        fill_in 'signup_password', with: password
+        submit_signup_form
+
+        expect(page).to have_current_path(educator_email_verification_form_path)
+        email = EmailAddress.find_by!(value: email_value)
+        pin = email.confirmation_pin
+        # The signup email was "just sent"; age it past the resend throttle.
+        email.update_column(:confirmation_sent_at, 2.minutes.ago)
+
+        click_on(I18n.t(:"login_signup_form.resend_signup_email"))
+        expect(page).to have_content(
+          ActionController::Base.helpers.strip_tags(
+            I18n.t(:"login_signup_form.signup_email_resent", email: email_value)
+          )
+        )
+        expect(page).to have_current_path(educator_email_verification_form_path)
+
+        perform_enqueued_jobs
+        open_email(email_value)
+        expect(current_email.subject).to include(pin)
+
+        fill_in('confirm_pin', with: "#{pin[0, 3]} #{pin[3..]}")
+        click_on(I18n.t(:"login_signup_form.confirm_my_account_button"))
+
+        expect_sheerid_iframe
+        expect(email.reload.verified).to be(true)
       end
     end
 

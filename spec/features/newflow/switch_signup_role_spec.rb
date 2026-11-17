@@ -23,7 +23,9 @@ module Newflow
 
       it 'does not offer a role switch' do
         expect(page).to have_field('confirm_pin')
-        expect(page).to have_no_css('.signup-alternatives')
+        # The PIN screen has its own "Didn't get the email?" panel; it must not
+        # carry the switch.
+        expect(page).to have_button(I18n.t(:"login_signup_form.resend_signup_email"))
         expect(page).to have_no_button(I18n.t(:"login_signup_form.switch_role_educator"))
       end
     end
@@ -39,7 +41,9 @@ module Newflow
 
       it 'does not offer a role switch' do
         expect(page).to have_field('confirm_pin')
-        expect(page).to have_no_css('.signup-alternatives')
+        # The PIN screen has its own "Didn't get the email?" panel; it must not
+        # carry the switch.
+        expect(page).to have_button(I18n.t(:"login_signup_form.resend_signup_email"))
         expect(page).to have_no_button(I18n.t(:"login_signup_form.switch_role_student"))
       end
     end
