@@ -47,7 +47,9 @@ module EmailAddressValidations
         {
           # AWS::SES::ResponseError InvalidParameterValue - Local address contains control or
           # whitespace
-          without: /[[:cntrl:]\u00AD\u200B-\u200D\u2060\uFEFF]/,
+          # Also rejects Unicode bidi/format marks (e.g. RLM, PDF), which otherwise reach the
+          # DNS MX lookup and break Resolv with Encoding::CompatibilityError
+          without: /[[:cntrl:]\u00AD\u061C\u200B-\u200F\u202A-\u202E\u2060\u2066-\u2069\uFEFF]/,
           message: :contains_invisible_characters
         }
       ]

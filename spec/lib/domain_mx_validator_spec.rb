@@ -19,5 +19,10 @@ describe EmailDomainMxValidator, type: :lib do
       EmailDomainMxValidator.strategy = EmailDomainMxValidator::DnsStrategy.new
       expect(subject.check(invalid_provider)).to eq(false)
     end
+
+    it 'returns false for a non-ASCII domain instead of raising' do
+      strategy = EmailDomainMxValidator::DnsStrategy.new
+      expect(strategy.check("gmail.com\u202C\u200F")).to be(false)
+    end
   end
 end
