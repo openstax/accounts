@@ -10,6 +10,8 @@ module EmailDomainMxValidator
   class DnsStrategy < Base
     def check(domain)
       return false if domain.blank?
+      # Resolv cannot encode non-ASCII labels (raises Encoding::CompatibilityError)
+      return false unless domain.ascii_only?
 
       mx_records = Resolv::DNS.open do |dns|
         dns.getresources(domain, Resolv::DNS::Resource::IN::MX)

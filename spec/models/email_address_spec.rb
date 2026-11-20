@@ -92,7 +92,10 @@ describe EmailAddress, type: :model do
     [
       ["zero-width space", "jo\u200Bhn@gmail.com"],
       ["soft hyphen", "john\u00ADsmith@gmail.com"],
-      ["tab", "jo\thn@gmail.com"]
+      ["tab", "jo\thn@gmail.com"],
+      ["right-to-left mark", "john@gmail.com\u200F"],
+      ["trailing bidi marks", "john@gmail.com\u202C\u200F"],
+      ["left-to-right isolate", "\u2066john@gmail.com"]
     ].each do |name, value|
       it "rejects a #{name}" do
         expect(email_for(value).errors[:value]).to include(message)
